@@ -7,11 +7,32 @@
   <script src="lib/jasmine-1.2.0/jasmine-html.js"></script>
 
   <!-- include source files here... -->
-  <script src="../app/scripts/models/selectionPageModel.js"></script>
-  <script src="../app/scripts/presenters/selectionPagePresenter.js"></script>
+<!--  <script src="../app/scripts/models/selectionPageModel.js"></script>
+  <script src="../app/scripts/presenters/selectionPagePresenter.js"></script>-->
 
   <!-- include spec files here... -->
-  <script src="spec/selectionPageSpec.js"></script>
+<!--  <script src="spec/selectionPageSpec.js"></script>-->
+  <script>
+    var require = {
+            paths: {
+                "domReady": "../components/requirejs-domready/domReady",
+            }
+        };
+  </script>
+  <script data-main="test_main.js" src="../components/requirejs/require.js"></script>
+
+  <script>
+    require([ "domReady!", "spec/selectionPageSpec"],
+    function(document) {
+   /* jasmine.getEnv().addReporter(
+    new jasmine.HtmlReporter()
+    );
+ */
+    // Run all the loaded test specs.
+    jasmine.getEnv().execute();
+    });</script>
+
+
 
   <!--
     Choose a jasmine reporter.
