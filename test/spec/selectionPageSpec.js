@@ -188,4 +188,3 @@ define(['scripts/models/selectionPageModel'], function(SelectionPageModel) {
     });
 
 });
-// TODO : removing orders!!
