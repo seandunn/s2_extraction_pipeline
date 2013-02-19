@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 
-define(['scripts/models/selectionPageModel'], function() {
+define([''], function() {
 
     function SelectionPageModel(user) {
     /* Creates the default implementation of a selection page model
@@ -31,7 +31,7 @@ define(['scripts/models/selectionPageModel'], function() {
 
     this.user = user;
     this.orders = [];
-    this.batch = undefined; //order.rawJson.order.batch;
+    this.batch = undefined; 
 
     this.addOrder = function(newOrder) {
 	/* add order

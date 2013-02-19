@@ -48,16 +48,15 @@ module.exports = function( grunt ) {
 
     // headless testing through PhantomJS
     jasmine: {
-//      all: ['test/**/*.html']
 	all: ['http://localhost:3501/index.html']
     },
 
     // default watch configuration
     watch: {
-      coffee: {
-        files: 'app/scripts/**/*.coffee',
-        tasks: 'coffee reload'
-      },
+	//      coffee: {
+	//	files: 'app/scripts/**/*.coffee',
+	//	tasks: 'coffee reload'
+	//},*/
       compass: {
         files: [
           'app/styles/**/*.{scss,sass}'
@@ -69,7 +68,10 @@ module.exports = function( grunt ) {
           'app/*.html',
           'app/styles/**/*.css',
           'app/scripts/**/*.js',
-          'app/images/**/*'
+          'app/images/**/*',
+	  'test/spec/*.js',
+	  'test/json/*.json',
+	  'test/*.js',
         ],
         tasks: 'reload'
       }
