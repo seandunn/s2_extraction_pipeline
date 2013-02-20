@@ -25,12 +25,16 @@ define(['scripts/models/selection_page_model', 'spec/selection_page_helper'],
 
     var helper = new SelectionPageHelper();
 
-    describe("model with user and 0 orders", function() {
+    describe("model with 0 orders", function() {
       var model;
       
       beforeEach(function() { 
 	model = new SelectionPageModel(123456789);
       });
+
+      it("has capacity of 12 orders", function() {
+	expect(model.getCapacity()).toEqual(12);
+	});
       
       it("has no batch identifier", function() {
 	expect(model.batch).toBeUndefined();
@@ -40,10 +44,10 @@ define(['scripts/models/selection_page_model', 'spec/selection_page_helper'],
 	model.addOrder(helper.createOrderWithOriginalBatch(0));
 	expect(model.batch).toEqual('001');
       });
-      
+
     });
     
-    describe("model with user and 1 order", function() {
+    describe("model with 1 order", function() {
       var model;
       
       beforeEach(function() { 
@@ -123,6 +127,13 @@ define(['scripts/models/selection_page_model', 'spec/selection_page_helper'],
 	var order = helper.createOrderWithOriginalBatch(12);
 	expect(function() { model.addOrder(order); }).toThrow();
       });
+
+      it("can return uuid from order index", function() {
+	for(var i = 0; i < model.getNumberOfOrders(); i++) {
+	  var expectedUuid = helper.createUuid(i);
+	  expect(model.getOrderUuidFromOrderIndex(i)).toBe(expectedUuid);
+	  }
+	});
     })});
 
 });

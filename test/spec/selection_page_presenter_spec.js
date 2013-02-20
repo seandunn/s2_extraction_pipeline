@@ -9,13 +9,11 @@ define(['scripts/models/selection_page_model', 'scripts/presenters/selection_pag
 
       var model = undefined;
       var presenter = undefined;
-      var view = null;
+      var view = undefined;
+      var app = undefined;
 
-      beforeEach(function() {
-
-	view = {
-	  
-	};
+       function configureSpyView() {
+	view = {};
 
 	view.clear = function() {
 	};
@@ -24,12 +22,25 @@ define(['scripts/models/selection_page_model', 'scripts/presenters/selection_pag
 	};
 
 	spyOn(view, 'clear');
-	spyOn(view, 'render');
+	spyOn(view, 'render');        
+       }
+
+      function configureSpyAppController() {
+	app = {};
+	app.childDone = function(presenter, action, data) {};
+
+	spyOn(app, 'childDone');
+	}
+
+      beforeEach(function() {
+
+	configureSpyView();
+	configureSpyAppController();
 
 	model = new SelectionPageModel(123456789);
 	model.addOrder(helper.createOrderWithOriginalBatch(0));
 
-	presenter = new SelectionPagePresenter(this);
+	presenter = new SelectionPagePresenter(app);
 	presenter.view = view;
 	
       });
@@ -45,6 +56,11 @@ define(['scripts/models/selection_page_model', 'scripts/presenters/selection_pag
 	expect(view.clear).toHaveBeenCalled();
 	expect(view.render).not.toHaveBeenCalled();		       
       });
+
+      it("childDone on next command delegates to app controller", function() {
+	presenter.childDone(presenter, "next", undefined);
+	expect(app.childDone).toHaveBeenCalledWith(presenter, "next", undefined);
+	});
     });
 
   });

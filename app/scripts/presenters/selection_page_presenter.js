@@ -18,7 +18,7 @@
  */
 
 
-define(['views/selection_page_view'], function(View) {
+define(['views/selection_page_view'], function(SelectionPageView) {
 
   var SelectionPagePresenter = function(owner) {
     /* constructor
@@ -32,11 +32,10 @@ define(['views/selection_page_view'], function(View) {
     this.view = undefined;
   }
 
-  SelectionPagePresenter.prototype.init = function() {
+  SelectionPagePresenter.prototype.init = function(selection) {
     /* initialises this instance by instantiating the view
      */
-    this.view = new View(this, $("body"));
-    // TODO : instantiate view
+    this.view = new SelectionPageView(this, selection);
   }
 
   SelectionPagePresenter.prototype.update = function(model) {
@@ -66,8 +65,41 @@ define(['views/selection_page_view'], function(View) {
   }
 
   SelectionPagePresenter.prototype.childDone = function(presenter, action, data) {
-    // TODO
+    /* Handles done messages from the page view and child presenters.
+     *
+     * Any messages that happen to come from the PageView will be delegated over to
+     * selfDone.
+     *
+     * Arguments
+     * ---------
+     * presenter : the presenter instance the done message is coming from. Can be
+     *             either the PagePresenter or one of the PartialPresenters
+     * action:     a string representing the action request, e.g. 'next' for someone
+     *             clicking on the next button
+     * data:       Any data associated with the action.
+     * 
+     */
+    if (presenter === this) {
+      this.selfDone(action, data);
+      }
   }
+
+  SelectionPagePresenter.prototype.selfDone = function(action, data) {
+    /* Handles done messages that arose from within this class or the view
+     *
+     * Arguments
+     * ---------
+     * presenter : the presenter instance the done message is coming from. Can be
+     *             either the PagePresenter or one of the PartialPresenters
+     * action:     a string representing the action request, e.g. 'next' for someone
+     *             clicking on the next button
+     * data:       Any data associated with the action.
+     * 
+     */
+    if (action == "next") {
+      this.owner.childDone(this, action, data);
+      }
+    }
   
   return SelectionPagePresenter;
 });
