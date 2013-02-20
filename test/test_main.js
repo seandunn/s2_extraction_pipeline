@@ -3,18 +3,20 @@ require.config({
     },
 
   paths: {
-      jquery: 'components/jquery',
-      d3: 'components/d3',
       domReady: 'components/requirejs-domready/domReady',
+      d3: 'components/d3',
       config: 'test_config',
-      scripts: 'scripts',
+      views: 'scripts/views',
+      presenters: 'scripts/presenters',
       spec: 'spec',
       json: 'json'
     },
 
-    urlArgs: "bust=" + (new Date()).getTime(),
+//    urlArgs: "bust=" + (new Date()).getTime(),
 });
  
-require([], function() {
+require(['domReady!', 'spec/selection_page_model_spec', 'spec/selection_page_presenter_spec'], function() {
   // use app here
+    runJasmineTests();
+
 });
