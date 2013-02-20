@@ -18,37 +18,56 @@
  */
 
 
-define([], function() {
+define(['views/selection_page_view'], function(View) {
 
-    var presenter = function(owner) {
-	/* constructor
-	 *
-	 * Arguments
-	 * ---------
-	 * owner : the owner of this presenter. Expected to be the application controller
-	 */
-	this.owner = owner;
-	this.model = undefined;
-	this.view = undefined;
+  var SelectionPagePresenter = function(owner) {
+    /* constructor
+     *
+     * Arguments
+     * ---------
+     * owner : the owner of this presenter. Expected to be the application controller
+     */
+    this.owner = owner;
+    this.model = undefined;
+    this.view = undefined;
+  }
+
+  SelectionPagePresenter.prototype.init = function() {
+    /* initialises this instance by instantiating the view
+     */
+    this.view = new View(this, $("body"));
+    // TODO : instantiate view
+  }
+
+  SelectionPagePresenter.prototype.update = function(model) {
+    /* Updates the data for the current view
+     *
+     * Tells the presenter that the model has been updated, giving
+     * the current value of the model.
+     *
+     * Arguments
+     * ---------
+     * model. The model to update.
+     */
+    if (this.view) {
+      this.view.clear();
+      this.view.render(model);
     }
+  }
 
-    presenter.prototype.init = function() {
-	/* initialises this instance by instantiating the view
-	 */
-	// TODO : instantiate view
-    }
+  SelectionPagePresenter.prototype.release = function() {
+    /* Tells the presnter to get ready for being deleted.
+     *
+     * This should only be called at the end of the life. It will
+     * tell the view component to tell itself to disappear from the 
+     * open page.
+     */
+    this.view.clear();
+  }
 
-    presenter.prototype.update = function(model) {
-	/* updates the data for the current view
-	 */
-	if (this.view) {
-	    this.view.clear();
-	    this.view.render(model);
-	    }
-    }
-
-    presenter.prototype.release = function() {
-	}
-    
-    return presenter;
+  SelectionPagePresenter.prototype.childDone = function(presenter, action, data) {
+    // TODO
+  }
+  
+  return SelectionPagePresenter;
 });

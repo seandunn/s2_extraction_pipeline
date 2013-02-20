@@ -19,7 +19,7 @@
 
 define([''], function() {
 
-    function SelectionPageModel(user) {
+  function SelectionPageModel(user) {
     /* Creates the default implementation of a selection page model
      * with a user identifier and some orders
      *
@@ -34,64 +34,65 @@ define([''], function() {
     this.batch = undefined; 
 
     this.addOrder = function(newOrder) {
-	/* add order
-	 *
-	 * Adds an order to this batch view.
-	 *
-	 * Arguments
-	 * ---------
-	 * newOrder: the new order to add
-	 *
-	 * Exceptions:
-	 * SelectionPageException:  If the number of orders is already saturated
-	 * SelectionPageException:  If the batch id does not match the current order
-	 *
-	 */
-	if (this.orders.length > 11 ) {
-	    throw {"type": "SelectionPageException", "message" : "Only 12 orders can be selected" };
-	    }
+      /* add order
+       *
+       * Adds an order to this batch view.
+       *
+       * Arguments
+       * ---------
+       * newOrder: the new order to add
+       *
+       * Exceptions
+       * ----------
+       * SelectionPageException:  If the number of orders is already saturated
+       * SelectionPageException:  If the batch id does not match the current order
+       *
+       */
+      if (this.orders.length > 11 ) {
+	throw {"type": "SelectionPageException", "message" : "Only 12 orders can be selected" };
+      }
 
-	if (this.batch === undefined) {
-	    this.batch = newOrder.rawJson.order.batch;
-	}
-	else if (newOrder.rawJson.order.batch != this.batch) {
-	    throw {"type": "SelectionPageException", "message" : "Batch number of new order does not match current selection" };
-	    }	
-	this.orders.push(newOrder);
-	};
+      if (this.batch === undefined) {
+	this.batch = newOrder.rawJson.order.batch;
+      }
+      else if (newOrder.rawJson.order.batch != this.batch) {
+	throw {"type": "SelectionPageException", "message" : "Batch number of new order does not match current selection" };
+      }	
+      this.orders.push(newOrder);
+    };
 
     this.removeOrderByUuid = function(uuid) {
-	/* removes an order matching a given uuid
-	 *
-	 * Arguments
-	 * ---------
-	 * uuid - the uuid of the order to remove
-	 */
-	for(var i = 0; i < this.orders.length; i++) {
-	    if(this.orders[i].rawJson.order.uuid == uuid) {
-		this.orders.splice(i, 1);
-		break;
-		}
-	    }
-
-	if (this.orders.length == 0) {
-	    this.batch = undefined;
-	    }
+      /* removes an order matching a given uuid
+       *
+       * Arguments
+       * ---------
+       * uuid - the uuid of the order to remove
+       */
+      for(var i = 0; i < this.orders.length; i++) {
+	if(this.orders[i].rawJson.order.uuid == uuid) {
+	  this.orders.splice(i, 1);
+	  break;
 	}
+      }
 
-    this.getNumberOfOrders = function() {
-	/* gets the number of orders
-	 *
-	 * Returns
-	 * -------
-	 * The number of orders.
-	 */
-	return this.orders.length;
-	}
-
-    return this;
+      if (this.orders.length == 0) {
+	this.batch = undefined;
+      }
     }
 
-    return SelectionPageModel;
+    this.getNumberOfOrders = function() {
+      /* gets the number of orders
+       *
+       * Returns
+       * -------
+       * The number of orders.
+       */
+      return this.orders.length;
+    }
+
+    return this;
+  }
+
+  return SelectionPageModel;
 
 });
