@@ -5,35 +5,8 @@
   <link rel="stylesheet" href="lib/jasmine-1.2.0/jasmine.css">
   <script src="lib/jasmine-1.2.0/jasmine.js"></script>
   <script src="lib/jasmine-1.2.0/jasmine-html.js"></script>
+  <script src="components/jquery/jquery.min.js"></script>
 
-  <script>
-    var require = {
-            paths: {
-                "domReady": "components/requirejs-domready/domReady"
-            }
-        };
-  </script>
-  <script data-main="test_main.js" src="components/requirejs/require.js"></script>
-
-  <!--
-    Choose a jasmine reporter.
-
-    runner/ directory includes both environment for basic HTML reporting
-    and a runner with the minimal amount of configuration required for
-    running Jasmine specs in an headless environment.
-
-    - headless.js:
-    If you are on Unix or Windows, notice that there are a few issues
-    running Jasmine specs via grunt-jasmine-task and PhantomJS if you
-    change this default environment (see
-    https://github.com/creynders/grunt-jasmine-task/issues/2 and
-    https://github.com/creynders/grunt-jasmine-task/issues/4)
-
-    - html.js:
-    You may choose to use a slighly different environment with
-    reporters like a jasmine.TrivialReporter or jasmine.HtmlReporter
-    to see the results py pointing your browser to your spec runner.
-  -->
   <script>
     if (window.phantom)
       document.write('<script src="runner/headless_requirejs.js"><\/script>');
@@ -41,11 +14,7 @@
       document.write('<script src="runner/html_requirejs.js"><\/script>');
   </script>
 
-  <script>
-    require([ "domReady!", "spec/selectionPageSpec", "spec/app_spec"],
-    function(document) {
-    runJasmineTests();
-    });</script>
+  <script data-main="test_main.js" src="components/requirejs/require.js"></script>
 </head>
 <body>
 
