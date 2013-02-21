@@ -1,34 +1,21 @@
 require.config({
-  shim: {
+  shim:{
   },
 
-  paths: {
-    hm: 'vendor/hm',
-    esprima: 'vendor/esprima',
-    jquery: 'vendor/jquery.min',
+  paths:{
+    hm:'vendor/hm',
+    esprima:'vendor/esprima',
+    jquery:'vendor/jquery.min',
+    mapper:'../components/S2Mapper/app/scripts/mapper',
+    labware:'../components/labware',
+    config:'config',
+    json:'/components/apiExample/workflows',
+    d3:'/components/d3'
   }
 });
- 
-require(['app', 'presenters/selection_page_presenter', 'models/selection_page_model','presenters/partial_presenter_factory'], function(app, SelectionPagePresenter, SelectionPageModel, PartialPresenterFactory) {
-  // use app here
-  function stubSelectionPage() {
 
-    var controller = { 
-      childDone: function(presenter, action, data) {
-	if(action === "next") {
-	  presenter.release();
-	}
-      }
-    }
-
-    var factory = new PartialPresenterFactory();
-    var presenter = new SelectionPagePresenter(controller, factory);
-    var model = new SelectionPageModel("123456789");
-    presenter.init($('body'));
-    presenter.update(model); 
-    }
-
-  console.log(app);
-  stubSelectionPage();
-  
+require(['app'], function (app) {
+  var theApp = new app();
+  theApp.init();
 });
+
