@@ -20,7 +20,7 @@
 
 define(['views/selection_page_view'], function(SelectionPageView) {
 
-  var SelectionPagePresenter = function(owner) {
+  var SelectionPagePresenter = function(owner, partialPresenterFactory) {
     /* constructor
      *
      * Arguments
@@ -30,6 +30,8 @@ define(['views/selection_page_view'], function(SelectionPageView) {
     this.owner = owner;
     this.model = undefined;
     this.view = undefined;
+    this.partialPresenterFactory = partialPresenterFactory;
+    this.presenters = [];
   }
 
   SelectionPagePresenter.prototype.init = function(selection) {
@@ -48,11 +50,42 @@ define(['views/selection_page_view'], function(SelectionPageView) {
      * ---------
      * model. The model to update.
      */
-    if (this.view) {
-      this.view.clear();
-      this.view.render(model);
-    }
+    var view = this.view;
+    if (!view) {
+      return;
+      }
+
+    // we need to render the model first, so that the html elements
+    // exist to configure the sub-presenters' views
+    view.clear();
+    view.render(model);
+    this.setupPresenters(model, this.view);
+    this.updatePresenters(model);
   }
+
+  SelectionPagePresenter.prototype.setupPresenters = function(model, view) {
+    var numOrders = model.getNumberOfOrders();
+    for(var i = 0; i < numOrders; i++)
+    {
+      // TODO : order presenters go here
+    }
+    if (numOrders < model.getCapacity() ) {
+      var selection = view.getRowByIndex(numOrders);
+      var presenter = this.partialPresenterFactory.createScanBarcodePresenter(this, selection, "tube");
+      presenter.init(selection);
+      this.presenters[numOrders] = presenter;
+    }    
+  }
+
+  SelectionPagePresenter.prototype.updatePresenters = function(model) {
+    var numOrders = model.getNumberOfOrders();
+    for(var i = 0; i < numOrders; i++) {
+      // TODO      
+      }
+    if(numOrders < model.getCapacity()) {
+      this.presenters[numOrders].update("");
+      }
+    }
 
   SelectionPagePresenter.prototype.release = function() {
     /* Tells the presnter to get ready for being deleted.
@@ -61,7 +94,9 @@ define(['views/selection_page_view'], function(SelectionPageView) {
      * tell the view component to tell itself to disappear from the 
      * open page.
      */
-    this.view.clear();
+    if (this.view) {    
+      this.view.clear();
+      }
   }
 
   SelectionPagePresenter.prototype.childDone = function(presenter, action, data) {
@@ -82,6 +117,11 @@ define(['views/selection_page_view'], function(SelectionPageView) {
     if (presenter === this) {
       this.selfDone(action, data);
       }
+
+    console.log("unhandled childDone event:");
+    console.log("presenter: " + presenter);
+    console.log("action: " + action);
+    console.log("data: " + data);
   }
 
   SelectionPagePresenter.prototype.selfDone = function(action, data) {

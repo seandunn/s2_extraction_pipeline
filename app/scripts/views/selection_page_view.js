@@ -92,6 +92,10 @@ define([], function() {
     this.buttonDiv = undefined;
     }
 
+  SelectionPageView.prototype.getRowByIndex = function(index) {
+    return this.rows.filter(function(d, i) { return i === index; });
+    }
+
   return SelectionPageView;
   
 });

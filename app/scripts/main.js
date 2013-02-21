@@ -9,7 +9,7 @@ require.config({
   }
 });
  
-require(['app', 'presenters/selection_page_presenter', 'models/selection_page_model'], function(app, SelectionPagePresenter, SelectionPageModel) {
+require(['app', 'presenters/selection_page_presenter', 'models/selection_page_model','presenters/partial_presenter_factory'], function(app, SelectionPagePresenter, SelectionPageModel, PartialPresenterFactory) {
   // use app here
   function stubSelectionPage() {
 
@@ -21,7 +21,8 @@ require(['app', 'presenters/selection_page_presenter', 'models/selection_page_mo
       }
     }
 
-    var presenter = new SelectionPagePresenter(controller);
+    var factory = new PartialPresenterFactory();
+    var presenter = new SelectionPagePresenter(controller, factory);
     var model = new SelectionPageModel("123456789");
     presenter.init($('body'));
     presenter.update(model); 
