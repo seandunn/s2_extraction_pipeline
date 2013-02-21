@@ -1,3 +1,6 @@
+// TODO : This resource is for development only. MUST be deleted once the mapper will be up and running.
+
+
 define([], function () {
   "use strict";
 
@@ -12,19 +15,14 @@ define([], function () {
   };
 
   function send(action, actionPath, data) {
-
-    var r = $.ajax({
+    return $.ajax({
       type:actionMethods[action],
-      url:'components/apiExample/tube.json',
+      url:actionPath,
       contentType:"json",
       dataType:"json",
       data:data
     });
-
-    return r;
-
-
-  };
+  }
 
   var ResourcePromise = function (uuid, sendAction, data) {
     var resourceDeferred = $.Deferred();

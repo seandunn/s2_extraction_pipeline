@@ -18,9 +18,10 @@
  */
 
 
-define(['views/selection_page_view'], function(SelectionPageView) {
+define(['views/selection_page_view', 'models/selection_page_model', 'dummyresource'], function (SelectionPageView, selectionPageModel, rsc) {
+  // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
 
-  var SelectionPagePresenter = function(owner) {
+  var SelectionPagePresenter = function (owner) {
     /* constructor
      *
      * Arguments
@@ -28,43 +29,64 @@ define(['views/selection_page_view'], function(SelectionPageView) {
      * owner : the owner of this presenter. Expected to be the application controller
      */
     this.owner = owner;
-    this.model = undefined;
-    this.view = undefined;
-  }
+    this.model = new selectionPageModel(this.owner.userBC);
 
-  SelectionPagePresenter.prototype.init = function(selection) {
+
+    var order;
+    var that = this;
+    order_rsc_path = 'components/apiExample/order.json';
+    new rsc(order_rsc_path, "read")
+        .done(function (s2order) {
+          order = s2order;
+        })
+        .fail(function () {
+          // TODO: deal with error reading the order
+        })
+        .then(function () {
+          console.log("order has been found ");
+          that.model.addOrder(order);
+          that.update();
+        });
+
+
+    this.view = undefined;
+    return this;
+  };
+
+  SelectionPagePresenter.prototype.init = function (selection) {
     /* initialises this instance by instantiating the view
      */
     this.view = new SelectionPageView(this, selection);
-  }
+    return this;
+  };
 
-  SelectionPagePresenter.prototype.update = function(model) {
+  SelectionPagePresenter.prototype.update = function () {
     /* Updates the data for the current view
      *
-     * Tells the presenter that the model has been updated, giving
-     * the current value of the model.
+     * Tells the presenter that the model has been updated
      *
-     * Arguments
-     * ---------
-     * model. The model to update.
      */
+
+
     if (this.view) {
       this.view.clear();
-      this.view.render(model);
+      this.view.render(this.model);
     }
-  }
+    return this;
+  };
 
-  SelectionPagePresenter.prototype.release = function() {
-    /* Tells the presnter to get ready for being deleted.
+  SelectionPagePresenter.prototype.release = function () {
+    /* Tells the presenter to get ready for being deleted.
      *
      * This should only be called at the end of the life. It will
      * tell the view component to tell itself to disappear from the 
      * open page.
      */
     this.view.clear();
-  }
+    return this;
+  };
 
-  SelectionPagePresenter.prototype.childDone = function(presenter, action, data) {
+  SelectionPagePresenter.prototype.childDone = function (presenter, action, data) {
     /* Handles done messages from the page view and child presenters.
      *
      * Any messages that happen to come from the PageView will be delegated over to
@@ -81,11 +103,12 @@ define(['views/selection_page_view'], function(SelectionPageView) {
      */
     if (presenter === this) {
       this.selfDone(action, data);
-      }
-  }
+    }
+    return this;
+  };
 
-  SelectionPagePresenter.prototype.selfDone = function(action, data) {
-    /* Handles done messages that arose from within this class or the view
+  SelectionPagePresenter.prototype.selfDone = function (action, data) {
+    /* Handles done messages that arose from within this object or the view
      *
      * Arguments
      * ---------
@@ -96,10 +119,11 @@ define(['views/selection_page_view'], function(SelectionPageView) {
      * data:       Any data associated with the action.
      * 
      */
-    if (action == "next") {
-      this.owner.childDone(this, action, data);
-      }
+    if (action == "tube") {
+      this.owner.childDone(this, "done", data);
     }
-  
+    return this;
+  };
+
   return SelectionPagePresenter;
 });
