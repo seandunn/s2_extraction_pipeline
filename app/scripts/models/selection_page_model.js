@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 
-define([''], function() {
-  
+define([''], function () {
+
   function SelectionPageModel(user) {
     /* Creates the default implementation of a selection page model
      * with a user identifier and some orders
@@ -28,18 +28,17 @@ define([''], function() {
      * user: the userId
      * orders: the first order
      */
-
     this.user = user;
     this.orders = [];
-    this.batch = undefined; 
+    this.batch = undefined;
     this.capacity = 12;
     return this;
   }
 
-  SelectionPageModel.prototype.addOrder = function(newOrder) {
+  SelectionPageModel.prototype.addOrder = function (newOrder) {
     /* add order
      *
-     * Adds an order to this batch view.
+     * Adds an order to this batch.
      *
      * Arguments
      * ---------
@@ -51,20 +50,20 @@ define([''], function() {
      * SelectionPageException:  If the batch id does not match the current order
      *
      */
-    if (this.orders.length > this.capacity - 1 ) {
-      throw {"type": "SelectionPageException", "message" : "Only " + this.capacity + " orders can be selected" };
+    if (this.orders.length > this.capacity - 1) {
+      throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
     }
-    
+
     if (this.batch === undefined) {
       this.batch = newOrder.rawJson.order.batch;
     }
     else if (newOrder.rawJson.order.batch != this.batch) {
-      throw {"type": "SelectionPageException", "message" : "Batch number of new order does not match current selection" };
-    }	
+      throw {"type":"SelectionPageException", "message":"Batch number of new order does not match current selection" };
+    }
     this.orders.push(newOrder);
   };
 
-  SelectionPageModel.prototype.getOrderUuidFromOrderIndex = function(index) {
+  SelectionPageModel.prototype.getOrderUuidFromOrderIndex = function (index) {
     /* reads the uuid corresponding to the order at the given index
      *
      * Returns
@@ -77,9 +76,9 @@ define([''], function() {
      */
     var order = this.orders[index];
     return order.rawJson.order.uuid;
-    }
+  };
 
-  SelectionPageModel.prototype.getCapacity = function() {
+  SelectionPageModel.prototype.getCapacity = function () {
     /* gets the capacity of the model
      *
      * Returns
@@ -87,28 +86,28 @@ define([''], function() {
      * The capacity
      */
     return this.capacity;
-    }
-  
-  SelectionPageModel.prototype.removeOrderByUuid = function(uuid) {
+  };
+
+  SelectionPageModel.prototype.removeOrderByUuid = function (uuid) {
     /* removes an order matching a given uuid
      *
      * Arguments
      * ---------
      * uuid - the uuid of the order to remove
      */
-    for(var i = 0; i < this.orders.length; i++) {
-      if(this.orders[i].rawJson.order.uuid == uuid) {
-	this.orders.splice(i, 1);
-	break;
+    for (var i = 0; i < this.orders.length; i++) {
+      if (this.orders[i].rawJson.order.uuid == uuid) {
+        this.orders.splice(i, 1);
+        break;
       }
     }
-    
+
     if (this.orders.length == 0) {
       this.batch = undefined;
     }
-  }
-  
-  SelectionPageModel.prototype.getNumberOfOrders = function() {
+  };
+
+  SelectionPageModel.prototype.getNumberOfOrders = function () {
     /* gets the number of orders
      *
      * Returns
@@ -116,8 +115,8 @@ define([''], function() {
      * The number of orders.
      */
     return this.orders.length;
-  }
-  
+  };
+
   return SelectionPageModel;
 
 });
