@@ -1,0 +1,97 @@
+define([], function() {
+  
+  var SelectionPageView = function(owner, selection) {
+    /* Constructor for SelectionPageView
+     *
+     * Arguments
+     * ---------
+     * owner :    the presenter that owns this class. Expected to be an
+     *            instance of SelectionPagePresenter
+     * selection: A jquery selection. This is converted to be a d3 selection
+     *            for rendering. 
+     */
+    this.owner = owner;
+    this.selection = d3.selectAll(selection);
+    this.table = undefined;
+    return this;
+    }
+
+  SelectionPageView.prototype.render = function(model) {
+    /* Renders the current view from the given model
+     *
+     * Arguments
+     * ---------
+     * model : the model to render
+     
+     */
+    this.table = this.selection.append("table");
+    this.rows = this.renderRows(model);
+    this.buttonDiv = this.renderButton();
+  }
+
+  SelectionPageView.prototype.renderRows = function(model) {
+    /* Renders the base table rows
+     *
+     * Returns
+     * -------
+     * The d3 selection elements corresponding to each order
+     * in the given model.
+     *
+     * Arguments
+     * ---------
+     * model : the model to render
+     */
+    var data = [];
+    var i = 0;
+    for(i = 0; i < model.getNumberOfOrders(); i++) {
+      data[i] = model.orderUuidFromOrderIndex(i);
+    }
+    data[i++] = "pending";
+    for(; i < model.getCapacity(); i++) {
+      data[i] = "empty_" + i;
+    }
+    var enter =  this.table.selectAll().data(data).enter();
+    enter.append("tr").attr("id", String);
+    
+    this.rows = this.table.selectAll("tr");
+    return this.rows;
+    }
+
+  SelectionPageView.prototype.renderButton = function() {
+    /* Renders the next button
+     *
+     * Arguments
+     * ---------
+     * model : the model to render
+     */
+
+    var div = this.selection.append("div");
+    div.attr("align", "right");
+    var button = div.append("button");
+    var owner = this.owner;
+    button.text("next");
+    button.attr("align", "right");
+    button.on("click", function() { 
+      owner.childDone(owner, "next", undefined);
+      });
+
+    return div;
+  }
+
+  SelectionPageView.prototype.clear = function() {
+    /* Clears the current view from the screen.
+     */
+    if (this.table != undefined) {
+      this.table.remove();
+      }
+    if (this.buttonDiv != undefined) {
+      this.buttonDiv.remove();
+      }
+    this.table = undefined;
+    this.rows = undefined;
+    this.buttonDiv = undefined;
+    }
+
+  return SelectionPageView;
+  
+});
