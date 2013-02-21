@@ -1,1 +1,10 @@
-package.json
+{
+  "name": "s2_extraction_pipeline",
+  "version": "0.0.0",
+  "dependencies": {
+    "jquery": "~1.9.1",
+    "d3": "~3.0.6",
+    "requirejs": "~2.1.4",
+    "requirejs-domready": "~2.0.1"
+  }
+}

@@ -6,21 +6,14 @@
   <script src="lib/jasmine-1.2.0/jasmine.js"></script>
   <script src="lib/jasmine-1.2.0/jasmine-html.js"></script>
 
-  <!-- include source files here... -->
-  <script src="../js/main.js"></script>
-
-  <!-- include spec files here... -->
-  <!--
-    the `src/introduction.js` include the Jasmine introduction, with a
-    lot of inline comments to help you get started with Jasmine. This is
-    meant to be replaced by your own tests.
-
-    The same introduction than the Jasmine doc page:
-    http://pivotal.github.com/jasmine/
-
-    https://raw.github.com/pivotal/jasmine/gh-pages/src/introduction.js
-  -->
-  <script src="spec/introduction.js"></script>
+  <script>
+    var require = {
+            paths: {
+                "domReady": "components/requirejs-domready/domReady"
+            }
+        };
+  </script>
+  <script data-main="test_main.js" src="components/requirejs/require.js"></script>
 
   <!--
     Choose a jasmine reporter.
@@ -43,11 +36,16 @@
   -->
   <script>
     if (window.phantom)
-      document.write('<script src="runner/headless.js"><\/script>');
+      document.write('<script src="runner/headless_requirejs.js"><\/script>');
     else
-      document.write('<script src="runner/html.js"><\/script>');
+      document.write('<script src="runner/html_requirejs.js"><\/script>');
   </script>
 
+  <script>
+    require([ "domReady!", "spec/selectionPageSpec", "spec/app_spec"],
+    function(document) {
+    runJasmineTests();
+    });</script>
 </head>
 <body>
 
