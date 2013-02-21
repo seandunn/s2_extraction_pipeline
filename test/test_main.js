@@ -16,7 +16,7 @@ require.config({
 
 });
 
-require(["domReady!", "spec/selectionPageSpec"], function(document) {
+require(["domReady!", "spec/selection_page_model_spec", "spec/selection_page_presenter_spec"], function(document) {
   // Very slight delay seems to be needed to get things synced...
   window.setTimeout(runJasmineTests, 50);
 });
