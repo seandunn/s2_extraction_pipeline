@@ -32,8 +32,17 @@ define(['models/scan_barcode_model', 'views/scan_barcode_view'], function(ScanBa
   ScanBarcodePresenter.prototype.handleBarcode = function(barcode) {
     this.model.barcode = barcode;
     if(this.model.isValid()) {
+      this.model.busy = true;
       this.update();
-      this.owner.childDone(this, "barcodeScanned", barcode);
+      var resource = this.model.getResourceFromBarcode();
+      var presenter = this;
+      resource.done(function(s2tube) { 
+	presenter.owner.childDone(presenter, "barcodeScanned", s2tube);
+	}).
+	fail(function() {
+	  presenter.model.busy = false;
+	  presenter.update();
+	  });
     }
     else {
       this.update();

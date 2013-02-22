@@ -26,7 +26,7 @@ define(['dummyresource', 'default/default_view'], function (rsc, view) {
 
 
   // interface ....
-  var defPtr = function (owner) {
+  var defPtr = function (owner, presenterFactory) {
     this.owner = owner;
     this.currentView = {};
     return this;
@@ -73,9 +73,10 @@ define(['dummyresource', 'default/default_view'], function (rsc, view) {
         .then(function () {
           console.log("tube has been found ");
           console.log(tube);
-          data = {userBC:userBC, labwareBC:tube.rawJson.tube.uuid, batchUUID:""};
+          var data = {userBC:userBC, labwareBC:tube.rawJson.tube.uuid, batchUUID:""};
           console.log(data);
-          that.owner.childDone(this, "login", data);
+          console.log(that);
+          that.owner.childDone(that, "login", data);
         });
   };
 

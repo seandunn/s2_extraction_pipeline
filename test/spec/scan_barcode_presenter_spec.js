@@ -58,8 +58,24 @@ define(['scripts/presenters/scan_barcode_presenter'], function(ScanBarcodePresen
       });
 
       it("valid barcode sent to owner", function() {
+	presenter.model.getResourceFromBarcode = function() {
+	  console.log("getRFB");
+	  return {
+	    done : function(callback) {
+	      console.log("done");
+	      callback();
+	      return this;
+	      },
+	    fail : function(callback) {
+	      console.log("fail");
+	      callback();
+	      }
+	    };
+	}
+
+
 	presenter.childDone(presenter, "barcodeScanned", "tube0001");
-	expect(app.childDone).toHaveBeenCalledWith(presenter, "barcodeScanned", "tube0001");
+	expect(app.childDone).toHaveBeenCalledWith(presenter, "barcodeScanned", undefined);
       });
     });
   });

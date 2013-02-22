@@ -21,7 +21,7 @@
 define(['views/selection_page_view', 'models/selection_page_model', 'dummyresource'], function (SelectionPageView, SelectionPageModel, rsc) {
   // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
 
-  var SelectionPagePresenter = function(owner, partialPresenterFactory) {
+  var SelectionPagePresenter = function (owner, presenterFactory) {
     /* constructor
      *
      * Arguments
@@ -30,9 +30,19 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      */
     this.owner = owner;
     this.model = new SelectionPageModel(this.owner.userBC);
+    this.findAndAddOrder();
 
-    var order;
+    this.view = undefined;
+    this.presenterFactory = presenterFactory;
+    this.presenters = [];
+
+    return this;
+  };
+
+  SelectionPagePresenter.prototype.findAndAddOrder = function() {
+    // TODO : later on we should go by uuid
     var that = this;
+    var order;
     order_rsc_path = 'components/s2-api-examples/order.json';
     new rsc(order_rsc_path, "read")
         .done(function (s2order) {
@@ -46,13 +56,6 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
           that.model.addOrder(order);
           that.update();
         });
-
-
-    this.view = undefined;
-    this.partialPresenterFactory = partialPresenterFactory;
-    this.presenters = undefined;
-
-    return this;
   }
 
   SelectionPagePresenter.prototype.init = function (selection) {
@@ -68,29 +71,52 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      *
      */
 
-    if (this.view) {
-      this.view.clear();
-      this.view.render(this.model);
-      if (!this.presenters) {
-	this.presenters = [];
-	this.createPresenters();
-	}
-      this.updatePresenters();
+    if (!this.view) {
+      return this;
     }
+
+    // we need to render the model first, so that the html elements
+    // exist to configure the sub-presenters' views
+    this.view.clear();
+    this.view.render(this.model);
+    this.setupPresenters(this.model, this.view);
+    this.updatePresenters(this.model);
     return this;
+  };
+
+  SelectionPagePresenter.prototype.setupPresenters = function (model, view) {
+    var numOrders = model.getNumberOfOrders();
+    for (var i = 0; i < numOrders; i++) {
+      // TODO : order presenters go here
+    }
+    if (numOrders < model.getCapacity()) {
+      var selection = view.getRowByIndex(numOrders);
+      var presenter = this.presenterFactory.createScanBarcodePresenter(this, selection, "tube");
+      presenter.init(selection);
+      this.presenters[numOrders] = presenter;
+    }
+  };
+
+
+  SelectionPagePresenter.prototype.updatePresenters = function (model) {
+    var numOrders = model.getNumberOfOrders();
+    for (var i = 0; i < numOrders; i++) {
+    }
+    if (numOrders < model.getCapacity()) {
+      this.presenters[numOrders].update("");
+    }
   };
 
   SelectionPagePresenter.prototype.release = function () {
     /* Tells the presenter to get ready for being deleted.
      *
      * This should only be called at the end of the life. It will
-     * tell the view component to tell itself to disappear from the 
+     * tell the view component to tell itself to disappear from the
      * open page.
      */
-    if (this.view) {    
-      this.view.clear();
-      }
-  }
+    this.view.clear();
+    return this;
+  };
 
   SelectionPagePresenter.prototype.createPresenters = function() {    
     var numOrders = this.model.getNumberOfOrders();
@@ -122,18 +148,27 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      * action:     a string representing the action request, e.g. 'next' for someone
      *             clicking on the next button
      * data:       Any data associated with the action.
-     * 
+     *
      */
     if (presenter === this) {
-      this.selfDone(action, data);
+      console.log("...?");
+      return this.selfDone(action, data);
+    }
+
+    if(action === "barcodeScanned") {
+      return this.handleBarcodeScanned(presenter, action, data);
       }
 
     console.log("unhandled childDone event:");
-    console.log("presenter: " + presenter);
+    console.log("presenter: ", presenter);
     console.log("action: " + action);
-    console.log("data: " + data);
+    console.log("data: " + JSON.stringify(data));
     return this;
   };
+
+  SelectionPagePresenter.prototype.handleBarcodeScanned = function(presenter, action, data) {
+    this.findAndAddOrder();
+    }
 
   SelectionPagePresenter.prototype.selfDone = function (action, data) {
     /* Handles done messages that arose from within this object or the view
@@ -145,7 +180,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      * action:     a string representing the action request, e.g. 'next' for someone
      *             clicking on the next button
      * data:       Any data associated with the action.
-     * 
+     *
      */
     if (action == "next") {
       this.owner.childDone(this, "done", data);

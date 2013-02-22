@@ -38,6 +38,15 @@ define(['models/scan_barcode_model'], function(ScanBarcodeModel) {
 	model.barcode = "tube0001";
 	expect(model.isValid()).toBeTruthy();
       });
+
+      it("can get tubeResource from tubeBarcode", function() {
+	model.barcode = "tube0001";
+	var resource = model.getResourceFromBarcode();
+	resource.done(function(s2tube) {
+	  expect(s2tube).toBeDefined(); 
+	});
+	expect(resource.state()).toBe("pending");
+     });
     });
   });
 });

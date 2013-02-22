@@ -42,10 +42,14 @@ define([], function() {
     var view = this;
     input.on("keypress", function(e) { 
       var key = getKey(e);
-      if (key == 13) {
+      if (key === 13) {
 	view.owner.childDone(this.owner, "barcodeScanned", this.value);
 	}
     });
+
+    if (model.busy) {
+      input.attr("disabled", "true");
+      }
 
     if(!model.isValid()) {
       console.log("invalid barcode '" + model.barcode + "'");

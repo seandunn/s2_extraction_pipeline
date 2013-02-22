@@ -56,9 +56,10 @@ define([], function () {
       data[i] = "empty_" + i;
     }
     var enter = this.table.selectAll().data(data).enter();
-    enter.append("tr").attr("id", String);
+     enter.append("tr").attr("id", String).append("td").text(String);
 
     this.rows = this.table.selectAll("tr");
+   
     return this.rows;
   };
 
