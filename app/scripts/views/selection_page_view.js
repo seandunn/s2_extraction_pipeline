@@ -1,6 +1,6 @@
-define([], function() {
-  
-  var SelectionPageView = function(owner, selection) {
+define([], function () {
+
+  var SelectionPageView = function (owner, selection) {
     /* Constructor for SelectionPageView
      *
      * Arguments
@@ -56,8 +56,8 @@ define([], function() {
     for (; i < model.getCapacity(); i++) {
       data[i] = "empty_" + i;
     }
-    var enter =  this.table.selectAll().data(data).enter();
-    enter.append("tr").attr("id", String);
+    var enter = this.table.selectAll().data(data).enter();
+     enter.append("tr").attr("id", String).append("td").text(String);
 
     this.rows = this.table.selectAll("tr");
     return this.rows;
@@ -65,10 +65,6 @@ define([], function() {
 
   SelectionPageView.prototype.renderButton = function() {
     /* Renders the next button
-     *
-     * Arguments
-     * ---------
-     * model : the model to render
      */
 
     var div = this.selection.append("div");
@@ -100,6 +96,10 @@ define([], function() {
     this.rows = undefined;
     this.buttonDiv = undefined;
   };
+
+  SelectionPageView.prototype.getRowByIndex = function(index) {
+    return this.rows.filter(function(d, i) { return i === index; });
+    }
 
   return SelectionPageView;
 

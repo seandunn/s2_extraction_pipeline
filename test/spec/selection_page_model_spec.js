@@ -1,7 +1,9 @@
-define(['scripts/models/selection_page_model', 'spec/selection_page_helper'], 
-  function(SelectionPageModel, SelectionPageHelper) {
+define(['models/selection_page_model', 'spec/selection_page_helper'], function(SelectionPageModel, SelectionPageHelper) {
 
   'use strict';
+  
+  var firstBatchUuid = '11111111-222222-00000000-111111111111';
+  var secondBatchUuid = '11111111-222222-00000000-111111111112';
 
   describe("SelectionPageModel", function() {
 
@@ -23,9 +25,9 @@ define(['scripts/models/selection_page_model', 'spec/selection_page_helper'],
       });
 
       it("has batch identifier set after an order has been added", function() {
-        model.addOrder(helper.createOrderWithOriginalBatch(0));
-       debugger;
-       expect(model.batch).toEqual('001');
+	var expectedBatchUuid = firstBatchUuid;
+        model.addOrder(helper.createOrderWithOriginalBatch(0));	
+	expect(model.batch).toEqual(firstBatchUuid);
    
       });
 

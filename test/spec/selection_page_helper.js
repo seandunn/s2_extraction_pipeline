@@ -9,8 +9,11 @@ define(['config', 'mapper/s2_resource'], function(config, S2Resource) {
 
   SelectionPageHelper.prototype.createOrderWithOriginalBatch = function (counter) {
     var order;
+    var canonicalUuid = '11111111-2222-3333-4444-999999999999';
+    var wantedUuid = this.createUuid(counter);
+    config.cpResource(canonicalUuid, wantedUuid);
 
-    new S2Resource('11111111-2222-3333-4444-999999999999').done(function(s2order){
+    new S2Resource(wantedUuid).done(function(s2order){
       order = s2order;
     });
 
@@ -27,7 +30,7 @@ define(['config', 'mapper/s2_resource'], function(config, S2Resource) {
 
   SelectionPageHelper.prototype.createOrderWithDifferentBatch = function(counter) {
     var order                = this.createOrderWithOriginalBatch(counter);
-    order.batch.rawJson.uuid = "11111111-2222222-0000000-1111111111112";
+    order.batch.rawJson.uuid = '11111111-222222-00000000-111111111112';
     return order;
   };
 

@@ -1,5 +1,6 @@
-define(['workflow_engine', 'mapper/s2_ajax'], function (workflowEngine, S2Ajax) {
+define(['workflow_engine', 'presenters/presenter_factory', 'mapper/s2_ajax'], function (workflowEngine, presenterFactory, S2Ajax) {
   var app = function () {
+    this.presenterFactory = new presenterFactory();
     this.workflow = new workflowEngine(this);
     this.currentPagePresenter = {};
 
@@ -9,7 +10,7 @@ define(['workflow_engine', 'mapper/s2_ajax'], function (workflowEngine, S2Ajax) 
   };
 
   app.prototype.init = function () {
-    this.currentPagePresenter = this.workflow.get_default_presenter().init($("#content")).update();
+    this.currentPagePresenter = this.workflow.get_default_presenter(this.presenterFactory).init($("#content")).update();
   };
 
   app.prototype.childDone = function (page_presenter, action, data) {
@@ -19,7 +20,7 @@ define(['workflow_engine', 'mapper/s2_ajax'], function (workflowEngine, S2Ajax) 
     if (action == "done") {
 
       this.currentPagePresenter.release();
-      this.currentPagePresenter = this.workflow.get_next_presenter().init($('#content')).update();
+      this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory).init($('#content')).update();
     } else if (action == "login") {
       console.log(data);
       this.userBC = data.userBC;
@@ -27,7 +28,7 @@ define(['workflow_engine', 'mapper/s2_ajax'], function (workflowEngine, S2Ajax) 
       this.batchUUID = data.batchUUID;
 
       this.currentPagePresenter.release();
-      this.currentPagePresenter = this.workflow.get_next_presenter().init($('#content')).update();
+      this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory).init($('#content')).update();
     }
     return this.appModel;
   };

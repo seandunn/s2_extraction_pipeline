@@ -4,6 +4,7 @@ dist
 .DS_Store
 .idea/**
 .gitignore
+*~
 app/components
 components
 *~
