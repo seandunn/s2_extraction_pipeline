@@ -19,7 +19,7 @@
 
 define([''], function () {
 
-  function SelectionPageModel(user) {
+  var SelectionPageModel = function(user) {
     /* Creates the default implementation of a selection page model
      * with a user identifier and some orders
      *
@@ -57,7 +57,7 @@ define([''], function () {
     if (this.batch === undefined) {
       this.batch = newOrder.rawJson.order.batch;
     }
-    else if (newOrder.rawJson.order.batch != this.batch) {
+    else if (newOrder.rawJson.order.batch !== this.batch) {
       throw {"type":"SelectionPageException", "message":"Batch number of new order does not match current selection" };
     }
     this.orders.push(newOrder);

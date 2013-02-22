@@ -1,11 +1,11 @@
 define(['default/default_presenter',
   'presenters/selection_page_presenter',
-  'labware/tubes/scripts/presenters/TubePresenter'], function (defPtr, SelectionPagePresenter, tubePtr) {
+  'labware/tubes/scripts/presenters/tube_presenter'], function (defPtr, SelectionPagePresenter, tubePtr) {
   var workflowEngine = function (owner) {
     this.mainController = owner;
   };
 
-  workflowEngine.prototype.get_next_presenter = function () {
+  workflowEngine.prototype.get_next_presenter = function (presenterFactory) {
     // use the this.mainController.appModel to decide what to do next
 
     if (!this.mainController.batchUUID) {
@@ -14,12 +14,12 @@ define(['default/default_presenter',
     }
     // todo: according to the batch, something else should happen
     if (!this.mainController.batchUUID) {
-      return new SelectionPagePresenter(this.mainController);
+      return new SelectionPagePresenter(this.mainController, presenterFactory);
     }
   };
 
-  workflowEngine.prototype.get_default_presenter = function () {
-    return new defPtr(this.mainController);
+  workflowEngine.prototype.get_default_presenter = function (presenterFactory) {
+    return new defPtr(this.mainController, presenterFactory);
   };
 
   return workflowEngine;

@@ -18,10 +18,10 @@
  */
 
 
-define(['views/selection_page_view', 'models/selection_page_model', 'dummyresource'], function (SelectionPageView, selectionPageModel, rsc) {
+define(['views/selection_page_view', 'models/selection_page_model', 'dummyresource'], function (SelectionPageView, SelectionPageModel, rsc) {
   // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
 
-  var SelectionPagePresenter = function (owner) {
+  var SelectionPagePresenter = function (owner, presenterFactory) {
     /* constructor
      *
      * Arguments
@@ -29,12 +29,21 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      * owner : the owner of this presenter. Expected to be the application controller
      */
     this.owner = owner;
-    this.model = new selectionPageModel(this.owner.userBC);
+    this.model = new SelectionPageModel(this.owner.userBC);
+    this.findAndAddOrder();
 
+    this.view = undefined;
+    this.presenterFactory = presenterFactory;
+    this.presenters = [];
 
-    var order;
+    return this;
+  };
+
+  SelectionPagePresenter.prototype.findAndAddOrder = function() {
+    // TODO : later on we should go by uuid
     var that = this;
-    order_rsc_path = 'components/apiExample/order.json';
+    var order;
+    order_rsc_path = 'components/s2-api-examples/order.json';
     new rsc(order_rsc_path, "read")
         .done(function (s2order) {
           order = s2order;
@@ -47,18 +56,13 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
           that.model.addOrder(order);
           that.update();
         });
-
-
-    this.view = undefined;
-    return this;
-  };
+  }
 
   SelectionPagePresenter.prototype.init = function (selection) {
     /* initialises this instance by instantiating the view
      */
     this.view = new SelectionPageView(this, selection);
-    return this;
-  };
+  }
 
   SelectionPagePresenter.prototype.update = function () {
     /* Updates the data for the current view
@@ -67,24 +71,69 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      *
      */
 
-
-    if (this.view) {
-      this.view.clear();
-      this.view.render(this.model);
+    if (!this.view) {
+      return this;
     }
+
+    // we need to render the model first, so that the html elements
+    // exist to configure the sub-presenters' views
+    this.view.clear();
+    this.view.render(this.model);
+    this.setupPresenters(this.model, this.view);
+    this.updatePresenters(this.model);
     return this;
+  };
+
+  SelectionPagePresenter.prototype.setupPresenters = function (model, view) {
+    var numOrders = model.getNumberOfOrders();
+    for (var i = 0; i < numOrders; i++) {
+      // TODO : order presenters go here
+    }
+    if (numOrders < model.getCapacity()) {
+      var selection = view.getRowByIndex(numOrders);
+      var presenter = this.presenterFactory.createScanBarcodePresenter(this, selection, "tube");
+      presenter.init(selection);
+      this.presenters[numOrders] = presenter;
+    }
+  };
+
+
+  SelectionPagePresenter.prototype.updatePresenters = function (model) {
+    var numOrders = model.getNumberOfOrders();
+    for (var i = 0; i < numOrders; i++) {
+    }
+    if (numOrders < model.getCapacity()) {
+      this.presenters[numOrders].update("");
+    }
   };
 
   SelectionPagePresenter.prototype.release = function () {
     /* Tells the presenter to get ready for being deleted.
      *
      * This should only be called at the end of the life. It will
-     * tell the view component to tell itself to disappear from the 
+     * tell the view component to tell itself to disappear from the
      * open page.
      */
     this.view.clear();
     return this;
   };
+
+  SelectionPagePresenter.prototype.createPresenters = function() {    
+    var numOrders = this.model.getNumberOfOrders();
+    if (numOrders < this.model.getCapacity()) {
+      var selection = this.view.getRowByIndex(numOrders);
+      var presenter = this.partialPresenterFactory.createScanBarcodePresenter(this, selection, "tube");
+      this.presenters[numOrders] = presenter;
+    }
+  }
+
+  SelectionPagePresenter.prototype.updatePresenters = function() {
+    for(var i = 0; i < this.presenters.length; i++)
+      var presenter = this.presenters[i];
+      if(presenter) {	
+	presenter.update();
+      }
+  }
 
   SelectionPagePresenter.prototype.childDone = function (presenter, action, data) {
     /* Handles done messages from the page view and child presenters.
@@ -99,13 +148,27 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      * action:     a string representing the action request, e.g. 'next' for someone
      *             clicking on the next button
      * data:       Any data associated with the action.
-     * 
+     *
      */
     if (presenter === this) {
-      this.selfDone(action, data);
+      console.log("...?");
+      return this.selfDone(action, data);
     }
+
+    if(action === "barcodeScanned") {
+      return this.handleBarcodeScanned(presenter, action, data);
+      }
+
+    console.log("unhandled childDone event:");
+    console.log("presenter: ", presenter);
+    console.log("action: " + action);
+    console.log("data: " + JSON.stringify(data));
     return this;
   };
+
+  SelectionPagePresenter.prototype.handleBarcodeScanned = function(presenter, action, data) {
+    this.findAndAddOrder();
+    }
 
   SelectionPagePresenter.prototype.selfDone = function (action, data) {
     /* Handles done messages that arose from within this object or the view
@@ -117,9 +180,9 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      * action:     a string representing the action request, e.g. 'next' for someone
      *             clicking on the next button
      * data:       Any data associated with the action.
-     * 
+     *
      */
-    if (action == "tube") {
+    if (action == "next") {
       this.owner.childDone(this, "done", data);
     }
     return this;

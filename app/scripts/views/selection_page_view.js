@@ -56,9 +56,10 @@ define([], function () {
       data[i] = "empty_" + i;
     }
     var enter = this.table.selectAll().data(data).enter();
-    enter.append("tr").attr("id", String);
+     enter.append("tr").attr("id", String).append("td").text(String);
 
     this.rows = this.table.selectAll("tr");
+   
     return this.rows;
   };
 
@@ -95,6 +96,10 @@ define([], function () {
     this.rows = undefined;
     this.buttonDiv = undefined;
   };
+
+  SelectionPageView.prototype.getRowByIndex = function(index) {
+    return this.rows.filter(function(d, i) { return i === index; });
+    }
 
   return SelectionPageView;
 
