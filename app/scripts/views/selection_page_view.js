@@ -7,7 +7,8 @@ define([], function () {
      * ---------
      * owner :    the presenter that owns this class. Expected to be an
      *            instance of SelectionPagePresenter
-     * selection: A jquery selection.
+     * selection: A jquery selection. This is converted to be a d3 selection
+     *            for rendering. 
      */
     this.owner = owner;
     this.selection = d3.selectAll(selection);
@@ -59,11 +60,10 @@ define([], function () {
      enter.append("tr").attr("id", String).append("td").text(String);
 
     this.rows = this.table.selectAll("tr");
-   
     return this.rows;
   };
 
-  SelectionPageView.prototype.renderButton = function () {
+  SelectionPageView.prototype.renderButton = function() {
     /* Renders the next button
      */
 

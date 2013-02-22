@@ -55,9 +55,9 @@ define([''], function () {
     }
 
     if (this.batch === undefined) {
-      this.batch = newOrder.rawJson.order.batch;
+      this.batch =  newOrder.batch && newOrder.batch.rawJson.uuid;
     }
-    else if (newOrder.rawJson.order.batch !== this.batch) {
+    else if (newOrder.batch.rawJson.uuid !== this.batch) {
       throw {"type":"SelectionPageException", "message":"Batch number of new order does not match current selection" };
     }
     this.orders.push(newOrder);

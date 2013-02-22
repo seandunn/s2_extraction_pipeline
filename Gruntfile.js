@@ -53,10 +53,10 @@ module.exports = function( grunt ) {
 
     // default watch configuration
     watch: {
-	//      coffee: {
-	//	files: 'app/scripts/**/*.coffee',
-	//	tasks: 'coffee reload'
-	//},*/
+      // coffee: {
+      //   files: 'app/scripts/**/*.coffee',
+      //   tasks: 'coffee reload'
+      // },
       compass: {
         files: [
           'app/styles/**/*.{scss,sass}'
@@ -69,9 +69,8 @@ module.exports = function( grunt ) {
           'app/styles/**/*.css',
           'app/scripts/**/*.js',
           'app/images/**/*',
-	  'test/spec/*.js',
-	  'test/json/*.json',
-	  'test/*.js',
+          'test/spec/**/*.js',
+          'test/test_main.js'
         ],
         tasks: 'reload'
       }
