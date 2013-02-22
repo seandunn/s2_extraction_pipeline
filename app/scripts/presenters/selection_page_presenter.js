@@ -21,7 +21,7 @@
 define(['views/selection_page_view', 'models/selection_page_model', 'dummyresource'], function (SelectionPageView, selectionPageModel, rsc) {
   // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
 
-  var SelectionPagePresenter = function (owner, partialPresenterFactory) {
+  var SelectionPagePresenter = function (owner, presenterFactory) {
     /* constructor
      *
      * Arguments
@@ -50,7 +50,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
 
 
     this.view = undefined;
-    this.partialPresenterFactory = partialPresenterFactory;
+    this.presenterFactory = presenterFactory;
     this.presenters = [];
 
     return this;
@@ -90,7 +90,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     }
     if (numOrders < model.getCapacity()) {
       var selection = view.getRowByIndex(numOrders);
-      var presenter = this.partialPresenterFactory.createScanBarcodePresenter(this, selection, "tube");
+      var presenter = this.presenterFactory.createScanBarcodePresenter(this, selection, "tube");
       presenter.init(selection);
       this.presenters[numOrders] = presenter;
     }
@@ -134,12 +134,13 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      *
      */
     if (presenter === this) {
+      console.log("...?");
       this.selfDone(action, data);
     }
 
 
     console.log("unhandled childDone event:");
-    console.log("presenter: " + presenter);
+    console.log("presenter: ", presenter);
     console.log("action: " + action);
     console.log("data: " + data);
     return this;

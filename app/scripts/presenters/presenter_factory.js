@@ -1,8 +1,8 @@
-define(['presenters/scan_barcode_presenter'], function(ScanBarcodePresenter) {
+define(['presenters/scan_barcode_presenter','presenters/selection_page_presenter'], function(ScanBarcodePresenter, SelectionPagePresenter) {
   'use strict';
 
-  var PartialPresenterFactory = function() {
-    /* Construct an instance of PartialPresenterFactory
+  var PresenterFactory = function() {
+    /* Construct an instance of PresenterFactory
      *
      * This is an implementation of the AbstractFactory pattern. The 
      * intention of using the pattern is to allow presenters that create
@@ -13,12 +13,12 @@ define(['presenters/scan_barcode_presenter'], function(ScanBarcodePresenter) {
     return this;
     }
 
-  PartialPresenterFactory.prototype.createScanBarcodePresenter =
+  PresenterFactory.prototype.createScanBarcodePresenter =
     function (owner, selection, type) {
       var presenter = new ScanBarcodePresenter(owner, type);
       presenter.init(selection);
       return presenter;
     }
 
-  return PartialPresenterFactory;
+  return PresenterFactory;
 });
