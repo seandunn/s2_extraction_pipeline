@@ -61,7 +61,7 @@ define(['dummyresource', 'default/default_view'], function (rsc, view) {
     var that = this;
 
     // TODO: for now, the tube is always the same... no use of the mapper
-    tubeBC = 'components/apiExample/tube.json';
+    tubeBC = 'components/s2-api-examples/tube.json';
 
     new rsc(tubeBC, "read")
         .done(function (s2tube) {

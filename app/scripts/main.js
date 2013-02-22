@@ -10,7 +10,7 @@ require.config({
     labware:'../components/labware',
     config:'config',
     json:'/components/apiExample/workflows',
-    d3:'/components/d3'
+    text: '../components/requirejs-text/text'
   }
 });
 

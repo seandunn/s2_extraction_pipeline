@@ -18,7 +18,7 @@
  */
 
 
-define(['views/selection_page_view', 'models/selection_page_model', 'dummyresource'], function (SelectionPageView, selectionPageModel, rsc) {
+define(['views/selection_page_view', 'models/selection_page_model', 'dummyresource'], function (SelectionPageView, SelectionPageModel, rsc) {
   // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
 
   var SelectionPagePresenter = function(owner, partialPresenterFactory) {
@@ -29,12 +29,11 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      * owner : the owner of this presenter. Expected to be the application controller
      */
     this.owner = owner;
-    this.model = new selectionPageModel(this.owner.userBC);
-
+    this.model = new SelectionPageModel(this.owner.userBC);
 
     var order;
     var that = this;
-    order_rsc_path = 'components/apiExample/order.json';
+    order_rsc_path = 'components/s2-api-examples/order.json';
     new rsc(order_rsc_path, "read")
         .done(function (s2order) {
           order = s2order;
@@ -51,7 +50,9 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
 
     this.view = undefined;
     this.partialPresenterFactory = partialPresenterFactory;
-    this.presenters = [];
+    this.presenters = undefined;
+
+    return this;
   }
 
   SelectionPagePresenter.prototype.init = function (selection) {
@@ -67,10 +68,14 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      *
      */
 
-
     if (this.view) {
       this.view.clear();
       this.view.render(this.model);
+      if (!this.presenters) {
+	this.presenters = [];
+	this.createPresenters();
+	}
+      this.updatePresenters();
     }
     return this;
   };
@@ -84,6 +89,23 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      */
     if (this.view) {    
       this.view.clear();
+      }
+  }
+
+  SelectionPagePresenter.prototype.createPresenters = function() {    
+    var numOrders = this.model.getNumberOfOrders();
+    if (numOrders < this.model.getCapacity()) {
+      var selection = this.view.getRowByIndex(numOrders);
+      var presenter = this.partialPresenterFactory.createScanBarcodePresenter(this, selection, "tube");
+      this.presenters[numOrders] = presenter;
+    }
+  }
+
+  SelectionPagePresenter.prototype.updatePresenters = function() {
+    for(var i = 0; i < this.presenters.length; i++)
+      var presenter = this.presenters[i];
+      if(presenter) {	
+	presenter.update();
       }
   }
 
@@ -110,8 +132,6 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     console.log("presenter: " + presenter);
     console.log("action: " + action);
     console.log("data: " + data);
-  }
-    }
     return this;
   };
 
@@ -127,7 +147,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      * data:       Any data associated with the action.
      * 
      */
-    if (action == "tube") {
+    if (action == "next") {
       this.owner.childDone(this, "done", data);
     }
     return this;

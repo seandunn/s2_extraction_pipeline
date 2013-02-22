@@ -10,14 +10,16 @@ require.config({
       models: 'scripts/models',
       presenters: 'scripts/presenters',
       spec: 'spec',
-      json: 'json'
+      json: 'json',
+      dummyresource: 'scripts/dummyresource',
     },
 
 });
  
-require(['domReady!', 'spec/selection_page_model_spec', 'spec/selection_page_presenter_spec',
-	'spec/scan_barcode_model_spec', 'spec/scan_barcode_presenter_spec'], function() {
+require(['domReady!', 'spec/selection_page_model_spec', 'spec/selection_page_presenter_spec',	'spec/scan_barcode_model_spec', 'spec/scan_barcode_presenter_spec'],
+ function() {
   // use app here
-    runJasmineTests();
+
+   window.setTimeout(runJasmineTests, 1000);
 
 });

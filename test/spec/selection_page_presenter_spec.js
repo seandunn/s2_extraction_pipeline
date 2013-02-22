@@ -1,4 +1,4 @@
-define(['scripts/models/selection_page_model', 'scripts/presenters/selection_page_presenter', 'spec/selection_page_helper'], function(SelectionPageModel, SelectionPagePresenter, SelectionPageHelper) {
+define(['models/selection_page_model', 'presenters/selection_page_presenter', 'spec/selection_page_helper'], function(SelectionPageModel, SelectionPagePresenter, SelectionPageHelper) {
   'use strict';
 
   describe("SelectionPagePresenter", function() {
@@ -54,12 +54,13 @@ define(['scripts/models/selection_page_model', 'scripts/presenters/selection_pag
     function configureMockPartialFactory() {
       partialFactory = {};
       partialFactory.createScanBarcodePresenter = function(owner, selection) {
-	return createMockPresenter("scanBarcode");
+	var mockPresenter = createMockPresenter("scanBarcode");
+	mockPresenter.init(selection);
+	return mockPresenter;
       }
       }
     
     describe("presenter which has never been updated", function() {
-
 
       beforeEach(function() {
 	mockPresenters = [];
@@ -70,26 +71,28 @@ define(['scripts/models/selection_page_model', 'scripts/presenters/selection_pag
 
 	model = new SelectionPageModel(123456789);
 	model.addOrder(helper.createOrderWithOriginalBatch(0));
-
+	
 	presenter = new SelectionPagePresenter(app, partialFactory);
 	presenter.view = view;
 	
       });
 
       it("presenter update calls clear then render", function() {
-	presenter.update(model);
+	presenter.model = model;
+	presenter.update();
 	expect(view.clear).toHaveBeenCalled();
 	expect(view.render).toHaveBeenCalledWith(model);
       });
 
       it("updating presenter with empty model creates a ScanBarcodePresenter", function() {
-	presenter.update(model);
+	presenter.model = model;
+	presenter.update();
 	expect(mockPresenters.length).toEqual(1);
 	var firstPartial = mockPresenters[0];
 	expect(firstPartial).toBeDefined();
 	expect(firstPartial.name).toEqual("scanBarcode");
-	expect(firstPartial.init).toHaveBeenCalledWith("row_1"); // TODO : make this called with
-	expect(firstPartial.update).toHaveBeenCalledWith("");
+	expect(firstPartial.init).toHaveBeenCalledWith("row_1"); 
+	expect(firstPartial.update).toHaveBeenCalled();
 	});
 
       it("presenter release calls clear", function() {
@@ -100,7 +103,7 @@ define(['scripts/models/selection_page_model', 'scripts/presenters/selection_pag
 
       it("childDone on next command delegates to app controller", function() {
 	presenter.childDone(presenter, "next", undefined);
-	expect(app.childDone).toHaveBeenCalledWith(presenter, "next", undefined);
+	expect(app.childDone).toHaveBeenCalledWith(presenter, "done", undefined);
 	});
     });
 

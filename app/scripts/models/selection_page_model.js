@@ -19,7 +19,7 @@
 
 define([''], function () {
 
-  function SelectionPageModel(user) {
+  var SelectionPageModel = function(user) {
     /* Creates the default implementation of a selection page model
      * with a user identifier and some orders
      *
