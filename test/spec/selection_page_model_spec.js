@@ -28,8 +28,12 @@ define(['models/selection_page_model', 'spec/selection_page_helper'], function(S
 	var expectedBatchUuid = firstBatchUuid;
         model.addOrder(helper.createOrderWithOriginalBatch(0));	
 	expect(model.batch).toEqual(firstBatchUuid);
-   
       });
+
+      it("adding order with no batch is handled gracefully", function() {
+	model.addOrder(helper.createOrderWithNullBatch(0));
+	expect(model.batch).toBeUndefined();
+	});
 
     });
 

@@ -7,7 +7,7 @@ define(['config', 'mapper/s2_resource'], function(config, S2Resource) {
     return this;
   };
 
-  SelectionPageHelper.prototype.createOrderWithOriginalBatch = function (counter) {
+  SelectionPageHelper.prototype.createOrderWithNullBatch = function(counter) {
     var order;
     var canonicalUuid = '11111111-2222-3333-4444-999999999999';
     var wantedUuid = this.createUuid(counter);
@@ -18,7 +18,13 @@ define(['config', 'mapper/s2_resource'], function(config, S2Resource) {
     });
 
     order.rawJson.order.uuid = this.createUuid(counter);
+    
+    return order;
+    }
 
+  SelectionPageHelper.prototype.createOrderWithOriginalBatch = function (counter) {
+    var order = this.createOrderWithNullBatch(counter);
+    
     order.batch = {
       rawJson:{
         uuid: '11111111-222222-00000000-111111111111'
@@ -29,8 +35,14 @@ define(['config', 'mapper/s2_resource'], function(config, S2Resource) {
   };
 
   SelectionPageHelper.prototype.createOrderWithDifferentBatch = function(counter) {
-    var order                = this.createOrderWithOriginalBatch(counter);
-    order.batch.rawJson.uuid = '11111111-222222-00000000-111111111112';
+    var order = this.createOrderWithNullBatch(counter);
+    order.batch = {
+      rawJson:{
+        uuid: '11111111-222222-00000000-111111111112'
+      }
+    };
+    
+//    order.batch.rawJson.uuid = '11111111-222222-00000000-111111111112';
     return order;
   };
 
