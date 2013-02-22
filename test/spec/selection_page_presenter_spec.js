@@ -1,4 +1,4 @@
-define(['scripts/models/selection_page_model', 'scripts/presenters/selection_page_presenter', 'spec/selection_page_helper'], function(SelectionPageModel, SelectionPagePresenter, SelectionPageHelper) {
+define([ 'scripts/models/selection_page_model', 'scripts/presenters/selection_page_presenter', 'spec/selection_page_helper'], function(SelectionPageModel, SelectionPagePresenter, SelectionPageHelper) {
   'use strict';
 
   describe("SelectionPagePresenter", function() {

@@ -6,3 +6,6 @@ dist
 .gitignore
 app/components
 components
+*~
+components
+*.orig

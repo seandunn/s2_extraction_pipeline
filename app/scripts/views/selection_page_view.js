@@ -1,13 +1,14 @@
-define([], function () {
-
-  var SelectionPageView = function (owner, selection) {
+define([], function() {
+  
+  var SelectionPageView = function(owner, selection) {
     /* Constructor for SelectionPageView
      *
      * Arguments
      * ---------
      * owner :    the presenter that owns this class. Expected to be an
      *            instance of SelectionPagePresenter
-     * selection: A jquery selection.
+     * selection: A jquery selection. This is converted to be a d3 selection
+     *            for rendering. 
      */
     this.owner = owner;
     this.selection = d3.selectAll(selection);
@@ -55,15 +56,19 @@ define([], function () {
     for (; i < model.getCapacity(); i++) {
       data[i] = "empty_" + i;
     }
-    var enter = this.table.selectAll().data(data).enter();
+    var enter =  this.table.selectAll().data(data).enter();
     enter.append("tr").attr("id", String);
 
     this.rows = this.table.selectAll("tr");
     return this.rows;
   };
 
-  SelectionPageView.prototype.renderButton = function () {
+  SelectionPageView.prototype.renderButton = function() {
     /* Renders the next button
+     *
+     * Arguments
+     * ---------
+     * model : the model to render
      */
 
     var div = this.selection.append("div");
