@@ -40,8 +40,8 @@ define(['models/scan_barcode_model', 'views/scan_barcode_view'], function(ScanBa
       this.render();
       var resource = this.model.getResourceFromBarcode();
       var presenter = this;
-      resource.done(function(s2tube) { 
-	presenter.owner.childDone(presenter, "barcodeScanned", s2tube);
+      resource.done(function(s2resource) { 
+	presenter.owner.childDone(presenter, "barcodeScanned", s2resource);
 	}).
 	fail(function() {
 	  presenter.model.busy = false;

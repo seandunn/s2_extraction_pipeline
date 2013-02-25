@@ -60,6 +60,8 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     /* initialises this instance by instantiating the view
      */
     this.view = new SelectionPageView(this, selection);
+    console.log("setting SPP selection");
+    this.selection = function() { return $("#content"); };
     this.findAndAddOrder();
     return this;
   }
@@ -92,6 +94,9 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
   };
 
   SelectionPagePresenter.prototype.setupPresenters = function (model, view) {
+    var that = this,
+    innerSelection,
+    presenter;
     if (!model) {
       return;
     }
@@ -100,9 +105,9 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
       // TODO : order presenters go here
     }
     if (numOrders < model.getCapacity()) {
-      var selection = view.getRowByIndex(numOrders);
-      var presenter = this.presenterFactory.createScanBarcodePresenter(this, selection, "tube");
-      presenter.setupView(selection);
+      innerSelection = function() { return that.selection().find("tr :eq(" + numOrders + ")"); }
+      presenter = this.presenterFactory.createScanBarcodePresenter(this, innerSelection, "tube");
+      presenter.setupView(innerSelection);
       this.presenters[numOrders] = presenter;
     }
   };

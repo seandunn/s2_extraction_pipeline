@@ -31,59 +31,38 @@ define([], function() {
      * ---------
      * model : the model to display
      */
-      
-    var parts =[ document.createElement("td"),
-		 document.createElement("td"),
-		  document.createElement("td") ];
+  
+    var parent = this.placeholderSelector();
+    htmlParts = ['<td><p>Scan barcode</p></td>',
+		 '<td><input value="',
+		 model.barcode, 
+		 '"',
+		 model.busy ? ' disabled="true"' : '' ,
+		 '/></td>',
+		 '<td>',
+		 model.isValid() ? '' : '<p class="alert-error">Invalid barcode entered</p>', 
+		 '</td>' ],
+    htmlString = htmlParts.join('');
 
-    var barcodeCell = d3.select(parts[0]);
-    var para = barcodeCell.append("p").text("Scan barcode");
-//<td><p>Scan barcode</p></td>");
+    // We have to append to the document or events won't register
+    parent.empty().
+      append(htmlString);
+    var input = parent.find("input");
+    var that = this;
+    input.on("keypress", function(e) { 
+      var key = getKey(e);
+      if (key === 13) {
+	that.owner.childDone(this.owner, "barcodeScanned", this.value);
+      }
+      });
 
-    var entryCell = d3.select(parts[1]);
-    var input = entryCell.append("input");
-    input.attr("value", model.barcode);
-    if(model.busy) {
-      input.attr("disabled", "true");
-    }
- 
-    console.log("entryCell:",  entryCell);
-    console.log("$entryCell:", $(entryCell));
-    console.log("input: ", input);
-//    var view = this;
-    input.on("click", function() { 
-      alert("oioi");
-    });
-     
-//      var key = getKey(e);
-  //    if (key === 13) {
-//	view.owner.childDone(this.owner, "barcodeScanned", this.value);
-//    });
-
-    console.log("input.onclick", input.onclick);
-
-  //  if (model.busy) {
-   //   input.attr("disabled", "true");
-   // }
-
- //   if(!model.isValid()) {
-  //    console.log("invalid barcode '" + model.barcode + "'");
-   //   var warningCell = parts[2];
-    //  var warning = warningCell.append("p");
+    console.log("html string", htmlString);
     
- //     warningCell.attr("class", "alert-error");
-  //    warning.text("Invalid barcode entered");
-   //   }
-
-    this.tree = [barcodeCell, entryCell];
   };
 
   ScanBarcodeView.prototype.attach = function() {
-//    if(this.placeholderSelector) {
-//      this.placeholderSelector().append(this.tree);
-//    }
-    $("#pending").append(this.tree[0].html());
-    $("#pending").append(this.tree[1].html());
+    /*
+    */
   };
 
   ScanBarcodeView.prototype.clear = function() {
