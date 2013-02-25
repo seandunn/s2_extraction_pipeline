@@ -15,11 +15,15 @@ define(['scripts/presenters/scan_barcode_presenter'], function(ScanBarcodePresen
 	view.clear = function() {
 	};
 	
-	view.render = function(data) { 		      
+	view.generateTree = function(data) { 
+	};
+
+	view.attach = function() {
 	};
 	
 	spyOn(view, 'clear');
-	spyOn(view, 'render');        
+	spyOn(view, 'generateTree');        
+	spyOn(view, 'attach');
       }
       
       function configureSpyAppController() {
@@ -34,27 +38,30 @@ define(['scripts/presenters/scan_barcode_presenter'], function(ScanBarcodePresen
 	configureSpyView();
 	configureSpyAppController();
 
-	presenter = new ScanBarcodePresenter(app, "tube");
+	presenter = new ScanBarcodePresenter(app);
+	presenter.setModel("tube");
 	presenter.view = view;
 	});
 
-      it("presenter update calls clear then render", function() {
-	presenter.update();
-	expect(view.clear).toHaveBeenCalled();
-	expect(view.render).toHaveBeenCalledWith(presenter.model);
+      it("presenter render calls generateTree and attach", function() {
+	presenter.render();
+	expect(view.clear).not.toHaveBeenCalled();
+	expect(view.generateTree).toHaveBeenCalledWith(presenter.model);
+	expect(view.attach).toHaveBeenCalled();
 	});
-
 
       it("presenter release calls clear", function() {
 	presenter.release();
 	expect(view.clear).toHaveBeenCalled();
-	expect(view.render).not.toHaveBeenCalled();		       
+	expect(view.generateTree).not.toHaveBeenCalled();		       
+	expect(view.attach).not.toHaveBeenCalled();
       });
 
       it("invalid barcode scan rerenders view", function() {
 	presenter.childDone(presenter, "barcodeScanned", "asdf");
-	expect(view.clear).toHaveBeenCalled();
-	expect(view.render).toHaveBeenCalled();
+	expect(view.clear).not.toHaveBeenCalled();
+	expect(view.generateTree).toHaveBeenCalled();
+	expect(view.attach).toHaveBeenCalled();
       });
 
       it("valid barcode sent to owner", function() {

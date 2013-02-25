@@ -29,8 +29,6 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      * owner : the owner of this presenter. Expected to be the application controller
      */
     this.owner = owner;
-    this.model = new SelectionPageModel(this.owner.userBC);
-    this.findAndAddOrder();
 
     this.view = undefined;
     this.presenterFactory = presenterFactory;
@@ -58,13 +56,22 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
         });
   }
 
-  SelectionPagePresenter.prototype.init = function (selection) {
+  SelectionPagePresenter.prototype.setupView = function(selection) {
     /* initialises this instance by instantiating the view
      */
     this.view = new SelectionPageView(this, selection);
+    this.findAndAddOrder();
+    return this;
   }
 
-  SelectionPagePresenter.prototype.update = function () {
+  SelectionPagePresenter.prototype.addModel = function(userBC) {
+    this.model = new SelectionPageModel(userBC);
+    this.setupPresenters();
+    this.updatePresenters();
+    return this;
+  }
+
+  SelectionPagePresenter.prototype.update = function() {
     /* Updates the data for the current view
      *
      * Tells the presenter that the model has been updated
@@ -85,6 +92,9 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
   };
 
   SelectionPagePresenter.prototype.setupPresenters = function (model, view) {
+    if (!model) {
+      return;
+    }
     var numOrders = model.getNumberOfOrders();
     for (var i = 0; i < numOrders; i++) {
       // TODO : order presenters go here
@@ -92,18 +102,21 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     if (numOrders < model.getCapacity()) {
       var selection = view.getRowByIndex(numOrders);
       var presenter = this.presenterFactory.createScanBarcodePresenter(this, selection, "tube");
-      presenter.init(selection);
+      presenter.setupView(selection);
       this.presenters[numOrders] = presenter;
     }
   };
 
 
   SelectionPagePresenter.prototype.updatePresenters = function (model) {
+    if(!model) {
+      return;
+    }
     var numOrders = model.getNumberOfOrders();
     for (var i = 0; i < numOrders; i++) {
     }
     if (numOrders < model.getCapacity()) {
-      this.presenters[numOrders].update("");
+      this.presenters[numOrders].render();
     }
   };
 
@@ -119,7 +132,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
   };
 
   SelectionPagePresenter.prototype.createPresenters = function() {    
-    var numOrders = this.model.getNumberOfOrders();
+    var numOrders = this.model ? this.model.getNumberOfOrders() : 0;
     if (numOrders < this.model.getCapacity()) {
       var selection = this.view.getRowByIndex(numOrders);
       var presenter = this.partialPresenterFactory.createScanBarcodePresenter(this, selection, "tube");
@@ -131,7 +144,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     for(var i = 0; i < this.presenters.length; i++)
       var presenter = this.presenters[i];
       if(presenter) {	
-	presenter.update();
+	presenter.render();
       }
   }
 

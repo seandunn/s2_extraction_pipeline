@@ -37,15 +37,17 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 
     function createMockPresenter(name) {
       var mockPresenter = { name : name};
-      mockPresenter.init = function(selection) {};
-      mockPresenter.update = function(model) {};
-      mockPresenter.release = function(model) {};
+      mockPresenter.setModel = function(model) {};
+      mockPresenter.render = function() {};
+      mockPresenter.release = function() {};
       mockPresenter.childDone = function(presenter, action, data) {};
+      mockPresenter.setupView = function(selection) {};
 
-      spyOn(mockPresenter, 'init');
-      spyOn(mockPresenter, 'update');
+      spyOn(mockPresenter, 'setModel');
+      spyOn(mockPresenter, 'render');
       spyOn(mockPresenter, 'release');
       spyOn(mockPresenter, 'childDone');
+      spyOn(mockPresenter, 'setupView');
 
       mockPresenters.push(mockPresenter);
       return mockPresenter;
@@ -53,9 +55,9 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 
     function configureMockPartialFactory() {
       partialFactory = {};
-      partialFactory.createScanBarcodePresenter = function(owner, selection) {
+      partialFactory.createScanBarcodePresenter = function(owner, selection, model) {
 	var mockPresenter = createMockPresenter("scanBarcode");
-	mockPresenter.init(selection);
+	mockPresenter.setModel(model);
 	return mockPresenter;
       }
       }
@@ -91,8 +93,9 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 	var firstPartial = mockPresenters[0];
 	expect(firstPartial).toBeDefined();
 	expect(firstPartial.name).toEqual("scanBarcode");
-	expect(firstPartial.init).toHaveBeenCalledWith("row_1"); 
-	expect(firstPartial.update).toHaveBeenCalled();
+	expect(firstPartial.setupView).toHaveBeenCalledWith("row_1"); 
+	expect(firstPartial.setModel).toHaveBeenCalledWith("tube");
+	expect(firstPartial.render).toHaveBeenCalled();
 	});
 
       it("presenter release calls clear", function() {

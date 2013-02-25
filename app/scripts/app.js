@@ -28,7 +28,9 @@ define(['workflow_engine', 'presenters/presenter_factory', 'mapper/s2_ajax'], fu
       this.batchUUID = data.batchUUID;
 
       this.currentPagePresenter.release();
-      this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory).init($('#content')).update();
+      this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory).
+	setupView($('#content')).
+	addModel(this.userBC);
     }
     return this.appModel;
   };
