@@ -87,13 +87,13 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
       });
 
       it("updating presenter with empty model creates a ScanBarcodePresenter", function() {
-	presenter.model = model;
+	presenter.setModel(model);
 	presenter.update();
 	expect(mockPresenters.length).toEqual(1);
 	var firstPartial = mockPresenters[0];
 	expect(firstPartial).toBeDefined();
 	expect(firstPartial.name).toEqual("scanBarcode");
-	expect(firstPartial.setupView).toHaveBeenCalledWith("row_1"); 
+	expect(firstPartial.setupView).toHaveBeenCalled(); 
 	expect(firstPartial.setModel).toHaveBeenCalledWith("tube");
 	expect(firstPartial.render).toHaveBeenCalled();
 	});

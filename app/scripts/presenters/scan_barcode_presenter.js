@@ -16,8 +16,7 @@ define(['models/scan_barcode_model', 'views/scan_barcode_view'], function(ScanBa
 
   ScanBarcodePresenter.prototype.render = function() {
     if (this.view) {
-      this.view.generateTree(this.model);
-      this.view.attach();
+      this.view.render(this.model);
       }
     }
 

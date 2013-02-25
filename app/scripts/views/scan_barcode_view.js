@@ -24,7 +24,7 @@ define([], function() {
     return this;
   };
 
-  ScanBarcodeView.prototype.generateTree = function(model) {
+  ScanBarcodeView.prototype.render = function(model) {
     /* render the current view onto the screen
      * 
      * Arguments
@@ -58,11 +58,6 @@ define([], function() {
 
     console.log("html string", htmlString);
     
-  };
-
-  ScanBarcodeView.prototype.attach = function() {
-    /*
-    */
   };
 
   ScanBarcodeView.prototype.clear = function() {

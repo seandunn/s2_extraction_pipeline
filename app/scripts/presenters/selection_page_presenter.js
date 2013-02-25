@@ -51,9 +51,13 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
         })
         .then(function () {
           console.log("order has been found ");
-          that.model.addOrder(order);
+	  that.presenters[model.getNumberOfOrders()].release();
+	  that.handleExtraOrder(order);
           that.update();
         });
+  }
+
+  SelectionPagePresenter.prototype.handleExtraOrder = function(order) {
   }
 
   SelectionPagePresenter.prototype.setupView = function(selection) {
@@ -66,10 +70,10 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     return this;
   }
 
-  SelectionPagePresenter.prototype.addModel = function(userBC) {
+  SelectionPagePresenter.prototype.setModel = function(userBC) {
     this.model = new SelectionPageModel(userBC);
-    this.setupPresenters();
-    this.updatePresenters();
+    this.setupPresenters(this.model);
+//    this.updatePresenters();
     return this;
   }
 
@@ -88,15 +92,17 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     // exist to configure the sub-presenters' views
     this.view.clear();
     this.view.render(this.model);
-    this.setupPresenters(this.model, this.view);
-    this.updatePresenters(this.model);
+    for(var i = 0; i < this.presenters.length; i++) {
+      var presenter = this.presenters[i];
+      if(presenter) {
+	presenter.render();
+      }
+    }
     return this;
   };
 
-  SelectionPagePresenter.prototype.setupPresenters = function (model, view) {
-    var that = this,
-    innerSelection,
-    presenter;
+  SelectionPagePresenter.prototype.setupPresenters = function (model) {
+    var that = this;
     if (!model) {
       return;
     }
@@ -105,23 +111,10 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
       // TODO : order presenters go here
     }
     if (numOrders < model.getCapacity()) {
-      innerSelection = function() { return that.selection().find("tr :eq(" + numOrders + ")"); }
-      presenter = this.presenterFactory.createScanBarcodePresenter(this, innerSelection, "tube");
+      var innerSelection = function() { return that.selection().find("tr :eq(" + numOrders + ")"); }
+      var presenter = this.presenterFactory.createScanBarcodePresenter(this, innerSelection, "tube");
       presenter.setupView(innerSelection);
       this.presenters[numOrders] = presenter;
-    }
-  };
-
-
-  SelectionPagePresenter.prototype.updatePresenters = function (model) {
-    if(!model) {
-      return;
-    }
-    var numOrders = model.getNumberOfOrders();
-    for (var i = 0; i < numOrders; i++) {
-    }
-    if (numOrders < model.getCapacity()) {
-      this.presenters[numOrders].render();
     }
   };
 
@@ -149,7 +142,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     for(var i = 0; i < this.presenters.length; i++)
       var presenter = this.presenters[i];
       if(presenter) {	
-	presenter.render();
+	presenter.update();
       }
   }
 

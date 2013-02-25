@@ -30,7 +30,7 @@ define(['workflow_engine', 'presenters/presenter_factory', 'mapper/s2_ajax'], fu
       this.currentPagePresenter.release();
       this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory).
 	setupView($('#content')).
-	addModel(this.userBC);
+	setModel(this.userBC);
     }
     return this.appModel;
   };
