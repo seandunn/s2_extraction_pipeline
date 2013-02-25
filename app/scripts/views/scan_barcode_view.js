@@ -63,8 +63,7 @@ define([], function() {
   ScanBarcodeView.prototype.clear = function() {
     /* clear the view from the current page
      */
-    var children = this.selection.selectAll("td");
-    children.remove();
+    var children = this.placeholderSelector().empty();
   };
 
   return ScanBarcodeView;
