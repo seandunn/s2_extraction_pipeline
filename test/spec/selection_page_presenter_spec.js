@@ -55,7 +55,7 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 
     function configureMockPartialFactory() {
       partialFactory = {};
-      partialFactory.createScanBarcodePresenter = function(owner, selection, model) {
+      partialFactory.createScanBarcodePresenter = function(owner, model) {
 	var mockPresenter = createMockPresenter("scanBarcode");
 	mockPresenter.setModel(model);
 	return mockPresenter;
@@ -80,16 +80,16 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
       });
 
       it("presenter update calls clear then render", function() {
-	presenter.model = model;
-	presenter.update();
+	presenter.setModel(model);
+	presenter.render();
 	expect(view.clear).toHaveBeenCalled();
-	expect(view.render).toHaveBeenCalledWith(model);
+	expect(view.render).toHaveBeenCalled();
       });
 
       it("updating presenter with empty model creates a ScanBarcodePresenter", function() {
 	presenter.setModel(model);
-	presenter.update();
-	expect(mockPresenters.length).toEqual(1);
+	presenter.render();
+	expect(mockPresenters.length).toBe(1);
 	var firstPartial = mockPresenters[0];
 	expect(firstPartial).toBeDefined();
 	expect(firstPartial.name).toEqual("scanBarcode");

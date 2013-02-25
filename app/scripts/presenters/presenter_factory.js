@@ -14,10 +14,9 @@ define(['presenters/scan_barcode_presenter','presenters/selection_page_presenter
     }
 
   PresenterFactory.prototype.createScanBarcodePresenter =
-    function (owner, selection, type) {
+    function (owner, type) {
       var presenter = new ScanBarcodePresenter(owner);
       presenter.setModel(type);
-      presenter.setupView(selection);
       
       return presenter;
     }

@@ -11,7 +11,7 @@ define([], function () {
      *            for rendering. 
      */
     this.owner = owner;
-    this.selection = d3.selectAll(selection);
+    this.selection = d3.selectAll(selection());
     this.table = undefined;
     this.pageDetailsDiv = undefined;
     return this;

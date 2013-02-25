@@ -51,13 +51,19 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
         })
         .then(function () {
           console.log("order has been found ");
-	  that.presenters[model.getNumberOfOrders()].release();
 	  that.handleExtraOrder(order);
-          that.update();
+          that.render();
         });
   }
 
   SelectionPagePresenter.prototype.handleExtraOrder = function(order) {
+    if(this.model) {
+      var numOrders = this.model.getNumberOfOrders();
+      this.model.addOrder(order);      
+      this.presenters[numOrders].release();
+      this.presenters[numOrders] = null;
+      this.ensureScanBarcodePresenter(this.model);
+    }
   }
 
   SelectionPagePresenter.prototype.setupView = function(selection) {
@@ -66,18 +72,17 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     this.view = new SelectionPageView(this, selection);
     console.log("setting SPP selection");
     this.selection = function() { return $("#content"); };
-    this.findAndAddOrder();
     return this;
   }
 
   SelectionPagePresenter.prototype.setModel = function(userBC) {
     this.model = new SelectionPageModel(userBC);
+    this.findAndAddOrder();
     this.setupPresenters(this.model);
-//    this.updatePresenters();
     return this;
   }
 
-  SelectionPagePresenter.prototype.update = function() {
+  SelectionPagePresenter.prototype.render = function() {
     /* Updates the data for the current view
      *
      * Tells the presenter that the model has been updated
@@ -110,11 +115,30 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     for (var i = 0; i < numOrders; i++) {
       // TODO : order presenters go here
     }
+    this.ensureScanBarcodePresenter(model);
+    for(var i = 0; i < this.presenters.length; i++) {
+      this.setupChildView(this.presenters[0], i);
+    }
+  }
+
+  SelectionPagePresenter.prototype.setupChildView = function (presenter, index) {
+    if(!presenter) {
+      return;
+      }
+    var j = index;
+    var presenter = this.presenters[index];
+    var that = this;
+    var innerSelection = function() { return that.selection().find("tr :eq(" + j  +  ")"); }
+    presenter.setupView(innerSelection);
+  }
+
+  SelectionPagePresenter.prototype.ensureScanBarcodePresenter = function(model) {
+    var numOrders = model.getNumberOfOrders();
+    console.log("num orders", numOrders);
     if (numOrders < model.getCapacity()) {
-      var innerSelection = function() { return that.selection().find("tr :eq(" + numOrders + ")"); }
-      var presenter = this.presenterFactory.createScanBarcodePresenter(this, innerSelection, "tube");
-      presenter.setupView(innerSelection);
+      var presenter = this.presenterFactory.createScanBarcodePresenter(this, "tube");
       this.presenters[numOrders] = presenter;
+      this.setupChildView(presenter, numOrders);
     }
   };
 
@@ -142,7 +166,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     for(var i = 0; i < this.presenters.length; i++)
       var presenter = this.presenters[i];
       if(presenter) {	
-	presenter.update();
+	presenter.render();
       }
   }
 
