@@ -1,6 +1,6 @@
 define(['default/default_presenter',
   'presenters/selection_page_presenter',
-  'labware/tubes/scripts/presenters/tube_presenter'], function (defPtr, SelectionPagePresenter, tubePtr) {
+  'labware/scripts/presenters/tube_presenter'], function (defPtr, SelectionPagePresenter, tubePtr) {
   var workflowEngine = function (owner) {
     this.mainController = owner;
   };

@@ -29,8 +29,6 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      * owner : the owner of this presenter. Expected to be the application controller
      */
     this.owner = owner;
-    this.model = new SelectionPageModel(this.owner.userBC);
-    this.findAndAddOrder();
 
     this.view = undefined;
     this.presenterFactory = presenterFactory;
@@ -53,18 +51,38 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
         })
         .then(function () {
           console.log("order has been found ");
-          that.model.addOrder(order);
-          that.update();
+	  that.handleExtraOrder(order);
+          that.render();
         });
   }
 
-  SelectionPagePresenter.prototype.init = function (selection) {
+  SelectionPagePresenter.prototype.handleExtraOrder = function(order) {
+    if(this.model) {
+      var numOrders = this.model.getNumberOfOrders();
+      this.model.addOrder(order);      
+      this.presenters[numOrders].release();
+      this.presenters[numOrders] = null;
+      this.ensureScanBarcodePresenter(this.model);
+    }
+  }
+
+  SelectionPagePresenter.prototype.setupView = function(selection) {
     /* initialises this instance by instantiating the view
      */
     this.view = new SelectionPageView(this, selection);
+    console.log("setting SPP selection");
+    this.selection = function() { return $("#content"); };
+    return this;
   }
 
-  SelectionPagePresenter.prototype.update = function () {
+  SelectionPagePresenter.prototype.setModel = function(userBC) {
+    this.model = new SelectionPageModel(userBC);
+    this.findAndAddOrder();
+    this.setupPresenters(this.model);
+    return this;
+  }
+
+  SelectionPagePresenter.prototype.render = function() {
     /* Updates the data for the current view
      *
      * Tells the presenter that the model has been updated
@@ -79,31 +97,48 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     // exist to configure the sub-presenters' views
     this.view.clear();
     this.view.render(this.model);
-    this.setupPresenters(this.model, this.view);
-    this.updatePresenters(this.model);
+    for(var i = 0; i < this.presenters.length; i++) {
+      var presenter = this.presenters[i];
+      if(presenter) {
+	presenter.render();
+      }
+    }
     return this;
   };
 
-  SelectionPagePresenter.prototype.setupPresenters = function (model, view) {
+  SelectionPagePresenter.prototype.setupPresenters = function (model) {
+    var that = this;
+    if (!model) {
+      return;
+    }
     var numOrders = model.getNumberOfOrders();
     for (var i = 0; i < numOrders; i++) {
       // TODO : order presenters go here
     }
-    if (numOrders < model.getCapacity()) {
-      var selection = view.getRowByIndex(numOrders);
-      var presenter = this.presenterFactory.createScanBarcodePresenter(this, selection, "tube");
-      presenter.init(selection);
-      this.presenters[numOrders] = presenter;
+    this.ensureScanBarcodePresenter(model);
+    for(var i = 0; i < this.presenters.length; i++) {
+      this.setupChildView(this.presenters[0], i);
     }
-  };
+  }
 
+  SelectionPagePresenter.prototype.setupChildView = function (presenter, index) {
+    if(!presenter) {
+      return;
+      }
+    var j = index;
+    var presenter = this.presenters[index];
+    var that = this;
+    var innerSelection = function() { return that.selection().find("tr :eq(" + j  +  ")"); }
+    presenter.setupView(innerSelection);
+  }
 
-  SelectionPagePresenter.prototype.updatePresenters = function (model) {
+  SelectionPagePresenter.prototype.ensureScanBarcodePresenter = function(model) {
     var numOrders = model.getNumberOfOrders();
-    for (var i = 0; i < numOrders; i++) {
-    }
+    console.log("num orders", numOrders);
     if (numOrders < model.getCapacity()) {
-      this.presenters[numOrders].update("");
+      var presenter = this.presenterFactory.createScanBarcodePresenter(this, "tube");
+      this.presenters[numOrders] = presenter;
+      this.setupChildView(presenter, numOrders);
     }
   };
 
@@ -119,7 +154,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
   };
 
   SelectionPagePresenter.prototype.createPresenters = function() {    
-    var numOrders = this.model.getNumberOfOrders();
+    var numOrders = this.model ? this.model.getNumberOfOrders() : 0;
     if (numOrders < this.model.getCapacity()) {
       var selection = this.view.getRowByIndex(numOrders);
       var presenter = this.partialPresenterFactory.createScanBarcodePresenter(this, selection, "tube");
@@ -131,7 +166,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     for(var i = 0; i < this.presenters.length; i++)
       var presenter = this.presenters[i];
       if(presenter) {	
-	presenter.update();
+	presenter.render();
       }
   }
 

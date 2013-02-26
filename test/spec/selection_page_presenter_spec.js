@@ -37,15 +37,17 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 
     function createMockPresenter(name) {
       var mockPresenter = { name : name};
-      mockPresenter.init = function(selection) {};
-      mockPresenter.update = function(model) {};
-      mockPresenter.release = function(model) {};
+      mockPresenter.setModel = function(model) {};
+      mockPresenter.render = function() {};
+      mockPresenter.release = function() {};
       mockPresenter.childDone = function(presenter, action, data) {};
+      mockPresenter.setupView = function(selection) {};
 
-      spyOn(mockPresenter, 'init');
-      spyOn(mockPresenter, 'update');
+      spyOn(mockPresenter, 'setModel');
+      spyOn(mockPresenter, 'render');
       spyOn(mockPresenter, 'release');
       spyOn(mockPresenter, 'childDone');
+      spyOn(mockPresenter, 'setupView');
 
       mockPresenters.push(mockPresenter);
       return mockPresenter;
@@ -53,9 +55,9 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 
     function configureMockPartialFactory() {
       partialFactory = {};
-      partialFactory.createScanBarcodePresenter = function(owner, selection) {
+      partialFactory.createScanBarcodePresenter = function(owner, model) {
 	var mockPresenter = createMockPresenter("scanBarcode");
-	mockPresenter.init(selection);
+	mockPresenter.setModel(model);
 	return mockPresenter;
       }
       }
@@ -78,21 +80,22 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
       });
 
       it("presenter update calls clear then render", function() {
-	presenter.model = model;
-	presenter.update();
+	presenter.setModel(model);
+	presenter.render();
 	expect(view.clear).toHaveBeenCalled();
-	expect(view.render).toHaveBeenCalledWith(model);
+	expect(view.render).toHaveBeenCalled();
       });
 
       it("updating presenter with empty model creates a ScanBarcodePresenter", function() {
-	presenter.model = model;
-	presenter.update();
-	expect(mockPresenters.length).toEqual(1);
+	presenter.setModel(model);
+	presenter.render();
+	expect(mockPresenters.length).toBe(1);
 	var firstPartial = mockPresenters[0];
 	expect(firstPartial).toBeDefined();
 	expect(firstPartial.name).toEqual("scanBarcode");
-	expect(firstPartial.init).toHaveBeenCalledWith("row_1"); 
-	expect(firstPartial.update).toHaveBeenCalled();
+	expect(firstPartial.setupView).toHaveBeenCalled(); 
+	expect(firstPartial.setModel).toHaveBeenCalledWith("tube");
+	expect(firstPartial.render).toHaveBeenCalled();
 	});
 
       it("presenter release calls clear", function() {

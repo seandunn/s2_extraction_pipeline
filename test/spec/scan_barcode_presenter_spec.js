@@ -15,9 +15,9 @@ define(['scripts/presenters/scan_barcode_presenter'], function(ScanBarcodePresen
 	view.clear = function() {
 	};
 	
-	view.render = function(data) { 		      
+	view.render= function(data) { 
 	};
-	
+
 	spyOn(view, 'clear');
 	spyOn(view, 'render');        
       }
@@ -34,16 +34,16 @@ define(['scripts/presenters/scan_barcode_presenter'], function(ScanBarcodePresen
 	configureSpyView();
 	configureSpyAppController();
 
-	presenter = new ScanBarcodePresenter(app, "tube");
+	presenter = new ScanBarcodePresenter(app);
+	presenter.setModel("tube");
 	presenter.view = view;
 	});
 
-      it("presenter update calls clear then render", function() {
-	presenter.update();
-	expect(view.clear).toHaveBeenCalled();
+      it("presenter render calls view render", function() {
+	presenter.render();
+	expect(view.clear).not.toHaveBeenCalled();
 	expect(view.render).toHaveBeenCalledWith(presenter.model);
 	});
-
 
       it("presenter release calls clear", function() {
 	presenter.release();
@@ -53,7 +53,7 @@ define(['scripts/presenters/scan_barcode_presenter'], function(ScanBarcodePresen
 
       it("invalid barcode scan rerenders view", function() {
 	presenter.childDone(presenter, "barcodeScanned", "asdf");
-	expect(view.clear).toHaveBeenCalled();
+	expect(view.clear).not.toHaveBeenCalled();
 	expect(view.render).toHaveBeenCalled();
       });
 

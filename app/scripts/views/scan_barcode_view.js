@@ -10,7 +10,7 @@ define([], function() {
     return null;    
     }
 
-  var ScanBarcodeView = function(owner, selection) {
+  var ScanBarcodeView = function(owner, placeholderSelector) {
     /* Constructs an instance of ScanBarCode view
      *
      * Arguments
@@ -19,9 +19,10 @@ define([], function() {
      * selection : the selection point to operate on
      */
     this.owner = owner;
-    this.selection = selection;
+    this.placeholderSelector = placeholderSelector;
+
     return this;
-    }
+  };
 
   ScanBarcodeView.prototype.render = function(model) {
     /* render the current view onto the screen
@@ -30,44 +31,40 @@ define([], function() {
      * ---------
      * model : the model to display
      */
-      
-    var barcodeCell = this.selection.append("td");
-    var para = barcodeCell.append("p");
-    para.text("Scan barcode");
+  
+    var parent = this.placeholderSelector(),
+    htmlParts = ['<td><p>Scan barcode</p></td>',
+		 '<td><input value="',
+		 model.barcode, 
+		 '"',
+		 model.busy ? ' disabled="true"' : '' ,
+		 '/></td>',
+		 '<td>',
+		 model.isValid() ? '' : '<p class="alert-error">Invalid barcode entered</p>', 
+		 '</td>' ],
+    htmlString = htmlParts.join('');
 
-    var entryCell = this.selection.append("td");
-    var input = entryCell.append("input");
-    input.attr("value", model.barcode);
-
-    var view = this;
+    // We have to append to the document or events won't register
+    parent.empty().
+      append(htmlString);
+    var input = parent.find("input");
+    var that = this;
     input.on("keypress", function(e) { 
       var key = getKey(e);
       if (key === 13) {
-	view.owner.childDone(this.owner, "barcodeScanned", this.value);
-	}
-    });
-
-    if (model.busy) {
-      input.attr("disabled", "true");
+	that.owner.childDone(this.owner, "barcodeScanned", this.value);
       }
+      });
 
-    if(!model.isValid()) {
-      console.log("invalid barcode '" + model.barcode + "'");
-      var warningCell = this.selection.append("td");
-      var warning = warningCell.append("p");
+    console.log("html string", htmlString);
     
-      warningCell.attr("class", "alert-error");
-      warning.text("Invalid barcode entered");
-      }
-    }
+  };
 
   ScanBarcodeView.prototype.clear = function() {
     /* clear the view from the current page
      */
-    var children = this.selection.selectAll("td");
-    children.remove();
-    // TODO
-    }
+    var children = this.placeholderSelector().empty();
+  };
 
   return ScanBarcodeView;
 
