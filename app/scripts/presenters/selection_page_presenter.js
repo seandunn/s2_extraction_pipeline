@@ -41,7 +41,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     // TODO : later on we should go by uuid
     var that = this;
     var order;
-    order_rsc_path = 'components/s2-api-examples/order.json';
+    order_rsc_path = 'components/s2-api-examples/tube.json';
     new rsc(order_rsc_path, "read")
         .done(function (s2order) {
           order = s2order;
@@ -51,17 +51,20 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
         })
         .then(function () {
           console.log("order has been found ");
-	  that.handleExtraOrder(order);
+	  that.handleExtraTube(order);
           that.render();
         });
   }
 
-  SelectionPagePresenter.prototype.handleExtraOrder = function(order) {
+  SelectionPagePresenter.prototype.handleExtraTube = function(tube) {
     if(this.model) {
-      var numOrders = this.model.getNumberOfOrders();
-      this.model.addOrder(order);      
-      this.presenters[numOrders].release();
-      this.presenters[numOrders] = null;
+      var numTubes = this.model.getNumberOfTubes();
+      this.model.addTube(tube);
+      if(this.presenters[numTubes]) {
+	this.presenters[numTubes].release();
+	this.presenters[numTubes] = null;
+      }
+      this.ensureTubeRemovalPresenter(tube, numTubes);
       this.ensureScanBarcodePresenter(this.model);
     }
   }
@@ -78,7 +81,6 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
   SelectionPagePresenter.prototype.setModel = function(userBC) {
     this.model = new SelectionPageModel(userBC);
     this.findAndAddOrder();
-    this.setupPresenters(this.model);
     return this;
   }
 
@@ -111,34 +113,38 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     if (!model) {
       return;
     }
-    var numOrders = model.getNumberOfOrders();
+    var numOrders = model.getNumberOfTubes();
     for (var i = 0; i < numOrders; i++) {
       // TODO : order presenters go here
     }
     this.ensureScanBarcodePresenter(model);
     for(var i = 0; i < this.presenters.length; i++) {
-      this.setupChildView(this.presenters[0], i);
+      this.setupChildView(i);
     }
   }
 
-  SelectionPagePresenter.prototype.setupChildView = function (presenter, index) {
-    if(!presenter) {
-      return;
-      }
+  SelectionPagePresenter.prototype.setupChildView = function (index) {
     var j = index;
     var presenter = this.presenters[index];
     var that = this;
     var innerSelection = function() { return that.selection().find("tr :eq(" + j  +  ")"); }
-    presenter.setupView(innerSelection);
+    this.presenters[index].setupView(innerSelection);
+  }
+
+  SelectionPagePresenter.prototype.ensureTubeRemovalPresenter = function(owner, index){
+    var presenter = this.presenterFactory.createTubeRemovalPresenter(this, owner);
+    this.presenters[index] = presenter;
+    this.setupChildView(index);
+    // TODO
   }
 
   SelectionPagePresenter.prototype.ensureScanBarcodePresenter = function(model) {
-    var numOrders = model.getNumberOfOrders();
-    console.log("num orders", numOrders);
-    if (numOrders < model.getCapacity()) {
+    var numTubes = model.getNumberOfTubes();
+    console.log("num orders", numTubes);
+    if (numTubes < model.getCapacity()) {
       var presenter = this.presenterFactory.createScanBarcodePresenter(this, "tube");
-      this.presenters[numOrders] = presenter;
-      this.setupChildView(presenter, numOrders);
+      this.presenters[numTubes] = presenter;
+      this.setupChildView(numTubes);
     }
   };
 
@@ -152,15 +158,6 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     this.view.clear();
     return this;
   };
-
-  SelectionPagePresenter.prototype.createPresenters = function() {    
-    var numOrders = this.model ? this.model.getNumberOfOrders() : 0;
-    if (numOrders < this.model.getCapacity()) {
-      var selection = this.view.getRowByIndex(numOrders);
-      var presenter = this.partialPresenterFactory.createScanBarcodePresenter(this, selection, "tube");
-      this.presenters[numOrders] = presenter;
-    }
-  }
 
   SelectionPagePresenter.prototype.updatePresenters = function() {
     for(var i = 0; i < this.presenters.length; i++)

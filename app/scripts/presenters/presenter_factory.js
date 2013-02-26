@@ -1,4 +1,4 @@
-define(['presenters/scan_barcode_presenter','presenters/selection_page_presenter'], function(ScanBarcodePresenter, SelectionPagePresenter) {
+define(['presenters/scan_barcode_presenter','presenters/selection_page_presenter', 'presenters/tube_removal_presenter'], function(ScanBarcodePresenter, SelectionPagePresenter, TubeRemovalPresenter) {
   'use strict';
 
   var PresenterFactory = function() {
@@ -19,7 +19,15 @@ define(['presenters/scan_barcode_presenter','presenters/selection_page_presenter
       presenter.setModel(type);
       
       return presenter;
-    }
+    };
+
+  PresenterFactory.prototype.createTubeRemovalPresenter = 
+    function (owner, order) {
+      var presenter = new TubeRemovalPresenter(owner, this);
+      presenter.setModel(order);
+
+      return presenter;
+    };
 
   return PresenterFactory;
 });
