@@ -32,7 +32,7 @@ define([], function() {
      * model : the model to display
      */
   
-    var parent = this.placeholderSelector();
+    var parent = this.placeholderSelector(),
     htmlParts = ['<td><p>Scan barcode</p></td>',
 		 '<td><input value="',
 		 model.barcode, 

@@ -11,9 +11,7 @@ define([], function () {
      *            for rendering. 
      */
     this.owner = owner;
-    this.selection = d3.selectAll(selection());
-    this.table = undefined;
-    this.pageDetailsDiv = undefined;
+    this.jquerySelector = selection;
     return this;
 };
 
@@ -25,17 +23,36 @@ define([], function () {
      * model : the model to render
 
      */
-    this.pageDetailsDiv = this.selection.append("div");
-    this.pageDetailsDiv.attr("id", "truc");
-    this.pageDetailsDiv.append("p").text("user barcode :" + model.user);
-    this.pageDetailsDiv.append("p").text("batch uuid :" + model.batch);
+    var selection = this.jquerySelector(),
+    i,
+    pageParts,
+    table;
+
+    parts = [ '<div id="truc">',
+	      '<p>user barcode : ', model.user, '</p>',
+	      '<p>batch uuid : ', model.batch !== undefined ? model.batch : 'new', '</p>',
+	      '</div>'
+	    ];
+
+
+    
     console.log(model);
-    this.table = this.selection.append("table");
-    this.rows = this.renderRows(model);
-    this.buttonDiv = this.renderButton();
+
+    table = this.renderTable(model); 
+    parts.push(table);
+
+    parts.push('<div align="right">');
+    parts.push('<button>next</button>');
+    parts.push('</div>');
+    var html = parts.join('');
+    console.log('page html', html);
+
+    selection.empty().append(html);
+    
+    this.attachEvents();
   };
 
-  SelectionPageView.prototype.renderRows = function (model) {
+  SelectionPageView.prototype.renderTable = function (model) {
     /* Renders the base table rows
      *
      * Returns
@@ -47,8 +64,10 @@ define([], function () {
      * ---------
      * model : the model to render
      */
-    var data = [];
-    var i;
+    var data = [], 
+    i,
+    tableParts,
+    tableHtml;
     for (i = 0; i < model.getNumberOfOrders(); i++) {
       data[i] = model.getOrderUuidFromOrderIndex(i);
     }
@@ -56,50 +75,29 @@ define([], function () {
     for (; i < model.getCapacity(); i++) {
       data[i] = "empty_" + i;
     }
-    var enter = this.table.selectAll().data(data).enter();
-     enter.append("tr").attr("id", String).append("td").text(String);
 
-    this.rows = this.table.selectAll("tr");
-    return this.rows;
+    tableParts = data.map(function(id) { return '<tr id="' + id + '"><td><p>' + id + '</p></td></tr>'; });
+    tableHtml = '<table><tbody>' + tableParts.join('') + '</tbody></table>';
+    console.log('table html: ', tableHtml);
+    return tableHtml;
   };
 
-  SelectionPageView.prototype.renderButton = function() {
+  SelectionPageView.prototype.attachEvents = function() {
     /* Renders the next button
      */
 
-    var div = this.selection.append("div");
-    div.attr("align", "right");
-    var button = div.append("button");
-    var owner = this.owner;
-    button.text("next");
-    button.attr("align", "right");
+    var button = this.jquerySelector().find("div button"),
+    owner = this.owner;
     button.on("click", function () {
       owner.childDone(owner, "next", undefined);
     });
-
-    return div;
   };
 
   SelectionPageView.prototype.clear = function () {
     /* Clears the current view from the screen.
      */
-    if (this.pageDetailsDiv) {
-      this.pageDetailsDiv.remove();
-    }
-    if (this.table != undefined) {
-      this.table.remove();
-    }
-    if (this.buttonDiv != undefined) {
-      this.buttonDiv.remove();
-    }
-    this.table = undefined;
-    this.rows = undefined;
-    this.buttonDiv = undefined;
+    this.jquerySelector().empty();
   };
-
-  SelectionPageView.prototype.getRowByIndex = function(index) {
-    return this.rows.filter(function(d, i) { return i === index; });
-    }
 
   return SelectionPageView;
 
