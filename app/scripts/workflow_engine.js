@@ -1,6 +1,5 @@
-define(['default/default_presenter',
-  'presenters/selection_page_presenter',
-  'labware/scripts/presenters/tube_presenter'], function (defPtr, SelectionPagePresenter, tubePtr) {
+define(['extraction_pipeline/default/default_presenter',
+  'extraction_pipeline/presenters/selection_page_presenter'], function (defPtr, SelectionPagePresenter) {
   var workflowEngine = function (owner) {
     this.mainController = owner;
   };

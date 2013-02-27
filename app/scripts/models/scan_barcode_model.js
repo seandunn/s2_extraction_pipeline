@@ -1,4 +1,4 @@
-define(['dummyresource'], function(DummyResource) {
+define(['extraction_pipeline/dummyresource'], function(DummyResource) {
   'use strict';
 
   var ScanBarcodeModel = function(type) {

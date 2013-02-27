@@ -1,4 +1,11 @@
-define(['presenters/scan_barcode_presenter','presenters/selection_page_presenter', 'presenters/tube_removal_presenter'], function(ScanBarcodePresenter, SelectionPagePresenter, TubeRemovalPresenter) {
+define(['extraction_pipeline/presenters/scan_barcode_presenter',
+	'extraction_pipeline/presenters/selection_page_presenter',
+	'extraction_pipeline/presenters/tube_removal_presenter',
+        'labware/presenters/tube_presenter'], 
+       function(ScanBarcodePresenter,
+		SelectionPagePresenter,
+		TubeRemovalPresenter,
+	        TubePresenter) {
   'use strict';
 
   var PresenterFactory = function() {
@@ -22,12 +29,21 @@ define(['presenters/scan_barcode_presenter','presenters/selection_page_presenter
     };
 
   PresenterFactory.prototype.createTubeRemovalPresenter = 
-    function (owner, order) {
+    function (owner, tube) {
       var presenter = new TubeRemovalPresenter(owner, this);
-      presenter.setModel(order);
+      presenter.setModel(tube);
 
       return presenter;
     };
+
+  PresenterFactory.prototype.createTubePresenter = 
+    function (owner, tube) {
+      var presenter = new TubePresenter(owner, this);
+      presenter.setupModel(tube);
+      
+      return presenter;
+    }
+    
 
   return PresenterFactory;
 });

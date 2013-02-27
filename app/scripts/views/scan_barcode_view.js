@@ -10,7 +10,7 @@ define([], function() {
     return null;    
     }
 
-  var ScanBarcodeView = function(owner, placeholderSelector) {
+  var ScanBarcodeView = function(owner, jquerySelector) {
     /* Constructs an instance of ScanBarCode view
      *
      * Arguments
@@ -19,12 +19,18 @@ define([], function() {
      * selection : the selection point to operate on
      */
     this.owner = owner;
-    this.placeholderSelector = placeholderSelector;
+    this.jquerySelector = jquerySelector;
 
     return this;
   };
 
   ScanBarcodeView.prototype.render = function(model) {
+    if (model !== null) {
+      this.model = model;
+    }
+    else {
+      model = this.model;
+    }
     /* render the current view onto the screen
      * 
      * Arguments
@@ -32,7 +38,7 @@ define([], function() {
      * model : the model to display
      */
   
-    var parent = this.placeholderSelector(),
+    var parent = this.jquerySelector(),
     htmlParts = ['<td><p>Scan barcode</p></td>',
 		 '<td><input value="',
 		 model.barcode, 
@@ -63,7 +69,7 @@ define([], function() {
   ScanBarcodeView.prototype.clear = function() {
     /* clear the view from the current page
      */
-    var children = this.placeholderSelector().empty();
+    var children = this.jquerySelector().empty();
   };
 
   return ScanBarcodeView;

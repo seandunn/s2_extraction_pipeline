@@ -1,4 +1,4 @@
-define(['workflow_engine', 'presenters/presenter_factory', 'mapper/s2_ajax'], function (workflowEngine, presenterFactory, S2Ajax) {
+define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/presenter_factory', 'mapper/s2_ajax'], function (workflowEngine, presenterFactory, S2Ajax) {
   var app = function () {
     this.presenterFactory = new presenterFactory();
     this.workflow = new workflowEngine(this);
