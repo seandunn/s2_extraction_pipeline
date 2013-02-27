@@ -1,7 +1,7 @@
-define(['dummyresource'], function(DummyResource) {
+define(['dummyresource'], function (DummyResource) {
   'use strict';
 
-  var ScanBarcodeModel = function(type) {
+  var ScanBarcodeModel = function (type) {
     /* Constructor
      *
      * Arguments
@@ -12,9 +12,9 @@ define(['dummyresource'], function(DummyResource) {
      */
     this.type = type;
     this.barcode = "";
-    }
+  };
 
-  ScanBarcodeModel.prototype.isValid = function() {
+  ScanBarcodeModel.prototype.isValid = function () {
     /* Determines whether the barcode is a valid barcode 
      *
      * Returns
@@ -23,16 +23,16 @@ define(['dummyresource'], function(DummyResource) {
      *       configured barcode type
      * false, otherwise
      */
-    if(this.barcode.length === 0) {
+    if (this.barcode.length === 0) {
       return true;
     }
-    if(this.type === "tube") {
+    if (this.type === "tube") {
       return this.isValidTubeBarcode();
     }
     return false;
-  }
+  };
 
-  ScanBarcodeModel.prototype.isValidTubeBarcode = function() {
+  ScanBarcodeModel.prototype.isValidTubeBarcode = function () {
     /* Determines whether the barcode is a valid tube barcode 
      *
      * Returns
@@ -44,9 +44,9 @@ define(['dummyresource'], function(DummyResource) {
     // Tube pattern expected to be tubeXXXX where XXXX is an integer
     var patt = /tube[0-9]{4}/g;
     return patt.test(this.barcode);
-  }
+  };
 
-  ScanBarcodeModel.prototype.getResourceFromBarcode = function() {
+  ScanBarcodeModel.prototype.getResourceFromBarcode = function () {
     /* Attempts to lookup a resource from the given barcode
      *
      * Returns
@@ -57,15 +57,13 @@ define(['dummyresource'], function(DummyResource) {
      */
     if (this.type === "tube") {
       return this.getResourceFromTubeBarcode();
-      }
+    }
+  };
 
-    return;
-  }
-
-  ScanBarcodeModel.prototype.getResourceFromTubeBarcode = function() {
+  ScanBarcodeModel.prototype.getResourceFromTubeBarcode = function () {
     var tubePath = 'components/s2-api-examples/tube.json';
     return new DummyResource(tubePath, "read");
-    }
+  };
 
   return ScanBarcodeModel;
 });

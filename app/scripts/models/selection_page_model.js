@@ -17,9 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 
-define([''], function () {
+define(['dummyresource'], function (rsc) {
 
-  var SelectionPageModel = function(user) {
+  var SelectionPageModel = function(owner,user) {
     /* Creates the default implementation of a selection page model
      * with a user identifier and some orders
      *
@@ -28,6 +28,7 @@ define([''], function () {
      * user: the userId
      * orders: the first order
      */
+    this.owner = owner;
     this.user = user;
     this.orders = [];
     this.batch = undefined;
@@ -35,7 +36,62 @@ define([''], function () {
     return this;
   }
 
-  SelectionPageModel.prototype.addOrder = function (newOrder) {
+
+  SelectionPageModel.prototype.retreiveOrderDetails = function (index, orderUUID){
+    console.log('retriveorderdetails');
+    var that = this;
+    var theRsc;
+    rsc_path = 'components/s2-api-examples/order.json';
+    new rsc(rsc_path, "read")
+        .done(function (s2order) {
+          theRsc = s2order;
+        })
+        .fail(function () {
+          // TODO: deal with error reading the order
+        })
+        .then(function () {
+          console.log("order has been found ");
+          that.orders[index] = theRsc;
+          var data = {index:index, orderUUID:orderUUID};
+          console.log(that);
+          that.owner.childDone(that,"foundOrder",data);
+        });
+  };
+
+  SelectionPageModel.prototype.retreiveBatchFromUser = function (){
+    // For now
+    console.log('retreiveBatchFromUser');
+
+    this.orders = [];
+
+    // something happens here...
+
+    var listOfOrderUUID = ["1234567890", "34567"];
+
+    for (var i=0; i< listOfOrderUUID.length; i++){
+      this.retreiveOrderDetails(i,listOfOrderUUID[i]);
+    }
+
+//    var that = this;
+//    var theRsc;
+//    rsc_path = 'components/s2-api-examples/batch.json';
+//    new rsc(rsc_path, "read")
+//        .done(function (s2batch) {
+//          theRsc = s2batch;
+//        })
+//        .fail(function () {
+//          // TODO: deal with error reading the order
+//        })
+//        .then(function () {
+//          console.log("batch has been found ");
+//        });
+
+
+  };
+
+
+
+  SelectionPageModel.prototype.addOrder = function (orderUUID) {
     /* add order
      *
      * Adds an order to this batch.
@@ -54,13 +110,18 @@ define([''], function () {
       throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
     }
 
-    if (this.batch === undefined) {
-      this.batch =  newOrder.batch && newOrder.batch.rawJson.uuid;
-    }
-    else if (newOrder.batch.rawJson.uuid !== this.batch) {
-      throw {"type":"SelectionPageException", "message":"Batch number of new order does not match current selection" };
-    }
-    this.orders.push(newOrder);
+//    if (this.batch === undefined) {
+//      this.batch =  newOrder.batch && newOrder.batch.rawJson.uuid;
+//    }
+//    else if (newOrder.batch.rawJson.uuid !== this.batch) {
+//      throw {"type":"SelectionPageException", "message":"Batch number of new order does not match current selection" };
+//    }
+//    this.orders.push(newOrder);
+
+    var lastOrderIndex = this.orders.length;
+    this.retreiveOrderDetails(lastOrderIndex, orderUUID);
+
+
   };
 
   SelectionPageModel.prototype.getOrderUuidFromOrderIndex = function (index) {

@@ -18,7 +18,7 @@
  */
 
 
-define(['views/selection_page_view', 'models/selection_page_model', 'dummyresource'], function (SelectionPageView, SelectionPageModel, rsc) {
+define(['views/selection_page_view', 'models/selection_page_model', 'dummyresource', 'presenters/tp', 'presenters/ep'], function (SelectionPageView, SelectionPageModel, rsc, tp, ep) {
   // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
 
   var SelectionPagePresenter = function (owner, presenterFactory) {
@@ -37,52 +37,53 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     return this;
   };
 
-  SelectionPagePresenter.prototype.findAndAddOrder = function() {
-    // TODO : later on we should go by uuid
-    var that = this;
-    var order;
-    order_rsc_path = 'components/s2-api-examples/order.json';
-    new rsc(order_rsc_path, "read")
-        .done(function (s2order) {
-          order = s2order;
-        })
-        .fail(function () {
-          // TODO: deal with error reading the order
-        })
-        .then(function () {
-          console.log("order has been found ");
-	  that.handleExtraOrder(order);
-          that.render();
-        });
-  }
+  SelectionPagePresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
+    /*
+     Arguments:
+     input_model = { userBC:"1234567890", labwareBC:"1234567890" }
+     */
+    console.log("SelectionPagePresenter  : setupPresenter");
+    this.setupPlaceholder(jquerySelection);
+    this.setupView();
+    this.renderView();
 
-  SelectionPagePresenter.prototype.handleExtraOrder = function(order) {
-    if(this.model) {
-      var numOrders = this.model.getNumberOfOrders();
-      this.model.addOrder(order);      
-      this.presenters[numOrders].release();
-      this.presenters[numOrders] = null;
-      this.ensureScanBarcodePresenter(this.model);
-    }
-  }
+    this.updateModel(input_model);
+    return this;
+  };
 
-  SelectionPagePresenter.prototype.setupView = function(selection) {
+  SelectionPagePresenter.prototype.setupPlaceholder = function (jquerySelection) {
+    console.log("SelectionPagePresenter  : setupPlaceholder");
+    this.jquerySelection = jquerySelection;
+    return this;
+  };
+
+  SelectionPagePresenter.prototype.setupView = function () {
     /* initialises this instance by instantiating the view
      */
-    this.view = new SelectionPageView(this, selection);
-    console.log("setting SPP selection");
-    this.selection = function() { return $("#content"); };
+    this.view = new SelectionPageView(this, this.jquerySelection);
+//    this.selection = function() { return $("#content"); };
     return this;
   }
 
-  SelectionPagePresenter.prototype.setModel = function(userBC) {
-    this.model = new SelectionPageModel(userBC);
-    this.findAndAddOrder();
-    this.setupPresenters(this.model);
-    return this;
-  }
+  SelectionPagePresenter.prototype.updateModel = function (input_model) {
+    /*
+     Arguments:
+     input_model = {
+     userBC:"1234567890",
+     labwareBC:"1234567890"
+     }
+     */
 
-  SelectionPagePresenter.prototype.render = function() {
+    console.log("SelectionPagePresenter  : updateModel");
+    if (!this.model) {
+      this.model = new SelectionPageModel(this, input_model);
+      this.model.retreiveBatchFromUser();
+    }
+    return this;
+  };
+
+
+  SelectionPagePresenter.prototype.renderView = function () {
     /* Updates the data for the current view
      *
      * Tells the presenter that the model has been updated
@@ -95,50 +96,67 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
 
     // we need to render the model first, so that the html elements
     // exist to configure the sub-presenters' views
-    this.view.clear();
     this.view.render(this.model);
-    for(var i = 0; i < this.presenters.length; i++) {
-      var presenter = this.presenters[i];
-      if(presenter) {
-	presenter.render();
+    for (var i = 0; i < this.presenters.length; i++) {
+      if (this.presenters[i]) {
+        this.presenters[i].renderView();
       }
     }
     return this;
   };
 
-  SelectionPagePresenter.prototype.setupPresenters = function (model) {
+  SelectionPagePresenter.prototype.setupSubPresenters = function () {
+    console.log("SelectionPagePresenter  : setupSubPresenter");
+
+    var numOrders = this.model ? this.model.getNumberOfOrders() : 0;
+
+    for (var i = 0; i < this.model.getCapacity(); i++) {
+
+      if (i < numOrders) {
+        this.presenters[i] = new tp(this);
+      } else if (i == numOrders) {
+        this.presenters[i] = this.presenterFactory.createScanBarcodePresenter(this, "tube");
+      } else {
+        this.presenters[i] = new ep(this);
+
+      }
+    }
+    this.setupSubModel();
+    return this;
+  };
+
+  SelectionPagePresenter.prototype.setupSubModel = function () {
+    /*
+     Creates the data needed for the sub presenters
+     */
+    console.log("SelectionPagePresenter  : setupSubModel");
+
     var that = this;
-    if (!model) {
+    var jQueryForNthChild = function (childIndex) {
+      return function () {
+        return that.jquerySelection().find("li :eq(" + childIndex + ")");
+      }
+    };
+
+    if (!this.model) {
       return;
     }
-    var numOrders = model.getNumberOfOrders();
+
+    numOrders = this.model.getNumberOfOrders();
     for (var i = 0; i < numOrders; i++) {
       // TODO : order presenters go here
     }
-    this.ensureScanBarcodePresenter(model);
-    for(var i = 0; i < this.presenters.length; i++) {
-      this.setupChildView(this.presenters[0], i);
-    }
-  }
+    //this.setupScanBarcodePresenterForAGivenRow(model);
+    for (var i = 0; i < this.presenters.length; i++) {
+      if (i < numOrders) {
+        this.presenters[i].setupPresenter(undefined, jQueryForNthChild(i));
 
-  SelectionPagePresenter.prototype.setupChildView = function (presenter, index) {
-    if(!presenter) {
-      return;
+      } else if (i == numOrders) {
+        this.presenters[i].setupPresenter(undefined, jQueryForNthChild(i));
+      } else {
+        this.presenters[i].setupPresenter(undefined, jQueryForNthChild(i));
+
       }
-    var j = index;
-    var presenter = this.presenters[index];
-    var that = this;
-    var innerSelection = function() { return that.selection().find("tr :eq(" + j  +  ")"); }
-    presenter.setupView(innerSelection);
-  }
-
-  SelectionPagePresenter.prototype.ensureScanBarcodePresenter = function(model) {
-    var numOrders = model.getNumberOfOrders();
-    console.log("num orders", numOrders);
-    if (numOrders < model.getCapacity()) {
-      var presenter = this.presenterFactory.createScanBarcodePresenter(this, "tube");
-      this.presenters[numOrders] = presenter;
-      this.setupChildView(presenter, numOrders);
     }
   };
 
@@ -153,24 +171,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     return this;
   };
 
-  SelectionPagePresenter.prototype.createPresenters = function() {    
-    var numOrders = this.model ? this.model.getNumberOfOrders() : 0;
-    if (numOrders < this.model.getCapacity()) {
-      var selection = this.view.getRowByIndex(numOrders);
-      var presenter = this.partialPresenterFactory.createScanBarcodePresenter(this, selection, "tube");
-      this.presenters[numOrders] = presenter;
-    }
-  }
-
-  SelectionPagePresenter.prototype.updatePresenters = function() {
-    for(var i = 0; i < this.presenters.length; i++)
-      var presenter = this.presenters[i];
-      if(presenter) {	
-	presenter.render();
-      }
-  }
-
-  SelectionPagePresenter.prototype.childDone = function (presenter, action, data) {
+  SelectionPagePresenter.prototype.childDone = function (child, action, data) {
     /* Handles done messages from the page view and child presenters.
      *
      * Any messages that happen to come from the PageView will be delegated over to
@@ -178,50 +179,40 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      *
      * Arguments
      * ---------
-     * presenter : the presenter instance the done message is coming from. Can be
-     *             either the PagePresenter or one of the PartialPresenters
+     * child : the presenter(or model) instance the done message is coming from. Can be
+     *             either the PagePresenter, one of the PartialPresenters or the model
      * action:     a string representing the action request, e.g. 'next' for someone
      *             clicking on the next button
      * data:       Any data associated with the action.
      *
      */
-    if (presenter === this) {
-      console.log("...?");
-      return this.selfDone(action, data);
+
+    if (child === this.model) {
+      if (action === "foundOrder") {
+        console.log("childDone");
+        this.setupSubPresenters();
+        this.renderView();
+
+        return;
+      }
     }
 
-    if(action === "barcodeScanned") {
-      return this.handleBarcodeScanned(presenter, action, data);
-      }
+    if (action === "barcodeScanned") {
+      console.log("barcodeScanned");
+      return this.model.addOrder(data);
+    }
 
     console.log("unhandled childDone event:");
-    console.log("presenter: ", presenter);
+    console.log("child: ", child);
     console.log("action: " + action);
     console.log("data: " + JSON.stringify(data));
     return this;
   };
 
-  SelectionPagePresenter.prototype.handleBarcodeScanned = function(presenter, action, data) {
-    this.findAndAddOrder();
-    }
-
-  SelectionPagePresenter.prototype.selfDone = function (action, data) {
-    /* Handles done messages that arose from within this object or the view
-     *
-     * Arguments
-     * ---------
-     * presenter : the presenter instance the done message is coming from. Can be
-     *             either the PagePresenter or one of the PartialPresenters
-     * action:     a string representing the action request, e.g. 'next' for someone
-     *             clicking on the next button
-     * data:       Any data associated with the action.
-     *
-     */
-    if (action == "next") {
-      this.owner.childDone(this, "done", data);
-    }
-    return this;
+  SelectionPagePresenter.prototype.handleBarcodeScanned = function (presenter, action, data) {
+    //this.findAndAddOrder();
   };
+
 
   return SelectionPagePresenter;
 });

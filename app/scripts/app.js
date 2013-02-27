@@ -40,8 +40,17 @@ define(['workflow_engine', 'presenters/presenter_factory', 'mapper/s2_ajax'], fu
 
   app.prototype.updateSubPresenters = function () {
     console.log("App : updateSubPresenters");
-    this.currentPagePresenter = this.workflow.get_default_presenter(this.presenterFactory);
-    this.currentPagePresenter.setupPresenter(this.model, this.jquerySelection);
+//    this.currentPagePresenter = this.workflow.get_default_presenter(this.presenterFactory);
+//    this.currentPagePresenter.setupPresenter(this.model, this.jquerySelection);
+    var data = {userBC:"1234567890", labwareBC:"1234567890", batch:undefined};
+    this.userBC = data.userBC;
+    this.labwareBC = data.labwareBC;
+    this.batchUUID = data.batchUUID;
+
+    this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory);
+    this.currentPagePresenter.setupPresenter(this.userBC, this.jquerySelection);
+
+
     return this;
   };
 
@@ -65,8 +74,8 @@ define(['workflow_engine', 'presenters/presenter_factory', 'mapper/s2_ajax'], fu
 
     if (action == "done") {
 
-      this.currentPagePresenter.release();
-      this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory).init($('#content')).update();
+//      this.currentPagePresenter.release();
+//      this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory).init($('#content')).update();
     } else if (action == "login") {
       console.log(data);
       this.userBC = data.userBC;
@@ -74,10 +83,10 @@ define(['workflow_engine', 'presenters/presenter_factory', 'mapper/s2_ajax'], fu
       this.batchUUID = data.batchUUID;
 
       this.currentPagePresenter.release();
-      this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory).
-	setupView(function() { return $('#content') }).
-	setModel(this.userBC).render();
+      this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory);
+      this.currentPagePresenter.setupPresenter(this.userBC, this.jquerySelection);
     }
+
     return this.appModel;
   };
 

@@ -29,6 +29,7 @@ define(['dummyresource', 'default/default_view'], function (rsc, view) {
   var defPtr = function (owner, presenterFactory) {
     this.owner = owner;
     this.currentView = {};
+    this.presenterFactory = presenterFactory;
     return this;
   };
 
@@ -43,7 +44,7 @@ define(['dummyresource', 'default/default_view'], function (rsc, view) {
     return this;
   };
 
-  defPtr.prototype.updateModel = function (input_model, jquerySelection) {
+  defPtr.prototype.updateModel = function (input_model) {
     console.log("defPtr  : updateModel");
     this.model = input_model;
     var theURL = "http://localhost:8088/tube/2_"+input_model.v;
