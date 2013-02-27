@@ -19,7 +19,7 @@ define(['default/default_presenter',
   };
 
   workflowEngine.prototype.get_default_presenter = function (presenterFactory) {
-    return new defPtr(this.mainController, presenterFactory);
+    return presenterFactory.createDefaultPresenter(this.mainController);
   };
 
   return workflowEngine;
