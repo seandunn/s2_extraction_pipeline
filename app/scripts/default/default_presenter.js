@@ -18,7 +18,7 @@
  */
 
 
-define(['dummyresource', 'default/default_view'], function (rsc, view) {
+define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/default_view'], function (rsc, view) {
 // TODO: replace the dummy resource with the real one aka the mapper ['mapper/s2_resource'], function(S2Resource) {
   /*
    The default page presenter. Deals with login.

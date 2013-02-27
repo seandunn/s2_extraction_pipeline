@@ -95,9 +95,12 @@ define([''], function () {
      * ---------
      * uuid - the uuid of the order to remove
      */
+    var index = -1;
+
     for (var i = 0; i < this.tubes.length; i++) {
       if (this.tubes[i].rawJson.tube.uuid == uuid) {
         this.tubes.splice(i, 1);
+	index = i;
         break;
       }
     }
@@ -105,6 +108,8 @@ define([''], function () {
     if (this.tubes.length === 0) {
       this.batch = undefined;
     }
+
+    return index;
   };
 
   SelectionPageModel.prototype.getNumberOfTubes = function () {

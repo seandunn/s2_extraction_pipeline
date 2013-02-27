@@ -7,18 +7,31 @@ define([], function() {
 
   TubeRemovalView.prototype.render = function(model) {
 
-    var parent = this.jquerySelector(),
-    waiting = '<td><p>Loading tube...</p></td>',
-    // This is wrong, but let's display something
-    uuid = model && model.rawJson && model.rawJson.tube && 
-      model.rawJson.tube.uuid,
+    var parent = this.jquerySelector();
+
+    this.attachHtml(parent, model);
+    this.attachEvents(parent, model);
+  };
+
+  TubeRemovalView.prototype.attachHtml = function(parent, model) {
+    var waiting = '<td><p>Loading tube...</p></td>',
+    uuid = (model && model.tube && 
+      model.tube.uuid ) || 'unknown';
+
     parts = [ '<td colspan="2">',
-	      '<p> Tube uuid: ', uuid, '</p>',
 	      '</td>',
+	      '<td/>',
 	      '<td><button>Remove</button></td>'],
     innerHtml = (model == undefined) ? waiting : parts.join('');
-    console.log("model is ", model);
     parent.empty().append(innerHtml);
+  };
+
+  TubeRemovalView.prototype.attachEvents = function(parent, model) {
+    var button = parent.find("button"),
+    owner = this.owner;
+    button.on('click', function(e) {
+      owner.childDone(owner, "removeTube", model);
+    });
   };
 
   TubeRemovalView.prototype.clear = function() {

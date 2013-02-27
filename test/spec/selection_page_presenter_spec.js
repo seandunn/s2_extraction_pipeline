@@ -78,8 +78,6 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
       expect(partial.render).toHaveBeenCalled();
       
     };
-
-
     
     describe("presenter which has never been updated", function() {
 
@@ -128,7 +126,49 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 	presenter.childDone(presenter, "next", undefined);
 	expect(app.childDone).toHaveBeenCalledWith(presenter, "done", undefined);
 	});
-    });
 
+      it("removeTube message with uuid not matching any tube does nothing", function() {
+	runs(function() {
+	  presenter.setModel(model);
+	  presenter.render();
+	  });
+	waitsFor(function() {
+	  return mockPresenters.length == 2;
+	  },
+		 "2 child presenters to be created",
+		 100);
+	runs(function() { 
+	  presenter.childDone(presenter, "removeTube", { tube : { uuid: "1" } });
+	  expect(mockPresenters[0].release).toHaveBeenCalled();
+	  expect(mockPresenters[1].release).toHaveBeenCalled();
+	});
+      });
+
+      it("removeTube message with uuid matching tube removes tube by uuid", function() {
+	runs(function() {
+	  presenter.setModel(model);
+	  presenter.render();
+	  });
+	waitsFor(function() {
+	  return mockPresenters.length == 2;
+	},
+		 "2 child presenters to be created",
+		 100);
+	runs(function() { 
+	  console.log("calling child done");
+	  presenter.childDone(this, "removeTube", { tube : { uuid: "11111111-2222-3333-4444-555555555555" } });
+	  });
+	waitsFor(function() {
+	    return mockPresenters[0].release.wasCalled;
+	},
+		 "release to have been called",
+		 100);
+	runs(function() {
+	  expect(mockPresenters[0].release).toHaveBeenCalled();
+	  expect(mockPresenters[1].release).toHaveBeenCalled();
+	});
+	
+      });
+    });
   });
 });

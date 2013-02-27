@@ -1,4 +1,4 @@
-define(['models/scan_barcode_model', 'views/scan_barcode_view'], function(ScanBarcodeModel, ScanBarcodeView) {
+define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/views/scan_barcode_view'], function(ScanBarcodeModel, ScanBarcodeView) {
 
   var ScanBarcodePresenter = function(owner) {
     this.owner = owner;
@@ -12,7 +12,7 @@ define(['models/scan_barcode_model', 'views/scan_barcode_view'], function(ScanBa
 
   ScanBarcodePresenter.prototype.setupView = function(selection) {
     this.view = new ScanBarcodeView(this, selection);
-    }
+  }
 
   ScanBarcodePresenter.prototype.render = function() {
     if (this.view) {
