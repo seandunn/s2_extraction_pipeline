@@ -52,7 +52,6 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
         .then(function () {
           console.log("order has been found ");
 	  that.handleExtraTube(order);
-//          that.render();
         });
   }
 
@@ -114,6 +113,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     var presenter = this.presenters[index];
     var that = this;
     var innerSelection = function() { return that.jquerySelector().find("tr :eq(" + j  +  ")"); }
+    this.presenters[index].release();
     this.presenters[index].setupView(innerSelection);
     this.presenters[index].render();
   }
@@ -122,7 +122,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     for(var i = 0; i < this.presenters.length; i++) {
       this.setupChildView(i);
     }
-    this.render();
+//    this.render();
   }
 
   SelectionPagePresenter.prototype.ensureTubeRemovalPresenter = function(owner, index){
