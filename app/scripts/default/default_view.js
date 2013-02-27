@@ -30,17 +30,17 @@ define([], function () {
     };
   }
 
-  var loginview = function (owner, jquerySelectionForContainter) {
+  var loginview = function (owner, jquerySelection) {
     // constructor
     this.owner = owner;
-    this.container = jquerySelectionForContainter;
+    this.jquerySelection = jquerySelection;
   };
 
   loginview.prototype.release = function () {
-    return this.container.empty();
+    return this.jquerySelection().empty();
   };
 
-  loginview.prototype.update = function (data) {
+  loginview.prototype.renderView = function (data) {
     var contentAsString = "<div>"
         + "<div><p>Enter your barcode. Now.</p><div><input id='user_barcode' value='123'></div></div>"
         + "<div ><p>And the tube barcode!</p><div><input id='tube_barcode' value='456'></div></div>"
@@ -49,7 +49,7 @@ define([], function () {
     if (data) {
       contentAsString += "<div class='alert'>"
           + "<button type='button' class='close' data-dismiss='alert'>&times;</button>"
-          + "<strong>Error!</strong> " + data.error
+          + "<strong>Error!</strong> " + data
           + "</div>";
     }
     contentAsString += "</div>";

@@ -16,6 +16,6 @@ require.config({
 
 require(['app'], function (app) {
   var theApp = new app();
-  theApp.init();
+  theApp.setupPresenter();
 });
 
