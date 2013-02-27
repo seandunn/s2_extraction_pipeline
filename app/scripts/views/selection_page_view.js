@@ -68,8 +68,8 @@ define([], function () {
     i,
     tableParts,
     tableHtml;
-    for (i = 0; i < model.getNumberOfOrders(); i++) {
-      data[i] = model.getOrderUuidFromOrderIndex(i);
+    for (i = 0; i < model.getNumberOfTubes(); i++) {
+      data[i] = model.getTubeUuidFromTubeIndex(i);
     }
     data[i++] = "pending";
     for (; i < model.getCapacity(); i++) {
