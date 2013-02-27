@@ -31,7 +31,7 @@ define(['extraction_pipeline/views/tube_removal_view'], function(TubeRemovalView
       this.view.render(this.model && this.model.rawJson);
       }
     if (this.tubePresenter) {
-      this.tubePresenter.renderView();
+      this.tubePresenter.renderView(this.model && this.model.rawJson);
     };
   }
 
