@@ -139,8 +139,8 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 		 100);
 	runs(function() { 
 	  presenter.childDone(presenter, "removeTube", { tube : { uuid: "1" } });
-	  expect(mockPresenters[0].release).not.toHaveBeenCalled();
-	  expect(mockPresenters[1].release).not.toHaveBeenCalled();
+	  expect(mockPresenters[0].release).toHaveBeenCalled();
+	  expect(mockPresenters[1].release).toHaveBeenCalled();
 	});
       });
 
@@ -165,7 +165,7 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 		 100);
 	runs(function() {
 	  expect(mockPresenters[0].release).toHaveBeenCalled();
-	  expect(mockPresenters[1].release).not.toHaveBeenCalled();
+	  expect(mockPresenters[1].release).toHaveBeenCalled();
 	});
 	
       });
