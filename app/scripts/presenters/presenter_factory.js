@@ -1,10 +1,14 @@
 define(['extraction_pipeline/presenters/scan_barcode_presenter',
 	'extraction_pipeline/presenters/selection_page_presenter',
 	'extraction_pipeline/presenters/tube_removal_presenter',
-        'labware/presenters/tube_presenter'], 
+	'extraction_pipeline/default/default_presenter',
+	'extraction_pipeline/presenters/empty_presenter',
+        'labware/presenters/tube_presenter'],
        function(ScanBarcodePresenter,
 		SelectionPagePresenter,
 		TubeRemovalPresenter,
+    DefaultPresenter,
+		EmptyPresenter,
 	        TubePresenter) {
   'use strict';
 
@@ -20,6 +24,11 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
     return this;
   }
 
+  PresenterFactory.prototype.createDefaultPresenter =
+    function (owner, type) {
+      return new DefaultPresenter(owner, this);
+    };
+
   PresenterFactory.prototype.createScanBarcodePresenter =
     function (owner, type) {
       return new ScanBarcodePresenter(owner, this, type);
@@ -28,18 +37,18 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
   PresenterFactory.prototype.createTubeRemovalPresenter = 
     function (owner) {
       return new TubeRemovalPresenter(owner, this);
-      //presenter.setModel(tube);
-//      return presenter;
     };
 
   PresenterFactory.prototype.createTubePresenter = 
     function (owner) {
       return new TubePresenter(owner, this);
-//      presenter.setupModel(tube);
-//      
-//      return presenter;
     };
     
+  PresenterFactory.prototype.createEmptyPresenter =
+    function (owner) {
+      return new EmptyPresenter(owner, this);
+    };
+
 
   return PresenterFactory;
 });

@@ -38,7 +38,7 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
 
 
   SelectionPageModel.prototype.retrieveTubeDetails = function (index, tubeUUID){
-    console.log('retriveorderdetails');
+//    console.log('retriveorderdetails');
     var that = this;
     var theRsc;
     rsc_path = 'components/s2-api-examples/tube.json';
@@ -63,14 +63,14 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
 
 
           var data = {index:index, tubeUUID:tubeUUID};
-          console.log(that);
+//          console.log(that);
           that.owner.childDone(that,"foundTube",data);
         });
   };
 
   SelectionPageModel.prototype.retrieveBatchFromUser = function (){
     // For now
-    console.log('retrieveBatchFromUser');
+//    console.log('retrieveBatchFromUser');
 
     this.tubes = [];
 

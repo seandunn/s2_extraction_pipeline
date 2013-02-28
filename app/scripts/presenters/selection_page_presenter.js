@@ -18,7 +18,7 @@
  */
 
 
-define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/models/selection_page_model', 'extraction_pipeline/dummyresource', 'extraction_pipeline/presenters/tp', 'extraction_pipeline/presenters/ep'], function (SelectionPageView, SelectionPageModel, rsc, tp, ep) {
+define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/models/selection_page_model', 'extraction_pipeline/dummyresource'], function (SelectionPageView, SelectionPageModel, rsc) {
   // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
 
   var SelectionPagePresenter = function (owner, presenterFactory) {
@@ -117,8 +117,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
       } else if (i == numOrders) {
         this.presenters[i] = this.presenterFactory.createScanBarcodePresenter(this, "tube");
       } else {
-        this.presenters[i] = new ep(this);
-
+        this.presenters[i] = this.presenterFactory.createEmptyPresenter(this);
       }
     }
     this.setupSubModel();

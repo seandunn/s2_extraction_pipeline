@@ -17,16 +17,20 @@ require.config({
     presenters: 'scripts/presenters',
     spec: 'spec',
     json: 'components/S2Mapper/test/json',
-    dummyresource: 'scripts/dummyresource',    
-  },
+    dummyresource: 'scripts/dummyresource',
+    text: '/components/requirejs-text/text'
+  }
 });
  
 require(['domReady!',
 	 'spec/selection_page_model_spec',
 	 'spec/selection_page_presenter_spec',
-	 'spec/scan_barcode_model_spec',
-	 'spec/scan_barcode_presenter_spec',
-	 'spec/tube_removal_presenter_spec'],
+  'spec/default_presenter_spec',
+  'spec/scan_barcode_model_spec',
+//   'spec/app_spec',
+	 'spec/scan_barcode_presenter_spec'//,
+//	 'spec/tube_removal_presenter_spec'
+],
  function() {
   // use app here
 

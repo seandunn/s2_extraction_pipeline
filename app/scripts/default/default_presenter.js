@@ -28,7 +28,7 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
   // interface ....
   var defPtr = function (owner, presenterFactory) {
     this.owner = owner;
-    this.currentView = {};
+    this.currentView = undefined;
     this.presenterFactory = presenterFactory;
     return this;
   };
@@ -37,26 +37,28 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
   defPtr.prototype.setupPresenter = function (input_model, jquerySelection) {
     console.log("defPtr  : setupPresenter");
     this.setupPlaceholder(jquerySelection);
+
+    this.updateModel(input_model);
+
     this.setupView();
     this.renderView();
 
-    this.updateModel(input_model);
     return this;
   };
 
   defPtr.prototype.updateModel = function (input_model) {
     console.log("defPtr  : updateModel");
     this.model = input_model;
-    var theURL = "http://localhost:8088/tube/2_"+input_model.v;
-    var that = this;
-    $.ajax({url:theURL, type:"GET"}).complete(
-        function (data) {
-          that.model = $.parseJSON(data.responseText);
-          that.setupView();
-          that.renderView();
-          that.setupSubPresenters();
-        }
-    );
+//    var theURL = "http://localhost:8088/tube/2_"+input_model.v;
+//    var that = this;
+//    $.ajax({url:theURL, type:"GET"}).complete(
+//        function (data) {
+//          that.model = $.parseJSON(data.responseText);
+//          that.setupView();
+//          that.renderView();
+//          that.setupSubPresenters();
+//        }
+//    );
     return this;
   };
 
@@ -89,11 +91,10 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
 
   defPtr.prototype.renderView = function () {
     // render view...
-    console.log("defPtr  : presenter::renderView");
-    var data = undefined;
-    if (this.model){
-      data = {};
-      data.error = "hello";
+    console.log("defPtr  : presenter::renderView", this.model);
+    var data = {};
+    if (this.model && this.model.error){
+      data.error = this.model.error;
     }
     this.currentView.renderView(data);
     return this;
@@ -108,12 +109,24 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
 
 
 
-  defPtr.prototype.childDone = function (childPtr, action, data) {
+  defPtr.prototype.childDone = function (child, action, data) {
     // called when a child presenter wants to say something...
     // here, does nothing.
+    if (child === this.currentView) {
+      if (action == "enteredLoginDetails"){
+        this.model.error = undefined;
+        this.login(data.userBC, data.labwareBC);
+      }
+    }
     return {};
   };
 
+
+  defPtr.prototype.handleError = function (error) {
+    // method called when try to login
+    console.log("error");
+    this.model.error = error;
+  };
 
   defPtr.prototype.login = function (userBC, tubeBC) {
     // method called when try to login
@@ -137,7 +150,13 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
           var data = {userBC:userBC, labwareBC:tube.rawJson.tube.uuid, batchUUID:""};
           console.log(data);
           console.log(that);
+          if (userBC != "123"){
+            var errorDetails = {msg:"Wrong user", data:data};
+            that.handleError(errorDetails);
+            that.renderView();
+          } else {
           that.owner.childDone(that, "login", data);
+          }
         });
   };
 
