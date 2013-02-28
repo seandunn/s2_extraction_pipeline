@@ -52,7 +52,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
   };
 
   SelectionPagePresenter.prototype.setupPlaceholder = function (jquerySelection) {
-    console.log("SelectionPagePresenter  : setupPlaceholder");
+    console.log("SelectionPagePresenter  : setupPlaceholder", jquerySelection);
     this.jquerySelection = jquerySelection;
     return this;
   };
@@ -113,7 +113,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     for (var i = 0; i < this.model.getCapacity(); i++) {
 
       if (i < numOrders) {
-        this.presenters[i] = new tp(this); //this.presenterFactory.createTubeRemovalPresenter(this);
+        this.presenters[i] = this.presenterFactory.createTubeRemovalPresenter(this);
       } else if (i == numOrders) {
         this.presenters[i] = this.presenterFactory.createScanBarcodePresenter(this, "tube");
       } else {
@@ -135,7 +135,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     var jQueryForNthChild = function (childIndex) {
       return function () {
         return that.jquerySelection().find("li :eq(" + childIndex + ")");
-      }
+      };
     };
 
     if (!this.model) {
@@ -148,7 +148,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     }
     //this.setupScanBarcodePresenterForAGivenRow(model);
     for (i = 0; i < this.presenters.length; i++) {
-      this.presenters[i].setupPresenter(undefined, jQueryForNthChild(i));
+      this.presenters[i].setupPresenter(this.model.tubes[i], jQueryForNthChild(i));
     }
   };
 

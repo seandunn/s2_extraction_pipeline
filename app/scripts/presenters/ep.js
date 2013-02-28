@@ -30,7 +30,7 @@ define([], function () {
 
 
   tp.prototype.setupPresenter = function (input_model, jquerySelection) {
-    console.log("et  : setupPresenter");
+//    console.log("et  : setupPresenter");
     this.jquerySelection = jquerySelection;
 
     return this;
@@ -38,7 +38,7 @@ define([], function () {
 
   tp.prototype.renderView = function () {
     // render view...
-    console.log("et  : presenter::renderView, ", this.jquerySelection());
+//    console.log("et  : presenter::renderView, ", this.jquerySelection());
     this.jquerySelection().empty().append("empty");
 
     return this;
