@@ -106,7 +106,8 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 
       it("updating presenter with empty model creates a ScanBarcodePresenter", function() {
 	runs(function() {
-	  expect(mockPresenters.length).toBe(1);
+          // one scan barcode and one tube removal
+	  expect(mockPresenters.length).toBe(2);
 	  presenter.renderView();
 	});
 	waitsFor(function() { 
@@ -117,8 +118,8 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 	runs(function() {	  
 	  expect(view.render).toHaveBeenCalled();
 	  expect(mockPresenters.length).toBeGreaterThan(1);
-	  expectPartial(mockPresenters[0], "scanBarcode", "tube");
-	  expectPartial(mockPresenters[1], "tubeRemoval", null);
+	  expectPartial(mockPresenters[0], "tubeRemoval", null);
+	  expectPartial(mockPresenters[1], "scanBarcode", "tube");
 	  });
       });
 
@@ -163,7 +164,7 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 	  console.log("calling child done");
           tubeCount = model.getNumberOfTubes();
           expect(tubeCount).toBe(1);
-	  presenter.childDone(this, "removeTube", { tube : { uuid: "11111111-2222-3333-4444-555555555555" } });
+	  presenter.childDone(this, "removeTube", { tube : { uuid: "11111111-2222-3333-4444-0000000000000" } });
 	  });
 	waitsFor(function() {
 	    return (model.getNumberOfTubes() === 0);

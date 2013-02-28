@@ -56,9 +56,9 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
 
 
           // NEW HACK
-
-          t
           
+          theRsc.rawJson.tube.uuid = tubeUUID;
+
           /*
           if (index == 0){
             that.tubes[index].rawJson.tube.uuid = "11111111-2222-3333-4444-555555555555";
@@ -176,11 +176,12 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
     var index = -1;
 
     for (var i = 0; i < this.tubes.length; i++) {
-      if (this.tubes[i].rawJson.tube.uuid == uuid) {
+      if (this.tubes[i].rawJson.tube.uuid === uuid) {
         this.tubes.splice(i, 1);
 	index = i;
         break;
       }
+      
     }
 
     if (this.tubes.length === 0) {
