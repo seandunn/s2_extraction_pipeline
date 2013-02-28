@@ -37,17 +37,22 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 
     function createMockPresenter(name) {
       var mockPresenter = { name : name};
-      mockPresenter.setModel = function(model) {};
-      mockPresenter.render = function() {};
+      mockPresenter.setupPresenter = function(input_model, jquerySelection) {};
+      mockPresenter.setupPlaceholder = function(jquerySelection) {};
+      mockPresenter.updateModel = function(input_model) {};
+      mockPresenter.setupSubModel = function(model, jquerySelection) {};
+      mockPresenter.setupView = function() {};
+      mockPresenter.renderView = function() {};
       mockPresenter.release = function() {};
       mockPresenter.childDone = function(presenter, action, data) {};
-      mockPresenter.setupView = function(selection) {};
 
-      spyOn(mockPresenter, 'setModel');
-      spyOn(mockPresenter, 'render');
+      spyOn(mockPresenter, 'setupPresenter');
+      spyOn(mockPresenter, 'setupPlaceholder');
+      spyOn(mockPresenter, 'setupSubModel');
+      spyOn(mockPresenter, 'setupView');
+      spyOn(mockPresenter, 'renderView');
       spyOn(mockPresenter, 'release');
       spyOn(mockPresenter, 'childDone');
-      spyOn(mockPresenter, 'setupView');
 
       mockPresenters.push(mockPresenter);
       return mockPresenter;
@@ -55,31 +60,30 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 
     function configureMockPartialFactory() {
       partialFactory = {};
-      partialFactory.createPresenter = function(name, owner, model) {
-	var mockPresenter = createMockPresenter(name);
-	mockPresenter.setModel(model);
-	return mockPresenter;
+      partialFactory.createPresenter = function(name, owner) {
+	return createMockPresenter(name);
 	}
-      partialFactory.createScanBarcodePresenter = function(owner, model) {
-	return this.createPresenter("scanBarcode", owner, model);
+      partialFactory.createScanBarcodePresenter = function(owner, type) {
+	var presenter = this.createPresenter("scanBarcode", owner);
+        presenter.setupPresenter(type);
+        return presenter;
       }
-      partialFactory.createTubeRemovalPresenter = function(owner, model) {
-	return this.createPresenter("tubeRemoval", owner, model);
+      partialFactory.createTubeRemovalPresenter = function(owner) {
+	return this.createPresenter("tubeRemoval", owner);
       }
     }
 
     function expectPartial(partial, typeName, args) {
       expect(partial).toBeDefined();
       expect(partial.name).toEqual(typeName);
-      expect(partial.setupView).toHaveBeenCalled(); 
       if(args) {
-	expect(partial.setModel).toHaveBeenCalledWith(args);
+	expect(partial.setupPresenter).toHaveBeenCalledWith(args);
       }
-      expect(partial.render).toHaveBeenCalled();
+      expect(partial.renderView).toHaveBeenCalled();
       
     };
     
-    describe("presenter which has never been updated", function() {
+    describe("Presenter which has spy subpresenters", function() {
 
       beforeEach(function() {
 	mockPresenters = [];
@@ -88,19 +92,22 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 	configureSpyAppController();
 	configureMockPartialFactory();
 
-	model = new SelectionPageModel(123456789);
-	model.addTube(helper.createTubeWithOriginalBatch(0));
-	
 	presenter = new SelectionPagePresenter(app, partialFactory);
-	presenter.view = view;
+	model = new SelectionPageModel(app, "1234567");
+	model.tubes.push(helper.createTubeWithOriginalBatch(0));
 	
+        presenter.setupPresenter(model, function() { return $("#content"); });
+        presenter.model = model;
+        presenter.setupSubPresenters();
+        // setup presenter sets the view, we now want to override it to be
+        // a the test spy view
+	presenter.view = view;
       });
 
       it("updating presenter with empty model creates a ScanBarcodePresenter", function() {
-	expect(mockPresenters.length).toBe(0);
-	runs(function() { 
-	  presenter.setModel(model);
-	  presenter.render();
+	runs(function() {
+	  expect(mockPresenters.length).toBe(1);
+	  presenter.renderView();
 	});
 	waitsFor(function() { 
 	  return mockPresenters.length >= 2; 
@@ -108,11 +115,10 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 		 "child presenters were never created",
 		 100);
 	runs(function() {	  
-	  expect(view.clear).toHaveBeenCalled();
 	  expect(view.render).toHaveBeenCalled();
-	  expect(mockPresenters.length).toBe(2);
-	  expectPartial(mockPresenters[0], "tubeRemoval", null);
-	  expectPartial(mockPresenters[1], "scanBarcode", "tube");
+	  expect(mockPresenters.length).toBeGreaterThan(1);
+	  expectPartial(mockPresenters[0], "scanBarcode", "tube");
+	  expectPartial(mockPresenters[1], "tubeRemoval", null);
 	  });
       });
 
@@ -129,43 +135,43 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 
       it("removeTube message with uuid not matching any tube does nothing", function() {
 	runs(function() {
-	  presenter.setModel(model);
-	  presenter.render();
+	  presenter.renderView();
 	  });
 	waitsFor(function() {
-	  return mockPresenters.length == 2;
+	  return mockPresenters.length >= 2;
 	  },
 		 "2 child presenters to be created",
 		 100);
 	runs(function() { 
+          var tubeCount = model.getNumberOfTubes();
 	  presenter.childDone(presenter, "removeTube", { tube : { uuid: "1" } });
-	  expect(mockPresenters[0].release).toHaveBeenCalled();
-	  expect(mockPresenters[1].release).toHaveBeenCalled();
+          expect(model.getNumberOfTubes()).toBe(tubeCount);
 	});
       });
 
       it("removeTube message with uuid matching tube removes tube by uuid", function() {
+        var tubeCount;
 	runs(function() {
-	  presenter.setModel(model);
-	  presenter.render();
+	  presenter.renderView();
 	  });
 	waitsFor(function() {
-	  return mockPresenters.length == 2;
+	  return model.getNumberOfTubes() === 1
 	},
-		 "2 child presenters to be created",
-		 100);
+		 "tube to be added",
+		 1000);
 	runs(function() { 
 	  console.log("calling child done");
+          tubeCount = model.getNumberOfTubes();
+          expect(tubeCount).toBe(1);
 	  presenter.childDone(this, "removeTube", { tube : { uuid: "11111111-2222-3333-4444-555555555555" } });
 	  });
 	waitsFor(function() {
-	    return mockPresenters[0].release.wasCalled;
+	    return (model.getNumberOfTubes() === 0);
 	},
-		 "release to have been called",
+		 "tube count to be decremented " + model.getNumberOfTubes(),
 		 100);
 	runs(function() {
-	  expect(mockPresenters[0].release).toHaveBeenCalled();
-	  expect(mockPresenters[1].release).toHaveBeenCalled();
+	  expect(model.getNumberOfTubes()).toBe(0);
 	});
 	
       });

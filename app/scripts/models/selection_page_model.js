@@ -51,13 +51,18 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
         })
         .then(function () {
           console.log("tube has been found ");
+          theRsc.rawJson.tube.uuid = tubeUUID;
           that.tubes[index] = theRsc;
 
 
-          // HACK
+          // NEW HACK
+
+          t
+          
+          /*
           if (index == 0){
-            that.tubes[index].rawJson.tube.uuid = "1234567890";
-          }
+            that.tubes[index].rawJson.tube.uuid = "11111111-2222-3333-4444-555555555555";
+          }*/
           // END OF HACK
 
 

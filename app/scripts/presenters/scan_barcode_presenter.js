@@ -1,12 +1,11 @@
 define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/views/scan_barcode_view'], function(ScanBarcodeModel, ScanBarcodeView) {
 
-  var ScanBarcodePresenter = function (owner, presenterFactory, type) {
-    console.log("ScanBarcodePresenter constructor : ", type);
+  var ScanBarcodePresenter = function (owner, presenterFactory) {
+    console.log("ScanBarcodePresenter constructor : ");
     this.owner = owner;
     this.presenterFactory = presenterFactory;
     this.view = undefined;
     this.model = undefined;
-    this.type = type;
     return this;
   };
 
@@ -28,9 +27,9 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
 
 
   ScanBarcodePresenter.prototype.updateModel = function (input_model) {
-    console.log("ScanBarcodePresenter  : updateModel", this.type);
+    console.log("ScanBarcodePresenter  : updateModel", input_model);
     if (!this.model) {
-      this.model = new ScanBarcodeModel(this.type);
+      this.model = new ScanBarcodeModel(input_model);
     }
 //    var theURL = "http://localhost:8088/tube/2_"+input_model.v;
 //    var that = this;
@@ -91,7 +90,7 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
           })
           .fail(function () {
             presenter.model.busy = false;
-            presenter.render();
+            presenter.renderView();
           });
     }
     else {
