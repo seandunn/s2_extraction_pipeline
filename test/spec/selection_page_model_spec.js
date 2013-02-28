@@ -43,7 +43,7 @@ define(['models/selection_page_model', 'spec/selection_page_helper'], function(S
       beforeEach(function() { 
         model = new SelectionPageModel(123456789);
 
-        model.addTube(helper.createTubeWithOriginalBatch(0));	
+        model.tubes.push(helper.createTubeWithOriginalBatch(0));
       });
 
       it("contains one tube", function() { 
@@ -78,7 +78,8 @@ define(['models/selection_page_model', 'spec/selection_page_helper'], function(S
         model = new SelectionPageModel(123456789);
         for(var i = 0; i < 12; i++) {
           var newTube = helper.createTubeWithOriginalBatch(i);
-          model.addTube(newTube);
+          
+          model.tubes.push(newTube);
         }
       });
 

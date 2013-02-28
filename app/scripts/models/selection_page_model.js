@@ -51,13 +51,18 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
         })
         .then(function () {
           console.log("tube has been found ");
+          theRsc.rawJson.tube.uuid = tubeUUID;
           that.tubes[index] = theRsc;
 
 
-          // HACK
+          // NEW HACK
+          
+          theRsc.rawJson.tube.uuid = tubeUUID;
+
+          /*
           if (index == 0){
-            that.tubes[index].rawJson.tube.uuid = "1234567890";
-          }
+            that.tubes[index].rawJson.tube.uuid = "11111111-2222-3333-4444-555555555555";
+          }*/
           // END OF HACK
 
 
@@ -171,11 +176,12 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
     var index = -1;
 
     for (var i = 0; i < this.tubes.length; i++) {
-      if (this.tubes[i].rawJson.tube.uuid == uuid) {
+      if (this.tubes[i].rawJson.tube.uuid === uuid) {
         this.tubes.splice(i, 1);
 	index = i;
         break;
       }
+      
     }
 
     if (this.tubes.length === 0) {

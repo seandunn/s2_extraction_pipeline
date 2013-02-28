@@ -1,11 +1,18 @@
 {
-  "author": "",
-  "name": "",
-  "version": "0.0.0",
+  "author": "WTSI PSD",
+  "name": "s2_extraction_pipeline",
+  "version": "0.0.1",
   "dependencies": {
-      "S2Mapper": "git@github.com:sanger/S2Mapper.git"
-      ,"apiExample":"git@github.com:sanger/s2-api-examples.git"
-      ,"labware":"git@github.com:sanger/labware.git"
+      "S2Mapper": "https://github.com/sanger/S2Mapper/tarball/master",
+      "labware":"https://github.com/sanger/labware/tarball/master"
   },
-  "devDependencies": {}
+  "devDependencies": {
+      "yeoman": "0.9.6",
+      "bower": "0.3.2"
+  },
+
+  "scripts": {
+      "test": "node_modules/.bin/bower install && node_modules/.bin/yeoman test --force"
+  }
+
 }

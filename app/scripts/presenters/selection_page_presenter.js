@@ -61,7 +61,6 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     /* initialises this instance by instantiating the view
      */
     this.view = new SelectionPageView(this, this.jquerySelection);
-//    this.selection = function() { return $("#content"); };
     return this;
   };
 
@@ -109,6 +108,8 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     console.log("SelectionPagePresenter  : setupSubPresenter");
 
     var numOrders = this.model ? this.model.getNumberOfTubes() : 0;
+
+    console.log("numOrders is ", numOrders);
 
     for (var i = 0; i < this.model.getCapacity(); i++) {
 
@@ -183,7 +184,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
         console.log("childDone");
         this.setupSubPresenters();
         this.renderView();
-
+        
         return;
       }
     }
@@ -199,12 +200,15 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     } else if (action === "removeTube") {
       return this.handleTubeRemoved(data);
     }
+    else if (action === "next"){
+      return this.owner.childDone(child, "done", data);
+    }
 
     console.log("unhandled childDone event:");
     console.log("child: ", child);
     console.log("action: " + action);
     console.log("data: " + JSON.stringify(data));
-    return this;
+    return this.owner.childDone(child, action, data);
   };
 
   SelectionPagePresenter.prototype.handleBarcodeScanned = function (data) {
@@ -218,7 +222,12 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
 
   SelectionPagePresenter.prototype.handleTubeRemoved = function (data) {
     console.log("data is ", data.tube.uuid);
+    console.log("model is ", this.model);
+    console.log("before model size is ", this.model.getNumberOfTubes());
+
     var index = this.model.removeTubeByUuid(data.tube.uuid);
+    console.log("after model size is ", this.model.getNumberOfTubes());
+   
     console.log("index is ", index);
     if (index > -1) {
       this.presenters[index].release();
