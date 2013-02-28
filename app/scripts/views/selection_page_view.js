@@ -35,7 +35,8 @@ define([], function () {
       }
       parts.push( "</ul>");
       parts.push('<div align="right">');
-      parts.push('<button>next</button>');
+      parts.push('<button class="nextBtn">next</button>');
+      parts.push('<button id="testBtn">test</button>');
       parts.push('</div>');
 
       var html = parts.join('');
@@ -54,10 +55,19 @@ define([], function () {
     /* Renders the next button
      */
 
-    var button = this.jquerySelector().find("div button"),
+    var button = this.jquerySelector().find("div button.nextBtn");
     owner = this.owner;
     button.on("click", function () {
       owner.childDone(owner, "next", undefined);
+    });
+
+    var button2 = this.jquerySelector().find("div button#testBtn");
+    button2.on("click", function () {
+      var data = {};
+      data.tube = {};
+      data.tube.uuid = "1234567890";
+      console.log(data);
+      owner.childDone(owner, "removeTube", data);
     });
   };
 

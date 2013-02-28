@@ -46,7 +46,7 @@ define([], function () {
 
 
   tp.prototype.release = function () {
-    this.jquerySelection().release();
+    this.jquerySelection().empty();
     return this;
   };
 

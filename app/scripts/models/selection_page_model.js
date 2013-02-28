@@ -52,6 +52,16 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
         .then(function () {
           console.log("tube has been found ");
           that.tubes[index] = theRsc;
+
+
+          // HACK
+          if (index == 0){
+            that.tubes[index].rawJson.tube.uuid = "1234567890";
+          }
+          // END OF HACK
+
+
+
           var data = {index:index, tubeUUID:tubeUUID};
           console.log(that);
           that.owner.childDone(that,"foundTube",data);
@@ -62,7 +72,7 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
     // For now
     console.log('retrieveBatchFromUser');
 
-    this.orders = [];
+    this.tubes = [];
 
     // something happens here...
 
@@ -70,6 +80,8 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
 
     for (var i=0; i< listOfTubeUUID.length; i++){
       this.retrieveTubeDetails(i,listOfTubeUUID[i]);
+
+
     }
 
 //    var that = this;

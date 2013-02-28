@@ -186,7 +186,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
      * data:       Any data associated with the action.
      *
      */
-
+    console.log(">>>",data);
     if (child === this.model) {
       if (action === "foundTube") {
         console.log("childDone");
@@ -204,8 +204,9 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     
 
     if (action === "barcodeScanned") {
-      console.log("barcodeScanned");
-      return this.model.addTube(data);
+      return this.handleBarcodeScanned(data);
+    } else if (action === "removeTube") {
+      return this.handleTubeRemoved(data);
     }
 
     console.log("unhandled childDone event:");
@@ -215,21 +216,29 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     return this;
   };
 
-  SelectionPagePresenter.prototype.handleBarcodeScanned = function (presenter, action, data) {
-    //this.findAndAddOrder();
-  }
+  SelectionPagePresenter.prototype.handleBarcodeScanned = function (data) {
+    if ( this.model.addTube(data) ){
+      // TODO: deal with the success...
+    } else {
+      // TODO: deal with the error...
+    }
+    return this;
+  };
 
-  SelectionPagePresenter.prototype.handleTubeRemoved = function(presenter, data) {
-    console.log("data is ", data);
+  SelectionPagePresenter.prototype.handleTubeRemoved = function(data) {
+    console.log("data is ", data.tube.uuid);
     var index = this.model.removeTubeByUuid(data.tube.uuid);
     console.log("index is ", index);
     if (index > -1) {
       this.presenters[index].release();
       this.presenters.splice(index, 1);
       if (this.presenters.length == this.model.getCapacity() - 1) {
-	this.ensureScanBarcodePresenter();
+
+	//this.ensureScanBarcodePresenter();
       }
-      this.setupChildViews();
+      this.setupSubPresenters();
+      this.renderView();
+            //this.setupChildViews();
     }
   }
 

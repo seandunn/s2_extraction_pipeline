@@ -38,7 +38,7 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
 //      presenter.setupModel(tube);
 //      
 //      return presenter;
-    }
+    };
     
 
   return PresenterFactory;
