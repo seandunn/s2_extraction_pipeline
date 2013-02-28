@@ -18,6 +18,7 @@
  */
 
 
+define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/models/selection_page_model', 'extraction_pipeline/dummyresource'], function (SelectionPageView, SelectionPageModel, rsc) {
 define(['views/selection_page_view', 'models/selection_page_model', 'dummyresource', 'presenters/tp', 'presenters/ep'], function (SelectionPageView, SelectionPageModel, rsc, tp, ep) {
   // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
 
@@ -143,6 +144,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     }
 
     numOrders = this.model.getNumberOfOrders();
+    //var numOrders = model.getNumberOfTubes();
     for (var i = 0; i < numOrders; i++) {
       // TODO : order presenters go here
     }
@@ -196,6 +198,12 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
         return;
       }
     }
+//    if (action === "barcodeScanned") {
+//      return this.handleBarcodeScanned(presenter, data);
+//    } else if (action === "removeTube") {
+//      return this.handleTubeRemoved(presenter, data);
+//    }
+    
 
     if (action === "barcodeScanned") {
       console.log("barcodeScanned");
@@ -211,6 +219,52 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
 
   SelectionPagePresenter.prototype.handleBarcodeScanned = function (presenter, action, data) {
     //this.findAndAddOrder();
+
+  SelectionPagePresenter.prototype.handleTubeRemoved = function(presenter, data) {
+    console.log("data is ", data);
+    var index = this.model.removeTubeByUuid(data.tube.uuid);
+    console.log("index is ", index);
+    if (index > -1) {
+      this.presenters[index].release();
+      this.presenters.splice(index, 1);
+      if (this.presenters.length == this.model.getCapacity() - 1) {
+	this.ensureScanBarcodePresenter();
+      }
+      this.setupChildViews();
+    }
+  }
+
+
+  SelectionPagePresenter.prototype.handleExtraTube = function(tube) {
+    if(this.model) {
+      var numTubes = this.model.getNumberOfTubes();
+      this.model.addTube(tube);
+      if(this.presenters[numTubes]) {
+	this.presenters[numTubes].release();
+	this.presenters[numTubes] = null;
+      }
+      this.ensureTubeRemovalPresenter(tube, numTubes);
+      this.ensureScanBarcodePresenter(this.model);
+      this.setupChildViews();
+    }
+  }
+
+  SelectionPagePresenter.prototype.selfDone = function (action, data) {
+    /* Handles done messages that arose from within this object or the view
+     *
+     * Arguments
+     * ---------
+     * presenter : the presenter instance the done message is coming from. Can be
+     *             either the PagePresenter or one of the PartialPresenters
+     * action:     a string representing the action request, e.g. 'next' for someone
+     *             clicking on the next button
+     * data:       Any data associated with the action.
+     *
+     */
+    if (action == "next") {
+      this.owner.childDone(this, "done", data);
+    }
+    return this;
   };
 
 

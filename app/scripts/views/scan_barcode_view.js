@@ -10,7 +10,7 @@ define([], function () {
     return null;
   }
 
-  var ScanBarcodeView = function (owner, placeholderSelector) {
+  var ScanBarcodeView = function(owner, jquerySelector) {
     /* Constructs an instance of ScanBarCode view
      *
      * Arguments
@@ -19,51 +19,57 @@ define([], function () {
      * selection : the selection point to operate on
      */
     this.owner = owner;
-    this.placeholderSelector = placeholderSelector;
+    this.jquerySelector = jquerySelector;
 
     return this;
   };
 
-  ScanBarcodeView.prototype.render = function (model) {
+  ScanBarcodeView.prototype.render = function(model) {
+    if (model !== null) {
+      this.model = model;
+    }
+    else {
+      model = this.model;
+    }
     /* render the current view onto the screen
      * 
      * Arguments
      * ---------
      * model : the model to display
      */
-
-    var parent = this.placeholderSelector(),
-        htmlParts = ['<td><p>Scan barcode</p></td>',
-          '<td><input value="',
-          model.barcode,
-          '"',
-          model.busy ? ' disabled="true"' : '' ,
-          '/></td>',
-          '<td>',
-          model.isValid() ? '' : '<p class="alert-error">Invalid barcode entered</p>',
-          '</td>' ],
-        htmlString = htmlParts.join('');
+  
+    var parent = this.jquerySelector(),
+    htmlParts = ['<td><p>Scan barcode</p></td>',
+		 '<td><input value="',
+		 model.barcode, 
+		 '"',
+		 model.busy ? ' disabled="true"' : '' ,
+		 '/></td>',
+		 '<td>',
+		 model.isValid() ? '' : '<p class="alert-error">Invalid barcode entered</p>', 
+		 '</td>' ],
+    htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
     parent.empty().
-        append(htmlString);
+      append(htmlString);
     var input = parent.find("input");
     var that = this;
-    input.on("keypress", function (e) {
+    input.on("keypress", function(e) { 
       var key = getKey(e);
       if (key === 13) {
-        that.owner.childDone(this.owner, "barcodeScanned", this.value);
+	that.owner.childDone(this.owner, "barcodeScanned", this.value);
       }
-    });
+      });
 
     console.log("html string", htmlString);
-
+    
   };
 
-  ScanBarcodeView.prototype.clear = function () {
+  ScanBarcodeView.prototype.clear = function() {
     /* clear the view from the current page
      */
-    var children = this.placeholderSelector().empty();
+    var children = this.jquerySelector().empty();
   };
 
   return ScanBarcodeView;

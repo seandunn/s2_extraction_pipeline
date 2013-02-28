@@ -1,4 +1,4 @@
-define(['models/scan_barcode_model', 'views/scan_barcode_view'], function (ScanBarcodeModel, ScanBarcodeView) {
+define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/views/scan_barcode_view'], function(ScanBarcodeModel, ScanBarcodeView) {
 
   var ScanBarcodePresenter = function (owner, presenterFactory, type) {
     console.log("ScanBarcodePresenter constructor : ", type);

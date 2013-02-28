@@ -30,7 +30,7 @@ define(['dummyresource'], function (rsc) {
      */
     this.owner = owner;
     this.user = user;
-    this.orders = [];
+    this.tubes = [];
     this.batch = undefined;
     this.capacity = 12;
     return this;
@@ -91,7 +91,8 @@ define(['dummyresource'], function (rsc) {
 
 
 
-  SelectionPageModel.prototype.addOrder = function (orderUUID) {
+  //SelectionPageModel.prototype.addOrder = function (orderUUID) {
+  SelectionPageModel.prototype.addTube = function (newTubeUUID) {
     /* add order
      *
      * Adds an order to this batch.
@@ -106,7 +107,7 @@ define(['dummyresource'], function (rsc) {
      * SelectionPageException:  If the batch id does not match the current order
      *
      */
-    if (this.orders.length > this.capacity - 1) {
+    if (this.tubes.length > this.capacity - 1) {
       throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
     }
 
@@ -118,13 +119,13 @@ define(['dummyresource'], function (rsc) {
 //    }
 //    this.orders.push(newOrder);
 
-    var lastOrderIndex = this.orders.length;
-    this.retreiveOrderDetails(lastOrderIndex, orderUUID);
+    var lastTubeIndex = this.tubes.length;
+    this.retreiveTubeDetails(lastTubeIndex, newTubeUUID);
 
 
   };
 
-  SelectionPageModel.prototype.getOrderUuidFromOrderIndex = function (index) {
+  SelectionPageModel.prototype.getTubeUuidFromTubeIndex = function (index) {
     /* reads the uuid corresponding to the order at the given index
      *
      * Returns
@@ -135,8 +136,8 @@ define(['dummyresource'], function (rsc) {
      * ---------
      * index : the index in the orders array
      */
-    var order = this.orders[index];
-    return order.rawJson.order.uuid;
+    var order = this.tubes[index];
+    return order.rawJson.tube.uuid;
   };
 
   SelectionPageModel.prototype.getCapacity = function () {
@@ -149,33 +150,38 @@ define(['dummyresource'], function (rsc) {
     return this.capacity;
   };
 
-  SelectionPageModel.prototype.removeOrderByUuid = function (uuid) {
+  SelectionPageModel.prototype.removeTubeByUuid = function (uuid) {
     /* removes an order matching a given uuid
      *
      * Arguments
      * ---------
      * uuid - the uuid of the order to remove
      */
-    for (var i = 0; i < this.orders.length; i++) {
-      if (this.orders[i].rawJson.order.uuid == uuid) {
-        this.orders.splice(i, 1);
+    var index = -1;
+
+    for (var i = 0; i < this.tubes.length; i++) {
+      if (this.tubes[i].rawJson.tube.uuid == uuid) {
+        this.tubes.splice(i, 1);
+	index = i;
         break;
       }
     }
 
-    if (this.orders.length == 0) {
+    if (this.tubes.length === 0) {
       this.batch = undefined;
     }
+
+    return index;
   };
 
-  SelectionPageModel.prototype.getNumberOfOrders = function () {
+  SelectionPageModel.prototype.getNumberOfTubes = function () {
     /* gets the number of orders
      *
      * Returns
      * -------
      * The number of orders.
      */
-    return this.orders.length;
+    return this.tubes.length;
   };
 
   return SelectionPageModel;

@@ -55,12 +55,29 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 
     function configureMockPartialFactory() {
       partialFactory = {};
-      partialFactory.createScanBarcodePresenter = function(owner, model) {
-	var mockPresenter = createMockPresenter("scanBarcode");
+      partialFactory.createPresenter = function(name, owner, model) {
+	var mockPresenter = createMockPresenter(name);
 	mockPresenter.setModel(model);
 	return mockPresenter;
+	}
+      partialFactory.createScanBarcodePresenter = function(owner, model) {
+	return this.createPresenter("scanBarcode", owner, model);
       }
+      partialFactory.createTubeRemovalPresenter = function(owner, model) {
+	return this.createPresenter("tubeRemoval", owner, model);
       }
+    }
+
+    function expectPartial(partial, typeName, args) {
+      expect(partial).toBeDefined();
+      expect(partial.name).toEqual(typeName);
+      expect(partial.setupView).toHaveBeenCalled(); 
+      if(args) {
+	expect(partial.setModel).toHaveBeenCalledWith(args);
+      }
+      expect(partial.render).toHaveBeenCalled();
+      
+    };
     
     describe("presenter which has never been updated", function() {
 
@@ -72,31 +89,32 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 	configureMockPartialFactory();
 
 	model = new SelectionPageModel(123456789);
-	model.addOrder(helper.createOrderWithOriginalBatch(0));
+	model.addTube(helper.createTubeWithOriginalBatch(0));
 	
 	presenter = new SelectionPagePresenter(app, partialFactory);
 	presenter.view = view;
 	
       });
 
-      it("presenter update calls clear then render", function() {
-	presenter.setModel(model);
-	presenter.render();
-	expect(view.clear).toHaveBeenCalled();
-	expect(view.render).toHaveBeenCalled();
-      });
-
       it("updating presenter with empty model creates a ScanBarcodePresenter", function() {
-	presenter.setModel(model);
-	presenter.render();
-	expect(mockPresenters.length).toBe(1);
-	var firstPartial = mockPresenters[0];
-	expect(firstPartial).toBeDefined();
-	expect(firstPartial.name).toEqual("scanBarcode");
-	expect(firstPartial.setupView).toHaveBeenCalled(); 
-	expect(firstPartial.setModel).toHaveBeenCalledWith("tube");
-	expect(firstPartial.render).toHaveBeenCalled();
+	expect(mockPresenters.length).toBe(0);
+	runs(function() { 
+	  presenter.setModel(model);
+	  presenter.render();
 	});
+	waitsFor(function() { 
+	  return mockPresenters.length >= 2; 
+	},
+		 "child presenters were never created",
+		 100);
+	runs(function() {	  
+	  expect(view.clear).toHaveBeenCalled();
+	  expect(view.render).toHaveBeenCalled();
+	  expect(mockPresenters.length).toBe(2);
+	  expectPartial(mockPresenters[0], "tubeRemoval", null);
+	  expectPartial(mockPresenters[1], "scanBarcode", "tube");
+	  });
+      });
 
       it("presenter release calls clear", function() {
 	presenter.release();
@@ -108,7 +126,49 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 	presenter.childDone(presenter, "next", undefined);
 	expect(app.childDone).toHaveBeenCalledWith(presenter, "done", undefined);
 	});
-    });
 
+      it("removeTube message with uuid not matching any tube does nothing", function() {
+	runs(function() {
+	  presenter.setModel(model);
+	  presenter.render();
+	  });
+	waitsFor(function() {
+	  return mockPresenters.length == 2;
+	  },
+		 "2 child presenters to be created",
+		 100);
+	runs(function() { 
+	  presenter.childDone(presenter, "removeTube", { tube : { uuid: "1" } });
+	  expect(mockPresenters[0].release).toHaveBeenCalled();
+	  expect(mockPresenters[1].release).toHaveBeenCalled();
+	});
+      });
+
+      it("removeTube message with uuid matching tube removes tube by uuid", function() {
+	runs(function() {
+	  presenter.setModel(model);
+	  presenter.render();
+	  });
+	waitsFor(function() {
+	  return mockPresenters.length == 2;
+	},
+		 "2 child presenters to be created",
+		 100);
+	runs(function() { 
+	  console.log("calling child done");
+	  presenter.childDone(this, "removeTube", { tube : { uuid: "11111111-2222-3333-4444-555555555555" } });
+	  });
+	waitsFor(function() {
+	    return mockPresenters[0].release.wasCalled;
+	},
+		 "release to have been called",
+		 100);
+	runs(function() {
+	  expect(mockPresenters[0].release).toHaveBeenCalled();
+	  expect(mockPresenters[1].release).toHaveBeenCalled();
+	});
+	
+      });
+    });
   });
 });
