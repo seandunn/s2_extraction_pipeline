@@ -6,8 +6,6 @@
       "S2Mapper": "git@github.com:sanger/S2Mapper.git"
       ,"apiExample":"git@github.com:sanger/s2-api-examples.git"
       ,"labware":"git@github.com:sanger/labware.git"
-      ,"mymapper":"git@github.com:benoitmangili/S2Mapper.git"
-
   },
   "devDependencies": {}
 }

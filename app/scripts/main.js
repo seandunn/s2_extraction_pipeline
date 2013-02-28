@@ -20,6 +20,6 @@ require.config({
 
 require(['extraction_pipeline/app'], function (app) {
   var theApp = new app();
-  theApp.init();
+  theApp.setupPresenter();
 });
 

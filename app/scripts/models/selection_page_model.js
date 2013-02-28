@@ -17,9 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 
-define([''], function () {
+define(['extraction_pipeline/dummyresource'], function (rsc) {
 
-  var SelectionPageModel = function(user) {
+  var SelectionPageModel = function(owner,user) {
     /* Creates the default implementation of a selection page model
      * with a user identifier and some orders
      *
@@ -28,6 +28,7 @@ define([''], function () {
      * user: the userId
      * orders: the first order
      */
+    this.owner = owner;
     this.user = user;
     this.tubes = [];
     this.batch = undefined;
@@ -35,14 +36,81 @@ define([''], function () {
     return this;
   }
 
-  SelectionPageModel.prototype.addTube = function (newTube) {
-    /* add order
+
+  SelectionPageModel.prototype.retrieveTubeDetails = function (index, tubeUUID){
+    console.log('retriveorderdetails');
+    var that = this;
+    var theRsc;
+    rsc_path = 'components/s2-api-examples/tube.json';
+    new rsc(rsc_path, "read")
+        .done(function (s2rsc) {
+          theRsc = s2rsc;
+        })
+        .fail(function () {
+          // TODO: deal with error reading the order
+        })
+        .then(function () {
+          console.log("tube has been found ");
+          that.tubes[index] = theRsc;
+
+
+          // HACK
+          if (index == 0){
+            that.tubes[index].rawJson.tube.uuid = "1234567890";
+          }
+          // END OF HACK
+
+
+
+          var data = {index:index, tubeUUID:tubeUUID};
+          console.log(that);
+          that.owner.childDone(that,"foundTube",data);
+        });
+  };
+
+  SelectionPageModel.prototype.retrieveBatchFromUser = function (){
+    // For now
+    console.log('retrieveBatchFromUser');
+
+    this.tubes = [];
+
+    // something happens here...
+
+    var listOfTubeUUID = ["1234567890", "34567"];
+
+    for (var i=0; i< listOfTubeUUID.length; i++){
+      this.retrieveTubeDetails(i,listOfTubeUUID[i]);
+
+
+    }
+
+//    var that = this;
+//    var theRsc;
+//    rsc_path = 'components/s2-api-examples/batch.json';
+//    new rsc(rsc_path, "read")
+//        .done(function (s2batch) {
+//          theRsc = s2batch;
+//        })
+//        .fail(function () {
+//          // TODO: deal with error reading the order
+//        })
+//        .then(function () {
+//          console.log("batch has been found ");
+//        });
+
+
+  };
+
+
+
+  SelectionPageModel.prototype.addTube = function (newTubeUUID) {
+    /* add tube
      *
-     * Adds an order to this batch.
+     * Adds an tube to this batch.
      *
      * Arguments
      * ---------
-     * newOrder: the new order to add
+     * newOrder: the new tube to add
      *
      * Exceptions
      * ----------
@@ -54,25 +122,30 @@ define([''], function () {
       throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
     }
 
-    if (this.batch === undefined) {
-      this.batch =  newTube.batch && newTube.batch.rawJson.uuid;
-    }
-    else if (newTube.batch.rawJson.uuid !== this.batch) {
-      throw {"type":"SelectionPageException", "message":"Batch number of new order does not match current selection" };
-    }
-    this.tubes.push(newTube);
+//    if (this.batch === undefined) {
+//      this.batch =  newOrder.batch && newOrder.batch.rawJson.uuid;
+//    }
+//    else if (newOrder.batch.rawJson.uuid !== this.batch) {
+//      throw {"type":"SelectionPageException", "message":"Batch number of new order does not match current selection" };
+//    }
+//    this.orders.push(newOrder);
+
+    var lastTubeIndex = this.tubes.length;
+    this.retrieveTubeDetails(lastTubeIndex, newTubeUUID);
+
+
   };
 
   SelectionPageModel.prototype.getTubeUuidFromTubeIndex = function (index) {
-    /* reads the uuid corresponding to the order at the given index
+    /* reads the uuid corresponding to the tube at the given index
      *
      * Returns
      * -------
-     * The uuid of the order in the orders array at index 'index'
+     * The uuid of the tube in the orders array at index 'index'
      *
      * Arguments
      * ---------
-     * index : the index in the orders array
+     * index : the index in the tubes array
      */
     var order = this.tubes[index];
     return order.rawJson.tube.uuid;
@@ -89,11 +162,11 @@ define([''], function () {
   };
 
   SelectionPageModel.prototype.removeTubeByUuid = function (uuid) {
-    /* removes an order matching a given uuid
+    /* removes a tube matching a given uuid
      *
      * Arguments
      * ---------
-     * uuid - the uuid of the order to remove
+     * uuid - the uuid of the tube to remove
      */
     var index = -1;
 
@@ -113,11 +186,11 @@ define([''], function () {
   };
 
   SelectionPageModel.prototype.getNumberOfTubes = function () {
-    /* gets the number of orders
+    /* gets the number of tubes
      *
      * Returns
      * -------
-     * The number of orders.
+     * The number of tubes.
      */
     return this.tubes.length;
   };

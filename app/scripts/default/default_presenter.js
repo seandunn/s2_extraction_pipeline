@@ -29,11 +29,73 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
   var defPtr = function (owner, presenterFactory) {
     this.owner = owner;
     this.currentView = {};
+    this.presenterFactory = presenterFactory;
     return this;
   };
 
-  defPtr.prototype.init = function (jquerySelection) {
-    this.currentView = new view(this, jquerySelection);
+
+  defPtr.prototype.setupPresenter = function (input_model, jquerySelection) {
+    console.log("defPtr  : setupPresenter");
+    this.setupPlaceholder(jquerySelection);
+    this.setupView();
+    this.renderView();
+
+    this.updateModel(input_model);
+    return this;
+  };
+
+  defPtr.prototype.updateModel = function (input_model) {
+    console.log("defPtr  : updateModel");
+    this.model = input_model;
+    var theURL = "http://localhost:8088/tube/2_"+input_model.v;
+    var that = this;
+    $.ajax({url:theURL, type:"GET"}).complete(
+        function (data) {
+          that.model = $.parseJSON(data.responseText);
+          that.setupView();
+          that.renderView();
+          that.setupSubPresenters();
+        }
+    );
+    return this;
+  };
+
+  defPtr.prototype.setupPlaceholder = function (jquerySelection) {
+    console.log("defPtr  : setupPlaceholder");
+    this.jquerySelection = jquerySelection;
+    return this;
+  };
+
+  defPtr.prototype.setupSubPresenters = function () {
+    // check with this.model for the needed subpresenters...
+    console.log("defPtr  : setupSubPresenter : none");
+    return this;
+  };
+
+  defPtr.prototype.setupSubModel = function (model,jquerySelection) {
+    console.log("defPtr  : setupSubModel : none");
+    return this;
+  };
+
+
+  defPtr.prototype.setupView = function () {
+    console.log("defPtr  : presenter::setupView : ", this.jquerySelection);
+    this.currentView = new view(this, this.jquerySelection);
+    return this;
+  };
+
+
+
+
+  defPtr.prototype.renderView = function () {
+    // render view...
+    console.log("defPtr  : presenter::renderView");
+    var data = undefined;
+    if (this.model){
+      data = {};
+      data.error = "hello";
+    }
+    this.currentView.renderView(data);
     return this;
   };
 
@@ -42,10 +104,9 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
     return this;
   };
 
-  defPtr.prototype.update = function () {
-    this.currentView.update();
-    return this;
-  };
+
+
+
 
   defPtr.prototype.childDone = function (childPtr, action, data) {
     // called when a child presenter wants to say something...
