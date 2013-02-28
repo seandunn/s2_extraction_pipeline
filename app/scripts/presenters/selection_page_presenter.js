@@ -18,8 +18,7 @@
  */
 
 
-define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/models/selection_page_model', 'extraction_pipeline/dummyresource'], function (SelectionPageView, SelectionPageModel, rsc) {
-define(['views/selection_page_view', 'models/selection_page_model', 'dummyresource', 'presenters/tp', 'presenters/ep'], function (SelectionPageView, SelectionPageModel, rsc, tp, ep) {
+define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/models/selection_page_model', 'extraction_pipeline/dummyresource', 'extraction_pipeline/presenters/tp', 'extraction_pipeline/presenters/ep'], function (SelectionPageView, SelectionPageModel, rsc, tp, ep) {
   // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
 
   var SelectionPagePresenter = function (owner, presenterFactory) {
@@ -78,7 +77,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
     console.log("SelectionPagePresenter  : updateModel");
     if (!this.model) {
       this.model = new SelectionPageModel(this, input_model);
-      this.model.retreiveBatchFromUser();
+      this.model.retrieveBatchFromUser();
     }
     return this;
   };
@@ -109,7 +108,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
   SelectionPagePresenter.prototype.setupSubPresenters = function () {
     console.log("SelectionPagePresenter  : setupSubPresenter");
 
-    var numOrders = this.model ? this.model.getNumberOfOrders() : 0;
+    var numOrders = this.model ? this.model.getNumberOfTubes() : 0;
 
     for (var i = 0; i < this.model.getCapacity(); i++) {
 
@@ -143,17 +142,16 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
       return;
     }
 
-    numOrders = this.model.getNumberOfOrders();
-    //var numOrders = model.getNumberOfTubes();
-    for (var i = 0; i < numOrders; i++) {
-      // TODO : order presenters go here
+    numTubes = this.model.getNumberOfTubes();
+    for (var i = 0; i < numTubes; i++) {
+      // TODO : tube presenters go here
     }
     //this.setupScanBarcodePresenterForAGivenRow(model);
     for (var i = 0; i < this.presenters.length; i++) {
-      if (i < numOrders) {
+      if (i < numTubes) {
         this.presenters[i].setupPresenter(undefined, jQueryForNthChild(i));
 
-      } else if (i == numOrders) {
+      } else if (i == numTubes) {
         this.presenters[i].setupPresenter(undefined, jQueryForNthChild(i));
       } else {
         this.presenters[i].setupPresenter(undefined, jQueryForNthChild(i));
@@ -190,7 +188,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
      */
 
     if (child === this.model) {
-      if (action === "foundOrder") {
+      if (action === "foundTube") {
         console.log("childDone");
         this.setupSubPresenters();
         this.renderView();
@@ -207,7 +205,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
 
     if (action === "barcodeScanned") {
       console.log("barcodeScanned");
-      return this.model.addOrder(data);
+      return this.model.addTube(data);
     }
 
     console.log("unhandled childDone event:");
@@ -219,6 +217,7 @@ define(['views/selection_page_view', 'models/selection_page_model', 'dummyresour
 
   SelectionPagePresenter.prototype.handleBarcodeScanned = function (presenter, action, data) {
     //this.findAndAddOrder();
+  }
 
   SelectionPagePresenter.prototype.handleTubeRemoved = function(presenter, data) {
     console.log("data is ", data);

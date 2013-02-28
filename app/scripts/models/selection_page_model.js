@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 
-define(['dummyresource'], function (rsc) {
+define(['extraction_pipeline/dummyresource'], function (rsc) {
 
   var SelectionPageModel = function(owner,user) {
     /* Creates the default implementation of a selection page model
@@ -37,39 +37,39 @@ define(['dummyresource'], function (rsc) {
   }
 
 
-  SelectionPageModel.prototype.retreiveOrderDetails = function (index, orderUUID){
+  SelectionPageModel.prototype.retrieveTubeDetails = function (index, tubeUUID){
     console.log('retriveorderdetails');
     var that = this;
     var theRsc;
-    rsc_path = 'components/s2-api-examples/order.json';
+    rsc_path = 'components/s2-api-examples/tube.json';
     new rsc(rsc_path, "read")
-        .done(function (s2order) {
-          theRsc = s2order;
+        .done(function (s2rsc) {
+          theRsc = s2rsc;
         })
         .fail(function () {
           // TODO: deal with error reading the order
         })
         .then(function () {
-          console.log("order has been found ");
-          that.orders[index] = theRsc;
-          var data = {index:index, orderUUID:orderUUID};
+          console.log("tube has been found ");
+          that.tubes[index] = theRsc;
+          var data = {index:index, tubeUUID:tubeUUID};
           console.log(that);
-          that.owner.childDone(that,"foundOrder",data);
+          that.owner.childDone(that,"foundTube",data);
         });
   };
 
-  SelectionPageModel.prototype.retreiveBatchFromUser = function (){
+  SelectionPageModel.prototype.retrieveBatchFromUser = function (){
     // For now
-    console.log('retreiveBatchFromUser');
+    console.log('retrieveBatchFromUser');
 
     this.orders = [];
 
     // something happens here...
 
-    var listOfOrderUUID = ["1234567890", "34567"];
+    var listOfTubeUUID = ["1234567890", "34567"];
 
-    for (var i=0; i< listOfOrderUUID.length; i++){
-      this.retreiveOrderDetails(i,listOfOrderUUID[i]);
+    for (var i=0; i< listOfTubeUUID.length; i++){
+      this.retrieveTubeDetails(i,listOfTubeUUID[i]);
     }
 
 //    var that = this;
@@ -91,15 +91,14 @@ define(['dummyresource'], function (rsc) {
 
 
 
-  //SelectionPageModel.prototype.addOrder = function (orderUUID) {
   SelectionPageModel.prototype.addTube = function (newTubeUUID) {
-    /* add order
+    /* add tube
      *
-     * Adds an order to this batch.
+     * Adds an tube to this batch.
      *
      * Arguments
      * ---------
-     * newOrder: the new order to add
+     * newOrder: the new tube to add
      *
      * Exceptions
      * ----------
@@ -120,21 +119,21 @@ define(['dummyresource'], function (rsc) {
 //    this.orders.push(newOrder);
 
     var lastTubeIndex = this.tubes.length;
-    this.retreiveTubeDetails(lastTubeIndex, newTubeUUID);
+    this.retrieveTubeDetails(lastTubeIndex, newTubeUUID);
 
 
   };
 
   SelectionPageModel.prototype.getTubeUuidFromTubeIndex = function (index) {
-    /* reads the uuid corresponding to the order at the given index
+    /* reads the uuid corresponding to the tube at the given index
      *
      * Returns
      * -------
-     * The uuid of the order in the orders array at index 'index'
+     * The uuid of the tube in the orders array at index 'index'
      *
      * Arguments
      * ---------
-     * index : the index in the orders array
+     * index : the index in the tubes array
      */
     var order = this.tubes[index];
     return order.rawJson.tube.uuid;
@@ -151,11 +150,11 @@ define(['dummyresource'], function (rsc) {
   };
 
   SelectionPageModel.prototype.removeTubeByUuid = function (uuid) {
-    /* removes an order matching a given uuid
+    /* removes a tube matching a given uuid
      *
      * Arguments
      * ---------
-     * uuid - the uuid of the order to remove
+     * uuid - the uuid of the tube to remove
      */
     var index = -1;
 
@@ -175,11 +174,11 @@ define(['dummyresource'], function (rsc) {
   };
 
   SelectionPageModel.prototype.getNumberOfTubes = function () {
-    /* gets the number of orders
+    /* gets the number of tubes
      *
      * Returns
      * -------
-     * The number of orders.
+     * The number of tubes.
      */
     return this.tubes.length;
   };
