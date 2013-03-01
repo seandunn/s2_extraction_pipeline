@@ -1,14 +1,14 @@
-define([], function() {
+define([], function () {
 
   function getKey(e) {
-    if(window.event) {
+    if (window.event) {
       return window.event.keyCode;
     }
-    else if(e) {
+    else if (e) {
       return e.which;
     }
-    return null;    
-    }
+    return null;
+  }
 
   var ScanBarcodeView = function(owner, jquerySelector) {
     /* Constructs an instance of ScanBarCode view
@@ -60,10 +60,7 @@ define([], function() {
       if (key === 13) {
 	that.owner.childDone(this.owner, "barcodeScanned", this.value);
       }
-      });
-
-    console.log("html string", htmlString);
-    
+      });    
   };
 
   ScanBarcodeView.prototype.clear = function() {

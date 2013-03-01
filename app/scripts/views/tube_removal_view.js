@@ -1,12 +1,12 @@
 define([], function() {
 
   var TubeRemovalView = function(owner, jquerySelector) {
+    if(!jquerySelector) { debugger; }
     this.owner = owner;
     this.jquerySelector = jquerySelector;
   };
 
   TubeRemovalView.prototype.render = function(model) {
-
     var parent = this.jquerySelector();
 
     this.attachHtml(parent, model);
@@ -14,14 +14,14 @@ define([], function() {
   };
 
   TubeRemovalView.prototype.attachHtml = function(parent, model) {
-    var waiting = '<td><p>Loading tube...</p></td>',
+    var waiting = '<p>Loading tube...</p>',
     uuid = (model && model.tube && 
-      model.tube.uuid ) || 'unknown';
+      model.tube.uuid ) || 'unknown',
 
-    parts = [ '<td colspan="2">',
-	      '</td>',
-	      '<td/>',
-	      '<td><button>Remove</button></td>'],
+    parts = [ '<div>',
+        '<div class="placeholder"/>',
+	      '<button>Remove</button>',
+          '</div>'],
     innerHtml = (model == undefined) ? waiting : parts.join('');
     parent.empty().append(innerHtml);
   };

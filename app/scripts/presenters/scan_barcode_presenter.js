@@ -1,58 +1,79 @@
 define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/views/scan_barcode_view'], function(ScanBarcodeModel, ScanBarcodeView) {
 
-  var ScanBarcodePresenter = function(owner) {
+  var ScanBarcodePresenter = function (owner, presenterFactory) {
     this.owner = owner;
+    this.presenterFactory = presenterFactory;
     this.view = undefined;
     this.model = undefined;
+    return this;
+  };
+
+  ScanBarcodePresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
+    this.setupPlaceholder(jquerySelection);
+
+    this.updateModel(input_model); // we do it before the setup view, because we know everything... no need for a tmp view
+    this.setupView();
+    this.renderView();
+    return this;
+  };
+
+  ScanBarcodePresenter.prototype.setupPlaceholder = function (jquerySelection) {
+    this.jquerySelection = jquerySelection;
+    return this;
+  };
+
+
+  ScanBarcodePresenter.prototype.updateModel = function (input_model) {
+    if (!this.model) {
+      this.model = new ScanBarcodeModel(input_model);
     }
+    return this;
+  };
 
-  ScanBarcodePresenter.prototype.setModel = function(barcodeType) {
-    this.model = new ScanBarcodeModel(barcodeType);
+  ScanBarcodePresenter.prototype.setupSubPresenters = function () {
+    // check with this.model for the needed subpresenters...
+    return this;
+  };
+
+  ScanBarcodePresenter.prototype.setupSubModel = function (model, jquerySelection) {
+    return this;
+  };
+
+  ScanBarcodePresenter.prototype.setupView = function () {
+    this.view = new ScanBarcodeView(this, this.jquerySelection);
   }
 
-  ScanBarcodePresenter.prototype.setupView = function(selection) {
-    this.view = new ScanBarcodeView(this, selection);
-  }
-
-  ScanBarcodePresenter.prototype.render = function() {
+  ScanBarcodePresenter.prototype.renderView = function () {
     if (this.view) {
       this.view.render(this.model);
-      }
     }
+  };
 
-  ScanBarcodePresenter.prototype.release = function() {
-    if(this.view) {
+  ScanBarcodePresenter.prototype.release = function () {
+    if (this.view) {
       this.view.clear();
-      }
-    }
-
-  ScanBarcodePresenter.prototype.childDone = function(presenter, action, data) {
-    if (action == "barcodeScanned") {
-      this.handleBarcode(data);
-      }
-    }
-
-  ScanBarcodePresenter.prototype.handleBarcode = function(barcode) {
-    this.model.barcode = barcode;
-    if(this.model.isValid()) {
-      this.model.busy = true;
-      this.render();
-      var resource = this.model.getResourceFromBarcode();
-      var presenter = this;
-      resource.done(function(s2resource) { 
-	presenter.owner.childDone(presenter, "barcodeScanned", s2resource);
-	}).
-	fail(function() {
-	  presenter.model.busy = false;
-	  presenter.render();
-	  });
-    }
-    else {
-      this.render();
     }
   }
 
-  ScanBarcodePresenter.prototype.validateBarcode = function(barcode) {
+  ScanBarcodePresenter.prototype.childDone = function (presenter, action, data) {
+    if (action == "barcodeScanned") {
+      this.handleBarcode(data);
+    }
+  }
+
+  ScanBarcodePresenter.prototype.handleBarcode = function (barcode) {
+    this.model.barcode = barcode;
+    if (this.model.isValid()) {
+      this.model.busy = true;
+      this.renderView();
+      this.owner.childDone(this, "barcodeScanned", barcode);
+    }
+    else {
+      this.renderView();
+    }
+  }
+
+  ScanBarcodePresenter.prototype.validateBarcode = function (barcode) {
     return false;
   }
 

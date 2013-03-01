@@ -35,12 +35,12 @@ define(['scripts/presenters/scan_barcode_presenter'], function(ScanBarcodePresen
 	configureSpyAppController();
 
 	presenter = new ScanBarcodePresenter(app);
-	presenter.setModel("tube");
+	presenter.setupPresenter("tube", function() { return $("#content"); } );
 	presenter.view = view;
 	});
 
       it("presenter render calls view render", function() {
-	presenter.render();
+	presenter.renderView();
 	expect(view.clear).not.toHaveBeenCalled();
 	expect(view.render).toHaveBeenCalledWith(presenter.model);
 	});
@@ -73,9 +73,8 @@ define(['scripts/presenters/scan_barcode_presenter'], function(ScanBarcodePresen
 	    };
 	}
 
-
 	presenter.childDone(presenter, "barcodeScanned", "tube0001");
-	expect(app.childDone).toHaveBeenCalledWith(presenter, "barcodeScanned", undefined);
+	expect(app.childDone).toHaveBeenCalledWith(presenter, "barcodeScanned", "tube0001");
       });
     });
   });

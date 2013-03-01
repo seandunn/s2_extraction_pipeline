@@ -9,8 +9,7 @@ require.config({
     esprima:'vendor/esprima',
     jquery:'vendor/jquery.min',
     mapper:'/components/S2Mapper/app/scripts/mapper',
-    labware:'/components/labware/app/scripts',
-    labware_images: 'components/labware/app/images',
+    labware:'/components/labware/app/scripts',    
     config:'scripts/config',
     json:'/components/apiExample/workflows',
     text: '/components/requirejs-text/text',
@@ -20,6 +19,6 @@ require.config({
 
 require(['extraction_pipeline/app'], function (app) {
   var theApp = new app();
-  theApp.init();
+  theApp.setupPresenter();
 });
 

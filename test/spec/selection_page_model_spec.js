@@ -1,9 +1,36 @@
-define(['models/selection_page_model', 'spec/selection_page_helper'], function(SelectionPageModel, SelectionPageHelper) {
+define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction_pipeline/dummyresource'], function(SelectionPageModel, SelectionPageHelper, DummyResource) {
 
   'use strict';
   
   var firstBatchUuid = '11111111-222222-00000000-111111111111';
   var secondBatchUuid = '11111111-222222-00000000-111111111112';
+  var nextObjectUuid = '';
+  var nextBatchUuid = '';
+  var haveMutated = false;
+  var owner = null;
+
+  DummyResource.prototype.mutateJson = function(json) {
+    console.log("patching tube");
+    
+    json.tube.uuid = nextObjectUuid;
+    json.tube.batch = {
+      rawJson:{
+        uuid: nextBatchUuid
+      }
+    };
+
+    haveMutated = true;
+
+    return json;
+
+  }
+
+  var createSpyOwner = function() {
+    owner = {
+      childDone: function(child, action, data) {}
+    };
+    spyOn(owner, 'childDone');    
+  }
 
   describe("SelectionPageModel", function() {
 
@@ -13,7 +40,8 @@ define(['models/selection_page_model', 'spec/selection_page_helper'], function(S
       var model;
 
       beforeEach(function() { 
-        model = new SelectionPageModel(123456789);
+	createSpyOwner();
+        model = new SelectionPageModel(owner, 123456789);
       });
 
       it("has capacity of 12 tubes", function() {
@@ -26,8 +54,20 @@ define(['models/selection_page_model', 'spec/selection_page_helper'], function(S
 
       it("has batch identifier set after a tube has been added", function() {
 	var expectedBatchUuid = firstBatchUuid;
-        model.addTube(helper.createTubeWithOriginalBatch(0));	
-	expect(model.batch).toEqual(firstBatchUuid);
+	nextBatchUuid = firstBatchUuid;
+        runs(function() { 
+          console.log("calling add tube");
+          model.addTube(helper.createUuid(0));	
+          });
+
+        waitsFor(function() {
+          return model.getNumberOfTubes() === 1
+          }, "message", 100);
+
+        runs(function() {
+          console.log("expecting model batch");
+	  expect(model.batch).toEqual(firstBatchUuid);
+          });
       });
 
       it("adding tube with no batch is handled gracefully", function() {
@@ -41,9 +81,9 @@ define(['models/selection_page_model', 'spec/selection_page_helper'], function(S
       var model;
 
       beforeEach(function() { 
-        model = new SelectionPageModel(123456789);
-
-        model.addTube(helper.createTubeWithOriginalBatch(0));	
+	createSpyOwner();
+        model = new SelectionPageModel(owner, 123456789);
+        model.tubes.push(helper.createTubeWithOriginalBatch(0));
       });
 
       it("contains one tube", function() { 
@@ -51,16 +91,37 @@ define(['models/selection_page_model', 'spec/selection_page_helper'], function(S
       });
 
       it("adding new tube in same batch works fine", function () {
-        var tube = helper.createTubeWithOriginalBatch(1);
-        model.addTube(tube);
 
-        expect(model.getNumberOfTubes()).toEqual(2);
-        expect(model.tubes[0].rawJson.tube.uuid).not.toEqual(model.tubes[1].rawJson.tube.uuid);
+	runs(function() {
+	  haveMutated = false;
+	  nextBatchUuid = firstBatchUuid;
+          var uuid = helper.createUuid(1);
+	  // Set up override uuid
+	  nextObjectUuid = uuid;
+          model.addTube(uuid);
+	});
+	waitsFor(function() {
+	  return haveMutated;
+	},
+		 "2 tubes to be created",
+		 50);	
+	runs( function() {
+          expect(model.getNumberOfTubes()).toEqual(2);
+          expect(model.tubes[0].rawJson.tube.uuid).not.toEqual(model.tubes[1].rawJson.tube.uuid);
+	  });
       });
 
-      it("adding new tube in different batch throws exception", function() {	
+      it("tube in different batch not added to model", function() {	
+	/*
         var tube = helper.createTubeWithDifferentBatch(1);
-        expect(function() { model.addTube(tube); }).toThrow();
+	var uuid = helper.createUuid(1);
+        expect(function() { model.addTube(uuid); }).toThrow();
+	*/
+
+	// Step 1 : get a uuid corresponding to a different tube
+	// Step 2 : make the mutator set a different batch uuid
+	// Step 3 : wait for the mutator to run
+	// Step 4 : no new tube is added to the model
       });
 
       it("removing last tube causes batch to be undefined", function() {
@@ -75,10 +136,12 @@ define(['models/selection_page_model', 'spec/selection_page_helper'], function(S
       var model;
 
       beforeEach(function() { 
-        model = new SelectionPageModel(123456789);
+	createSpyOwner();
+        model = new SelectionPageModel(owner, 123456789);
         for(var i = 0; i < 12; i++) {
           var newTube = helper.createTubeWithOriginalBatch(i);
-          model.addTube(newTube);
+          
+          model.tubes.push(newTube);
         }
       });
 

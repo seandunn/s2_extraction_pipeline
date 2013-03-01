@@ -18,7 +18,7 @@
  */
 
 
-define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/models/selection_page_model', 'extraction_pipeline/dummyresource'], function (SelectionPageView, SelectionPageModel, rsc) {
+define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/models/selection_page_model', 'extraction_pipeline/dummyresource', 'extraction_pipeline/presenters/tp', 'extraction_pipeline/presenters/ep'], function (SelectionPageView, SelectionPageModel, rsc, tp, ep) {
   // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
 
   var SelectionPagePresenter = function (owner, presenterFactory) {
@@ -37,39 +37,52 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     return this;
   };
 
-  SelectionPagePresenter.prototype.findAndAddOrder = function() {
-    // TODO : later on we should go by uuid
-    var that = this;
-    var order;
-    order_rsc_path = 'components/s2-api-examples/tube.json';
-    new rsc(order_rsc_path, "read")
-        .done(function (s2order) {
-          order = s2order;
-        })
-        .fail(function () {
-          // TODO: deal with error reading the order
-        })
-        .then(function () {
-          console.log("order has been found ");
-	  that.handleExtraTube(order);
-        });
-  }
+  SelectionPagePresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
+    /*
+     Arguments:
+     input_model = { userBC:"1234567890", labwareBC:"1234567890" }
+     */
+    console.log("SelectionPagePresenter  : setupPresenter");
+    this.setupPlaceholder(jquerySelection);
+    this.setupView();
+    this.renderView();
 
-  SelectionPagePresenter.prototype.setupView = function(selection) {
+    this.updateModel(input_model);
+    return this;
+  };
+
+  SelectionPagePresenter.prototype.setupPlaceholder = function (jquerySelection) {
+    console.log("SelectionPagePresenter  : setupPlaceholder", jquerySelection);
+    this.jquerySelection = jquerySelection;
+    return this;
+  };
+
+  SelectionPagePresenter.prototype.setupView = function () {
     /* initialises this instance by instantiating the view
      */
-    this.view = new SelectionPageView(this, selection);
-    this.jquerySelector = function() { return $("#content"); };
+    this.view = new SelectionPageView(this, this.jquerySelection);
     return this;
-  }
+  };
 
-  SelectionPagePresenter.prototype.setModel = function(userBC) {
-    this.model = new SelectionPageModel(userBC);
-    this.findAndAddOrder();
+  SelectionPagePresenter.prototype.updateModel = function (input_model) {
+    /*
+     Arguments:
+     input_model = {
+     userBC:"1234567890",
+     labwareBC:"1234567890"
+     }
+     */
+
+    console.log("SelectionPagePresenter  : updateModel");
+    if (!this.model) {
+      this.model = new SelectionPageModel(this, input_model);
+      this.model.retrieveBatchFromUser();
+    }
     return this;
-  }
+  };
 
-  SelectionPagePresenter.prototype.render = function() {
+
+  SelectionPagePresenter.prototype.renderView = function () {
     /* Updates the data for the current view
      *
      * Tells the presenter that the model has been updated
@@ -82,63 +95,70 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
 
     // we need to render the model first, so that the html elements
     // exist to configure the sub-presenters' views
-    this.view.clear();
     this.view.render(this.model);
-    for(var i = 0; i < this.presenters.length; i++) {
-      var presenter = this.presenters[i];
-      if(presenter) {
-	presenter.render();
+    for (var i = 0; i < this.presenters.length; i++) {
+      if (this.presenters[i]) {
+        this.presenters[i].renderView();
       }
     }
     return this;
   };
 
-  SelectionPagePresenter.prototype.setupPresenters = function (model) {
+  SelectionPagePresenter.prototype.setupSubPresenters = function () {
+    console.log("SelectionPagePresenter  : setupSubPresenter");
+
+    var numOrders = this.model ? this.model.getNumberOfTubes() : 0;
+
+    console.log("numOrders is ", numOrders);
+
+    for (var i = 0; i < this.model.getCapacity(); i++) {
+
+      if (i < numOrders) {
+        this.presenters[i] = this.presenterFactory.createTubeRemovalPresenter(this);
+      } else if (i == numOrders) {
+        this.presenters[i] = this.presenterFactory.createScanBarcodePresenter(this, "tube");
+      } else {
+        this.presenters[i] = new ep(null);
+
+      }
+    }
+    this.setupSubModel();
+    return this;
+  };
+
+  SelectionPagePresenter.prototype.setupSubModel = function () {
+    /*
+     Creates the data needed for the sub presenters
+     */
+    console.log("SelectionPagePresenter  : setupSubModel");
+
     var that = this;
-    if (!model) {
+    var jQueryForNthChild = function (childIndex) {
+      return function () {
+        return that.jquerySelection().find("li :eq(" + childIndex + ")");
+      };
+    };
+
+    if (!this.model) {
       return;
     }
-    var numOrders = model.getNumberOfTubes();
-    for (var i = 0; i < numOrders; i++) {
-      // TODO : order presenters go here
+
+    numTubes = this.model.getNumberOfTubes();
+
+    var submodels = [];
+    for(var i = 0; i < numTubes; i++){
+      submodels.push(this.model.tubes[i]);
     }
-    this.ensureScanBarcodePresenter(model);
-    for(var i = 0; i < this.presenters.length; i++) {
-      this.setupChildView(i);
+    if(numTubes < this.model.getCapacity()) {
+      submodels.push("tube");
     }
-  }
-
-  SelectionPagePresenter.prototype.setupChildView = function (index) {
-    var j = index;
-    var presenter = this.presenters[index];
-    var that = this;
-    var innerSelection = function() { return that.jquerySelector().find("tr :eq(" + j  +  ")"); }
-    this.presenters[index].release();
-    this.presenters[index].setupView(innerSelection);
-    this.presenters[index].render();
-  }
-
-  SelectionPagePresenter.prototype.setupChildViews = function() {
-    for(var i = 0; i < this.presenters.length; i++) {
-      this.setupChildView(i);
+    for(i = numTubes + 1; i < this.model.getCapacity(); i++) {
+      submodels.push(null);
     }
-//    this.render();
-  }
 
-  SelectionPagePresenter.prototype.ensureTubeRemovalPresenter = function(owner, index){
-    var presenter = this.presenterFactory.createTubeRemovalPresenter(this, owner);
-    this.presenters[index] = presenter;
-    this.setupChildView(index);
-    // TODO
-  }
-
-  SelectionPagePresenter.prototype.ensureScanBarcodePresenter = function(model) {
-    var numTubes = model.getNumberOfTubes();
-    console.log("num orders", numTubes);
-    if (numTubes < model.getCapacity()) {
-      var presenter = this.presenterFactory.createScanBarcodePresenter(this, "tube");
-      this.presenters[numTubes] = presenter;
-      this.setupChildView(numTubes);
+    for (i = 0; i < this.model.getCapacity(); i++) {
+      var submodel = this.model.tubes[i]
+      this.presenters[i].setupPresenter(submodels[i], jQueryForNthChild(i));
     }
   };
 
@@ -153,15 +173,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     return this;
   };
 
-  SelectionPagePresenter.prototype.updatePresenters = function() {
-    for(var i = 0; i < this.presenters.length; i++)
-      var presenter = this.presenters[i];
-      if(presenter) {	
-	presenter.render();
-      }
-  }
-
-  SelectionPagePresenter.prototype.childDone = function (presenter, action, data) {
+  SelectionPagePresenter.prototype.childDone = function (child, action, data) {
     /* Handles done messages from the page view and child presenters.
      *
      * Any messages that happen to come from the PageView will be delegated over to
@@ -169,64 +181,85 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
      *
      * Arguments
      * ---------
-     * presenter : the presenter instance the done message is coming from. Can be
-     *             either the PagePresenter or one of the PartialPresenters
+     * child : the presenter(or model) instance the done message is coming from. Can be
+     *             either the PagePresenter, one of the PartialPresenters or the model
      * action:     a string representing the action request, e.g. 'next' for someone
      *             clicking on the next button
      * data:       Any data associated with the action.
      *
      */
-    if (presenter === this) {
-      console.log("...?");
-      return this.selfDone(action, data);
+    console.log(">>>", data);
+    if (child === this.model) {
+      if (action === "foundTube") {
+        console.log("childDone");
+        this.setupSubPresenters();
+        this.renderView();
+        
+        return;
+      }
     }
 
     if (action === "barcodeScanned") {
-      return this.handleBarcodeScanned(presenter, data);
+      return this.handleBarcodeScanned(data);
     } else if (action === "removeTube") {
-      return this.handleTubeRemoved(presenter, data);
+      return this.handleTubeRemoved(data);
     }
-    
+    else if (action === "next"){
+      return this.owner.childDone(child, "done", data);
+    }
 
     console.log("unhandled childDone event:");
-    console.log("presenter: ", presenter);
+    console.log("child: ", child);
     console.log("action: " + action);
     console.log("data: " + JSON.stringify(data));
+    return this.owner.childDone(child, action, data);
+  };
+
+  SelectionPagePresenter.prototype.handleBarcodeScanned = function (data) {
+    if (this.model.addTube(data)) {
+      // TODO: deal with the success...
+    } else {
+      // TODO: deal with the error...
+    }
     return this;
   };
 
-  SelectionPagePresenter.prototype.handleBarcodeScanned = function(presenter, data) {
-    this.findAndAddOrder();
-    }
+  SelectionPagePresenter.prototype.handleTubeRemoved = function (data) {
+    console.log("data is ", data.tube.uuid);
+    console.log("model is ", this.model);
+    console.log("before model size is ", this.model.getNumberOfTubes());
 
-  SelectionPagePresenter.prototype.handleTubeRemoved = function(presenter, data) {
-    console.log("data is ", data);
     var index = this.model.removeTubeByUuid(data.tube.uuid);
+    console.log("after model size is ", this.model.getNumberOfTubes());
+   
     console.log("index is ", index);
     if (index > -1) {
       this.presenters[index].release();
       this.presenters.splice(index, 1);
       if (this.presenters.length == this.model.getCapacity() - 1) {
-	this.ensureScanBarcodePresenter();
+
+        //this.ensureScanBarcodePresenter();
       }
-      this.setupChildViews();
+      this.setupSubPresenters();
+      this.renderView();
+      //this.setupChildViews();
     }
-  }
+  };
 
 
-  SelectionPagePresenter.prototype.handleExtraTube = function(tube) {
-    if(this.model) {
+  SelectionPagePresenter.prototype.handleExtraTube = function (tube) {
+    if (this.model) {
       var numTubes = this.model.getNumberOfTubes();
       this.model.addTube(tube);
-      if(this.presenters[numTubes]) {
-	this.presenters[numTubes].release();
-	this.presenters[numTubes] = null;
+      if (this.presenters[numTubes]) {
+        this.presenters[numTubes].release();
+        this.presenters[numTubes] = null;
       }
       this.ensureTubeRemovalPresenter(tube, numTubes);
       this.ensureScanBarcodePresenter(this.model);
       this.setupChildViews();
     }
-  }
+  };
 
   SelectionPagePresenter.prototype.selfDone = function (action, data) {
     /* Handles done messages that arose from within this object or the view
@@ -245,6 +278,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     }
     return this;
   };
+
 
   return SelectionPagePresenter;
 });

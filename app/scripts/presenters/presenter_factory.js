@@ -8,7 +8,7 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
 	        TubePresenter) {
   'use strict';
 
-  var PresenterFactory = function() {
+  var PresenterFactory = function () {
     /* Construct an instance of PresenterFactory
      *
      * This is an implementation of the AbstractFactory pattern. The 
@@ -18,31 +18,27 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
      * with the Jasmine testing library. 
      */
     return this;
-    }
+  }
 
   PresenterFactory.prototype.createScanBarcodePresenter =
     function (owner, type) {
-      var presenter = new ScanBarcodePresenter(owner);
-      presenter.setModel(type);
-      
-      return presenter;
+      return new ScanBarcodePresenter(owner, this, type);
     };
 
   PresenterFactory.prototype.createTubeRemovalPresenter = 
-    function (owner, tube) {
-      var presenter = new TubeRemovalPresenter(owner, this);
-      presenter.setModel(tube);
-
-      return presenter;
+    function (owner) {
+      return new TubeRemovalPresenter(owner, this);
+      //presenter.setModel(tube);
+//      return presenter;
     };
 
   PresenterFactory.prototype.createTubePresenter = 
-    function (owner, tube) {
-      var presenter = new TubePresenter(owner, this);
-      presenter.setupModel(tube);
-      
-      return presenter;
-    }
+    function (owner) {
+      return new TubePresenter(owner, this);
+//      presenter.setupModel(tube);
+//      
+//      return presenter;
+    };
     
 
   return PresenterFactory;
