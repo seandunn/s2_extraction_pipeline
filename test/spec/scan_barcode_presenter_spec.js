@@ -74,7 +74,7 @@ define(['scripts/presenters/scan_barcode_presenter'], function(ScanBarcodePresen
 	}
 
 	presenter.childDone(presenter, "barcodeScanned", "tube0001");
-	expect(app.childDone).toHaveBeenCalledWith(presenter, "barcodeScanned", undefined);
+	expect(app.childDone).toHaveBeenCalledWith(presenter, "barcodeScanned", "tube0001");
       });
     });
   });
