@@ -57,7 +57,7 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
 	nextBatchUuid = firstBatchUuid;
         runs(function() { 
           console.log("calling add tube");
-          model.addTube(helper.createTubeWithOriginalBatch(0));	
+          model.addTube(helper.createUuid(0));	
           });
 
         waitsFor(function() {

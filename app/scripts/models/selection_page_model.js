@@ -42,6 +42,7 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
     var that = this;
     var theRsc;
     rsc_path = 'components/s2-api-examples/tube.json';
+    rsc_path = tubeUUID;
     new rsc(rsc_path, "read")
         .done(function (s2rsc) {
           theRsc = s2rsc;

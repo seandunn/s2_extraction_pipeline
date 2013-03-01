@@ -14,6 +14,10 @@ define([], function () {
     delete:'DELETE'  // Update maps to PUT
   };
 
+  var resourceUris = {
+    tube:'components/s2-api-examples/tube.json'
+  };
+
   function send(action, actionPath, data) {
     return $.ajax({
       type:actionMethods[action],
@@ -27,13 +31,16 @@ define([], function () {
   var ResourcePromise = function (uuid, sendAction, data) {
     var resourceDeferred = $.Deferred();
     var that = this;
+    var path = this.pathFromUuid(uuid);
 
-    send((sendAction || 'read'), '/' + uuid, data).
+    console.log("path is ", path);
+
+    send((sendAction || 'read'), '/' + path, data).
         done(function (response) {
 
           var rawJson = response; //response.responseText;
           var resource = Object.create(null);
-          resource.rawJson = that.mutateJson(rawJson); 
+          resource.rawJson = that.mutateJson(rawJson, uuid); 
 
           // The resourceType is the first and only attribute of the rawJson
           resource.resourceType = Object.keys(rawJson)[0];
@@ -53,7 +60,28 @@ define([], function () {
     return resourceDeferred.promise();
   };
 
-  ResourcePromise.prototype.mutateJson = function(json) {
+  ResourcePromise.prototype.pathFromUuid = function(uuid) {
+    
+    var tubeUuidRegex = /^1{8}-2{4}-3{4}-4{4}/;
+    if (tubeUuidRegex.test(uuid)) {
+      console.log("Recognised tube-like uuid");
+      return resourceUris.tube;
+      }
+    
+    console.log("Assuming uuid is the path");
+    return uuid;
+  }
+
+  ResourcePromise.prototype.mutateJson = function(json,uuid) {
+    // Default behavior: make json uuid match requested uuid
+    var type;
+    if(path.tube) {
+      type = "tube";
+    } else if (path.order) {
+      type = "order";
+    } // TODO etc
+    
+    if(type && json[type]) { json[type].uuid = uuid; }
     return json;
   }
 
