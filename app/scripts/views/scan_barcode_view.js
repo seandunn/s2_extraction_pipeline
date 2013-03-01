@@ -60,10 +60,7 @@ define([], function () {
       if (key === 13) {
 	that.owner.childDone(this.owner, "barcodeScanned", this.value);
       }
-      });
-
-    console.log("html string", htmlString);
-    
+      });    
   };
 
   ScanBarcodeView.prototype.clear = function() {

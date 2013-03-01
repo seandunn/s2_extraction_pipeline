@@ -1,7 +1,6 @@
 define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/views/scan_barcode_view'], function(ScanBarcodeModel, ScanBarcodeView) {
 
   var ScanBarcodePresenter = function (owner, presenterFactory) {
-    console.log("ScanBarcodePresenter constructor : ");
     this.owner = owner;
     this.presenterFactory = presenterFactory;
     this.view = undefined;
@@ -10,7 +9,6 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
   };
 
   ScanBarcodePresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
-    console.log("ScanBarcodePresenter  : setupPresenter");
     this.setupPlaceholder(jquerySelection);
 
     this.updateModel(input_model); // we do it before the setup view, because we know everything... no need for a tmp view
@@ -20,38 +18,24 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
   };
 
   ScanBarcodePresenter.prototype.setupPlaceholder = function (jquerySelection) {
-    console.log("ScanBarcodePresenter  : setupPlaceholder");
     this.jquerySelection = jquerySelection;
     return this;
   };
 
 
   ScanBarcodePresenter.prototype.updateModel = function (input_model) {
-    console.log("ScanBarcodePresenter  : updateModel", input_model);
     if (!this.model) {
       this.model = new ScanBarcodeModel(input_model);
     }
-//    var theURL = "http://localhost:8088/tube/2_"+input_model.v;
-//    var that = this;
-//    $.ajax({url:theURL, type:"GET"}).complete(
-//        function (data) {
-//          that.model = $.parseJSON(data.responseText);
-//          that.setupView();
-//          that.renderView();
-//          that.setupSubPresenters();
-//        }
-//    );
     return this;
   };
 
   ScanBarcodePresenter.prototype.setupSubPresenters = function () {
     // check with this.model for the needed subpresenters...
-    console.log("ScanBarcodePresenter  : setupSubPresenter : none");
     return this;
   };
 
   ScanBarcodePresenter.prototype.setupSubModel = function (model, jquerySelection) {
-    console.log("ScanBarcodePresenter  : setupSubModel : none");
     return this;
   };
 
@@ -82,16 +66,7 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
     if (this.model.isValid()) {
       this.model.busy = true;
       this.renderView();
-      var resource = this.model.getResourceFromBarcode();
-      var presenter = this;
-      resource
-          .done(function (s2resource) {
-            presenter.owner.childDone(presenter, "barcodeScanned", s2resource);
-          })
-          .fail(function () {
-            presenter.model.busy = false;
-            presenter.renderView();
-          });
+      this.owner.childDone(this, "barcodeScanned", barcode);
     }
     else {
       this.renderView();

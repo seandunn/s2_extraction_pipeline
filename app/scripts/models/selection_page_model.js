@@ -41,7 +41,6 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
     console.log('retriveorderdetails');
     var that = this;
     var theRsc;
-    rsc_path = 'components/s2-api-examples/tube.json';
     rsc_path = tubeUUID;
     new rsc(rsc_path, "read")
         .done(function (s2rsc) {
@@ -52,14 +51,16 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
         })
         .then(function () {
           console.log("tube has been found ");
-          theRsc.rawJson.tube.uuid = tubeUUID;
+//          theRsc.rawJson.tube.uuid = tubeUUID;
           that.tubes[index] = theRsc;
+	  var tubeJson  = theRsc.rawJson && theRsc.rawJson.tube;
+	  var batchJson = tubeJson && tubeJson.batch && tubeJson.batch.rawJson;
+	  var batchUuid = batchJson && batchJson.uuid;
 
-
-          if (that.batch === undefined) {
-            that.batch =  theRsc.rawJson.tube.batch.rawJson && theRsc.rawJson.tube.batch.rawJson.uuid;
+          if (that.batch === undefined) {	    
+            that.batch =  batchUuid;
           }
-          else if (theRsc.rawJson.tube.batch.rawJson.uuid !== this.batch) {
+          else if (batchUuid !== this.batch) {
 	    console.log("Not adding tube with different batch to selection page model");
           }
 
@@ -77,28 +78,13 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
 
     // something happens here...
 
-    var listOfTubeUUID = ["1234567890", "34567"];
+    var listOfTubeUUID = ["11111111-2222-3333-4444-000000000000"];
 
     for (var i=0; i< listOfTubeUUID.length; i++){
       this.retrieveTubeDetails(i,listOfTubeUUID[i]);
 
 
     }
-
-//    var that = this;
-//    var theRsc;
-//    rsc_path = 'components/s2-api-examples/batch.json';
-//    new rsc(rsc_path, "read")
-//        .done(function (s2batch) {
-//          theRsc = s2batch;
-//        })
-//        .fail(function () {
-//          // TODO: deal with error reading the order
-//        })
-//        .then(function () {
-//          console.log("batch has been found ");
-//        });
-
 
   };
 
@@ -122,14 +108,6 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
     if (this.tubes.length > this.capacity - 1) {
       throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
     }
-
-//    if (this.batch === undefined) {
-//      this.batch =  newOrder.batch && newOrder.batch.rawJson.uuid;
-//    }
-//    else if (newOrder.batch.rawJson.uuid !== this.batch) {
-//      throw {"type":"SelectionPageException", "message":"Batch number of new order does not match current selection" };
-//    }
-//    this.orders.push(newOrder);
 
     var lastTubeIndex = this.tubes.length;
     this.retrieveTubeDetails(lastTubeIndex, newTubeUUID);

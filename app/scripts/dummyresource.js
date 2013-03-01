@@ -18,6 +18,10 @@ define([], function () {
     tube:'components/s2-api-examples/tube.json'
   };
 
+  var typeUuidStubs = {
+    tube: "11111111-2222-3333-4444-00000000"
+  };
+
   function send(action, actionPath, data) {
     return $.ajax({
       type:actionMethods[action],
@@ -26,6 +30,10 @@ define([], function () {
       dataType:"json",
       data:data
     });
+  }
+
+  function generateUuidFromBarcode(barcode, type) { 
+    return typeUuidStubs[type] + barcode.slice(4);
   }
 
   var ResourcePromise = function (uuid, sendAction, data) {
@@ -40,6 +48,7 @@ define([], function () {
 
           var rawJson = response; //response.responseText;
           var resource = Object.create(null);
+	  console.log("dummy resource");
           resource.rawJson = that.mutateJson(rawJson, uuid); 
 
           // The resourceType is the first and only attribute of the rawJson
@@ -48,7 +57,7 @@ define([], function () {
           // Add the JSON's actions as functions on the Resource object
           for (var action in rawJson[resource.resourceType].actions) {
             resource[action] = function (sendData) {
-              return new ResourcePromise(uuid, action, data);
+              return new ResourcePromise(path, action, data);
             };
           }
 
@@ -63,7 +72,8 @@ define([], function () {
   ResourcePromise.prototype.pathFromUuid = function(uuid) {
     
     var tubeUuidRegex = /^1{8}-2{4}-3{4}-4{4}/;
-    if (tubeUuidRegex.test(uuid)) {
+    var tubeBarcodeRegex = /^tube[0-9]{4}/;
+    if (tubeUuidRegex.test(uuid) || tubeBarcodeRegex.test(uuid)) {
       console.log("Recognised tube-like uuid");
       return resourceUris.tube;
       }
@@ -72,16 +82,36 @@ define([], function () {
     return uuid;
   }
 
-  ResourcePromise.prototype.mutateJson = function(json,uuid) {
+  ResourcePromise.prototype.mutateJson = function(json,uuidOrBarcode) {
     // Default behavior: make json uuid match requested uuid
+
+    console.log("default mutate json");
+
     var type;
-    if(path.tube) {
+    if(json.tube) {
       type = "tube";
-    } else if (path.order) {
+    } else if (json.order) {
       type = "order";
     } // TODO etc
+
+    // add batch if necessary
+    console.log("uuid or barcode ", uuidOrBarcode);
+    console.log("uuid or barcode length", uuidOrBarcode.length);
+    var patchedUuid = uuidOrBarcode.length > 13 ?
+      uuidOrBarcode : generateUuidFromBarcode(uuidOrBarcode, type);
+ 
+    console.log("uuid is ", patchedUuid);
     
-    if(type && json[type]) { json[type].uuid = uuid; }
+    if(type && json[type]) { 
+      console.log("patching uuid");
+      console.log("before", json);
+      console.log("type", type);
+      json[type].uuid = patchedUuid.slice(9); 
+    } else { 
+      console.log("leaving uuid alone");
+    }
+    
+    console.log("dummy resource mutated json ", json);
     return json;
   }
 

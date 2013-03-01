@@ -1,16 +1,12 @@
 define([], function() {
 
   var TubeRemovalView = function(owner, jquerySelector) {
-    console.log("TRV ctor owner ", owner);
-    console.log("TRV ctor selector", jquerySelector);
     if(!jquerySelector) { debugger; }
     this.owner = owner;
     this.jquerySelector = jquerySelector;
   };
 
   TubeRemovalView.prototype.render = function(model) {
-    console.log("TRV.render model ", model);
-    console.log("TRV selector ", this.jquerySelector);
     var parent = this.jquerySelector();
 
     this.attachHtml(parent, model);

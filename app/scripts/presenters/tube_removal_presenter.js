@@ -7,7 +7,6 @@ define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalVie
   };
 
   TubeRemovalPresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
-    console.log("TubeRemovalPresenter  : setupPresenter");
     this.setupPlaceholder(jquerySelection);
     this.setupView();
     this.renderView();
@@ -17,20 +16,16 @@ define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalVie
   };
 
   TubeRemovalPresenter.prototype.setupPlaceholder = function (jquerySelection) {
-    console.log("TubeRemovalPresenter  : setupPlaceholder", jquerySelection);
     this.jquerySelection = jquerySelection;
     return this;
   };
 
   TubeRemovalPresenter.prototype.setupView = function () {
-    console.log("TubeRemovalPresenter  : presenter::setupView : ", this.jquerySelection);
-
     this.view = new TubeRemovalView(this, this.jquerySelection);
     return this;
   };
 
   TubeRemovalPresenter.prototype.updateModel = function (model) {
-    console.log("TubeRemovalPresenter  : updateModel", model);
     this.model = model;
     this.setupSubPresenters();
     return this;
@@ -58,12 +53,10 @@ define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalVie
   };
 
   TubeRemovalPresenter.prototype.renderView = function () {
-    console.log("TubeRemovalPresenter  : renderView : ", this.model);
     if (this.view) {
       this.view.render(this.model && this.model.rawJson);
     }
     if (this.tubePresenter) {
-      console.log("B");
       this.tubePresenter.renderView(this.model && this.model.rawJson);
     }
 

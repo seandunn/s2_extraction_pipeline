@@ -144,12 +144,21 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     }
 
     numTubes = this.model.getNumberOfTubes();
-    for (var i = 0; i < numTubes; i++) {
-      // TODO : tube presenters go here
+
+    var submodels = [];
+    for(var i = 0; i < numTubes; i++){
+      submodels.push(this.model.tubes[i]);
     }
-    //this.setupScanBarcodePresenterForAGivenRow(model);
-    for (i = 0; i < this.presenters.length; i++) {
-      this.presenters[i].setupPresenter(this.model.tubes[i], jQueryForNthChild(i));
+    if(numTubes < this.model.getCapacity()) {
+      submodels.push("tube");
+    }
+    for(i = numTubes + 1; i < this.model.getCapacity(); i++) {
+      submodels.push(null);
+    }
+
+    for (i = 0; i < this.model.getCapacity(); i++) {
+      var submodel = this.model.tubes[i]
+      this.presenters[i].setupPresenter(submodels[i], jQueryForNthChild(i));
     }
   };
 
@@ -189,12 +198,6 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
         return;
       }
     }
-//    if (action === "barcodeScanned") {
-//      return this.handleBarcodeScanned(presenter, data);
-//    } else if (action === "removeTube") {
-//      return this.handleTubeRemoved(presenter, data);
-//    }
-
 
     if (action === "barcodeScanned") {
       return this.handleBarcodeScanned(data);
