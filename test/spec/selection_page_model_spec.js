@@ -8,6 +8,7 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
   var nextBatchUuid = '';
   var haveMutated = false;
   var owner = null;
+  var barcodePresenter = {}; // minimal mock is acceptable
 
   DummyResource.prototype.mutateJson = function(json) {
     console.log("patching tube");
@@ -34,6 +35,7 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
     spyOn(owner, 'childDone');    
   }
 
+
   describe("SelectionPageModel", function() {
 
     var helper = new SelectionPageHelper();
@@ -44,6 +46,7 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
       beforeEach(function() { 
 	createSpyOwner();
         model = new SelectionPageModel(owner, 123456789);
+	haveMutated = false;
       });
 
       it("has capacity of 12 tubes", function() {
@@ -59,12 +62,12 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
 	nextBatchUuid = firstBatchUuid;
         runs(function() { 
           console.log("calling add tube");
-          model.addTube(helper.createUuid(0));	
+          model.addTube(helper.createUuid(0), barcodePresenter);	
           });
 
         waitsFor(function() {
-          return model.getNumberOfTubes() === 1
-          }, "message", 100);
+          return haveMutated;
+          }, "mutator to run", 100);
 
         runs(function() {
           console.log("expecting model batch");
@@ -88,6 +91,8 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
 	createSpyOwner();
         model = new SelectionPageModel(owner, 123456789);
         model.tubes.push(helper.createTubeWithOriginalBatch(0));
+	model.batch = firstBatchUuid;
+	haveMutated = false;
       });
 
       it("contains one tube", function() { 
@@ -115,17 +120,19 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
 	  });
       });
 
-      it("tube in different batch not added to model", function() {	
+      it("tube in different batch not added to model and sends error message to childDone", function() {	
 	runs(function() {
 	  nextBatchUuid = secondBatchUuid;
-	  model.addTube(helper.createUuid(1));
+	  model.addTube(helper.createUuid(1), barcodePresenter);	  
 	  });
 	waitsFor(function() {
 	  return haveMutated; },
 		"The mutator to override the batch uuid",
-		20);
+		40);
 	runs(function() {
 	  expect(model.getNumberOfTubes()).toBe(1);
+	  expect(owner.childDone).toHaveBeenCalledWith(barcodePresenter, "error",
+						       {"type": "UuidMismatch", "message": "tube in different batch to currently selected tubes"});
 	  });
       });
 
@@ -134,6 +141,24 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
         model.removeTubeByUuid(uuid);
         expect(model.getNumberOfTubes()).toEqual(0);
         expect(model.batch).toBeUndefined();
+      });
+
+      it("attempting to add same tube again sends error message to parent", function() { 
+	runs(function() {
+	  nextBatchUuid = firstBatchUuid;
+	  model.addTube(helper.createUuid(0), barcodePresenter);	  
+	  });
+	waitsFor(function() {
+	  return haveMutated;
+	  }, 
+		 "The mutator to have overriden the batch id",
+		 40);
+	runs(function() {
+	  expect(model.getNumberOfTubes()).toBe(1);
+	  expect(owner.childDone).toHaveBeenCalledWith(barcodePresenter, "error",
+						       {"type": "UuidMismatch", "message": "this tube has already been scanned"});
+	  });
+	
       });
     });
 
