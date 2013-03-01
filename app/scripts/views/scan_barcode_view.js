@@ -46,7 +46,7 @@ define([], function () {
 		 model.busy ? ' disabled="true"' : '' ,
 		 '/></td>',
 		 '<td>',
-		 model.isValid() ? '' : '<p class="alert-error">Invalid barcode entered</p>', 
+		 this.getError(model),
 		 '</td>' ],
     htmlString = htmlParts.join('');
 
@@ -62,6 +62,16 @@ define([], function () {
       }
       });    
   };
+
+  ScanBarcodeView.prototype.getError = function(model) {
+    var errorMessage = model.customError;
+    if (!errorMessage && !model.isValid) {
+      errorMessage = "Invalid barcode entered";
+    }
+    return errorMessage ? '<p class="alert-error">' + errorMessage + '</p>' : '';
+  }
+
+
 
   ScanBarcodeView.prototype.clear = function() {
     /* clear the view from the current page

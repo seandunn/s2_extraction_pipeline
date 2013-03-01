@@ -63,7 +63,7 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
     console.log("tube has been found ");
 
     this.validateBatchUuid(resource);
-    this.validateTubeUuid(tubeUuid);
+    this.validateTubeUuid(resource.rawJson.tube.uuid);
     console.log("index ", index);
 
     
@@ -88,7 +88,7 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
     else if (batchUuid !== this.batch) {
       console.log("Not adding tube with different batch to selection page model");
       throw {type: "UuidMismatch", 
-	     message: "tube in different batch to currently selected tubes" };
+	     message: "Tube in different batch to currently selected tubes." };
     }
 
   }
@@ -98,9 +98,13 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
     for(var i = 0; i < this.tubes.length; i++) {
       tube = this.tubes[i];
       if(tube) {
-	if(tube && tube.rawJson && (tube.rawJson.uuid === uuid) ) {
+	if(tube.rawJson && tube.rawJson.tube && (tube.rawJson.tube.uuid === uuid) ) {
 	  throw {type: "UuidMismatch",
-		 message: "this tube has already been scanned" }
+		 message: "This tube has already been scanned." }
+	}
+	else {
+	  console.log("found tube with uuid ", tube.rawJson && tube.rawJson.uuid);
+	  console.log("original uuid is " , uuid);
 	}
       }
     }

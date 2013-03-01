@@ -132,7 +132,7 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
 	runs(function() {
 	  expect(model.getNumberOfTubes()).toBe(1);
 	  expect(owner.childDone).toHaveBeenCalledWith(barcodePresenter, "error",
-						       {"type": "UuidMismatch", "message": "tube in different batch to currently selected tubes"});
+						       {"type": "UuidMismatch", "message": "Tube in different batch to currently selected tubes."});
 	  });
       });
 
@@ -146,6 +146,7 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
       it("attempting to add same tube again sends error message to parent", function() { 
 	runs(function() {
 	  nextBatchUuid = firstBatchUuid;
+	  nextObjectUuid = helper.createUuid(0);
 	  model.addTube(helper.createUuid(0), barcodePresenter);	  
 	  });
 	waitsFor(function() {
@@ -156,7 +157,7 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
 	runs(function() {
 	  expect(model.getNumberOfTubes()).toBe(1);
 	  expect(owner.childDone).toHaveBeenCalledWith(barcodePresenter, "error",
-						       {"type": "UuidMismatch", "message": "this tube has already been scanned"});
+						       {"type": "UuidMismatch", "message": "This tube has already been scanned."});
 	  });
 	
       });
