@@ -26,13 +26,14 @@ define([], function () {
 
   var ResourcePromise = function (uuid, sendAction, data) {
     var resourceDeferred = $.Deferred();
+    var that = this;
 
     send((sendAction || 'read'), '/' + uuid, data).
         done(function (response) {
 
           var rawJson = response; //response.responseText;
           var resource = Object.create(null);
-          resource.rawJson = rawJson;
+          resource.rawJson = that.mutateJson(rawJson); 
 
           // The resourceType is the first and only attribute of the rawJson
           resource.resourceType = Object.keys(rawJson)[0];
@@ -51,6 +52,10 @@ define([], function () {
 
     return resourceDeferred.promise();
   };
+
+  ResourcePromise.prototype.mutateJson = function(json) {
+    return json;
+  }
 
   return ResourcePromise;
 });

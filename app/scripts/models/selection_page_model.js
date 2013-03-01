@@ -55,17 +55,12 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
           that.tubes[index] = theRsc;
 
 
-          // NEW HACK
-          
-          theRsc.rawJson.tube.uuid = tubeUUID;
-
-          /*
-          if (index == 0){
-            that.tubes[index].rawJson.tube.uuid = "11111111-2222-3333-4444-555555555555";
-          }*/
-          // END OF HACK
-
-
+          if (that.batch === undefined) {
+            that.batch =  theRsc.rawJson.tube.batch.rawJson && theRsc.rawJson.tube.batch.rawJson.uuid;
+          }
+          else if (theRsc.rawJson.tube.batch.rawJson.uuid !== this.batch) {
+	    console.log("Not adding tube with different batch to selection page model");
+          }
 
           var data = {index:index, tubeUUID:tubeUUID};
           console.log(that);
