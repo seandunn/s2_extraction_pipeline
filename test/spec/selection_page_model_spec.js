@@ -116,16 +116,17 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
       });
 
       it("tube in different batch not added to model", function() {	
-	/*
-        var tube = helper.createTubeWithDifferentBatch(1);
-	var uuid = helper.createUuid(1);
-        expect(function() { model.addTube(uuid); }).toThrow();
-	*/
-
-	// Step 1 : get a uuid corresponding to a different tube
-	// Step 2 : make the mutator set a different batch uuid
-	// Step 3 : wait for the mutator to run
-	// Step 4 : no new tube is added to the model
+	runs(function() {
+	  nextBatchUuid = secondBatchUuid;
+	  model.addTube(helper.createUuid(1));
+	  });
+	waitsFor(function() {
+	  return haveMutated; },
+		"The mutator to override the batch uuid",
+		20);
+	runs(function() {
+	  expect(model.getNumberOfTubes()).toBe(1);
+	  });
       });
 
       it("removing last tube causes batch to be undefined", function() {
