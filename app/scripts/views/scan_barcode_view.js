@@ -65,7 +65,7 @@ define([], function () {
 
   ScanBarcodeView.prototype.getError = function(model) {
     var errorMessage = model.customError;
-    if (!errorMessage && !model.isValid) {
+    if (!errorMessage && !model.isValid()) {
       errorMessage = "Invalid barcode entered";
     }
     return errorMessage ? '<p class="alert-error">' + errorMessage + '</p>' : '';
