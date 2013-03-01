@@ -12,13 +12,15 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
   DummyResource.prototype.mutateJson = function(json) {
     console.log("patching tube");
     
+   
     json.tube.uuid = nextObjectUuid;
-    json.tube.batch = {
-      rawJson:{
-        uuid: nextBatchUuid
-      }
-    };
-
+    if (nextBatchUuid !== '')  {
+      json.tube.batch = {
+	rawJson:{
+          uuid: nextBatchUuid
+	}
+      };
+    }
     haveMutated = true;
 
     return json;
@@ -71,7 +73,9 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
       });
 
       it("adding tube with no batch is handled gracefully", function() {
-	model.addTube(helper.createTubeWithNullBatch(0));
+	// TODO
+	nextBatchUuid = '';
+	model.addTube(helper.createUuid(0));
 	expect(model.batch).toBeUndefined();
 	});
 
