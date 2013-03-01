@@ -37,7 +37,7 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
   }
 
 
-  SelectionPageModel.prototype.retrieveTubeDetails = function (index, tubeUUID){
+  SelectionPageModel.prototype.retrieveTubeDetails = function (index, tubeUUID, originatingPresenter){
     console.log('retriveorderdetails');
     var that = this;
     var theRsc;
@@ -46,29 +46,70 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
         .done(function (s2rsc) {
           theRsc = s2rsc;
         })
-        .fail(function () {
+        .fail(function () {	  
           // TODO: deal with error reading the order
         })
         .then(function () {
-          console.log("tube has been found ");
-//          theRsc.rawJson.tube.uuid = tubeUUID;
-          that.tubes[index] = theRsc;
-	  var tubeJson  = theRsc.rawJson && theRsc.rawJson.tube;
-	  var batchJson = tubeJson && tubeJson.batch && tubeJson.batch.rawJson;
-	  var batchUuid = batchJson && batchJson.uuid;
-
-          if (that.batch === undefined) {	    
-            that.batch =  batchUuid;
-          }
-          else if (batchUuid !== this.batch) {
-	    console.log("Not adding tube with different batch to selection page model");
-          }
-
-          var data = {index:index, tubeUUID:tubeUUID};
-          console.log(that);
-          that.owner.childDone(that,"foundTube",data);
+	  try  {
+	    that.addTubeResource(theRsc, index, tubeUUID);
+	  }
+	  catch( e) {
+	    that.owner.childDone(originatingPresenter, "error", e);
+	  }
         });
   };
+
+  SelectionPageModel.prototype.addTubeResource = function(resource, index, tubeUuid) {
+    console.log("tube has been found ");
+
+    this.validateBatchUuid(resource);
+    this.validateTubeUuid(resource.rawJson.tube.uuid);
+    console.log("index ", index);
+
+    
+    this.tubes[index] = resource;
+    var data = {index:index, tubeUUID:tubeUuid};
+    console.log(this);
+    this.owner.childDone(this, "foundTube", data);
+  }
+
+  SelectionPageModel.prototype.validateBatchUuid = function(resource) {
+    var tubeJson  = resource.rawJson && resource.rawJson.tube;
+    var batchJson = tubeJson && tubeJson.batch && tubeJson.batch.rawJson;
+    var batchUuid = batchJson && batchJson.uuid;
+
+    console.log("tubeJson ", tubeJson);
+    console.log("batchJson ", batchJson);
+    console.log("batch uuid ", batchUuid);
+    console.log("batch ", this.batch);
+    if (this.batch === undefined) {	    
+      this.batch =  batchUuid;
+    }
+    else if (batchUuid !== this.batch) {
+      console.log("Not adding tube with different batch to selection page model");
+      throw {type: "UuidMismatch", 
+	     message: "Tube in different batch to currently selected tubes." };
+    }
+
+  }
+
+  SelectionPageModel.prototype.validateTubeUuid = function(uuid) {
+    var tube;
+    for(var i = 0; i < this.tubes.length; i++) {
+      tube = this.tubes[i];
+      if(tube) {
+	if(tube.rawJson && tube.rawJson.tube && (tube.rawJson.tube.uuid === uuid) ) {
+	  throw {type: "UuidMismatch",
+		 message: "This tube has already been scanned." }
+	}
+	else {
+	  console.log("found tube with uuid ", tube.rawJson && tube.rawJson.uuid);
+	  console.log("original uuid is " , uuid);
+	}
+      }
+    }
+  };
+
 
   SelectionPageModel.prototype.retrieveBatchFromUser = function (){
     // For now
@@ -90,7 +131,7 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
 
 
 
-  SelectionPageModel.prototype.addTube = function (newTubeUUID) {
+  SelectionPageModel.prototype.addTube = function (newTubeUUID, originatingPresenter) {
     /* add tube
      *
      * Adds an tube to this batch.
@@ -110,7 +151,7 @@ define(['extraction_pipeline/dummyresource'], function (rsc) {
     }
 
     var lastTubeIndex = this.tubes.length;
-    this.retrieveTubeDetails(lastTubeIndex, newTubeUUID);
+    this.retrieveTubeDetails(lastTubeIndex, newTubeUUID, originatingPresenter);
 
 
   };

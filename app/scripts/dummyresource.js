@@ -42,6 +42,10 @@ define([], function () {
     var path = this.pathFromUuid(uuid);
 
     console.log("path is ", path);
+    if (typeof path !== "string") {
+      debugger;
+    }
+    
 
     send((sendAction || 'read'), '/' + path, data).
         done(function (response) {
