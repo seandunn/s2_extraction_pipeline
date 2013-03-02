@@ -12,6 +12,8 @@ define(['extraction_pipeline/dummyresource'], function(DummyResource) {
      */
     console.log(type);
     this.type = type;
+    this.customError = "";
+    this.busy = false;
     this.barcode = "";
   };
 

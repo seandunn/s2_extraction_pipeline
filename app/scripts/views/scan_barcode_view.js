@@ -24,8 +24,7 @@ define([], function () {
     return this;
   };
 
-  ScanBarcodeView.prototype.render = function (model) {
-    //debugger;
+  ScanBarcodeView.prototype.render = function(model) {
     if (model !== null) {
       this.model = model;
     }
@@ -37,17 +36,16 @@ define([], function () {
      */
 
     var parent = this.jquerySelector(),
-        htmlParts = ['<p>Scan ',
-          this.model.type ? this.model.type : 'barcode' ,
-
-          '</p><input value="',
-          this.model.barcode,
-          '"',
-          this.model.busy ? ' disabled="true"' : '' ,
-          '/>',
-          this.model.isValid() ? '' : '<p class="alert-error">Invalid barcode entered</p>',
-          '' ],
-        htmlString = htmlParts.join('');
+    htmlParts = ['<td><p>Scan barcode</p></td>',
+		 '<td><input value="',
+		 model.barcode, 
+		 '"',
+		 model.busy ? ' disabled="true"' : '' ,
+		 '/></td>',
+		 '<td>',
+		 this.getError(model),
+		 '</td>' ],
+    htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
     parent.empty().append(htmlString);
@@ -60,6 +58,16 @@ define([], function () {
       }
     });
   };
+
+  ScanBarcodeView.prototype.getError = function(model) {
+    var errorMessage = model.customError;
+    if (!errorMessage && !model.isValid()) {
+      errorMessage = "Invalid barcode entered";
+    }
+    return errorMessage ? '<p class="alert-error">' + errorMessage + '</p>' : '';
+  }
+
+
 
   ScanBarcodeView.prototype.clear = function () {
     /* clear the view from the current page
