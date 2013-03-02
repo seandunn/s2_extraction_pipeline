@@ -10,6 +10,7 @@ define(['extraction_pipeline/dummyresource'], function(DummyResource) {
      *       values for this are:
      *         - tube ( a tube barcode )
      */
+    console.log(type);
     this.type = type;
     this.barcode = "";
   };

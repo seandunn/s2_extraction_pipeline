@@ -28,8 +28,10 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
   // interface ....
   var defPtr = function (owner, presenterFactory) {
     this.owner = owner;
-    this.currentView = {};
+    this.currentView = undefined;
     this.presenterFactory = presenterFactory;
+    this.userBCSubPresenter = undefined;
+    this.labwareBCSubPresenter = undefined;
     return this;
   };
 
@@ -47,16 +49,20 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
   defPtr.prototype.updateModel = function (input_model) {
     console.log("defPtr  : updateModel");
     this.model = input_model;
-    var theURL = "http://localhost:8088/tube/2_"+input_model.v;
-    var that = this;
-    $.ajax({url:theURL, type:"GET"}).complete(
-        function (data) {
-          that.model = $.parseJSON(data.responseText);
-          that.setupView();
-          that.renderView();
-          that.setupSubPresenters();
-        }
-    );
+    if (this.model){
+      // TODO: fix me -> eventually use a proper resource to check the user...
+//      var theURL = "http://localhost:8088/tube/2_" + input_model.v;
+//      var that = this;
+//      $.ajax({url:theURL, type:"GET"}).complete(
+//          function (data) {
+//            that.model = $.parseJSON(data.responseText);
+//            that.setupView();
+//            that.renderView();
+//            that.setupSubPresenters();
+//          }
+//      );
+    }
+    this.setupSubPresenters();
     return this;
   };
 
@@ -68,34 +74,53 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
 
   defPtr.prototype.setupSubPresenters = function () {
     // check with this.model for the needed subpresenters...
-    console.log("defPtr  : setupSubPresenter : none");
+    console.log("defPtr  : setupSubPresenter");
+    this.userBCSubPresenter = this.presenterFactory.createScanBarcodePresenter(this);
+    this.labwareBCSubPresenter = this.presenterFactory.createScanBarcodePresenter(this);
+    this.setupSubModel();
     return this;
   };
 
-  defPtr.prototype.setupSubModel = function (model,jquerySelection) {
-    console.log("defPtr  : setupSubModel : none");
+  defPtr.prototype.setupSubModel = function () {
+    console.log("defPtr  : setupSubModel");
+    var that = this;
+    var jQuerySelectionForUser = function () {
+      return that.jquerySelection().find(".user_barcode");
+    };
+
+    var jQuerySelectionForLabware = function () {
+      return that.jquerySelection().find(".labware_barcode");
+    };
+
+    if (this.userBCSubPresenter) {
+      this.userBCSubPresenter.setupPresenter("user", jQuerySelectionForUser);
+    }
+    if (this.labwareBCSubPresenter) {
+      this.labwareBCSubPresenter.setupPresenter("tube", jQuerySelectionForLabware);
+    }
     return this;
   };
 
 
   defPtr.prototype.setupView = function () {
-    console.log("defPtr  : presenter::setupView : ", this.jquerySelection);
+    console.log("defPtr  : presenter::setupView");
     this.currentView = new view(this, this.jquerySelection);
     return this;
   };
-
-
 
 
   defPtr.prototype.renderView = function () {
     // render view...
     console.log("defPtr  : presenter::renderView");
     var data = undefined;
-    if (this.model){
+    if (this.model) {
       data = {};
       data.error = "hello";
     }
     this.currentView.renderView(data);
+    if (this.userBCSubPresenter){
+      this.userBCSubPresenter.renderView();
+    }
     return this;
   };
 
@@ -105,13 +130,28 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
   };
 
 
+  defPtr.prototype.childDone = function (child, action, data) {
+    // called when a child  wants to say something...
 
+    if (child === this.userBCSubPresenter){
+      if (action === "barcodeScanned") {
+        return this.handleBarcodeScanned(data);
+      }
+    } else if (child === this.view){
+      if (action === "login"){
+        this.login(data.userBC, data.labwareBC);
+      }
+    }
+//    else if (action === "next"){
+//      return this.owner.childDone(child, "done", data);
+//    }
 
-
-  defPtr.prototype.childDone = function (childPtr, action, data) {
-    // called when a child presenter wants to say something...
-    // here, does nothing.
-    return {};
+    console.log("unhandled childDone event:");
+    console.log("child: ", child);
+    console.log("action: " + action);
+    console.log("data: " + JSON.stringify(data));
+    //return this.owner.childDone(child, action, data);
+    return this;
   };
 
 
@@ -120,6 +160,15 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
 
     var tube;
     var that = this;
+
+    if (!userBC){
+      console.log("something wrong happened with the user");
+      return this;
+    }
+    if (!tubeBC){
+      console.log("something wrong happened with the tube");
+      return this;
+    }
 
     // TODO: for now, the tube is always the same... no use of the mapper
     tubeBC = 'components/s2-api-examples/tube.json';
@@ -139,6 +188,7 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
           console.log(that);
           that.owner.childDone(that, "login", data);
         });
+    return this;
   };
 
   return defPtr;
