@@ -19,37 +19,31 @@
 
 
 define([], function () {
-// TODO: remove me !!!!
 
   // interface ....
-  var tp = function (owner, presenterFactory) {
+  var emptyPresenter = function (owner, presenterFactory) {
     this.owner = owner;
     this.currentView = {};
     return this;
   };
 
-
-  tp.prototype.setupPresenter = function (input_model, jquerySelection) {
-//    console.log("et  : setupPresenter");
+  emptyPresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
     this.jquerySelection = jquerySelection;
-
     return this;
   };
 
-  tp.prototype.renderView = function () {
+  emptyPresenter.prototype.renderView = function () {
     // render view...
-//    console.log("et  : presenter::renderView, ", this.jquerySelection());
-    this.jquerySelection().empty().append("empty");
-
+    this.jquerySelection().empty().append("<div>empty<div/>");
     return this;
   };
 
 
-  tp.prototype.release = function () {
+  emptyPresenter.prototype.release = function () {
     this.jquerySelection().release();
     return this;
   };
 
 
-  return tp;
+  return emptyPresenter;
 });
