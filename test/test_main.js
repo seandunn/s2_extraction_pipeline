@@ -17,8 +17,9 @@ require.config({
     presenters: 'scripts/presenters',
     spec: 'spec',
     json: 'components/S2Mapper/test/json',
-    dummyresource: 'scripts/dummyresource',    
-  },
+    dummyresource: 'scripts/dummyresource',
+    text: '/components/requirejs-text/text'
+  }
 });
  
 require(['domReady!',

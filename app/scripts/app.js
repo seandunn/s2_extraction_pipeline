@@ -16,7 +16,7 @@ define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/p
     this.setupPlaceholder();
     this.setupView();
     this.renderView(); // render empty view...
-    var input_model = {};
+    var input_model = undefined;
     this.updateModel(input_model);
 
     return this;
@@ -39,15 +39,15 @@ define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/p
 
   app.prototype.updateSubPresenters = function () {
     console.log("App : updateSubPresenters");
-//    this.currentPagePresenter = this.workflow.get_default_presenter(this.presenterFactory);
-//    this.currentPagePresenter.setupPresenter(this.model, this.jquerySelection);
-    var data = {userBC:"1234567890", labwareBC:"1234567890", batch:undefined};
-    this.userBC = data.userBC;
-    this.labwareBC = data.labwareBC;
-    this.batchUUID = data.batchUUID;
-
-    this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory);
-    this.currentPagePresenter.setupPresenter(this.userBC, this.jquerySelection);
+    this.currentPagePresenter = this.workflow.get_default_presenter(this.presenterFactory);
+    this.currentPagePresenter.setupPresenter(this.model, this.jquerySelection);
+//    var data = {userBC:"1234567890", labwareBC:"1234567890", batch:undefined};
+//    this.userBC = data.userBC;
+//    this.labwareBC = data.labwareBC;
+//    this.batchUUID = data.batchUUID;
+//
+//    this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory);
+//    this.currentPagePresenter.setupPresenter(this.userBC, this.jquerySelection);
 
 
     return this;

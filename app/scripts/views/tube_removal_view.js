@@ -18,8 +18,8 @@ define([], function() {
     uuid = (model && model.tube && 
       model.tube.uuid ) || 'unknown',
 
-    parts = [ '<div>',
-        '<div class="placeholder"/>',
+    parts = [ '<div style="float: none">',
+        '<div style="float: none;" class="placeholder"/>',
 	      '<button>Remove</button>',
           '</div>'],
     innerHtml = (model == undefined) ? waiting : parts.join('');
