@@ -1,7 +1,7 @@
 define(['extraction_pipeline/dummyresource'], function(DummyResource) {
   'use strict';
 
-  var ScanBarcodeModel = function (type) {
+  var ScanBarcodeModel = function (data) {
     /* Constructor
      *
      * Arguments
@@ -10,43 +10,17 @@ define(['extraction_pipeline/dummyresource'], function(DummyResource) {
      *       values for this are:
      *         - tube ( a tube barcode )
      */
+    var type =data.type;
     console.log(type);
     this.type = type;
     this.customError = "";
     this.busy = false;
-    this.barcode = "";
+    this.barcode = data.value;
   };
 
   ScanBarcodeModel.prototype.isValid = function () {
-    /* Determines whether the barcode is a valid barcode 
-     *
-     * Returns
-     * -------
-     * true, if the barcode is a well-formed barcode for the
-     *       configured barcode type
-     * false, otherwise
-     */
-    if (this.barcode.length === 0) {
-      return true;
-    }
-    if (this.type === "tube") {
-      return this.isValidTubeBarcode();
-    }
-    return false;
-  };
-
-  ScanBarcodeModel.prototype.isValidTubeBarcode = function () {
-    /* Determines whether the barcode is a valid tube barcode 
-     *
-     * Returns
-     * -------
-     * true, if the barcode is a well-formed tube barcode
-     * false, otherwise
-     */
-    // TODO : this is a placeholder
-    // Tube pattern expected to be tubeXXXX where XXXX is an integer
-    var patt = /tube[0-9]{4}/g;
-    return patt.test(this.barcode);
+    var pattern = new RegExp(this.type + "[0-9]{4}","g");
+    return pattern.test(this.barcode);
   };
 
   ScanBarcodeModel.prototype.getResourceFromBarcode = function () {
@@ -58,14 +32,12 @@ define(['extraction_pipeline/dummyresource'], function(DummyResource) {
      *   be determined.
      * - undefined otherwise
      */
+    //todo : should be 'type' agnostic at this point : the mapper should decide
     if (this.type === "tube") {
-      return this.getResourceFromTubeBarcode();
+      return new DummyResource('components/s2-api-examples/tube.json', "read");
     }
-  };
 
-  ScanBarcodeModel.prototype.getResourceFromTubeBarcode = function () {
-    var tubePath = 'components/s2-api-examples/tube.json';
-    return new DummyResource(tubePath, "read");
+    return undefined;
   };
 
   return ScanBarcodeModel;

@@ -50,6 +50,7 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
     console.log("defPtr  : updateModel");
     this.model = input_model;
     if (this.model){
+
       // TODO: fix me -> eventually use a proper resource to check the user...
 //      var theURL = "http://localhost:8088/tube/2_" + input_model.v;
 //      var that = this;
@@ -93,10 +94,10 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
     };
 
     if (this.userBCSubPresenter) {
-      this.userBCSubPresenter.setupPresenter("user", jQuerySelectionForUser);
+      this.userBCSubPresenter.setupPresenter({type:"user",value:"user0001"}, jQuerySelectionForUser);
     }
     if (this.labwareBCSubPresenter) {
-      this.labwareBCSubPresenter.setupPresenter("tube", jQuerySelectionForLabware);
+      this.labwareBCSubPresenter.setupPresenter({type:"tube",value:"tube0001"}, jQuerySelectionForLabware);
     }
     return this;
   };
