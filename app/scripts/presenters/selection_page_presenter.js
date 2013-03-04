@@ -18,7 +18,7 @@
  */
 
 
-define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/models/selection_page_model', 'extraction_pipeline/dummyresource', 'extraction_pipeline/presenters/tp', 'extraction_pipeline/presenters/ep'], function (SelectionPageView, SelectionPageModel, rsc, tp, ep) {
+define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/models/selection_page_model', 'extraction_pipeline/dummyresource'], function (SelectionPageView, SelectionPageModel, rsc) {
   // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
 
   var SelectionPagePresenter = function (owner, presenterFactory) {
@@ -52,7 +52,6 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
   };
 
   SelectionPagePresenter.prototype.setupPlaceholder = function (jquerySelection) {
-    console.log("SelectionPagePresenter  : setupPlaceholder", jquerySelection);
     this.jquerySelection = jquerySelection;
     return this;
   };
@@ -105,20 +104,16 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
   };
 
   SelectionPagePresenter.prototype.setupSubPresenters = function () {
-    console.log("SelectionPagePresenter  : setupSubPresenter");
-
     var numOrders = this.model ? this.model.getNumberOfTubes() : 0;
-
-    console.log("numOrders is ", numOrders);
 
     for (var i = 0; i < this.model.getCapacity(); i++) {
 
       if (i < numOrders) {
         this.presenters[i] = this.presenterFactory.createTubeRemovalPresenter(this);
       } else if (i == numOrders) {
-        this.presenters[i] = this.presenterFactory.createScanBarcodePresenter(this, "tube");
+        this.presenters[i] = this.presenterFactory.createScanBarcodePresenter(this);
       } else {
-        this.presenters[i] = new ep(null);
+        this.presenters[i] = this.presenterFactory.createEmptyPresenter(this);
 
       }
     }
@@ -130,8 +125,6 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     /*
      Creates the data needed for the sub presenters
      */
-    console.log("SelectionPagePresenter  : setupSubModel");
-
     var that = this;
     var jQueryForNthChild = function (childIndex) {
       return function () {
@@ -150,7 +143,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
       submodels.push(this.model.tubes[i]);
     }
     if(numTubes < this.model.getCapacity()) {
-      submodels.push("tube");
+      submodels.push({type:"tube",value:"tube9999"} );
     }
     for(i = numTubes + 1; i < this.model.getCapacity(); i++) {
       submodels.push(null);
@@ -188,10 +181,8 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
      * data:       Any data associated with the action.
      *
      */
-    console.log(">>>", data);
     if (child === this.model) {
       if (action === "foundTube") {
-        console.log("childDone");
         this.setupSubPresenters();
         this.renderView();
         
@@ -208,10 +199,6 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
       return this.owner.childDone(child, "done", data);
     }
 
-    console.log("unhandled childDone event:");
-    console.log("child: ", child);
-    console.log("action: " + action);
-    console.log("data: " + JSON.stringify(data));
     return this.owner.childDone(child, action, data);
   };
 
@@ -225,19 +212,12 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
   };
 
   SelectionPagePresenter.prototype.handleTubeRemoved = function (data) {
-    console.log("data is ", data.tube.uuid);
-    console.log("model is ", this.model);
-    console.log("before model size is ", this.model.getNumberOfTubes());
-
     var index = this.model.removeTubeByUuid(data.tube.uuid);
-    console.log("after model size is ", this.model.getNumberOfTubes());
-   
-    console.log("index is ", index);
+
     if (index > -1) {
       this.presenters[index].release();
       this.presenters.splice(index, 1);
       if (this.presenters.length == this.model.getCapacity() - 1) {
-
         //this.ensureScanBarcodePresenter();
       }
       this.setupSubPresenters();

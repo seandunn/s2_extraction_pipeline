@@ -13,7 +13,7 @@ require.config({
     config:'scripts/config',
     json:'/components/apiExample/workflows',
     text: '/components/requirejs-text/text',
-    extraction_pipeline: 'scripts',
+    extraction_pipeline: 'scripts'
   }
 });
 
