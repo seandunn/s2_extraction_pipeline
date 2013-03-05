@@ -17,8 +17,10 @@ require.config({
   }
 });
 
-require(['extraction_pipeline/app'], function (app) {
-  var theApp = new app();
-  theApp.setupPresenter();
+require(['extraction_pipeline/app', 'extraction_pipeline/presenters/kit_presenter'], function (app, KitPresenter) {
+//  var theApp = new app();
+//  theApp.setupPresenter();
+    var kitPresenter = new KitPresenter();
+    kitPresenter.setupPresenter()
 });
 
