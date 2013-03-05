@@ -1,7 +1,7 @@
 define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalView) {
 
   var TubeRemovalPresenter = function (owner, presenterFactory) {
-    this.model = null;
+    this.model = undefined;
     this.owner = owner;
     this.presenterFactory = presenterFactory;
   };
@@ -51,7 +51,10 @@ define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalVie
     if (this.model) {
       var that = this;
 //      debugger;
-      var data = {uuid:this.model.uuid};
+      var data = {
+        uuid:this.model.uuid
+      };
+
       this.tubePresenter.setupPresenter(data,function () {
         return that.jquerySelection().find("div.placeholder");
       });
@@ -73,7 +76,7 @@ define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalVie
       this.view.render(this.model);
     }
     if (this.tubePresenter) {
-      this.tubePresenter.renderView(this.model);
+      this.tubePresenter.renderView();
     }
 
   };

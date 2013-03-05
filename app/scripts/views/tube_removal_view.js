@@ -25,16 +25,24 @@ define([], function () {
   };
 
   TubeRemovalView.prototype.attachHtml = function (parent, model) {
-    var waiting = '<p>Loading tube...</p>';
+    if (!parent) {
+      // TODO: Add an exception
+      debugger;
+      return;
+    }
 
-    var  uuid = model.uuid || 'unknown';
+    var innerHtml = undefined;
 
-    var parts = [ '<div style="float: none">',
-        '<div style="float: none;" class="placeholder"/>',
-        '<button>Remove</button>',
-        '</div>'].join('');
+    if (!model){
+      innerHtml = '<p>Loading tube...</p>';
+    }
+    else{
+      innerHtml = [ '<div style="float: none">',
+          '<div style="float: none;" class="placeholder"/>',
+          '<button>Remove</button>',
+          '</div>'].join('');
+    }
 
-    var innerHtml = (model == undefined) ? waiting : parts;
     parent.empty().append(innerHtml);
   };
 
