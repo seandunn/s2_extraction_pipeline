@@ -1,17 +1,18 @@
 define([], function () {
   "use strict";
   var that = this;
-  function onLogin_clicked(owner) {
+  function onLogin_clicked(owner, view) {
     /*
     * response to the click on the login button...
     * tells the owner that we want to try a login
     */
     return function () {
       if (owner) {
+        console.log("logging ?", view);
         var userbarcode = $(".user_barcode input").val();
         var tube_barcode = $(".labware_barcode input").val();
 
-        owner.childDone(that , "login",{userBC:userbarcode, labwareBC:tube_barcode});
+        owner.childDone(view , "login",{userBC:userbarcode, labwareBC:tube_barcode});
       }
     }
   }
@@ -68,7 +69,7 @@ define([], function () {
 
     // adds the js response to the ui elements
 //    $("#tube_barcode").bind('keypress', onReturnKey_pressed(this.owner));
-    $("#login_button").click(onLogin_clicked(this.owner));
+    $("#login_button").click(onLogin_clicked(this.owner, this));
   };
 
   return loginview;

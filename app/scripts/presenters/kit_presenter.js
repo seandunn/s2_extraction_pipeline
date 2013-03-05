@@ -19,8 +19,6 @@
 
 
 define(['extraction_pipeline/views/kit_view'], function (View) {
-// TODO: remove me !!!!
-
   // interface ....
   var tp = function (owner, presenterFactory) {
     this.owner = owner;

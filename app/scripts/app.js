@@ -69,7 +69,7 @@ define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/p
 
   app.prototype.childDone = function (page_presenter, action, data) {
     // for now, when a pagePresenter has done, we just load the same old page presenter...
-    console.log("child done ? " + action);
+    console.log("child done ? " + action, page_presenter);
 
     if (action == "done") {
 
@@ -83,7 +83,7 @@ define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/p
 
       this.currentPagePresenter.release();
       this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory);
-      this.currentPagePresenter.setupPresenter(this.userBC, this.jquerySelection);
+      this.currentPagePresenter.setupPresenter(data, this.jquerySelection);
     }
 
     return this.appModel;

@@ -4,7 +4,7 @@ define(['extraction_pipeline/default/default_presenter',
     this.mainController = owner;
   };
 
-  workflowEngine.prototype.get_next_presenter = function (presenterFactory) {
+  workflowEngine.prototype.get_next_presenter = function (presenterFactory, data) {
     // use the this.mainController.appModel to decide what to do next
 
     if (!this.mainController.batchUUID) {
@@ -20,6 +20,12 @@ define(['extraction_pipeline/default/default_presenter',
   workflowEngine.prototype.get_default_presenter = function (presenterFactory) {
     return presenterFactory.createDefaultPresenter(this.mainController);
   };
+
+  workflowEngine.prototype.get_kit_presenter = function (presenterFactory){
+    return presenterFactory.createKitPresenter(this.mainController);
+  };
+
+  //TODO: add similar functions to the above for all of the page presenters
 
   return workflowEngine;
 });

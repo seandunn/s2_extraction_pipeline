@@ -11,7 +11,7 @@ define([], function () {
   }
 
   var ScanBarcodeView = function(owner, jquerySelector) {
-console.log("hello");
+    console.log("hello");
     this.owner = owner;
     this.jquerySelector = jquerySelector;
 

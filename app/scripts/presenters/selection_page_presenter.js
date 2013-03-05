@@ -40,9 +40,9 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
   SelectionPagePresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
     /*
      Arguments:
-     input_model = { userBC:"1234567890", labwareBC:"1234567890" }
+     input_model = { userBC:"1234567890", labwareBC:"1234567890", batchUUID:"0123456789" }
      */
-    console.log("SelectionPagePresenter  : setupPresenter");
+    console.log("SelectionPagePresenter  : setupPresenter, ", input_model);
     this.setupPlaceholder(jquerySelection);
     this.setupView();
     this.renderView();
@@ -75,7 +75,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     console.log("SelectionPagePresenter  : updateModel");
     if (!this.model) {
       this.model = new SelectionPageModel(this, input_model);
-      this.model.retrieveBatchFromUser();
+      this.model.retrieveBatchFromSeminalLabware();
     }
     return this;
   };
@@ -150,7 +150,8 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     }
 
     for (i = 0; i < this.model.getCapacity(); i++) {
-      var submodel = this.model.tubes[i]
+      var submodel = this.model.tubes[i];
+//      if(i == 0) debugger;
       this.presenters[i].setupPresenter(submodels[i], jQueryForNthChild(i));
     }
   };
@@ -182,7 +183,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
      *
      */
     if (child === this.model) {
-      if (action === "foundTube") {
+      if (action === "modelUpdated") {
         this.setupSubPresenters();
         this.renderView();
         
@@ -198,6 +199,8 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     else if (action === "next"){
       return this.owner.childDone(child, "done", data);
     }
+
+
 
     return this.owner.childDone(child, action, data);
   };
