@@ -18,7 +18,7 @@
  */
 
 
-define(['extraction_pipeline/views/kit_view'], function (View) {
+define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource'], function (View, rsc) {
 // TODO: remove me !!!!
 
   // interface ....
@@ -26,8 +26,10 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     this.owner = owner;
     this.currentView = undefined;
     this.barcodePresenter = undefined;
-    this.rowPresenters = [];
     this.presenterFactory = presenterFactory;
+    this.tubePresenter = undefined;
+    this.wasteTubePresenter = undefined;
+    this.spinColumnPresenter = undefined;
     return this;
   };
 
@@ -54,42 +56,49 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
 
   tp.prototype.updateModel = function (model) {
     this.model = model;
-    this.numRows = 12;
     this.setupSubPresenters();
     return this;
   }
 
   tp.prototype.setupSubPresenters = function () {
-    if (!this.barcodePresenter) {
-      this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
+    if (!this.tubePresenter) {
+      this.tubePresenter = this.presenterFactory.createTubePresenter(this);
     }
-    for (var i = 0; i < this.numRows; i++) {
-      if (!this.rowPresenters[i]) {
-        this.rowPresenters[i] = this.presenterFactory.createRowPresenter(this);
-      }
+    if (!this.spinColumnPresenter) {
+      this.spinColumnPresenter = this.presenterFactory.createSpinColumnPresenter(this);
     }
+    if (!this.wasteTubePresenter) {
+      this.wasteTubePresenter = this.presenterFactory.createTubePresenter(this);
+    }
+
+    // TODO: for now, the tube is always the same... no use of the mapper
+
     this.setupSubModel();
+
     return this;
   }
 
   tp.prototype.setupSubModel = function () {
-    var modelJson = {"type":"Kit",
-      "value":"Kit0001"}
+    var tubeBC = { "url" : "components/s2-api-examples/tube.json" };
+    var spinColumnBC = { "url" : "components/s2-api-examples/spin_column.json" };
     var that = this;
-    var jquerySelectionForBarcode = function () {
-      return that.jquerySelection().find('.barcode')
-    }
 
-    for (var i = 0; i < this.numRows; i++) {
+    var jquerySelectionForTube = function () {
+      return that.jquerySelection().find('.tube')
+    };
 
-      var jquerySelectionForRow = function (i) {
-        return function () {
-          return that.jquerySelection().find('.row' + i);
-        }
-      }
-      this.rowPresenters[i].setupPresenter(undefined, jquerySelectionForRow(i));
-    }
-    this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
+    var jquerySelectionForWasteTube = function () {
+      return that.jquerySelection().find('.wasteTube')
+    };
+
+    var jquerySelectionForSpinColumn = function () {
+      return that.jquerySelection().find('.spinColumn')
+    };
+
+    this.tubePresenter.setupPresenter(tubeBC, jquerySelectionForTube);
+    this.spinColumnPresenter.setupPresenter(spinColumnBC, jquerySelectionForSpinColumn);
+    this.wasteTubePresenter.drawWasteTube(jquerySelectionForWasteTube);
+
     return this;
   }
 
@@ -97,8 +106,8 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     // render view...
 //    console.log("et  : presenter::renderView, ", this.jquerySelection());
     this.currentView.renderView();
-    if (this.barcodePresenter) {
-      this.barcodePresenter.renderView();
+    if(this.tubePresenter){
+    this.tubePresenter.renderView();
     }
     return this;
   };
@@ -111,5 +120,4 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
 
 
   return tp;
-})
-;
+});

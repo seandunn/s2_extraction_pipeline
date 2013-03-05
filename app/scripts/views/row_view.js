@@ -29,29 +29,12 @@ console.log("hello");
   
     var parent = this.jquerySelector(),
     htmlParts = [
-      '<div class="barcode"> ',
-
-      '</div>',
-      'Kit Type ',
-      '<select class="kitSelect">',
-      '<option>DNA</option>',
-      '<option>RNA</option>',
-      '</select>',
-      '<h2>Start Transfers</h2>',
-      '<hr />',
-      '<div class="row0"></div>',
-      '<div class="row1"></div>',
-      '<div class="row2"></div>',
-      '<div class="row3"></div>',
-      '<div class="row4"></div>',
-      '<div class="row5"></div>',
-      '<div class="row6"></div>',
-      '<div class="row7"></div>',
-      '<div class="row8"></div>',
-      '<div class="row9"></div>',
-      '<div class="row10"></div>',
-      '<div class="row11"></div>',
-      '<p align="right"><button>Print Barcode</button></p>'],
+      '<ul>',
+      '<li class="tube"></li>',
+      '<li style="font-size: 9em; vertical-align: 150%">&rarr;</li>',
+      '<li class="spinColumn"></li>',
+      '<li class="wasteTube"></li>',
+      '</ul><hr />'],
     htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
