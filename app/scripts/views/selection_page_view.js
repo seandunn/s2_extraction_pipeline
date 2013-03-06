@@ -24,14 +24,14 @@ define([], function () {
 
      */
     if (model) {
-      var parts = [ '<div id="truc">',
+      var parts = [ '<div class="details" style="border: 1px solid #d3d3d3; margin:10px; padding: 10px;">',
         '<p>user barcode : ', model.user, '</p>',
         '<p>batch uuid : ', model.batch !== undefined ? model.batch : 'new', '</p>',
         '</div>'
       ];
-      parts.push( "<ul>");
+      parts.push( "<ul style='background: #b0c4de'>");
       for (var i = 0; i < model.getCapacity(); i++) {
-        parts.push( "<li/>");
+        parts.push( "<li>NO PRESENTER ASSOCIATED TO THIS ITEM</li>");
       }
       parts.push( "</ul>");
       parts.push('<div align="right">');

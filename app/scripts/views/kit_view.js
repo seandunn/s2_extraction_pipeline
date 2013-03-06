@@ -10,15 +10,15 @@ define([], function () {
     return null;
   }
 
-  var kitView = function(owner, jquerySelector) {
-console.log("hello");
+  var ScanBarcodeView = function(owner, jquerySelector) {
+    console.log("hello");
     this.owner = owner;
     this.jquerySelector = jquerySelector;
 
     return this;
   };
 
-  kitView.prototype.renderView = function(model) {
+  ScanBarcodeView.prototype.renderView = function(model) {
     if (model !== null) {
       this.model = model;
     }
@@ -104,12 +104,12 @@ console.log("hello");
 
 
 
-  kitView.prototype.clear = function() {
+  ScanBarcodeView.prototype.clear = function() {
     /* clear the view from the current page
      */
     var children = this.jquerySelector().empty();
   };
 
-  return kitView;
+  return ScanBarcodeView;
 
 });

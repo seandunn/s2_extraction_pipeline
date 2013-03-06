@@ -18,7 +18,7 @@
  */
 
 
-define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/models/selection_page_model', 'extraction_pipeline/dummyresource'], function (SelectionPageView, SelectionPageModel, rsc) {
+define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/models/selection_page_model', 'mapper/s2_root'], function (SelectionPageView, SelectionPageModel, S2Root) {
   // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
 
   var SelectionPagePresenter = function (owner, presenterFactory) {
@@ -29,20 +29,18 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
      * owner : the owner of this presenter. Expected to be the application controller
      */
     this.owner = owner;
-
     this.view = undefined;
     this.presenterFactory = presenterFactory;
     this.presenters = [];
-
     return this;
   };
 
   SelectionPagePresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
     /*
      Arguments:
-     input_model = { userBC:"1234567890", labwareBC:"1234567890" }
+     input_model = { userUUID:"1234567890", labwareUUID:"1234567890", batchUUID:"0123456789" }
      */
-    console.log("SelectionPagePresenter  : setupPresenter");
+    console.log("SelectionPagePresenter  : setupPresenter, ", input_model);
     this.setupPlaceholder(jquerySelection);
     this.setupView();
     this.renderView();
@@ -67,15 +65,16 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     /*
      Arguments:
      input_model = {
-     userBC:"1234567890",
-     labwareBC:"1234567890"
+     userUUID:"1234567890",
+     labwareUUID:"1234567890",
+     batchUUID:"1234567890"
      }
      */
 
     console.log("SelectionPagePresenter  : updateModel");
     if (!this.model) {
       this.model = new SelectionPageModel(this, input_model);
-      this.model.retrieveBatchFromUser();
+      this.model.retrieveBatchFromSeminalLabware();
     }
     return this;
   };
@@ -138,21 +137,22 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
 
     numTubes = this.model.getNumberOfTubes();
 
-    var submodels = [];
-    for(var i = 0; i < numTubes; i++){
-      submodels.push(this.model.tubes[i]);
-    }
-    if(numTubes < this.model.getCapacity()) {
-      submodels.push({type:"tube",value:"tube9999"} );
-    }
-    for(i = numTubes + 1; i < this.model.getCapacity(); i++) {
-      submodels.push(null);
+    console.warn(this.model);
+
+    for (var i = 0; i < this.model.getCapacity(); i++){
+      if (i < numTubes){
+        var dataForTubeRemovalPresenter = { uuid:this.model.tubeUUIDs[i]};
+        this.presenters[i].setupPresenter(dataForTubeRemovalPresenter, jQueryForNthChild(i));
+      } else if (i == numTubes) {
+        var dataForScanBarcodePresenter = {};
+        this.presenters[i].setupPresenter(dataForScanBarcodePresenter, jQueryForNthChild(i));
+      } else {
+        var dataForEmptyPresenter = {};
+        this.presenters[i].setupPresenter(dataForEmptyPresenter, jQueryForNthChild(i));
+
+      }
     }
 
-    for (i = 0; i < this.model.getCapacity(); i++) {
-      var submodel = this.model.tubes[i]
-      this.presenters[i].setupPresenter(submodels[i], jQueryForNthChild(i));
-    }
   };
 
   SelectionPagePresenter.prototype.release = function () {
@@ -182,7 +182,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
      *
      */
     if (child === this.model) {
-      if (action === "foundTube") {
+      if (action === "modelUpdated") {
         this.setupSubPresenters();
         this.renderView();
         
@@ -191,7 +191,8 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     }
 
     if (action === "barcodeScanned") {
-      return this.handleBarcodeScanned(data);
+      console.warn(data);
+      return this.handleBarcodeScanned(data.uuid);
     } else if (action === "removeTube") {
       return this.handleTubeRemoved(data);
     }
@@ -199,11 +200,13 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
       return this.owner.childDone(child, "done", data);
     }
 
+
+
     return this.owner.childDone(child, action, data);
   };
 
-  SelectionPagePresenter.prototype.handleBarcodeScanned = function (data) {
-    if (this.model.addTube(data)) {
+  SelectionPagePresenter.prototype.handleBarcodeScanned = function (uuid) {
+    if (this.model.addTube(uuid)) {
       // TODO: deal with the success...
     } else {
       // TODO: deal with the error...

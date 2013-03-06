@@ -1,12 +1,19 @@
 define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalView) {
 
   var TubeRemovalPresenter = function (owner, presenterFactory) {
-    this.model = null;
+    this.model = undefined;
     this.owner = owner;
     this.presenterFactory = presenterFactory;
   };
 
   TubeRemovalPresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
+    /*
+    * input_model = {
+    *   uuid: "1234567890" // the uuid used to locate the resource
+    * }
+    *
+    * */
+
     this.setupPlaceholder(jquerySelection);
     this.setupView();
     this.renderView();
@@ -33,7 +40,8 @@ define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalVie
 
   TubeRemovalPresenter.prototype.setupSubPresenters = function () {
     if (!this.tubePresenter) {
-      this.tubePresenter = this.presenterFactory.createTubePresenter(this.model);
+
+      this.tubePresenter = this.presenterFactory.createTubePresenter(this);
     }
     this.setupSubModel();
     return this;
@@ -41,23 +49,34 @@ define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalVie
 
   TubeRemovalPresenter.prototype.setupSubModel = function () {
     if (this.model) {
-      this.tubePresenter.setupModel(this.model);
-    }
       var that = this;
-      // equivalent to the call to tubePresenter.setupPresenter()
-      this.tubePresenter.setupView(function () {
-        console.log(that.jquerySelection());
+//      debugger;
+      var data = {
+        uuid:this.model.uuid
+      };
+
+      this.tubePresenter.setupPresenter(data,function () {
         return that.jquerySelection().find("div.placeholder");
       });
+//      console.log(">>>>> ",this.tubePresenter);
+
+    }
+      // equivalent to the call to tubePresenter.setupPresenter()
+//      this.tubePresenter.setupView(function () {
+//        console.log(that.jquerySelection());
+//        return that.jquerySelection().find("div.placeholder");
+//      });
 
   };
 
   TubeRemovalPresenter.prototype.renderView = function () {
+    console.log("### renderView", this.model);
+
     if (this.view) {
-      this.view.render(this.model && this.model.rawJson);
+      this.view.render(this.model);
     }
     if (this.tubePresenter) {
-      this.tubePresenter.renderView(this.model && this.model.rawJson);
+      this.tubePresenter.renderView();
     }
 
   };
@@ -68,8 +87,18 @@ define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalVie
     }
   };
 
-  TubeRemovalPresenter.prototype.childDone = function (presenter, action, data) {
-    this.owner.childDone(presenter, action, data);
+  /*
+  TODO : update data schema
+  action : "removeTube" -> data == { ?? }
+   */
+  TubeRemovalPresenter.prototype.childDone = function (child, action, data) {
+    if (child === this.view){
+      if (action == "removeTube"){
+//        var action = action;
+//        var data = data;
+        this.owner.childDone(this, action, data);
+      }
+    }
   };
 
   return TubeRemovalPresenter;

@@ -18,7 +18,8 @@
  */
 
 
-define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/default_view'], function (rsc, view) {
+define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
+  , 'extraction_pipeline/dummyresource', 'extraction_pipeline/default/default_view'], function (config, S2Root, S2RscFactory, rsc, view) {
 // TODO: replace the dummy resource with the real one aka the mapper ['mapper/s2_resource'], function(S2Resource) {
   /*
    The default page presenter. Deals with login.
@@ -35,7 +36,13 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
     return this;
   };
 
-
+  /*
+   input_model =
+   {
+   userBC : "1234567890"
+   labware : "1234567890"
+   }
+   */
   defPtr.prototype.setupPresenter = function (input_model, jquerySelection) {
     console.log("defPtr  : setupPresenter");
     this.setupPlaceholder(jquerySelection);
@@ -49,7 +56,7 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
   defPtr.prototype.updateModel = function (input_model) {
     console.log("defPtr  : updateModel");
     this.model = input_model;
-    if (this.model){
+    if (this.model) {
 
       // TODO: fix me -> eventually use a proper resource to check the user...
 //      var theURL = "http://localhost:8088/tube/2_" + input_model.v;
@@ -94,10 +101,10 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
     };
 
     if (this.userBCSubPresenter) {
-      this.userBCSubPresenter.setupPresenter({type:"user",value:"user0001"}, jQuerySelectionForUser);
+      this.userBCSubPresenter.setupPresenter({type:"user", value:"2345678901234"}, jQuerySelectionForUser);
     }
     if (this.labwareBCSubPresenter) {
-      this.labwareBCSubPresenter.setupPresenter({type:"tube",value:"tube0001"}, jQuerySelectionForLabware);
+      this.labwareBCSubPresenter.setupPresenter({type:"tube", value:"2345678901234"}, jQuerySelectionForLabware);
     }
     return this;
   };
@@ -119,7 +126,7 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
       data.error = "hello";
     }
     this.currentView.renderView(data);
-    if (this.userBCSubPresenter){
+    if (this.userBCSubPresenter) {
       this.userBCSubPresenter.renderView();
     }
     return this;
@@ -134,61 +141,78 @@ define(['extraction_pipeline/dummyresource', 'extraction_pipeline/default/defaul
   defPtr.prototype.childDone = function (child, action, data) {
     // called when a child  wants to say something...
 
-    if (child === this.userBCSubPresenter){
+    if (child === this.userBCSubPresenter) {
       if (action === "barcodeScanned") {
         return this.handleBarcodeScanned(data);
       }
-    } else if (child === this.view){
-      if (action === "login"){
-        this.login(data.userBC, data.labwareBC);
+    } else if (child === this.currentView) {
+      if (action === "login") {
+        var dataForLogin = {
+          userBC:data.userBC,
+          labwareBC:data.labwareBC
+        }
+        return this.login(dataForLogin);
       }
     }
 //    else if (action === "next"){
 //      return this.owner.childDone(child, "done", data);
 //    }
 
-    console.log("unhandled childDone event:");
-    console.log("child: ", child);
-    console.log("action: " + action);
-    console.log("data: " + JSON.stringify(data));
+    console.error("unhandled childDone event:");
+    console.error("child: ", child);
+    console.error("action: " + action);
+    console.error("data: " + JSON.stringify(data));
     //return this.owner.childDone(child, action, data);
     return this;
   };
 
 
-  defPtr.prototype.login = function (userBC, tubeBC) {
+  defPtr.prototype.login = function (dataForLogin) {
     // method called when try to login
 
-    var tube;
+    var tube, root;
     var that = this;
 
-    if (!userBC){
-      console.log("something wrong happened with the user");
+    if (!dataForLogin.userBC) {
+      console.warn("something wrong happened with the user");
       return this;
     }
-    if (!tubeBC){
-      console.log("something wrong happened with the tube");
+    if (!dataForLogin.labwareBC) {
+      console.warn("something wrong happened with the tube");
       return this;
     }
 
     // TODO: for now, the tube is always the same... no use of the mapper
-    tubeBC = 'components/s2-api-examples/tube.json';
-
-    new rsc(tubeBC, "read")
-        .done(function (s2tube) {
-          tube = s2tube;
-        })
-        .fail(function () {
-          // TODO: deal with error reading the tube
-        })
-        .then(function () {
-          console.log("tube has been found ");
-          console.log(tube);
-          var data = {userBC:userBC, labwareBC:tube.rawJson.tube.uuid, batchUUID:""};
-          console.log(data);
-          console.log(that);
-          that.owner.childDone(that, "login", data);
+//    tubeBC = 'tube0001';
+    config.setTestJson('dna_only_extraction');
+    config.currentStage = 'stage1';
+    S2Root.load()
+        .done(function (result) {
+          root = result;
+        }).then(
+        function () {
+          root.tubes.findByEan13Barcode(dataForLogin.labwareBC).done(
+              function (result) {
+                if (result) {
+                  var dataForChildDone = {
+                    // note that we're talking about UUID now ! but we're using the BC as uuid for now... ugly, I know
+                    userUUID:dataForLogin.userBC,
+                    labwareUUID:result.rawJson.tube.uuid,
+                    batchUUID:undefined
+                  };
+                  that.owner.childDone(that, "login", dataForChildDone);
+                } else {
+                  // todo : handle error
+                  debugger;
+                }
+              }
+          ).fail(
+              function () {
+                debugger;
+              }
+          );
         });
+
     return this;
   };
 
