@@ -58,9 +58,15 @@ define([], function () {
     // We have to append to the document or events won't register
     parent.empty().
       append(htmlString);
+
     var input = parent.find("input");
     var selector = parent.find(".kitSelect");
     var that = this;
+
+    $('li').addClass("kit");
+    $('ul p').addClass("kit");
+    $('ul h3').addClass("kit");
+
     input.on("keypress", function(e) { 
       var key = getKey(e);
       if (key === 13) {
@@ -72,7 +78,7 @@ define([], function () {
     });
   };
 
-  kitView.prototype.setKitValidState = function (valid) {
+  ScanBarcodeView.prototype.setKitValidState = function (valid) {
     var result = '';
     var jquerySelection = this.jquerySelector();
 

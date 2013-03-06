@@ -1,4 +1,4 @@
-define(['extraction_pipeline/views/labware_view'], function (LabwareView) {
+define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 'config'], function (LabwareView, S2Factory, config) {
 
   var LabwarePresenter = function (owner, presenterFactory) {
     this.model = undefined;
@@ -17,9 +17,6 @@ define(['extraction_pipeline/views/labware_view'], function (LabwareView) {
      * */
 
     this.setupPlaceholder(jquerySelection);
-    this.setupView();
-    this.renderView();
-
     this.updateModel(input_model);
     return this;
   };
@@ -35,14 +32,29 @@ define(['extraction_pipeline/views/labware_view'], function (LabwareView) {
   };
 
   LabwarePresenter.prototype.updateModel = function (model) {
-    this.model = model;
-    this.setupSubPresenters();
+
+    var that = this;
+    var root, rsc;
+
+    config.setTestJson('dna_only_extraction');
+    config.currentStage = 'stage1';
+    var rscPromise = new S2Factory({uuid:model.uuid});
+
+    rscPromise.done(function(result){rsc = result;}).then(
+      function () {
+        that.model = rsc.rawJson;
+        that.setupView();
+        that.renderView();
+        that.setupSubPresenters();
+      }
+    );
+
     return this;
   };
 
   LabwarePresenter.prototype.setupSubPresenters = function () {
     if (!this.resourcePresenter) {
-      this.resourcePresenter = this.presenterFactory.createTubePresenter(this);
+      this.resourcePresenter = this.presenterFactory.createLabwarePresenter(this, Object.keys(this.model)[0]);
     }
     if (!this.barcodeInputPresenter) {
       this.barcodeInputPresenter = this.presenterFactory.createScanBarcodePresenter(this);
@@ -57,9 +69,7 @@ define(['extraction_pipeline/views/labware_view'], function (LabwareView) {
 //      debugger;
     var data = {};
     if (this.model) {
-      data = {
-        uuid:this.model.uuid
-      };
+      data = this.model;
     }
 
     this.resourcePresenter.setupPresenter(data, function () {

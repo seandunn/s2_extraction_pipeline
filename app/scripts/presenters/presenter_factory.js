@@ -37,11 +37,6 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
             return new TubeRemovalPresenter(owner, this);
           };
 
-      PresenterFactory.prototype.createTubePresenter =
-          function (owner) {
-            return new TubePresenter(owner, this);
-          };
-
       PresenterFactory.prototype.createDefaultPresenter =
           function (owner) {
             return new DefaultPresenter(owner, this);
@@ -66,6 +61,25 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
           function (owner) {
             return new SpinColumnPresenter(owner, this);
           };
+
+      PresenterFactory.prototype.createTubePresenter =
+        function (owner) {
+          return new TubePresenter(owner, this);
+        };
+
+      PresenterFactory.prototype.createLabwarePresenter =
+        function(owner, type) {
+          var presenter = {};
+          switch (type) {
+            case 'tube':
+              presenter = new TubePresenter(owner, this);
+              break;
+            case 'spin_columns':
+              presenter = new SpinColumnPresenter(owner, this);
+              break;
+          }
+          return presenter;
+        };
 
       return PresenterFactory;
     });
