@@ -17,7 +17,7 @@ require.config({
   }
 });
 
-require(['extraction_pipeline/app','extraction_pipeline/presenters/labware_presenter', 'extraction_pipeline/presenters/presenter_factory', 'extraction_pipeline/presenters/labware_presenter'], function (app, LabwarePresenter, pf, LabwarePresenter) {
+require(['extraction_pipeline/app', 'extraction_pipeline/presenters/presenter_factory', 'extraction_pipeline/presenters/labware_presenter', 'extraction_pipeline/presenters/selection_page_presenter'], function (app, pf, LabwarePresenter, SelectionPagePresenter) {
     var theApp = new app();
   var inputModelForApp = undefined;
 //  inputModelForApp = {
@@ -35,10 +35,14 @@ require(['extraction_pipeline/app','extraction_pipeline/presenters/labware_prese
 //    var lp = new LabwarePresenter(undefined, new pf());
 //    lp.setupPresenter(undefined, function() { return $("#content"); });
 
-  var labwarePresenter = new LabwarePresenter(undefined, new pf());
-  var labwareModel = {"uuid" : "106d61c0-6224-0130-90b6-282066132de2",
-                      "expected_type" : "tube"};
-  labwarePresenter.setupPresenter(labwareModel, function() { return $("#content"); })
+//  var labwarePresenter = new LabwarePresenter(undefined, new pf());
+//  var labwareModel = {"uuid" : "106d61c0-6224-0130-90b6-282066132de2",
+//                      "expected_type" : "tube"};
+//  labwarePresenter.setupPresenter(labwareModel, function() { return $("#content"); })
+
+  var selectionPagePresenter = new SelectionPagePresenter(theApp, new pf());
+  var selectionPageModel = {userUUID:"1234567890", labwareUUID:"1234567890", batchUUID:"0123456789"};
+  selectionPagePresenter.setupPresenter(selectionPageModel, function() {return $("#content"); });
 
 
 });
