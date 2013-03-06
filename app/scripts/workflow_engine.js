@@ -1,31 +1,28 @@
-define(['extraction_pipeline/default/default_presenter',
-  'extraction_pipeline/presenters/selection_page_presenter'], function (defPtr, SelectionPagePresenter) {
+define(['extraction_pipeline/default/default_presenter' ], function (defPtr, SelectionPagePresenter) {
   var workflowEngine = function (owner) {
     this.mainController = owner;
   };
 
-  workflowEngine.prototype.get_next_presenter = function (presenterFactory, data) {
-    // use the this.mainController.appModel to decide what to do next
-
-    if (!this.mainController.batchUUID) {
-      //var batch = new rsc('/1234567890/batch/or/whatever/is/suitable/to/find/a/batch','read');
-      this.mainController.batchUUID = ''; // TODO: something better than empty...
+  workflowEngine.prototype.getNextPresenter = function (presenterFactory, inputDataForWorkflow) {
+    /**
+     * data = {
+     *   userUUID: "1234567890",
+     *   batchUUID: "1234567890"
+     * }
+     */
+    if (!inputDataForWorkflow.userUUID){
+      return presenterFactory.createDefaultPresenter(this.mainController);
     }
-    // todo: according to the batch, something else should happen
-    if (!this.mainController.batchUUID) {
-      return new SelectionPagePresenter(this.mainController, presenterFactory);
-    }
-  };
 
-  workflowEngine.prototype.get_default_presenter = function (presenterFactory) {
+    if (inputDataForWorkflow.labwareUUID) {
+      // todo: according to the batch, something else should happen
+      // clever things should happen here...
+      return presenterFactory.createSelectionPagePresenter(this.mainController);
+    }
+
     return presenterFactory.createDefaultPresenter(this.mainController);
   };
 
-  workflowEngine.prototype.get_kit_presenter = function (presenterFactory){
-    return presenterFactory.createKitPresenter(this.mainController);
-  };
-
-  //TODO: add similar functions to the above for all of the page presenters
 
   return workflowEngine;
 });

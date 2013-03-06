@@ -71,19 +71,24 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
 
   ScanBarcodePresenter.prototype.handleBarcode = function (barcode) {
     this.model.barcode = barcode;
-    if (this.model.isValid()) {
-      this.model.busy = true;
-      this.renderView();
-      this.owner.childDone(this, "barcodeScanned", barcode);
-    }
-    else {
-      this.renderView();
-    }
+    var dataForBarcodeScanned = {
+      BC:barcode
+    };
+    this.owner.childDone(this, "barcodeScanned", dataForBarcodeScanned);
+
+//    if (this.model.isValid()) {
+//      this.model.busy = true;
+//      this.renderView();
+//      this.owner.childDone(this, "barcodeScanned", barcode);
+//    }
+//    else {
+//      this.renderView();
+//    }
   };
 
-  ScanBarcodePresenter.prototype.validateBarcode = function (barcode) {
-    return false;
-  };
+//  ScanBarcodePresenter.prototype.validateBarcode = function (barcode) {
+//    return false;
+//  };
 
   return ScanBarcodePresenter;
 

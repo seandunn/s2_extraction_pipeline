@@ -58,7 +58,7 @@ define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalVie
       this.tubePresenter.setupPresenter(data,function () {
         return that.jquerySelection().find("div.placeholder");
       });
-      console.log(">>>>> ",this.tubePresenter);
+//      console.log(">>>>> ",this.tubePresenter);
 
     }
       // equivalent to the call to tubePresenter.setupPresenter()
