@@ -43,20 +43,34 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     rscPromise.done(function(result){rsc = result;}).then(
       function () {
         that.model = rsc.rawJson;
+
+        if (model.hasOwnProperty('expected_type')) {
+          if (!rsc.rawJson.hasOwnProperty(model.expected_type)) {
+            that.model = undefined;
+          }
+        }
+
         that.setupView();
         that.renderView();
-        that.setupSubPresenters();
+        that.setupSubPresenters(model.expected_type);
+//        that.owner.childDone(that, "Found equipment", model.uuid);
       }
     );
 
     return this;
   };
 
-  LabwarePresenter.prototype.setupSubPresenters = function () {
+  LabwarePresenter.prototype.setupSubPresenters = function (expectedType) {
     if (!this.resourcePresenter) {
-      this.resourcePresenter = this.presenterFactory.createLabwarePresenter(this, Object.keys(this.model)[0]);
+      var type = expectedType;
+
+      if (this.model) {
+        type = Object.keys(this.model)[0];
+      }
+
+      this.resourcePresenter = this.presenterFactory.createLabwarePresenter(this, type);
     }
-    if (!this.barcodeInputPresenter) {
+    if (!this.barcodeInputPresenter && !this.model) {
       this.barcodeInputPresenter = this.presenterFactory.createScanBarcodePresenter(this);
     }
     this.setupSubModel();
@@ -72,12 +86,17 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
       data = this.model;
     }
 
-    this.resourcePresenter.setupPresenter(data, function () {
-      return that.jquerySelection().find("div.resource");
-    });
-    this.barcodeInputPresenter.setupPresenter(data, function () {
-      return that.jquerySelection().find("div.barcodeScanner");
-    });
+    if (this.resourcePresenter) {
+      this.resourcePresenter.setupPresenter(data, function () {
+        return that.jquerySelection().find("div.resource");
+      });
+    }
+
+    if (this.barcodeInputPresenter) {
+      this.barcodeInputPresenter.setupPresenter(data, function () {
+        return that.jquerySelection().find("div.barcodeScanner");
+      });
+    }
 //      console.log(">>>>> ",this.tubePresenter);
 
     //  }
