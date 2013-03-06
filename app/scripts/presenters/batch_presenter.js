@@ -18,7 +18,7 @@
  */
 
 
-define(['extraction_pipeline/views/kit_view'], function (View) {
+define(['extraction_pipeline/views/batch_view'], function (View) {
   // interface ....
   var tp = function (owner, presenterFactory) {
     this.owner = owner;
@@ -102,20 +102,14 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
       var rowModel = {
         "rowNum":i,
         "labware1":{
-          "uuid":this.model[i].uuid,
           "expected_type":"tube",
-          "display_remove":false,
-          "display_barcode":false
+          "display_remove":true,
+          "display_barcode":true
         },
         "labware2":{
           "expected_type":"spin_columns",
-          "display_remove":false,
-          "display_barcode":false
-        },
-        "labware3":{
-          "expected_type":"waste_tube",
-          "display_remove":false,
-          "display_barcode":false
+          "display_remove":true,
+          "display_barcode":true
         }
       };
 

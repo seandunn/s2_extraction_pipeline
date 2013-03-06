@@ -21,8 +21,9 @@ require(['extraction_pipeline/app',
   'extraction_pipeline/presenters/labware_presenter',
   'extraction_pipeline/presenters/presenter_factory',
   'extraction_pipeline/presenters/labware_presenter',
-  'extraction_pipeline/presenters/kit_presenter'],
-  function (app, LabwarePresenter, pf, LabwarePresenter, KitPresenter) {
+  'extraction_pipeline/presenters/kit_presenter',
+  'extraction_pipeline/presenters/batch_presenter'],
+  function (app, LabwarePresenter, pf, LabwarePresenter, KitPresenter, BatchPresenter) {
     var theApp = new app();
   var inputModelForApp = undefined;
 //  inputModelForApp = {
@@ -35,7 +36,8 @@ require(['extraction_pipeline/app',
 
 
 
-    var kitPresenter = new KitPresenter(undefined, new pf());
+//    var kitPresenter = new KitPresenter(undefined, new pf());
+    var batchPresenter = new BatchPresenter(undefined, new pf());
     var dummyInput = {
       "tubes" : [
         {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
@@ -45,7 +47,8 @@ require(['extraction_pipeline/app',
       ]
     };
 
-    kitPresenter.setupPresenter(dummyInput, function() { return $("#content"); });
+//    kitPresenter.setupPresenter(dummyInput, function() { return $("#content"); });
+    batchPresenter.setupPresenter(dummyInput, function() { return $("#content"); });
 //    var lp = new LabwarePresenter(undefined, new pf());
 //    lp.setupPresenter(undefined, function() { return $("#content"); });
 

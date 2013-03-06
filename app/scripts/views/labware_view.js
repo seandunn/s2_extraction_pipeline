@@ -29,7 +29,7 @@ define([], function () {
     return null;
   }
 
-  var LabwareView = function(owner, jquerySelector) {
+  var LabwareView = function (owner, jquerySelector) {
     console.log("hello");
     this.owner = owner;
     this.jquerySelector = jquerySelector;
@@ -37,17 +37,18 @@ define([], function () {
     return this;
   };
 
-  LabwareView.prototype.renderView = function(model) {
+  LabwareView.prototype.renderView = function (model) {
     if (model !== null) {
       this.model = model;
     }
 
     var parent = this.jquerySelector(),
-        htmlParts = [
-          '<button class="removeButton" style="float: right; margin-right: 20px;">X</button>',
-          '<div class="resource"></div>',
-          '<div class="barcodeScanner"></div>'],
-        htmlString = htmlParts.join('');
+      htmlParts = [
+        '<h3 class="title"></h3>',
+        '<button class="removeButton" style="float: right; margin-right: 20px;">X</button>',
+        '<div class="resource" style="position: absolute; float:left;"></div>',
+        '<div class="barcodeScanner" style="padding-top: 150px"></div>'],
+      htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
     parent.empty().append(htmlString);
@@ -56,20 +57,39 @@ define([], function () {
     var input = parent.find("input");
     var that = this;
 
-    input.on("keypress", function(e) {
+    input.on("keypress", function (e) {
       var key = getKey(e);
       if (key === 13) {
         that.owner.childDone(this.owner, "barcodeScanned", this.value);
       }
     });
 
-    removeButton.on("click", function(e) {
+    removeButton.on("click", function (e) {
       that.owner.resetLabware();
     });
   };
 
-  LabwareView.prototype.hideRemoveButton = function() {
+  LabwareView.prototype.hideRemoveButton = function () {
     this.jquerySelector().find('.removeButton').css('display', 'none');
+  };
+
+  LabwareView.prototype.setTitle = function (titleString) {
+
+    var title = '';
+
+    switch (titleString) {
+      case 'tube':
+        title = 'Tube';
+        break;
+      case 'spin_columns':
+        title = 'Spin Column';
+        break;
+      case 'waste_tube':
+        title = 'Waste Tube';
+        break;
+    };
+
+    this.jquerySelector().find('.title').append(title);
   };
 //
 //  ScanBarcodeView.prototype.getError = function(model) {
@@ -81,8 +101,7 @@ define([], function () {
 //  }
 
 
-
-  LabwareView.prototype.clear = function() {
+  LabwareView.prototype.clear = function () {
     /* clear the view from the current page
      */
     this.jquerySelector().empty();

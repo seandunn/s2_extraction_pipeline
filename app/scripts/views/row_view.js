@@ -31,12 +31,12 @@ define([], function () {
       htmlParts = [
         '<h3 class="rowNum"></h3>',
         '<ul>',
-        '<li><h3>Tube</h3><div class="labware1"></div></li>',
+        '<li><div class="labware1"></div></li>',
         '<li style="font-size: 6em; padding-top: 100px;">&rarr;</li>',
-        '<li><h3>Spin Column</h3>',
+        '<li>',
         '<div><ul><li class="labware2"></li><li class="spinColumnDesc"><p></p></li></ul></div>',
         '</li>',
-        '<li><h3>Waste Tube</h3><div class="labware3"></div></li>',
+        '<li><div class="labware3"></div></li>',
         '</ul><hr />'],
       htmlString = htmlParts.join('');
 

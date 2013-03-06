@@ -93,6 +93,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 
       if (type) {
         this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
+        this.view.setTitle(type);
       }
     }
     if (!this.barcodeInputPresenter && this.inputModel.display_barcode) {

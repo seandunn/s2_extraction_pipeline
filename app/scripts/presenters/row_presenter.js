@@ -83,14 +83,14 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
   }
 
   tp.prototype.setupSubPresenters = function () {
-    if (!this.labware1Presenter) {
+    if (!this.labware1Presenter && this.model.hasOwnProperty('labware1')) {
       this.labware1Presenter = this.presenterFactory.createLabwarePresenter(this);
     }
-    if (!this.labware3Presenter) {
-      this.labware3Presenter = this.presenterFactory.createLabwarePresenter(this);
-    }
-    if (!this.labware2Presenter) {
+    if (!this.labware2Presenter && this.model.hasOwnProperty('labware2')) {
       this.labware2Presenter = this.presenterFactory.createLabwarePresenter(this);
+    }
+    if (!this.labware3Presenter && this.model.hasOwnProperty('labware3')) {
+      this.labware3Presenter = this.presenterFactory.createLabwarePresenter(this);
     }
 
     // TODO: for now, the tube is always the same... no use of the mapper
@@ -115,9 +115,15 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
       return that.jquerySelection().find('.labware3')
     };
 
-    this.labware1Presenter.setupPresenter(this.model.labware1, jquerySelectionForLabware1);
-    this.labware3Presenter.setupPresenter(this.model.labware2, jquerySelectionForLabware2);
-    this.labware2Presenter.setupPresenter(this.model.labware3, jquerySelectionForLabware3);
+    if (this.labware1Presenter) {
+      this.labware1Presenter.setupPresenter(this.model.labware1, jquerySelectionForLabware1);
+    }
+    if (this.labware2Presenter) {
+      this.labware2Presenter.setupPresenter(this.model.labware2, jquerySelectionForLabware2);
+    }
+    if (this.labware3Presenter) {
+      this.labware3Presenter.setupPresenter(this.model.labware3, jquerySelectionForLabware3);
+    }
 
     return this;
   }
