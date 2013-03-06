@@ -30,7 +30,16 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     return this;
   };
 
-
+/* Sample input model for the kit presenter
+ *{
+ *  "tubes" : [
+ *   {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
+ *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
+ *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
+ *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"}
+ *  ]
+ *}
+ */
   tp.prototype.setupPresenter = function (input_model, jquerySelection) {
 //    console.log("et  : setupPresenter");
     this.tubeTypes = [];
@@ -53,9 +62,11 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
   };
 
   tp.prototype.updateModel = function (model) {
-    this.model = model;
-    this.numRows = 12;
-    this.setupSubPresenters();
+      if (model.hasOwnProperty('tubes')) {
+      this.model = model.tubes;
+      this.numRows = this.model.length;
+      this.setupSubPresenters();
+    }
     return this;
   }
 
@@ -87,7 +98,28 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
           return that.jquerySelection().find('.row' + i);
         }
       }
-      this.rowPresenters[i].setupPresenter({"rowNum":i}, jquerySelectionForRow(i));
+
+      var rowModel = {
+        "rowNum" : i,
+        "labware1" : {
+          "uuid" : this.model[i].uuid,
+          "expected_type" : "tube",
+          "display_remove" : false,
+          "display_barcode" : false
+        },
+        "labware2" : {
+          "expected_type" : "spin_columns",
+          "display_remove" : false,
+          "display_barcode" : false
+        },
+        "labware3" : {
+          "expected_type" : "waste_tube",
+          "display_remove" : false,
+          "display_barcode" : false
+        }
+      };
+
+      this.rowPresenters[i].setupPresenter(rowModel, jquerySelectionForRow(i));
     }
     this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
     return this;

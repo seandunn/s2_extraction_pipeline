@@ -26,18 +26,37 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
     this.owner = owner;
     this.currentView = undefined;
     this.presenterFactory = presenterFactory;
-    this.tubePresenter = undefined;
-    this.wasteTubePresenter = undefined;
-    this.spinColumnPresenter = undefined;
+    this.labware1Presenter = undefined;
+    this.labware2Presenter = undefined;
+    this.labware3Presenter = undefined;
     this.rowNum = undefined;
-    this.done = 0;
     return this;
   };
 
-
+  /* Sample model input:
+  *
+  *{
+  * "rowNum" : i,
+  * "labware1" : {
+  *   "uuid" : this.model[i].uuid,
+  *   "expected_type" : "tube",
+  *   "display_remove" : false,
+  *   "display_barcode" : false
+  * },
+  * "labware2" : {
+  *   "expected_type" : "spin_columns",
+  *   "display_remove" : false,
+  *   "display_barcode" : false
+  * },
+  * "labware3" : {
+  *   "expected_type" : "waste_tube",
+  *   "display_remove" : false,
+  *   "display_barcode" : false
+  * }
+  *};
+  */
   tp.prototype.setupPresenter = function (input_model, jquerySelection) {
 //    console.log("et  : setupPresenter");
-    this.done = 0;
     this.setupPlaceholder(jquerySelection);
     this.setupView();
     this.renderView();
@@ -64,14 +83,14 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
   }
 
   tp.prototype.setupSubPresenters = function () {
-    if (!this.tubePresenter) {
-      this.tubePresenter = this.presenterFactory.createLabwarePresenter(this);
+    if (!this.labware1Presenter) {
+      this.labware1Presenter = this.presenterFactory.createLabwarePresenter(this);
     }
-    if (!this.spinColumnPresenter) {
-      this.spinColumnPresenter = this.presenterFactory.createLabwarePresenter(this);
+    if (!this.labware3Presenter) {
+      this.labware3Presenter = this.presenterFactory.createLabwarePresenter(this);
     }
-    if (!this.wasteTubePresenter) {
-      this.wasteTubePresenter = this.presenterFactory.createLabwarePresenter(this);
+    if (!this.labware2Presenter) {
+      this.labware2Presenter = this.presenterFactory.createLabwarePresenter(this);
     }
 
     // TODO: for now, the tube is always the same... no use of the mapper
@@ -82,27 +101,23 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
   }
 
   tp.prototype.setupSubModel = function () {
-    var tubeModel = {"uuid" : "106d61c0-6224-0130-90b6-282066132de2",
-                     "expected_type" : "tube"};
-    var spinColumnModel = { "expected_type" : "spin_columns" };
-    var wasteTubeModel = { "expected_type" : "waste_tube" };
     var that = this;
 
-    var jquerySelectionForTube = function () {
-      return that.jquerySelection().find('.tube')
+    var jquerySelectionForLabware1 = function () {
+      return that.jquerySelection().find('.labware1')
     };
 
-    var jquerySelectionForWasteTube = function () {
-      return that.jquerySelection().find('.wasteTube')
+    var jquerySelectionForLabware2 = function () {
+      return that.jquerySelection().find('.labware2')
     };
 
-    var jquerySelectionForSpinColumn = function () {
-      return that.jquerySelection().find('.spinColumn')
+    var jquerySelectionForLabware3 = function () {
+      return that.jquerySelection().find('.labware3')
     };
 
-    this.tubePresenter.setupPresenter(tubeModel, jquerySelectionForTube);
-    this.spinColumnPresenter.setupPresenter(spinColumnModel, jquerySelectionForSpinColumn);
-    this.wasteTubePresenter.setupPresenter(wasteTubeModel, jquerySelectionForWasteTube);
+    this.labware1Presenter.setupPresenter(this.model.labware1, jquerySelectionForLabware1);
+    this.labware3Presenter.setupPresenter(this.model.labware2, jquerySelectionForLabware2);
+    this.labware2Presenter.setupPresenter(this.model.labware3, jquerySelectionForLabware3);
 
     return this;
   }
@@ -118,8 +133,8 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
   tp.prototype.getTubeType = function () {
     var tubeType = '';
 
-    if (this.tubePresenter) {
-      tubeType = this.tubePresenter.getAliquotType();
+    if (this.labware1Presenter) {
+      tubeType = this.labware1Presenter.getAliquotType();
     }
 
     return tubeType;

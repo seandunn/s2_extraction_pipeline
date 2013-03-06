@@ -57,7 +57,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
         that.setupView();
         that.renderView();
         that.setupSubPresenters(model.expected_type);
-        that.setRemoveButtonVisibility(expectedType);
+        that.setRemoveButtonVisibility(model.display_remove);
 //        that.owner.childDone(that, "Found equipment", model.uuid);
       }
     );
@@ -70,14 +70,14 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
       this.setupView();
       this.renderView();
       this.setupSubPresenters(expectedType);
-      this.setRemoveButtonVisibility(expectedType);
+      this.setRemoveButtonVisibility(model.display_remove);
     }
 
     return this;
   };
 
-  LabwarePresenter.prototype.setRemoveButtonVisibility = function(expectedType) {
-    if (this.specialType(expectedType) || this.model) {
+  LabwarePresenter.prototype.setRemoveButtonVisibility = function(displayRemove) {
+    if (!displayRemove) {
       this.view.hideRemoveButton();
     }
   }
@@ -95,7 +95,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
         this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
       }
     }
-    if (!this.barcodeInputPresenter && !this.model && !this.specialType(type)) {
+    if (!this.barcodeInputPresenter && this.inputModel.display_barcode) {
       this.barcodeInputPresenter = this.presenterFactory.createScanBarcodePresenter(this);
     }
     this.setupSubModel();
