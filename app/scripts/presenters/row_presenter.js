@@ -18,14 +18,13 @@
  */
 
 
-define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource'], function (View, rsc) {
+define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource', 'labware/presenters/tube_presenter'], function (View, rsc, TubePresenter) {
 // TODO: remove me !!!!
 
   // interface ....
   var tp = function (owner, presenterFactory) {
     this.owner = owner;
     this.currentView = undefined;
-    this.spinColumnBarcodePresenter = undefined;
     this.presenterFactory = presenterFactory;
     this.tubePresenter = undefined;
     this.wasteTubePresenter = undefined;
@@ -66,16 +65,13 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
 
   tp.prototype.setupSubPresenters = function () {
     if (!this.tubePresenter) {
-      this.tubePresenter = this.presenterFactory.createTubePresenter(this);
+      this.tubePresenter = this.presenterFactory.createLabwarePresenter(this);
     }
     if (!this.spinColumnPresenter) {
-      this.spinColumnPresenter = this.presenterFactory.createSpinColumnPresenter(this);
+      this.spinColumnPresenter = this.presenterFactory.createLabwarePresenter(this);
     }
     if (!this.wasteTubePresenter) {
-      this.wasteTubePresenter = this.presenterFactory.createTubePresenter(this);
-    }
-    if (!this.spinColumnBarcodePresenter) {
-      this.spinColumnBarcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
+      this.wasteTubePresenter = this.presenterFactory.createLabwarePresenter(this);
     }
 
     // TODO: for now, the tube is always the same... no use of the mapper
@@ -86,15 +82,11 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
   }
 
   tp.prototype.setupSubModel = function () {
-    var tubeBC = { "url" : "components/s2-api-examples/tube.json" };
-    var spinColumnBC = { "url" : "components/s2-api-examples/spin_column.json" };
+    var tubeModel = {"uuid" : "106d61c0-6224-0130-90b6-282066132de2",
+                     "expected_type" : "tube"};
+    var spinColumnModel = { "expected_type" : "spin_columns" };
+    var wasteTubeModel = { "expected_type" : "waste_tube" };
     var that = this;
-    var scBarcodeJson = {"type":"SC",
-      "value":"SC0001"};
-    var that = this;
-    var jquerySelectionForBarcode = function () {
-      return that.jquerySelection().find('.spinColumnBarcode')
-    };
 
     var jquerySelectionForTube = function () {
       return that.jquerySelection().find('.tube')
@@ -108,10 +100,9 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
       return that.jquerySelection().find('.spinColumn')
     };
 
-    this.tubePresenter.setupPresenter(tubeBC, jquerySelectionForTube);
-    this.spinColumnPresenter.setupPresenter(spinColumnBC, jquerySelectionForSpinColumn);
-    this.wasteTubePresenter.drawWasteTube(jquerySelectionForWasteTube);
-    this.spinColumnBarcodePresenter.setupPresenter(scBarcodeJson, jquerySelectionForBarcode);
+    this.tubePresenter.setupPresenter(tubeModel, jquerySelectionForTube);
+    this.spinColumnPresenter.setupPresenter(spinColumnModel, jquerySelectionForSpinColumn);
+    this.wasteTubePresenter.setupPresenter(wasteTubeModel, jquerySelectionForWasteTube);
 
     return this;
   }
@@ -141,8 +132,8 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
 
   tp.prototype.childDone = function (child, action, data) {
 
-    if (child === this.tubePresenter) {
-     this.owner.childDone(this, "tubeFinished", this.getTubeType());
+    if (child instanceof TubePresenter) {
+     this.owner.childDone(this, "tubeFinished", data);
     }
   };
 

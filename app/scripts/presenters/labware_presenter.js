@@ -33,6 +33,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 
   LabwarePresenter.prototype.updateModel = function (model) {
 
+    if (model && model.hasOwnProperty('uuid')) {
     var that = this;
     var root, rsc;
 
@@ -57,6 +58,16 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
       }
     );
 
+    } else {
+      var expectedType = undefined;
+      if (model) {
+        expectedType = model.expected_type;
+      }
+      this.setupView();
+      this.renderView();
+      this.setupSubPresenters(expectedType);
+    }
+
     return this;
   };
 
@@ -66,11 +77,14 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 
       if (this.model) {
         type = Object.keys(this.model)[0];
+
       }
 
-      this.resourcePresenter = this.presenterFactory.createLabwarePresenter(this, type);
+      if (type) {
+        this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
+      }
     }
-    if (!this.barcodeInputPresenter && !this.model) {
+    if (!this.barcodeInputPresenter && !this.model && !this.specialType(type)) {
       this.barcodeInputPresenter = this.presenterFactory.createScanBarcodePresenter(this);
     }
     this.setupSubModel();
@@ -86,15 +100,16 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
       data = this.model;
     }
 
+    var resourceSelector = function () {
+      return that.jquerySelection().find("div.resource")};
+
     if (this.resourcePresenter) {
-      this.resourcePresenter.setupPresenter(data, function () {
-        return that.jquerySelection().find("div.resource");
-      });
+      this.resourcePresenter.setupPresenter(data, resourceSelector);
     }
 
     if (this.barcodeInputPresenter) {
       this.barcodeInputPresenter.setupPresenter(data, function () {
-        return that.jquerySelection().find("div.barcodeScanner");
+        return that.jquerySelection().find("div.barcodeScanner")
       });
     }
 //      console.log(">>>>> ",this.tubePresenter);
@@ -123,6 +138,19 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 
   };
 
+  LabwarePresenter.prototype.specialType = function(type) {
+    var specialType = false;
+    var typesList = ['waste_tube', 'qia_cube', 'centrifuge'];
+
+    if (type) {
+      if (typesList.indexOf(type) > -1) {
+        specialType = true;
+      }
+    }
+
+    return specialType;
+  }
+
   LabwarePresenter.prototype.release = function () {
     if (this.view) {
       this.view.clear();
@@ -140,6 +168,9 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 //        var data = data;
         this.owner.childDone(this, action, data);
       }
+    }
+    else if (data.hasOwnProperty('tube')) {
+      this.owner.childDone(child, action, child.getAliquotType());
     }
   };
 

@@ -88,7 +88,7 @@ define([], function () {
         find('.printButton').removeAttr('disabled');
     }
     else {
-      result = '(╯°□°）╯︵ ┻━┻';
+      result = 'This kit is not valid for the selected tubes';
       jquerySelection.
         find('.printButton').attr('disabled','disabled');
     }
