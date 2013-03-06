@@ -10,15 +10,15 @@ define([], function () {
     return null;
   }
 
-  var ScanBarcodeView = function(owner, jquerySelector) {
-console.log("hello");
+  var rowView = function (owner, jquerySelector) {
+    console.log("hello");
     this.owner = owner;
     this.jquerySelector = jquerySelector;
 
     return this;
   };
 
-  ScanBarcodeView.prototype.renderView = function(model) {
+  rowView.prototype.renderView = function (model) {
     if (model !== null) {
       this.model = model;
     }
@@ -26,28 +26,31 @@ console.log("hello");
       model = this.model;
     }
 
-  
+
     var parent = this.jquerySelector(),
-    htmlParts = [
-      '<ul>',
-      '<li class="tube"></li>',
-      '<li style="font-size: 9em; vertical-align: 150%">&rarr;</li>',
-      '<li class="spinColumn"></li>',
-      '<li class="wasteTube"></li>',
-      '</ul><hr />'],
-    htmlString = htmlParts.join('');
+      htmlParts = [
+        '<h3 class="rowNum"></h3>',
+        '<ul>',
+        '<li><h3>Tube</h3><div class="tube"></div></li>',
+        '<li style="font-size: 6em; padding-top: 100px;">&rarr;</li>',
+        '<li><h3>Spin Column</h3>',
+        '<div><ul><li class="spinColumn"></li><li class="spinColumnDesc"><p>lorem ipsum dolor sit amet</p></li></ul></div>',
+        '<div class="spinColumnBarcode"></div></li>',
+        '<li><h3>Waste Tube</h3><div class="wasteTube"></div></li>',
+        '</ul><hr />'],
+      htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
     parent.empty().
       append(htmlString);
     var input = parent.find("input");
     var that = this;
-    input.on("keypress", function(e) { 
+    input.on("keypress", function (e) {
       var key = getKey(e);
       if (key === 13) {
-	that.owner.childDone(this.owner, "barcodeScanned", this.value);
+        that.owner.childDone(this.owner, "barcodeScanned", this.value);
       }
-      });    
+    });
   };
 //
 //  ScanBarcodeView.prototype.getError = function(model) {
@@ -59,13 +62,12 @@ console.log("hello");
 //  }
 
 
-
-  ScanBarcodeView.prototype.clear = function() {
+  rowView.prototype.clear = function () {
     /* clear the view from the current page
      */
     var children = this.jquerySelector().empty();
   };
 
-  return ScanBarcodeView;
+  return rowView;
 
 });

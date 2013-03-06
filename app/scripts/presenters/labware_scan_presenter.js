@@ -21,29 +21,29 @@
 define([], function () {
 
   // interface ....
-  var emptyPresenter = function (owner, presenterFactory) {
+  var labwareScanPresenter = function (owner, presenterFactory) {
     this.owner = owner;
     this.currentView = {};
     return this;
   };
 
-  emptyPresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
+  labwareScanPresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
     this.jquerySelection = jquerySelection;
     return this;
   };
 
-  emptyPresenter.prototype.renderView = function () {
+  labwareScanPresenter.prototype.renderView = function () {
     // render view...
     this.jquerySelection().empty().append("<div>empty<div/>");
     return this;
   };
 
 
-  emptyPresenter.prototype.release = function () {
+  labwareScanPresenter.prototype.release = function () {
     this.jquerySelection().release();
     return this;
   };
 
 
-  return emptyPresenter;
+  return labwareScanPresenter;
 });

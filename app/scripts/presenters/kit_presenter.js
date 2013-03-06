@@ -27,6 +27,7 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     this.currentView = undefined;
     this.barcodePresenter = undefined;
     this.rowPresenters = [];
+    this.tubeTypes = [];
     this.presenterFactory = presenterFactory;
     return this;
   };
@@ -34,6 +35,7 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
 
   tp.prototype.setupPresenter = function (input_model, jquerySelection) {
 //    console.log("et  : setupPresenter");
+    this.tubeTypes = [];
     this.setupPlaceholder(jquerySelection);
     this.setupView();
     this.renderView();
@@ -87,7 +89,7 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
           return that.jquerySelection().find('.row' + i);
         }
       }
-      this.rowPresenters[i].setupPresenter(undefined, jquerySelectionForRow(i));
+      this.rowPresenters[i].setupPresenter({"rowNum":i}, jquerySelectionForRow(i));
     }
     this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
     return this;
@@ -103,12 +105,38 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     return this;
   };
 
+  tp.prototype.validateKitTubes = function () {
+    var valid = true;
+    var kitType = this.jquerySelection().find('.kitSelect').val();
+
+    for (var index in this.tubeTypes) {
+      if (this.tubeTypes[index] != kitType) {
+        valid = false;
+        break;
+      }
+    }
+
+    this.currentView.setKitValidState(valid);
+
+    return this;
+  };
 
   tp.prototype.release = function () {
     this.jquerySelection().release();
     return this;
   };
 
+  tp.prototype.childDone = function (child, action, data) {
+
+    if (action == 'tubeFinished') {
+      this.tubeTypes.push(data);
+
+      if (this.tubeTypes.length == this.numRows) {
+        this.validateKitTubes();
+      }
+    }
+
+  };
 
   return tp;
 })

@@ -17,10 +17,11 @@ require.config({
   }
 });
 
-require(['extraction_pipeline/app', 'extraction_pipeline/presenters/kit_presenter'], function (app, KitPresenter) {
+require(['extraction_pipeline/app', 'extraction_pipeline/presenters/kit_presenter', 'extraction_pipeline/presenters/presenter_factory'], function (app, KitPresenter, PF) {
 //  var theApp = new app();
 //  theApp.setupPresenter();
-    var kitPresenter = new KitPresenter();
-    kitPresenter.setupPresenter()
+    var pf = new PF();
+    var kitPresenter = new KitPresenter({}, pf);
+    kitPresenter.setupPresenter({}, function() { return $("#content"); });
 });
 

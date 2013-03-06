@@ -10,7 +10,7 @@ define([], function () {
     return null;
   }
 
-  var ScanBarcodeView = function(owner, jquerySelector) {
+  var kitView = function(owner, jquerySelector) {
 console.log("hello");
     this.owner = owner;
     this.jquerySelector = jquerySelector;
@@ -18,7 +18,7 @@ console.log("hello");
     return this;
   };
 
-  ScanBarcodeView.prototype.renderView = function(model) {
+  kitView.prototype.renderView = function(model) {
     if (model !== null) {
       this.model = model;
     }
@@ -29,14 +29,15 @@ console.log("hello");
   
     var parent = this.jquerySelector(),
     htmlParts = [
-      '<div class="barcode"> ',
-
-      '</div>',
+      '<div style="overflow: hidden"><div style="float: left; overflow: auto;">',
+      '<div class="barcode"></div>',
       'Kit Type ',
       '<select class="kitSelect">',
       '<option>DNA</option>',
       '<option>RNA</option>',
-      '</select>',
+      '</select></div>',
+      '<div style="float: right; overflow: auto;"><p class="validationText"></p></div>',
+      '</div>',
       '<h2>Start Transfers</h2>',
       '<hr />',
       '<div class="row0"></div>',
@@ -51,21 +52,47 @@ console.log("hello");
       '<div class="row9"></div>',
       '<div class="row10"></div>',
       '<div class="row11"></div>',
-      '<p align="right"><button>Print Barcode</button></p>'],
+      '<p align="right"><button class="printButton">Print Barcode</button></p>'],
     htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
     parent.empty().
       append(htmlString);
     var input = parent.find("input");
+    var selector = parent.find(".kitSelect");
     var that = this;
     input.on("keypress", function(e) { 
       var key = getKey(e);
       if (key === 13) {
 	that.owner.childDone(this.owner, "barcodeScanned", this.value);
       }
-      });    
+      });
+    selector.on("change", function(e) {
+      that.owner.validateKitTubes();
+    });
   };
+
+  kitView.prototype.setKitValidState = function (valid) {
+    var result = '';
+    var jquerySelection = this.jquerySelector();
+
+    if (valid) {
+      result = 'This kit is valid for the selected tubes';
+      jquerySelection.
+        find('.printButton').removeAttr('disabled');
+    }
+    else {
+      result = '(╯°□°）╯︵ ┻━┻';
+      jquerySelection.
+        find('.printButton').attr('disabled','disabled');
+    }
+
+    jquerySelection.
+      find('.validationText').
+      empty().
+      append(result);
+  };
+
 //
 //  ScanBarcodeView.prototype.getError = function(model) {
 //    var errorMessage = model.customError;
@@ -77,12 +104,12 @@ console.log("hello");
 
 
 
-  ScanBarcodeView.prototype.clear = function() {
+  kitView.prototype.clear = function() {
     /* clear the view from the current page
      */
     var children = this.jquerySelector().empty();
   };
 
-  return ScanBarcodeView;
+  return kitView;
 
 });

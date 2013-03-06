@@ -25,21 +25,25 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
   var tp = function (owner, presenterFactory) {
     this.owner = owner;
     this.currentView = undefined;
-    this.barcodePresenter = undefined;
+    this.spinColumnBarcodePresenter = undefined;
     this.presenterFactory = presenterFactory;
     this.tubePresenter = undefined;
     this.wasteTubePresenter = undefined;
     this.spinColumnPresenter = undefined;
+    this.rowNum = undefined;
+    this.done = 0;
     return this;
   };
 
 
   tp.prototype.setupPresenter = function (input_model, jquerySelection) {
 //    console.log("et  : setupPresenter");
+    this.done = 0;
     this.setupPlaceholder(jquerySelection);
     this.setupView();
     this.renderView();
     this.updateModel(input_model);
+    this.rowNum = input_model.rowNum;
     return this;
   };
 
@@ -70,6 +74,9 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
     if (!this.wasteTubePresenter) {
       this.wasteTubePresenter = this.presenterFactory.createTubePresenter(this);
     }
+    if (!this.spinColumnBarcodePresenter) {
+      this.spinColumnBarcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
+    }
 
     // TODO: for now, the tube is always the same... no use of the mapper
 
@@ -82,6 +89,12 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
     var tubeBC = { "url" : "components/s2-api-examples/tube.json" };
     var spinColumnBC = { "url" : "components/s2-api-examples/spin_column.json" };
     var that = this;
+    var scBarcodeJson = {"type":"SC",
+      "value":"SC0001"};
+    var that = this;
+    var jquerySelectionForBarcode = function () {
+      return that.jquerySelection().find('.spinColumnBarcode')
+    };
 
     var jquerySelectionForTube = function () {
       return that.jquerySelection().find('.tube')
@@ -98,6 +111,7 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
     this.tubePresenter.setupPresenter(tubeBC, jquerySelectionForTube);
     this.spinColumnPresenter.setupPresenter(spinColumnBC, jquerySelectionForSpinColumn);
     this.wasteTubePresenter.drawWasteTube(jquerySelectionForWasteTube);
+    this.spinColumnBarcodePresenter.setupPresenter(scBarcodeJson, jquerySelectionForBarcode);
 
     return this;
   }
@@ -106,16 +120,30 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
     // render view...
 //    console.log("et  : presenter::renderView, ", this.jquerySelection());
     this.currentView.renderView();
-    if(this.tubePresenter){
-    this.tubePresenter.renderView();
-    }
+
     return this;
   };
 
+  tp.prototype.getTubeType = function () {
+    var tubeType = '';
+
+    if (this.tubePresenter) {
+      tubeType = this.tubePresenter.getAliquotType();
+    }
+
+    return tubeType;
+  }
 
   tp.prototype.release = function () {
     this.jquerySelection().release();
     return this;
+  };
+
+  tp.prototype.childDone = function (child, action, data) {
+
+    if (child === this.tubePresenter) {
+     this.owner.childDone(this, "tubeFinished", this.getTubeType());
+    }
   };
 
 
