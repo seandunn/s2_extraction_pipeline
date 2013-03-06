@@ -44,6 +44,7 @@ define([], function () {
 
     var parent = this.jquerySelector(),
         htmlParts = [
+          '<button class="removeButton" style="float: right; margin-right: 20px;">X</button>',
           '<div class="resource"></div>',
           '<div class="barcodeScanner"></div>'],
         htmlString = htmlParts.join('');
@@ -51,14 +52,24 @@ define([], function () {
     // We have to append to the document or events won't register
     parent.empty().append(htmlString);
 
+    var removeButton = parent.find('.removeButton');
     var input = parent.find("input");
     var that = this;
+
     input.on("keypress", function(e) {
       var key = getKey(e);
       if (key === 13) {
         that.owner.childDone(this.owner, "barcodeScanned", this.value);
       }
     });
+
+    removeButton.on("click", function(e) {
+      that.owner.resetLabware();
+    });
+  };
+
+  LabwareView.prototype.hideRemoveButton = function() {
+    this.jquerySelector().find('.removeButton').css('display', 'none');
   };
 //
 //  ScanBarcodeView.prototype.getError = function(model) {

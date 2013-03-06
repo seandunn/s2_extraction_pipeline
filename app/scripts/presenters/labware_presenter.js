@@ -3,6 +3,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
   var LabwarePresenter = function (owner, presenterFactory) {
     this.model = undefined;
     this.owner = owner;
+    this.inputModel = undefined;
     this.presenterFactory = presenterFactory;
     this.resourcePresenter = undefined;
     this.barcodeInputPresenter = undefined;
@@ -33,6 +34,8 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 
   LabwarePresenter.prototype.updateModel = function (model) {
 
+    this.inputModel = model;
+
     if (model && model.hasOwnProperty('uuid')) {
     var that = this;
     var root, rsc;
@@ -54,6 +57,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
         that.setupView();
         that.renderView();
         that.setupSubPresenters(model.expected_type);
+        that.setRemoveButtonVisibility(expectedType);
 //        that.owner.childDone(that, "Found equipment", model.uuid);
       }
     );
@@ -66,10 +70,17 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
       this.setupView();
       this.renderView();
       this.setupSubPresenters(expectedType);
+      this.setRemoveButtonVisibility(expectedType);
     }
 
     return this;
   };
+
+  LabwarePresenter.prototype.setRemoveButtonVisibility = function(expectedType) {
+    if (this.specialType(expectedType) || this.model) {
+      this.view.hideRemoveButton();
+    }
+  }
 
   LabwarePresenter.prototype.setupSubPresenters = function (expectedType) {
     if (!this.resourcePresenter) {
@@ -150,6 +161,13 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 
     return specialType;
   }
+
+  LabwarePresenter.prototype.resetLabware = function() {
+    this.release();
+    this.resourcePresenter = undefined;
+    this.barcodeInputPresenter = undefined;
+    this.setupPresenter(this.inputModel, this.jquerySelection);
+  };
 
   LabwarePresenter.prototype.release = function () {
     if (this.view) {

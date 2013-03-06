@@ -44,6 +44,7 @@ define([], function () {
     parent.empty().
       append(htmlString);
   };
+
 //
 //  ScanBarcodeView.prototype.getError = function(model) {
 //    var errorMessage = model.customError;
