@@ -5,9 +5,11 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
   'extraction_pipeline/default/default_presenter',
   'extraction_pipeline/presenters/kit_presenter',
   'extraction_pipeline/presenters/row_presenter',
+  'extraction_pipeline/presenters/labware_presenter',
   'labware/presenters/tube_presenter',
-  'labware/presenters/spin_column_presenter'],
-    function (ScanBarcodePresenter, SelectionPagePresenter, TubeRemovalPresenter, EmptyPresenter, DefaultPresenter, KitPresenter, RowPresenter, TubePresenter, SpinColumnPresenter) {
+  'labware/presenters/spin_column_presenter',
+  'labware/presenters/waste_tube_presenter'],
+    function (ScanBarcodePresenter, SelectionPagePresenter, TubeRemovalPresenter, EmptyPresenter, DefaultPresenter, KitPresenter, RowPresenter, LabwarePresenter, TubePresenter, SpinColumnPresenter, WasteTubePresenter) {
       'use strict';
 
       var PresenterFactory = function () {
@@ -68,6 +70,11 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
         };
 
       PresenterFactory.prototype.createLabwarePresenter =
+        function(owner) {
+          return new LabwarePresenter(owner, this);
+        };
+
+      PresenterFactory.prototype.createLabwareSubPresenter =
         function(owner, type) {
           var presenter = {};
           switch (type) {
@@ -76,6 +83,9 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
               break;
             case 'spin_columns':
               presenter = new SpinColumnPresenter(owner, this);
+              break;
+            case 'waste_tube':
+              presenter = new WasteTubePresenter(owner, this);
               break;
           }
           return presenter;

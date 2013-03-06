@@ -44,8 +44,8 @@ define([], function () {
 
     var parent = this.jquerySelector(),
         htmlParts = [
-          '<div class="resource"/>',
-          '<div class="barcodeScanner" />'],
+          '<div class="resource"></div>',
+          '<div class="barcodeScanner"></div>'],
         htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register

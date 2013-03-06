@@ -34,8 +34,8 @@ define([], function () {
         '<li><h3>Tube</h3><div class="tube"></div></li>',
         '<li style="font-size: 6em; padding-top: 100px;">&rarr;</li>',
         '<li><h3>Spin Column</h3>',
-        '<div><ul><li class="spinColumn"></li><li class="spinColumnDesc"><p>lorem ipsum dolor sit amet</p></li></ul></div>',
-        '<div class="spinColumnBarcode"></div></li>',
+        '<div><ul><li class="spinColumn"></li><li class="spinColumnDesc"><p></p></li></ul></div>',
+        '</li>',
         '<li><h3>Waste Tube</h3><div class="wasteTube"></div></li>',
         '</ul><hr />'],
       htmlString = htmlParts.join('');
@@ -43,14 +43,6 @@ define([], function () {
     // We have to append to the document or events won't register
     parent.empty().
       append(htmlString);
-    var input = parent.find("input");
-    var that = this;
-    input.on("keypress", function (e) {
-      var key = getKey(e);
-      if (key === 13) {
-        that.owner.childDone(this.owner, "barcodeScanned", this.value);
-      }
-    });
   };
 //
 //  ScanBarcodeView.prototype.getError = function(model) {
