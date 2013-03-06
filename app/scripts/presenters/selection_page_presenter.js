@@ -108,7 +108,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     for (var i = 0; i < this.model.getCapacity(); i++) {
 
       if (i < numOrders) {
-        this.presenters[i] = this.presenterFactory.createTubeRemovalPresenter(this);
+        this.presenters[i] = this.presenterFactory.createLabwarePresenter(this, 'tube');
       } else if (i == numOrders) {
         this.presenters[i] = this.presenterFactory.createScanBarcodePresenter(this);
       } else {

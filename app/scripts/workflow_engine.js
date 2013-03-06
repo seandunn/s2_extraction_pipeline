@@ -14,6 +14,10 @@ define(['extraction_pipeline/default/default_presenter' ], function (defPtr, Sel
       return presenterFactory.createDefaultPresenter(this.mainController);
     }
 
+    if (inputDataForWorkflow.batchUUID){
+      return presenterFactory.createKitPresenter(this.mainController);
+    }
+
     if (inputDataForWorkflow.labwareUUID) {
       // todo: according to the batch, something else should happen
       // clever things should happen here...
