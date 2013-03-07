@@ -56,8 +56,6 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 
         that.setupView();
         that.renderView();
-        that.setupSubPresenters(model.expected_type);
-        that.setRemoveButtonVisibility(model.display_remove);
 //        that.owner.childDone(that, "Found equipment", model.uuid);
       }
     );
@@ -69,8 +67,6 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
       }
       this.setupView();
       this.renderView();
-      this.setupSubPresenters(expectedType);
-      this.setRemoveButtonVisibility(model.display_remove);
     }
 
     return this;
@@ -106,7 +102,6 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
   LabwarePresenter.prototype.setupSubModel = function () {
     //if (this.model) {
     var that = this;
-//      debugger;
     var data = {};
     if (this.model) {
       data = this.model;
@@ -136,6 +131,10 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
   };
 
   LabwarePresenter.prototype.renderView = function () {
+    this.release();
+    this.resourcePresenter = undefined;
+    this.barcodeInputPresenter = undefined;
+
     console.log("### renderView", this.model);
 
     if (this.view) {
@@ -148,6 +147,9 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
       this.barcodeInputPresenter.renderView();
     }
 
+
+    this.setupSubPresenters(this.inputModel.expected_type);
+    this.setRemoveButtonVisibility(this.inputModel.display_remove);
   };
 
   LabwarePresenter.prototype.specialType = function(type) {
@@ -182,10 +184,11 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
    */
   LabwarePresenter.prototype.childDone = function (child, action, data) {
     if (child === this.view) {
-      if (action == "removeTube") {
+      if (action == "labwareRemoved") {
 //        var action = action;
 //        var data = data;
-        this.owner.childDone(this, action, data);
+        this.resetLabware();
+        this.owner.childDone(this, action, this.model.uuid);
       }
     }
     else if (data.hasOwnProperty('tube')) {

@@ -106,15 +106,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     var numOrders = this.model ? this.model.getNumberOfTubes() : 0;
 
     for (var i = 0; i < this.model.getCapacity(); i++) {
-
-      if (i < numOrders) {
-        this.presenters[i] = this.presenterFactory.createLabwarePresenter(this, 'tube');
-      } else if (i == numOrders) {
-        this.presenters[i] = this.presenterFactory.createScanBarcodePresenter(this);
-      } else {
-        this.presenters[i] = this.presenterFactory.createEmptyPresenter(this);
-
-      }
+      this.presenters[i] = this.presenterFactory.createLabwarePresenter(this);
     }
     this.setupSubModel();
     return this;
@@ -137,18 +129,18 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
 
     numTubes = this.model.getNumberOfTubes();
 
-    console.warn(this.model);
-
-    for (var i = 0; i < this.model.getCapacity(); i++){
-      if (i < numTubes){
-        var dataForTubeRemovalPresenter = { uuid:this.model.tubeUUIDs[i]};
-        this.presenters[i].setupPresenter(dataForTubeRemovalPresenter, jQueryForNthChild(i));
+    for (var i = 0; i < this.model.getCapacity(); i++) {
+      if (i < numTubes) {
+        var dataForExistingLabware_presenter = { "uuid":this.model.tubeUUIDs[i].uuid,
+          "display_remove":true,
+          "display_barcode":false};
+        this.presenters[i].setupPresenter(dataForExistingLabware_presenter, jQueryForNthChild(i));
       } else if (i == numTubes) {
-        var dataForScanBarcodePresenter = {};
-        this.presenters[i].setupPresenter(dataForScanBarcodePresenter, jQueryForNthChild(i));
+        var dataForLabwareWithBC_presenter = {"display_remove":false, "display_barcode":true};
+        this.presenters[i].setupPresenter(dataForLabwareWithBC_presenter, jQueryForNthChild(i));
       } else {
-        var dataForEmptyPresenter = {};
-        this.presenters[i].setupPresenter(dataForEmptyPresenter, jQueryForNthChild(i));
+        var dataForhiddenLabwarePresenter = {"display_remove":false, "display_barcode":false};
+        this.presenters[i].setupPresenter(dataForhiddenLabwarePresenter, jQueryForNthChild(i));
 
       }
     }
@@ -183,9 +175,10 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
      */
     if (child === this.model) {
       if (action === "modelUpdated") {
+
         this.setupSubPresenters();
         this.renderView();
-        
+
         return;
       }
     }
@@ -193,21 +186,31 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     if (action === "barcodeScanned") {
       console.warn(data);
       return this.handleBarcodeScanned(data.uuid);
-    } else if (action === "removeTube") {
-      return this.handleTubeRemoved(data);
+    } else if (action === "labwareRemoved") {
+      return this.handleTubeRemoved(data.uuid);
     }
-    else if (action === "next"){
-      return this.owner.childDone(child, "done", data);
+    else if (action === "next") {
+
+      console.warn("CALL TO S2MAPPER: CREATING BATCH");
+      var newBatchUUID = "0147852369";
+
+      var dataForOwner = {
+        batchUUID:newBatchUUID
+      };
+
+      this.owner.HACK_add_global_tube_uuids(this.model.tubeUUIDs);
+
+      return this.owner.childDone(this, "done", dataForOwner);
     }
 
 
-
-    return this.owner.childDone(child, action, data);
+    return this.owner.childDone(this, action, data);
   };
 
   SelectionPagePresenter.prototype.handleBarcodeScanned = function (uuid) {
     if (this.model.addTube(uuid)) {
       // TODO: deal with the success...
+
     } else {
       // TODO: deal with the error...
     }
@@ -215,18 +218,13 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
   };
 
   SelectionPagePresenter.prototype.handleTubeRemoved = function (data) {
-    var index = this.model.removeTubeByUuid(data.tube.uuid);
+    if (this.model.removeTubeByUuid(uuid)) {
+// TODO: deal with the success...
 
-    if (index > -1) {
-      this.presenters[index].release();
-      this.presenters.splice(index, 1);
-      if (this.presenters.length == this.model.getCapacity() - 1) {
-        //this.ensureScanBarcodePresenter();
-      }
-      this.setupSubPresenters();
-      this.renderView();
-      //this.setupChildViews();
+    } else {
+      // TODO: deal with the error...
     }
+    return this;
   };
 
 

@@ -93,8 +93,8 @@ define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/p
     var inputDataForModel;
     if (action == "done") {
       inputDataForModel = {
-        userUUID:data.userUUID,
-        labwareUUID:data.labwareUUID,
+        userUUID:this.model.userUUID,
+        labwareUUID:this.model.labwareUUID,
         batchUUID:data.batchUUID
       };
 
@@ -111,6 +111,12 @@ define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/p
 
     return this;
   };
+
+  app.prototype.HACK_add_global_tube_uuids = function (tubeUUIDs){
+    this.tubeUUIDs = tubeUUIDs;
+  }
+
+
 
   return app;
 });

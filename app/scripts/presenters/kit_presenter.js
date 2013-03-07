@@ -62,8 +62,12 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
   };
 
   tp.prototype.updateModel = function (model) {
-    if (model.hasOwnProperty('tubes')) {
-      this.model = model.tubes;
+    if (model.hasOwnProperty('batchUUID')) {
+
+      // TODO: get the uuids from the batchUUID
+      var uuids = this.owner.tubeUUIDs;
+
+      this.model = uuids; // list of uuids...
       this.numRows = this.model.length;
       this.setupSubPresenters();
     }
@@ -84,8 +88,10 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
   }
 
   tp.prototype.setupSubModel = function () {
-    var modelJson = {"type":"Kit",
-      "value":"Kit0001"}
+    var modelJson = {
+      "type":"Kit",
+      "value":"Kit0001"
+    };
     var that = this;
     var jquerySelectionForBarcode = function () {
       return that.jquerySelection().find('.barcode')

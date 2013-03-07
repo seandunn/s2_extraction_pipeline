@@ -133,7 +133,7 @@ define(['mapper/s2_root'], function (S2Root) {
     }
 
 //    this.retrieveTubeDetails(lastTubeIndex, newTubeUUID);
-    this.tubeUUIDs.push(newTubeUUID);
+    this.tubeUUIDs.push({"uuid":newTubeUUID});
     //var lastTubeIndex = this.tubes.length;
     this.owner.childDone(this, "modelUpdated");
     return this;
@@ -163,31 +163,24 @@ define(['mapper/s2_root'], function (S2Root) {
      */
     return this.capacity;
   };
-//
-//  SelectionPageModel.prototype.removeTubeByUuid = function (uuid) {
-//    /* removes a tube matching a given uuid
-//     *
-//     * Arguments
-//     * ---------
-//     * uuid - the uuid of the tube to remove
-//     */
-//    var index = -1;
-//
-//    for (var i = 0; i < this.tubes.length; i++) {
-//      if (this.tubes[i].rawJson.tube.uuid === uuid) {
-//        this.tubes.splice(i, 1);
-//        index = i;
-//        break;
-//      }
-//
-//    }
-//
-//    if (this.tubes.length === 0) {
-//      this.batch = undefined;
-//    }
-//
-//    return index;
-//  };
+
+  SelectionPageModel.prototype.removeTubeByUuid = function (uuid) {
+    /* removes a tube matching a given uuid
+     *
+     * Arguments
+     * ---------
+     * uuid - the uuid of the tube to remove
+     */
+
+    for (var i = 0; i < this.tubes.length; i++) {
+      if (this.tubeUUIDs[i].uuid === uuid) {
+        this.tubeUUIDs.splice(i, 1);
+        this.owner.childDone(this, "modelUpdated");
+        return true;
+      }
+    }
+    return false;
+  };
 
   SelectionPageModel.prototype.getNumberOfTubes = function () {
     /* gets the number of tubes
