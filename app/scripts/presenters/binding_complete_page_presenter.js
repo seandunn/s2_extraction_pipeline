@@ -18,7 +18,7 @@
  */
 
 
-define(['extraction_pipeline/views/batch_view'], function (View) {
+define(['extraction_pipeline/views/binding_complete_page_view'], function (View) {
   // interface ....
   var tp = function (owner, presenterFactory) {
     this.owner = owner;
@@ -101,6 +101,7 @@ define(['extraction_pipeline/views/batch_view'], function (View) {
 
       var rowModel = {
         "rowNum":i,
+        "remove_arrow":true,
         "labware1":{
           "expected_type":"tube",
           "display_remove":true,
@@ -110,6 +111,11 @@ define(['extraction_pipeline/views/batch_view'], function (View) {
           "expected_type":"spin_columns",
           "display_remove":true,
           "display_barcode":true
+        },
+        "labware3":{
+          "expected_type":"waste_tube",
+          "display_remove":false,
+          "display_barcode":false
         }
       };
 

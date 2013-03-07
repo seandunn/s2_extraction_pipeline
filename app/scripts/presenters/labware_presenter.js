@@ -1,4 +1,4 @@
-define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 'config'], function (LabwareView, S2Factory, config) {
+define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 'config', 'mapper/s2_root'], function (LabwareView, S2Factory, config, S2Root) {
 
   var LabwarePresenter = function (owner, presenterFactory) {
     this.model = undefined;
@@ -56,8 +56,6 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 
         that.setupView();
         that.renderView();
-        that.setupSubPresenters(model.expected_type);
-        that.setRemoveButtonVisibility(model.display_remove);
 //        that.owner.childDone(that, "Found equipment", model.uuid);
       }
     );
@@ -69,8 +67,6 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
       }
       this.setupView();
       this.renderView();
-      this.setupSubPresenters(expectedType);
-      this.setRemoveButtonVisibility(model.display_remove);
     }
 
     return this;
@@ -101,6 +97,37 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     }
     this.setupSubModel();
     return this;
+  };
+
+  LabwarePresenter.prototype.retrieveBarcode = function (data) {
+    var tube, root;
+    var barcode = data;
+    var that = this;
+
+    config.setTestJson('dna_only_extraction');
+    config.currentStage = 'stage1';
+    S2Root.load()
+      .done(function (result) {
+        root = result;
+      }).then(
+      function () {
+        root.tubes.findByEan13Barcode(barcode).done(
+          function (result) {
+            if (result) {
+              that.model = result.rawJson;
+              that.setupSubPresenters(that.inputModel.expected_type);
+//              that.owner.childDone(that, "login", dataForChildDone);
+            } else {
+              // todo : handle error
+              debugger;
+            }
+          }
+        ).fail(
+          function () {
+            debugger;
+          }
+        );
+      });
   };
 
   LabwarePresenter.prototype.setupSubModel = function () {
@@ -136,6 +163,10 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
   };
 
   LabwarePresenter.prototype.renderView = function () {
+    this.release();
+    this.resourcePresenter = undefined;
+    this.barcodeInputPresenter = undefined;
+
     console.log("### renderView", this.model);
 
     if (this.view) {
@@ -148,6 +179,9 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
       this.barcodeInputPresenter.renderView();
     }
 
+
+    this.setupSubPresenters(this.inputModel.expected_type);
+    this.setRemoveButtonVisibility(this.inputModel.display_remove);
   };
 
   LabwarePresenter.prototype.specialType = function(type) {
@@ -165,6 +199,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 
   LabwarePresenter.prototype.resetLabware = function() {
     this.release();
+    this.model = undefined;
     this.resourcePresenter = undefined;
     this.barcodeInputPresenter = undefined;
     this.setupPresenter(this.inputModel, this.jquerySelection);
@@ -190,6 +225,9 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     }
     else if (data.hasOwnProperty('tube')) {
       this.owner.childDone(child, action, child.getAliquotType());
+    }
+    else if (action == 'barcodeScanned') {
+      this.retrieveBarcode(data.BC);
     }
   };
 
