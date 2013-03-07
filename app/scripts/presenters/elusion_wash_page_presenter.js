@@ -18,7 +18,7 @@
  */
 
 
-define(['extraction_pipeline/views/kit_view'], function (View) {
+define(['extraction_pipeline/views/elusion_loading_page_view'], function (View) {
   // interface ....
   var tp = function (owner, presenterFactory) {
     this.owner = owner;
@@ -62,12 +62,8 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
   };
 
   tp.prototype.updateModel = function (model) {
-    if (model.hasOwnProperty('batchUUID')) {
-
-      // TODO: get the uuids from the batchUUID
-      var uuids = this.owner.tubeUUIDs;
-
-      this.model = uuids; // list of uuids...
+    if (model.hasOwnProperty('tubes')) {
+      this.model = model.tubes;
       this.numRows = this.model.length;
       this.setupSubPresenters();
     }
@@ -88,10 +84,8 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
   }
 
   tp.prototype.setupSubModel = function () {
-    var modelJson = {
-      "type":"Kit",
-      "value":"Kit0001"
-    };
+    var modelJson = {"type":"Kit",
+      "value":"Kit0001"}
     var that = this;
     var jquerySelectionForBarcode = function () {
       return that.jquerySelection().find('.barcode')
@@ -107,21 +101,16 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
 
       var rowModel = {
         "rowNum":i,
+        "remove_arrow":false,
         "labware1":{
-          "uuid":this.model[i].uuid,
-          "expected_type":"tube",
-          "display_remove":false,
-          "display_barcode":false
+          "expected_type":"spin_columns",
+          "display_remove":true,
+          "display_barcode":true
         },
         "labware2":{
-          "expected_type":"spin_columns",
-          "display_remove":false,
-          "display_barcode":false
-        },
-        "labware3":{
-          "expected_type":"waste_tube",
-          "display_remove":false,
-          "display_barcode":false
+          "expected_type":"tube",
+          "display_remove":true,
+          "display_barcode":true
         }
       };
 
@@ -157,6 +146,20 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     return this;
   };
 
+  tp.prototype.checkPageComplete = function() {
+
+    var complete = true;
+
+    for (var i; i < this.rowPresenters.length; i++) {
+      if (!this.rowPresenters[i].isRowComplete()) {
+        complete = false;
+        break;
+      }
+    }
+
+    return true;
+  };
+
   tp.prototype.release = function () {
     this.jquerySelection().release();
     return this;
@@ -169,6 +172,10 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
 
       if (this.tubeTypes.length == this.numRows) {
         this.validateKitTubes();
+      }
+    } else if (action == 'bindingComplete') {
+      if (this.checkPageComplete()) {
+        this.owner.childComplete(this, 'bindingComplete', {});
       }
     }
 

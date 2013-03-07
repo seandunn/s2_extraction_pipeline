@@ -59,6 +59,7 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
   };
 
   ScanBarcodePresenter.prototype.childDone = function (presenter, action, data) {
+
     if (action == "barcodeScanned") {
       this.handleBarcode(data);
     } else if (action === "parentError") {

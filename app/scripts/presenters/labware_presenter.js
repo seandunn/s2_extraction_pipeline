@@ -48,7 +48,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     rscPromise.done(function(result){rsc = result;}).then(
       function () {
         that.model = rsc.rawJson;
-
+        that.uuid = model.uuid;
         if (model.hasOwnProperty('expected_type')) {
           if (!rsc.rawJson.hasOwnProperty(model.expected_type)) {
             that.model = undefined;
@@ -118,7 +118,8 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
           function (result) {
             if (result) {
               that.model = result.rawJson;
-              that.renderView();
+              var type = result.resourceType;
+              that.uuid = result.rawJson[type].uuid;
               that.setupSubPresenters(that.inputModel.expected_type);
 //              that.owner.childDone(that, "login", dataForChildDone);
             } else {
@@ -221,17 +222,19 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
    */
   LabwarePresenter.prototype.childDone = function (child, action, data) {
     if (child === this.view) {
-      if (action == "removeTube") {
+      if (action == "labwareRemoved") {
 //        var action = action;
 //        var data = data;
-        this.owner.childDone(this, action, data);
+        this.resetLabware();
+        this.owner.childDone(this, "labwareRemoved", {"uuid":this.uuid});
       }
     }
     else if (data.hasOwnProperty('tube')) {
-      this.owner.childDone(child, action, child.getAliquotType());
+      this.owner.childDone(this, action, child.getAliquotType());
     }
     else if (action == 'barcodeScanned') {
       this.retrieveBarcode(data.BC);
+      this.owner.childDone(this, 'barcodeScanned', {"uuid":this.uuid});
     }
   };
 

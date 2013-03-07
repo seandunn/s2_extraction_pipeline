@@ -37,6 +37,22 @@ define([], function () {
     return this;
   };
 
+
+  function onRemoved_clicked(owner, view) {
+    /*
+     * response to the click on the login button...
+     * tells the owner that we want to try a login
+     */
+    return function () {
+      if (owner) {
+        var userbarcode = $(".user_barcode input").val();
+        var tube_barcode = $(".labware_barcode input").val();
+
+        owner.childDone(view , "login",{ userBC:userbarcode, labwareBC:tube_barcode });
+      }
+    }
+  }
+
   LabwareView.prototype.renderView = function (model) {
     if (model !== null) {
       this.model = model;
@@ -64,8 +80,8 @@ define([], function () {
       }
     });
 
-    removeButton.on("clicked", function (e) {
-      that.owner.resetLabware();
+    removeButton.on("click", function (e) {
+      that.owner.childDone(that, "labwareRemoved");
     });
   };
 
