@@ -2,6 +2,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 
   var LabwarePresenter = function (owner, presenterFactory) {
     this.model = undefined;
+    this.uuid = undefined;
     this.owner = owner;
     this.inputModel = undefined;
     this.presenterFactory = presenterFactory;
@@ -81,21 +82,23 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
   LabwarePresenter.prototype.setupSubPresenters = function (expectedType) {
     if (!this.resourcePresenter) {
       var type = expectedType;
-
+    }
       if (this.model) {
         type = Object.keys(this.model)[0];
 
       }
-
-      if (type) {
-        this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
-        this.view.setTitle(type);
+      if (expectedType && type != expectedType) {
+        //TODO: Set up error message here
+      } else {
+        if (type) {
+          this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
+          this.view.setTitle(type);
+        }
+      if (!this.barcodeInputPresenter && this.inputModel.display_barcode) {
+        this.barcodeInputPresenter = this.presenterFactory.createScanBarcodePresenter(this);
       }
+      this.setupSubModel();
     }
-    if (!this.barcodeInputPresenter && this.inputModel.display_barcode) {
-      this.barcodeInputPresenter = this.presenterFactory.createScanBarcodePresenter(this);
-    }
-    this.setupSubModel();
     return this;
   };
 
@@ -115,6 +118,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
           function (result) {
             if (result) {
               that.model = result.rawJson;
+              that.renderView();
               that.setupSubPresenters(that.inputModel.expected_type);
 //              that.owner.childDone(that, "login", dataForChildDone);
             } else {
