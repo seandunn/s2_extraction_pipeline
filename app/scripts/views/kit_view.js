@@ -25,7 +25,6 @@ define([], function () {
   }
 
   var kitView = function (owner, jquerySelector) {
-    console.log("hello");
     this.owner = owner;
     this.jquerySelector = jquerySelector;
 

@@ -172,8 +172,6 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     this.resourcePresenter = undefined;
     this.barcodeInputPresenter = undefined;
 
-    console.log("### renderView", this.model);
-
     if (this.view) {
       this.view.renderView(this.model);
     }

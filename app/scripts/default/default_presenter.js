@@ -44,7 +44,6 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
    }
    */
   defPtr.prototype.setupPresenter = function (input_model, jquerySelection) {
-    console.log("defPtr  : setupPresenter");
     this.setupPlaceholder(jquerySelection);
     this.setupView();
     this.renderView();
@@ -54,7 +53,6 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
   };
 
   defPtr.prototype.updateModel = function (input_model) {
-    console.log("defPtr  : updateModel");
     this.model = input_model;
     if (this.model) {
 
@@ -75,14 +73,12 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
   };
 
   defPtr.prototype.setupPlaceholder = function (jquerySelection) {
-    console.log("defPtr  : setupPlaceholder");
     this.jquerySelection = jquerySelection;
     return this;
   };
 
   defPtr.prototype.setupSubPresenters = function () {
     // check with this.model for the needed subpresenters...
-    console.log("defPtr  : setupSubPresenter");
     this.userBCSubPresenter = this.presenterFactory.createScanBarcodePresenter(this);
     this.labwareBCSubPresenter = this.presenterFactory.createScanBarcodePresenter(this);
     this.setupSubModel();
@@ -90,7 +86,6 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
   };
 
   defPtr.prototype.setupSubModel = function () {
-    console.log("defPtr  : setupSubModel");
     var that = this;
     var jQuerySelectionForUser = function () {
       return that.jquerySelection().find(".user_barcode");
@@ -111,7 +106,6 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
 
 
   defPtr.prototype.setupView = function () {
-    console.log("defPtr  : presenter::setupView");
     this.currentView = new view(this, this.jquerySelection);
     return this;
   };
@@ -119,7 +113,6 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
 
   defPtr.prototype.renderView = function () {
     // render view...
-    console.log("defPtr  : presenter::renderView");
     var data = undefined;
     if (this.model) {
       data = {};
@@ -200,6 +193,8 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
                     labwareUUID:result.rawJson.tube.uuid,
                     batchUUID:undefined
                   };
+                  console.warn("CALL TO S2MAPPER: TRY TO LOGIN ?");
+
                   that.owner.childDone(that, "login", dataForChildDone);
                 } else {
                   // todo : handle error

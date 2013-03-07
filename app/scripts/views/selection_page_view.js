@@ -29,7 +29,7 @@ define([], function () {
         '<p>batch uuid : ', model.batch !== undefined ? model.batch : 'new', '</p>',
         '</div>'
       ];
-      parts.push( "<ul style='background: #b0c4de'>");
+      parts.push( "<ul style=''>");
       for (var i = 0; i < model.getCapacity(); i++) {
         parts.push( "<li>NO PRESENTER ASSOCIATED TO THIS ITEM</li>");
       }

@@ -28,7 +28,6 @@ define(['mapper/s2_root'], function (S2Root) {
      * owner
      * input_model = {userUUID:"1234567890", labwareUUID:"1234567890", batchUUID:"1234567890"}
      */
-    console.log("model constructor, with data :" , input_model);
     this.owner = owner;
     this.user = input_model.userUUID;
     this.batch = input_model.batchUUID;
@@ -44,7 +43,6 @@ define(['mapper/s2_root'], function (S2Root) {
   };
 
 //  SelectionPageModel.prototype.addTubeResource = function (resource, index, tubeUuid) {
-//    console.log("tube has been found ");
 //
 //    this.validateBatchUuid(resource);
 //    this.validateTubeUuid(resource.rawJson.tube.uuid);
@@ -103,7 +101,6 @@ define(['mapper/s2_root'], function (S2Root) {
 
   SelectionPageModel.prototype.retrieveBatchFromSeminalLabware = function () {
     // For now
-    console.log('retrieveBatchFromSeminalLabware, ', this.seminalLabwareBC);
 
     if (this.seminalLabwareBC){
       this.addTube(this.seminalLabwareBC);

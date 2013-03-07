@@ -41,7 +41,6 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
    *}
    */
   tp.prototype.setupPresenter = function (input_model, jquerySelection) {
-//    console.log("et  : setupPresenter");
     this.tubeTypes = [];
     this.setupPlaceholder(jquerySelection);
     this.setupView();
@@ -57,7 +56,6 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
 
   tp.prototype.setupView = function () {
     this.currentView = new View(this, this.jquerySelection);
-    console.log(this.currentView);
     return this;
   };
 
@@ -132,7 +130,6 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
 
   tp.prototype.renderView = function () {
     // render view...
-//    console.log("et  : presenter::renderView, ", this.jquerySelection());
     this.currentView.renderView();
     if (this.barcodePresenter) {
       this.barcodePresenter.renderView();

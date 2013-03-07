@@ -40,7 +40,6 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
      Arguments:
      input_model = { userUUID:"1234567890", labwareUUID:"1234567890", batchUUID:"0123456789" }
      */
-    console.log("SelectionPagePresenter  : setupPresenter, ", input_model);
     this.setupPlaceholder(jquerySelection);
     this.setupView();
     this.renderView();
@@ -71,7 +70,6 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
      }
      */
 
-    console.log("SelectionPagePresenter  : updateModel");
     if (!this.model) {
       this.model = new SelectionPageModel(this, input_model);
       this.model.retrieveBatchFromSeminalLabware();
@@ -185,7 +183,6 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
     }
 
     if (action === "barcodeScanned") {
-      console.warn(data);
       return this.handleBarcodeScanned(data.uuid);
     } else if (action === "labwareRemoved") {
       return this.handleTubeRemoved(data.uuid);

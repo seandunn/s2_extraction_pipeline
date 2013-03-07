@@ -11,8 +11,6 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
   var barcodePresenter = {}; // minimal mock is acceptable
 
   DummyResource.prototype.mutateJson = function (json) {
-    console.log("patching tube");
-
 
     json.tube.uuid = nextObjectUuid;
     if (nextBatchUuid !== '') {
@@ -62,7 +60,6 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
         var expectedBatchUuid = firstBatchUuid;
         nextBatchUuid = firstBatchUuid;
         runs(function () {
-          console.log("calling add tube");
           model.addTube(helper.createUuid(0), barcodePresenter);
         });
 
@@ -71,7 +68,6 @@ define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction
         }, "mutator to run", 100);
 
         runs(function () {
-          console.log("expecting model batch");
           expect(model.batch).toEqual(firstBatchUuid);
         });
       });

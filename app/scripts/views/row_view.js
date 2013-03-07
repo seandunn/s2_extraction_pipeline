@@ -11,7 +11,6 @@ define([], function () {
   }
 
   var rowView = function (owner, jquerySelector) {
-    console.log("hello");
     this.owner = owner;
     this.jquerySelector = jquerySelector;
 
