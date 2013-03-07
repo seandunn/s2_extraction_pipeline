@@ -33,15 +33,25 @@ define([], function () {
     var parent = this.jquerySelector(),
       htmlParts = [
         '<h3 class="rowNum"></h3>',
-        '<ul class="inline">',
-        '<li><div class="labware1"></div></li>',
-        '<li style="font-size: 6em; padding-top: 100px;" class="arrow">&rarr;</li>',
-        '<li>',
-        '<div><ul><li class="labware2"></li><li class="spinColumnDesc"><p></p></li></ul></div>',
+        '<ul class="" style="">',
+        '<li style="float: left;"><div class="labware1" style="width:21em;"></div></li>',
+        '<li style="float: left;" class="arrow"><div style="font-size: 6em; padding-top: 100px;">&rarr;</div></li>',
+        '<li style="float: left;">',
+        ' <div style=" width:15em; "><ul><li class="labware2"></li><li class="spinColumnDesc"><p></p></li></ul></div>',
         '</li>',
-        '<li><div class="labware3"></div></li>',
+        '<li style="float: left;"><div class="labware3" style="  width:12em"></div></li>',
+//        '<h3 class="rowNum">1</h3>',
+//        '<ul class="" style="display: inline">',
+//        '<li style="display: inline"><div class="labware1" style="background: red"></div></li>',
+//        '<li style="display: inline; font-size: 6em; padding-top: 100px; background: green" class="arrow">&rarr;</li>',
+//        '<li style="display: inline">',
+//        '<div style="display: inline; background: purple"><ul><li class="labware2"></li><li class="spinColumnDesc"><p></p></li></ul></div>',
+//        '</li>',
+//        '<listyle="display: inline"><div class="labware3" style="background: blue"></div></li>',
         '</ul><hr />'],
       htmlString = htmlParts.join('');
+
+//      htmlString = "<ul  style='display: inline'><li style='display: inline'>hello</li><li style='display: inline'>hello</li></ul>"
 
     // We have to append to the document or events won't register
     parent.empty().
