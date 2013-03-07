@@ -10,7 +10,7 @@ define([], function () {
     return null;
   }
 
-  var batchView = function (owner, jquerySelector) {
+  var bindingView = function (owner, jquerySelector) {
     console.log("hello");
     this.owner = owner;
     this.jquerySelector = jquerySelector;
@@ -18,7 +18,7 @@ define([], function () {
     return this;
   };
 
-  batchView.prototype.renderView = function (model) {
+  bindingView.prototype.renderView = function (model) {
     if (model !== null) {
       this.model = model;
     }
@@ -29,7 +29,7 @@ define([], function () {
 
     var parent = this.jquerySelector(),
       htmlParts = [
-        '<h2>Batch Select</h2>',
+        '<h2 class="title">Binding Complete for order: </h2>',
         '<hr />',
         '<div class="row0"></div>',
         '<div class="row1"></div>',
@@ -43,7 +43,7 @@ define([], function () {
         '<div class="row9"></div>',
         '<div class="row10"></div>',
         '<div class="row11"></div>',
-        '<p align="right"><button class="printButton">Next</button></p>'],
+        '<p align="right"><button class="finishButton">Finish Binding</button></p>'],
       htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
@@ -55,7 +55,7 @@ define([], function () {
     $('ul h3').addClass("kit");
   };
 
-  batchView.prototype.setKitValidState = function (valid) {
+  bindingView.prototype.setKitValidState = function (valid) {
     var result = '';
     var jquerySelection = this.jquerySelector();
 
@@ -86,12 +86,12 @@ define([], function () {
 //  }
 
 
-  batchView.prototype.clear = function () {
+  bindingView.prototype.clear = function () {
     /* clear the view from the current page
      */
     var children = this.jquerySelector().empty();
   };
 
-  return batchView;
+  return bindingView;
 
 });

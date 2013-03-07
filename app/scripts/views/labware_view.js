@@ -61,8 +61,8 @@ define([], function () {
     var parent = this.jquerySelector(),
       htmlParts = [
         '<h3 class="title"></h3>',
-        '<button class="removeButton" style="float: right; margin-right: 20px;">X</button>',
-        '<div class="resource" style="position: absolute; float:left;"></div>',
+        '<div class="resource" style="position: absolute; float:left; z-index: 1;"></div>',
+        '<button class="removeButton" style="position: relative; float: right; margin-right: 20px; z-index: 2;">X</button>',
         '<div class="barcodeScanner" style="padding-top: 150px"></div>'],
       htmlString = htmlParts.join('');
 

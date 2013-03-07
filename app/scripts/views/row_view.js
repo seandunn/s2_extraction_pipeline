@@ -18,6 +18,10 @@ define([], function () {
     return this;
   };
 
+  rowView.prototype.removeArrow = function() {
+    this.jquerySelector().find('.arrow').empty();
+  };
+
   rowView.prototype.renderView = function (model) {
     if (model !== null) {
       this.model = model;
@@ -26,13 +30,12 @@ define([], function () {
       model = this.model;
     }
 
-
     var parent = this.jquerySelector(),
       htmlParts = [
         '<h3 class="rowNum"></h3>',
-        '<ul>',
+        '<ul class="inline">',
         '<li><div class="labware1"></div></li>',
-        '<li style="font-size: 6em; padding-top: 100px;">&rarr;</li>',
+        '<li style="font-size: 6em; padding-top: 100px;" class="arrow">&rarr;</li>',
         '<li>',
         '<div><ul><li class="labware2"></li><li class="spinColumnDesc"><p></p></li></ul></div>',
         '</li>',

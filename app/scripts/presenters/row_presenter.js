@@ -59,9 +59,15 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
 //    console.log("et  : setupPresenter");
     this.setupPlaceholder(jquerySelection);
     this.setupView();
+
     this.renderView();
     this.updateModel(input_model);
     this.rowNum = input_model.rowNum;
+
+    if (input_model.remove_arrow) {
+      this.currentView.removeArrow();
+    }
+
     return this;
   };
 

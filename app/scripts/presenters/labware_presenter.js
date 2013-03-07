@@ -1,4 +1,4 @@
-define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 'config'], function (LabwareView, S2Factory, config) {
+define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 'config', 'mapper/s2_root'], function (LabwareView, S2Factory, config, S2Root) {
 
   var LabwarePresenter = function (owner, presenterFactory) {
     this.model = undefined;
@@ -99,6 +99,37 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     return this;
   };
 
+  LabwarePresenter.prototype.retrieveBarcode = function (data) {
+    var tube, root;
+    var barcode = data;
+    var that = this;
+
+    config.setTestJson('dna_only_extraction');
+    config.currentStage = 'stage1';
+    S2Root.load()
+      .done(function (result) {
+        root = result;
+      }).then(
+      function () {
+        root.tubes.findByEan13Barcode(barcode).done(
+          function (result) {
+            if (result) {
+              that.model = result.rawJson;
+              that.setupSubPresenters(that.inputModel.expected_type);
+//              that.owner.childDone(that, "login", dataForChildDone);
+            } else {
+              // todo : handle error
+              debugger;
+            }
+          }
+        ).fail(
+          function () {
+            debugger;
+          }
+        );
+      });
+  };
+
   LabwarePresenter.prototype.setupSubModel = function () {
     //if (this.model) {
     var that = this;
@@ -167,6 +198,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 
   LabwarePresenter.prototype.resetLabware = function() {
     this.release();
+    this.model = undefined;
     this.resourcePresenter = undefined;
     this.barcodeInputPresenter = undefined;
     this.setupPresenter(this.inputModel, this.jquerySelection);
@@ -193,6 +225,9 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     }
     else if (data.hasOwnProperty('tube')) {
       this.owner.childDone(child, action, child.getAliquotType());
+    }
+    else if (action == 'barcodeScanned') {
+      this.retrieveBarcode(data.BC);
     }
   };
 
