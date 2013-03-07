@@ -105,7 +105,7 @@ define([], function () {
         break;
     };
 
-    this.jquerySelector().find('.title').append(title);
+    this.jquerySelector().find('.title').empty().append(title);
   };
 //
 //  ScanBarcodeView.prototype.getError = function(model) {

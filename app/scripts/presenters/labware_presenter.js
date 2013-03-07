@@ -2,6 +2,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 
   var LabwarePresenter = function (owner, presenterFactory) {
     this.model = undefined;
+    this.uuid = undefined;
     this.owner = owner;
     this.inputModel = undefined;
     this.presenterFactory = presenterFactory;
@@ -47,7 +48,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     rscPromise.done(function(result){rsc = result;}).then(
       function () {
         that.model = rsc.rawJson;
-
+        that.uuid = model.uuid;
         if (model.hasOwnProperty('expected_type')) {
           if (!rsc.rawJson.hasOwnProperty(model.expected_type)) {
             that.model = undefined;
@@ -81,21 +82,23 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
   LabwarePresenter.prototype.setupSubPresenters = function (expectedType) {
     if (!this.resourcePresenter) {
       var type = expectedType;
-
+    }
       if (this.model) {
         type = Object.keys(this.model)[0];
 
       }
-
-      if (type) {
-        this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
-        this.view.setTitle(type);
+      if (expectedType && type != expectedType) {
+        //TODO: Set up error message here
+      } else {
+        if (type) {
+          this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
+          this.view.setTitle(type);
+        }
+      if (!this.barcodeInputPresenter && this.inputModel.display_barcode) {
+        this.barcodeInputPresenter = this.presenterFactory.createScanBarcodePresenter(this);
       }
+      this.setupSubModel();
     }
-    if (!this.barcodeInputPresenter && this.inputModel.display_barcode) {
-      this.barcodeInputPresenter = this.presenterFactory.createScanBarcodePresenter(this);
-    }
-    this.setupSubModel();
     return this;
   };
 
@@ -135,6 +138,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
   LabwarePresenter.prototype.setupSubModel = function () {
     //if (this.model) {
     var that = this;
+//      debugger;
     var data = {};
     if (this.model) {
       data = this.model;
@@ -222,7 +226,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
 //        var action = action;
 //        var data = data;
         this.resetLabware();
-        this.owner.childDone(this, "labwareRemoved", this.model.uuid);
+        this.owner.childDone(this, "labwareRemoved", {"uuid":this.uuid});
       }
     }
     else if (data.hasOwnProperty('tube')) {

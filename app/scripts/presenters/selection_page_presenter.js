@@ -218,7 +218,8 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
   };
 
   SelectionPagePresenter.prototype.handleTubeRemoved = function (data) {
-    if (this.model.removeTubeByUuid(uuid)) {
+
+    if (this.model.removeTubeByUuid(data)) {
 // TODO: deal with the success...
 
     } else {

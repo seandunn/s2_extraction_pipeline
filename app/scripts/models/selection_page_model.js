@@ -172,7 +172,7 @@ define(['mapper/s2_root'], function (S2Root) {
      * uuid - the uuid of the tube to remove
      */
 
-    for (var i = 0; i < this.tubes.length; i++) {
+    for (var i = 0; i < this.tubeUUIDs.length; i++) {
       if (this.tubeUUIDs[i].uuid === uuid) {
         this.tubeUUIDs.splice(i, 1);
         this.owner.childDone(this, "modelUpdated");
