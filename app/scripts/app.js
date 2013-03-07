@@ -59,6 +59,10 @@ define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/p
       batchUUID:this.model.batchUUID
     };
 
+    if (this.model.hasOwnProperty("HACK")) {
+      inputModelForWorkflowEngine.HACK = "hack";
+    }
+
     this.currentPagePresenter = this.workflow.getNextPresenter(this.presenterFactory, inputModelForWorkflowEngine);
 //    //this.currentPagePresenter = this.workflow.get_default_presenter(this.presenterFactory);
 //
@@ -68,7 +72,10 @@ define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/p
       labwareUUID:this.model.labwareUUID,
       batchUUID:this.model.batchUUID
     };
-//
+    if (this.model.hasOwnProperty("HACK")) {
+      inputModelForPresenter.HACK = "hack";
+    }
+
     this.currentPagePresenter.setupPresenter(inputModelForPresenter, this.jquerySelection);
     return this;
   };
@@ -98,6 +105,11 @@ define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/p
         batchUUID:data.batchUUID
       };
 
+      if (data.hasOwnProperty("HACK")) {
+        inputDataForModel.HACK = "hack";
+      }
+
+
       this.updateModel(inputDataForModel);
     } else if (action == "login") {
       inputDataForModel = {
@@ -112,10 +124,9 @@ define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/p
     return this;
   };
 
-  app.prototype.HACK_add_global_tube_uuids = function (tubeUUIDs){
+  app.prototype.HACK_add_global_tube_uuids = function (tubeUUIDs) {
     this.tubeUUIDs = tubeUUIDs;
   }
-
 
 
   return app;

@@ -30,7 +30,7 @@ require(['extraction_pipeline/app',
   inputModelForApp = {
     userUUID:"2345678901234",
     labwareUUID:"106d61c0-6224-0130-90b6-282066132de2",
-    batchUUID:"1234567890"
+//    batchUUID:"1234567890"
   };
        theApp.tubeUUIDs =  [
         {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},

@@ -1,5 +1,19 @@
 define([], function () {
 
+  var that = this;
+  function onNext_clicked(owner, view) {
+    /*
+     * response to the click on the login button...
+     * tells the owner that we want to try a login
+     */
+    return function () {
+      if (owner) {
+        owner.childDone(view , "next",{ });
+      }
+    }
+  }
+
+
   function getKey(e) {
     if (window.event) {
       return window.event.keyCode;
@@ -52,7 +66,7 @@ define([], function () {
         '<div class="row9" style="display:inline-table; height:250px;"></div>',
         '<div class="row10" style="display:inline-table; height:250px;"></div>',
         '<div class="row11" style="display:inline-table; height:250px;"></div>',
-        '<p align="right"><button class="printButton">Print Barcode</button></p>'],
+        '<p align="right"><button class="printButton">Print Barcode</button><button class="nextBtn">Next</button></p>'],
       htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
@@ -76,6 +90,11 @@ define([], function () {
     selector.on("change", function (e) {
       that.owner.validateKitTubes();
     });
+
+    this.jquerySelector().find(".nextBtn").click(onNext_clicked(this.owner, this));
+
+
+
   };
 
   kitView.prototype.setKitValidState = function (valid) {
@@ -112,7 +131,7 @@ define([], function () {
   kitView.prototype.clear = function () {
     /* clear the view from the current page
      */
-    var children = this.jquerySelector().empty();
+    this.jquerySelector().empty();
   };
 
   return kitView;

@@ -66,7 +66,7 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
 
       // TODO: get the uuids from the batchUUID
       var uuids = this.owner.tubeUUIDs;
-
+      this.batchUUID = model.batchUUID;
       this.model = uuids; // list of uuids...
       this.numRows = this.model.length;
       this.setupSubPresenters();
@@ -158,17 +158,28 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
   };
 
   tp.prototype.release = function () {
-    this.jquerySelection().release();
+    this.currentView.clear();
     return this;
   };
 
   tp.prototype.childDone = function (child, action, data) {
 
-    if (action == 'tubeFinished') {
-      this.tubeTypes.push(data);
+    if (child === this.currentView) {
 
-      if (this.tubeTypes.length == this.numRows) {
-        this.validateKitTubes();
+      if (action == 'tubeFinished') {
+        this.tubeTypes.push(data);
+
+        if (this.tubeTypes.length == this.numRows) {
+          this.validateKitTubes();
+        }
+      }
+      else if (action == "next") {
+        console.warn("CALL TO S2MAPPER: KIT VERIFIED");
+        var dataForOwner = {
+          batchUUID:this.batchUUID,
+          HACK:"HACK"
+        };
+        this.owner.childDone(this, "done", dataForOwner);
       }
     }
 
