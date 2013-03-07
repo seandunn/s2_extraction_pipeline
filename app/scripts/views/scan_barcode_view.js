@@ -55,7 +55,7 @@ define([], function () {
     input.on("keypress", function (e) {
       var key = getKey(e);
       if (key === 13) {
-        that.owner.childDone(this.owner, "barcodeScanned", this.value);
+        that.owner.childDone(this, "barcodeScanned", this.value);
       }
     });
   };

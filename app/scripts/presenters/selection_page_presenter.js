@@ -175,6 +175,7 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
      */
     if (child === this.model) {
       if (action === "modelUpdated") {
+        this.owner.HACK_add_global_tube_uuids(this.model.tubeUUIDs);
 
         this.setupSubPresenters();
         this.renderView();
@@ -198,7 +199,6 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
         batchUUID:newBatchUUID
       };
 
-      this.owner.HACK_add_global_tube_uuids(this.model.tubeUUIDs);
 
       return this.owner.childDone(this, "done", dataForOwner);
     }

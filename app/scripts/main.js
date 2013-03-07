@@ -22,7 +22,7 @@ require(['extraction_pipeline/app',
   'extraction_pipeline/presenters/presenter_factory',
   'extraction_pipeline/presenters/labware_presenter',
   'extraction_pipeline/presenters/kit_presenter',
-  'extraction_pipeline/presenters/batch_presenter',
+  'extraction_pipeline/presenters/binding_complete_page_presenter',
   'extraction_pipeline/presenters/selection_page_presenter'],
   function (app, LabwarePresenter, pf, LabwarePresenter, KitPresenter, BatchPresenter, SelectionPagePresenter) {
     var theApp = new app();
