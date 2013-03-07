@@ -34,7 +34,7 @@ define([], function () {
       htmlParts = [
         '<h3 class="rowNum"></h3>',
         '<ul class="inline">',
-        '<li><div class="labware1"></div></li>',
+        '<li class="labware1"></li>',
         '<li style="font-size: 6em; padding-top: 100px;" class="arrow">&rarr;</li>',
         '<li>',
         '<div><ul><li class="labware2"></li><li class="spinColumnDesc"><p></p></li></ul></div>',

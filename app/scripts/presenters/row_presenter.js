@@ -157,6 +157,12 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
     return this;
   };
 
+  tp.prototype.isRowComplete = function() {
+    var complete = true;
+
+    return complete;
+  };
+
   tp.prototype.childDone = function (child, action, data) {
 
     if (child instanceof TubePresenter) {

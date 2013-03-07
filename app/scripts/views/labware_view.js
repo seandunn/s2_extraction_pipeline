@@ -64,7 +64,7 @@ define([], function () {
       }
     });
 
-    removeButton.on("click", function (e) {
+    removeButton.on("clicked", function (e) {
       that.owner.resetLabware();
     });
   };

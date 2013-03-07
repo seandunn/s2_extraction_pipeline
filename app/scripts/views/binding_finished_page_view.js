@@ -29,7 +29,7 @@ define([], function () {
 
     var parent = this.jquerySelector(),
       htmlParts = [
-        '<h2 class="title">Binding Complete for order: </h2>',
+        '<h2 class="title">Binding finished for order: </h2>',
         '<hr />',
         '<div class="row0"></div>',
         '<div class="row1"></div>',
@@ -43,22 +43,22 @@ define([], function () {
         '<div class="row9"></div>',
         '<div class="row10"></div>',
         '<div class="row11"></div>',
-        '<p align="right"><button class="finishButton">Finish Binding</button></p>'],
+        '<p align="right"><button class="printButton">Print Output Tube Barcodes</button><button class="startButton">Start Elusion Loading</button></p>'],
       htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
     parent.empty().
       append(htmlString);
-    var finishButton = parent.find(".finishButton");
+    var startButton = parent.find(".startButton");
     var that = this;
 
-    finishButton.on('click', function(e) {
-        that.owner.childDone(that, "bindingComplete", {});
+    startButton.on('click', function(e) {
+        that.owner.childDone(that, "bindingFinished", {});
     });
 
-    $('li').addClass("kit");
-    $('ul p').addClass("kit");
-    $('ul h3').addClass("kit");
+//    $('li').addClass("kit");
+//    $('ul p').addClass("kit");
+//    $('ul h3').addClass("kit");
   };
 
   bindingView.prototype.setKitValidState = function (valid) {
