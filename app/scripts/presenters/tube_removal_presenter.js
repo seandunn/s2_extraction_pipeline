@@ -39,9 +39,9 @@ define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalVie
   };
 
   TubeRemovalPresenter.prototype.setupSubPresenters = function () {
-    if (!this.tubePresenter) {
+    if (!this.labware1Presenter) {
 
-      this.tubePresenter = this.presenterFactory.createTubePresenter(this);
+      this.labware1Presenter = this.presenterFactory.createTubePresenter(this);
     }
     this.setupSubModel();
     return this;
@@ -55,7 +55,7 @@ define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalVie
         uuid:this.model.uuid
       };
 
-      this.tubePresenter.setupPresenter(data,function () {
+      this.labware1Presenter.setupPresenter(data,function () {
         return that.jquerySelection().find("div.placeholder");
       });
 //      console.log(">>>>> ",this.tubePresenter);
@@ -75,8 +75,8 @@ define(['extraction_pipeline/views/tube_removal_view'], function (TubeRemovalVie
     if (this.view) {
       this.view.render(this.model);
     }
-    if (this.tubePresenter) {
-      this.tubePresenter.renderView();
+    if (this.labware1Presenter) {
+      this.labware1Presenter.renderView();
     }
 
   };
