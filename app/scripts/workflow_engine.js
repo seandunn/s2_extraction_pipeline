@@ -30,7 +30,6 @@ define(['extraction_pipeline/default/default_presenter' ], function (defPtr, Sel
       return presenterFactory.createSelectionPagePresenter(this.mainController);
     }
 
-
     return presenterFactory.createDefaultPresenter(this.mainController);
   };
 

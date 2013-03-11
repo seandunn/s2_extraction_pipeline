@@ -19,9 +19,10 @@ define([
       var path = url.replace(/^http:\/\/\w*:?\d*\//, '/');
       var resultFromJson = config.testJSON[config.currentStage][path];
 
-      if (resultFromJson === undefined)
+      if (resultFromJson === undefined){
+        debugger;
         throw "Path: '" + path + "' not found in test JSON for stage: " + config.currentStage;
-
+      }
       return resultFromJson;
     },
 

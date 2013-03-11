@@ -38,19 +38,9 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
             return new SelectionPagePresenter(owner, this);
           };
 
-      PresenterFactory.prototype.createTubeRemovalPresenter =
-          function (owner) {
-            return new TubeRemovalPresenter(owner, this);
-          };
-
       PresenterFactory.prototype.createDefaultPresenter =
           function (owner) {
             return new DefaultPresenter(owner, this);
-          };
-
-      PresenterFactory.prototype.createEmptyPresenter =
-          function (owner) {
-            return new EmptyPresenter(owner, this);
           };
 
       PresenterFactory.prototype.createKitPresenter =

@@ -18,15 +18,10 @@ require.config({
 });
 
 require(['extraction_pipeline/app',
-  'extraction_pipeline/presenters/labware_presenter',
-  'extraction_pipeline/presenters/presenter_factory',
-  'extraction_pipeline/presenters/labware_presenter',
-  'extraction_pipeline/presenters/kit_presenter',
-  'extraction_pipeline/presenters/binding_complete_page_presenter',
-  'extraction_pipeline/presenters/selection_page_presenter'],
-  function (app, LabwarePresenter, pf, LabwarePresenter, KitPresenter, BatchPresenter, SelectionPagePresenter) {
-    var theApp = new app();
-  var inputModelForApp = undefined;
+  'extraction_pipeline/presenters/presenter_factory'],
+  function (app, PresenterFactory) {
+    var theApp = new app(new PresenterFactory());
+    var inputModelForApp = undefined;
 //  inputModelForApp = {
 //    userUUID:"2345678901234",
 //    labwareUUID:"106d61c0-6224-0130-90b6-282066132de2",
