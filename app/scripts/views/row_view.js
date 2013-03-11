@@ -10,15 +10,18 @@ define([], function () {
     return null;
   }
 
-  var ScanBarcodeView = function(owner, jquerySelector) {
-console.log("hello");
+  var rowView = function (owner, jquerySelector) {
     this.owner = owner;
     this.jquerySelector = jquerySelector;
 
     return this;
   };
 
-  ScanBarcodeView.prototype.renderView = function(model) {
+  rowView.prototype.removeArrow = function() {
+    this.jquerySelector().find('.arrow').empty();
+  };
+
+  rowView.prototype.renderView = function (model) {
     if (model !== null) {
       this.model = model;
     }
@@ -26,29 +29,34 @@ console.log("hello");
       model = this.model;
     }
 
-  
     var parent = this.jquerySelector(),
-    htmlParts = [
-      '<ul>',
-      '<li class="tube"></li>',
-      '<li style="font-size: 9em; vertical-align: 150%">&rarr;</li>',
-      '<li class="spinColumn"></li>',
-      '<li class="wasteTube"></li>',
-      '</ul><hr />'],
-    htmlString = htmlParts.join('');
+      htmlParts = [
+        '<h3 class="rowNum"></h3>',
+        '<ul class="" style="">',
+        '<li style="float: left;"><div class="labware1" style="width:21em;"></div></li>',
+        '<li style="float: left;" class="arrow"><div style="font-size: 6em; padding-top: 100px;">&rarr;</div></li>',
+        '<li style="float: left;">',
+        ' <div style=" width:15em; "><ul><li class="labware2"></li><li class="spinColumnDesc"><p></p></li></ul></div>',
+        '</li>',
+        '<li style="float: left;"><div class="labware3" style="  width:12em"></div></li>',
+//        '<h3 class="rowNum">1</h3>',
+//        '<ul class="" style="display: inline">',
+//        '<li style="display: inline"><div class="labware1" style="background: red"></div></li>',
+//        '<li style="display: inline; font-size: 6em; padding-top: 100px; background: green" class="arrow">&rarr;</li>',
+//        '<li style="display: inline">',
+//        '<div style="display: inline; background: purple"><ul><li class="labware2"></li><li class="spinColumnDesc"><p></p></li></ul></div>',
+//        '</li>',
+//        '<listyle="display: inline"><div class="labware3" style="background: blue"></div></li>',
+        '</ul><hr />'],
+      htmlString = htmlParts.join('');
+
+//      htmlString = "<ul  style='display: inline'><li style='display: inline'>hello</li><li style='display: inline'>hello</li></ul>"
 
     // We have to append to the document or events won't register
     parent.empty().
       append(htmlString);
-    var input = parent.find("input");
-    var that = this;
-    input.on("keypress", function(e) { 
-      var key = getKey(e);
-      if (key === 13) {
-	that.owner.childDone(this.owner, "barcodeScanned", this.value);
-      }
-      });    
   };
+
 //
 //  ScanBarcodeView.prototype.getError = function(model) {
 //    var errorMessage = model.customError;
@@ -59,13 +67,12 @@ console.log("hello");
 //  }
 
 
-
-  ScanBarcodeView.prototype.clear = function() {
+  rowView.prototype.clear = function () {
     /* clear the view from the current page
      */
     var children = this.jquerySelector().empty();
   };
 
-  return ScanBarcodeView;
+  return rowView;
 
 });

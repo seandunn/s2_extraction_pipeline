@@ -18,7 +18,7 @@
  */
 
 
-define(['extraction_pipeline/views/kit_view'], function (View) {
+define(['extraction_pipeline/views/binding_complete_page_view'], function (View) {
   // interface ....
   var tp = function (owner, presenterFactory) {
     this.owner = owner;
@@ -60,15 +60,15 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
   };
 
   tp.prototype.updateModel = function (model) {
-    if (model.hasOwnProperty('batchUUID')) {
+    //if (model.hasOwnProperty('tubes')) {
 
-      // TODO: get the uuids from the batchUUID
-      var uuids = this.owner.tubeUUIDs;
-      this.batchUUID = model.batchUUID;
-      this.model = uuids; // list of uuids...
-      this.numRows = this.model.length;
-      this.setupSubPresenters();
-    }
+    var uuids = this.owner.tubeUUIDs;
+
+
+    this.model = uuids;// model.tubes;
+    this.numRows = this.model.length;
+    this.setupSubPresenters();
+    //}
     return this;
   }
 
@@ -86,10 +86,8 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
   }
 
   tp.prototype.setupSubModel = function () {
-    var modelJson = {
-      "type":"Kit",
-      "value":"Kit0001"
-    };
+    var modelJson = {"type":"Kit",
+      "value":"Kit0001"}
     var that = this;
     var jquerySelectionForBarcode = function () {
       return that.jquerySelection().find('.barcode')
@@ -105,6 +103,7 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
 
       var rowModel = {
         "rowNum":i,
+        "remove_arrow":true,
         "labware1":{
           "uuid":this.model[i].uuid,
           "expected_type":"tube",
@@ -113,8 +112,8 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
         },
         "labware2":{
           "expected_type":"spin_columns",
-          "display_remove":false,
-          "display_barcode":false
+          "display_remove":true,
+          "display_barcode":true
         },
         "labware3":{
           "expected_type":"waste_tube",
@@ -154,29 +153,36 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     return this;
   };
 
+  tp.prototype.checkPageComplete = function() {
+
+    var complete = true;
+
+    for (var i; i < this.rowPresenters.length; i++) {
+      if (!this.rowPresenters[i].isRowComplete()) {
+        complete = false;
+        break;
+      }
+    }
+
+    return true;
+  };
+
   tp.prototype.release = function () {
-    this.currentView.clear();
+    this.jquerySelection().release();
     return this;
   };
 
   tp.prototype.childDone = function (child, action, data) {
-
-    if (child === this.currentView) {
-      if (action == "next") {
-        console.warn("CALL TO S2MAPPER: KIT VERIFIED");
-        var dataForOwner = {
-          batchUUID:this.batchUUID,
-          HACK:"HACK"
-        };
-        this.owner.childDone(this, "done", dataForOwner);
-      }
-    }
 
     if (action == 'tubeFinished') {
       this.tubeTypes.push(data);
 
       if (this.tubeTypes.length == this.numRows) {
         this.validateKitTubes();
+      }
+    } else if (action == 'bindingComplete') {
+      if (this.checkPageComplete()) {
+        this.owner.childComplete(this, 'bindingComplete', {});
       }
     }
 

@@ -1,7 +1,6 @@
 define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/views/scan_barcode_view'], function(ScanBarcodeModel, ScanBarcodeView) {
 
   var ScanBarcodePresenter = function (owner, presenterFactory) {
-    console.log("ScanBarcodePresenter : constructor");
     this.owner = owner;
     this.presenterFactory = presenterFactory;
     this.view = undefined;
@@ -10,7 +9,6 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
   };
 
   ScanBarcodePresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
-    console.log("ScanBarcodePresenter : setupPresenter");
     this.setupPlaceholder(jquerySelection);
 
     this.updateModel(input_model); // we do it before the setup view, because we know everything... no need for a tmp view
@@ -46,7 +44,6 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
   };
 
   ScanBarcodePresenter.prototype.renderView = function () {
-    console.log("ScanBarcodePresenter : renderView");
     if (this.view) {
       this.view.render(this.model);
     }
@@ -59,6 +56,7 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
   };
 
   ScanBarcodePresenter.prototype.childDone = function (presenter, action, data) {
+
     if (action == "barcodeScanned") {
       this.handleBarcode(data);
     } else if (action === "parentError") {
@@ -71,19 +69,24 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
 
   ScanBarcodePresenter.prototype.handleBarcode = function (barcode) {
     this.model.barcode = barcode;
-    if (this.model.isValid()) {
-      this.model.busy = true;
-      this.renderView();
-      this.owner.childDone(this, "barcodeScanned", barcode);
-    }
-    else {
-      this.renderView();
-    }
+    var dataForBarcodeScanned = {
+      BC:barcode
+    };
+    this.owner.childDone(this, "barcodeScanned", dataForBarcodeScanned);
+
+//    if (this.model.isValid()) {
+//      this.model.busy = true;
+//      this.renderView();
+//      this.owner.childDone(this, "barcodeScanned", barcode);
+//    }
+//    else {
+//      this.renderView();
+//    }
   };
 
-  ScanBarcodePresenter.prototype.validateBarcode = function (barcode) {
-    return false;
-  };
+//  ScanBarcodePresenter.prototype.validateBarcode = function (barcode) {
+//    return false;
+//  };
 
   return ScanBarcodePresenter;
 

@@ -1,19 +1,5 @@
 define([], function () {
 
-  var that = this;
-  function onNext_clicked(owner, view) {
-    /*
-     * response to the click on the login button...
-     * tells the owner that we want to try a login
-     */
-    return function () {
-      if (owner) {
-        owner.childDone(view , "next",{ });
-      }
-    }
-  }
-
-
   function getKey(e) {
     if (window.event) {
       return window.event.keyCode;
@@ -24,14 +10,14 @@ define([], function () {
     return null;
   }
 
-  var kitView = function (owner, jquerySelector) {
+  var bindingView = function (owner, jquerySelector) {
     this.owner = owner;
     this.jquerySelector = jquerySelector;
 
     return this;
   };
 
-  kitView.prototype.renderView = function (model) {
+  bindingView.prototype.renderView = function (model) {
     if (model !== null) {
       this.model = model;
     }
@@ -42,16 +28,7 @@ define([], function () {
 
     var parent = this.jquerySelector(),
       htmlParts = [
-        '<div style="overflow: hidden"><div style="float: left; overflow: auto;">',
-        '<div class="barcode"></div>',
-        'Kit Type ',
-        '<select class="kitSelect">',
-        '<option>DNA</option>',
-        '<option>RNA</option>',
-        '</select></div>',
-        '<div style="float: right; overflow: auto;"><p class="validationText"></p></div>',
-        '</div>',
-        '<h2>Start Transfers</h2>',
+        '<h2 class="title">Binding Complete for order: </h2>',
         '<hr />',
         '<div class="row0" style="display:inline-table; height:250px;"></div>',
         '<div class="row1" style="display:inline-table; height:250px;"></div>',
@@ -65,38 +42,25 @@ define([], function () {
         '<div class="row9" style="display:inline-table; height:250px;"></div>',
         '<div class="row10" style="display:inline-table; height:250px;"></div>',
         '<div class="row11" style="display:inline-table; height:250px;"></div>',
-        '<p align="right"><button class="printButton">Print Barcode</button><button class="nextBtn">Next</button></p>'],
+        '<p align="right"><button class="finishButton">Finish Binding</button></p>'],
       htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
     parent.empty().
       append(htmlString);
-
-    var input = parent.find("input");
-    var selector = parent.find(".kitSelect");
+    var finishButton = parent.find(".finishButton");
     var that = this;
+
+    finishButton.on('click', function(e) {
+        that.owner.childDone(that, "bindingComplete", {});
+    });
 
     $('li').addClass("kit");
     $('ul p').addClass("kit");
     $('ul h3').addClass("kit");
-
-    input.on("keypress", function (e) {
-      var key = getKey(e);
-      if (key === 13) {
-        that.owner.childDone(this.owner, "barcodeScanned", this.value);
-      }
-    });
-    selector.on("change", function (e) {
-      that.owner.validateKitTubes();
-    });
-
-    this.jquerySelector().find(".nextBtn").click(onNext_clicked(this.owner, this));
-
-
-
   };
 
-  kitView.prototype.setKitValidState = function (valid) {
+  bindingView.prototype.setKitValidState = function (valid) {
     var result = '';
     var jquerySelection = this.jquerySelector();
 
@@ -127,12 +91,12 @@ define([], function () {
 //  }
 
 
-  kitView.prototype.clear = function () {
+  bindingView.prototype.clear = function () {
     /* clear the view from the current page
      */
-    this.jquerySelector().empty();
+    var children = this.jquerySelector().empty();
   };
 
-  return kitView;
+  return bindingView;
 
 });

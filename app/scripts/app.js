@@ -2,35 +2,44 @@ define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/p
   var app = function () {
     this.presenterFactory = new presenterFactory();
     this.workflow = new workflowEngine(this);
-    this.currentPagePresenter = {};
-
-    this.userBC = "";
-    this.labwareBC = "";
-    this.batchUUID = "";
+    this.currentPagePresenter = undefined;
+    this.model = undefined;
     return this;
   };
 
-  app.prototype.setupPresenter = function () {
-    console.log("App : setupPresenter");
+  /*
+   *
+   this.model =
+   {
+   userUUID : "", // current user UUID
+   labwareUUID : "", // the seminal labware UUID
+   batchUUID : "" // the current batch
+   };
 
+   * */
+  app.prototype.setupPresenter = function (inputModel) {
     this.setupPlaceholder();
     this.setupView();
     this.renderView(); // render empty view...
-    var input_model = undefined;
-    this.updateModel(input_model);
+    if (!inputModel) {
+      inputModel = {
+        userUUID:undefined,
+        labwareUUID:undefined,
+        batchUUID:undefined
+      };
+    }
+    this.updateModel(inputModel);
 
     return this;
   };
 
   app.prototype.updateModel = function (input_model) {
-    console.log("App : updateModel");
     this.model = input_model;
     this.updateSubPresenters();
     return this;
   };
 
   app.prototype.setupPlaceholder = function () {
-    console.log("App : setupPlaceholder");
     this.jquerySelection = function () {
       return $('#content');
     };
@@ -38,18 +47,36 @@ define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/p
   };
 
   app.prototype.updateSubPresenters = function () {
-    console.log("App : updateSubPresenters");
-    this.currentPagePresenter = this.workflow.get_default_presenter(this.presenterFactory);
-    this.currentPagePresenter.setupPresenter(this.model, this.jquerySelection);
-//    var data = {userBC:"1234567890", labwareBC:"1234567890", batch:undefined};
-//    this.userBC = data.userBC;
-//    this.labwareBC = data.labwareBC;
-//    this.batchUUID = data.batchUUID;
+
+    if (this.currentPagePresenter) {
+      this.currentPagePresenter.release();
+      this.currentPagePresenter = undefined;
+    }
+
+    var inputModelForWorkflowEngine = {
+      userUUID:this.model.userUUID,
+      labwareUUID:this.model.labwareUUID,
+      batchUUID:this.model.batchUUID
+    };
+
+    if (this.model.hasOwnProperty("HACK")) {
+      inputModelForWorkflowEngine.HACK = "hack";
+    }
+
+    this.currentPagePresenter = this.workflow.getNextPresenter(this.presenterFactory, inputModelForWorkflowEngine);
+//    //this.currentPagePresenter = this.workflow.get_default_presenter(this.presenterFactory);
 //
-//    this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory);
-//    this.currentPagePresenter.setupPresenter(this.userBC, this.jquerySelection);
+//    // marshalling the data for the default presenter... here... nothing to do!
+    var inputModelForPresenter = {
+      userUUID:this.model.userUUID,
+      labwareUUID:this.model.labwareUUID,
+      batchUUID:this.model.batchUUID
+    };
+    if (this.model.hasOwnProperty("HACK")) {
+      inputModelForPresenter.HACK = "hack";
+    }
 
-
+    this.currentPagePresenter.setupPresenter(inputModelForPresenter, this.jquerySelection);
     return this;
   };
 
@@ -67,27 +94,40 @@ define(['extraction_pipeline/workflow_engine', 'extraction_pipeline/presenters/p
     return this;
   };
 
-  app.prototype.childDone = function (page_presenter, action, data) {
+  app.prototype.childDone = function (child, action, data) {
     // for now, when a pagePresenter has done, we just load the same old page presenter...
-    console.log("child done ? " + action);
-
+    console.log("A child of App (", child, ") said it has done the following action '" + action + "' with data :", data);
+    var inputDataForModel;
     if (action == "done") {
+      inputDataForModel = {
+        userUUID:this.model.userUUID,
+        labwareUUID:this.model.labwareUUID,
+        batchUUID:data.batchUUID
+      };
 
-//      this.currentPagePresenter.release();
-//      this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory).init($('#content')).update();
+      if (data.hasOwnProperty("HACK")) {
+        inputDataForModel.HACK = "hack";
+      }
+
+
+      this.updateModel(inputDataForModel);
     } else if (action == "login") {
-      console.log(data);
-      this.userBC = data.userBC;
-      this.labwareBC = data.labwareBC;
-      this.batchUUID = data.batchUUID;
+      inputDataForModel = {
+        userUUID:data.userUUID,
+        labwareUUID:data.labwareUUID,
+        batchUUID:data.batchUUID
+      };
 
-      this.currentPagePresenter.release();
-      this.currentPagePresenter = this.workflow.get_next_presenter(this.presenterFactory);
-      this.currentPagePresenter.setupPresenter(this.userBC, this.jquerySelection);
+      this.updateModel(inputDataForModel);
     }
 
-    return this.appModel;
+    return this;
   };
+
+  app.prototype.HACK_add_global_tube_uuids = function (tubeUUIDs) {
+    this.tubeUUIDs = tubeUUIDs;
+  }
+
 
   return app;
 });

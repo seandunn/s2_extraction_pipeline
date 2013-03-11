@@ -25,7 +25,6 @@ require.config({
 require(['domReady!',
 	 'spec/selection_page_model_spec',
 	 'spec/selection_page_presenter_spec',
-	 'spec/scan_barcode_model_spec',
 	 'spec/scan_barcode_presenter_spec'],
  function() {
   // use app here

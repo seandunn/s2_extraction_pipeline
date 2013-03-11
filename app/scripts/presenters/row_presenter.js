@@ -18,28 +18,55 @@
  */
 
 
-define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource'], function (View, rsc) {
+define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource', 'labware/presenters/tube_presenter'], function (View, rsc, TubePresenter) {
 // TODO: remove me !!!!
 
   // interface ....
   var tp = function (owner, presenterFactory) {
     this.owner = owner;
     this.currentView = undefined;
-    this.barcodePresenter = undefined;
     this.presenterFactory = presenterFactory;
-    this.tubePresenter = undefined;
-    this.wasteTubePresenter = undefined;
-    this.spinColumnPresenter = undefined;
+    this.labware1Presenter = undefined;
+    this.labware2Presenter = undefined;
+    this.labware3Presenter = undefined;
+    this.rowNum = undefined;
     return this;
   };
 
-
+  /* Sample model input:
+  *
+  *{
+  * "rowNum" : i,
+  * "labware1" : {
+  *   "uuid" : this.model[i].uuid,
+  *   "expected_type" : "tube",
+  *   "display_remove" : false,
+  *   "display_barcode" : false
+  * },
+  * "labware2" : {
+  *   "expected_type" : "spin_columns",
+  *   "display_remove" : false,
+  *   "display_barcode" : false
+  * },
+  * "labware3" : {
+  *   "expected_type" : "waste_tube",
+  *   "display_remove" : false,
+  *   "display_barcode" : false
+  * }
+  *};
+  */
   tp.prototype.setupPresenter = function (input_model, jquerySelection) {
-//    console.log("et  : setupPresenter");
     this.setupPlaceholder(jquerySelection);
     this.setupView();
+
     this.renderView();
     this.updateModel(input_model);
+    this.rowNum = input_model.rowNum;
+
+    if (input_model.remove_arrow) {
+      this.currentView.removeArrow();
+    }
+
     return this;
   };
 
@@ -50,7 +77,6 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
 
   tp.prototype.setupView = function () {
     this.currentView = new View(this, this.jquerySelection);
-    console.log(this.currentView);
     return this;
   };
 
@@ -61,14 +87,14 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
   }
 
   tp.prototype.setupSubPresenters = function () {
-    if (!this.tubePresenter) {
-      this.tubePresenter = this.presenterFactory.createTubePresenter(this);
+    if (!this.labware1Presenter && this.model.hasOwnProperty('labware1')) {
+      this.labware1Presenter = this.presenterFactory.createLabwarePresenter(this);
     }
-    if (!this.spinColumnPresenter) {
-      this.spinColumnPresenter = this.presenterFactory.createSpinColumnPresenter(this);
+    if (!this.labware2Presenter && this.model.hasOwnProperty('labware2')) {
+      this.labware2Presenter = this.presenterFactory.createLabwarePresenter(this);
     }
-    if (!this.wasteTubePresenter) {
-      this.wasteTubePresenter = this.presenterFactory.createTubePresenter(this);
+    if (!this.labware3Presenter && this.model.hasOwnProperty('labware3')) {
+      this.labware3Presenter = this.presenterFactory.createLabwarePresenter(this);
     }
 
     // TODO: for now, the tube is always the same... no use of the mapper
@@ -79,43 +105,66 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
   }
 
   tp.prototype.setupSubModel = function () {
-    var tubeBC = { "url" : "components/s2-api-examples/tube.json" };
-    var spinColumnBC = { "url" : "components/s2-api-examples/spin_column.json" };
     var that = this;
 
-    var jquerySelectionForTube = function () {
-      return that.jquerySelection().find('.tube')
+    var jquerySelectionForLabware1 = function () {
+      return that.jquerySelection().find('.labware1')
     };
 
-    var jquerySelectionForWasteTube = function () {
-      return that.jquerySelection().find('.wasteTube')
+    var jquerySelectionForLabware2 = function () {
+      return that.jquerySelection().find('.labware2')
     };
 
-    var jquerySelectionForSpinColumn = function () {
-      return that.jquerySelection().find('.spinColumn')
+    var jquerySelectionForLabware3 = function () {
+      return that.jquerySelection().find('.labware3')
     };
 
-    this.tubePresenter.setupPresenter(tubeBC, jquerySelectionForTube);
-    this.spinColumnPresenter.setupPresenter(spinColumnBC, jquerySelectionForSpinColumn);
-    this.wasteTubePresenter.drawWasteTube(jquerySelectionForWasteTube);
+    if (this.labware1Presenter) {
+      this.labware1Presenter.setupPresenter(this.model.labware1, jquerySelectionForLabware1);
+    }
+    if (this.labware2Presenter) {
+      this.labware2Presenter.setupPresenter(this.model.labware2, jquerySelectionForLabware2);
+    }
+    if (this.labware3Presenter) {
+      this.labware3Presenter.setupPresenter(this.model.labware3, jquerySelectionForLabware3);
+    }
 
     return this;
   }
 
   tp.prototype.renderView = function () {
     // render view...
-//    console.log("et  : presenter::renderView, ", this.jquerySelection());
     this.currentView.renderView();
-    if(this.tubePresenter){
-    this.tubePresenter.renderView();
-    }
+
     return this;
   };
 
+  tp.prototype.getTubeType = function () {
+    var tubeType = '';
+
+    if (this.labware1Presenter) {
+      tubeType = this.labware1Presenter.getAliquotType();
+    }
+
+    return tubeType;
+  }
 
   tp.prototype.release = function () {
     this.jquerySelection().release();
     return this;
+  };
+
+  tp.prototype.isRowComplete = function() {
+    var complete = true;
+
+    return complete;
+  };
+
+  tp.prototype.childDone = function (child, action, data) {
+
+    if (action == "tube rendered") {
+     this.owner.childDone(this, "tubeFinished", data);
+    }
   };
 
 
