@@ -172,7 +172,6 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
             "tube to be added",
             1000);
         runs(function () {
-          console.log("calling child done");
           tubeCount = model.getNumberOfTubes();
           expect(tubeCount).toBe(1);
           presenter.childDone(this, "removeTube", { tube:{ uuid:"11111111-2222-3333-4444-0000000000000" } });

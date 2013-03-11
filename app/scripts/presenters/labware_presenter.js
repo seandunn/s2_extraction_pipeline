@@ -172,8 +172,6 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     this.resourcePresenter = undefined;
     this.barcodeInputPresenter = undefined;
 
-    console.log("### renderView", this.model);
-
     if (this.view) {
       this.view.renderView(this.model);
     }
@@ -229,7 +227,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
         this.owner.childDone(this, "labwareRemoved", {"uuid":this.uuid});
       }
     }
-    else if (data.hasOwnProperty('tube')) {
+    else if (action == "tube rendered") {
       this.owner.childDone(this, action, child.getAliquotType());
     }
     else if (action == 'barcodeScanned') {

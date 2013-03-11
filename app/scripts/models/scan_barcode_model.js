@@ -11,7 +11,6 @@ define(['extraction_pipeline/dummyresource'], function(DummyResource) {
      *         - tube ( a tube barcode )
      */
     var type =data.type;
-    console.log(type);
     this.type = type;
     this.customError = "";
     this.busy = false;

@@ -10,8 +10,14 @@ define(['extraction_pipeline/default/default_presenter' ], function (defPtr, Sel
      *   batchUUID: "1234567890"
      * }
      */
+
     if (!inputDataForWorkflow.userUUID){
       return presenterFactory.createDefaultPresenter(this.mainController);
+    }
+
+    if (inputDataForWorkflow.HACK){
+      return presenterFactory.createBindingCompletePage(this.mainController);
+
     }
 
     if (inputDataForWorkflow.batchUUID){
@@ -23,6 +29,7 @@ define(['extraction_pipeline/default/default_presenter' ], function (defPtr, Sel
       // clever things should happen here...
       return presenterFactory.createSelectionPagePresenter(this.mainController);
     }
+
 
     return presenterFactory.createDefaultPresenter(this.mainController);
   };

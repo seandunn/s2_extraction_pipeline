@@ -41,7 +41,6 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
    *}
    */
   tp.prototype.setupPresenter = function (input_model, jquerySelection) {
-//    console.log("et  : setupPresenter");
     this.tubeTypes = [];
     this.setupPlaceholder(jquerySelection);
     this.setupView();
@@ -57,16 +56,19 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
 
   tp.prototype.setupView = function () {
     this.currentView = new View(this, this.jquerySelection);
-    console.log(this.currentView);
     return this;
   };
 
   tp.prototype.updateModel = function (model) {
-    if (model.hasOwnProperty('tubes')) {
-      this.model = model.tubes;
-      this.numRows = this.model.length;
-      this.setupSubPresenters();
-    }
+    //if (model.hasOwnProperty('tubes')) {
+
+    var uuids = this.owner.tubeUUIDs;
+
+
+    this.model = uuids;// model.tubes;
+    this.numRows = this.model.length;
+    this.setupSubPresenters();
+    //}
     return this;
   }
 
@@ -103,9 +105,10 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
         "rowNum":i,
         "remove_arrow":true,
         "labware1":{
+          "uuid":this.model[i].uuid,
           "expected_type":"tube",
-          "display_remove":true,
-          "display_barcode":true
+          "display_remove":false,
+          "display_barcode":false
         },
         "labware2":{
           "expected_type":"spin_columns",
@@ -127,7 +130,6 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
 
   tp.prototype.renderView = function () {
     // render view...
-//    console.log("et  : presenter::renderView, ", this.jquerySelection());
     this.currentView.renderView();
     if (this.barcodePresenter) {
       this.barcodePresenter.renderView();

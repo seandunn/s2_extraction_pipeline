@@ -56,7 +56,6 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
   *};
   */
   tp.prototype.setupPresenter = function (input_model, jquerySelection) {
-//    console.log("et  : setupPresenter");
     this.setupPlaceholder(jquerySelection);
     this.setupView();
 
@@ -78,7 +77,6 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
 
   tp.prototype.setupView = function () {
     this.currentView = new View(this, this.jquerySelection);
-    console.log(this.currentView);
     return this;
   };
 
@@ -136,7 +134,6 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
 
   tp.prototype.renderView = function () {
     // render view...
-//    console.log("et  : presenter::renderView, ", this.jquerySelection());
     this.currentView.renderView();
 
     return this;
@@ -165,7 +162,7 @@ define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource
 
   tp.prototype.childDone = function (child, action, data) {
 
-    if (child instanceof TubePresenter) {
+    if (action == "tube rendered") {
      this.owner.childDone(this, "tubeFinished", data);
     }
   };

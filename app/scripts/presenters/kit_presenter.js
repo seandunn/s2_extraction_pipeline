@@ -41,7 +41,6 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
    *}
    */
   tp.prototype.setupPresenter = function (input_model, jquerySelection) {
-//    console.log("et  : setupPresenter");
     this.tubeTypes = [];
     this.setupPlaceholder(jquerySelection);
     this.setupView();
@@ -57,7 +56,6 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
 
   tp.prototype.setupView = function () {
     this.currentView = new View(this, this.jquerySelection);
-    console.log(this.currentView);
     return this;
   };
 
@@ -66,7 +64,7 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
 
       // TODO: get the uuids from the batchUUID
       var uuids = this.owner.tubeUUIDs;
-
+      this.batchUUID = model.batchUUID;
       this.model = uuids; // list of uuids...
       this.numRows = this.model.length;
       this.setupSubPresenters();
@@ -133,7 +131,6 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
 
   tp.prototype.renderView = function () {
     // render view...
-//    console.log("et  : presenter::renderView, ", this.jquerySelection());
     this.currentView.renderView();
     if (this.barcodePresenter) {
       this.barcodePresenter.renderView();
@@ -158,11 +155,22 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
   };
 
   tp.prototype.release = function () {
-    this.jquerySelection().release();
+    this.currentView.clear();
     return this;
   };
 
   tp.prototype.childDone = function (child, action, data) {
+
+    if (child === this.currentView) {
+      if (action == "next") {
+        console.warn("CALL TO S2MAPPER: KIT VERIFIED");
+        var dataForOwner = {
+          batchUUID:this.batchUUID,
+          HACK:"HACK"
+        };
+        this.owner.childDone(this, "done", dataForOwner);
+      }
+    }
 
     if (action == 'tubeFinished') {
       this.tubeTypes.push(data);
