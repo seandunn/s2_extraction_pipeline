@@ -60,24 +60,16 @@ define([], function () {
     var parent = this.jquerySelector(),
       htmlParts = [
         '<h3 class="title"></h3>',
-        '<div class="resource" style="position: absolute; float:left; z-index: 1;"></div>',
-        '<button class="removeButton" style="position: relative; float: right; margin-right: 20px; z-index: 2;">X</button>',
-        '<div class="barcodeScanner" style="padding-top: 150px"></div>'],
+        '<div style="overflow: auto"><div class="resource" style="position: relative; float:left; z-index: 1;"></div>',
+        '<button class="removeButton" style="position: relative; float: right; margin-right: 20px; z-index: 2;">X</button></div>',
+        '<div class="barcodeScanner"></div>'],
       htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
     parent.empty().append(htmlString);
 
     var removeButton = parent.find('.removeButton');
-    var input = parent.find("input");
     var that = this;
-
-    input.on("keypress", function (e) {
-      var key = getKey(e);
-      if (key === 13) {
-        that.owner.childDone(this.owner, "barcodeScanned", this.value);
-      }
-    });
 
     removeButton.on("click", function (e) {
       that.owner.childDone(that, "labwareRemoved");
