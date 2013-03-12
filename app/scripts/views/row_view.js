@@ -36,7 +36,7 @@ define([], function () {
         '<li style="float: left;"><div class="labware1" style="width:21em;"></div></li>',
         '<li style="float: left;" class="arrow"><div style="font-size: 6em; padding-top: 100px;">&rarr;</div></li>',
         '<li style="float: left;">',
-        ' <div style=" width:15em; "><ul><li class="labware2"></li><li class="spinColumnDesc"><p></p></li></ul></div>',
+        ' <div style=" width:17em; "><ul><li class="labware2"></li><li class="spinColumnDesc"><p></p></li></ul></div>',
         '</li>',
         '<li style="float: left;"><div class="labware3" style="  width:12em"></div></li>',
 //        '<h3 class="rowNum">1</h3>',

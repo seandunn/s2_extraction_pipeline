@@ -1,4 +1,4 @@
-define(['extraction_pipeline/dummyresource'], function(DummyResource) {
+define(['extraction_pipeline/dummyresource'], function (DummyResource) {
   'use strict';
 
   var ScanBarcodeModel = function (data) {
@@ -10,7 +10,7 @@ define(['extraction_pipeline/dummyresource'], function(DummyResource) {
      *       values for this are:
      *         - tube ( a tube barcode )
      */
-    var type =data.type;
+    var type = data.type;
     this.type = type;
     this.customError = "";
     this.busy = false;
@@ -20,7 +20,11 @@ define(['extraction_pipeline/dummyresource'], function(DummyResource) {
   ScanBarcodeModel.prototype.isValid = function () {
 //    var pattern = new RegExp(this.type + "[0-9]{4}","g");
 //    return pattern.test(this.barcode);
-    return true;
+    var valid = true;
+    if (this.barcode) {
+      valid = (this.barcode.length == 13);
+    }
+    return valid;
   };
 
   ScanBarcodeModel.prototype.getResourceFromBarcode = function () {
