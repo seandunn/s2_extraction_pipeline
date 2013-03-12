@@ -154,7 +154,7 @@ define(['scripts/app'], function (app) {
       var f = function () {
         mainApp.childDone(undefined, "login", inputDataForModel);
       }
-      expect(f).toThrow("Data Schema Error");
+      expect(f).toThrow("DataSchemaError");
     });
 
   })

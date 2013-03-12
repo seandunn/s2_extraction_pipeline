@@ -19,7 +19,9 @@
 
 
 define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
-  , 'extraction_pipeline/dummyresource', 'extraction_pipeline/default/default_view'], function (config, S2Root, S2RscFactory, rsc, view) {
+  , 'extraction_pipeline/dummyresource', 'extraction_pipeline/default/default_view'
+  , 'text!components/S2Mapper/test/json/unit/root.json'
+  , 'text!components/S2Mapper/test/json/unit/tube_by_barcode.json'], function (config, S2Root, S2RscFactory, rsc, view, rootTestJson, dataJSON) {
 // TODO: replace the dummy resource with the real one aka the mapper ['mapper/s2_resource'], function(S2Resource) {
   /*
    The default page presenter. Deals with login.
@@ -47,28 +49,21 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
     this.setupPlaceholder(jquerySelection);
     this.setupView();
     this.renderView();
-
-    this.updateModel(input_model);
+    if (input_model && input_model.constructor == Object) {
+      this.updateModel(input_model);
+    } else {
+      throw {message:"DataSchemaError"}
+    }
     return this;
   };
 
   defPtr.prototype.updateModel = function (input_model) {
     this.model = input_model;
     if (this.model) {
-
       // TODO: fix me -> eventually use a proper resource to check the user...
-//      var theURL = "http://localhost:8088/tube/2_" + input_model.v;
-//      var that = this;
-//      $.ajax({url:theURL, type:"GET"}).complete(
-//          function (data) {
-//            that.model = $.parseJSON(data.responseText);
-//            that.setupView();
-//            that.renderView();
-//            that.setupSubPresenters();
-//          }
-//      );
     }
     this.setupSubPresenters();
+
     return this;
   };
 
@@ -147,9 +142,6 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
         return this.login(dataForLogin);
       }
     }
-//    else if (action === "next"){
-//      return this.owner.childDone(child, "done", data);
-//    }
 
     console.error("unhandled childDone event:");
     console.error("child: ", child);
@@ -177,13 +169,13 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
 
     // TODO: for now, the tube is always the same... no use of the mapper
 //    tubeBC = 'tube0001';
-    config.setTestJson('dna_only_extraction');
-    config.currentStage = 'stage1';
+    config.setupTest(rootTestJson);
     S2Root.load()
         .done(function (result) {
           root = result;
         }).then(
         function () {
+          config.setupTest(dataJSON);
           root.tubes.findByEan13Barcode(dataForLogin.labwareBC).done(
               function (result) {
                 if (result) {

@@ -1,4 +1,7 @@
-define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 'config', 'mapper/s2_root'], function (LabwareView, S2Factory, config, S2Root) {
+define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 'config', 'mapper/s2_root'
+  , 'text!components/S2Mapper/test/json/unit/root.json'
+  , 'text!components/S2Mapper/test/json/unit/tube.json'
+  , 'text!components/S2Mapper/test/json/unit/tube_by_barcode.json'], function (LabwareView, S2Factory, config, S2Root, rootTestJson, dataTubeJSON, dataTubeFbyBCJSON) {
 
   var LabwarePresenter = function (owner, presenterFactory) {
     this.model = undefined;
@@ -38,28 +41,29 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     this.inputModel = model;
 
     if (model && model.hasOwnProperty('uuid')) {
-    var that = this;
-    var root, rsc;
+      var that = this;
+      var root, rsc;
 
-    config.setTestJson('dna_only_extraction');
-    config.currentStage = 'stage1';
-    var rscPromise = new S2Factory({uuid:model.uuid});
+      config.setupTest(dataTubeJSON);
+      var rscPromise = new S2Factory({uuid:model.uuid});
 
-    rscPromise.done(function(result){rsc = result;}).then(
-      function () {
-        that.model = rsc.rawJson;
-        that.uuid = model.uuid;
-        if (model.hasOwnProperty('expected_type')) {
-          if (!rsc.rawJson.hasOwnProperty(model.expected_type)) {
-            that.model = undefined;
-          }
-        }
+      rscPromise.done(function (result) {
+        rsc = result;
+      }).then(
+          function () {
+            that.model = rsc.rawJson;
+            that.uuid = model.uuid;
+            if (model.hasOwnProperty('expected_type')) {
+              if (!rsc.rawJson.hasOwnProperty(model.expected_type)) {
+                that.model = undefined;
+              }
+            }
 
-        that.setupView();
-        that.renderView();
+            that.setupView();
+            that.renderView();
 //        that.owner.childDone(that, "Found equipment", model.uuid);
-      }
-    );
+          }
+      );
 
     } else {
       var expectedType = undefined;
@@ -73,7 +77,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     return this;
   };
 
-  LabwarePresenter.prototype.setRemoveButtonVisibility = function(displayRemove) {
+  LabwarePresenter.prototype.setRemoveButtonVisibility = function (displayRemove) {
     if (!displayRemove) {
       this.view.hideRemoveButton();
     }
@@ -83,17 +87,17 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     if (!this.resourcePresenter) {
       var type = expectedType;
     }
-      if (this.model) {
-        type = Object.keys(this.model)[0];
+    if (this.model) {
+      type = Object.keys(this.model)[0];
 
+    }
+    if (expectedType && type != expectedType) {
+      //TODO: Set up error message here
+    } else {
+      if (type) {
+        this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
+        this.view.setTitle(type);
       }
-      if (expectedType && type != expectedType) {
-        //TODO: Set up error message here
-      } else {
-        if (type) {
-          this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
-          this.view.setTitle(type);
-        }
       if (!this.barcodeInputPresenter && this.inputModel.display_barcode) {
         this.barcodeInputPresenter = this.presenterFactory.createScanBarcodePresenter(this);
       }
@@ -106,33 +110,32 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     var tube, root;
     var barcode = data;
     var that = this;
-
-    config.setTestJson('dna_only_extraction');
-    config.currentStage = 'stage1';
+    config.setupTest(rootTestJson);
     S2Root.load()
-      .done(function (result) {
-        root = result;
-      }).then(
-      function () {
-        root.tubes.findByEan13Barcode(barcode).done(
-          function (result) {
-            if (result) {
-              that.model = result.rawJson;
-              var type = result.resourceType;
-              that.uuid = result.rawJson[type].uuid;
-              that.setupSubPresenters(that.inputModel.expected_type);
+        .done(function (result) {
+          root = result;
+        }).then(
+        function () {
+          config.setupTest(dataTubeFbyBCJSON);
+          root.tubes.findByEan13Barcode(barcode).done(
+              function (result) {
+                if (result) {
+                  that.model = result.rawJson;
+                  var type = result.resourceType;
+                  that.uuid = result.rawJson[type].uuid;
+                  that.setupSubPresenters(that.inputModel.expected_type);
 //              that.owner.childDone(that, "login", dataForChildDone);
-            } else {
-              // todo : handle error
-              debugger;
-            }
-          }
-        ).fail(
-          function () {
-            debugger;
-          }
-        );
-      });
+                } else {
+                  // todo : handle error
+                  debugger;
+                }
+              }
+          ).fail(
+              function () {
+                debugger;
+              }
+          );
+        });
   };
 
   LabwarePresenter.prototype.setupSubModel = function () {
@@ -145,7 +148,8 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     }
 
     var resourceSelector = function () {
-      return that.jquerySelection().find("div.resource")};
+      return that.jquerySelection().find("div.resource")
+    };
 
     if (this.resourcePresenter) {
       this.resourcePresenter.setupPresenter(data, resourceSelector);
@@ -187,7 +191,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     this.setRemoveButtonVisibility(this.inputModel.display_remove);
   };
 
-  LabwarePresenter.prototype.specialType = function(type) {
+  LabwarePresenter.prototype.specialType = function (type) {
     var specialType = false;
     var typesList = ['waste_tube', 'qia_cube', 'centrifuge'];
 
@@ -200,7 +204,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     return specialType;
   }
 
-  LabwarePresenter.prototype.resetLabware = function() {
+  LabwarePresenter.prototype.resetLabware = function () {
     this.release();
     this.model = undefined;
     this.resourcePresenter = undefined;
