@@ -36,17 +36,22 @@ define([], function () {
     }
 
     var parent = this.jquerySelector(),
-        htmlParts = [
-          '<div style="padding: 3px;"><span style="margin-right:5px;">Scan ',
-          this.model.type,
-          '</span><input value="', model.barcode,
-          '"', model.busy ? ' disabled="true"' : '' , '>',
-            model.value,
-            '</input>',
-          this.getError(model),
-          '</div>'
-        ],
-        htmlString = htmlParts.join('');
+      htmlParts = [
+        '<div style="padding: 3px;"><span style="margin-right:5px;">Scan ',
+        this.model.type,
+        '</span><input class="barcodeInput" style="width: 9em" value="', model.barcode,
+        '"', model.busy ? ' disabled="true"' : '' , '>',
+        model.value,
+        '</input>',
+        this.getError(model),
+        '</div>',
+        '<div class="alert alert-error" style="display: none">',
+        '<a class="close" data-dismiss="alert">×</a>',
+        '<h4 class="alert-heading">Error!</h4>',
+        'Invalid barcode',
+        '</div>'
+      ],
+      htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
     parent.empty().append(htmlString);
@@ -55,7 +60,14 @@ define([], function () {
     input.on("keypress", function (e) {
       var key = getKey(e);
       if (key === 13) {
-        that.owner.childDone(this, "barcodeScanned", this.value);
+        model.barcode = that.jquerySelector().find('.barcodeInput').val();
+        if (model.isValid()) {
+          that.jquerySelector().find('.alert-error').css('display', 'none');
+          that.owner.childDone(this, "barcodeScanned", this.value);
+        }
+        else {
+          that.jquerySelector().find('.alert-error').css('display', 'block');
+        }
       }
     });
   };
