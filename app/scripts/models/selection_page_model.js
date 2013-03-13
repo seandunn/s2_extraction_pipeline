@@ -29,10 +29,14 @@ define(['mapper/s2_root'], function (S2Root) {
      * input_model = {userUUID:"1234567890", labwareUUID:"1234567890", batchUUID:"1234567890"}
      */
     this.owner = owner;
-    this.user = input_model.userUUID;
-    this.batch = input_model.batchUUID;
-    this.seminalLabwareBC = input_model.labwareUUID;
 
+    if(input_model.constructor == Object){
+      this.user = input_model.userUUID;
+      this.batch = input_model.batchUUID;
+      this.seminalLabwareUUID = input_model.labwareUUID;
+    } else {
+      throw {message:"DataSchemaError"}
+    }
 
     this.tubeUUIDs = [];
     this.capacity = 12;
@@ -100,19 +104,18 @@ define(['mapper/s2_root'], function (S2Root) {
 
 
   SelectionPageModel.prototype.retrieveBatchFromSeminalLabware = function () {
-    // For now
+    // For now, does not get any batch...
 
-    if (this.seminalLabwareBC){
-      this.addTube(this.seminalLabwareBC);
+    if (this.seminalLabwareUUID){
+      // if there was a labware as input, we add it to the model.
+      this.addTube(this.seminalLabwareUUID);
     }
 
   };
 
 
   SelectionPageModel.prototype.addTube = function (newTubeUUID) {
-    /* add tube
-     *
-     * Adds an tube to this model.
+    /* Adds an tube to this model.
      *
      * Arguments
      * ---------
@@ -130,6 +133,7 @@ define(['mapper/s2_root'], function (S2Root) {
     }
 
 //    this.retrieveTubeDetails(lastTubeIndex, newTubeUUID);
+
     this.tubeUUIDs.push({"uuid":newTubeUUID});
     //var lastTubeIndex = this.tubes.length;
     this.owner.childDone(this, "modelUpdated");

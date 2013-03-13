@@ -18,13 +18,15 @@
  */
 
 
-define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
-  , 'extraction_pipeline/dummyresource', 'extraction_pipeline/default/default_view'], function (config, S2Root, S2RscFactory, rsc, view) {
-// TODO: replace the dummy resource with the real one aka the mapper ['mapper/s2_resource'], function(S2Resource) {
+define(['config'
+  , 'mapper/s2_root'
+  , 'extraction_pipeline/default/default_view'
+  , 'text!components/S2Mapper/test/json/unit/root.json'
+  , 'text!components/S2Mapper/test/json/unit/tube_by_barcode.json'],
+    function (config, S2Root, view, rootTestJson, dataJSON) {
   /*
    The default page presenter. Deals with login.
    */
-
 
   // interface ....
   var defPtr = function (owner, presenterFactory) {
@@ -47,28 +49,21 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
     this.setupPlaceholder(jquerySelection);
     this.setupView();
     this.renderView();
-
-    this.updateModel(input_model);
+    if (input_model && input_model.constructor == Object) {
+      this.updateModel(input_model);
+    } else {
+      throw {message:"DataSchemaError"}
+    }
     return this;
   };
 
   defPtr.prototype.updateModel = function (input_model) {
     this.model = input_model;
     if (this.model) {
-
       // TODO: fix me -> eventually use a proper resource to check the user...
-//      var theURL = "http://localhost:8088/tube/2_" + input_model.v;
-//      var that = this;
-//      $.ajax({url:theURL, type:"GET"}).complete(
-//          function (data) {
-//            that.model = $.parseJSON(data.responseText);
-//            that.setupView();
-//            that.renderView();
-//            that.setupSubPresenters();
-//          }
-//      );
     }
     this.setupSubPresenters();
+
     return this;
   };
 
@@ -114,10 +109,7 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
   defPtr.prototype.renderView = function () {
     // render view...
     var data = undefined;
-    if (this.model) {
-      data = {};
-      data.error = "hello";
-    }
+
     this.currentView.renderView(data);
     if (this.userBCSubPresenter) {
       this.userBCSubPresenter.renderView();
@@ -147,9 +139,6 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
         return this.login(dataForLogin);
       }
     }
-//    else if (action === "next"){
-//      return this.owner.childDone(child, "done", data);
-//    }
 
     console.error("unhandled childDone event:");
     console.error("child: ", child);
@@ -177,20 +166,21 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
 
     // TODO: for now, the tube is always the same... no use of the mapper
 //    tubeBC = 'tube0001';
-    config.setTestJson('dna_only_extraction');
-    config.currentStage = 'stage1';
+    config.setupTest(rootTestJson);
     S2Root.load()
         .done(function (result) {
           root = result;
         }).then(
         function () {
+          config.setupTest(dataJSON);
           root.tubes.findByEan13Barcode(dataForLogin.labwareBC).done(
               function (result) {
                 if (result) {
+                 // debugger;
                   var dataForChildDone = {
                     // note that we're talking about UUID now ! but we're using the BC as uuid for now... ugly, I know
                     userUUID:dataForLogin.userBC,
-                    labwareUUID:result.rawJson.tube.uuid,
+                    labwareUUID:result.uuid,
                     batchUUID:undefined
                   };
                   console.warn("CALL TO S2MAPPER: TRY TO LOGIN ?");

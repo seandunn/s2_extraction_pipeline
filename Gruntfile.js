@@ -48,7 +48,7 @@ module.exports = function( grunt ) {
 
     // headless testing through PhantomJS
     jasmine: {
-	all: ['http://localhost:3501/index.html']
+	    all: ['http://localhost:3501/index.html']
     },
 
     // default watch configuration
@@ -184,7 +184,9 @@ module.exports = function( grunt ) {
       dist: ''
     },
 
-    server:{port:3502}
+    server:{
+      port:3503
+    }
 
   });
 

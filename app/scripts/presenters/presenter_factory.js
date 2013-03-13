@@ -1,7 +1,5 @@
 define(['extraction_pipeline/presenters/scan_barcode_presenter',
   'extraction_pipeline/presenters/selection_page_presenter',
-  'extraction_pipeline/presenters/tube_removal_presenter',
-  'extraction_pipeline/presenters/empty_presenter',
   'extraction_pipeline/default/default_presenter',
   'extraction_pipeline/presenters/kit_presenter',
   'extraction_pipeline/presenters/row_presenter',
@@ -10,7 +8,7 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
   'labware/presenters/tube_presenter',
   'labware/presenters/spin_column_presenter',
   'labware/presenters/waste_tube_presenter'],
-    function (ScanBarcodePresenter, SelectionPagePresenter, TubeRemovalPresenter, EmptyPresenter, DefaultPresenter, KitPresenter, RowPresenter,
+    function (ScanBarcodePresenter, SelectionPagePresenter, DefaultPresenter, KitPresenter, RowPresenter,
               LabwarePresenter,
               BindingCompletePagePresenter,
               TubePresenter, SpinColumnPresenter, WasteTubePresenter) {
@@ -38,19 +36,9 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
             return new SelectionPagePresenter(owner, this);
           };
 
-      PresenterFactory.prototype.createTubeRemovalPresenter =
-          function (owner) {
-            return new TubeRemovalPresenter(owner, this);
-          };
-
       PresenterFactory.prototype.createDefaultPresenter =
           function (owner) {
             return new DefaultPresenter(owner, this);
-          };
-
-      PresenterFactory.prototype.createEmptyPresenter =
-          function (owner) {
-            return new EmptyPresenter(owner, this);
           };
 
       PresenterFactory.prototype.createKitPresenter =
@@ -85,7 +73,7 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
 
       PresenterFactory.prototype.createLabwareSubPresenter =
         function(owner, type) {
-          var presenter = {};
+          var presenter = null;
           switch (type) {
             case 'tube':
               presenter = new TubePresenter(owner, this);

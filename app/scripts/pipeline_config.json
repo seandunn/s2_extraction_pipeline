@@ -1,0 +1,28 @@
+{
+  "special_rules":{
+    "no_item_rule":{
+      "description":"no item",
+      "result":"default_presenter"
+    }
+  },
+  "rules":{
+    "rule1":{
+      "description":"the description",
+      "role":"tube_to_be_extracted",
+      "needed":{
+        "status":"in_progress"
+      },
+      "forbidding":{},
+      "result":"selection_page_presenter"
+    },
+    "rule2":{
+      "description":"the description",
+      "role":"tube_to_be_extracted",
+      "needed":{
+        "status":"done"
+      },
+      "forbidding":{},
+      "result":"selection_page_presenter"
+    }
+  }
+}

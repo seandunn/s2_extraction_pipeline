@@ -92,7 +92,7 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
 
     }
 
-    describe("Presenter which has spy subpresenters", function () {
+    xdescribe("Presenter which has spy subpresenters", function () {
 
       beforeEach(function () {
         mockPresenters = [];
