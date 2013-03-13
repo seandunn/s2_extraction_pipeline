@@ -4,9 +4,9 @@ define(['config'
   , 'text!scripts/pipeline_config.json'
 ], function (config, S2Root, S2RscFactory, pipelineConfig) {
 
-  var workflowEngine = function (owner) {
+  var workflowEngine = function (owner, config) {
     this.mainController = owner;
-    this.rules = $.parseJSON(pipelineConfig);
+    this.rules = $.parseJSON(config);
   };
 
   workflowEngine.prototype.getNextPresenter = function (presenterFactory, inputDataForWorkflow) {

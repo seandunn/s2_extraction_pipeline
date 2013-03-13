@@ -75,23 +75,8 @@ define([], function() {
         options.data = null;
       }
 
-      console.log('------------------------');
-      console.log('Sending ajax message for ' + config.stage);
-
       config.reqParams = options.url + options.type.toLowerCase() + JSON.stringify(options.data);
-      console.log(config.reqParams);
-
-
-
-
-      // We resolve the Deferred object before return so any callbacks added
-      // with .done() are called as soon as they're added, which should solve 
-      // testing latency issues.
-      console.log(config);
-
       var response = config.finalDna[config.reqParams];
-      console.log('Responding with a ' + typeof response);
-      console.log(response);
 
       return $.Deferred().resolve({
         url:           options.url,
