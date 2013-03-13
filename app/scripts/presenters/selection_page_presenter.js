@@ -18,7 +18,14 @@
  */
 
 
-define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/models/selection_page_model', 'mapper/s2_root'], function (SelectionPageView, SelectionPageModel, S2Root) {
+define([
+  'extraction_pipeline/views/selection_page_view',
+  'extraction_pipeline/models/selection_page_model',
+  'mapper/s2_root'
+], function (
+    SelectionPageView,
+    SelectionPageModel,
+    S2Root) {
   // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
 
   var SelectionPagePresenter = function (owner, presenterFactory) {
@@ -196,12 +203,8 @@ define(['extraction_pipeline/views/selection_page_view', 'extraction_pipeline/mo
         batchUUID:newBatchUUID
       };
 
-
       return this.owner.childDone(this, "done", dataForOwner);
     }
-
-
-    return this.owner.childDone(this, action, data);
   };
 
   SelectionPagePresenter.prototype.handleBarcodeScanned = function (uuid) {

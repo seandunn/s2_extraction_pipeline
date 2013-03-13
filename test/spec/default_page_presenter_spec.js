@@ -10,7 +10,10 @@ define(['scripts/default/default_presenter'], function (DefaultPresenter) {
       var defaultPresenter = undefined;
       var view = undefined;
       var owner = {};
-      var jquerySelection = function(){return $('');};
+      var jquerySelection = function () {
+        return $('');
+      };
+
       function configureSpies() {
         view = {};
         view.clear = function () {
@@ -27,13 +30,14 @@ define(['scripts/default/default_presenter'], function (DefaultPresenter) {
         spyOn(presenterFactory, 'createDefaultPresenter');
       }
 
-      it("default presenter is setup properly", function(){
+      it("default presenter is setup properly", function () {
         configureSpies();
         defaultPresenter = new DefaultPresenter(owner, presenterFactory);
-        defaultPresenter.updateModel = function() {};
+        defaultPresenter.updateModel = function () {
+        };
         spyOn(defaultPresenter, 'updateModel');
 
-        defaultPresenter.setupPresenter(undefined, jquerySelection);
+        defaultPresenter.setupPresenter({}, jquerySelection);
 
         expect(defaultPresenter.currentView).toBeDefined();
         expect(defaultPresenter.presenterFactory).toBeDefined();
@@ -41,6 +45,9 @@ define(['scripts/default/default_presenter'], function (DefaultPresenter) {
         expect(defaultPresenter.updateModel).toHaveBeenCalled();
 
       });
+
+
+
 
 //      beforeEach(function () {
 //        configureSpyView();
