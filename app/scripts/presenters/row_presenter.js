@@ -18,8 +18,10 @@
  */
 
 
-define(['extraction_pipeline/views/row_view', 'extraction_pipeline/dummyresource', 'labware/presenters/tube_presenter'], function (View, rsc, TubePresenter) {
-// TODO: remove me !!!!
+define([
+    'extraction_pipeline/views/row_view'
+  , 'labware/presenters/tube_presenter'
+], function (View, TubePresenter) {
 
   // interface ....
   var tp = function (owner, presenterFactory) {

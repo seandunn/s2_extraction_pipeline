@@ -1,4 +1,4 @@
-define(['models/selection_page_model', 'spec/selection_page_helper', 'extraction_pipeline/dummyresource'], function (SelectionPageModel, SelectionPageHelper, DummyResource) {
+define(['models/selection_page_model', 'spec/selection_page_helper'], function (SelectionPageModel, SelectionPageHelper) {
 
   'use strict';
 

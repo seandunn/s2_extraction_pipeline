@@ -1,8 +1,7 @@
 define(['config'
   , 'mapper/s2_root'
-  , 'mapper/s2_resource_factory'
   , 'text!scripts/pipeline_config.json'
-], function (config, S2Root, S2RscFactory, pipelineConfig) {
+], function (config, S2Root, pipelineConfig) {
 
   var workflowEngine = function (owner, config) {
     this.mainController = owner;
@@ -108,7 +107,6 @@ define(['config'
     console.log("---------");
     this.specialRules = $.parseJSON(pipelineConfig)["special_rules"];
     this.rules = $.parseJSON(pipelineConfig)["rules"];
-
     console.log(">>> ",getPresenter(items));
 
     if (!inputDataForWorkflow.userUUID) {
@@ -131,8 +129,6 @@ define(['config'
     }
 
     if (inputDataForWorkflow.labwareUUID) {
-      // todo: according to the batch, something else should happen
-      // clever things should happen here...
       return presenterFactory.createSelectionPagePresenter(this.mainController);
     }
 

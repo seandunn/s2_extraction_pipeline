@@ -18,15 +18,15 @@
  */
 
 
-define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
-  , 'extraction_pipeline/dummyresource', 'extraction_pipeline/default/default_view'
+define(['config'
+  , 'mapper/s2_root'
+  , 'extraction_pipeline/default/default_view'
   , 'text!components/S2Mapper/test/json/unit/root.json'
-  , 'text!components/S2Mapper/test/json/unit/tube_by_barcode.json'], function (config, S2Root, S2RscFactory, rsc, view, rootTestJson, dataJSON) {
-// TODO: replace the dummy resource with the real one aka the mapper ['mapper/s2_resource'], function(S2Resource) {
+  , 'text!components/S2Mapper/test/json/unit/tube_by_barcode.json'],
+    function (config, S2Root, view, rootTestJson, dataJSON) {
   /*
    The default page presenter. Deals with login.
    */
-
 
   // interface ....
   var defPtr = function (owner, presenterFactory) {
@@ -109,10 +109,7 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
   defPtr.prototype.renderView = function () {
     // render view...
     var data = undefined;
-    if (this.model) {
-      data = {};
-      data.error = "hello";
-    }
+
     this.currentView.renderView(data);
     if (this.userBCSubPresenter) {
       this.userBCSubPresenter.renderView();
@@ -179,10 +176,11 @@ define(['config', 'mapper/s2_root', 'mapper/s2_resource_factory'
           root.tubes.findByEan13Barcode(dataForLogin.labwareBC).done(
               function (result) {
                 if (result) {
+                 // debugger;
                   var dataForChildDone = {
                     // note that we're talking about UUID now ! but we're using the BC as uuid for now... ugly, I know
                     userUUID:dataForLogin.userBC,
-                    labwareUUID:result.rawJson.tube.uuid,
+                    labwareUUID:result.uuid,
                     batchUUID:undefined
                   };
                   console.warn("CALL TO S2MAPPER: TRY TO LOGIN ?");

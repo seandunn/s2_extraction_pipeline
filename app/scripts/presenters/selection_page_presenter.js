@@ -203,12 +203,8 @@ define([
         batchUUID:newBatchUUID
       };
 
-
       return this.owner.childDone(this, "done", dataForOwner);
     }
-
-
-    return this.owner.childDone(this, action, data);
   };
 
   SelectionPagePresenter.prototype.handleBarcodeScanned = function (uuid) {

@@ -1,7 +1,7 @@
-define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 'config', 'mapper/s2_root'
+define(['extraction_pipeline/views/labware_view', 'config', 'mapper/s2_root'
   , 'text!components/S2Mapper/test/json/unit/root.json'
   , 'text!components/S2Mapper/test/json/unit/tube.json'
-  , 'text!components/S2Mapper/test/json/unit/tube_by_barcode.json'], function (LabwareView, S2Factory, config, S2Root, rootTestJson, dataTubeJSON, dataTubeFbyBCJSON) {
+  , 'text!components/S2Mapper/test/json/unit/tube_by_barcode.json'], function (LabwareView, config, S2Root, rootTestJson, dataTubeJSON, dataTubeFbyBCJSON) {
 
   var LabwarePresenter = function (owner, presenterFactory) {
     this.model = undefined;
@@ -44,21 +44,23 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
       var that = this;
       var root, rsc;
 
-      config.setupTest(dataTubeJSON);
-      var rscPromise = new S2Factory({uuid:model.uuid});
 
-      rscPromise.done(function (result) {
-        rsc = result;
-      }).then(
-          function () {
-            that.model = rsc.rawJson;
-            that.uuid = model.uuid;
-            if (model.hasOwnProperty('expected_type')) {
-              if (!rsc.rawJson.hasOwnProperty(model.expected_type)) {
-                that.model = undefined;
-              }
-            }
-
+      config.setupTest(rootTestJson);
+      S2Root.load().done(function (result) {
+        root = result;
+      })
+          .then(function () {
+            config.setupTest(dataTubeJSON);
+            root.find(model.uuid).done(function (rsc) {
+                  that.model = rsc.rawJson;
+                  that.uuid = model.uuid;
+                  if (model.hasOwnProperty('expected_type')) {
+                    if (!rsc.rawJson.hasOwnProperty(model.expected_type)) {
+                      that.model = undefined;
+                    }
+                  }
+                }
+            );
             that.setupView();
             that.renderView();
 //        that.owner.childDone(that, "Found equipment", model.uuid);
@@ -111,18 +113,16 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
     var barcode = data;
     var that = this;
     config.setupTest(rootTestJson);
-    S2Root.load()
-        .done(function (result) {
-          root = result;
-        }).then(
-        function () {
+    S2Root.load().done(function (result) {
+      root = result;
+    })
+        .then(function () {
           config.setupTest(dataTubeFbyBCJSON);
-          root.tubes.findByEan13Barcode(barcode).done(
-              function (result) {
+          root.tubes.findByEan13Barcode(barcode).done(function (result) {
                 if (result) {
-                  that.model = result.rawJson;
                   var type = result.resourceType;
-                  that.uuid = result.rawJson[type].uuid;
+                  that.model = result.rawJson;
+                  that.uuid = result.uuid; //rawJson[type].uuid;
                   that.setupSubPresenters(that.inputModel.expected_type);
 //              that.owner.childDone(that, "login", dataForChildDone);
                 } else {
