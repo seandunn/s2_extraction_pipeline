@@ -32,8 +32,8 @@ define([], function () {
     var parent = this.jquerySelector(),
       htmlParts = [
         '<h3 class="rowNum"></h3>',
-        '<ul class="" style="">',
-        '<li style="float: left;"><div class="labware1" style="width:21em;"></div></li>',
+        '<ul style="overflow: auto">',
+        '<li style="float: left"><div class="labware1" style="width:21em;"></div></li>',
         '<li style="float: left;" class="arrow"><div style="font-size: 6em; padding-top: 100px;">&rarr;</div></li>',
         '<li style="float: left;">',
         ' <div style=" width:17em; "><ul><li class="labware2"></li><li class="spinColumnDesc"><p></p></li></ul></div>',
@@ -47,7 +47,7 @@ define([], function () {
 //        '<div style="display: inline; background: purple"><ul><li class="labware2"></li><li class="spinColumnDesc"><p></p></li></ul></div>',
 //        '</li>',
 //        '<listyle="display: inline"><div class="labware3" style="background: blue"></div></li>',
-        '</ul><hr />'],
+        '</ul>'],
       htmlString = htmlParts.join('');
 
 //      htmlString = "<ul  style='display: inline'><li style='display: inline'>hello</li><li style='display: inline'>hello</li></ul>"

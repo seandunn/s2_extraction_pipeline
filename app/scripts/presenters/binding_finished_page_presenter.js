@@ -64,9 +64,12 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
   tp.prototype.updateModel = function (model) {
     if (model.hasOwnProperty('tubes')) {
       this.model = model.tubes;
-      this.numRows = this.model.length;
-      this.setupSubPresenters();
     }
+
+    var uuids = this.owner.tubeUUIDs;
+    this.model = uuids;
+    this.numRows = this.model.length;
+    this.setupSubPresenters();
     return this;
   }
 
@@ -146,7 +149,7 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
     return this;
   };
 
-  tp.prototype.checkPageComplete = function() {
+  tp.prototype.checkPageComplete = function () {
 
     var complete = true;
 

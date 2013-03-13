@@ -120,8 +120,7 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
               that.model = result.rawJson;
               var type = result.resourceType;
               that.uuid = result.rawJson[type].uuid;
-              that.setupSubPresenters(that.inputModel.expected_type);
-//              that.owner.childDone(that, "login", dataForChildDone);
+              // that.setupSubPresenters(that.inputModel.expected_type);
             } else {
               // todo : handle error
               debugger;
@@ -234,6 +233,10 @@ define(['extraction_pipeline/views/labware_view', 'mapper/s2_resource_factory', 
       this.retrieveBarcode(data.BC);
       this.owner.childDone(this, 'barcodeScanned', {"uuid":this.uuid});
     }
+  };
+
+  LabwarePresenter.prototype.displayErrorMessage = function(message) {
+    this.barcodeInputPresenter.displayErrorMessage(message);
   };
 
   return LabwarePresenter;

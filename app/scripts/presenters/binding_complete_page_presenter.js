@@ -64,7 +64,6 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
 
     var uuids = this.owner.tubeUUIDs;
 
-
     this.model = uuids;// model.tubes;
     this.numRows = this.model.length;
     this.setupSubPresenters();
@@ -105,10 +104,9 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
         "rowNum":i,
         "remove_arrow":true,
         "labware1":{
-          "uuid":this.model[i].uuid,
           "expected_type":"tube",
-          "display_remove":false,
-          "display_barcode":false
+          "display_remove":true,
+          "display_barcode":true
         },
         "labware2":{
           "expected_type":"spin_columns",
@@ -170,6 +168,19 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
   tp.prototype.release = function () {
     this.jquerySelection().release();
     return this;
+  };
+
+  tp.prototype.validateUuid = function(child, data) {
+    var valid = false;
+
+    for (var i = 0; i < this.model.length; i++) {
+      if (this.model[i].uuid == data.uuid) {
+        valid = true;
+        break;
+      }
+    }
+
+    return valid;
   };
 
   tp.prototype.childDone = function (child, action, data) {

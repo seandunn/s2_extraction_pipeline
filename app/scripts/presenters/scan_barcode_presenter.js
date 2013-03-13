@@ -84,6 +84,10 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
 //    }
   };
 
+  ScanBarcodePresenter.prototype.displayErrorMessage = function(message) {
+    this.view.displayErrorMessage(message);
+  };
+
 //  ScanBarcodePresenter.prototype.validateBarcode = function (barcode) {
 //    return false;
 //  };

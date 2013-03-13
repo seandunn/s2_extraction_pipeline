@@ -64,9 +64,10 @@ define(['extraction_pipeline/views/elusion_loading_page_view'], function (View) 
   tp.prototype.updateModel = function (model) {
     if (model.hasOwnProperty('tubes')) {
       this.model = model.tubes;
-      this.numRows = this.model.length;
-      this.setupSubPresenters();
     }
+    this.model = this.owner.tubeUUIDs;
+    this.numRows = this.model.length;
+    this.setupSubPresenters();
     return this;
   }
 

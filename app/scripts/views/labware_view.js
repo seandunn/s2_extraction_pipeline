@@ -60,8 +60,9 @@ define([], function () {
     var parent = this.jquerySelector(),
       htmlParts = [
         '<h3 class="title"></h3>',
-        '<div style="overflow: auto"><div class="resource" style="position: relative; float:left; z-index: 1;"></div>',
-        '<button class="removeButton" style="position: relative; float: right; margin-right: 20px; z-index: 2;">X</button></div>',
+        '<div style="height:100%; position:relative; width:100%;">',
+        '<button class="removeButton" style="position: absolute; right: 20px; z-index: 2;">X</button>',
+        '<div class="resource" style="position: relative; left: 0px; z-index: 1;"></div></div>',
         '<div class="barcodeScanner"></div>'],
       htmlString = htmlParts.join('');
 
@@ -98,6 +99,7 @@ define([], function () {
 
     this.jquerySelector().find('.title').empty().append(title);
   };
+
 //
 //  ScanBarcodeView.prototype.getError = function(model) {
 //    var errorMessage = model.customError;
