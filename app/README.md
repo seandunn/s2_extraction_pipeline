@@ -12,7 +12,8 @@ The presenters may have different levels of responsibility, from page presenters
 responsible only for a barcode scanner component on the page. By convention, page presenters are suffixed with _page_presenter to avoid any confusion,
 for example, binding_complete_page_presenter.
 
-As such, it is important to be able to exchange information between the classes. This is typically done using the childDone method
+Since presenters have differing levels of responsibility, it is important to be able to pass information up and down the hierarchy. 
+This is typically done using the childDone method
 that all such classes have. Data is passed as JSON through this method. The idea of the childDone method is to simulate a callback.
 In a later refactor, all childDone methods should be changed into callbacks.
 
@@ -77,9 +78,9 @@ will be optimised when there is a fully functional framework in place.
 
 A typical chain may be as follows:
 
-- 1) Page presenter:
-- 2) Labware presenter:
-- 3) Tube presenter:
+- 1) Page presenter
+- 2) Labware presenter
+- 3) Tube presenter
 
 For example, when childDone is called in 3), a typical sequence of passing information may look like the following:
 3->2->1 (but never directly to 3)). When childDone is called in 3), this information must work its way up the chain. 1) has no knowledge of 3), so
