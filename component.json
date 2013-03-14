@@ -9,8 +9,6 @@
     "S2Mapper": "https://github.com/sanger/S2Mapper.git",
     "labware": "https://github.com/sanger/labware.git",
     "requirejs-text": "~2.0.5",
-    "apiExamples": "https://github.com/sanger/apiExamples",
-    "s2-api-examples": "https://github.com/sanger/s2-api-examples.git",
-    "JSONPath": "https://github.com/s3u/JSONPath.git"
+    "s2-api-examples": "https://github.com/sanger/s2-api-examples.git"
   }
 }
