@@ -12,7 +12,7 @@
   },
 
   "scripts": {
-      "test": "yes '\n' |  node_modules/.bin/yeoman install app/components && node_modules/.bin/yeoman test --force"
+      "test": "yes |  node_modules/.bin/yeoman install app/components && node_modules/.bin/yeoman test --force"
   }
 
 }
