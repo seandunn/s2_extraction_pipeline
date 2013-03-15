@@ -1,9 +1,9 @@
 define(['config'
   , 'mapper/s2_root'
-//  , 'text!scripts/pipeline_config.json'
 ], function (config, S2Root) {
 
   var workflowEngine = function (owner, config) {
+
     this.mainController = owner;
     this.default = config["default"];
     this.rules = config["rules"];
@@ -42,7 +42,7 @@ define(['config'
     return presenterName;
   };
 
-  workflowEngine.prototype.getNextPresenterFromName = function (presenterName) {
+  workflowEngine.prototype.getNextPresenterFromName = function (presenterFactory, presenterName) {
     switch (presenterName) {
       case "binding_complete_page":
         return presenterFactory.createBindingCompletePage(this.mainController);
@@ -57,24 +57,69 @@ define(['config'
 
 
   workflowEngine.prototype.getNextPresenter = function (presenterFactory, inputDataForWorkflow) {
+    var batch = undefined;
+    var presenterName = undefined;
+
     if (!inputDataForWorkflow.userUUID) {
-      return this.getNextPresenterFromName("default");
+      // what ever happened, if there's no user, nothing can happen!
+      batch = {items:{}};
+    } else {
+
+      if (inputDataForWorkflow.hasOwnProperty("batchUUID") && inputDataForWorkflow.batchUUID) {
+        // get batch from bathcUUID...
+        batch = {
+          items:{
+            "tube_to_be_extracted":[
+              {
+                "uuid":"f1628770-6c81-0130-e02d-282066132de2",
+                "status":"ready",
+                "batch":null
+              }
+            ]
+          }
+        };
+      } else if (inputDataForWorkflow.hasOwnProperty("labwareUUID") && inputDataForWorkflow.labwareUUID) {
+        // get batch from labwareUUID...
+        batch = {
+          items:{
+            "tube_to_be_extracted":[
+              {
+                "uuid":"f1628770-6c81-0130-e02d-282066132de2",
+                "status":"ready",
+                "batch":null
+              }
+            ]
+          }
+        };
+      }
+
+
     }
 
-    if (inputDataForWorkflow.HACK) {
-      return this.getNextPresenterFromName("binding_complete_page");
 
-    }
+    presenterName = this.getNextPresenterName(batch);
 
-    if (inputDataForWorkflow.batchUUID) {
-      return this.getNextPresenterFromName("kit_presenter_page");
-    }
+    return this.getNextPresenterFromName(presenterFactory, presenterName);
 
-    if (inputDataForWorkflow.labwareUUID) {
-      return this.getNextPresenterFromName("selection_page_presenter");
-    }
-
-    return this.getNextPresenterFromName("default");
+//
+//    if (!inputDataForWorkflow.userUUID) {
+//      return this.getNextPresenterFromName("default");
+//    }
+//
+//    if (inputDataForWorkflow.HACK) {
+//      return this.getNextPresenterFromName("binding_complete_page");
+//
+//    }
+//
+//    if (inputDataForWorkflow.batchUUID) {
+//      return this.getNextPresenterFromName("kit_presenter_page");
+//    }
+//
+//    if (inputDataForWorkflow.labwareUUID) {
+//      return this.getNextPresenterFromName("selection_page_presenter");
+//    }
+//
+//    return this.getNextPresenterFromName("default");
 
   };
 

@@ -1,28 +1,8 @@
 {
-  "special_rules":[
-    {
-      "description":"no item",
-      "result":"default_presenter"
-    }
-  ],
-  "rules":[
-    {
-      "description":"the description",
-      "role":"tube_to_be_extracted",
-      "needed":{
-        "status":"in_progress"
-      },
-      "forbidding":{},
-      "result":"selection_page_presenter"
-    },
-    {
-      "description":"the description",
-      "role":"tube_to_be_extracted",
-      "needed":{
-        "status":"done"
-      },
-      "forbidding":{},
-      "result":"selection_page_presenter"
-    }
-  ]
+    "rules":[
+      [
+        "tube_to_be_extracted", "selection_page_presenter"
+      ]
+    ],
+    "default":"default_presenter"
 }

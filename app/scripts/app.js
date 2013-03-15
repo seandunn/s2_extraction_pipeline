@@ -1,11 +1,12 @@
 define([
   'extraction_pipeline/workflow_engine'
  , 'mapper/s2_ajax'
+ , 'text!scripts/pipeline_config.json'
 ],
-    function (workflowEngine, S2Ajax) {
+    function (workflowEngine, S2Ajax, workflowConfiguration) {
       var app = function (thePresenterFactory) {
         this.presenterFactory = thePresenterFactory;
-        this.workflow = new workflowEngine(this);
+        this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
 
         this.currentPagePresenter = undefined;
         this.model = undefined;
