@@ -164,9 +164,8 @@ define(['config'
       return this;
     }
 
-    // TODO: for now, the tube is always the same... no use of the mapper
-//    tubeBC = 'tube0001';
-    config.setupTest(rootTestJson);
+
+    config.setupTest(rootTestJson); // TODO: remove this line to activate the real mapper
     S2Root.load()
         .done(function (result) {
           root = result;
@@ -193,6 +192,7 @@ define(['config'
               }
           ).fail(
               function () {
+                // todo : handle error
                 debugger;
               }
           );

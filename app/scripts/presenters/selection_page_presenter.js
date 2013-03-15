@@ -18,15 +18,12 @@
  */
 
 
-define([
-  'extraction_pipeline/views/selection_page_view',
-  'extraction_pipeline/models/selection_page_model',
-  'mapper/s2_root'
-], function (
-    SelectionPageView,
-    SelectionPageModel,
-    S2Root) {
-  // TODO : add dependency for resource : ..., ... ,'mapper/s2_resource' ], function (...,..., rsc )
+define([ 'config'
+  , 'extraction_pipeline/views/selection_page_view'
+  , 'extraction_pipeline/models/selection_page_model'
+  , 'mapper/s2_root'
+  , 'text!components/S2Mapper/test/json/unit/root.json'
+], function (config, SelectionPageView, SelectionPageModel, S2Root, rootTestJson) {
 
   var SelectionPagePresenter = function (owner, presenterFactory) {
     /* constructor
@@ -193,10 +190,23 @@ define([
       return this.handleBarcodeScanned(data.uuid);
     } else if (action === "labwareRemoved") {
       return this.handleTubeRemoved(data.uuid);
-    }
-    else if (action === "next") {
+    } else if (action === "next") {
 
       console.warn("CALL TO S2MAPPER: CREATING BATCH");
+      var root;
+      var batch;
+      config.setupTest(rootTestJson); // TODO: remove this line to activate the real mapper
+      S2Root.load().done(function (result) {
+        root = result;
+      }).fail(function () {
+        console.log("root load failed");
+      }).then(function () {
+        batch = root.batches.new({items:[ "3bcf8010-68ac-0130-9163-282066132de2",
+                                          "3bcf8010-68ac-0130-9163-282066132de2" ]
+        });
+        // todo : save the new batch
+      });
+
       var newBatchUUID = "0147852369";
 
       var dataForOwner = {
@@ -208,59 +218,14 @@ define([
   };
 
   SelectionPagePresenter.prototype.handleBarcodeScanned = function (uuid) {
-    if (this.model.addTube(uuid)) {
-      // TODO: deal with the success...
-
-    } else {
-      // TODO: deal with the error...
-    }
+    this.model.addTube(uuid);
     return this;
   };
 
   SelectionPagePresenter.prototype.handleTubeRemoved = function (data) {
-
-    if (this.model.removeTubeByUuid(data)) {
-// TODO: deal with the success...
-
-    } else {
-      // TODO: deal with the error...
-    }
+    this.model.removeTubeByUuid(data);
     return this;
   };
-
-
-  SelectionPagePresenter.prototype.handleExtraTube = function (tube) {
-    if (this.model) {
-      var numTubes = this.model.getNumberOfTubes();
-      this.model.addTube(tube);
-      if (this.presenters[numTubes]) {
-        this.presenters[numTubes].release();
-        this.presenters[numTubes] = null;
-      }
-      this.ensureTubeRemovalPresenter(tube, numTubes);
-      this.ensureScanBarcodePresenter(this.model);
-      this.setupChildViews();
-    }
-  };
-
-  SelectionPagePresenter.prototype.selfDone = function (action, data) {
-    /* Handles done messages that arose from within this object or the view
-     *
-     * Arguments
-     * ---------
-     * presenter : the presenter instance the done message is coming from. Can be
-     *             either the PagePresenter or one of the PartialPresenters
-     * action:     a string representing the action request, e.g. 'next' for someone
-     *             clicking on the next button
-     * data:       Any data associated with the action.
-     *
-     */
-    if (action == "next") {
-      this.owner.childDone(this, "done", data);
-    }
-    return this;
-  };
-
 
   return SelectionPagePresenter;
 });
