@@ -38,7 +38,7 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
 
       PresenterFactory.prototype.createDefaultPresenter =
           function (owner) {
-            return new DefaultPresenter(owner, this);
+            return Object.create(DefaultPresenter).init(owner, this);
           };
 
       PresenterFactory.prototype.createKitPresenter =

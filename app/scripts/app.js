@@ -1,27 +1,53 @@
-define([
-  'extraction_pipeline/workflow_engine'
- , 'mapper/s2_ajax'
- , 'text!scripts/pipeline_config.json'
+define([ 'config'
+  , 'extraction_pipeline/workflow_engine'
+  , 'mapper/s2_root'
+  , 'mapper/s2_ajax'
+  , 'text!scripts/pipeline_config.json'
+  , 'text!components/S2Mapper/test/json/unit/root.json'
 ],
-    function (workflowEngine, S2Ajax, workflowConfiguration) {
+    function (config, workflowEngine, S2Root, S2Ajax, workflowConfiguration, rootTestJson) {
       var app = function (thePresenterFactory) {
         this.presenterFactory = thePresenterFactory;
         this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
 
         this.currentPagePresenter = undefined;
         this.model = undefined;
+
         return this;
+      };
+
+      app.prototype.resetS2Root = function () {
+        this.s2Root = undefined;
+        return this;
+      };
+
+      app.prototype.getS2Root = function () {
+        var deferredS2Root = new $.Deferred();
+
+        if (!this.s2Root) {
+          var that = this;
+          config.setupTest(rootTestJson); // TODO: remove this line to activate the real mapper
+          S2Root.load().done(function (result) {
+            that.s2Root = result;
+            deferredS2Root.resolve(result);
+          }).fail(function () {
+            deferredS2Root.reject();
+          });
+        } else {
+          deferredS2Root.resolve(this.s2Root);
+        }
+        return deferredS2Root.promise();
       };
 
       app.prototype.setupPresenter = function (inputModel) {
         /*
-        inputModel =
-        {
-          userUUID    : "", // current user UUID
-          labwareUUID : "", // the seminal labware UUID
-          batchUUID   : "" // the current batch
-        };
-        */
+         inputModel =
+         {
+         userUUID    : "", // current user UUID
+         labwareUUID : "", // the seminal labware UUID
+         batchUUID   : "" // the current batch
+         };
+         */
         this.setupPlaceholder();
         this.setupView();
         this.renderView(); // render empty view...
@@ -142,7 +168,7 @@ define([
 
           return this;
         } catch (err) {
-          if (err.message == "DataSchemaError"){
+          if (err.message == "DataSchemaError") {
             // do something ?
             throw {
               type:"DataSchemaError",
