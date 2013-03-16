@@ -21,7 +21,8 @@
 define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/default/default_view'
-  , 'text!components/S2Mapper/test/json/unit/tube_by_barcode.json'],
+  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
+],
     function (config, BasePresenter, view, dataJSON) {
       /*
        The default page presenter. Deals with login.
@@ -56,7 +57,6 @@ define(['config'
 
           return this;
         },
-
         setupSubPresenters:function () {
           // check with this.model for the needed subpresenters...
           this.userBCSubPresenter = this.presenterFactory.createScanBarcodePresenter(this);
@@ -75,15 +75,13 @@ define(['config'
           };
 
           if (this.userBCSubPresenter) {
-            this.userBCSubPresenter.setupPresenter({type:"user", value:"2345678901234"}, jQuerySelectionForUser);
+            this.userBCSubPresenter.setupPresenter({type:"user", value:"XX111111K"}, jQuerySelectionForUser);
           }
           if (this.labwareBCSubPresenter) {
-            this.labwareBCSubPresenter.setupPresenter({type:"tube", value:"2345678901234"}, jQuerySelectionForLabware);
+            this.labwareBCSubPresenter.setupPresenter({type:"tube", value:"XX111111K"}, jQuerySelectionForLabware);
           }
           return this;
         },
-
-
         setupView:function () {
           this.currentView = new view(this, this.jquerySelection);
           return this;
@@ -126,11 +124,10 @@ define(['config'
           //return this.owner.childDone(child, action, data);
           return this;
         },
-
         login:function (dataForLogin) {
           // method called when try to login
 
-          var tube, root;
+          var thatTube, batch;
           var that = this;
 
           if (!dataForLogin.userBC) {
@@ -143,36 +140,18 @@ define(['config'
           }
 
           this.getS2Root()
-              .done(function (result) {
-                root = result;
-              }).then(
-              function () {
+              .pipe(function (root) {
                 config.setupTest(dataJSON);
-                root.tubes.findByEan13Barcode(dataForLogin.labwareBC).done(
-                    function (result) {
-                      if (result) {
-                        // debugger;
-                        var dataForChildDone = {
-                          // note that we're talking about UUID now ! but we're using the BC as uuid for now... ugly, I know
-                          userUUID:dataForLogin.userBC,
-                          labwareUUID:result.uuid,
-                          batchUUID:undefined
-                        };
-                        console.warn("CALL TO S2MAPPER: TRY TO LOGIN ?");
-
-                        that.owner.childDone(that, "login", dataForChildDone);
-                      } else {
-                        // todo : handle error
-                        debugger;
-                      }
-                    }
-                ).fail(
-                    function () {
-                      // todo : handle error
-                      debugger;
-                    }
-                );
-              });
+                return root.tubes.findByEan13Barcode(dataForLogin.labwareBC);
+              }).pipe(function (tube) {
+                thatTube = tube;
+                return tube.order();
+              }).pipe(function (order) {
+                batch = order.batchFor(true);
+                that.owner.childDone(that, "login", {userUUID:dataForLogin.userBC, labwareUUID:thatTube.uuid, "batch":batch});
+              }).fail(function () {
+                debugger;
+              }); // todo : handle error
 
           return this;
         }

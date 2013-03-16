@@ -3,7 +3,7 @@ define([ 'config'
   , 'mapper/s2_root'
   , 'mapper/s2_ajax'
   , 'text!scripts/pipeline_config.json'
-  , 'text!components/S2Mapper/test/json/unit/root.json'
+  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_1.json'
 ],
     function (config, workflowEngine, S2Root, S2Ajax, workflowConfiguration, rootTestJson) {
       var app = function (thePresenterFactory) {
@@ -40,14 +40,6 @@ define([ 'config'
       };
 
       app.prototype.setupPresenter = function (inputModel) {
-        /*
-         inputModel =
-         {
-         userUUID    : "", // current user UUID
-         labwareUUID : "", // the seminal labware UUID
-         batchUUID   : "" // the current batch
-         };
-         */
         this.setupPlaceholder();
         this.setupView();
         this.renderView(); // render empty view...
@@ -55,7 +47,7 @@ define([ 'config'
           inputModel = {
             userUUID:undefined,
             labwareUUID:undefined,
-            batchUUID:undefined
+            batch:undefined
           };
         }
         this.updateModel(inputModel);
@@ -63,7 +55,7 @@ define([ 'config'
         return this;
       };
 
-      app.prototype.updateModel = function (inputModel) {
+      app.prototype.updateModel = function (newData) {
         /*
          inputModel =
          {
@@ -72,7 +64,14 @@ define([ 'config'
          batchUUID   : "" // the current batch
          };
          */
-        this.model = inputModel;
+        this.model = $.extend(this.model, newData);
+//        if(newData && newData.batch){
+//          this.model.batch = newData.batch;
+//        }
+//        if(newData && newData.userUUID){
+//          this.model.userUUID = newData.userUUID;
+//        }
+        //this.model = newData;
         this.updateSubPresenters();
         return this;
       };
@@ -91,30 +90,30 @@ define([ 'config'
           this.currentPagePresenter = undefined;
         }
 
-        var inputModelForWorkflowEngine = {
-          userUUID:this.model.userUUID,
-          labwareUUID:this.model.labwareUUID,
-          batchUUID:this.model.batchUUID
-        };
+//        var inputModelForWorkflowEngine = {
+//          userUUID:this.model.userUUID,
+//          labwareUUID:this.model.labwareUUID,
+//          batchUUID:this.model.batchUUID
+//        };
+//
+//        if (this.model.hasOwnProperty("HACK")) {
+//          inputModelForWorkflowEngine.HACK = "hack";
+//        }
 
-        if (this.model.hasOwnProperty("HACK")) {
-          inputModelForWorkflowEngine.HACK = "hack";
-        }
-
-        this.currentPagePresenter = this.workflow.getNextPresenter(this.presenterFactory, inputModelForWorkflowEngine);
+        this.currentPagePresenter = this.workflow.getNextPresenter(this.presenterFactory, this.model);
 //    //this.currentPagePresenter = this.workflow.get_default_presenter(this.presenterFactory);
 //
 //    // marshalling the data for the default presenter... here... nothing to do!
-        var inputModelForPresenter = {
-          userUUID:this.model.userUUID,
-          labwareUUID:this.model.labwareUUID,
-          batchUUID:this.model.batchUUID
-        };
-        if (this.model.hasOwnProperty("HACK")) {
-          inputModelForPresenter.HACK = "hack";
-        }
+//        var inputModelForPresenter = {
+//          userUUID:this.model.userUUID,
+//          labwareUUID:this.model.labwareUUID,
+//          batchUUID:this.model.batchUUID
+//        };
+//        if (this.model.hasOwnProperty("HACK")) {
+//          inputModelForPresenter.HACK = "hack";
+//        }
 
-        this.currentPagePresenter.setupPresenter(inputModelForPresenter, this.jquerySelection);
+        this.currentPagePresenter.setupPresenter(this.model, this.jquerySelection);
         return this;
       };
 
@@ -133,37 +132,23 @@ define([ 'config'
       };
 
       app.prototype.childDone = function (child, action, data) {
-        /*
-         data =
-         {
-         userUUID    : "", // current user UUID
-         labwareUUID : "", // the seminal labware UUID
-         batchUUID   : "" // the current batch
-         };
-         */
         console.log("A child of App (", child, ") said it has done the following action '" + action + "' with data :", data);
         try {
           var inputDataForModel;
           if (action == "done") {
 
-            inputDataForModel = {
-              userUUID:this.model.userUUID,
-              labwareUUID:this.model.labwareUUID,
-              batchUUID:data.batchUUID
-            };
-            if (data.hasOwnProperty("HACK")) {
-              inputDataForModel.HACK = "hack";
-            }
+//            inputDataForModel = {
+//              userUUID:this.model.userUUID,
+//              labwareUUID:this.model.labwareUUID,
+//              batchUUID:data.batchUUID
+//            };
+//            if (data.hasOwnProperty("HACK")) {
+//              inputDataForModel.HACK = "hack";
+//            }
             this.updateModel(inputDataForModel);
 
           } else if (action == "login") {
-
-            inputDataForModel = {
-              userUUID:data.userUUID || this.model.userUID,
-              labwareUUID:data.labwareUUID,
-              batchUUID:data.batchUUID
-            };
-            this.updateModel(inputDataForModel);
+            this.updateModel(data);
           }
 
           return this;

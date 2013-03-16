@@ -59,7 +59,7 @@ define(['config'
   workflowEngine.prototype.getNextPresenter = function (presenterFactory, inputDataForWorkflow) {
     var batch = undefined;
     var presenterName = undefined;
-
+//    debugger;
     if (!inputDataForWorkflow.userUUID) {
       // what ever happened, if there's no user, nothing can happen!
       batch = {items:{}};
