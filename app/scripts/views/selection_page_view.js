@@ -30,8 +30,8 @@ define([], function () {
         '</div>'
       ];
       parts.push( "<ul style=''>");
-      for (var i = 0; i < model.getCapacity(); i++) {
-        parts.push( "<li>NO PRESENTER ASSOCIATED TO THIS ITEM</li>");
+      for (var i = 0; i < model.capacity; i++) {
+        parts.push( "<li>"+i+" - NO PRESENTER ASSOCIATED TO THIS ITEM</li>");
       }
       parts.push( "</ul>");
       parts.push('<div align="right">');

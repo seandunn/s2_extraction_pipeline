@@ -17,13 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 
-define([],
-    function () {
+define(['config'
+  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
+],
+    function (config,dataJSON) {
 
       var BasePresenter = Object.create(null);
 
       $.extend(BasePresenter, {
-            init:function(owner, presenterFactory) {
+            init:function (owner, presenterFactory) {
               this.presenterFactory = presenterFactory;
               this.owner = owner;
               return this;
@@ -43,7 +45,47 @@ define([],
               }
               return deferredS2Root.promise();
             },
-            resetS2Root:function(){
+            getLabwareResourcePromise:function (resourceDetails) {
+              var deferredS2Resource = new $.Deferred();
+
+              var rsc,that = this;
+
+              if (!this.stash_by_BC) this.stash_by_BC = {};
+              if (!this.stash_by_UUID) this.stash_by_UUID = {};
+
+              if (resourceDetails.uuid) {
+                rsc = this.stash_by_UUID[resourceDetails.uuid];
+                if (rsc) {
+                  return deferredS2Resource.resolve(rsc).promise();
+                } else {
+                  debugger;
+                  return deferredS2Resource.reject().promise();
+                }
+              }
+
+              if (resourceDetails.barcode) {
+                rsc = this.stash_by_BC[resourceDetails.barcode];
+                if (rsc) {
+                  return deferredS2Resource.resolve(rsc).promise();
+                } else {
+
+                  this.getS2Root()
+                      .then(function (root) {
+                        config.setupTest(dataJSON);
+                        return root.tubes.findByEan13Barcode(resourceDetails.barcode);
+                      }).then(function (result) {
+                        rsc = result;
+                        that.stash_by_BC[resourceDetails.barcode] = rsc;
+                        that.stash_by_UUID[rsc.uuid] = rsc;
+                         deferredS2Resource.resolve(rsc);
+                      }).fail(function () {
+                         deferredS2Resource.reject();
+                      });
+                }
+              }
+              return deferredS2Resource.promise();
+            },
+            resetS2Root:function () {
               this.s2Root = undefined;
               return this;
             },

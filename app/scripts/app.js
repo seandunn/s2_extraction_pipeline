@@ -46,7 +46,7 @@ define([ 'config'
         if (!inputModel) {
           inputModel = {
             userUUID:undefined,
-            labwareUUID:undefined,
+            labware:undefined,
             batch:undefined
           };
         }
@@ -114,6 +114,7 @@ define([ 'config'
 //        }
 
         this.currentPagePresenter.setupPresenter(this.model, this.jquerySelection);
+        this.model.labware = undefined;
         return this;
       };
 

@@ -19,213 +19,192 @@
 
 
 define([ 'config'
+  , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/views/selection_page_view'
   , 'extraction_pipeline/models/selection_page_model'
   , 'mapper/s2_root'
   , 'text!components/S2Mapper/test/json/unit/root.json'
-], function (config, SelectionPageView, SelectionPageModel, S2Root, rootTestJson) {
+], function (config, BasePresenter, SelectionPageView, SelectionPageModel, S2Root, rootTestJson) {
 
-  var SelectionPagePresenter = function (owner, presenterFactory) {
-    /* constructor
-     *
-     * Arguments
-     * ---------
-     * owner : the owner of this presenter. Expected to be the application controller
-     */
-    this.owner = owner;
-    this.view = undefined;
-    this.presenterFactory = presenterFactory;
-    this.presenters = [];
-    return this;
-  };
+  var PagePresenter = Object.create(BasePresenter);
 
-  SelectionPagePresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
-    /*
-     Arguments:
-     input_model = { userUUID:"1234567890", labwareUUID:"1234567890", batchUUID:"0123456789" }
-     */
-    this.setupPlaceholder(jquerySelection);
-    this.setupView();
-    this.renderView();
+  $.extend(PagePresenter, {
 
-    this.updateModel(input_model);
-    return this;
-  };
-
-  SelectionPagePresenter.prototype.setupPlaceholder = function (jquerySelection) {
-    this.jquerySelection = jquerySelection;
-    return this;
-  };
-
-  SelectionPagePresenter.prototype.setupView = function () {
-    /* initialises this instance by instantiating the view
-     */
-    this.view = new SelectionPageView(this, this.jquerySelection);
-    return this;
-  };
-
-  SelectionPagePresenter.prototype.updateModel = function (input_model) {
-    /*
-     Arguments:
-     input_model = {
-     userUUID:"1234567890",
-     labwareUUID:"1234567890",
-     batchUUID:"1234567890"
-     }
-     */
-
-    if (!this.model) {
+    setupPresenter:function (input_model, jquerySelection) {
+      /*
+       Arguments:
+       input_model = { userUUID:"1234567890", labwareUUID:"1234567890", batchUUID:"0123456789" }
+       */
       this.model = new SelectionPageModel(this, input_model);
-      this.model.retrieveBatchFromSeminalLabware();
-    }
-    return this;
-  };
+      this.setupPlaceholder(jquerySelection);
+      this.setupView();
+      this.renderView();
+      this.setupSubPresenters();
 
-
-  SelectionPagePresenter.prototype.renderView = function () {
-    /* Updates the data for the current view
-     *
-     * Tells the presenter that the model has been updated
-     *
-     */
-
-    if (!this.view) {
       return this;
-    }
+    },
+    setupView:function () {
+      /* initialises this instance by instantiating the view
+       */
+      this.view = new SelectionPageView(this, this.jquerySelection);
+      return this;
+    },
 
-    // we need to render the model first, so that the html elements
-    // exist to configure the sub-presenters' views
-    this.view.render(this.model);
-    for (var i = 0; i < this.presenters.length; i++) {
-      if (this.presenters[i]) {
-        this.presenters[i].renderView();
+    renderView:function () {
+      /* Updates the data for the current view
+       *
+       * Tells the presenter that the model has been updated
+       *
+       */
+
+      if (!this.view) {
+        return this;
       }
-    }
-    return this;
-  };
 
-  SelectionPagePresenter.prototype.setupSubPresenters = function () {
-    var numOrders = this.model ? this.model.getNumberOfTubes() : 0;
-
-    for (var i = 0; i < this.model.getCapacity(); i++) {
-      this.presenters[i] = this.presenterFactory.createLabwarePresenter(this);
-    }
-    this.setupSubModel();
-    return this;
-  };
-
-  SelectionPagePresenter.prototype.setupSubModel = function () {
-    /*
-     Creates the data needed for the sub presenters
-     */
-    var that = this;
-    var jQueryForNthChild = function (childIndex) {
-      return function () {
-        return that.jquerySelection().find("li :eq(" + childIndex + ")");
+      // we need to render the model first, so that the html elements
+      // exist to configure the sub-presenters' views
+      var dataForView = {
+        batch:this.model.batch && this.model.batch.uuid,
+        user:this.model.userUUID,
+        capacity:this.model.getCapacity()
       };
-    };
-
-    if (!this.model) {
-      return;
-    }
-
-    numTubes = this.model.getNumberOfTubes();
-
-    for (var i = 0; i < this.model.getCapacity(); i++) {
-      if (i < numTubes) {
-        var dataForExistingLabware_presenter = { "uuid":this.model.tubeUUIDs[i].uuid,
-          "display_remove":true,
-          "display_barcode":false};
-        this.presenters[i].setupPresenter(dataForExistingLabware_presenter, jQueryForNthChild(i));
-      } else if (i == numTubes) {
-        var dataForLabwareWithBC_presenter = {"display_remove":false, "display_barcode":true};
-        this.presenters[i].setupPresenter(dataForLabwareWithBC_presenter, jQueryForNthChild(i));
-      } else {
-        var dataForhiddenLabwarePresenter = {"display_remove":false, "display_barcode":false};
-        this.presenters[i].setupPresenter(dataForhiddenLabwarePresenter, jQueryForNthChild(i));
-
+      this.view.render(dataForView);
+      if (!this.presenters){
+        this.presenters = [];
       }
-    }
+      for (var i = 0; i < this.presenters.length; i++) {
+        if (this.presenters[i]) {
+          this.presenters[i].renderView();
+        }
+      }
+      return this;
+    },
 
-  };
+    setupSubPresenters:function () {
+      var numOrders = this.model ? this.model.getNumberOfTubes() : 0;
 
-  SelectionPagePresenter.prototype.release = function () {
-    /* Tells the presenter to get ready for being deleted.
-     *
-     * This should only be called at the end of the life. It will
-     * tell the view component to tell itself to disappear from the
-     * open page.
-     */
-    this.view.clear();
-    return this;
-  };
+      for (var i = 0; i < this.model.getCapacity(); i++) {
+        this.presenters[i] = this.presenterFactory.createLabwarePresenter(this);
+      }
+      this.setupSubModel();
+      return this;
+    },
 
-  SelectionPagePresenter.prototype.childDone = function (child, action, data) {
-    /* Handles done messages from the page view and child presenters.
-     *
-     * Any messages that happen to come from the PageView will be delegated over to
-     * selfDone.
-     *
-     * Arguments
-     * ---------
-     * child : the presenter(or model) instance the done message is coming from. Can be
-     *             either the PagePresenter, one of the PartialPresenters or the model
-     * action:     a string representing the action request, e.g. 'next' for someone
-     *             clicking on the next button
-     * data:       Any data associated with the action.
-     *
-     */
-    if (child === this.model) {
-      if (action === "modelUpdated") {
-        this.owner.HACK_add_global_tube_uuids(this.model.tubeUUIDs);
+    setupSubModel:function () {
+      /*
+       Creates the data needed for the sub presenters
+       */
+      var that = this;
+      var jQueryForNthChild = function (childIndex) {
+        return function () {
+          return that.jquerySelection().find("li :eq(" + childIndex + ")");
+        };
+      };
 
-        this.setupSubPresenters();
-        this.renderView();
-
+      if (!this.model) {
         return;
       }
+
+      numTubes = this.model.getNumberOfTubes();
+
+      for (var i = 0; i < this.model.getCapacity(); i++) {
+        if (i < numTubes) {
+          var dataForExistingLabware_presenter = { "resource":this.model.tubes[i],
+            "display_remove":true,
+            "display_barcode":false};
+          this.presenters[i].setupPresenter(dataForExistingLabware_presenter, jQueryForNthChild(i));
+        } else if (i == numTubes) {
+          var dataForLabwareWithBC_presenter = {"display_remove":false, "display_barcode":true};
+          this.presenters[i].setupPresenter(dataForLabwareWithBC_presenter, jQueryForNthChild(i));
+        } else {
+          var dataForhiddenLabwarePresenter = {"display_remove":false, "display_barcode":false};
+          this.presenters[i].setupPresenter(dataForhiddenLabwarePresenter, jQueryForNthChild(i));
+
+        }
+      }
+
+    },
+
+    release:function () {
+      /* Tells the presenter to get ready for being deleted.
+       *
+       * This should only be called at the end of the life. It will
+       * tell the view component to tell itself to disappear from the
+       * open page.
+       */
+      this.view.clear();
+      return this;
+    },
+
+    childDone:function (child, action, data) {
+      /* Handles done messages from the page view and child presenters.
+       *
+       * Any messages that happen to come from the PageView will be delegated over to
+       * selfDone.
+       *
+       * Arguments
+       * ---------
+       * child : the presenter(or model) instance the done message is coming from. Can be
+       *             either the PagePresenter, one of the PartialPresenters or the model
+       * action:     a string representing the action request, e.g. 'next' for someone
+       *             clicking on the next button
+       * data:       Any data associated with the action.
+       *
+       */
+      if (child === this.model) {
+        if (action === "modelUpdated") {
+          this.owner.HACK_add_global_tube_uuids(this.model.tubeUUIDs);
+
+          this.setupSubPresenters();
+          this.renderView();
+
+          return;
+        }
+      }
+
+      if (action === "barcodeScanned") {
+        return this.handleBarcodeScanned(data.BC);
+      } else if (action === "labwareRemoved") {
+        return this.handleTubeRemoved(data.uuid);
+//      } else if (action === "next") {
+//        console.warn("CALL TO S2MAPPER: CREATING BATCH");
+//        var root;
+//        var batch;
+//        config.setupTest(rootTestJson); // TODO: remove this line to activate the real mapper
+//        S2Root.load().done(function (result) {
+//          root = result;
+//        }).fail(function () {
+//              console.log("root load failed");
+//            }).then(function () {
+//              batch = root.batches.new({items:[ "3bcf8010-68ac-0130-9163-282066132de2",
+//                "3bcf8010-68ac-0130-9163-282066132de2" ]
+//              });
+//              // todo : save the new batch
+//            });
+//
+//        var newBatchUUID = "0147852369";
+//
+//        var dataForOwner = {
+//          batchUUID:newBatchUUID
+//        };
+//        return this.owner.childDone(this, "done", dataForOwner);
+      }
+    },
+
+    handleBarcodeScanned:function (barcode) {
+      var that = this;
+      this.getLabwareResourcePromise({barcode:barcode})
+          .then(function(rsc){
+            that.model.addTube(rsc);
+          });
+      return this;
+    },
+
+    handleTubeRemoved:function (data) {
+      this.model.removeTubeByUuid(data);
+      return this;
     }
+  });
 
-    if (action === "barcodeScanned") {
-      return this.handleBarcodeScanned(data.uuid);
-    } else if (action === "labwareRemoved") {
-      return this.handleTubeRemoved(data.uuid);
-    } else if (action === "next") {
-
-      console.warn("CALL TO S2MAPPER: CREATING BATCH");
-      var root;
-      var batch;
-      config.setupTest(rootTestJson); // TODO: remove this line to activate the real mapper
-      S2Root.load().done(function (result) {
-        root = result;
-      }).fail(function () {
-        console.log("root load failed");
-      }).then(function () {
-        batch = root.batches.new({items:[ "3bcf8010-68ac-0130-9163-282066132de2",
-                                          "3bcf8010-68ac-0130-9163-282066132de2" ]
-        });
-        // todo : save the new batch
-      });
-
-      var newBatchUUID = "0147852369";
-
-      var dataForOwner = {
-        batchUUID:newBatchUUID
-      };
-
-      return this.owner.childDone(this, "done", dataForOwner);
-    }
-  };
-
-  SelectionPagePresenter.prototype.handleBarcodeScanned = function (uuid) {
-    this.model.addTube(uuid);
-    return this;
-  };
-
-  SelectionPagePresenter.prototype.handleTubeRemoved = function (data) {
-    this.model.removeTubeByUuid(data);
-    return this;
-  };
-
-  return SelectionPagePresenter;
+  return PagePresenter;
 });

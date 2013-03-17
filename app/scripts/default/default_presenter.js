@@ -28,8 +28,9 @@ define(['config'
        The default page presenter. Deals with login.
        */
 
+      var DefaultPresenter = Object.create(BasePresenter);
 
-      return $.extend(BasePresenter, {
+      $.extend(DefaultPresenter, {
         /*
          input_model =
          {
@@ -89,7 +90,6 @@ define(['config'
         renderView:function () {
           // render view...
           var data = undefined;
-
           this.currentView.renderView(data);
           if (this.userBCSubPresenter) {
             this.userBCSubPresenter.renderView();
@@ -140,22 +140,31 @@ define(['config'
           }
 
           this.getS2Root()
-              .pipe(function (root) {
+              .then(function (root) {
                 config.setupTest(dataJSON);
                 return root.tubes.findByEan13Barcode(dataForLogin.labwareBC);
-              }).pipe(function (tube) {
+              }).then(function (tube) {
                 thatTube = tube;
                 return tube.order();
-              }).pipe(function (order) {
-                batch = order.batchFor(true);
-                that.owner.childDone(that, "login", {userUUID:dataForLogin.userBC, labwareUUID:thatTube.uuid, "batch":batch});
+              }).then(function (order) {
+                return order.batchFor(function () {
+                  return true;
+                });
+              }).then(function (batch) {
+                that.owner.childDone(that, "login", {userUUID:dataForLogin.userBC, labware:thatTube, "batch":batch});
               }).fail(function () {
-                debugger;
+                if (thatTube) {
+                  that.owner.childDone(that, "login", {userUUID:dataForLogin.userBC, labware:thatTube, "batch":undefined});
+                } else {
+                  console.error("Something went wrong");
+                }
               }); // todo : handle error
 
           return this;
         }
 
       });
+
+      return DefaultPresenter;
     }
 );

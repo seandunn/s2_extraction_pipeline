@@ -26,23 +26,19 @@ define(['mapper/s2_root'], function (S2Root) {
      * Arguments
      * ---------
      * owner
-     * input_model = {userUUID:"1234567890", labwareUUID:"1234567890", batchUUID:"1234567890"}
+     * input_model
      */
     this.owner = owner;
-
-    if(input_model.constructor == Object){
-      this.user = input_model.userUUID;
-      this.batch = input_model.batchUUID;
-      this.seminalLabwareUUID = input_model.labwareUUID;
-    } else {
-      throw {message:"DataSchemaError"}
-    }
-
-    this.tubeUUIDs = [];
+    this.tubes = [];
     this.capacity = 12;
+    this.batch = input_model.batch;
+    this.userUUID = input_model.userUUID;
 
-
-
+    this.seminalLabware = input_model.labware;
+    if (this.seminalLabware){
+      // if there was a labware as input, we add it to the model.
+      this.tubes.push(this.seminalLabware);
+    }
     return this;
   };
 
@@ -106,15 +102,15 @@ define(['mapper/s2_root'], function (S2Root) {
   SelectionPageModel.prototype.retrieveBatchFromSeminalLabware = function () {
     // For now, does not get any batch...
 
-    if (this.seminalLabwareUUID){
+    if (this.seminalLabware){
       // if there was a labware as input, we add it to the model.
-      this.addTube(this.seminalLabwareUUID);
+      this.addTube(this.seminalLabware);
     }
 
   };
 
 
-  SelectionPageModel.prototype.addTube = function (newTubeUUID) {
+  SelectionPageModel.prototype.addTube = function (newTube) {
     /* Adds an tube to this model.
      *
      * Arguments
@@ -128,14 +124,13 @@ define(['mapper/s2_root'], function (S2Root) {
      *
      */
 
-    if (this.tubeUUIDs.length > this.capacity - 1) {
+    if (this.tubes.length > this.capacity - 1) {
       throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
     }
 
 //    this.retrieveTubeDetails(lastTubeIndex, newTubeUUID);
 
-    this.tubeUUIDs.push({"uuid":newTubeUUID});
-    //var lastTubeIndex = this.tubes.length;
+    this.tubes.push(newTube);
     this.owner.childDone(this, "modelUpdated");
     return this;
   };
@@ -173,9 +168,9 @@ define(['mapper/s2_root'], function (S2Root) {
      * uuid - the uuid of the tube to remove
      */
 
-    for (var i = 0; i < this.tubeUUIDs.length; i++) {
-      if (this.tubeUUIDs[i].uuid === uuid) {
-        this.tubeUUIDs.splice(i, 1);
+    for (var i = 0; i < this.tubes.length; i++) {
+      if (this.tubes[i].uuid === uuid) {
+        this.tubes.splice(i, 1);
         this.owner.childDone(this, "modelUpdated");
         return true;
       }
@@ -190,7 +185,7 @@ define(['mapper/s2_root'], function (S2Root) {
      * -------
      * The number of tubes.
      */
-    return this.tubeUUIDs.length;
+    return this.tubes.length;
   };
 
   return SelectionPageModel;
