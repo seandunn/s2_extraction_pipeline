@@ -17,177 +17,94 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 
-define(['mapper/s2_root'], function (S2Root) {
-
-  var SelectionPageModel = function (owner, input_model) {
-    /* Creates the default implementation of a selection page model
-     * with a user identifier and some orders
-     *
-     * Arguments
-     * ---------
-     * owner
-     * input_model
-     */
-    this.owner = owner;
-    this.tubes = [];
-    this.capacity = 12;
-    this.batch = input_model.batch;
-    this.userUUID = input_model.userUUID;
-
-    this.seminalLabware = input_model.labware;
-    if (this.seminalLabware){
-      // if there was a labware as input, we add it to the model.
-      this.tubes.push(this.seminalLabware);
-    }
-    return this;
-  };
-
-//  SelectionPageModel.prototype.addTubeResource = function (resource, index, tubeUuid) {
-//
-//    this.validateBatchUuid(resource);
-//    this.validateTubeUuid(resource.rawJson.tube.uuid);
-//    console.log("index ", index);
-//
-//
-//    this.tubeUUIDs[index] = resource;
-//    var data = {index:index, tubeUUID:tubeUuid};
-//    console.log(this);
-//    this.owner.childDone(this, "foundTube", data);
-//  };
-
-//  SelectionPageModel.prototype.validateBatchUuid = function (resource) {
-//    var tubeJson = resource.rawJson && resource.rawJson.tube;
-//    var batchJson = tubeJson && tubeJson.batch && tubeJson.batch.rawJson;
-//    var batchUuid = batchJson && batchJson.uuid;
-//
-//    console.log("tubeJson ", tubeJson);
-//    console.log("batchJson ", batchJson);
-//    console.log("batch uuid ", batchUuid);
-//    console.log("batch ", this.batch);
-//    if (this.batch === undefined) {
-//      this.batch = batchUuid;
-//    }
-//    else if (batchUuid !== this.batch) {
-//      console.log("Not adding tube with different batch to selection page model");
-//      throw {type:"UuidMismatch",
-//        message:"Tube in different batch to currently selected tubes." };
-//    }
-//
-//  }
-
-//  SelectionPageModel.prototype.validateTubeUuid = function (uuidToCheck) {
-//    var tube;
-//    for (var uuid in this.tubeUUIDs){
-//      if (uuid == uuidToCheck){
-//        return
-//      }
-//    }
-//    for (var i = 0; i < this.tubeUUIDs.length; i++) {
-//      if ()
-////      tube = this.tubeUUIDs[i];
-////      if (tube) {
-////        if (tube.rawJson && tube.rawJson.tube && (tube.rawJson.tube.uuid === uuid)) {
-//          throw {type:"UuidMismatch",
-//            message:"This tube has already been scanned." }
-//        }
-//        else {
-//          console.log("found tube with uuid ", tube.rawJson && tube.rawJson.uuid);
-//          console.log("original uuid is ", uuid);
-//        }
-//      }
-//    }
-//  };
+define([
+  'extraction_pipeline/models/base_page_model'
+  , 'config'
+  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
+], function (BasePageModel, config, dataJSON) {
 
 
-  SelectionPageModel.prototype.retrieveBatchFromSeminalLabware = function () {
-    // For now, does not get any batch...
+  var SelectionPageModel = Object.create(BasePageModel);
 
-    if (this.seminalLabware){
-      // if there was a labware as input, we add it to the model.
-      this.addTube(this.seminalLabware);
-    }
+  $.extend(SelectionPageModel, {
+    init:function (owner) {
+      console.log("selection model init");
+      BasePageModel.init(owner);
+      this.tubes = [];
+      this.capacity = 12;
+      this.batch = undefined;
+      this.user = undefined;
+      return this;
+    },
+    setBatch:function (batch) {
+      console.log("setBatch : ", batch);
+      this.addResource(batch);
+      this.batch = batch;
+      this.owner.childDone(this, "batchAdded");
+    },
+    setSeminalLabware:function (labware) {
+      console.log("setSeminalLabware : ", labware);
+      this.addResource(labware);
+      this.tubes.push(labware);
+      if(this.batch){
 
-  };
-
-
-  SelectionPageModel.prototype.addTube = function (newTube) {
-    /* Adds an tube to this model.
-     *
-     * Arguments
-     * ---------
-     * newTubeUUID: the new tube to add
-     *
-     * Exceptions
-     * ----------
-     * SelectionPageException:  If the number of orders is already saturated
-     * SelectionPageException:  If the batch id does not match the current order
-     *
-     */
-
-    if (this.tubes.length > this.capacity - 1) {
-      throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
-    }
-
-//    this.retrieveTubeDetails(lastTubeIndex, newTubeUUID);
-
-    this.tubes.push(newTube);
-    this.owner.childDone(this, "modelUpdated");
-    return this;
-  };
-
-//  SelectionPageModel.prototype.getTubeUuidFromTubeIndex = function (index) {
-//    /* reads the uuid corresponding to the tube at the given index
-//     *
-//     * Returns
-//     * -------
-//     * The uuid of the tube in the orders array at index 'index'
-//     *
-//     * Arguments
-//     * ---------
-//     * index : the index in the tubes array
-//     */
-//    var order = this.tubes[index];
-//    return order.rawJson.tube.uuid;
-//  };
-
-  SelectionPageModel.prototype.getCapacity = function () {
-    /* gets the capacity of the model
-     *
-     * Returns
-     * -------
-     * The capacity
-     */
-    return this.capacity;
-  };
-
-  SelectionPageModel.prototype.removeTubeByUuid = function (uuid) {
-    /* removes a tube matching a given uuid
-     *
-     * Arguments
-     * ---------
-     * uuid - the uuid of the tube to remove
-     */
-
-    for (var i = 0; i < this.tubes.length; i++) {
-      if (this.tubes[i].uuid === uuid) {
-        this.tubes.splice(i, 1);
-        this.owner.childDone(this, "modelUpdated");
-        return true;
       }
+      this.owner.childDone(this, "seminalLabwareAdded");
+    },
+    setUser:function (user) {
+      console.log("setUser : ", user);
+      this.user = user;
+      this.owner.childDone(this, "userAdded");
+    },
+    addTube:function (newTube) {
+      if (this.tubes.length > this.capacity - 1) {
+        throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
+      }
+
+      this.tubes.push(newTube);
+      this.owner.childDone(this, "modelUpdated", {index:this.tubes.length, updateType:"addition"});
+      return this;
+    },
+    addTubeFromBarcode:function (barcode) {
+      var that = this;
+      this.setTestData(dataJSON);
+      this.fetchResourcePromiseFromBarcode(barcode)
+          .then(function (rsc) {
+            that.addTube(rsc);
+          })
+          .fail(function () {
+            //todo: handle error
+          });
+    },
+    getCapacity:function () {
+      return this.capacity;
+    },
+    removeTubeByUuid:function (uuid) {
+      for (var i = 0; i < this.tubes.length; i++) {
+        if (this.tubes[i].uuid === uuid) {
+          this.tubes.splice(i, 1);
+          this.owner.childDone(this, "modelUpdated", {index:i, updateType:"substraction"});
+          return;
+        }
+      }
+    },
+    getNumberOfTubes:function () {
+      return this.tubes.length;
+    },
+    makeBatch:function(){
+      //TODO: for now, let's pretend there is no batch... we create one.
+      var that = this;
+      this.owner.getS2Root()
+          .then(function(root){
+            that.setTestData(dataJSON);
+            return root.batches.new({items:that.tubes});
+          }).then(function(batch){
+            debugger;
+            return batch.update();
+          }).then(function(){
+            that.owner.childDone(that,"batchSaved");
+          })
     }
-    return false;
-  };
-
-  SelectionPageModel.prototype.getNumberOfTubes = function () {
-    /* gets the number of tubes
-     *
-     * Returns
-     * -------
-     * The number of tubes.
-     */
-    return this.tubes.length;
-  };
-
+  });
   return SelectionPageModel;
-
 });

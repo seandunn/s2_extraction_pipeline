@@ -30,48 +30,37 @@ define([ 'config'
 
   $.extend(PagePresenter, {
 
-    setupPresenter:function (input_model, jquerySelection) {
-      /*
-       Arguments:
-       input_model = { userUUID:"1234567890", labwareUUID:"1234567890", batchUUID:"0123456789" }
-       */
-      this.model = new SelectionPageModel(this, input_model);
+    setupPresenter:function (setupData, jquerySelection) {
+      console.log("selection presenter  setupPresenter");
       this.setupPlaceholder(jquerySelection);
+      this.pageModel = Object.create(SelectionPageModel).init(this);
+      if (setupData) {
+        this.pageModel.setBatch(setupData.batch); // the batch BEFORE the labware!
+        this.pageModel.setSeminalLabware(setupData.labware);
+        this.pageModel.setUser(setupData.userUUID);
+      }
       this.setupView();
-      this.renderView();
       this.setupSubPresenters();
+      this.renderView();
 
       return this;
     },
     setupView:function () {
-      /* initialises this instance by instantiating the view
-       */
-      this.view = new SelectionPageView(this, this.jquerySelection);
+      this.currentView = new SelectionPageView(this, this.jquerySelection);
       return this;
     },
-
     renderView:function () {
-      /* Updates the data for the current view
-       *
-       * Tells the presenter that the model has been updated
-       *
-       */
-
-      if (!this.view) {
+      if (!this.currentView) {
         return this;
       }
-
-      // we need to render the model first, so that the html elements
-      // exist to configure the sub-presenters' views
+      //marshalling data for the view
       var dataForView = {
-        batch:this.model.batch && this.model.batch.uuid,
-        user:this.model.userUUID,
-        capacity:this.model.getCapacity()
+        batch:this.pageModel.batch && this.model.batch.uuid,
+        user:this.pageModel.user,
+        capacity:this.pageModel.getCapacity()
       };
-      this.view.render(dataForView);
-      if (!this.presenters){
-        this.presenters = [];
-      }
+      this.currentView.render(dataForView);
+      // render subviews...
       for (var i = 0; i < this.presenters.length; i++) {
         if (this.presenters[i]) {
           this.presenters[i].renderView();
@@ -79,21 +68,17 @@ define([ 'config'
       }
       return this;
     },
-
     setupSubPresenters:function () {
-      var numOrders = this.model ? this.model.getNumberOfTubes() : 0;
-
-      for (var i = 0; i < this.model.getCapacity(); i++) {
-        this.presenters[i] = this.presenterFactory.createLabwarePresenter(this);
+      this.presenters = [];
+      for (var i = 0; i < this.pageModel.getCapacity(); i++) {
+        var subPresenter = this.presenterFactory.createLabwarePresenter(this);
+        this.presenters.push(subPresenter);
       }
       this.setupSubModel();
       return this;
     },
 
     setupSubModel:function () {
-      /*
-       Creates the data needed for the sub presenters
-       */
       var that = this;
       var jQueryForNthChild = function (childIndex) {
         return function () {
@@ -101,38 +86,40 @@ define([ 'config'
         };
       };
 
-      if (!this.model) {
+      if (!this.pageModel) {
         return;
       }
 
-      numTubes = this.model.getNumberOfTubes();
+      var numTubes = this.pageModel.getNumberOfTubes();
 
-      for (var i = 0; i < this.model.getCapacity(); i++) {
+      for (var i = 0; i < this.pageModel.getCapacity(); i++) {
         if (i < numTubes) {
-          var dataForExistingLabware_presenter = { "resource":this.model.tubes[i],
+          var dataForExistingLabware_presenter = {
+            "resource":this.pageModel.tubes[i],
             "display_remove":true,
-            "display_barcode":false};
+            "display_barcode":false
+          };
           this.presenters[i].setupPresenter(dataForExistingLabware_presenter, jQueryForNthChild(i));
         } else if (i == numTubes) {
-          var dataForLabwareWithBC_presenter = {"display_remove":false, "display_barcode":true};
+          var dataForLabwareWithBC_presenter = {
+            "display_remove":false,
+            "display_barcode":true
+          };
           this.presenters[i].setupPresenter(dataForLabwareWithBC_presenter, jQueryForNthChild(i));
         } else {
-          var dataForhiddenLabwarePresenter = {"display_remove":false, "display_barcode":false};
+          var dataForhiddenLabwarePresenter = {
+            "display_remove":false,
+            "display_barcode":false
+          };
           this.presenters[i].setupPresenter(dataForhiddenLabwarePresenter, jQueryForNthChild(i));
-
         }
       }
-
     },
 
     release:function () {
-      /* Tells the presenter to get ready for being deleted.
-       *
-       * This should only be called at the end of the life. It will
-       * tell the view component to tell itself to disappear from the
-       * open page.
-       */
-      this.view.clear();
+      if (this.currentView) {
+        this.currentView.clear();
+      }
       return this;
     },
 
@@ -151,58 +138,30 @@ define([ 'config'
        * data:       Any data associated with the action.
        *
        */
-      if (child === this.model) {
+      if (child === this.currentView){
+        if (action === "next") {
+          this.pageModel.makeBatch();
+        }
+      } else if (child === this.pageModel) {
         if (action === "modelUpdated") {
-          this.owner.HACK_add_global_tube_uuids(this.model.tubeUUIDs);
-
+          // TODO: use the data provided by the model to only update the relevant subpresenters...
           this.setupSubPresenters();
           this.renderView();
-
-          return;
+        } else if (action === "batchSaved") {
+          var dataForOwner = {
+            userUUID:this.pageModel.user,
+            labware:this.pageModel.labware,
+            "batch":this.pageModel.batch
+          };
+          this.owner.childDone(this,"next",dataForOwner);
+        }
+      } else {
+        if (action === "barcodeScanned") {
+          this.pageModel.addTubeFromBarcode(data.BC);
+        } else if (action === "removeLabware") {
+          this.pageModel.removeTubeByUuid(data.uuid);
         }
       }
-
-      if (action === "barcodeScanned") {
-        return this.handleBarcodeScanned(data.BC);
-      } else if (action === "labwareRemoved") {
-        return this.handleTubeRemoved(data.uuid);
-//      } else if (action === "next") {
-//        console.warn("CALL TO S2MAPPER: CREATING BATCH");
-//        var root;
-//        var batch;
-//        config.setupTest(rootTestJson); // TODO: remove this line to activate the real mapper
-//        S2Root.load().done(function (result) {
-//          root = result;
-//        }).fail(function () {
-//              console.log("root load failed");
-//            }).then(function () {
-//              batch = root.batches.new({items:[ "3bcf8010-68ac-0130-9163-282066132de2",
-//                "3bcf8010-68ac-0130-9163-282066132de2" ]
-//              });
-//              // todo : save the new batch
-//            });
-//
-//        var newBatchUUID = "0147852369";
-//
-//        var dataForOwner = {
-//          batchUUID:newBatchUUID
-//        };
-//        return this.owner.childDone(this, "done", dataForOwner);
-      }
-    },
-
-    handleBarcodeScanned:function (barcode) {
-      var that = this;
-      this.getLabwareResourcePromise({barcode:barcode})
-          .then(function(rsc){
-            that.model.addTube(rsc);
-          });
-      return this;
-    },
-
-    handleTubeRemoved:function (data) {
-      this.model.removeTubeByUuid(data);
-      return this;
     }
   });
 

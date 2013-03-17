@@ -60,9 +60,11 @@ define(['config'
   workflowEngine.prototype.getNextPresenter = function (presenterFactory, inputDataForWorkflow) {
     var presenterName = undefined;
     if (!inputDataForWorkflow.userUUID) {
+      console.log(">> to default");
       // what ever happened, if there's no user, nothing can happen!
       presenterName = this.default;
     } else if (!inputDataForWorkflow.batch && inputDataForWorkflow.labware) {
+      console.log(">> to selection_page_presenter");
       presenterName = "selection_page_presenter";
     } else {
       presenterName = this.getNextPresenterName(inputDataForWorkflow.batch);

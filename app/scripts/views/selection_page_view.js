@@ -55,9 +55,10 @@ define([], function () {
      */
 
     var button = this.jquerySelector().find("div button.nextBtn");
-    owner = this.owner;
+    var thatOwner = this.owner;
+    var that = this;
     button.on("click", function () {
-      owner.childDone(owner, "next", undefined);
+      thatOwner.childDone(that, "next", undefined);
     });
   };
 

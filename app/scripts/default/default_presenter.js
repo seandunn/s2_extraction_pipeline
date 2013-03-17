@@ -21,9 +21,10 @@
 define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/default/default_view'
+  , 'extraction_pipeline/default/default_model'
   , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
 ],
-    function (config, BasePresenter, view, dataJSON) {
+    function (config, BasePresenter, view, DefaultPageModel, dataJSON) {
       /*
        The default page presenter. Deals with login.
        */
@@ -38,25 +39,16 @@ define(['config'
          labware : "1234567890"
          }
          */
-        setupPresenter:function (input_model, jquerySelection) {
+        setupPresenter:function (setupData, jquerySelection) {
           this.setupPlaceholder(jquerySelection);
-          this.setupView();
-          this.renderView();
-          if (input_model && input_model.constructor == Object) {
-            this.updateModel(input_model);
-          } else {
-            throw {message:"DataSchemaError"}
-          }
+          this.pageModel = Object.create(DefaultPageModel).init(this);
+          this.pageModel.dirtySetup(); // TODO: remove me, I'm a hack
           return this;
-        },
-        updateModel:function (input_model) {
-          this.model = input_model;
-          if (this.model) {
-            // TODO: fix me -> eventually use a proper resource to check the user...
-          }
-          this.setupSubPresenters();
-
-          return this;
+//          this.setupView();
+//          this.setupSubPresenters();
+//          this.renderView();
+//
+//          return this;
         },
         setupSubPresenters:function () {
           // check with this.model for the needed subpresenters...
@@ -94,75 +86,65 @@ define(['config'
           if (this.userBCSubPresenter) {
             this.userBCSubPresenter.renderView();
           }
+          if (this.labwareBCSubPresenter) {
+            this.labwareBCSubPresenter.renderView();
+          }
           return this;
         },
         release:function () {
-          this.currentView.release();
+          if (this.currentView) {
+            this.currentView.release();
+          }
           return this;
         },
         childDone:function (child, action, data) {
           // called when a child  wants to say something...
-
-          if (child === this.userBCSubPresenter) {
+          var that = this;
+          if (child === this.labwareBCSubPresenter) {
             if (action === "barcodeScanned") {
-              return this.handleBarcodeScanned(data);
+              this.pageModel.setLabwareFromBarcode(data.BC);
+              return;
             }
-          } else if (child === this.currentView) {
-            if (action === "login") {
-              var dataForLogin = {
-                userBC:data.userBC,
-                labwareBC:data.labwareBC
-              };
-              return this.login(dataForLogin);
+          } else if (child === this.userBCSubPresenter) {
+            if (action === "barcodeScanned") {
+              that.pageModel.setUserFromBarcode(data.BC);
+              return;
             }
+//          } else if (child === this.currentView) {
+//            if (action === "login") {
+//              var dataForLogin = {
+//                userBC:data.userBC,
+//                labwareBC:data.labwareBC
+//              };
+//              this.login(dataForLogin);
+//              return;
+//            }
+          } else if (child === this.pageModel) {
+            switch (action) {
+              case "modelUpdated":
+                if (this.currentView) {
+                  this.setupSubPresenters();
+                  this.renderView();
+                }
+                break;
+              case "modelValidated":
+                var dataForOwner = {
+                  userUUID:this.pageModel.user,
+                  labware:this.pageModel.labware,
+                  "batch":this.pageModel.batch
+                };
+                this.owner.childDone(this, "login", dataForOwner);
+                break;
+            }
+            return;
           }
 
           console.error("unhandled childDone event:");
           console.error("child: ", child);
           console.error("action: " + action);
           console.error("data: " + JSON.stringify(data));
-          //return this.owner.childDone(child, action, data);
-          return this;
-        },
-        login:function (dataForLogin) {
-          // method called when try to login
-
-          var thatTube, batch;
-          var that = this;
-
-          if (!dataForLogin.userBC) {
-            console.warn("something wrong happened with the user");
-            return this;
-          }
-          if (!dataForLogin.labwareBC) {
-            console.warn("something wrong happened with the tube");
-            return this;
-          }
-
-          this.getS2Root()
-              .then(function (root) {
-                config.setupTest(dataJSON);
-                return root.tubes.findByEan13Barcode(dataForLogin.labwareBC);
-              }).then(function (tube) {
-                thatTube = tube;
-                return tube.order();
-              }).then(function (order) {
-                return order.batchFor(function () {
-                  return true;
-                });
-              }).then(function (batch) {
-                that.owner.childDone(that, "login", {userUUID:dataForLogin.userBC, labware:thatTube, "batch":batch});
-              }).fail(function () {
-                if (thatTube) {
-                  that.owner.childDone(that, "login", {userUUID:dataForLogin.userBC, labware:thatTube, "batch":undefined});
-                } else {
-                  console.error("Something went wrong");
-                }
-              }); // todo : handle error
-
           return this;
         }
-
       });
 
       return DefaultPresenter;
