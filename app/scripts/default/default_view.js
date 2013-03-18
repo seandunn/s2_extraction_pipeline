@@ -26,6 +26,7 @@ define([], function () {
       var code = (e.keyCode ? e.keyCode : e.which);
       if (code == 13) {
         onLogin_clicked(owner)();
+
       }
     };
   }

@@ -16,6 +16,7 @@ define(['config'
     var that = this;
     var presenterName = null;
 
+    console.log(inputDataForWorkflow);
     $.each(that.rules, function (ruleName, rule) {
 //      console.log("rule : ",rule);
       $.each(inputDataForWorkflow.items, function (roleName, role) {
@@ -57,47 +58,43 @@ define(['config'
 
 
   workflowEngine.prototype.getNextPresenter = function (presenterFactory, inputDataForWorkflow) {
-    var batch = undefined;
     var presenterName = undefined;
-
     if (!inputDataForWorkflow.userUUID) {
+      console.log(">> to default");
       // what ever happened, if there's no user, nothing can happen!
-      batch = {items:{}};
+      presenterName = this.default;
+    } else if (!inputDataForWorkflow.batch && inputDataForWorkflow.labware) {
+      console.log(">> to selection_page_presenter");
+      presenterName = "selection_page_presenter";
     } else {
-
-      if (inputDataForWorkflow.hasOwnProperty("batchUUID") && inputDataForWorkflow.batchUUID) {
-        // get batch from bathcUUID...
-        batch = {
-          items:{
-            "tube_to_be_extracted":[
-              {
-                "uuid":"f1628770-6c81-0130-e02d-282066132de2",
-                "status":"ready",
-                "batch":null
-              }
-            ]
-          }
-        };
-      } else if (inputDataForWorkflow.hasOwnProperty("labwareUUID") && inputDataForWorkflow.labwareUUID) {
-        // get batch from labwareUUID...
-        batch = {
-          items:{
-            "tube_to_be_extracted":[
-              {
-                "uuid":"f1628770-6c81-0130-e02d-282066132de2",
-                "status":"ready",
-                "batch":null
-              }
-            ]
-          }
-        };
-      }
-
-
+      presenterName = this.getNextPresenterName(inputDataForWorkflow.batch);
     }
 
 
-    presenterName = this.getNextPresenterName(batch);
+
+//    else {
+//
+//      if (inputDataForWorkflow.hasOwnProperty("batch") && inputDataForWorkflow.batch) {
+//        batch = inputDataForWorkflow.batch;
+//      } else if (inputDataForWorkflow.hasOwnProperty("labware") && inputDataForWorkflow.labware) {
+//        // get batch from labwareUUID...
+////        batch = {
+////          items:{
+////            "tube_to_be_extracted":[
+////              {
+////                "uuid":"f1628770-6c81-0130-e02d-282066132de2",
+////                "status":"ready",
+////                "batch":null
+////              }
+////            ]
+////          }
+////        };
+//      }
+
+
+
+
+
 
     return this.getNextPresenterFromName(presenterFactory, presenterName);
 

@@ -12,10 +12,10 @@ define([], function () {
   };
 
   ScanBarcodeModel.prototype.isValid = function () {
-    if (this.barcode) {
-      if (this.barcode.length != 13)
-        return false;
-    }
+//    if (this.barcode) {
+//      if (this.barcode.length != 13)
+//        return false;
+//    }
     return true;
   };
 
