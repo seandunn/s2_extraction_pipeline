@@ -36,27 +36,27 @@ define([
   };
 
   /* Sample model input:
-  *
-  *{
-  * "rowNum" : i,
-  * "labware1" : {
-  *   "uuid" : this.model[i].uuid,
-  *   "expected_type" : "tube",
-  *   "display_remove" : false,
-  *   "display_barcode" : false
-  * },
-  * "labware2" : {
-  *   "expected_type" : "spin_columns",
-  *   "display_remove" : false,
-  *   "display_barcode" : false
-  * },
-  * "labware3" : {
-  *   "expected_type" : "waste_tube",
-  *   "display_remove" : false,
-  *   "display_barcode" : false
-  * }
-  *};
-  */
+   *
+   *{
+   * "rowNum" : i,
+   * "labware1" : {
+   *   "uuid" : this.model[i].uuid,
+   *   "expected_type" : "tube",
+   *   "display_remove" : false,
+   *   "display_barcode" : false
+   * },
+   * "labware2" : {
+   *   "expected_type" : "spin_columns",
+   *   "display_remove" : false,
+   *   "display_barcode" : false
+   * },
+   * "labware3" : {
+   *   "expected_type" : "waste_tube",
+   *   "display_remove" : false,
+   *   "display_barcode" : false
+   * }
+   *};
+   */
   tp.prototype.setupPresenter = function (input_model, jquerySelection) {
     this.setupPlaceholder(jquerySelection);
     this.setupView();
@@ -156,16 +156,35 @@ define([
     return this;
   };
 
-  tp.prototype.isRowComplete = function() {
-    var complete = true;
+  tp.prototype.isRowComplete = function () {
+    var complete = false;
+
+    if (this.labware1Presenter.isComplete() &&
+        this.labware2Presenter.isComplete() &&
+        this.labware3Presenter.isComplete()) {
+      complete = true;
+    }
 
     return complete;
+  };
+
+  tp.prototype.validateUuid = function(child, data) {
+
+    if (this.owner.validateUuid(this, data)) {
+      child.setupSubPresenters(child.inputModel.expected_type);
+    } else {
+      child.resetLabware();
+      child.displayErrorMessage("Barcode does not exist in the pipeline.");
+    }
+
   };
 
   tp.prototype.childDone = function (child, action, data) {
 
     if (action == "tube rendered") {
-     this.owner.childDone(this, "tubeFinished", data);
+      this.owner.childDone(this, "tubeFinished", data);
+    } else if (action == "barcodeScanned") {
+      this.validateUuid(child, data);
     }
   };
 

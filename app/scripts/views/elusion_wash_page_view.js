@@ -52,8 +52,8 @@ define([], function () {
     var finishButton = parent.find(".finishButton");
     var that = this;
 
-    finishButton.on('click', function(e) {
-        that.owner.childDone(that, "elusionFinished", {});
+    finishButton.on('click', function (e) {
+      that.owner.childDone(that, "elusionFinished", {});
     });
 
 //    $('li').addClass("kit");

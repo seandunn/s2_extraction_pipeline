@@ -43,12 +43,8 @@ define([], function () {
         '"', model.busy ? ' disabled="true"' : '' , '>',
         model.value,
         '</input>',
-        this.getError(model),
         '</div>',
         '<div class="alert alert-error" style="display: none">',
-        '<a class="close" data-dismiss="alert">×</a>',
-        '<h4 class="alert-heading">Error!</h4>',
-        'Invalid barcode',
         '</div>'
       ],
       htmlString = htmlParts.join('');
@@ -60,16 +56,20 @@ define([], function () {
     input.on("keypress", function (e) {
       var key = getKey(e);
       if (key === 13) {
-        model.barcode = that.jquerySelector().find('.barcodeInput').val();
+        that.setModelBarcode(model);
         if (model.isValid()) {
           that.jquerySelector().find('.alert-error').css('display', 'none');
           that.owner.childDone(this, "barcodeScanned", this.value);
         }
         else {
-          that.jquerySelector().find('.alert-error').css('display', 'block');
+          that.displayErrorMessage('Invalid Barcode');
         }
       }
     });
+  };
+
+  ScanBarcodeView.prototype.setModelBarcode = function(model) {
+    model.barcode = this.jquerySelector().find('.barcodeInput').val();
   };
 
   ScanBarcodeView.prototype.getError = function (model) {
@@ -79,6 +79,20 @@ define([], function () {
     }
     return errorMessage ? '<span class="alert-error">' + errorMessage + '</span>' : '';
   }
+
+  ScanBarcodeView.prototype.displayErrorMessage = function(message) {
+
+    var selection = this.jquerySelector().find('.alert-error');
+
+    var tmp = '<a class="close" data-dismiss="alert">×</a><h4 class="alert-heading">Error!</h4>';
+
+    if (message) {
+      tmp += message;
+    }
+
+    selection.empty().append(tmp);
+    selection.css('display', 'block');
+  };
 
 
   ScanBarcodeView.prototype.clear = function () {

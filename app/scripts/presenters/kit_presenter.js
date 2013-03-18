@@ -140,10 +140,10 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
 
   tp.prototype.validateKitTubes = function () {
     var valid = true;
-    var kitType = this.jquerySelection().find('.kitSelect').val();
+    var kitTypes = this.jquerySelection().find('.kitSelect').val().split('/');
 
     for (var index in this.tubeTypes) {
-      if (this.tubeTypes[index] != kitType) {
+      if (kitTypes.indexOf(this.tubeTypes[index]) == -1 ) {
         valid = false;
         break;
       }
@@ -151,8 +151,19 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
 
     this.currentView.setKitValidState(valid);
 
-    return this;
+    return valid;
   };
+
+  tp.prototype.isPageComplete = function() {
+    var complete = false;
+
+    if (this.barcodePresenter.isValid() && this.validateKitTubes()) {
+      complete = true;
+    }
+
+    return complete;
+  };
+
 
   tp.prototype.release = function () {
     this.currentView.clear();
@@ -163,12 +174,17 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
 
     if (child === this.currentView) {
       if (action == "next") {
+        if (this.isPageComplete()) {
         console.warn("CALL TO S2MAPPER: KIT VERIFIED");
         var dataForOwner = {
           batchUUID:this.batchUUID,
           HACK:"HACK"
         };
         this.owner.childDone(this, "done", dataForOwner);
+        } else {
+          this.owner.childDone(this, "error", {"message" : "The kit has not been completed."})
+        }
+
       }
     }
 

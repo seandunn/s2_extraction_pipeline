@@ -94,7 +94,7 @@ define(['extraction_pipeline/views/labware_view', 'config', 'mapper/s2_root'
 
     }
     if (expectedType && type != expectedType) {
-      //TODO: Set up error message here
+      this.displayErrorMessage('Equipment is not of expected type');
     } else {
       if (type) {
         this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
@@ -212,6 +212,17 @@ define(['extraction_pipeline/views/labware_view', 'config', 'mapper/s2_root'
     this.setupPresenter(this.inputModel, this.jquerySelection);
   };
 
+  LabwarePresenter.prototype.isComplete = function() {
+    var complete = true;
+
+      // If the labware module requires input but there is no model to populate it, we can assume it's incomplete
+      if (this.inputModel.display_barcode && this.inputModel.display_remove && !this.model) {
+        complete = false;
+      }
+
+    return complete;
+  };
+
   LabwarePresenter.prototype.release = function () {
     if (this.view) {
       this.view.clear();
@@ -238,6 +249,10 @@ define(['extraction_pipeline/views/labware_view', 'config', 'mapper/s2_root'
       this.retrieveBarcode(data.BC);
       this.owner.childDone(this, 'barcodeScanned', {"uuid":this.uuid});
     }
+  };
+
+  LabwarePresenter.prototype.displayErrorMessage = function(message) {
+    this.barcodeInputPresenter.displayErrorMessage(message);
   };
 
   return LabwarePresenter;

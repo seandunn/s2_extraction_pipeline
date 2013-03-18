@@ -48,6 +48,7 @@ define([], function () {
         '<select class="kitSelect">',
         '<option>DNA</option>',
         '<option>RNA</option>',
+        '<option>DNA/RNA</option>',
         '</select></div>',
         '<div style="float: right; overflow: auto;"><p class="validationText"></p></div>',
         '</div>',

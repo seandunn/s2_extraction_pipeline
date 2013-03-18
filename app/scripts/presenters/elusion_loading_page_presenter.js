@@ -64,9 +64,10 @@ define(['extraction_pipeline/views/elusion_loading_page_view'], function (View) 
   tp.prototype.updateModel = function (model) {
     if (model.hasOwnProperty('tubes')) {
       this.model = model.tubes;
-      this.numRows = this.model.length;
-      this.setupSubPresenters();
     }
+    this.model = this.owner.tubeUUIDs;
+    this.numRows = this.model.length;
+    this.setupSubPresenters();
     return this;
   }
 
@@ -150,19 +151,34 @@ define(['extraction_pipeline/views/elusion_loading_page_view'], function (View) 
 
     var complete = true;
 
-    for (var i; i < this.rowPresenters.length; i++) {
+    for (var i = 0; i < this.rowPresenters.length; i++) {
       if (!this.rowPresenters[i].isRowComplete()) {
         complete = false;
         break;
       }
     }
 
-    return true;
+    //TODO: Add check that tube barcodes have been printed
+
+    return complete;
   };
 
   tp.prototype.release = function () {
     this.jquerySelection().release();
     return this;
+  };
+
+  tp.prototype.validateUuid = function(child, data) {
+    var valid = false;
+
+    for (var i = 0; i < this.model.length; i++) {
+      if (this.model[i].uuid == data.uuid) {
+        valid = true;
+        break;
+      }
+    }
+
+    return valid;
   };
 
   tp.prototype.childDone = function (child, action, data) {
