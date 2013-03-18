@@ -74,6 +74,7 @@ define([
           })
           .fail(function () {
             //todo: handle error
+            that.owner.childDone(that, "barcodeNotFound", {});
           });
     },
     getCapacity:function () {
