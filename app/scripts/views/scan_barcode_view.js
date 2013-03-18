@@ -43,7 +43,6 @@ define([], function () {
         '"', model.busy ? ' disabled="true"' : '' , '>',
         model.value,
         '</input>',
-        this.getError(model),
         '</div>',
         '<div class="alert alert-error" style="display: none">',
         '</div>'
@@ -57,7 +56,7 @@ define([], function () {
     input.on("keypress", function (e) {
       var key = getKey(e);
       if (key === 13) {
-        model.barcode = that.jquerySelector().find('.barcodeInput').val();
+        that.setModelBarcode(model);
         if (model.isValid()) {
           that.jquerySelector().find('.alert-error').css('display', 'none');
           that.owner.childDone(this, "barcodeScanned", this.value);
@@ -67,6 +66,10 @@ define([], function () {
         }
       }
     });
+  };
+
+  ScanBarcodeView.prototype.setModelBarcode = function(model) {
+    model.barcode = this.jquerySelector().find('.barcodeInput').val();
   };
 
   ScanBarcodeView.prototype.getError = function (model) {

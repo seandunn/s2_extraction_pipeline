@@ -155,14 +155,14 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
 
     var complete = true;
 
-    for (var i; i < this.rowPresenters.length; i++) {
+    for (var i = 0; i < this.rowPresenters.length; i++) {
       if (!this.rowPresenters[i].isRowComplete()) {
         complete = false;
         break;
       }
     }
 
-    return true;
+    return complete;
   };
 
   tp.prototype.release = function () {
@@ -193,7 +193,9 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
       }
     } else if (action == 'bindingComplete') {
       if (this.checkPageComplete()) {
-        this.owner.childComplete(this, 'bindingComplete', {});
+        this.owner.childDone(this, 'error', {"message" : "childDone not hooked up to workflow engine"});
+      } else {
+        this.owner.childDone(this, 'error', {"message" : "The page has not been completed"});
       }
     }
 

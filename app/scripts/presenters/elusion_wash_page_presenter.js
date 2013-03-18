@@ -152,14 +152,14 @@ define(['extraction_pipeline/views/elusion_wash_page_view'], function (View) {
 
     var complete = true;
 
-    for (var i; i < this.rowPresenters.length; i++) {
+    for (var i = 0; i < this.rowPresenters.length; i++) {
       if (!this.rowPresenters[i].isRowComplete()) {
         complete = false;
         break;
       }
     }
 
-    return true;
+    return complete;
   };
 
   tp.prototype.release = function () {
@@ -175,9 +175,9 @@ define(['extraction_pipeline/views/elusion_wash_page_view'], function (View) {
       if (this.tubeTypes.length == this.numRows) {
         this.validateKitTubes();
       }
-    } else if (action == 'bindingComplete') {
+    } else if (action == 'elusionFinished') {
       if (this.checkPageComplete()) {
-        this.owner.childComplete(this, 'bindingComplete', {});
+        this.owner.childComplete(this, 'error', { "message" : "Not hooked up in child done presenter."});
       }
     }
 

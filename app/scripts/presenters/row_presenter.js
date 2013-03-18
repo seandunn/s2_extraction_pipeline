@@ -157,7 +157,13 @@ define([
   };
 
   tp.prototype.isRowComplete = function () {
-    var complete = true;
+    var complete = false;
+
+    if (this.labware1Presenter.isComplete() &&
+        this.labware2Presenter.isComplete() &&
+        this.labware3Presenter.isComplete()) {
+      complete = true;
+    }
 
     return complete;
   };

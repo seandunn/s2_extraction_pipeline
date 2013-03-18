@@ -88,6 +88,11 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
     this.view.displayErrorMessage(message);
   };
 
+  ScanBarcodePresenter.prototype.isValid = function() {
+    this.view.setModelBarcode(this.model);
+    return this.model.isValid();
+  };
+
 //  ScanBarcodePresenter.prototype.validateBarcode = function (barcode) {
 //    return false;
 //  };

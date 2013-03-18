@@ -133,34 +133,24 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
     return this;
   };
 
-  tp.prototype.validateKitTubes = function () {
-    var valid = true;
-    var kitType = this.jquerySelection().find('.kitSelect').val();
-
-    for (var index in this.tubeTypes) {
-      if (this.tubeTypes[index] != kitType) {
-        valid = false;
-        break;
-      }
-    }
-
-    this.currentView.setKitValidState(valid);
-
-    return this;
-  };
-
-  tp.prototype.checkPageComplete = function () {
+  tp.prototype.checkPageComplete = function() {
 
     var complete = true;
 
-    for (var i; i < this.rowPresenters.length; i++) {
+    for (var i = 0; i < this.rowPresenters.length; i++) {
       if (!this.rowPresenters[i].isRowComplete()) {
         complete = false;
         break;
       }
     }
 
-    return true;
+    //TODO: Add check that tube barcodes have been printed
+
+    return complete;
+  };
+
+  tp.prototype.printBarcodes = function() {
+    alert("Not implemented!");
   };
 
   tp.prototype.release = function () {
@@ -170,16 +160,13 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
 
   tp.prototype.childDone = function (child, action, data) {
 
-    if (action == 'tubeFinished') {
-      this.tubeTypes.push(data);
-
-      if (this.tubeTypes.length == this.numRows) {
-        this.validateKitTubes();
-      }
-    } else if (action == 'bindingComplete') {
+    if (action == 'bindingFinished') {
       if (this.checkPageComplete()) {
-        this.owner.childComplete(this, 'bindingComplete', {});
+        this.owner.childComplete(this, 'bindingFinished', {});
       }
+    }
+    else if (action == 'printBarcodes') {
+      this.printBarcodes();
     }
 
   };
