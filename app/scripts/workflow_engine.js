@@ -1,138 +1,123 @@
 define(['config'
   , 'mapper/s2_root'
-  , 'text!scripts/pipeline_config.json'
-], function (config, S2Root, pipelineConfig) {
+], function (config, S2Root) {
 
   var workflowEngine = function (owner, config) {
+
     this.mainController = owner;
-    this.rules = $.parseJSON(config);
+    this.default = config["default"];
+    this.rules = config["rules"];
   };
 
-  workflowEngine.prototype.getNextPresenter = function (presenterFactory, inputDataForWorkflow) {
+  workflowEngine.prototype.getNextPresenterName = function (inputDataForWorkflow) {
     /**
-     * data = {
-     *   userUUID: "1234567890",
-     *   batchUUID: "1234567890"
-     * }
+     * inputDataForWorkflow is a batch
      */
     var that = this;
-    var ruleApplies = function (rule, role, item) {
-      console.log(rule.description);
-      console.log(rule, item);
-      if (rule.role != role)
-        return false;
-      for(var elmt in rule.needed){
-        if (rule.needed[elmt] != item[elmt])
-          return false;
-      }
-      return true;
-    };
+    var presenterName = null;
 
-
-    var getPresenter = function (items) {
-
-      if (!items) {
-        return that.specialRules["no_item_rule"].result;
-      }
-
-      var presenter = null;
-      //$.each(items, function(index, item){
-      for (var ruleName in that.rules) {
-        for (var itemRole in items) {
-          for (var indexItem = 0; indexItem < items[itemRole].length; indexItem++) {
-
-            if (ruleApplies(that.rules[ruleName], itemRole, items[itemRole][indexItem])) {
-              return that.rules[ruleName].result;
+    console.log(inputDataForWorkflow);
+    $.each(that.rules, function (ruleName, rule) {
+//      console.log("rule : ",rule);
+      $.each(inputDataForWorkflow.items, function (roleName, role) {
+//        console.log(">>> role : ", roleName, " > ",role);
+        $.each(role, function (itemIndex, item) {
+//          console.log(">>>>>>> item : ", item);
+          if (item.status === "ready") {
+            if (rule[0] === roleName) {
+              presenterName = rule[1];
+              return false;
             }
-
           }
-        }
-      }
+        });
+        if (presenterName) {
+          return false;
+        } // allows to break to the loop as soon as we know...
+      });
+      if (presenterName) {
+        return false;
+      } // allows to break to the loop as soon as we know...
+    });
+    if (!presenterName)
+      presenterName = this.default;
+    return presenterName;
+  };
+
+  workflowEngine.prototype.getNextPresenterFromName = function (presenterFactory, presenterName) {
+    switch (presenterName) {
+      case "binding_complete_page":
+        return presenterFactory.createBindingCompletePage(this.mainController);
+      case "kit_presenter_page":
+        return presenterFactory.createKitPresenter(this.mainController);
+      case "selection_page_presenter":
+        return presenterFactory.createSelectionPagePresenter(this.mainController);
+      default:
+        return presenterFactory.createDefaultPresenter(this.mainController);
+    }
+  };
 
 
-      //});
-//      for (var ruleName in that.rules) {
-//        var rule = that.rules[ruleName];
-//        console.log("rule:", ruleName);
-//
-//        for (var role in items) {
-//          for (var i = 0; i < items[role].length; i++) {
-//            var item = items[role][i];
-//            console.log(">>", item);
-//
-//
-//            if (ruleApplies(rule, role, item)) {
-//              console.log(" > " + rule + " & " + item);
-//              return rule.result;
-//            }
-//          }
-//        }
-//      }
-      return null;
-    };
-
-
-    var items = {
-      "tube_to_be_extracted":[
-        {
-          "uuid":"3bcf8010-68ac-0130-9163-282066132de2",
-          "status":"done",
-          "batch":{
-            "actions":{
-              "read":"http://localhost:9292/47608460-68ac-0130-7ac8-282066132de2",
-              "create":"http://localhost:9292/47608460-68ac-0130-7ac8-282066132de2",
-              "update":"http://localhost:9292/47608460-68ac-0130-7ac8-282066132de2",
-              "delete":"http://localhost:9292/47608460-68ac-0130-7ac8-282066132de2"
-            },
-            "uuid":"47608460-68ac-0130-7ac8-282066132de2",
-            "process":null
-          }
-        },
-        {
-          "uuid":"3bd0e850-68ac-0130-9163-282066132de2",
-          "status":"in_progress",
-          "batch":{
-            "actions":{
-              "read":"http://localhost:9292/47608460-68ac-0130-7ac8-282066132de2",
-              "create":"http://localhost:9292/47608460-68ac-0130-7ac8-282066132de2",
-              "update":"http://localhost:9292/47608460-68ac-0130-7ac8-282066132de2",
-              "delete":"http://localhost:9292/47608460-68ac-0130-7ac8-282066132de2"
-            },
-            "uuid":"47608460-68ac-0130-7ac8-282066132de2",
-            "process":null
-          }
-        }
-      ]
-    };
-    console.log("---------");
-    this.specialRules = $.parseJSON(pipelineConfig)["special_rules"];
-    this.rules = $.parseJSON(pipelineConfig)["rules"];
-    console.log(">>> ",getPresenter(items));
-
+  workflowEngine.prototype.getNextPresenter = function (presenterFactory, inputDataForWorkflow) {
+    var presenterName = undefined;
     if (!inputDataForWorkflow.userUUID) {
-      // nobody is logged in.
-      // we must show the login presenter
-      return presenterFactory.createDefaultPresenter(this.mainController);
+      console.log(">> to default");
+      // what ever happened, if there's no user, nothing can happen!
+      presenterName = this.default;
+    } else if (!inputDataForWorkflow.batch && inputDataForWorkflow.labware) {
+      console.log(">> to selection_page_presenter");
+      presenterName = "selection_page_presenter";
+    } else {
+      presenterName = this.getNextPresenterName(inputDataForWorkflow.batch);
     }
 
-    // from here, we can assume that a user has entered it's barcode, and has been
-    // recognised (maybe...)
 
 
-    if (inputDataForWorkflow.HACK) {
-      return presenterFactory.createBindingCompletePage(this.mainController);
+//    else {
+//
+//      if (inputDataForWorkflow.hasOwnProperty("batch") && inputDataForWorkflow.batch) {
+//        batch = inputDataForWorkflow.batch;
+//      } else if (inputDataForWorkflow.hasOwnProperty("labware") && inputDataForWorkflow.labware) {
+//        // get batch from labwareUUID...
+////        batch = {
+////          items:{
+////            "tube_to_be_extracted":[
+////              {
+////                "uuid":"f1628770-6c81-0130-e02d-282066132de2",
+////                "status":"ready",
+////                "batch":null
+////              }
+////            ]
+////          }
+////        };
+//      }
 
-    }
 
-    if (inputDataForWorkflow.batchUUID) {
-      return presenterFactory.createKitPresenter(this.mainController);
-    }
 
-    if (inputDataForWorkflow.labwareUUID) {
-      return presenterFactory.createSelectionPagePresenter(this.mainController);
-    }
 
-    return presenterFactory.createDefaultPresenter(this.mainController);
+
+
+    return this.getNextPresenterFromName(presenterFactory, presenterName);
+
+//
+//    if (!inputDataForWorkflow.userUUID) {
+//      return this.getNextPresenterFromName("default");
+//    }
+//
+//    if (inputDataForWorkflow.HACK) {
+//      return this.getNextPresenterFromName("binding_complete_page");
+//
+//    }
+//
+//    if (inputDataForWorkflow.batchUUID) {
+//      return this.getNextPresenterFromName("kit_presenter_page");
+//    }
+//
+//    if (inputDataForWorkflow.labwareUUID) {
+//      return this.getNextPresenterFromName("selection_page_presenter");
+//    }
+//
+//    return this.getNextPresenterFromName("default");
+
   };
 
 
