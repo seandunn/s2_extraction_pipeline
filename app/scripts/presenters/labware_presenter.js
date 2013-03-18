@@ -1,218 +1,228 @@
-define(['extraction_pipeline/views/labware_view', 'config', 'mapper/s2_root'
+define(['config'
+  , 'extraction_pipeline/presenters/base_presenter'
+  , 'extraction_pipeline/views/labware_view'
+  , 'mapper/s2_root'
   , 'text!components/S2Mapper/test/json/unit/root.json'
   , 'text!components/S2Mapper/test/json/unit/tube.json'
-  , 'text!components/S2Mapper/test/json/unit/tube_by_barcode.json'], function (LabwareView, config, S2Root, rootTestJson, dataTubeJSON, dataTubeFbyBCJSON) {
+  , 'text!components/S2Mapper/test/json/unit/tube_by_barcode.json'
+], function (config, BasePresenter, LabwareView, S2Root, rootTestJson, dataTubeJSON, dataTubeFbyBCJSON) {
 
-  var LabwarePresenter = function (owner, presenterFactory) {
-    this.model = undefined;
-    this.uuid = undefined;
-    this.owner = owner;
-    this.inputModel = undefined;
-    this.presenterFactory = presenterFactory;
-    this.resourcePresenter = undefined;
-    this.barcodeInputPresenter = undefined;
-  };
+  var LabwareModel = Object.create(null);
+  $.extend(LabwareModel, {
+    init:function (owner) {
+      this.owner = owner;
+      this.resource = undefined;
+      this.display_remove = undefined;
+      this.display_barcode = undefined;
+      return this;
+    },
+    reset:function(){
+      this.resource = undefined;
+    },
+    setResource:function (value) {
+      this.resource = value
+    },
+    setDisplayRemove:function (value) {
+      this.display_remove = value
+    },
+    setDisplayBarcode:function (value) {
+      this.display_barcode = value
+    }
+  });
 
-  LabwarePresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
-    /*
-     * input_model = {
-     *   uuid: "1234567890" // the uuid used to locate the resource
-     * }
-     *
-     * */
+  var LabwarePresenter = Object.create(BasePresenter);
 
-    this.setupPlaceholder(jquerySelection);
-    this.updateModel(input_model);
-    return this;
-  };
+//  var LabwarePresenter = function (owner, presenterFactory) {
+//    this.model = undefined;
+//    this.uuid = undefined;
+//    this.owner = owner;
+//    this.inputModel = undefined;
+//    this.presenterFactory = presenterFactory;
+//    this.resourcePresenter = undefined;
+//    this.barcodeInputPresenter = undefined;
+//  };
+  $.extend(LabwarePresenter, {
 
-  LabwarePresenter.prototype.setupPlaceholder = function (jquerySelection) {
-    this.jquerySelection = jquerySelection;
-    return this;
-  };
-
-  LabwarePresenter.prototype.setupView = function () {
-    this.view = new LabwareView(this, this.jquerySelection);
-    return this;
-  };
-
-  LabwarePresenter.prototype.updateModel = function (model) {
-
-    this.inputModel = model;
-
-    if (model && model.hasOwnProperty('uuid')) {
-      var that = this;
-      var root, rsc;
-
-
-      config.setupTest(rootTestJson);
-      S2Root.load().done(function (result) {
-        root = result;
-      })
-          .then(function () {
-            config.setupTest(dataTubeJSON);
-            root.find(model.uuid).done(function (rsc) {
-                  that.model = rsc.rawJson;
-                  that.uuid = model.uuid;
-                  if (model.hasOwnProperty('expected_type')) {
-                    if (!rsc.rawJson.hasOwnProperty(model.expected_type)) {
-                      that.model = undefined;
-                    }
-                  }
-                }
-            );
-            that.setupView();
-            that.renderView();
-//        that.owner.childDone(that, "Found equipment", model.uuid);
-          }
-      );
-
-    } else {
-      var expectedType = undefined;
-      if (model) {
-        expectedType = model.expected_type;
+    setupPresenter:function (setupData, jquerySelection) {
+      this.setupPlaceholder(jquerySelection);
+      this.labwareModel = Object.create(LabwareModel).init(this);
+      if (setupData) {
+        this.labwareModel.setResource(setupData.resource);
+        this.labwareModel.setDisplayRemove(setupData.display_remove);
+        this.labwareModel.setDisplayBarcode(setupData.display_barcode);
       }
+      //this.updateModel(input_model);
+      this.setupView();
+      this.setupSubPresenters();
+//      this.renderView();
+      return this;
+    },
+
+    setupPlaceholder:function (jquerySelection) {
+      this.jquerySelection = jquerySelection;
+      return this;
+    },
+
+    setupView:function () {
+      this.view = new LabwareView(this, this.jquerySelection);
+      return this;
+    },
+
+    updateModel:function (newData) {
+
+      if (!this.model) this.model = {};
+
+      $.extend(this.model, newData);
+
+//      if (model && model.hasOwnProperty('resource')) {
+//        this.inputModel = model;
+//      }
+
+
+//        if (!this.model.hasOwnProperty('resource') && this.model.hasOwnProperty('uuid')) {
+//
+//          config.setupTest(rootTestJson);
+//          S2Root.load().done(function (result) {
+//            root = result;
+//          })
+//              .then(function () {
+//                config.setupTest(dataTubeJSON);
+//                root.find(model.uuid).done(function (rsc) {
+//                      that.model = rsc.rawJson;
+//                      that.uuid = model.uuid;
+//                      if (model.hasOwnProperty('expected_type')) {
+//                        if (!rsc.rawJson.hasOwnProperty(model.expected_type)) {
+//                          that.model = undefined;
+//                        }
+//                      }
+//                    }
+//                );
+//                that.setupView();
+//                that.renderView();
+//  //        that.owner.childDone(that, "Found equipment", model.uuid);
+//              }
+//          );
+//        }
+//      } else {
+//          var expectedType = undefined;
+//          if (model) {
+//            expectedType = model.expected_type;
+//          }
+//          this.setupView();
+//          this.renderView();
+//
+//      }
       this.setupView();
       this.renderView();
-    }
+      return this;
+    },
 
-    return this;
-  };
-
-  LabwarePresenter.prototype.setRemoveButtonVisibility = function (displayRemove) {
+  setRemoveButtonVisibility:function (displayRemove) {
     if (!displayRemove) {
       this.view.hideRemoveButton();
     }
-  }
+  },
 
-  LabwarePresenter.prototype.setupSubPresenters = function (expectedType) {
-    if (!this.resourcePresenter) {
-      var type = expectedType;
-    }
-    if (this.model) {
-      type = Object.keys(this.model)[0];
-
-    }
-    if (expectedType && type != expectedType) {
-      this.displayErrorMessage('Equipment is not of expected type');
-    } else {
-      if (type) {
-        this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
-        this.view.setTitle(type);
+    setupSubPresenters:function (expectedType) {
+      if (!this.resourcePresenter) {
+        var type = expectedType;
       }
-      if (!this.barcodeInputPresenter && this.inputModel.display_barcode) {
-        this.barcodeInputPresenter = this.presenterFactory.createScanBarcodePresenter(this);
+      if (this.labwareModel.resource) {
+        type = this.labwareModel.resource.resourceType;
       }
-      this.setupSubModel();
-    }
-    return this;
-  };
+      if (expectedType && type != expectedType) {
+        //TODO: Set up error message here
+      } else {
+        if (type) {
+          this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
+          this.view.setTitle(type);
+        }
+        if (!this.barcodeInputPresenter && this.labwareModel.display_barcode) {
+          this.barcodeInputPresenter = this.presenterFactory.createScanBarcodePresenter(this);
+        }
+        this.setupSubModel();
+      }
+      return this;
+    },
 
-  LabwarePresenter.prototype.retrieveBarcode = function (data) {
-    var tube, root;
-    var barcode = data;
-    var that = this;
-    config.setupTest(rootTestJson);
-    S2Root.load().done(function (result) {
-      root = result;
-    })
-        .then(function () {
-          config.setupTest(dataTubeFbyBCJSON);
-          root.tubes.findByEan13Barcode(barcode).done(function (result) {
-                if (result) {
-                  var type = result.resourceType;
-                  that.model = result.rawJson;
-                  that.uuid = result.uuid; //rawJson[type].uuid;
-                  that.setupSubPresenters(that.inputModel.expected_type);
-//              that.owner.childDone(that, "login", dataForChildDone);
-                } else {
-                  // todo : handle error
-                  debugger;
-                }
-              }
-          ).fail(
-              function () {
-                debugger;
-              }
-          );
-        });
-  };
-
-  LabwarePresenter.prototype.setupSubModel = function () {
-    //if (this.model) {
-    var that = this;
+    setupSubModel:function () {
+      //if (this.model) {
+      var that = this;
 //      debugger;
-    var data = {};
-    if (this.model) {
-      data = this.model;
-    }
+      var data = {};
+      if (this.labwareModel.resource) {
+        // TODO: change the labware behaviour to get rid of the extra wrapping...
+        // because the labware expect a resource of the following form:
+        // resource == { tube:{...,resourceType:"tube", ...} }
+        // we wrap the resource...
+        data[this.labwareModel.resource.resourceType] = this.labwareModel.resource;
+      }
 
-    var resourceSelector = function () {
-      return that.jquerySelection().find("div.resource")
-    };
+      var resourceSelector = function () {
+        return that.jquerySelection().find("div.resource")
+      };
 
-    if (this.resourcePresenter) {
-      this.resourcePresenter.setupPresenter(data, resourceSelector);
-    }
+      if (this.resourcePresenter) {
+        this.resourcePresenter.setupPresenter(data, resourceSelector);
+      }
 
-    if (this.barcodeInputPresenter) {
-      this.barcodeInputPresenter.setupPresenter(data, function () {
-        return that.jquerySelection().find("div.barcodeScanner")
-      });
-    }
+      if (this.barcodeInputPresenter) {
+        this.barcodeInputPresenter.setupPresenter(data, function () {
+          return that.jquerySelection().find("div.barcodeScanner")
+        });
+      }
 //      console.log(">>>>> ",this.tubePresenter);
 
-    //  }
-    // equivalent to the call to tubePresenter.setupPresenter()
+      //  }
+      // equivalent to the call to tubePresenter.setupPresenter()
 //      this.tubePresenter.setupView(function () {
 //        console.log(that.jquerySelection());
 //        return that.jquerySelection().find("div.placeholder");
 //      });
 
-  };
+    },
 
-  LabwarePresenter.prototype.renderView = function () {
-    this.release();
-    this.resourcePresenter = undefined;
-    this.barcodeInputPresenter = undefined;
+    renderView:function () {
+      this.release();
+      this.resourcePresenter = undefined;
+      this.barcodeInputPresenter = undefined;
 
-    if (this.view) {
-      this.view.renderView(this.model);
-    }
-    if (this.resourcePresenter) {
-      this.resourcePresenter.renderView();
-    }
-    if (this.barcodeInputPresenter) {
-      this.barcodeInputPresenter.renderView();
-    }
-
-
-    this.setupSubPresenters(this.inputModel.expected_type);
-    this.setRemoveButtonVisibility(this.inputModel.display_remove);
-  };
-
-  LabwarePresenter.prototype.specialType = function (type) {
-    var specialType = false;
-    var typesList = ['waste_tube', 'qia_cube', 'centrifuge'];
-
-    if (type) {
-      if (typesList.indexOf(type) > -1) {
-        specialType = true;
+      if (this.view) {
+        this.view.renderView(this.model);
       }
-    }
+      if (this.resourcePresenter) {
+        this.resourcePresenter.renderView();
+      }
+      if (this.barcodeInputPresenter) {
+        this.barcodeInputPresenter.renderView();
+      }
 
-    return specialType;
-  }
+      this.setupSubPresenters(this.labwareModel.expected_type);
+      this.setRemoveButtonVisibility(this.labwareModel.display_remove);
+    },
 
-  LabwarePresenter.prototype.resetLabware = function () {
-    this.release();
-    this.model = undefined;
-    this.resourcePresenter = undefined;
-    this.barcodeInputPresenter = undefined;
-    this.setupPresenter(this.inputModel, this.jquerySelection);
-  };
+    specialType:function (type) {
+      var specialType = false;
+      var typesList = ['waste_tube', 'qia_cube', 'centrifuge'];
 
-  LabwarePresenter.prototype.isComplete = function() {
+      if (type) {
+        if (typesList.indexOf(type) > -1) {
+          specialType = true;
+        }
+      }
+
+      return specialType;
+    },
+
+    resetLabware:function () {
+      this.release();
+      this.labwareModel.reset();// = undefined;
+      this.resourcePresenter = undefined;
+      this.barcodeInputPresenter = undefined;
+      this.setupPresenter(this.labwareModel, this.jquerySelection);
+    },
+
+  isComplete:function() {
     var complete = true;
 
       // If the labware module requires input but there is no model to populate it, we can assume it's incomplete
@@ -221,39 +231,41 @@ define(['extraction_pipeline/views/labware_view', 'config', 'mapper/s2_root'
       }
 
     return complete;
-  };
-
-  LabwarePresenter.prototype.release = function () {
-    if (this.view) {
-      this.view.clear();
-    }
-  };
-
-  /*
-   TODO : update data schema
-   action : "removeTube" -> data == { ?? }
-   */
-  LabwarePresenter.prototype.childDone = function (child, action, data) {
-    if (child === this.view) {
-      if (action == "labwareRemoved") {
-//        var action = action;
-//        var data = data;
-        this.resetLabware();
-        this.owner.childDone(this, "labwareRemoved", {"uuid":this.uuid});
+  },
+  
+    release:function () {
+      if (this.view) {
+        this.view.clear();
       }
-    }
-    else if (action == "tube rendered") {
-      this.owner.childDone(this, action, child.getAliquotType());
-    }
-    else if (action == 'barcodeScanned') {
-      this.retrieveBarcode(data.BC);
-      this.owner.childDone(this, 'barcodeScanned', {"uuid":this.uuid});
-    }
-  };
+    },
 
-  LabwarePresenter.prototype.displayErrorMessage = function(message) {
+    /*
+     TODO : update data schema
+     action : "removeTube" -> data == { ?? }
+     */
+    childDone:function (child, action, data) {
+      if (child === this.view) {
+        if (action == "labwareRemoved") {
+          var dataForOwner = {
+            "uuid":this.labwareModel.resource.uuid
+          };
+          this.owner.childDone(this, "removeLabware", dataForOwner);
+        }
+      }
+//      else if (action == "tube rendered") {
+//        //this.owner.childDone(this, action, child.getAliquotType());
+//      }
+      else if (action == 'barcodeScanned') {
+        this.owner.childDone(this, 'barcodeScanned', {"BC":data.BC});
+
+      }    
+  },
+
+  displayErrorMessage:function(message) {
     this.barcodeInputPresenter.displayErrorMessage(message);
-  };
+  }
+  
+  });
 
   return LabwarePresenter;
 

@@ -8,10 +8,7 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
   'labware/presenters/tube_presenter',
   'labware/presenters/spin_column_presenter',
   'labware/presenters/waste_tube_presenter'],
-    function (ScanBarcodePresenter, SelectionPagePresenter, DefaultPresenter, KitPresenter, RowPresenter,
-              LabwarePresenter,
-              BindingCompletePagePresenter,
-              TubePresenter, SpinColumnPresenter, WasteTubePresenter) {
+    function (ScanBarcodePresenter, SelectionPagePresenter, DefaultPresenter, KitPresenter, RowPresenter, LabwarePresenter, BindingCompletePagePresenter, TubePresenter, SpinColumnPresenter, WasteTubePresenter) {
       'use strict';
 
       var PresenterFactory = function () {
@@ -24,21 +21,21 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
          * with the Jasmine testing library.
          */
         return this;
-      }
+      };
 
       PresenterFactory.prototype.createScanBarcodePresenter =
-          function (owner, type) {
+          function (owner) {
             return new ScanBarcodePresenter(owner, this);
           };
 
       PresenterFactory.prototype.createSelectionPagePresenter =
-          function (owner, type) {
-            return new SelectionPagePresenter(owner, this);
+          function (owner) {
+            return Object.create(SelectionPagePresenter).init(owner, this);
           };
 
       PresenterFactory.prototype.createDefaultPresenter =
           function (owner) {
-            return new DefaultPresenter(owner, this);
+            return Object.create(DefaultPresenter).init(owner, this);
           };
 
       PresenterFactory.prototype.createKitPresenter =
@@ -57,36 +54,38 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
           };
 
       PresenterFactory.prototype.createTubePresenter =
-        function (owner) {
-          return new TubePresenter(owner, this);
-        };
+          function (owner) {
+            return new TubePresenter(owner, this);
+          };
 
       PresenterFactory.prototype.createLabwarePresenter =
-        function(owner) {
-          return new LabwarePresenter(owner, this);
-        };
+          function (owner) {
+            return Object.create(LabwarePresenter).init(owner, this);
+          };
 
       PresenterFactory.prototype.createBindingCompletePage =
-        function(owner) {
-          return new BindingCompletePagePresenter(owner, this);
-        };
+          function (owner) {
+            return new BindingCompletePagePresenter(owner, this);
+          };
 
       PresenterFactory.prototype.createLabwareSubPresenter =
-        function(owner, type) {
-          var presenter = null;
-          switch (type) {
-            case 'tube':
-              presenter = new TubePresenter(owner, this);
-              break;
-            case 'spin_columns':
-              presenter = new SpinColumnPresenter(owner, this);
-              break;
-            case 'waste_tube':
-              presenter = new WasteTubePresenter(owner, this);
-              break;
-          }
-          return presenter;
-        };
+          function (owner, type) {
+            var presenter = null;
+            switch (type) {
+              case 'tube':
+                presenter = new TubePresenter(owner, this);
+                break;
+              case 'spin_columns':
+                presenter = new SpinColumnPresenter(owner, this);
+                break;
+              case 'waste_tube':
+                presenter = new WasteTubePresenter(owner, this);
+                break;
+              default :
+                debugger;
+            }
+            return presenter;
+          };
 
       return PresenterFactory;
     });
