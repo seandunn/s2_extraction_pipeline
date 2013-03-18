@@ -132,6 +132,11 @@ define([ 'config'
         return this;
       };
 
+      app.prototype.displayError = function(message) {
+        bootbox.alert(message);
+        return this;
+      };
+
       app.prototype.childDone = function (child, action, data) {
         console.log("A child of App (", child, ") said it has done the following action '" + action + "' with data :", data);
         try {
@@ -147,6 +152,8 @@ define([ 'config'
 //              inputDataForModel.HACK = "hack";
 //            }
             this.updateModel(inputDataForModel);
+          } else if (action == "error") {
+            this.displayError(data.message);
 
           } else if (action == "login") {
             this.updateModel(data);

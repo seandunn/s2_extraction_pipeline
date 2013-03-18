@@ -226,7 +226,7 @@ define(['config'
     var complete = true;
 
       // If the labware module requires input but there is no model to populate it, we can assume it's incomplete
-      if (this.inputModel.display_barcode && this.inputModel.display_remove && !this.model) {
+      if (this.labwareModel.display_barcode && this.labwareModel.display_remove && !this.model) {
         complete = false;
       }
 
