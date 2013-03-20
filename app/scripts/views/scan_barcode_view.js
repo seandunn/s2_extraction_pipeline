@@ -84,7 +84,7 @@ define([], function () {
 
     var selection = this.jquerySelector().find('.alert-error');
 
-    var tmp = '<a class="close" data-dismiss="alert">×</a><h4 class="alert-heading">Error!</h4>';
+    var tmp = '<h4 class="alert-heading">Error!</h4>';
 
     if (message) {
       tmp += message;
