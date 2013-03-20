@@ -257,9 +257,7 @@ define(['config'
           this.owner.childDone(this, "removeLabware", dataForOwner);
         }
       }
-//      else if (action == "tube rendered") {
-//        //this.owner.childDone(this, action, child.getAliquotType());
-//      }
+
       else if (action == 'barcodeScanned') {
         this.owner.childDone(this, 'barcodeScanned', {"BC":data.BC});
 
