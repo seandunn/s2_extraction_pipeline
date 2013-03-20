@@ -30,15 +30,19 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     return this;
   };
 
-  /* Sample input model for the kit presenter
-   *{
-   *  "tubes" : [
-   *   {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-   *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-   *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-   *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"}
-   *  ]
-   *}
+  /* Initialises the presenter and defines the view to be used
+   *
+   *
+   * Arguments
+   * ---------
+   * input_model:     The input model containing the current pipeline state
+   *
+   * jquerySelection: The selector method for the HTML container this presenter is responsible for
+   *
+   *
+   * Returns
+   * -------
+   * this
    */
   tp.prototype.setupPresenter = function (input_model, jquerySelection) {
     this.tubeTypes = [];
@@ -49,16 +53,51 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     return this;
   };
 
+  /* Sets the container selector method for the presenter
+   *
+   *
+   * Arguments
+   * ---------
+   * jquerySelection: The selector method for the presenter
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.setupPlaceholder = function (jquerySelection) {
     this.jquerySelection = jquerySelection;
     return this;
   };
 
+  /* Sets up the presenters view
+   *
+   *
+   * Arguments
+   * ---------
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.setupView = function () {
     this.currentView = new View(this, this.jquerySelection);
     return this;
   };
 
+  /* Updates the presenters model and delegates to subpresenters
+   *
+   *
+   * Arguments
+   * ---------
+   * model:     The model to be used by the presenter to display data
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.updateModel = function (model) {
     if (model.hasOwnProperty('batchUUID')) {
 
@@ -72,6 +111,17 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     return this;
   }
 
+  /* Sets up any subpresenters to be displayed in this instance
+   *
+   *
+   * Arguments
+   * ---------
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.setupSubPresenters = function () {
     if (!this.barcodePresenter) {
       this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
@@ -85,6 +135,17 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     return this;
   }
 
+  /* Delegates the models for the subpresenters
+   *
+   *
+   * Arguments
+   * ---------
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.setupSubModel = function () {
     var modelJson = {
       "type":"Kit",
@@ -129,6 +190,17 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     return this;
   }
 
+  /* Renders the current view and its internal placeholders
+   *
+   *
+   * Arguments
+   * ---------
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.renderView = function () {
     // render view...
     this.currentView.renderView();
@@ -138,12 +210,23 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     return this;
   };
 
-  tp.prototype.validateKitTubes = function () {
+  /* Validates that the kit tubes are valid to the users selection
+   *
+   *
+   * Arguments
+   * ---------
+   * kitTypes:      The list of valid kit types
+   *
+   *
+   * Returns
+   * -------
+   * valid boolean
+   */
+  tp.prototype.validateKitTubes = function (kitTypes) {
     var valid = true;
-    var kitTypes = this.jquerySelection().find('.kitSelect').val().split('/');
 
     for (var index in this.tubeTypes) {
-      if (kitTypes.indexOf(this.tubeTypes[index]) == -1 ) {
+      if (kitTypes.indexOf(this.tubeTypes[index]) == -1) {
         valid = false;
         break;
       }
@@ -154,35 +237,70 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
     return valid;
   };
 
-  tp.prototype.isPageComplete = function() {
+  /* Checks if all of the pages tasks have been completed before moving forward in the pipeline
+   *
+   *
+   * Arguments
+   * ---------
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
+  tp.prototype.isPageComplete = function () {
     var complete = false;
 
-    if (this.barcodePresenter.isValid() && this.validateKitTubes()) {
+    if (this.barcodePresenter.isValid() && this.validateKitTubes(this.currentView.getKitTypeSelection())) {
       complete = true;
     }
 
     return complete;
   };
 
-
+  /* Clears the current view and all of its children
+   *
+   *
+   * Arguments
+   * ---------
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.release = function () {
     this.currentView.clear();
     return this;
   };
 
+  /* Indicates a child has completed an action
+   *
+   *
+   * Arguments
+   * ---------
+   * child:     The child that has completed
+   * action:    The action completed
+   * data:      Supplementary data to the completed action
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.childDone = function (child, action, data) {
 
     if (child === this.currentView) {
       if (action == "next") {
         if (this.isPageComplete()) {
-        console.warn("CALL TO S2MAPPER: KIT VERIFIED");
-        var dataForOwner = {
-          batchUUID:this.batchUUID,
-          HACK:"HACK"
-        };
-        this.owner.childDone(this, "done", dataForOwner);
+          console.warn("CALL TO S2MAPPER: KIT VERIFIED");
+          var dataForOwner = {
+            batchUUID:this.batchUUID,
+            HACK:"HACK"
+          };
+          this.owner.childDone(this, "done", dataForOwner);
         } else {
-          this.owner.childDone(this, "error", {"message" : "The kit has not been completed."})
+          this.owner.childDone(this, "error", {"message":"The kit has not been completed."})
         }
 
       }
@@ -192,7 +310,7 @@ define(['extraction_pipeline/views/kit_view'], function (View) {
       this.tubeTypes.push(data);
 
       if (this.tubeTypes.length == this.numRows) {
-        this.validateKitTubes();
+        this.validateKitTubes(this.currentView.getKitTypeSelection());
       }
     }
 

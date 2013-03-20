@@ -27,6 +27,7 @@ require(['domReady!'
 //	 ,'spec/default_page_presenter_spec'
 //	 ,'spec/selection_page_presenter_spec'
 	 ,'spec/workflow_engine_spec'
+   ,'spec/kit_presenter_spec'
 //	 ,'spec/scan_barcode_presenter_spec'
   ],
  function() {

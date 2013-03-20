@@ -44,7 +44,7 @@ define([], function () {
         model.value,
         '</input>',
         '</div>',
-        '<div class="alert alert-error" style="display: none">',
+        '<div class="alert alert-error" style="max-width: 9em; display: none;">',
         '</div>'
       ],
       htmlString = htmlParts.join('');

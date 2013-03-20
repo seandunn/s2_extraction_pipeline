@@ -118,6 +118,10 @@ define([], function () {
       append(result);
   };
 
+  kitView.getKitTypeSelection = function() {
+    return this.jquerySelector().find('.kitSelect').val().split('/');
+  };
+
 //
 //  ScanBarcodeView.prototype.getError = function(model) {
 //    var errorMessage = model.customError;
