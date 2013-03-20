@@ -44,16 +44,29 @@ define([
       this.dirtySetTubes(); // as in: from the batch, I get the tubes involved...
       this.owner.childDone(this, "batchAdded");
     },
-    makeTransfer:function(source,destination){
+    makeTransfer:function(source,destination_SC_BR){
       var root, that = this;
+      var spinColumn;
       this.owner.getS2Root()
         .then(function(r){
-          // save sc
           root = r;
-          return {}; //...
+          // creates sc with the given BC
+          return SC.creates();
+//          return {}; //...
+        })
+        .then(function(sc){
+          spinColumn = sc;
+
+          return root.tube_spin_column_transfers.new({"source":source, "destination":sc});
         })
         .then(function(){
-          return root.tube_spin_column_transfers.new({"source":source, "destination":destination});
+          return source.order();
+        })
+        .then(function(ord){
+          return ord.updateRole(source,{event:"complete"});
+        })
+        .then(function(ord){
+          return ord.updateRole(spinColumn,{event:"complete"});
         })
         .then(function(){
           that.owner.childDone(that,"modelUpdated", {});
@@ -73,6 +86,22 @@ define([
           that.tubes.push(rsc);
         });
 //      this.uuids = this.owner.tubeUUIDs;
+    },
+    createMissingSpinColumnBarcodes:function(){
+      var that = this;
+      this.barcodes = []
+      for (var tube in that.tubes){
+        // TODO: create a spin column barcode for every tube
+
+        // generate SC barcodes
+
+        // save the barcodes
+        this.barcodes.push(); // barcodes!
+
+
+        // use tube and BC to generate SC
+//        var spinColumn = this.owner.getS2Root().spin
+      }
     }
 
   });

@@ -24,15 +24,7 @@ define(['extraction_pipeline/views/kit_view'
 ],
   function (View, BasePresenter, KitModel) {
   // interface ....
-  var tp = function (owner, presenterFactory) {
-    this.owner = owner;
-    this.currentView = undefined;
-    this.barcodePresenter = undefined;
-    this.rowPresenters = [];
-    this.tubeTypes = [];
-    this.presenterFactory = presenterFactory;
-    return this;
-  };
+  var KitPresenter = Object.create(BasePresenter);
 
   $.extend(KitPresenter, {
     /* Sample input model for the kit presenter
@@ -45,7 +37,6 @@ define(['extraction_pipeline/views/kit_view'
      *  ]
      *}
      */
-
     init:function(owner, presenterFactory) {
       this.owner = owner;
       this.currentView = undefined;
@@ -55,7 +46,6 @@ define(['extraction_pipeline/views/kit_view'
       this.presenterFactory = presenterFactory;
       return this;
     },
-
     setupPresenter:function (input_model, jquerySelection) {
       this.tubeTypes = [];
       this.kitModel = Object.create(KitModel).init(this);
@@ -63,25 +53,23 @@ define(['extraction_pipeline/views/kit_view'
       this.kitModel.dirtySetTubes();
       this.setupPlaceholder(jquerySelection);
       this.setupView();
+      this.setupSubPresenters();
       this.renderView();
       return this;
     },
-
     setupPlaceholder:function (jquerySelection) {
       this.jquerySelection = jquerySelection;
       return this;
     },
-
     setupView:function () {
       this.currentView = new View(this, this.jquerySelection);
       return this;
     },
-
     setupSubPresenters:function () {
       if (!this.barcodePresenter) {
         this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
       }
-      for (var i = 0; i < this.numRows; i++) {
+      for (var i = 0; i < this.kitModel.tubes.length; i++) {
         if (!this.rowPresenters[i]) {
           this.rowPresenters[i] = this.presenterFactory.createRowPresenter(this);
         }
@@ -89,7 +77,6 @@ define(['extraction_pipeline/views/kit_view'
       this.setupSubModel();
       return this;
     },
-
     setupSubModel:function () {
       var modelJson = {
         "type":"Kit",
@@ -99,8 +86,7 @@ define(['extraction_pipeline/views/kit_view'
       var jquerySelectionForBarcode = function () {
         return that.jquerySelection().find('.barcode')
       }
-
-      for (var i = 0; i < this.numRows; i++) {
+      for (var i = 0; i < this.kitModel.tubes.length; i++) {
 
         var jquerySelectionForRow = function (i) {
           return function () {
@@ -111,7 +97,7 @@ define(['extraction_pipeline/views/kit_view'
         var rowModel = {
           "rowNum":i,
           "labware1":{
-            "tube":this.kitModel.tubes[i],
+            "resource":this.kitModel.tubes[i],
             "expected_type":"tube",
             "display_remove":false,
             "display_barcode":false
@@ -127,22 +113,24 @@ define(['extraction_pipeline/views/kit_view'
             "display_barcode":false
           }
         };
-
         this.rowPresenters[i].setupPresenter(rowModel, jquerySelectionForRow(i));
       }
       this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
       return this;
     },
-
     renderView:function () {
       // render view...
       this.currentView.renderView();
       if (this.barcodePresenter) {
         this.barcodePresenter.renderView();
       }
+      for (var i = 0; i < this.kitModel.tubes.length; i++) {
+        if (this.rowPresenters[i]) {
+          this.rowPresenters[i].renderView();
+        }
+      }
       return this;
     },
-
     validateKitTubes:function () {
       var valid = true;
       var kitType = this.jquerySelection().find('.kitSelect').val();
@@ -158,12 +146,10 @@ define(['extraction_pipeline/views/kit_view'
 
       return this;
     },
-
     release:function () {
       this.currentView.clear();
       return this;
     },
-
     childDone:function (child, action, data) {
 
       if (child === this.currentView) {
