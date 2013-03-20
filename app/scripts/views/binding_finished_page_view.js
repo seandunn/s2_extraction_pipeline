@@ -50,36 +50,20 @@ define([], function () {
     parent.empty().
       append(htmlString);
     var startButton = parent.find(".startButton");
+    var printButton = parent.find(".printButton");
     var that = this;
 
     startButton.on('click', function(e) {
         that.owner.childDone(that, "bindingFinished", {});
     });
 
+    printButton.on('click', function(e) {
+        that.owner.childDone(that, "printBarcodes", {});
+    });
+
 //    $('li').addClass("kit");
 //    $('ul p').addClass("kit");
 //    $('ul h3').addClass("kit");
-  };
-
-  bindingView.prototype.setKitValidState = function (valid) {
-    var result = '';
-    var jquerySelection = this.jquerySelector();
-
-    if (valid) {
-      result = 'This kit is valid for the selected tubes';
-      jquerySelection.
-        find('.printButton').removeAttr('disabled');
-    }
-    else {
-      result = 'This kit is not valid for the selected tubes';
-      jquerySelection.
-        find('.printButton').attr('disabled', 'disabled');
-    }
-
-    jquerySelection.
-      find('.validationText').
-      empty().
-      append(result);
   };
 
 //

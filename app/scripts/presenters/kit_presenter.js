@@ -24,7 +24,15 @@ define(['extraction_pipeline/views/kit_view'
 ],
   function (View, BasePresenter, KitModel) {
   // interface ....
-  var KitPresenter = Object.create(BasePresenter);
+  var tp = function (owner, presenterFactory) {
+    this.owner = owner;
+    this.currentView = undefined;
+    this.barcodePresenter = undefined;
+    this.rowPresenters = [];
+    this.tubeTypes = [];
+    this.presenterFactory = presenterFactory;
+    return this;
+  };
 
   $.extend(KitPresenter, {
     /* Sample input model for the kit presenter

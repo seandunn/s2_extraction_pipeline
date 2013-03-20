@@ -59,10 +59,13 @@ define([], function () {
 
     var parent = this.jquerySelector(),
       htmlParts = [
+        '<div style="height:100%; position:relative; width:100%;">',
         '<h3 class="title"></h3>',
-        '<div style="overflow: auto"><div class="resource" style="position: relative; float:left; z-index: 1;"></div>',
-        '<button class="removeButton" style="position: relative; float: right; margin-right: 20px; z-index: 2;">X</button></div>',
-        '<div class="barcodeScanner"></div>'],
+        '<div style="height:100%; position:relative; width:100%;">',
+        '<button class="removeButton" style="position: absolute; right: 20px; z-index: 2;">X</button>',
+        '<div class="resource" style="position: relative; left: 0px; z-index: 1;"></div></div>',
+        '<div class="barcodeScanner"></div>',
+        '<div class="labwareDisabled" style="position: absolute; top: 0px; left: 0px; opacity: 0.6; width: 100%; height: 100%; background: #eeeeee; z-index: 3; display: none;"></div></div>'],
       htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
@@ -79,6 +82,15 @@ define([], function () {
   LabwareView.prototype.hideRemoveButton = function () {
     this.jquerySelector().find('.removeButton').css('display', 'none');
   };
+
+  LabwareView.prototype.labwareEnabled = function(isEnabled) {
+    var selection = this.jquerySelector().find('.labwareDisabled');
+    var display = isEnabled ? 'none' : 'block';
+
+    selection.css('display', display);
+
+    return this;
+  }
 
   LabwareView.prototype.setTitle = function (titleString) {
 
@@ -98,6 +110,7 @@ define([], function () {
 
     this.jquerySelector().find('.title').empty().append(title);
   };
+
 //
 //  ScanBarcodeView.prototype.getError = function(model) {
 //    var errorMessage = model.customError;
