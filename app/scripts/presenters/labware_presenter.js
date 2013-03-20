@@ -14,6 +14,7 @@ define(['config'
       this.resource = undefined;
       this.display_remove = undefined;
       this.display_barcode = undefined;
+      this.expected_type = undefined;
       return this;
     },
     reset:function(){
@@ -27,6 +28,9 @@ define(['config'
     },
     setDisplayBarcode:function (value) {
       this.display_barcode = value
+    }    ,
+    setExpectedType:function (value) {
+      this.expected_type = value
     }
   });
 
@@ -50,6 +54,7 @@ define(['config'
         this.labwareModel.setResource(setupData.resource);
         this.labwareModel.setDisplayRemove(setupData.display_remove);
         this.labwareModel.setDisplayBarcode(setupData.display_barcode);
+        this.labwareModel.setExpectedType(setupData.expected_type);
       }
       //this.updateModel(input_model);
       this.setupView();
@@ -130,7 +135,7 @@ define(['config'
       if (this.labwareModel.resource) {
         type = this.labwareModel.resource.resourceType;
       }
-      if (expectedType && type != expectedType) {
+      if (this.labwareModel.expectedType && type != this.labwareModel.expectedType) {
         //TODO: Set up error message here
       } else {
         if (type) {

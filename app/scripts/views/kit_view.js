@@ -39,7 +39,6 @@ define([], function () {
       model = this.model;
     }
 
-
     var parent = this.jquerySelector(),
       htmlParts = [
         '<div style="overflow: hidden"><div style="float: left; overflow: auto;">',
@@ -116,6 +115,10 @@ define([], function () {
       find('.validationText').
       empty().
       append(result);
+  };
+
+  kitView.getKitTypeSelection = function() {
+    return this.jquerySelector().find('.kitSelect').val().split('/');
   };
 
 //
