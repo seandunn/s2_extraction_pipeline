@@ -19,8 +19,8 @@
       "test0":{
         "input":{
           "batch":{
-            "items":{
-            }
+            "items":[
+            ]
           }
         },
         "expected":{
@@ -30,14 +30,13 @@
       "test1":{
         "input":{
           "batch":{
-            "items":{
-              "roleA":[
-                {
-                  "uuid":"uuid_for_roleA",
-                  "status":"ready"
-                }
-              ]
-            }
+            "items":[
+              {
+                "uuid":"uuid_for_roleA",
+                "status":"ready",
+                "role":"roleA"
+              }
+            ]
           }
         },
         "expected":{
@@ -47,14 +46,13 @@
       "test2":{
         "input":{
           "batch":{
-            "items":{
-              "roleB":[
-                {
-                  "uuid":"uuid_for_roleB",
-                  "status":"ready"
-                }
-              ]
-            }
+            "items":[
+              {
+                "uuid":"uuid_for_roleB",
+                "status":"ready",
+                "role":"roleB"
+              }
+            ]
           }
         },
         "expected":{
@@ -64,14 +62,13 @@
       "test3":{
         "input":{
           "batch":{
-            "items":{
-              "roleC":[
-                {
-                  "uuid":"uuid_for_roleC",
-                  "status":"ready"
-                }
-              ]
-            }
+            "items":[
+              {
+                "uuid":"uuid_for_roleC",
+                "status":"ready",
+                "role":"roleC"
+              }
+            ]
           }
         },
         "expected":{
@@ -81,14 +78,13 @@
       "test4":{
         "input":{
           "batch":{
-            "items":{
-              "roleD":[
-                {
-                  "uuid":"uuid_for_roleD",
-                  "status":"ready"
-                }
-              ]
-            }
+            "items":[
+              {
+                "uuid":"uuid_for_roleD",
+                "status":"ready",
+                "role":"roleD"
+              }
+            ]
           }
         },
         "expected":{
@@ -116,20 +112,18 @@
         "description":"",
         "input":{
           "batch":{
-            "items":{
-              "tube_DNA":[
-                {
-                  "uuid":"uuid_for_DNA",
-                  "status":"ready"
-                }
-              ],
-              "tube_RNA":[
-                {
-                  "uuid":"uuid_for_RNA",
-                  "status":"ready"
-                }
-              ]
-            }
+            "items":[
+              {
+                "uuid":"uuid_for_DNA",
+                "status":"ready",
+                "role":"tube_DNA"
+              },
+              {
+                "uuid":"uuid_for_RNA",
+                "status":"ready",
+                "role":"tube_RNA"
+              }
+            ]
           }
         },
         "expected":{
@@ -139,20 +133,18 @@
       "test2":{
         "input":{
           "batch":{
-            "items":{
-              "tube_DNA":[
-                {
-                  "uuid":"uuid_for_DNA",
-                  "status":"not_used"
-                }
-              ],
-              "tube_RNA":[
-                {
-                  "uuid":"uuid_for_RNA",
-                  "status":"ready"
-                }
-              ]
-            }
+            "items":[
+              {
+                "uuid":"uuid_for_DNA",
+                "status":"not_used",
+                "role":"tube_DNA"
+              },
+              {
+                "uuid":"uuid_for_RNA",
+                "status":"ready",
+                "role":"tube_RNA"
+              }
+            ]
           }
         },
         "expected":{
@@ -162,20 +154,18 @@
       "test3":{
         "input":{
           "batch":{
-            "items":{
-              "tube_RNA":[
-                {
-                  "uuid":"uuid_for_RNA",
-                  "status":"ready"
-                }
-              ],
-              "tube_DNA":[
-                {
-                  "uuid":"uuid_for_DNA",
-                  "status":"not_used"
-                }
-              ]
-            }
+            "items":[
+              {
+                "uuid":"uuid_for_RNA",
+                "status":"ready",
+                "role":"tube_RNA"
+              },
+              {
+                "uuid":"uuid_for_DNA",
+                "status":"not_used",
+                "role":"tube_DNA"
+              }
+            ]
           }
         },
         "expected":{
