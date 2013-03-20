@@ -39,7 +39,6 @@ define([], function () {
       model = this.model;
     }
 
-
     var parent = this.jquerySelector(),
       htmlParts = [
         '<div style="overflow: hidden"><div style="float: left; overflow: auto;">',

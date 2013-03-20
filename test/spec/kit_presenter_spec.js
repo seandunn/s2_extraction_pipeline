@@ -97,7 +97,7 @@ define(['presenters/kit_presenter'], function (KitPresenter) {
         mockPresenters = [];
         configureSpyAppController();
         configureMockPartialFactory();
-        presenter = new KitPresenter(app, partialFactory);
+        presenter = Object.create(KitPresenter).init(app, partialFactory);
         configureSpyView();
         presenter.currentView = view;
       });
@@ -113,7 +113,7 @@ define(['presenters/kit_presenter'], function (KitPresenter) {
         mockPresenters = [];
         configureSpyAppController();
         configureMockPartialFactory();
-        presenter = new KitPresenter(app, partialFactory);
+        presenter = Object.create(KitPresenter).init(app, partialFactory);
         configureSpyView();
         presenter.currentView = view;
         var dummyInput = {
@@ -121,10 +121,9 @@ define(['presenters/kit_presenter'], function (KitPresenter) {
           labwareUUID:"106d61c0-6224-0130-90b6-282066132de2",
           batchUUID:"1234567890"
         };
-        presenter.updateModel(dummyInput);
       });
       it("Model is defined", function () {
-        expect(presenter.model).toBeDefined();
+        expect(presenter.kitModel).toBeDefined();
       });
       it("Presenter has created rows", function () {
         expect(presenter.rowPresenters.length).not.toEqual(0);
@@ -135,7 +134,7 @@ define(['presenters/kit_presenter'], function (KitPresenter) {
         mockPresenters = [];
         configureSpyAppController();
         configureMockPartialFactory();
-        presenter = new KitPresenter(app, partialFactory);
+        presenter = Object.create(KitPresenter).init(app, partialFactory);
         configureSpyView();
         presenter.currentView = view;
         presenter.tubeTypes = ["DNA", "DNA"];

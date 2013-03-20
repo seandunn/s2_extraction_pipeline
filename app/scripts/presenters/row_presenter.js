@@ -19,28 +19,43 @@
 
 
 define([
-    'extraction_pipeline/views/row_view'
+  'extraction_pipeline/views/row_view'
   , 'labware/presenters/tube_presenter'
-], function (View, TubePresenter) {
+  , 'extraction_pipeline/presenters/base_presenter'
+], function (View, TubePresenter, BasePresenter) {
+
+  var RowModel = Object.create(null);
+  $.extend(RowModel, {
+    init:function (owner) {
+      this.owner = owner;
+      this.labware1Presenter = undefined;
+      this.labware2Presenter = undefined;
+      this.labware3Presenter = undefined;
+
+      // TODO: check whether anything else required
+
+      return this;
+    }
+  });
+
+  var RowPresenter = Object.create(BasePresenter);
 
   // interface ....
-  var tp = function (owner, presenterFactory) {
-    this.owner = owner;
-    this.currentView = undefined;
-    this.presenterFactory = presenterFactory;
-    this.labware1Presenter = undefined;
-    this.labware2Presenter = undefined;
-    this.labware3Presenter = undefined;
-    this.rowNum = undefined;
-    return this;
-  };
+//  var tp = function (owner, presenterFactory) {
+//    this.owner = owner;
+//    this.currentView = undefined;
+//    this.presenterFactory = presenterFactory;
+//    
+//    this.rowNum = undefined;
+//    return this;
+//  };
 
   /* Sample model input:
    *
    *{
    * "rowNum" : i,
    * "labware1" : {
-   *   "uuid" : this.model[i].uuid,
+   *   "uuid" : this.model[i],
    *   "expected_type" : "tube",
    *   "display_remove" : false,
    *   "display_barcode" : false
@@ -57,137 +72,134 @@ define([
    * }
    *};
    */
-  tp.prototype.setupPresenter = function (input_model, jquerySelection) {
-    this.setupPlaceholder(jquerySelection);
-    this.setupView();
 
-    this.renderView();
-    this.updateModel(input_model);
-    this.rowNum = input_model.rowNum;
+  $.extend(RowPresenter, {
+    setupPresenter:function (input_model, jquerySelection) {
+      this.setupPlaceholder(jquerySelection);
 
-    if (input_model.remove_arrow) {
-      this.currentView.removeArrow();
-    }
+      this.updateModel(input_model);
+      this.rowNum = input_model.rowNum;
 
-    return this;
-  };
+      if (input_model.remove_arrow) {
+        this.currentView.removeArrow();
+      }
+      this.setupView();
+      this.setupSubPresenters();
 
-  tp.prototype.setupPlaceholder = function (jquerySelection) {
-    this.jquerySelection = jquerySelection;
-    return this;
-  };
+      return this;
+    },
 
-  tp.prototype.setupView = function () {
-    this.currentView = new View(this, this.jquerySelection);
-    return this;
-  };
+    setupPlaceholder:function (jquerySelection) {
+      this.jquerySelection = jquerySelection;
+      return this;
+    },
 
-  tp.prototype.updateModel = function (model) {
-    this.model = model;
-    this.setupSubPresenters();
-    return this;
-  }
+    setupView:function () {
+      this.currentView = new View(this, this.jquerySelection);
+      return this;
+    },
 
-  tp.prototype.setupSubPresenters = function () {
-    if (!this.labware1Presenter && this.model.hasOwnProperty('labware1')) {
-      this.labware1Presenter = this.presenterFactory.createLabwarePresenter(this);
-    }
-    if (!this.labware2Presenter && this.model.hasOwnProperty('labware2')) {
-      this.labware2Presenter = this.presenterFactory.createLabwarePresenter(this);
-    }
-    if (!this.labware3Presenter && this.model.hasOwnProperty('labware3')) {
-      this.labware3Presenter = this.presenterFactory.createLabwarePresenter(this);
-    }
+    updateModel:function (model) {
+      this.model = model;
+      return this;
+    },
 
-    // TODO: for now, the tube is always the same... no use of the mapper
+    setupSubPresenters:function () {
+      if (!this.labware1Presenter && this.model.hasOwnProperty('labware1')) {
+        this.labware1Presenter = this.presenterFactory.createLabwarePresenter(this);
+      }
+      if (!this.labware2Presenter && this.model.hasOwnProperty('labware2')) {
+        this.labware2Presenter = this.presenterFactory.createLabwarePresenter(this);
+      }
+      if (!this.labware3Presenter && this.model.hasOwnProperty('labware3')) {
+        this.labware3Presenter = this.presenterFactory.createLabwarePresenter(this);
+      }
 
-    this.setupSubModel();
+      // TODO: for now, the tube is always the same... no use of the mapper
 
-    return this;
-  }
+      this.setupSubModel();
 
-  tp.prototype.setupSubModel = function () {
-    var that = this;
+      return this;
+    },
 
-    var jquerySelectionForLabware1 = function () {
-      return that.jquerySelection().find('.labware1')
-    };
+    setupSubModel:function () {
+      var that = this;
 
-    var jquerySelectionForLabware2 = function () {
-      return that.jquerySelection().find('.labware2')
-    };
+      var jquerySelectionForLabware1 = function () {
+        return that.jquerySelection().find('.labware1')
+      };
 
-    var jquerySelectionForLabware3 = function () {
-      return that.jquerySelection().find('.labware3')
-    };
+      var jquerySelectionForLabware2 = function () {
+        return that.jquerySelection().find('.labware2')
+      };
 
-    if (this.labware1Presenter) {
-      this.labware1Presenter.setupPresenter(this.model.labware1, jquerySelectionForLabware1);
-    }
-    if (this.labware2Presenter) {
-      this.labware2Presenter.setupPresenter(this.model.labware2, jquerySelectionForLabware2);
-    }
-    if (this.labware3Presenter) {
-      this.labware3Presenter.setupPresenter(this.model.labware3, jquerySelectionForLabware3);
-    }
+      var jquerySelectionForLabware3 = function () {
+        return that.jquerySelection().find('.labware3')
+      };
 
-    return this;
-  }
+      if (this.labware1Presenter) {
+        this.labware1Presenter.setupPresenter(this.model.labware1, jquerySelectionForLabware1);
+      }
+      if (this.labware2Presenter) {
+        this.labware2Presenter.setupPresenter(this.model.labware2, jquerySelectionForLabware2);
+      }
+      if (this.labware3Presenter) {
+        this.labware3Presenter.setupPresenter(this.model.labware3, jquerySelectionForLabware3);
+      }
+      return this;
+    },
 
-  tp.prototype.renderView = function () {
-    // render view...
-    this.currentView.renderView();
+    renderView:function () {
+      // render view...
+      this.currentView.renderView();
+      if (this.labware1Presenter)
+        this.labware1Presenter.renderView();
+      if (this.labware2Presenter) {
+        debugger;
+        this.labware2Presenter.renderView();
+      }
+      if (this.labware3Presenter)
+        this.labware3Presenter.renderView();
+      return this;
+    },
 
-    return this;
-  };
+    getTubeType:function () {
+      var tubeType = '';
 
-  tp.prototype.getTubeType = function () {
-    var tubeType = '';
+      if (this.labware1Presenter) {
+        tubeType = this.labware1Presenter.getAliquotType();
+      }
 
-    if (this.labware1Presenter) {
-      tubeType = this.labware1Presenter.getAliquotType();
-    }
+      return tubeType;
+    },
 
-    return tubeType;
-  }
+    release:function () {
+      this.jquerySelection().release();
+      return this;
+    },
 
-  tp.prototype.release = function () {
-    this.jquerySelection().release();
-    return this;
-  };
+    isRowComplete:function () {
+      var complete = false;
 
-  tp.prototype.isRowComplete = function () {
-    var complete = false;
-
-    if (this.labware1Presenter.isComplete() &&
+      if (this.labware1Presenter.isComplete() &&
         this.labware2Presenter.isComplete() &&
         this.labware3Presenter.isComplete()) {
-      complete = true;
+        complete = true;
+      }
+
+      return complete;
+    },
+
+    childDone:function (child, action, data) {
+
+      if (action == "tube rendered") {
+        this.owner.childDone(this, "tubeFinished", data);
+      } else if (action == "barcodeScanned") {
+        this.validateUuid(child, data);
+      }
     }
+  });
 
-    return complete;
-  };
+  return RowPresenter;
 
-  tp.prototype.validateUuid = function(child, data) {
-
-    if (this.owner.validateUuid(this, data)) {
-      child.setupSubPresenters(child.inputModel.expected_type);
-    } else {
-      child.resetLabware();
-      child.displayErrorMessage("Barcode does not exist in the pipeline.");
-    }
-
-  };
-
-  tp.prototype.childDone = function (child, action, data) {
-
-    if (action == "tube rendered") {
-      this.owner.childDone(this, "tubeFinished", data);
-    } else if (action == "barcodeScanned") {
-      this.validateUuid(child, data);
-    }
-  };
-
-
-  return tp;
 });

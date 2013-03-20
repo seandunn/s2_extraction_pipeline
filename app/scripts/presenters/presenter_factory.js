@@ -40,12 +40,12 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
 
       PresenterFactory.prototype.createKitPresenter =
           function (owner) {
-            return new KitPresenter(owner, this);
+            return Object.create(KitPresenter).init(owner, this);
           };
 
       PresenterFactory.prototype.createRowPresenter =
           function (owner) {
-            return new RowPresenter(owner, this);
+            return Object.create(RowPresenter).init(owner, this);
           };
 
       PresenterFactory.prototype.createSpinColumnPresenter =
