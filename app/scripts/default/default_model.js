@@ -19,7 +19,7 @@
 
 define([
   'extraction_pipeline/models/base_page_model'
-  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
+  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ], function (BasePageModel, dataJSON) {
 
 
@@ -82,10 +82,10 @@ define([
     dirtySetup:function () {
       var that = this;
       this.setTestData(dataJSON);
-      this.fetchResourcePromiseFromBarcode("XX111111K")
+      this.fetchResourcePromiseFromBarcode("1220017279667")
           .then(function (rsc) {
             that.setLabware(rsc);
-            that.setUser("XX111111K");
+            that.setUser("1220017279667");
           });
     }
 
