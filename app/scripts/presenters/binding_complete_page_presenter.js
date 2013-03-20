@@ -18,9 +18,17 @@
  */
 
 
-define(['extraction_pipeline/views/binding_complete_page_view'], function (View) {
+define(['extraction_pipeline/views/binding_complete_page_view',
+        'extraction_pipeline/presenters/base_presenter',
+        'extraction_pipeline/models/binding_complete_model'
+], function (View, BasePresenter, BindingCompleteModel) {
+
+  var BindingCompletePresenter = Object.create(BasePresenter);
+
+  $.extend(BindingCompletePresenter, {
+
   // interface ....
-  var tp = function (owner, presenterFactory) {
+  init:function (owner, presenterFactory) {
     this.owner = owner;
     this.currentView = undefined;
     this.barcodePresenter = undefined;
@@ -28,7 +36,7 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
     this.tubeTypes = [];
     this.presenterFactory = presenterFactory;
     return this;
-  };
+  },
 
   /* Initialises the presenter and defines the view to be used
    *
@@ -44,31 +52,16 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
    * -------
    * this
    */
-  tp.prototype.setupPresenter = function (input_model, jquerySelection) {
+  setupPresenter:function (input_model, jquerySelection) {
     this.tubeTypes = [];
+    this.model = Object.create(BindingCompleteModel).init(this);
+    this.model.dirtySetTubes();
     this.setupPlaceholder(jquerySelection);
     this.setupView();
     this.renderView();
-    this.updateModel(input_model);
+    this.setupSubPresenters();
     return this;
-  };
-
-  /* Sets the container selector method for the presenter
-   *
-   *
-   * Arguments
-   * ---------
-   * jquerySelection: The selector method for the presenter
-   *
-   *
-   * Returns
-   * -------
-   * this
-   */
-  tp.prototype.setupPlaceholder = function (jquerySelection) {
-    this.jquerySelection = jquerySelection;
-    return this;
-  };
+  },
 
   /* Sets up the presenters view
    *
@@ -81,34 +74,10 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
    * -------
    * this
    */
-  tp.prototype.setupView = function () {
+  setupView:function () {
     this.currentView = new View(this, this.jquerySelection);
     return this;
-  };
-
-  /* Updates the presenters model and delegates to subpresenters
-   *
-   *
-   * Arguments
-   * ---------
-   * model:     The model to be used by the presenter to display data
-   *
-   *
-   * Returns
-   * -------
-   * this
-   */
-  tp.prototype.updateModel = function (model) {
-    //if (model.hasOwnProperty('tubes')) {
-
-    var uuids = this.owner.tubeUUIDs;
-
-    this.model = uuids;// model.tubes;
-    this.numRows = this.model.length;
-    this.setupSubPresenters();
-    //}
-    return this;
-  }
+  },
 
   /* Sets up any subpresenters to be displayed in this instance
    *
@@ -121,18 +90,18 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
    * -------
    * this
    */
-  tp.prototype.setupSubPresenters = function () {
+  setupSubPresenters:function () {
     if (!this.barcodePresenter) {
       this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
     }
-    for (var i = 0; i < this.numRows; i++) {
+    for (var i = 0; i < this.model.tubes.length; i++) {
       if (!this.rowPresenters[i]) {
         this.rowPresenters[i] = this.presenterFactory.createRowPresenter(this);
       }
     }
     this.setupSubModel();
     return this;
-  }
+  },
 
   /* Delegates the models for the subpresenters
    *
@@ -145,7 +114,7 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
    * -------
    * this
    */
-  tp.prototype.setupSubModel = function () {
+  setupSubModel:function () {
     var modelJson = {"type":"Kit",
       "value":"Kit0001"}
     var that = this;
@@ -153,7 +122,7 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
       return that.jquerySelection().find('.barcode')
     }
 
-    for (var i = 0; i < this.numRows; i++) {
+    for (var i = 0; i < this.model.tubes.length; i++) {
 
       var jquerySelectionForRow = function (i) {
         return function () {
@@ -185,7 +154,7 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
     }
     this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
     return this;
-  }
+  },
 
   /* Renders the current view and its internal placeholders
    *
@@ -198,14 +167,14 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
    * -------
    * this
    */
-  tp.prototype.renderView = function () {
+  renderView:function () {
     // render view...
     this.currentView.renderView();
     if (this.barcodePresenter) {
       this.barcodePresenter.renderView();
     }
     return this;
-  };
+  },
 
   /* Checks if all of the pages tasks have been completed before moving forward in the pipeline
    *
@@ -218,7 +187,7 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
    * -------
    * this
    */
-  tp.prototype.checkPageComplete = function () {
+  checkPageComplete:function () {
 
     var complete = true;
 
@@ -230,23 +199,7 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
     }
 
     return complete;
-  };
-
-  /* Clears the current view and all of its children
-   *
-   *
-   * Arguments
-   * ---------
-   *
-   *
-   * Returns
-   * -------
-   * this
-   */
-  tp.prototype.release = function () {
-    this.jquerySelection().release();
-    return this;
-  };
+  },
 
   /* Ensure that the user entered UUID matches the expected list
    *
@@ -259,18 +212,18 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
    * -------
    * this
    */
-  tp.prototype.validateUuid = function (child, data) {
+  validateUuid:function (child, data) {
     var valid = false;
 
-    for (var i = 0; i < this.model.length; i++) {
-      if (this.model[i].uuid == data.uuid) {
+    for (var i = 0; i < this.model.tubes.length; i++) {
+      if (this.model.tubes[i].uuid == data.uuid) {
         valid = true;
         break;
       }
     }
 
     return valid;
-  };
+  },
 
   /* Indicates a child has completed an action
    *
@@ -286,7 +239,7 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
    * -------
    * this
    */
-  tp.prototype.childDone = function (child, action, data) {
+  childDone:function (child, action, data) {
 
     if (action == 'bindingComplete') {
       if (this.checkPageComplete()) {
@@ -296,8 +249,10 @@ define(['extraction_pipeline/views/binding_complete_page_view'], function (View)
       }
     }
 
-  };
+  }
 
-  return tp;
+});
+
+  return BindingCompletePresenter;
 })
 ;
