@@ -9,38 +9,24 @@ define(['config'
     this.rules = config["rules"];
   };
 
+  // Returns a function that finds the first "ready" item in the batch that matches the given rule.
+  function itemMatcherForBatch(batch) {
+    return function(rule) {
+      return _.chain(batch.items)
+              .filter(function(item) { return item.status === 'ready'; })
+              .filter(function(item) { return item.role === rule[0]; })
+              .first()
+              .value();
+    };
+  }
+
   workflowEngine.prototype.getNextPresenterName = function (inputDataForWorkflow) {
     /**
      * inputDataForWorkflow is a batch
      */
-    var that = this;
-    var presenterName = null;
-
     console.log(inputDataForWorkflow);
-    $.each(that.rules, function (ruleName, rule) {
-//      console.log("rule : ",rule);
-      $.each(inputDataForWorkflow.items, function (roleName, role) {
-//        console.log(">>> role : ", roleName, " > ",role);
-        $.each(role, function (itemIndex, item) {
-//          console.log(">>>>>>> item : ", item);
-          if (item.status === "ready") {
-            if (rule[0] === roleName) {
-              presenterName = rule[1];
-              return false;
-            }
-          }
-        });
-        if (presenterName) {
-          return false;
-        } // allows to break to the loop as soon as we know...
-      });
-      if (presenterName) {
-        return false;
-      } // allows to break to the loop as soon as we know...
-    });
-    if (!presenterName)
-      presenterName = this.default;
-    return presenterName;
+    var presenterRule = _.chain(this.rules).find(itemMatcherForBatch(inputDataForWorkflow)).value();
+    return presenterRule ? presenterRule[1] : this.default;
   };
 
   workflowEngine.prototype.getNextPresenterFromName = function (presenterFactory, presenterName) {
