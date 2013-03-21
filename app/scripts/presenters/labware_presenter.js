@@ -17,7 +17,7 @@ define(['config'
       this.expected_type = undefined;
       return this;
     },
-    reset:function(){
+    reset:function () {
       this.resource = undefined;
     },
     setResource:function (value) {
@@ -28,7 +28,7 @@ define(['config'
     },
     setDisplayBarcode:function (value) {
       this.display_barcode = value
-    }    ,
+    },
     setExpectedType:function (value) {
       this.expected_type = value
     }
@@ -122,11 +122,11 @@ define(['config'
       return this;
     },
 
-  setRemoveButtonVisibility:function (displayRemove) {
-    if (!displayRemove) {
-      this.view.hideRemoveButton();
-    }
-  },
+    setRemoveButtonVisibility:function (displayRemove) {
+      if (!displayRemove) {
+        this.view.hideRemoveButton();
+      }
+    },
 
     setupSubPresenters:function (expectedType) {
       if (!this.resourcePresenter) {
@@ -204,6 +204,7 @@ define(['config'
 
       this.setupSubPresenters(this.labwareModel.expected_type);
       this.setRemoveButtonVisibility(this.labwareModel.display_remove);
+      this.owner.childDone(this, "labwareRendered", {});
     },
 
     specialType:function (type) {
@@ -227,17 +228,22 @@ define(['config'
       this.setupPresenter(this.labwareModel, this.jquerySelection);
     },
 
-  isComplete:function() {
-    var complete = true;
+    isComplete:function () {
+      var complete = true;
 
       // If the labware module requires input but there is no model to populate it, we can assume it's incomplete
       if (this.labwareModel.display_barcode && this.labwareModel.display_remove && !this.model) {
         complete = false;
       }
 
-    return complete;
-  },
-  
+      return complete;
+    },
+
+    labwareEnabled:function (isEnabled) {
+      this.view.labwareEnabled(isEnabled);
+      return this;
+    },
+
     release:function () {
       if (this.view) {
         this.view.clear();
@@ -261,13 +267,13 @@ define(['config'
       else if (action == 'barcodeScanned') {
         this.owner.childDone(this, 'barcodeScanned', {"BC":data.BC});
 
-      }    
-  },
+      }
+    },
 
-  displayErrorMessage:function(message) {
-    this.barcodeInputPresenter.displayErrorMessage(message);
-  }
-  
+    displayErrorMessage:function (message) {
+      this.barcodeInputPresenter.displayErrorMessage(message);
+    }
+
   });
 
   return LabwarePresenter;

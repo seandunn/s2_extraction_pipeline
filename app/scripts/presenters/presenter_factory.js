@@ -65,7 +65,7 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
 
       PresenterFactory.prototype.createBindingCompletePage =
           function (owner) {
-            return new BindingCompletePagePresenter(owner, this);
+            return Object.create(BindingCompletePagePresenter).init(owner, this);
           };
 
       PresenterFactory.prototype.createLabwareSubPresenter =

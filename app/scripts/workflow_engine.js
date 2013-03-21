@@ -51,6 +51,8 @@ define(['config'
         return presenterFactory.createKitPresenter(this.mainController);
       case "selection_page_presenter":
         return presenterFactory.createSelectionPagePresenter(this.mainController);
+      case "elusion_wash_page_presenter":
+        return presenterFactory.cr
       default:
         return presenterFactory.createDefaultPresenter(this.mainController);
     }

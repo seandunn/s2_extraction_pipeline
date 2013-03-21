@@ -30,15 +30,19 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
     return this;
   };
 
-  /* Sample input model for the kit presenter
-   *{
-   *  "tubes" : [
-   *   {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-   *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-   *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-   *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"}
-   *  ]
-   *}
+  /* Initialises the presenter and defines the view to be used
+   *
+   *
+   * Arguments
+   * ---------
+   * input_model:     The input model containing the current pipeline state
+   *
+   * jquerySelection: The selector method for the HTML container this presenter is responsible for
+   *
+   *
+   * Returns
+   * -------
+   * this
    */
   tp.prototype.setupPresenter = function (input_model, jquerySelection) {
 //    console.log("et  : setupPresenter");
@@ -50,17 +54,52 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
     return this;
   };
 
+  /* Sets the container selector method for the presenter
+   *
+   *
+   * Arguments
+   * ---------
+   * jquerySelection: The selector method for the presenter
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.setupPlaceholder = function (jquerySelection) {
     this.jquerySelection = jquerySelection;
     return this;
   };
 
+  /* Sets up the presenters view
+   *
+   *
+   * Arguments
+   * ---------
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.setupView = function () {
     this.currentView = new View(this, this.jquerySelection);
     console.log(this.currentView);
     return this;
   };
 
+  /* Updates the presenters model and delegates to subpresenters
+   *
+   *
+   * Arguments
+   * ---------
+   * model:     The model to be used by the presenter to display data
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.updateModel = function (model) {
     if (model.hasOwnProperty('tubes')) {
       this.model = model.tubes;
@@ -73,6 +112,17 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
     return this;
   }
 
+  /* Sets up any subpresenters to be displayed in this instance
+   *
+   *
+   * Arguments
+   * ---------
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.setupSubPresenters = function () {
     if (!this.barcodePresenter) {
       this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
@@ -86,6 +136,17 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
     return this;
   }
 
+  /* Delegates the models for the subpresenters
+   *
+   *
+   * Arguments
+   * ---------
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.setupSubModel = function () {
     var modelJson = {"type":"Kit",
       "value":"Kit0001"}
@@ -123,6 +184,17 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
     return this;
   }
 
+  /* Renders the current view and its internal placeholders
+   *
+   *
+   * Arguments
+   * ---------
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.renderView = function () {
     // render view...
 //    console.log("et  : presenter::renderView, ", this.jquerySelection());
@@ -133,7 +205,18 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
     return this;
   };
 
-  tp.prototype.checkPageComplete = function() {
+  /* Checks if all of the pages tasks have been completed before moving forward in the pipeline
+   *
+   *
+   * Arguments
+   * ---------
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
+  tp.prototype.checkPageComplete = function () {
 
     var complete = true;
 
@@ -149,15 +232,51 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
     return complete;
   };
 
-  tp.prototype.printBarcodes = function() {
+  /* Creates and prints the required barcodes
+   *
+   *
+   * Arguments
+   * ---------
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
+  tp.prototype.printBarcodes = function () {
     alert("Not implemented!");
   };
 
+  /* Clears the current view and all of its children
+   *
+   *
+   * Arguments
+   * ---------
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.release = function () {
     this.jquerySelection().release();
     return this;
   };
 
+  /* Indicates a child has completed an action
+   *
+   *
+   * Arguments
+   * ---------
+   * child:     The child that has completed
+   * action:    The action completed
+   * data:      Supplementary data to the completed action
+   *
+   *
+   * Returns
+   * -------
+   * this
+   */
   tp.prototype.childDone = function (child, action, data) {
 
     if (action == 'bindingFinished') {

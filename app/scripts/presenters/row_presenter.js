@@ -103,12 +103,13 @@ define([
         this.rowModel.setupModel(input_model);
       }
       this.rowNum = input_model.rowNum;
+      this.setupView();
+      this.setupSubPresenters();
+      this.renderView();
 
       if (input_model.remove_arrow) {
         this.currentView.removeArrow();
       }
-      this.setupView();
-      this.setupSubPresenters();
 
       return this;
     },
@@ -190,12 +191,39 @@ define([
 
       return complete;
     },
+
+    setLabwareVisibility:function() {
+      var labware1Enabled = true;
+      var labware2Enabled = true;
+      var labware3Enabled = true;
+      if (this.labware2Presenter) {
+        if (this.labware2Presenter.isComplete() && this.labware1Presenter.isComplete()) {
+          labware1Enabled = false;
+        }
+        if (!this.labware2Presenter.isComplete() && !this.labware1Presenter.isComplete()) {
+          labware2Enabled = false;
+        }
+        this.labware1Presenter.labwareEnabled(labware1Enabled);
+        this.labware2Presenter.labwareEnabled(labware2Enabled);
+      }
+      if (this.labware2Presenter && this.labware3Presenter) {
+        if (!this.labware3Presenter.isComplete() && !this.labware2Presenter.isComplete()) {
+          labware3Enabled = false;
+        }
+        this.labware3Presenter.labwareEnabled(labware3Enabled);
+      }
+
+
+    },
+
     childDone:function (child, action, data) {
 
       if (action == "tube rendered") {
         this.owner.childDone(this, "tubeFinished", data);
       } else if (action == "barcodeScanned") {
-        this.validateUuid(child, data);
+        this.owner.validateUuid(child, data);
+      } else if (action == "labwareRendered") {
+        this.setLabwareVisibility();
       }
     }
   });
