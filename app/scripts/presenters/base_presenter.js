@@ -18,7 +18,7 @@
  */
 
 define(['config'
-  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
+  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ],
   function (config, dataJSON) {
 
