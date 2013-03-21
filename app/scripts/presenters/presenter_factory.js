@@ -6,10 +6,24 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
   'extraction_pipeline/presenters/labware_presenter',
   'extraction_pipeline/presenters/binding_complete_page_presenter',
   'extraction_pipeline/presenters/binding_finished_page_presenter',
+  'extraction_pipeline/presenters/elusion_loading_page_presenter',
+  'extraction_pipeline/presenters/elusion_wash_page_presenter',
   'labware/presenters/tube_presenter',
   'labware/presenters/spin_column_presenter',
   'labware/presenters/waste_tube_presenter'],
-  function (ScanBarcodePresenter, SelectionPagePresenter, DefaultPresenter, KitPresenter, RowPresenter, LabwarePresenter, BindingCompletePagePresenter, BindingFinishedPagePresenter, TubePresenter, SpinColumnPresenter, WasteTubePresenter) {
+  function (ScanBarcodePresenter,
+            SelectionPagePresenter,
+            DefaultPresenter,
+            KitPresenter,
+            RowPresenter,
+            LabwarePresenter,
+            BindingCompletePagePresenter,
+            BindingFinishedPagePresenter,
+            ElusionLoadingPagePresenter,
+            ElusionWashPagePresenter,
+            TubePresenter,
+            SpinColumnPresenter,
+            WasteTubePresenter) {
     'use strict';
 
     var PresenterFactory = function () {
@@ -72,6 +86,16 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
     PresenterFactory.prototype.createBindingFinishedPage =
       function (owner) {
         return Object.create(BindingFinishedPagePresenter).init(owner, this);
+      };
+
+    PresenterFactory.prototype.createElusionLoadingPage =
+      function (owner) {
+        return Object.create(ElusionLoadingPagePresenter).init(owner, this);
+      };
+
+    PresenterFactory.prototype.createElusionWashPage =
+      function (owner) {
+        return Object.create(ElusionWashPagePresenter).init(owner,this);
       };
 
     PresenterFactory.prototype.createLabwareSubPresenter =
