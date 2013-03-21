@@ -87,7 +87,7 @@ define([], function () {
       }
     });
     selector.on("change", function (e) {
-      that.owner.validateKitTubes();
+      that.owner.setValidState();
     });
 
     this.jquerySelector().find(".nextBtn").click(onNext_clicked(this.owner, this));
