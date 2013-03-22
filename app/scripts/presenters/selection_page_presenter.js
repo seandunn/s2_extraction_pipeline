@@ -29,7 +29,11 @@ define([ 'config'
   var PagePresenter = Object.create(BasePresenter);
 
   $.extend(PagePresenter, {
-
+    init:function (owner, presenterFactory) {
+      this.presenterFactory = presenterFactory;
+      this.owner = owner;
+      return this;
+    },
     setupPresenter:function (setupData, jquerySelection) {
       console.log("selection presenter  setupPresenter");
       this.setupPlaceholder(jquerySelection);
@@ -116,6 +120,12 @@ define([ 'config'
       }
     },
 
+    displayBarcodeError:function (message) {
+      //numTubes is the index number of the barcode input view in the array of presenters
+      var numTubes = this.pageModel.getNumberOfTubes();
+      this.presenters[numTubes].displayErrorMessage(message);
+    },
+
     release:function () {
       if (this.currentView) {
         this.currentView.clear();
@@ -140,6 +150,7 @@ define([ 'config'
        */
       if (child === this.currentView){
         if (action === "next") {
+          this.owner.childDone(this,"error",{"message" : "Not hooked up!"});
           this.pageModel.makeBatch();
         }
       } else if (child === this.pageModel) {
@@ -154,6 +165,8 @@ define([ 'config'
             "batch":this.pageModel.batch
           };
           this.owner.childDone(this,"next",dataForOwner);
+        } else if (action === "barcodeNotFound") {
+          this.displayBarcodeError("Barcode not found");
         }
       } else {
         if (action === "barcodeScanned") {

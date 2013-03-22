@@ -14,9 +14,10 @@ define(['config'
       this.resource = undefined;
       this.display_remove = undefined;
       this.display_barcode = undefined;
+      this.expected_type = undefined;
       return this;
     },
-    reset:function(){
+    reset:function () {
       this.resource = undefined;
     },
     setResource:function (value) {
@@ -27,6 +28,9 @@ define(['config'
     },
     setDisplayBarcode:function (value) {
       this.display_barcode = value
+    },
+    setExpectedType:function (value) {
+      this.expected_type = value
     }
   });
 
@@ -50,6 +54,7 @@ define(['config'
         this.labwareModel.setResource(setupData.resource);
         this.labwareModel.setDisplayRemove(setupData.display_remove);
         this.labwareModel.setDisplayBarcode(setupData.display_barcode);
+        this.labwareModel.setExpectedType(setupData.expected_type);
       }
       //this.updateModel(input_model);
       this.setupView();
@@ -117,11 +122,11 @@ define(['config'
       return this;
     },
 
-  setRemoveButtonVisibility:function (displayRemove) {
-    if (!displayRemove) {
-      this.view.hideRemoveButton();
-    }
-  },
+    setRemoveButtonVisibility:function (displayRemove) {
+      if (!displayRemove) {
+        this.view.hideRemoveButton();
+      }
+    },
 
     setupSubPresenters:function (expectedType) {
       if (!this.resourcePresenter) {
@@ -130,7 +135,7 @@ define(['config'
       if (this.labwareModel.resource) {
         type = this.labwareModel.resource.resourceType;
       }
-      if (expectedType && type != expectedType) {
+      if (this.labwareModel.expectedType && type != this.labwareModel.expectedType) {
         //TODO: Set up error message here
       } else {
         if (type) {
@@ -199,6 +204,7 @@ define(['config'
 
       this.setupSubPresenters(this.labwareModel.expected_type);
       this.setRemoveButtonVisibility(this.labwareModel.display_remove);
+      this.owner.childDone(this, "labwareRendered", {});
     },
 
     specialType:function (type) {
@@ -222,17 +228,22 @@ define(['config'
       this.setupPresenter(this.labwareModel, this.jquerySelection);
     },
 
-  isComplete:function() {
-    var complete = true;
+    isComplete:function () {
+      var complete = true;
 
       // If the labware module requires input but there is no model to populate it, we can assume it's incomplete
       if (this.labwareModel.display_barcode && this.labwareModel.display_remove && !this.model) {
         complete = false;
       }
 
-    return complete;
-  },
-  
+      return complete;
+    },
+
+    labwareEnabled:function (isEnabled) {
+      this.view.labwareEnabled(isEnabled);
+      return this;
+    },
+
     release:function () {
       if (this.view) {
         this.view.clear();
@@ -252,19 +263,17 @@ define(['config'
           this.owner.childDone(this, "removeLabware", dataForOwner);
         }
       }
-//      else if (action == "tube rendered") {
-//        //this.owner.childDone(this, action, child.getAliquotType());
-//      }
+
       else if (action == 'barcodeScanned') {
         this.owner.childDone(this, 'barcodeScanned', {"BC":data.BC});
 
-      }    
-  },
+      }
+    },
 
-  displayErrorMessage:function(message) {
-    this.barcodeInputPresenter.displayErrorMessage(message);
-  }
-  
+    displayErrorMessage:function (message) {
+      this.barcodeInputPresenter.displayErrorMessage(message);
+    }
+
   });
 
   return LabwarePresenter;

@@ -18,171 +18,264 @@
  */
 
 
-define(['extraction_pipeline/views/elusion_wash_page_view'], function (View) {
-  // interface ....
-  var tp = function (owner, presenterFactory) {
-    this.owner = owner;
-    this.currentView = undefined;
-    this.barcodePresenter = undefined;
-    this.rowPresenters = [];
-    this.tubeTypes = [];
-    this.presenterFactory = presenterFactory;
-    return this;
-  };
+define(['extraction_pipeline/views/elusion_wash_page_view',
+  'extraction_pipeline/presenters/base_presenter'
+], function (View, BasePresenter) {
 
-  /* Sample input model for the kit presenter
-   *{
-   *  "tubes" : [
-   *   {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-   *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-   *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-   *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"}
-   *  ]
-   *}
-   */
-  tp.prototype.setupPresenter = function (input_model, jquerySelection) {
+  var ElusionWashPresenter = Object.create(BasePresenter);
+
+  $.extend(ElusionWashPresenter, {
+    // interface ....
+    init:function (owner, presenterFactory) {
+      this.owner = owner;
+      this.currentView = undefined;
+      this.barcodePresenter = undefined;
+      this.rowPresenters = [];
+      this.tubeTypes = [];
+      this.presenterFactory = presenterFactory;
+      return this;
+    },
+
+    /* Initialises the presenter and defines the view to be used
+     *
+     *
+     * Arguments
+     * ---------
+     * input_model:     The input model containing the current pipeline state
+     *
+     * jquerySelection: The selector method for the HTML container this presenter is responsible for
+     *
+     *
+     * Returns
+     * -------
+     * this
+     */
+    setupPresenter:function (input_model, jquerySelection) {
 //    console.log("et  : setupPresenter");
-    this.tubeTypes = [];
-    this.setupPlaceholder(jquerySelection);
-    this.setupView();
-    this.renderView();
-    this.updateModel(input_model);
-    return this;
-  };
+      this.tubeTypes = [];
+      this.setupPlaceholder(jquerySelection);
+      this.setupView();
+      this.renderView();
+      this.updateModel(input_model);
+      return this;
+    },
 
-  tp.prototype.setupPlaceholder = function (jquerySelection) {
-    this.jquerySelection = jquerySelection;
-    return this;
-  };
+    /* Sets the container selector method for the presenter
+     *
+     *
+     * Arguments
+     * ---------
+     * jquerySelection: The selector method for the presenter
+     *
+     *
+     * Returns
+     * -------
+     * this
+     */
+    setupPlaceholder:function (jquerySelection) {
+      this.jquerySelection = jquerySelection;
+      return this;
+    },
 
-  tp.prototype.setupView = function () {
-    this.currentView = new View(this, this.jquerySelection);
-    console.log(this.currentView);
-    return this;
-  };
+    /* Sets up the presenters view
+     *
+     *
+     * Arguments
+     * ---------
+     *
+     *
+     * Returns
+     * -------
+     * this
+     */
+    setupView:function () {
+      this.currentView = new View(this, this.jquerySelection);
+      console.log(this.currentView);
+      return this;
+    },
 
-  tp.prototype.updateModel = function (model) {
-    if (model.hasOwnProperty('tubes')) {
-      this.model = model.tubes;
-    }
-
-    this.model = this.owner.tubeUUIDs;
-    this.numRows = this.model.length;
-    this.setupSubPresenters();
-    return this;
-  }
-
-  tp.prototype.setupSubPresenters = function () {
-    if (!this.barcodePresenter) {
-      this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
-    }
-    for (var i = 0; i < this.numRows; i++) {
-      if (!this.rowPresenters[i]) {
-        this.rowPresenters[i] = this.presenterFactory.createRowPresenter(this);
+    /* Updates the presenters model and delegates to subpresenters
+     *
+     *
+     * Arguments
+     * ---------
+     * model:     The model to be used by the presenter to display data
+     *
+     *
+     * Returns
+     * -------
+     * this
+     */
+    updateModel:function (model) {
+      if (model.hasOwnProperty('tubes')) {
+        this.model = model.tubes;
       }
-    }
-    this.setupSubModel();
-    return this;
-  }
 
-  tp.prototype.setupSubModel = function () {
-    var modelJson = {"type":"Kit",
-      "value":"Kit0001"}
-    var that = this;
-    var jquerySelectionForBarcode = function () {
-      return that.jquerySelection().find('.barcode')
-    }
+      this.model = this.owner.tubeUUIDs;
+      this.numRows = this.model.length;
+      this.setupSubPresenters();
+      return this;
+    },
 
-    for (var i = 0; i < this.numRows; i++) {
-
-      var jquerySelectionForRow = function (i) {
-        return function () {
-          return that.jquerySelection().find('.row' + i);
+    /* Sets up any subpresenters to be displayed in this instance
+     *
+     *
+     * Arguments
+     * ---------
+     *
+     *
+     * Returns
+     * -------
+     * this
+     */
+    setupSubPresenters:function () {
+      if (!this.barcodePresenter) {
+        this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
+      }
+      for (var i = 0; i < this.numRows; i++) {
+        if (!this.rowPresenters[i]) {
+          this.rowPresenters[i] = this.presenterFactory.createRowPresenter(this);
         }
       }
+      this.setupSubModel();
+      return this;
+    },
 
-      var rowModel = {
-        "rowNum":i,
-        "remove_arrow":false,
-        "labware1":{
-          "expected_type":"spin_columns",
-          "display_remove":true,
-          "display_barcode":true
-        },
-        "labware2":{
-          "expected_type":"tube",
-          "display_remove":true,
-          "display_barcode":true
+    /* Delegates the models for the subpresenters
+     *
+     *
+     * Arguments
+     * ---------
+     *
+     *
+     * Returns
+     * -------
+     * this
+     */
+    setupSubModel:function () {
+      var modelJson = {"type":"Kit",
+        "value":"Kit0001"}
+      var that = this;
+      var jquerySelectionForBarcode = function () {
+        return that.jquerySelection().find('.barcode')
+      }
+
+      for (var i = 0; i < this.numRows; i++) {
+
+        var jquerySelectionForRow = function (i) {
+          return function () {
+            return that.jquerySelection().find('.row' + i);
+          }
         }
-      };
 
-      this.rowPresenters[i].setupPresenter(rowModel, jquerySelectionForRow(i));
-    }
-    this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
-    return this;
-  }
+        var rowModel = {
+          "rowNum":i,
+          "remove_arrow":false,
+          "labware1":{
+            "expected_type":"spin_columns",
+            "display_remove":true,
+            "display_barcode":true
+          },
+          "labware2":{
+            "expected_type":"tube",
+            "display_remove":true,
+            "display_barcode":true
+          }
+        };
 
-  tp.prototype.renderView = function () {
-    // render view...
+        this.rowPresenters[i].setupPresenter(rowModel, jquerySelectionForRow(i));
+      }
+      this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
+      return this;
+    },
+
+    /* Renders the current view and its internal placeholders
+     *
+     *
+     * Arguments
+     * ---------
+     *
+     *
+     * Returns
+     * -------
+     * this
+     */
+    renderView:function () {
+      // render view...
 //    console.log("et  : presenter::renderView, ", this.jquerySelection());
-    this.currentView.renderView();
-    if (this.barcodePresenter) {
-      this.barcodePresenter.renderView();
-    }
-    return this;
-  };
-
-  tp.prototype.validateKitTubes = function () {
-    var valid = true;
-    var kitType = this.jquerySelection().find('.kitSelect').val();
-
-    for (var index in this.tubeTypes) {
-      if (this.tubeTypes[index] != kitType) {
-        valid = false;
-        break;
+      this.currentView.renderView();
+      if (this.barcodePresenter) {
+        this.barcodePresenter.renderView();
       }
+      return this;
+    },
+
+    /* Checks if all of the pages tasks have been completed before moving forward in the pipeline
+     *
+     *
+     * Arguments
+     * ---------
+     *
+     *
+     * Returns
+     * -------
+     * this
+     */
+    checkPageComplete:function () {
+
+      var complete = true;
+
+      for (var i = 0; i < this.rowPresenters.length; i++) {
+        if (!this.rowPresenters[i].isRowComplete()) {
+          complete = false;
+          break;
+        }
+      }
+
+      return complete;
+    },
+
+    /* Clears the current view and all of its children
+     *
+     *
+     * Arguments
+     * ---------
+     *
+     *
+     * Returns
+     * -------
+     * this
+     */
+    release:function () {
+      this.jquerySelection().release();
+      return this;
+    },
+
+    /* Indicates a child has completed an action
+     *
+     *
+     * Arguments
+     * ---------
+     * child:     The child that has completed
+     * action:    The action completed
+     * data:      Supplementary data to the completed action
+     *
+     *
+     * Returns
+     * -------
+     * this
+     */
+    childDone:function (child, action, data) {
+      if (action == 'elusionFinished') {
+        if (this.checkPageComplete()) {
+          this.owner.childComplete(this, 'error', { "message":"Not hooked up in child done presenter."});
+        }
+      }
+
     }
 
-    this.currentView.setKitValidState(valid);
+  });
 
-    return this;
-  };
-
-  tp.prototype.checkPageComplete = function() {
-
-    var complete = true;
-
-    for (var i = 0; i < this.rowPresenters.length; i++) {
-      if (!this.rowPresenters[i].isRowComplete()) {
-        complete = false;
-        break;
-      }
-    }
-
-    return complete;
-  };
-
-  tp.prototype.release = function () {
-    this.jquerySelection().release();
-    return this;
-  };
-
-  tp.prototype.childDone = function (child, action, data) {
-
-    if (action == 'tubeFinished') {
-      this.tubeTypes.push(data);
-
-      if (this.tubeTypes.length == this.numRows) {
-        this.validateKitTubes();
-      }
-    } else if (action == 'elusionFinished') {
-      if (this.checkPageComplete()) {
-        this.owner.childComplete(this, 'error', { "message" : "Not hooked up in child done presenter."});
-      }
-    }
-
-  };
-
-  return tp;
+  return ElusionWashPresenter;
 })
 ;

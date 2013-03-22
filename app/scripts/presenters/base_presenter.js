@@ -20,41 +20,36 @@
 define(['config'
   , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ],
-    function (config,dataJSON) {
+  function (config, dataJSON) {
 
-      var BasePresenter = Object.create(null);
+    var BasePresenter = Object.create(null);
 
-      $.extend(BasePresenter, {
-            init:function (owner, presenterFactory) {
-              this.presenterFactory = presenterFactory;
-              this.owner = owner;
-              return this;
-            },
-            getS2Root:function () {
-              var deferredS2Root = new $.Deferred();
-              if (!this.s2Root) {
-                var that = this;
-                this.owner.getS2Root().done(function (result) {
-                  that.s2Root = result;
-                  deferredS2Root.resolve(result);
-                }).fail(function () {
-                      deferredS2Root.reject();
-                    });
-              } else {
-                deferredS2Root.resolve(this.s2Root);
-              }
-              return deferredS2Root.promise();
-            },
-            resetS2Root:function () {
-              this.s2Root = undefined;
-              return this;
-            },
-            setupPlaceholder:function (jquerySelection) {
-              this.jquerySelection = jquerySelection;
-              return this;
-            }
+    $.extend(BasePresenter, {
+        getS2Root:function () {
+          var deferredS2Root = new $.Deferred();
+          if (!this.s2Root) {
+            var that = this;
+            this.owner.getS2Root().done(function (result) {
+              that.s2Root = result;
+              deferredS2Root.resolve(result);
+            }).fail(function () {
+                deferredS2Root.reject();
+              });
+          } else {
+            deferredS2Root.resolve(this.s2Root);
           }
-      );
+          return deferredS2Root.promise();
+        },
+        resetS2Root:function () {
+          this.s2Root = undefined;
+          return this;
+        },
+        setupPlaceholder:function (jquerySelection) {
+          this.jquerySelection = jquerySelection;
+          return this;
+        }
+      }
+    );
 
-      return BasePresenter;
-    });
+    return BasePresenter;
+  });

@@ -61,7 +61,7 @@ define(['scripts/presenters/scan_barcode_presenter'], function (ScanBarcodePrese
 
       it("scanned barcode sends correct message to owner", function () {
         presenter.childDone(presenter, "barcodeScanned", "tube0001");
-        expect(app.childDone).toHaveBeenCalledWith([presenter, 'barcodeScanned', "tube0001"]);
+        expect(app.childDone).toHaveBeenCalledWith([presenter, 'barcodeScanned', {BC:'tube0001'}]);
       });
     });
   });
