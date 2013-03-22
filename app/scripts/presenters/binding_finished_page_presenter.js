@@ -27,6 +27,7 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
     this.rowPresenters = [];
     this.tubeTypes = [];
     this.presenterFactory = presenterFactory;
+    this.barcodesPrinted = false;
     return this;
   };
 
@@ -244,7 +245,8 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
    * this
    */
   tp.prototype.printBarcodes = function () {
-    alert("Not implemented!");
+    this.barcodesPrinted = true;
+    this.owner.childDone(this, 'error', {"message":"Output tube barcodes printed."});
   };
 
   /* Clears the current view and all of its children
@@ -259,7 +261,7 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
    * this
    */
   tp.prototype.release = function () {
-    this.jquerySelection().release();
+    this.currentView.clear();
     return this;
   };
 
@@ -281,7 +283,12 @@ define(['extraction_pipeline/views/binding_finished_page_view'], function (View)
 
     if (action == 'bindingFinished') {
       if (this.checkPageComplete()) {
-        this.owner.childComplete(this, 'bindingFinished', {});
+        if (this.barcodesPrinted) {
+          this.owner.childDone(this, 'done', {});
+        }
+        else {
+          this.owner.childDone(this, 'error', {"message":"Output tube barcodes have not been printed yet!"});
+        }
       }
     }
     else if (action == 'printBarcodes') {

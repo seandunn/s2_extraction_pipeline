@@ -261,9 +261,9 @@ define(['extraction_pipeline/views/elusion_wash_page_view'], function (View) {
    */
   tp.prototype.childDone = function (child, action, data) {
     if (action == 'elusionFinished') {
-      if (this.checkPageComplete()) {
-        this.owner.childComplete(this, 'error', { "message":"Not hooked up in child done presenter."});
-      }
+//      if (this.checkPageComplete()) {
+        this.owner.childDone(this, 'error', { "message":"Process Complete."});
+//      }
     }
 
   };

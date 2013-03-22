@@ -5,10 +5,25 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
   'extraction_pipeline/presenters/row_presenter',
   'extraction_pipeline/presenters/labware_presenter',
   'extraction_pipeline/presenters/binding_complete_page_presenter',
+  'extraction_pipeline/presenters/binding_finished_page_presenter',
+  'extraction_pipeline/presenters/elusion_loading_page_presenter',
+  'extraction_pipeline/presenters/elusion_wash_page_presenter',
   'labware/presenters/tube_presenter',
   'labware/presenters/spin_column_presenter',
   'labware/presenters/waste_tube_presenter'],
-    function (ScanBarcodePresenter, SelectionPagePresenter, DefaultPresenter, KitPresenter, RowPresenter, LabwarePresenter, BindingCompletePagePresenter, TubePresenter, SpinColumnPresenter, WasteTubePresenter) {
+    function (ScanBarcodePresenter,
+              SelectionPagePresenter,
+              DefaultPresenter,
+              KitPresenter,
+              RowPresenter,
+              LabwarePresenter,
+              BindingCompletePagePresenter,
+              BindingFinishedPagePresenter,
+              ElusionLoadingPagePresenter,
+              ElusionWashPagePresenter,
+              TubePresenter,
+              SpinColumnPresenter,
+              WasteTubePresenter) {
       'use strict';
 
       var PresenterFactory = function () {
@@ -67,6 +82,21 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
           function (owner) {
             return Object.create(BindingCompletePagePresenter).init(owner, this);
           };
+
+      PresenterFactory.prototype.createBindingFinishedPage =
+        function (owner) {
+          return new BindingFinishedPagePresenter(owner, this);
+        };
+
+      PresenterFactory.prototype.createElusionLoadingPage =
+        function (owner) {
+          return new ElusionLoadingPagePresenter(owner, this);
+        };
+
+      PresenterFactory.prototype.createElusionWashPage =
+        function (owner) {
+          return new ElusionWashPagePresenter(owner, this);
+        };
 
       PresenterFactory.prototype.createLabwareSubPresenter =
           function (owner, type) {

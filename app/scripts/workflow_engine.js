@@ -7,6 +7,7 @@ define(['config'
     this.mainController = owner;
     this.default = config["default"];
     this.rules = config["rules"];
+    this.presenterIndex = 0;
   };
 
   workflowEngine.prototype.getNextPresenterName = function (inputDataForWorkflow) {
@@ -17,6 +18,28 @@ define(['config'
     var presenterName = null;
 
     console.log(inputDataForWorkflow);
+
+    if (this.presenterIndex > 2) {
+      switch (this.presenterIndex) {
+        case 3:
+          presenterName = "kit_presenter_page";
+          break;
+        case 4:
+          presenterName = "binding_complete_page";
+          break;
+        case 5:
+          presenterName = "binding_finished_page";
+          break;
+        case 6:
+          presenterName = "elusion_loading_page";
+          break;
+        case 7:
+          presenterName = "elusion_wash_page";
+          break;
+      }
+
+    } else {
+
     $.each(that.rules, function (ruleName, rule) {
 //      console.log("rule : ",rule);
       $.each(inputDataForWorkflow.items, function (roleName, role) {
@@ -38,6 +61,8 @@ define(['config'
         return false;
       } // allows to break to the loop as soon as we know...
     });
+
+    }
     if (!presenterName)
       presenterName = this.default;
     return presenterName;
@@ -45,6 +70,12 @@ define(['config'
 
   workflowEngine.prototype.getNextPresenterFromName = function (presenterFactory, presenterName) {
     switch (presenterName) {
+      case "elusion_wash_page":
+        return presenterFactory.createElusionWashPage(this.mainController);
+      case "elusion_loading_page":
+        return presenterFactory.createElusionLoadingPage(this.mainController);
+      case "binding_finished_page":
+        return presenterFactory.createBindingFinishedPage(this.mainController);
       case "binding_complete_page":
         return presenterFactory.createBindingCompletePage(this.mainController);
       case "kit_presenter_page":
@@ -59,10 +90,13 @@ define(['config'
 
   workflowEngine.prototype.getNextPresenter = function (presenterFactory, inputDataForWorkflow) {
     var presenterName = undefined;
+    this.presenterIndex++;
     if (!inputDataForWorkflow.userUUID) {
       console.log(">> to default");
       // what ever happened, if there's no user, nothing can happen!
       presenterName = this.default;
+    } else if (this.presenterIndex > 2) {
+      presenterName = this.getNextPresenterName({});
     } else if (!inputDataForWorkflow.batch && inputDataForWorkflow.labware) {
       console.log(">> to selection_page_presenter");
       presenterName = "selection_page_presenter";

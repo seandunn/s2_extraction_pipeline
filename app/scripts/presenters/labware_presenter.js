@@ -75,9 +75,11 @@ define(['config'
 
     updateModel:function (newData) {
 
-      if (!this.model) this.model = {};
+//      if (!this.model) this.model = {};
+//
+//      $.extend(this.model, newData);
 
-      $.extend(this.model, newData);
+      this.labwareModel.setResource(newData);
 
 //      if (model && model.hasOwnProperty('resource')) {
 //        this.inputModel = model;
@@ -135,7 +137,7 @@ define(['config'
       if (this.labwareModel.resource) {
         type = this.labwareModel.resource.resourceType;
       }
-      if (this.labwareModel.expectedType && type != this.labwareModel.expectedType) {
+      if (this.labwareModel.expected_type && type != this.labwareModel.expected_type) {
         //TODO: Set up error message here
       } else {
         if (type) {
@@ -169,6 +171,9 @@ define(['config'
 
       if (this.resourcePresenter) {
         this.resourcePresenter.setupPresenter(data, resourceSelector);
+        if (this.labwareModel.resource && this.labwareModel.resource.resourceType == "spin_columns") {
+          this.view.displaySuccessMessage(this.labwareModel.resource.BC + " added.");
+        }
       }
 
       if (this.barcodeInputPresenter) {
@@ -226,13 +231,14 @@ define(['config'
       this.resourcePresenter = undefined;
       this.barcodeInputPresenter = undefined;
       this.setupPresenter(this.labwareModel, this.jquerySelection);
+      this.renderView();
     },
 
     isComplete:function () {
       var complete = true;
 
       // If the labware module requires input but there is no model to populate it, we can assume it's incomplete
-      if (this.labwareModel.display_barcode && this.labwareModel.display_remove && !this.model) {
+      if (this.labwareModel.display_barcode && this.labwareModel.display_remove && !this.labwareModel.resource) {
         complete = false;
       }
 
@@ -260,6 +266,7 @@ define(['config'
           var dataForOwner = {
             "uuid":this.labwareModel.resource.uuid
           };
+          this.resetLabware();
           this.owner.childDone(this, "removeLabware", dataForOwner);
         }
       }

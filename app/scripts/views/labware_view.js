@@ -62,7 +62,9 @@ define([], function () {
         '<div style="height:100%; position:relative; width:100%;">',
         '<h3 class="title"></h3>',
         '<div style="height:100%; position:relative; width:100%;">',
-        '<button class="removeButton" style="position: absolute; right: 20px; z-index: 2;">X</button>',
+        '<div class="alert alert-success" style="top: 3em; opacity: 0.9; position: absolute; max-width: 9em; display: none; z-index: 4;">',
+        '</div>',
+        '<button class="btn btn-small removeButton" style="position: absolute; right: 20px; z-index: 2;">X</button>',
         '<div class="resource" style="position: relative; left: 0px; z-index: 1;"></div></div>',
         '<div class="barcodeScanner"></div>',
         '<div class="labwareDisabled" style="position: absolute; top: 0px; left: 0px; opacity: 0.6; width: 100%; height: 100%; background: #eeeeee; z-index: 3; display: none;"></div></div>'],
@@ -91,6 +93,20 @@ define([], function () {
 
     return this;
   }
+
+  LabwareView.prototype.displaySuccessMessage = function(message) {
+
+    var selection = this.jquerySelector().find('.alert-success');
+
+    var tmp = '<h4 class="alert-heading">Success!</h4>';
+
+    if (message) {
+      tmp += message;
+    }
+
+    selection.empty().append(tmp);
+    selection.css('display', 'block');
+  };
 
   LabwareView.prototype.setTitle = function (titleString) {
 

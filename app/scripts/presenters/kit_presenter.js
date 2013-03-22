@@ -158,6 +158,8 @@ define(['extraction_pipeline/views/kit_view'
             } else {
               this.owner.childDone(this, "error", {"message":"Error: The kit isn't validated."});
             }
+          } else if (action == "printBC") {
+            this.owner.childDone(this, "error", {"message" : "Spin Column Barcodes printed"});
           }
         }
 

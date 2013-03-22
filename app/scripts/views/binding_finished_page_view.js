@@ -43,7 +43,7 @@ define([], function () {
         '<div class="row9" style="display:inline-table; height:250px;"></div>',
         '<div class="row10" style="display:inline-table; height:250px;"></div>',
         '<div class="row11" style="display:inline-table; height:250px;"></div>',
-        '<p align="right"><button class="printButton">Print Output Tube Barcodes</button><button class="startButton">Start Elusion Loading</button></p>'],
+        '<p align="right"><button class="btn printButton">Print Output Tube Barcodes</button><button class="btn startButton">Start Elusion Loading</button></p>'],
       htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register

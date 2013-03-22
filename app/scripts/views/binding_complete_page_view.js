@@ -42,7 +42,7 @@ define([], function () {
         '<div class="row9" style="display:inline-table; height:250px;"></div>',
         '<div class="row10" style="display:inline-table; height:250px;"></div>',
         '<div class="row11" style="display:inline-table; height:250px;"></div>',
-        '<p align="right"><button class="finishButton">Finish Binding</button></p>'],
+        '<p align="right"><button class="btn finishButton">Finish Binding</button></p>'],
       htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
@@ -52,7 +52,7 @@ define([], function () {
     var that = this;
 
     finishButton.on('click', function(e) {
-        that.owner.childDone(that, "bindingComplete", {});
+      that.owner.childDone(that, "bindingComplete", {});
     });
 
     $('li').addClass("kit");

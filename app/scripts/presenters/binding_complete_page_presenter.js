@@ -212,7 +212,7 @@ define(['extraction_pipeline/views/binding_complete_page_view',
    * -------
    * this
    */
-  validateUuid:function (child, data) {
+  validateTubeUuid:function (data) {
     var valid = false;
 
     for (var i = 0; i < this.model.tubes.length; i++) {
@@ -224,6 +224,34 @@ define(['extraction_pipeline/views/binding_complete_page_view',
 
     return valid;
   },
+
+    getTube:function(child, data) {
+      var result = this.model.findTubeFromBarcode(data.BC);
+      if (result == "notFound") {
+        child.displayErrorMessage("Barcode not found");
+      } else {
+        if (this.validateTubeUuid(result)){
+          child.updateModel(result);
+        } else {
+          child.displayErrorMessage("Tube is not in kit");
+        }
+      }
+
+    },
+
+    getSpinColumn:function(child, data) {
+      if (this.model.validateSCBarcode(data.BC)) {
+        child.updateModel({"resourceType": "spin_columns",
+                           "BC" : data.BC});
+      } else {
+        child.displayErrorMessage("Spin column is not in kit");
+      }
+    },
+
+    release:function () {
+      this.currentView.clear();
+      return this;
+    },
 
   /* Indicates a child has completed an action
    *
@@ -243,9 +271,15 @@ define(['extraction_pipeline/views/binding_complete_page_view',
 
     if (action == 'bindingComplete') {
       if (this.checkPageComplete()) {
-        this.owner.childDone(this, 'error', {"message":"childDone not hooked up to workflow engine"});
+        this.owner.childDone(this, 'done', {});
       } else {
         this.owner.childDone(this, 'error', {"message":"The page has not been completed"});
+      }
+    } else if (action == "barcodeScanned") {
+      if (child.labwareModel.expected_type == "tube") {
+        this.getTube(child, data);
+      } else if (child.labwareModel.expected_type == "spin_columns") {
+        this.getSpinColumn(child, data);
       }
     }
 

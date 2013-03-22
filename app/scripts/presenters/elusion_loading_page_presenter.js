@@ -242,7 +242,7 @@ define(['extraction_pipeline/views/elusion_loading_page_view'], function (View) 
    * this
    */
   tp.prototype.release = function () {
-    this.jquerySelection().release();
+    this.currentView.clear();
     return this;
   };
 
@@ -286,10 +286,10 @@ define(['extraction_pipeline/views/elusion_loading_page_view'], function (View) 
    */
   tp.prototype.childDone = function (child, action, data) {
 
-    if (action == 'bindingComplete') {
-      if (this.checkPageComplete()) {
-        this.owner.childComplete(this, 'bindingComplete', {});
-      }
+    if (action == 'elusionStarted') {
+//      if (this.checkPageComplete()) {
+        this.owner.childDone(this, 'done', {});
+//      }
     }
 
   };

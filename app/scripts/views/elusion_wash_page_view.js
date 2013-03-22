@@ -43,7 +43,7 @@ define([], function () {
         '<div class="row9"></div>',
         '<div class="row10"></div>',
         '<div class="row11"></div>',
-        '<p align="right"><button class="finishButton">Finish Elusion process</button></p>'],
+        '<p align="right"><button class="btn finishButton">Finish Elusion process</button></p>'],
       htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register

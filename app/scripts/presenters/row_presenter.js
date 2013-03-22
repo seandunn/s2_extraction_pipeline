@@ -196,15 +196,18 @@ define([
       var labware1Enabled = true;
       var labware2Enabled = true;
       var labware3Enabled = true;
+
       if (this.labware2Presenter) {
-        if (this.labware2Presenter.isComplete() && this.labware1Presenter.isComplete()) {
+        if (this.labware2Presenter.isComplete() &&
+            this.labware1Presenter.isComplete() &&
+            this.labware1Presenter.labwareModel.display_barcode) {
           labware1Enabled = false;
         }
         if (!this.labware2Presenter.isComplete() && !this.labware1Presenter.isComplete()) {
           labware2Enabled = false;
         }
-        this.labware1Presenter.labwareEnabled(labware1Enabled);
         this.labware2Presenter.labwareEnabled(labware2Enabled);
+        this.labware1Presenter.labwareEnabled(labware1Enabled);
       }
       if (this.labware2Presenter && this.labware3Presenter) {
         if (!this.labware3Presenter.isComplete() && !this.labware2Presenter.isComplete()) {
@@ -213,7 +216,6 @@ define([
         this.labware3Presenter.labwareEnabled(labware3Enabled);
       }
 
-
     },
 
     childDone:function (child, action, data) {
@@ -221,7 +223,7 @@ define([
       if (action == "tube rendered") {
         this.owner.childDone(this, "tubeFinished", data);
       } else if (action == "barcodeScanned") {
-        this.owner.validateUuid(child, data);
+        this.owner.childDone(child, "barcodeScanned", data);
       } else if (action == "labwareRendered") {
         this.setLabwareVisibility();
       }

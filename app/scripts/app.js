@@ -143,6 +143,9 @@ define([ 'config'
           var inputDataForModel;
           if (action == "done") {
 
+            $('html, body').animate({scrollTop:0}, 'slow');
+
+
 //            inputDataForModel = {
 //              userUUID:this.model.userUUID,
 //              labwareUUID:this.model.labwareUUID,
