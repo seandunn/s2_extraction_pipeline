@@ -19,8 +19,10 @@
 
 
 define(['extraction_pipeline/views/binding_finished_page_view',
-  'extraction_pipeline/presenters/base_presenter'
-], function (View, BasePresenter) {
+  'extraction_pipeline/presenters/base_presenter',
+  'extraction_pipeline/models/binding_finished_model',
+  'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
+], function (View, BasePresenter, BindingFinishedModel, dataJSON) {
 
   var BindingFinishedPresenter = Object.create(BasePresenter);
 
@@ -52,9 +54,13 @@ define(['extraction_pipeline/views/binding_finished_page_view',
      * -------
      * this
      */
+
+    //TODO: Binding finished model needs to be implemented properly
+
     setupPresenter:function (input_model, jquerySelection) {
 //    console.log("et  : setupPresenter");
       this.tubeTypes = [];
+      this.model = Object.create(BindingFinishedModel).init(this);
       this.setupPlaceholder(jquerySelection);
       this.setupView();
       this.renderView();
@@ -303,7 +309,8 @@ define(['extraction_pipeline/views/binding_finished_page_view',
       }
     }
 
-  }); //END OF EXTEND
+  });
+
 
   return BindingFinishedPresenter;
 });

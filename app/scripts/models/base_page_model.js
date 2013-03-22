@@ -17,17 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 define(['config'
-  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
+  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ], function (config,dataJSON) {
 
   var BasePageModel = Object.create(null);
 
   $.extend(BasePageModel, {
-    init:function (owner) {
-      this.owner = owner;
-      if (!this.stash_by_BC) this.stash_by_BC = {};
-      if (!this.stash_by_UUID) this.stash_by_UUID = {};
-    },
     addResource:function (resource) {
       if (!resource) return;
 
@@ -39,16 +34,17 @@ define(['config'
       }
     },
     fetchResourcePromiseFromUUID:function (uuid) {
-      return this.fecthResourcePromise({uuid:uuid});
+      return this.fetchResourcePromise({uuid:uuid});
     },
     fetchResourcePromiseFromBarcode:function (barcode) {
-      return this.fecthResourcePromise({barcode:barcode});
+      return this.fetchResourcePromise({barcode:barcode});
     },
-    fecthResourcePromise:function (resourceDetails) {
+    fetchResourcePromise:function (resourceDetails) {
       var deferredS2Resource = new $.Deferred();
 
       var rsc, that = this;
 
+//      debugger;
 
       if (resourceDetails.uuid) {
         rsc = this.stash_by_UUID[resourceDetails.uuid];
@@ -68,13 +64,16 @@ define(['config'
 
           this.owner.getS2Root()
               .then(function (root) {
-                that.activateTestData();
+                console.log("done...");
+//                that.activateTestData();
                 return root.tubes.findByEan13Barcode(resourceDetails.barcode);
               }).then(function (result) {
+              console.log("found tube...");
                 rsc = result;
                 that.addResource(rsc);
                 deferredS2Resource.resolve(rsc);
               }).fail(function () {
+                console.log("failed...");
                 deferredS2Resource.reject();
               });
         }

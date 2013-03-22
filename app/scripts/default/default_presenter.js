@@ -22,7 +22,7 @@ define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/default/default_view'
   , 'extraction_pipeline/default/default_model'
-  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
+  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ],
     function (config, BasePresenter, view, DefaultPageModel, dataJSON) {
       /*
@@ -32,6 +32,11 @@ define(['config'
       var DefaultPresenter = Object.create(BasePresenter);
 
       $.extend(DefaultPresenter, {
+        init:function (owner, presenterFactory) {
+          this.presenterFactory = presenterFactory;
+          this.owner = owner;
+          return this;
+        },
         /*
          input_model =
          {
@@ -42,11 +47,11 @@ define(['config'
         setupPresenter:function (setupData, jquerySelection) {
           this.setupPlaceholder(jquerySelection);
           this.pageModel = Object.create(DefaultPageModel).init(this);
-//          this.pageModel.dirtySetup(); // TODO: remove me, I'm a hack
-//          return this;
-          this.setupView();
-          this.setupSubPresenters();
-          this.renderView();
+          this.pageModel.dirtySetup(); // TODO: remove me, I'm a hack
+          return this;
+//          this.setupView();
+//          this.setupSubPresenters();
+//          this.renderView();
 
           return this;
         },

@@ -27,18 +27,9 @@ define(['extraction_pipeline/views/kit_view'
     var KitPresenter = Object.create(BasePresenter);
 
     $.extend(KitPresenter, {
-      /* Sample input model for the kit presenter
-       *{
-       *  "tubes" : [
-       *   {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-       *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-       *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-       *    {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"}
-       *  ]
-       *}
-       */
       init:function (owner, presenterFactory) {
         this.owner = owner;
+        this.kitModel = Object.create(KitModel).init(this);
         this.currentView = undefined;
         this.barcodePresenter = undefined;
         this.rowPresenters = [];
@@ -48,7 +39,7 @@ define(['extraction_pipeline/views/kit_view'
       },
       setupPresenter:function (input_model, jquerySelection) {
         this.tubeTypes = [];
-        this.kitModel = Object.create(KitModel).init(this);
+
         // TODO: Replace the dirty setTubes with a clean method
         this.kitModel.dirtySetTubes();
         this.setupPlaceholder(jquerySelection);

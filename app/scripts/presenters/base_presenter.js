@@ -18,18 +18,13 @@
  */
 
 define(['config'
-  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
+  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ],
   function (config, dataJSON) {
 
     var BasePresenter = Object.create(null);
 
     $.extend(BasePresenter, {
-        init:function (owner, presenterFactory) {
-          this.presenterFactory = presenterFactory;
-          this.owner = owner;
-          return this;
-        },
         getS2Root:function () {
           var deferredS2Root = new $.Deferred();
           if (!this.s2Root) {
