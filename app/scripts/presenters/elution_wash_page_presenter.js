@@ -18,7 +18,7 @@
  */
 
 
-define(['extraction_pipeline/views/elusion_loading_page_view'], function (View) {
+define(['extraction_pipeline/views/elution_wash_page_view'], function (View) {
   // interface ....
   var tp = function (owner, presenterFactory) {
     this.owner = owner;
@@ -104,6 +104,7 @@ define(['extraction_pipeline/views/elusion_loading_page_view'], function (View) 
     if (model.hasOwnProperty('tubes')) {
       this.model = model.tubes;
     }
+
     this.model = this.owner.tubeUUIDs;
     this.numRows = this.model.length;
     this.setupSubPresenters();
@@ -225,8 +226,6 @@ define(['extraction_pipeline/views/elusion_loading_page_view'], function (View) 
       }
     }
 
-    //TODO: Add check that tube barcodes have been printed
-
     return complete;
   };
 
@@ -242,32 +241,8 @@ define(['extraction_pipeline/views/elusion_loading_page_view'], function (View) 
    * this
    */
   tp.prototype.release = function () {
-    this.currentView.clear();
+    this.jquerySelection().release();
     return this;
-  };
-
-  /* Ensure that the user entered UUID matches the expected list
-   *
-   *
-   * Arguments
-   * ---------
-   *
-   *
-   * Returns
-   * -------
-   * this
-   */
-  tp.prototype.validateUuid = function (child, data) {
-    var valid = false;
-
-    for (var i = 0; i < this.model.length; i++) {
-      if (this.model[i].uuid == data.uuid) {
-        valid = true;
-        break;
-      }
-    }
-
-    return valid;
   };
 
   /* Indicates a child has completed an action
@@ -285,10 +260,9 @@ define(['extraction_pipeline/views/elusion_loading_page_view'], function (View) 
    * this
    */
   tp.prototype.childDone = function (child, action, data) {
-
-    if (action == 'elusionStarted') {
+    if (action == 'elutionFinished') {
 //      if (this.checkPageComplete()) {
-        this.owner.childDone(this, 'done', {});
+        this.owner.childDone(this, 'error', { "message":"Process Complete."});
 //      }
     }
 
