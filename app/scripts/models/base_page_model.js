@@ -64,16 +64,12 @@ define(['config'
 
           this.owner.getS2Root()
               .then(function (root) {
-                console.log("done...");
-//                that.activateTestData();
                 return root.tubes.findByEan13Barcode(resourceDetails.barcode);
               }).then(function (result) {
-              console.log("found tube...");
                 rsc = result;
                 that.addResource(rsc);
                 deferredS2Resource.resolve(rsc);
               }).fail(function () {
-                console.log("failed...");
                 deferredS2Resource.reject();
               });
         }
