@@ -22,9 +22,9 @@ define(['extraction_pipeline/views/elution_wash_page_view',
   'extraction_pipeline/presenters/base_presenter'
 ], function (View, BasePresenter) {
 
-  var ElusionWashPresenter = Object.create(BasePresenter);
+  var ElutionWashPresenter = Object.create(BasePresenter);
 
-  $.extend(ElusionWashPresenter, {
+  $.extend(ElutionWashPresenter, {
     // interface ....
     init:function (owner, presenterFactory) {
       this.owner = owner;
@@ -266,7 +266,7 @@ define(['extraction_pipeline/views/elution_wash_page_view',
      * this
      */
     childDone:function (child, action, data) {
-      if (action == 'elusionFinished') {
+      if (action == 'elutionFinished') {
         if (this.checkPageComplete()) {
           this.owner.childComplete(this, 'error', { "message":"Not hooked up in child done presenter."});
         }
@@ -276,6 +276,6 @@ define(['extraction_pipeline/views/elution_wash_page_view',
 
   });
 
-  return ElusionWashPresenter;
+  return ElutionWashPresenter;
 })
 ;
