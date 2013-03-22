@@ -3,9 +3,9 @@ define([ 'config'
   , 'mapper/s2_root'
   , 'mapper/s2_ajax'
   , 'text!scripts/pipeline_config.json'
-  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/1.json'
+//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/1.json'
 ],
-    function (config, workflowEngine, S2Root, S2Ajax, workflowConfiguration, rootTestJson) {
+    function (config, workflowEngine, S2Root, S2Ajax, workflowConfiguration) {
       var app = function (thePresenterFactory) {
         this.presenterFactory = thePresenterFactory;
         this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
@@ -26,7 +26,7 @@ define([ 'config'
 
         if (!this.s2Root) {
           var that = this;
-          config.setupTest(rootTestJson); // TODO: remove this line to activate the real mapper
+//          config.setupTest(rootTestJson); // TODO: remove this line to activate the real mapper
           S2Root.load({user:"username"}).done(function (result) {
             that.s2Root = result;
             deferredS2Root.resolve(result);

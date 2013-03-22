@@ -19,7 +19,7 @@
 
 define([
   'extraction_pipeline/models/base_page_model'
-  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
+//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ], function (BasePageModel) {
 
 
@@ -52,7 +52,7 @@ define([
     },
     setLabwareFromBarcode:function (barcode) {
       var that = this;
-      this.setTestData(dataJSON);
+//      this.setTestData(dataJSON);
       this.fetchResourcePromiseFromBarcode(barcode)
           .then(function (rsc) {
             that.setLabware(rsc);

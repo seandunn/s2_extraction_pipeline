@@ -46,7 +46,11 @@ define(['config'
 //    this.barcodeInputPresenter = undefined;
 //  };
   $.extend(LabwarePresenter, {
-
+    init:function (owner, presenterFactory) {
+      this.owner = owner;
+      this.presenterFactory = presenterFactory;
+      return this;
+    },
     setupPresenter:function (setupData, jquerySelection) {
       this.setupPlaceholder(jquerySelection);
       this.labwareModel = Object.create(LabwareModel).init(this);

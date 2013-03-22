@@ -22,9 +22,9 @@ define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/default/default_view'
   , 'extraction_pipeline/default/default_model'
-  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
+//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ],
-    function (config, BasePresenter, view, DefaultPageModel, dataJSON) {
+    function (config, BasePresenter, view, DefaultPageModel) {
       /*
        The default page presenter. Deals with login.
        */
