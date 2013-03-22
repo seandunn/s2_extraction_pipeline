@@ -25,6 +25,17 @@ define([
 
   var DefaultPageModel = Object.create(BasePageModel);
 
+  var setLabware = function (that, rsc) {
+    that.labware = rsc;
+    that.owner.childDone(that, "modelUpdated", rsc);
+    that.checkIfModelIsValid();
+  };
+
+  var setUser = function (that, rsc) {
+    that.user = rsc;
+    that.owner.childDone(that, "modelUpdated", rsc);
+    that.checkIfModelIsValid();
+  };
 
   $.extend(DefaultPageModel, {
     init:function (owner) {
@@ -34,35 +45,30 @@ define([
       this.stash_by_UUID = {};
 
 
-
       this.labware = undefined;
       this.user = undefined;
       this.batch = undefined;
       return this;
     },
-    setLabware:function (rsc) {
-      this.labware = rsc;
-      this.owner.childDone(this, "modelUpdated", rsc);
-      this.checkIfModelIsValid();
-    },
-    setUser:function (rsc) {
-      this.user = rsc;
-      this.owner.childDone(this, "modelUpdated", rsc);
-      this.checkIfModelIsValid();
-    },
+//    setLabware:function (rsc) {
+//      this.labware = rsc;
+//      this.owner.childDone(this, "modelUpdated", rsc);
+//      this.checkIfModelIsValid();
+//    },
+
     setLabwareFromBarcode:function (barcode) {
       var that = this;
-      this.setTestData(dataJSON);
-      this.fetchResourcePromiseFromBarcode(barcode)
-          .then(function (rsc) {
-            that.setLabware(rsc);
-          })
-          .fail(function(){
-            //todo: handle error
-          });
+//      this.setTestData(dataJSON);
+      return this.fetchResourcePromiseFromBarcode(barcode)
+        .then(function (rsc) {
+          setLabware(that, rsc);
+        })
+        .fail(function () {
+          //todo: handle error
+        });
     },
     setUserFromBarcode:function (barcode) {
-      this.setUser(barcode);
+      setUser(this,barcode);
     },
     checkIfModelIsValid:function () {
       if (this.user && this.labware) {
@@ -70,19 +76,19 @@ define([
         var that = this;
         var dataForOwner;
         this.labware.order()
-            .then(function (order) {
-              return order.batchFor(function () {
-                return true;
-              });
-            })
-            .then(function (batch) {
-              this.batch = batch;
-              that.owner.childDone(that, "modelValidated");
-            })
-            .fail(function () {
-              // we still inform the owner that this is a valid model, even if we don't have batch
-              that.owner.childDone(that, "modelValidated");
+          .then(function (order) {
+            return order.batchFor(function () {
+              return true;
             });
+          })
+          .then(function (batch) {
+            this.batch = batch;
+            that.owner.childDone(that, "modelValidated");
+          })
+          .fail(function () {
+            // we still inform the owner that this is a valid model, even if we don't have batch
+            that.owner.childDone(that, "modelValidated");
+          });
       }
     }
 //    , dirtySetup:function () {
