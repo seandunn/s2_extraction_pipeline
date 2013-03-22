@@ -27,7 +27,7 @@ define([ 'config'
         if (!this.s2Root) {
           var that = this;
           config.setupTest(rootTestJson); // TODO: remove this line to activate the real mapper
-          S2Root.load().done(function (result) {
+          S2Root.load({user:"username"}).done(function (result) {
             that.s2Root = result;
             deferredS2Root.resolve(result);
           }).fail(function () {

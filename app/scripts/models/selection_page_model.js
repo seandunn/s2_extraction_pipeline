@@ -96,14 +96,17 @@ define([
       var that = this;
       this.owner.getS2Root()
           .then(function(root){
-            that.setTestData(dataJSON);
             return root.batches.new({items:that.tubes});
           }).then(function(batch){
             debugger;
-            return batch.update();
-          }).then(function(){
+            return batch.save();
+          }).then(function(savedBatch){
+            debugger;
             that.owner.childDone(that,"batchSaved");
-          })
+          }).fail( function(){
+          debugger;
+          }
+      );
     }
   });
   return SelectionPageModel;

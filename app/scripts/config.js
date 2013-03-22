@@ -24,7 +24,7 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
 
     console.log('------------------------');
     console.log('Sending ajax message for ' + config.stage);
-
+//    deleteRecursive(options.data,"user");
     config.reqParams = config.currentStep + '-' + options.url + options.type.toLowerCase() + JSON.stringify(options.data);
     console.log(config.reqParams);
 
@@ -46,7 +46,7 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
       // Check whether this is a search we need to fake.
       if (options.url === '/searches' && options.type.toLowerCase() === 'post') {
         console.log('But we are searching for a ' + options.data.search.model  + ', so need to return the empty data');
-
+        debugger;
         fakeAjaxDeferred.resolve({
           url:           options.url,
           'status':      200,
@@ -73,6 +73,24 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
     return fakeAjaxDeferred;
   };
   json = JSON.parse(json)
+
+  function deleteRecursive(data, key) {
+    for(var property in data) {
+      if(data.hasOwnProperty(property)) {
+        if(property == key) {
+          delete data[key];
+        }
+        else {
+          if(typeof data[property] === "object") {
+            deleteRecursive(data[property], key);
+          }
+        }
+      }
+    }
+  }
+
+//  deleteRecursive(json,"user");
+
   //initialise step count
   config.currentStep = 0;
   config.completeWorkflow = {}
