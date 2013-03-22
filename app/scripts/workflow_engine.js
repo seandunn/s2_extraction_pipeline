@@ -31,10 +31,10 @@ define(['config'
 
   workflowEngine.prototype.getNextPresenterFromName = function (presenterFactory, presenterName) {
     switch (presenterName) {
-      case "elusion_wash_page":
-        return presenterFactory.createElusionWashPage(this.mainController);
-      case "elusion_loading_page":
-        return presenterFactory.createElusionLoadingPage(this.mainController);
+      case "elution_wash_page":
+        return presenterFactory.createElutionWashPage(this.mainController);
+      case "elution_loading_page":
+        return presenterFactory.createElutionLoadingPage(this.mainController);
       case "binding_finished_page":
         return presenterFactory.createBindingFinishedPage(this.mainController);
       case "binding_complete_page":
@@ -43,7 +43,7 @@ define(['config'
         return presenterFactory.createKitPresenter(this.mainController);
       case "selection_page_presenter":
         return presenterFactory.createSelectionPagePresenter(this.mainController);
-      case "elusion_wash_page_presenter":
+      case "elution_wash_page_presenter":
         return presenterFactory.cr
       default:
         return presenterFactory.createDefaultPresenter(this.mainController);

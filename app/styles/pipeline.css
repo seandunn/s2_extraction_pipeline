@@ -1,0 +1,23 @@
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
+ul, li {
+  list-style-type: none;
+}
+
+#pageTitle {
+  position: absolute;
+  top: 0em;
+}
+
+#titleLogo {
+  float: left;
+  margin-right: 3em;
+}
+
+#titleText {
+  float: right;
+  text-shadow: 2px 2px 2px #999;
+}

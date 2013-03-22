@@ -99,8 +99,8 @@ define([
             that.setTestData(dataJSON);
             return root.batches.new({items:that.tubes});
           }).then(function(batch){
-//            debugger;
-//            return batch.update();
+            debugger;
+            return batch.update();
           }).then(function(){
             that.owner.childDone(that,"batchSaved");
           })

@@ -226,7 +226,7 @@ define(['extraction_pipeline/views/binding_finished_page_view',
      */
     checkPageComplete:function () {
 
-    var complete = true;
+      var complete = true;
 
       for (var i = 0; i < this.rowPresenters.length; i++) {
         if (!this.rowPresenters[i].isRowComplete()) {
@@ -288,21 +288,22 @@ define(['extraction_pipeline/views/binding_finished_page_view',
      */
     childDone:function (child, action, data) {
 
-    if (action == 'bindingFinished') {
-      if (this.checkPageComplete()) {
-        if (this.barcodesPrinted) {
-          this.owner.childDone(this, 'done', {});
-        }
-        else {
-          this.owner.childDone(this, 'error', {"message":"Output tube barcodes have not been printed yet!"});
+      if (action == 'bindingFinished') {
+        if (this.checkPageComplete()) {
+          if (this.barcodesPrinted) {
+            this.owner.childDone(this, 'done', {});
+          }
+          else {
+            this.owner.childDone(this, 'error', {"message":"Output tube barcodes have not been printed yet!"});
+          }
         }
       }
-    }
-    else if (action == 'printBarcodes') {
-      this.printBarcodes();
+      else if (action == 'printBarcodes') {
+        this.printBarcodes();
+      }
     }
 
   }); //END OF EXTEND
 
-  return tp;
+  return BindingFinishedPresenter;
 });

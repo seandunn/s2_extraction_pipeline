@@ -6,8 +6,8 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
   'extraction_pipeline/presenters/labware_presenter',
   'extraction_pipeline/presenters/binding_complete_page_presenter',
   'extraction_pipeline/presenters/binding_finished_page_presenter',
-  'extraction_pipeline/presenters/elusion_loading_page_presenter',
-  'extraction_pipeline/presenters/elusion_wash_page_presenter',
+  'extraction_pipeline/presenters/elution_loading_page_presenter',
+  'extraction_pipeline/presenters/elution_wash_page_presenter',
   'labware/presenters/tube_presenter',
   'labware/presenters/spin_column_presenter',
   'labware/presenters/waste_tube_presenter'],
@@ -19,8 +19,8 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
               LabwarePresenter,
               BindingCompletePagePresenter,
               BindingFinishedPagePresenter,
-              ElusionLoadingPagePresenter,
-              ElusionWashPagePresenter,
+              ElutionLoadingPagePresenter,
+              ElutionWashPagePresenter,
               TubePresenter,
               SpinColumnPresenter,
               WasteTubePresenter) {
@@ -85,17 +85,17 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
 
       PresenterFactory.prototype.createBindingFinishedPage =
         function (owner) {
-          return new BindingFinishedPagePresenter(owner, this);
+          return Object.create(BindingFinishedPagePresenter).init(owner, this);
         };
 
-      PresenterFactory.prototype.createElusionLoadingPage =
+      PresenterFactory.prototype.createElutionLoadingPage =
         function (owner) {
-          return new ElusionLoadingPagePresenter(owner, this);
+          return new ElutionLoadingPagePresenter(owner, this);
         };
 
-      PresenterFactory.prototype.createElusionWashPage =
+      PresenterFactory.prototype.createElutionWashPage =
         function (owner) {
-          return new ElusionWashPagePresenter(owner, this);
+          return new ElutionWashPagePresenter(owner, this);
         };
 
       PresenterFactory.prototype.createLabwareSubPresenter =

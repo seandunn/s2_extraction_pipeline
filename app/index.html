@@ -11,16 +11,10 @@
 
 
   <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/pipeline.css">
 
   <style type="text/css">
-    body {
-      padding-top: 60px;
-      padding-bottom: 40px;
-    }
 
-    ul, li {
-      list-style-type: none;
-    }
   </style>
   <script src="scripts/vendor/modernizr.min.js"></script>
   <script src="components/d3/d3.js"></script>
@@ -34,9 +28,9 @@
 
 
   <div class="container">
-    <div style="position: absolute; top: 0em;">
-    <img src="images/sanger-logo.png" style="float: left; margin-right: 3em;"/>
-    <h1 style="float: right; text-shadow: 2px 2px 2px #999;">S2 Extraction Pipeline</h1>
+    <div id="pageTitle">
+    <img id="titleLogo" src="images/sanger-logo.png"/>
+    <h1 id="titleText">S2 Extraction Pipeline</h1>
   </div>
     <div class="hero-unit" id="content">&nbsp;</div>
   </div>

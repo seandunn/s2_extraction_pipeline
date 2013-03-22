@@ -159,6 +159,7 @@ define(['extraction_pipeline/views/kit_view'
               this.owner.childDone(this, "error", {"message":"Error: The kit isn't validated."});
             }
           } else if (action == "printBC") {
+            this.kitModel.createMissingSpinColumnBarcodes();
             this.owner.childDone(this, "error", {"message" : "Spin Column Barcodes printed"});
           }
         }
