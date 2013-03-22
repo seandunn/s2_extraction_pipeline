@@ -29,7 +29,11 @@ define([ 'config'
   var PagePresenter = Object.create(BasePresenter);
 
   $.extend(PagePresenter, {
-
+    init:function (owner, presenterFactory) {
+      this.presenterFactory = presenterFactory;
+      this.owner = owner;
+      return this;
+    },
     setupPresenter:function (setupData, jquerySelection) {
       console.log("selection presenter  setupPresenter");
       this.setupPlaceholder(jquerySelection);

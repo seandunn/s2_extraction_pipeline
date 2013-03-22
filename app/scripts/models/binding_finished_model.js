@@ -21,7 +21,7 @@
 
 define([
   'extraction_pipeline/models/base_page_model'
-  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
+  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ], function(BasePageModel, dataJSON) {
 
   var BindingFinishedModel = Object.create(BasePageModel);
@@ -32,7 +32,9 @@ define([
     init:function (owner) {
       // TODO: The required data will need to be checked
 
-      BasePageModel.init(owner);
+      this.owner = Object.create(owner);
+      this.stash_by_BC = {};
+      this.stash_by_UUID = {};
       this.labware = undefined;
       this.user = undefined;
       this.batch = undefined;

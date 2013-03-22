@@ -25,11 +25,6 @@ define(['config'
     var BasePresenter = Object.create(null);
 
     $.extend(BasePresenter, {
-        init:function (owner, presenterFactory) {
-          this.presenterFactory = presenterFactory;
-          this.owner = owner;
-          return this;
-        },
         getS2Root:function () {
           var deferredS2Root = new $.Deferred();
           if (!this.s2Root) {

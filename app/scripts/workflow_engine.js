@@ -37,8 +37,12 @@ define(['config'
         return presenterFactory.createKitPresenter(this.mainController);
       case "selection_page_presenter":
         return presenterFactory.createSelectionPagePresenter(this.mainController);
+      case "binding_finished_page_presenter":
+        return presenterFactory.createBindingFinishedPage(this.mainController);
+      case "elusion_loading_page_presenter":
+        return presenterFactory.createElusionLoadingPage(this.mainController);
       case "elusion_wash_page_presenter":
-        return presenterFactory.cr
+        return presenterFactory.createElusionWashPage(this.mainController);
       default:
         return presenterFactory.createDefaultPresenter(this.mainController);
     }

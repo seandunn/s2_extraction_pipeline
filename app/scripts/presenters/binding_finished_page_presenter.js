@@ -21,7 +21,7 @@
 define(['extraction_pipeline/views/binding_finished_page_view',
   'extraction_pipeline/presenters/base_presenter',
   'extraction_pipeline/models/binding_finished_model',
-  'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
+  'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ], function (View, BasePresenter, BindingFinishedModel, dataJSON) {
 
   var BindingFinishedPresenter = Object.create(BasePresenter);

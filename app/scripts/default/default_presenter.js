@@ -32,6 +32,11 @@ define(['config'
       var DefaultPresenter = Object.create(BasePresenter);
 
       $.extend(DefaultPresenter, {
+        init:function (owner, presenterFactory) {
+          this.presenterFactory = presenterFactory;
+          this.owner = owner;
+          return this;
+        },
         /*
          input_model =
          {

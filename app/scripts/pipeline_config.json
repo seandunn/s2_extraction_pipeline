@@ -4,5 +4,5 @@
         "tube_to_be_extracted", "selection_page_presenter"
       ]
     ],
-    "default":"binding_complete_page"
+    "default":"elusion_wash_page_presenter"
 }

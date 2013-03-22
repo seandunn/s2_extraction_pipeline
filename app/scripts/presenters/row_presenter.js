@@ -91,6 +91,11 @@ define([
 
 
   $.extend(RowPresenter, {
+    init:function (owner, presenterFactory) {
+      this.presenterFactory = presenterFactory;
+      this.owner = owner;
+      return this;
+    },
     setupPresenter:function (input_model, jquerySelection) {
       this.setupPlaceholder(jquerySelection);
 

@@ -29,7 +29,9 @@ define([
   $.extend(SelectionPageModel, {
     init:function (owner) {
       console.log("selection model init");
-      BasePageModel.init(owner);
+      this.owner = Object.create(owner);
+      this.stash_by_BC = {};
+      this.stash_by_UUID = {};
       this.tubes = [];
       this.capacity = 12;
       this.batch = undefined;
