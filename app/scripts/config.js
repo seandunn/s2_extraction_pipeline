@@ -23,10 +23,12 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
 
 
     console.log('------------------------');
-    console.log('Sending ajax message for ' + config.stage);
-
-    config.reqParams = config.currentStep + '-' + options.url + options.type.toLowerCase() + JSON.stringify(options.data);
-    console.log(config.reqParams);
+//    console.log('Sending ajax message for ' + config.stage);
+    if (options.data == undefined){
+      options.data = null;
+    }
+    config.reqParams = config.currentStep + '-' + options.url + options.type.toLowerCase() + (options.data);
+//    console.log(config.reqParams);
 
 
     // The real $.ajax returns a promise.  Please leave this as a defered as
@@ -42,22 +44,24 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
       // if the stored result can't be found in the data but the url is in the root then
       // it means that the system couldn't find the data.
 
-      console.log("AJAX[" + config.reqParams + "]: not found in " + config.stepJson);
-      // Check whether this is a search we need to fake.
-      if (options.url === '/searches' && options.type.toLowerCase() === 'post') {
-        console.log('But we are searching for a ' + options.data.search.model  + ', so need to return the empty data');
-        debugger;
-        fakeAjaxDeferred.resolve({
-          url:           options.url,
-          'status':      200,
-          responseTime:  750,
-          responseText:  JSON.parse(emptyTubeData).steps[0].response
-        });
-
-      } else {
+      console.log("AJAX <<<\n" + config.reqParams + "\n >>>: not found ");
+      console.log("shouldn't it be :\n<<<\n"+       JSON.stringify(config.completeSteps[config.currentStep]) + "\n >>>");
+      debugger;
+//      // Check whether this is a search we need to fake.
+//      if (options.url === '/searches' && options.type.toLowerCase() === 'post') {
+//        console.log('But we are searching for a ' + options.data.search.model  + ', so need to return the empty data');
+//        //debugger;
+//        fakeAjaxDeferred.resolve({
+//          url:           options.url,
+//          'status':      200,
+//          responseTime:  750,
+//          responseText:  JSON.parse(emptyTubeData).steps[0].response
+//        });
+//
+//      } else {
 
         fakeAjaxDeferred.reject(fakeAjaxDeferred, '404 error');
-      }
+//      }
     } else {
       console.log("AJAX[" + config.reqParams + "]: responding with:");
       console.log(response);

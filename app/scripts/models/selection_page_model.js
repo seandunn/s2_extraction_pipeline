@@ -69,7 +69,6 @@ define([
     },
     addTubeFromBarcode:function (barcode) {
       var that = this;
-      this.setTestData(dataJSON);
       this.fetchResourcePromiseFromBarcode(barcode)
           .then(function (rsc) {
             that.addTube(rsc);
@@ -98,9 +97,10 @@ define([
       var that = this;
       this.owner.getS2Root()
           .then(function(root){
-            return root.batches.new({items:that.tubes});
+            return root.batches.new({resources:that.tubes});
           }).then(function(batch){
-            debugger;
+            console.log(batch);
+//            debugger;
             return batch.save();
           }).then(function(savedBatch){
             debugger;

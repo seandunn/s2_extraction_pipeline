@@ -6,9 +6,9 @@
     "d3": "~3.0.6",
     "requirejs": "~2.1.4",
     "requirejs-domready": "~2.0.1",
-    "S2Mapper": "git@github.com:sanger/S2Mapper.git",
-    "labware": "git@github.com:sanger/labware.git",
+    "S2Mapper": "https://github.com/sanger/S2Mapper.git",
+    "labware": "https://github.com/sanger/labware.git",
     "requirejs-text": "~2.0.5",
-    "s2-api-examples": "git@github.com:sanger/s2-api-examples.git"
+    "s2-api-examples": "https://github.com/sanger/s2-api-examples.git"
   }
 }
