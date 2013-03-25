@@ -35,7 +35,7 @@ define([], function () {
       }
       parts.push( "</ul>");
       parts.push('<div align="right">');
-      parts.push('<button class="nextBtn">next</button>');
+      parts.push('<button class="btn nextBtn">next</button>');
       parts.push('</div>');
 
       var html = parts.join('');

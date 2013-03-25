@@ -49,7 +49,7 @@ define([], function () {
         + "<div ><p>And the tube barcode!</p>"
         + "<div class='labware_barcode'>"
         + "</div></div>"
-        + "<div align='right'><button id='login_button'>Let\'s go</button></div>";
+        + "<div align='right'><button class='btn' id='login_button'>Let\'s go</button></div>";
 
     if (data) {
       contentAsString += "<div class='alert'>"

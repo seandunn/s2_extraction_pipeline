@@ -18,28 +18,13 @@
  */
 
 
-define(['extraction_pipeline/views/binding_finished_page_view',
-  'extraction_pipeline/presenters/base_presenter',
-  'extraction_pipeline/models/binding_finished_model'
-//  'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
-], function (View, BasePresenter, BindingFinishedModel) {
+define(['extraction_pipeline/views/elution_loading_page_view',
+  'extraction_pipeline/presenters/base_presenter'
+], function (View, BasePresenter) {
 
-  var BindingFinishedPresenter = Object.create(BasePresenter);
+  var ElutionLoadingPresenter = Object.create(BasePresenter);
 
-  $.extend(BindingFinishedPresenter, {
-
-    // interface ....
-    init:function (owner, presenterFactory) {
-      this.owner = owner;
-      this.currentView = undefined;
-      this.barcodePresenter = undefined;
-      this.rowPresenters = [];
-      this.tubeTypes = [];
-      this.presenterFactory = presenterFactory;
-      this.barcodesPrinted = false;
-      return this;
-    },
-
+  $.extend(ElutionLoadingPresenter, {
     /* Initialises the presenter and defines the view to be used
      *
      *
@@ -55,12 +40,21 @@ define(['extraction_pipeline/views/binding_finished_page_view',
      * this
      */
 
-    //TODO: Binding finished model needs to be implemented properly
+
+    // interface ....
+    init:function (owner, presenterFactory) {
+      this.owner = owner;
+      this.currentView = undefined;
+      this.barcodePresenter = undefined;
+      this.rowPresenters = [];
+      this.tubeTypes = [];
+      this.presenterFactory = presenterFactory;
+      return this;
+    },
 
     setupPresenter:function (input_model, jquerySelection) {
 //    console.log("et  : setupPresenter");
       this.tubeTypes = [];
-      this.model = Object.create(BindingFinishedModel).init(this);
       this.setupPlaceholder(jquerySelection);
       this.setupView();
       this.renderView();
@@ -118,9 +112,7 @@ define(['extraction_pipeline/views/binding_finished_page_view',
       if (model.hasOwnProperty('tubes')) {
         this.model = model.tubes;
       }
-
-      var uuids = this.owner.tubeUUIDs;
-      this.model = uuids;
+      this.model = this.owner.tubeUUIDs;
       this.numRows = this.model.length;
       this.setupSubPresenters();
       return this;
@@ -182,13 +174,13 @@ define(['extraction_pipeline/views/binding_finished_page_view',
           "remove_arrow":false,
           "labware1":{
             "expected_type":"spin_columns",
-            "display_remove":false,
-            "display_barcode":false
+            "display_remove":true,
+            "display_barcode":true
           },
           "labware2":{
             "expected_type":"tube",
-            "display_remove":false,
-            "display_barcode":false
+            "display_remove":true,
+            "display_barcode":true
           }
         };
 
@@ -246,22 +238,6 @@ define(['extraction_pipeline/views/binding_finished_page_view',
       return complete;
     },
 
-    /* Creates and prints the required barcodes
-     *
-     *
-     * Arguments
-     * ---------
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    printBarcodes:function () {
-      this.barcodesPrinted = true;
-      this.owner.childDone(this, 'error', {"message":"Output tube barcodes printed."});
-    },
-
     /* Clears the current view and all of its children
      *
      *
@@ -276,6 +252,30 @@ define(['extraction_pipeline/views/binding_finished_page_view',
     release:function () {
       this.currentView.clear();
       return this;
+    },
+
+    /* Ensure that the user entered UUID matches the expected list
+     *
+     *
+     * Arguments
+     * ---------
+     *
+     *
+     * Returns
+     * -------
+     * this
+     */
+    validateUuid:function (child, data) {
+      var valid = false;
+
+      for (var i = 0; i < this.model.length; i++) {
+        if (this.model[i].uuid == data.uuid) {
+          valid = true;
+          break;
+        }
+      }
+
+      return valid;
     },
 
     /* Indicates a child has completed an action
@@ -294,23 +294,16 @@ define(['extraction_pipeline/views/binding_finished_page_view',
      */
     childDone:function (child, action, data) {
 
-      if (action == 'bindingFinished') {
-        if (this.checkPageComplete()) {
-          if (this.barcodesPrinted) {
-            this.owner.childDone(this, 'done', {});
-          }
-          else {
-            this.owner.childDone(this, 'error', {"message":"Output tube barcodes have not been printed yet!"});
-          }
-        }
+      if (action == 'elutionStarted') {
+//      if (this.checkPageComplete()) {
+        this.owner.childDone(this, 'done', {});
+//      }
       }
-      else if (action == 'printBarcodes') {
-        this.printBarcodes();
-      }
-    }
 
+    }
   });
 
 
-  return BindingFinishedPresenter;
-});
+  return ElutionLoadingPresenter;
+})
+;

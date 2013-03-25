@@ -20,8 +20,8 @@
 define([
   'extraction_pipeline/models/base_page_model'
   , 'config'
-  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
-], function (BasePageModel, config, dataJSON) {
+//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
+], function (BasePageModel, config) {
 
 
   var SelectionPageModel = Object.create(BasePageModel);
@@ -29,7 +29,9 @@ define([
   $.extend(SelectionPageModel, {
     init:function (owner) {
       console.log("selection model init");
-      BasePageModel.init(owner);
+      this.owner = Object.create(owner);
+      this.stash_by_BC = {};
+      this.stash_by_UUID = {};
       this.tubes = [];
       this.capacity = 12;
       this.batch = undefined;
@@ -67,13 +69,11 @@ define([
     },
     addTubeFromBarcode:function (barcode) {
       var that = this;
-      this.setTestData(dataJSON);
       this.fetchResourcePromiseFromBarcode(barcode)
           .then(function (rsc) {
             that.addTube(rsc);
           })
           .fail(function () {
-            //todo: handle error
             that.owner.childDone(that, "barcodeNotFound", {});
           });
     },
@@ -97,14 +97,18 @@ define([
       var that = this;
       this.owner.getS2Root()
           .then(function(root){
-            that.setTestData(dataJSON);
-            return root.batches.new({items:that.tubes});
+            return root.batches.new({resources:that.tubes});
           }).then(function(batch){
+            console.log(batch);
+//            debugger;
+            return batch.save();
+          }).then(function(savedBatch){
             debugger;
-            return batch.update();
-          }).then(function(){
             that.owner.childDone(that,"batchSaved");
-          })
+          }).fail( function(){
+          debugger;
+          }
+      );
     }
   });
   return SelectionPageModel;

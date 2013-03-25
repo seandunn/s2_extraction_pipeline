@@ -29,7 +29,11 @@ define([ 'config'
   var PagePresenter = Object.create(BasePresenter);
 
   $.extend(PagePresenter, {
-
+    init:function (owner, presenterFactory) {
+      this.presenterFactory = presenterFactory;
+      this.owner = owner;
+      return this;
+    },
     setupPresenter:function (setupData, jquerySelection) {
       console.log("selection presenter  setupPresenter");
       this.setupPlaceholder(jquerySelection);
@@ -146,7 +150,7 @@ define([ 'config'
        */
       if (child === this.currentView){
         if (action === "next") {
-          this.owner.childDone(this,"error",{"message" : "Not hooked up!"});
+          //this.owner.childDone(this,"error",{"message" : "Not hooked up!"});
           this.pageModel.makeBatch();
         }
       } else if (child === this.pageModel) {

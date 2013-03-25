@@ -19,8 +19,8 @@
 
 define([
   'extraction_pipeline/models/base_page_model'
-  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
-], function (BasePageModel, dataJSON) {
+//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
+], function (BasePageModel) {
 
 
   var DefaultPageModel = Object.create(BasePageModel);
@@ -28,7 +28,13 @@ define([
 
   $.extend(DefaultPageModel, {
     init:function (owner) {
-      BasePageModel.init(owner);
+//      BasePageModel.init(owner);
+      this.owner = Object.create(owner);
+      this.stash_by_BC = {};
+      this.stash_by_UUID = {};
+
+
+
       this.labware = undefined;
       this.user = undefined;
       this.batch = undefined;
@@ -46,7 +52,7 @@ define([
     },
     setLabwareFromBarcode:function (barcode) {
       var that = this;
-      this.setTestData(dataJSON);
+//      this.setTestData(dataJSON);
       this.fetchResourcePromiseFromBarcode(barcode)
           .then(function (rsc) {
             that.setLabware(rsc);
@@ -78,16 +84,16 @@ define([
               that.owner.childDone(that, "modelValidated");
             });
       }
-    },
-    dirtySetup:function () {
-      var that = this;
-      this.setTestData(dataJSON);
-      this.fetchResourcePromiseFromBarcode("XX111111K")
-          .then(function (rsc) {
-            that.setLabware(rsc);
-            that.setUser("XX111111K");
-          });
     }
+//    , dirtySetup:function () {
+//      var that = this;
+//      this.setTestData(dataJSON);
+//      this.fetchResourcePromiseFromBarcode("XX111111K")
+//          .then(function (rsc) {
+//            that.setLabware(rsc);
+//            that.setUser("XX111111K");
+//          });
+//    }
 
   });
 

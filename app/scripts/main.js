@@ -12,7 +12,7 @@ require.config({
     mapper_test: 'components/S2Mapper/test',
     labware:'/components/labware/app/scripts',
     config:'scripts/config',
-    json:'/components/apiExample/workflows',
+    json:'/components/S2Mapper/app/test/json',
     text: '/components/requirejs-text/text',
     extraction_pipeline: 'scripts'
   }
@@ -28,12 +28,12 @@ require(['extraction_pipeline/app',
 //    labwareUUID:"106d61c0-6224-0130-90b6-282066132de2",
 //    batchUUID:"1234567890"
 //  };
-//       theApp.tubeUUIDs =  [
-//        {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-//        {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-//        {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
-//        {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"}
-//      ];
+       theApp.tubeUUIDs =  [
+        {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
+        {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
+        {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"},
+        {"uuid" : "106d61c0-6224-0130-90b6-282066132de2"}
+      ];
 
     theApp.setupPresenter(inputModelForApp);
 

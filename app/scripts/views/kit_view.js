@@ -65,7 +65,7 @@ define([], function () {
         '<div class="row9" style="display:inline-table; height:250px;"></div>',
         '<div class="row10" style="display:inline-table; height:250px;"></div>',
         '<div class="row11" style="display:inline-table; height:250px;"></div>',
-        '<p align="right"><button class="printButton">Print Barcode</button><button class="nextBtn">Next</button></p>'],
+        '<p align="right"><button class="btn printButton">Print Barcode</button><button class="btn nextBtn">Next</button></p>'],
       htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register
@@ -74,7 +74,12 @@ define([], function () {
 
     var input = parent.find("input");
     var selector = parent.find(".kitSelect");
+    var printBtn = parent.find(".printButton");
     var that = this;
+
+    printBtn.on('click', function(e) {
+      that.owner.childDone(that, "printBC", {});
+    });
 
     $('li').addClass("kit");
     $('ul p').addClass("kit");
@@ -87,7 +92,7 @@ define([], function () {
       }
     });
     selector.on("change", function (e) {
-      that.owner.validateKitTubes();
+      that.owner.setValidState();
     });
 
     this.jquerySelector().find(".nextBtn").click(onNext_clicked(this.owner, this));

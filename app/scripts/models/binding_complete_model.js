@@ -24,9 +24,9 @@ define([
 //  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ], function(BasePageModel) {
 
-  var KitModel = Object.create(BasePageModel);
+  var BindingCompleteModel = Object.create(BasePageModel);
 
-  $.extend(KitModel, {
+  $.extend(BindingCompleteModel, {
     //TODO: add suitable methods for the model
 
     init:function (owner) {
@@ -89,6 +89,20 @@ define([
         });
 //      this.uuids = this.owner.tubeUUIDs;
     },
+    findTubeFromBarcode:function (barcode) {
+      var that = this;
+      var result = {};
+      this.setTestData(dataJSON);
+      this.fetchResourcePromiseFromBarcode(barcode)
+        .then(function (rsc) {
+          result = rsc;
+        })
+        .fail(function () {
+          result = "notFound"
+        });
+
+      return result;
+    },
     createMissingSpinColumnBarcodes:function(){
       var that = this;
       this.barcodes = []
@@ -105,29 +119,11 @@ define([
 //        var spinColumn = this.owner.getS2Root().spin
       }
     },
-    validateKitTubes:function(kitType) {
-      var valid = true;
-      var tubeTypes = [];
-
-      for (var tube in this.tubes) {
-        if (this.tubes[tube].hasOwnProperty('aliquots')) {
-          if (this.tubes[tube].aliquots.length > 0) {
-            tubeTypes.push = this.tubes[tube].aliquots[0].type;
-          }
-        }
-      }
-
-      for (var index in tubeTypes) {
-        if (kitType.indexOf(tubeTypes[index]) == -1) {
-          valid = false;
-          break;
-        }
-      }
-      return valid;
+    validateSCBarcode:function(data) {
+      return data == "XX111111K" ? true : false;
     }
-
   });
 
-  return KitModel;
+  return BindingCompleteModel;
 
 })

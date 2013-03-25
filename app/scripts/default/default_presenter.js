@@ -22,9 +22,9 @@ define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/default/default_view'
   , 'extraction_pipeline/default/default_model'
-  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction_2.json'
+//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ],
-    function (config, BasePresenter, view, DefaultPageModel, dataJSON) {
+    function (config, BasePresenter, view, DefaultPageModel) {
       /*
        The default page presenter. Deals with login.
        */
@@ -32,6 +32,11 @@ define(['config'
       var DefaultPresenter = Object.create(BasePresenter);
 
       $.extend(DefaultPresenter, {
+        init:function (owner, presenterFactory) {
+          this.presenterFactory = presenterFactory;
+          this.owner = owner;
+          return this;
+        },
         /*
          input_model =
          {
@@ -68,10 +73,10 @@ define(['config'
           };
 
           if (this.userBCSubPresenter) {
-            this.userBCSubPresenter.setupPresenter({type:"user", value:"XX111111K"}, jQuerySelectionForUser);
+            this.userBCSubPresenter.setupPresenter({type:"user", value:"1220017279667"}, jQuerySelectionForUser);
           }
           if (this.labwareBCSubPresenter) {
-            this.labwareBCSubPresenter.setupPresenter({type:"tube", value:"XX111111K"}, jQuerySelectionForLabware);
+            this.labwareBCSubPresenter.setupPresenter({type:"tube", value:"1220017279667"}, jQuerySelectionForLabware);
           }
           return this;
         },

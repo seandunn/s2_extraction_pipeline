@@ -24,19 +24,22 @@ define([
 //  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ], function(BasePageModel) {
 
-  var KitModel = Object.create(BasePageModel);
+  var BindingFinishedModel = Object.create(BasePageModel);
 
-  $.extend(KitModel, {
+  $.extend(BindingFinishedModel, {
     //TODO: add suitable methods for the model
 
     init:function (owner) {
+      // TODO: The required data will need to be checked
+
       this.owner = Object.create(owner);
       this.stash_by_BC = {};
       this.stash_by_UUID = {};
       this.labware = undefined;
       this.user = undefined;
       this.batch = undefined;
-      this.tubes = [];
+//      this.spinColumns = [];
+//      this.outputTubes = [];
       return this;
     },
     setBatch:function (batch) {
@@ -77,18 +80,6 @@ define([
           // ...
         });
     },
-    dirtySetTubes:function(){
-      var that = this;
-      this.setTestData(dataJSON);
-      this.fetchResourcePromiseFromBarcode("XX111111K")
-        .then(function (rsc) {
-          that.tubes.push(rsc);
-          that.tubes.push(rsc);
-          that.tubes.push(rsc);
-          that.tubes.push(rsc);
-        });
-//      this.uuids = this.owner.tubeUUIDs;
-    },
     createMissingSpinColumnBarcodes:function(){
       var that = this;
       this.barcodes = []
@@ -104,30 +95,10 @@ define([
         // use tube and BC to generate SC
 //        var spinColumn = this.owner.getS2Root().spin
       }
-    },
-    validateKitTubes:function(kitType) {
-      var valid = true;
-      var tubeTypes = [];
-
-      for (var tube in this.tubes) {
-        if (this.tubes[tube].hasOwnProperty('aliquots')) {
-          if (this.tubes[tube].aliquots.length > 0) {
-            tubeTypes.push = this.tubes[tube].aliquots[0].type;
-          }
-        }
-      }
-
-      for (var index in tubeTypes) {
-        if (kitType.indexOf(tubeTypes[index]) == -1) {
-          valid = false;
-          break;
-        }
-      }
-      return valid;
     }
 
   });
 
-  return KitModel;
+  return BindingFinishedModel;
 
-})
+});

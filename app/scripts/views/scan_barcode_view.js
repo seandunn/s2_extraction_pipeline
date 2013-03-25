@@ -39,7 +39,7 @@ define([], function () {
       htmlParts = [
         '<div style="padding: 3px;"><span style="margin-right:5px;">Scan ',
         this.model.type,
-        '</span><input class="barcodeInput" style="width: 9em" value="', model.barcode,
+        '</span><input type="text" class="barcodeInput" style="width: 9em" value="', model.barcode,
         '"', model.busy ? ' disabled="true"' : '' , '>',
         model.value,
         '</input>',
