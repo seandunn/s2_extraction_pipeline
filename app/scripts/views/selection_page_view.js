@@ -29,11 +29,11 @@ define([], function () {
         '<p>batch uuid : ', model.batch !== undefined ? model.batch : 'new', '</p>',
         '</div>'
       ];
-      parts.push( "<ul style=''>");
+      parts.push( "<ol style=''>");
       for (var i = 0; i < model.capacity; i++) {
         parts.push( "<li>"+i+" - NO PRESENTER ASSOCIATED TO THIS ITEM</li>");
       }
-      parts.push( "</ul>");
+      parts.push( "</ol>");
       parts.push('<div align="right">');
       parts.push('<button class="btn nextBtn">next</button>');
       parts.push('</div>');

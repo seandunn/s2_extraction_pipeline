@@ -13,7 +13,7 @@ define(['config'
   function itemMatcherForBatch(batch) {
     return function(rule) {
       return _.chain(batch.items)
-              .filter(function(item) { return item.status === 'ready'; })
+              .filter(function(item) { return item.status === 'complete'; })
               .filter(function(item) { return item.role === rule[0]; })
               .first()
               .value();
@@ -24,7 +24,8 @@ define(['config'
     /**
      * inputDataForWorkflow is a batch
      */
-    console.log(inputDataForWorkflow);
+    console.log(inputDataForWorkflow.items);
+
     var presenterRule = _.chain(this.rules).find(itemMatcherForBatch(inputDataForWorkflow)).value();
     return presenterRule ? presenterRule[1] : this.default;
   };

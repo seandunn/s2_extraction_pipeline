@@ -46,7 +46,7 @@ define([ 'config'
       this.setupView();
       this.setupSubPresenters();
       this.renderView();
-
+      this.pageModel.addTubeFromBarcode("1220017279668");
       return this;
     },
     setupView:function () {
@@ -162,9 +162,9 @@ define([ 'config'
           var dataForOwner = {
             userUUID:this.pageModel.user,
             labware:this.pageModel.labware,
-            "batch":this.pageModel.batch
+            "batch":data
           };
-          this.owner.childDone(this,"next",dataForOwner);
+          this.owner.childDone(this,"done",dataForOwner);
         } else if (action === "barcodeNotFound") {
           this.displayBarcodeError("Barcode not found");
         }

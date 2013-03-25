@@ -144,9 +144,7 @@ define([ 'config'
           if (action == "done") {
 
             $('html, body').animate({scrollTop:0}, 'slow');
-//            $('#content').toggle('slow');
-//            $('#content').toggle('slow');
-
+            inputDataForModel = data;
 
 //            inputDataForModel = {
 //              userUUID:this.model.userUUID,

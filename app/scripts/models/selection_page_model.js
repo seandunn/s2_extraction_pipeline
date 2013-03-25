@@ -104,7 +104,8 @@ define([
             return batch.save();
           }).then(function(savedBatch){
             debugger;
-            that.owner.childDone(that,"batchSaved");
+            that.batch = savedBatch;
+            that.owner.childDone(that,"batchSaved", savedBatch);
           }).fail( function(){
           debugger;
           }
