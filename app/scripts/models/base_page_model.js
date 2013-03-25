@@ -44,7 +44,7 @@ define(['config'
 
       var rsc, that = this;
 
-//      debugger;
+
 
       if (resourceDetails.uuid) {
         rsc = this.stash_by_UUID[resourceDetails.uuid];

@@ -159,7 +159,7 @@ define(['config'
     setupSubModel:function () {
       //if (this.model) {
       var that = this;
-//      debugger;
+
       var data = {};
       if (this.labwareModel.resource) {
         // TODO: change the labware behaviour to get rid of the extra wrapping...
