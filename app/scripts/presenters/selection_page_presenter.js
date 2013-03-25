@@ -150,9 +150,8 @@ define([ 'config'
        */
       if (child === this.currentView){
         if (action === "next") {
-//          this.owner.childDone(this,"error",{"message" : "Not hooked up!"});
+          //this.owner.childDone(this,"error",{"message" : "Not hooked up!"});
           this.pageModel.makeBatch();
-          this.owner.childDone(this, "done", {});
         }
       } else if (child === this.pageModel) {
         if (action === "modelUpdated") {

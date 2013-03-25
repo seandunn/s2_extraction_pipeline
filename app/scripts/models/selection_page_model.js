@@ -20,8 +20,8 @@
 define([
   'extraction_pipeline/models/base_page_model'
   , 'config'
-  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
-], function (BasePageModel, config, dataJSON) {
+//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
+], function (BasePageModel, config) {
 
 
   var SelectionPageModel = Object.create(BasePageModel);
@@ -69,7 +69,6 @@ define([
     },
     addTubeFromBarcode:function (barcode) {
       var that = this;
-      this.setTestData(dataJSON);
       this.fetchResourcePromiseFromBarcode(barcode)
           .then(function (rsc) {
             that.addTube(rsc);
@@ -98,14 +97,18 @@ define([
       var that = this;
       this.owner.getS2Root()
           .then(function(root){
-            that.setTestData(dataJSON);
-            return root.batches.new({items:that.tubes});
+            return root.batches.new({resources:that.tubes});
           }).then(function(batch){
+            console.log(batch);
+//            debugger;
+            return batch.save();
+          }).then(function(savedBatch){
             debugger;
-            return batch.update();
-          }).then(function(){
             that.owner.childDone(that,"batchSaved");
-          })
+          }).fail( function(){
+          debugger;
+          }
+      );
     }
   });
   return SelectionPageModel;

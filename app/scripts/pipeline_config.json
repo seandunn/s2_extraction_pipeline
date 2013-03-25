@@ -4,5 +4,5 @@
         "tube_to_be_extracted", "selection_page_presenter"
       ]
     ],
-    "default":"default_page"
+    "default":"default_presenter"
 }
