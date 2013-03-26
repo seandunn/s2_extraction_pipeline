@@ -59,14 +59,17 @@ define([], function () {
 
     var parent = this.jquerySelector(),
       htmlParts = [
-        '<div style="height:100%; position:relative; width:100%;">',
-        '<h3 class="title"></h3>',
-        '<div style="height:100%; position:relative; width:100%;">',
-        '<div class="alert alert-success" style="top: 3em; opacity: 0.9; position: absolute; max-width: 9em; display: none; z-index: 4;">',
+        '<div class="row">',
+        '<h3 class="title span11"></h3>',
+        '<button class="btn btn-small removeButton span1" style="z-index: 2;"><i class="icon-remove"></i></button>',
         '</div>',
-        '<button class="btn btn-small removeButton" style="position: absolute; right: 20px; z-index: 2;">X</button>',
-        '<div class="resource" style="position: relative; left: 0px; z-index: 1;"></div></div>',
-        '<div class="barcodeScanner"></div>',
+        '<div class="row">',
+        '<div class="alert alert-success span12" style="top: 3em; opacity: 0.9; position: absolute; max-width: 9em; display: none; z-index: 4;"></div>',
+
+
+        '<div class="resource span12"></div>',
+        '<div class="barcodeScanner span12"></div>',
+        '</div>',
         '<div class="labwareDisabled" style="position: absolute; top: 0px; left: 0px; opacity: 0.6; width: 100%; height: 100%; background: #eeeeee; z-index: 3; display: none;"></div></div>'],
       htmlString = htmlParts.join('');
 

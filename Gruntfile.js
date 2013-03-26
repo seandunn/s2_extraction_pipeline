@@ -34,7 +34,8 @@ module.exports = function( grunt ) {
         options: {
           css_dir: 'temp/styles',
           sass_dir: 'app/styles',
-          images_dir: 'app/images',
+          //note this causes build error
+          images_dir: 'images',
           javascripts_dir: 'temp/scripts',
           force: true
         }
