@@ -46,7 +46,7 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
 
       console.log("AJAX <<<\n" + config.reqParams + "\n >>>: not found ");
       console.log("shouldn't it be :\n<<<\n"+       JSON.stringify(config.completeSteps[config.currentStep]) + "\n >>>");
-      debugger;
+
 //      // Check whether this is a search we need to fake.
 //      if (options.url === '/searches' && options.type.toLowerCase() === 'post') {
 //        console.log('But we are searching for a ' + options.data.search.model  + ', so need to return the empty data');

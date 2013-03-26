@@ -24,24 +24,21 @@ define([], function () {
 
      */
     if (model) {
-      var parts = [ '<div class="details" style="border: 1px solid #d3d3d3; margin:10px; padding: 10px;">',
-        '<p>user barcode : ', model.user, '</p>',
-        '<p>batch uuid : ', model.batch !== undefined ? model.batch : 'new', '</p>',
-        '</div>'
+      var parts = [
+        '<h3 class="alert">',
+        '<p>User Barcode : ', model.user, '<p>',
+        '<p>Batch UUID : ', model.batch !== undefined ? model.batch : 'new', '<p>',
+        '</h3>'
       ];
-      parts.push( "<ol style=''>");
+
+      parts.push( "<ol>");
       for (var i = 0; i < model.capacity; i++) {
-        parts.push( "<li>"+i+" - NO PRESENTER ASSOCIATED TO THIS ITEM</li>");
+        parts.push( '<li>' + i + ' - NO PRESENTER ASSOCIATED WITH THIS ITEM</li>');
       }
       parts.push( "</ol>");
-      parts.push('<div align="right">');
-      parts.push('<button class="btn nextBtn">next</button>');
-      parts.push('</div>');
-
+      parts.push('<button class="btn pull-right">Continue</button>');
       var html = parts.join('');
-//
       this.jquerySelector().empty().append(html);
-//
       this.attachEvents();
     } else {
       this.jquerySelector().empty().append("loading...");
