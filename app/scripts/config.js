@@ -1,4 +1,4 @@
-define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_extraction.json'], function(mapperConfig, json) {
+define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_extraction.json'], function(mapperConfig, json) {
   'use strict';
   var config = $.extend(mapperConfig, {
   });
@@ -22,7 +22,6 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
 
 
 
-    console.log('------------------------');
 //    console.log('Sending ajax message for ' + config.stage);
     if (options.data == undefined){
       options.data = null;
@@ -43,10 +42,14 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
     if (response === undefined) {
       // if the stored result can't be found in the data but the url is in the root then
       // it means that the system couldn't find the data.
+      console.log('------------------------');
 
-      console.log("AJAX <<<\n" + config.reqParams + "\n >>>: not found ");
-      console.log("shouldn't it be :\n<<<\n"+       JSON.stringify(config.completeSteps[config.currentStep]) + "\n >>>");
-      debugger;
+      console.log("unknown AJAX call made for:\n" + config.reqParams + "\n ");
+      var tmp = config.completeSteps[config.currentStep];
+      var text = config.currentStep + '-' + tmp.url + tmp.method + JSON.stringify(tmp.request);
+
+
+      console.log("I was expecting this :\n"+       text + "\n... ... ... ");
 //      // Check whether this is a search we need to fake.
 //      if (options.url === '/searches' && options.type.toLowerCase() === 'post') {
 //        console.log('But we are searching for a ' + options.data.search.model  + ', so need to return the empty data');
@@ -59,12 +62,11 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
 //        });
 //
 //      } else {
-
         fakeAjaxDeferred.reject(fakeAjaxDeferred, '404 error');
 //      }
     } else {
-      console.log("AJAX[" + config.reqParams + "]: responding with:");
-      console.log(response);
+//      console.log("AJAX[" + config.reqParams + "]: responding with:");
+//      console.log(response);
 
       fakeAjaxDeferred.resolve({
         url:           options.url,

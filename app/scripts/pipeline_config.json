@@ -1,7 +1,7 @@
 {
     "rules":[
       [
-        "tube_to_be_extracted", "selection_page_presenter"
+        "tube_to_be_extracted", "selection_page_presenter", "sdfs"
       ]
     ],
     "default":"default_presenter"

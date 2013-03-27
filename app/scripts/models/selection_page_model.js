@@ -20,7 +20,6 @@
 define([
   'extraction_pipeline/models/base_page_model'
   , 'config'
-//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ], function (BasePageModel, config) {
 
 
@@ -28,7 +27,6 @@ define([
 
   $.extend(SelectionPageModel, {
     init:function (owner) {
-      console.log("selection model init");
       this.owner = Object.create(owner);
       this.stash_by_BC = {};
       this.stash_by_UUID = {};
@@ -39,13 +37,11 @@ define([
       return this;
     },
     setBatch:function (batch) {
-      console.log("setBatch : ", batch);
       this.addResource(batch);
       this.batch = batch;
       this.owner.childDone(this, "batchAdded");
     },
     setSeminalLabware:function (labware) {
-      console.log("setSeminalLabware : ", labware);
       this.addResource(labware);
       this.tubes.push(labware);
       if(this.batch){
@@ -54,7 +50,6 @@ define([
       this.owner.childDone(this, "seminalLabwareAdded");
     },
     setUser:function (user) {
-      console.log("setUser : ", user);
       this.user = user;
       this.owner.childDone(this, "userAdded");
     },
@@ -99,12 +94,10 @@ define([
           .then(function(root){
             return root.batches.new({resources:that.tubes});
           }).then(function(batch){
-            console.log(batch);
-//            debugger;
             return batch.save();
           }).then(function(savedBatch){
-            debugger;
-            that.owner.childDone(that,"batchSaved");
+            that.batch = savedBatch;
+            that.owner.childDone(that,"batchSaved", savedBatch);
           }).fail( function(){
           debugger;
           }

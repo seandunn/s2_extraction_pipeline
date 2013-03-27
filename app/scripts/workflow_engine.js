@@ -13,7 +13,7 @@ define(['config'
   function itemMatcherForBatch(batch) {
     return function(rule) {
       return _.chain(batch.items)
-              .filter(function(item) { return item.status === 'ready'; })
+              .filter(function(item) { return item.status === 'done'; })
               .filter(function(item) { return item.role === rule[0]; })
               .first()
               .value();
@@ -21,10 +21,6 @@ define(['config'
   }
 
   workflowEngine.prototype.getNextPresenterName = function (inputDataForWorkflow) {
-    /**
-     * inputDataForWorkflow is a batch
-     */
-    console.log(inputDataForWorkflow);
     var presenterRule = _.chain(this.rules).find(itemMatcherForBatch(inputDataForWorkflow)).value();
     return presenterRule ? presenterRule[1] : this.default;
   };
@@ -62,54 +58,7 @@ define(['config'
       presenterName = this.getNextPresenterName(inputDataForWorkflow.batch);
     }
 
-
-
-//    else {
-//
-//      if (inputDataForWorkflow.hasOwnProperty("batch") && inputDataForWorkflow.batch) {
-//        batch = inputDataForWorkflow.batch;
-//      } else if (inputDataForWorkflow.hasOwnProperty("labware") && inputDataForWorkflow.labware) {
-//        // get batch from labwareUUID...
-////        batch = {
-////          items:{
-////            "tube_to_be_extracted":[
-////              {
-////                "uuid":"f1628770-6c81-0130-e02d-282066132de2",
-////                "status":"ready",
-////                "batch":null
-////              }
-////            ]
-////          }
-////        };
-//      }
-
-
-
-
-
-
     return this.getNextPresenterFromName(presenterFactory, presenterName);
-
-//
-//    if (!inputDataForWorkflow.userUUID) {
-//      return this.getNextPresenterFromName("default");
-//    }
-//
-//    if (inputDataForWorkflow.HACK) {
-//      return this.getNextPresenterFromName("binding_complete_page");
-//
-//    }
-//
-//    if (inputDataForWorkflow.batchUUID) {
-//      return this.getNextPresenterFromName("kit_presenter_page");
-//    }
-//
-//    if (inputDataForWorkflow.labwareUUID) {
-//      return this.getNextPresenterFromName("selection_page_presenter");
-//    }
-//
-//    return this.getNextPresenterFromName("default");
-
   };
 
 

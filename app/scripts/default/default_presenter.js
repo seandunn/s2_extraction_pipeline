@@ -52,6 +52,8 @@ define(['config'
           this.setupView();
           this.setupSubPresenters();
           this.renderView();
+          this.pageModel.setUserFromBarcode("bullshit");
+          this.pageModel.setLabwareFromBarcode("1220017279667");
 
           return this;
         },

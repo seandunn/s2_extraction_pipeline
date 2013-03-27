@@ -22,9 +22,7 @@ define([ 'config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/views/selection_page_view'
   , 'extraction_pipeline/models/selection_page_model'
-  , 'mapper/s2_root'
-  , 'text!components/S2Mapper/test/json/unit/root.json'
-], function (config, BasePresenter, SelectionPageView, SelectionPageModel, S2Root, rootTestJson) {
+], function (config, BasePresenter, SelectionPageView, SelectionPageModel ) {
 
   var PagePresenter = Object.create(BasePresenter);
 
@@ -35,7 +33,6 @@ define([ 'config'
       return this;
     },
     setupPresenter:function (setupData, jquerySelection) {
-      console.log("selection presenter  setupPresenter");
       this.setupPlaceholder(jquerySelection);
       this.pageModel = Object.create(SelectionPageModel).init(this);
       if (setupData) {
@@ -46,6 +43,10 @@ define([ 'config'
       this.setupView();
       this.setupSubPresenters();
       this.renderView();
+
+      // for test purposes only
+//      this.pageModel.addTubeFromBarcode("1220017279668");
+//      this.pageModel.makeBatch();
 
       return this;
     },
