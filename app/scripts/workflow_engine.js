@@ -21,6 +21,10 @@ define(['config'
   }
 
   workflowEngine.prototype.getNextPresenterName = function (inputDataForWorkflow) {
+    /**
+     * inputDataForWorkflow is a batch
+     */
+    console.log(inputDataForWorkflow);
     var presenterRule = _.chain(this.rules).find(itemMatcherForBatch(inputDataForWorkflow)).value();
     return presenterRule ? presenterRule[1] : this.default;
   };

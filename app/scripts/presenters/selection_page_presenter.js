@@ -165,7 +165,7 @@ define([ 'config'
             labware:this.pageModel.labware,
             "batch":this.pageModel.batch
           };
-          this.owner.childDone(this,"next",dataForOwner);
+          this.owner.childDone(this,"done",dataForOwner);
         } else if (action === "barcodeNotFound") {
           this.displayBarcodeError("Barcode not found");
         }

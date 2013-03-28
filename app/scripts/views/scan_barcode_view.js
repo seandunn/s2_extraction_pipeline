@@ -37,14 +37,14 @@ define([], function () {
 
     var parent = this.jquerySelector(),
       htmlParts = [
-        '<div style="padding: 3px;"><span style="margin-right:5px;">Scan ',
+        '<div class="input-prepend"><span class="add-on">Scan ',
         this.model.type,
-        '</span><input type="text" class="barcodeInput" style="width: 9em" value="', model.barcode,
+        '</span><input type="text" class="barcodeInput" value="', model.barcode,
         '"', model.busy ? ' disabled="true"' : '' , '>',
         model.value,
         '</input>',
         '</div>',
-        '<div class="alert alert-error" style="max-width: 9em; display: none;">',
+        '<div class="alert alert-error hide" >',
         '</div>'
       ],
       htmlString = htmlParts.join('');

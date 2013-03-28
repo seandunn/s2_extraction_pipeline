@@ -1,4 +1,4 @@
-define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_extraction.json'], function(mapperConfig, json) {
+define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_extraction.json'], function(mapperConfig, json) {
   'use strict';
   var config = $.extend(mapperConfig, {
   });
