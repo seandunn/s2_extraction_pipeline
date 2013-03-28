@@ -1,0 +1,15 @@
+header, #content {
+    @extend .container;
+}
+
+ol {
+    .labware {
+        @extend h3;
+   }
+}
+
+.removeButton {
+    @extend .btn;
+    @extend .btn-small;
+    @extend .pull-right;
+}
