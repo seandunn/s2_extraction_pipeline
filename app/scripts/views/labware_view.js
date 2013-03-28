@@ -61,8 +61,7 @@ define([], function () {
       htmlParts = [
         '<button class="removeButton" style="z-index: 2;"><i class="icon-remove"></i></button>',
         '<h3 class="title"></h3>',
-
-        '<div class="row">',
+        '<div>',
           '<div class="alert alert-success" style="top: 3em; opacity: 0.9; position: absolute; max-width: 9em; display: none; z-index: 4;"></div>',
           '<div class="resource"></div>',
           '<div class="barcodeScanner"></div>',

@@ -27,13 +27,12 @@ define([], function () {
       var parts = [
         '<h3 class="alert">',
         '<p>User Barcode : ', model.user, '<p>',
-        '<p>Batch UUID : ', model.batch !== undefined ? model.batch : 'new', '<p>',
         '</h3>'
       ];
 
-      parts.push( "<ol>");
+      parts.push( '<ol class="labware">');
       for (var i = 0; i < model.capacity; i++) {
-        parts.push( '<li class="labware">' + i + ' - NO PRESENTER ASSOCIATED WITH THIS ITEM</li>');
+        parts.push( '<li>' + i + ' - NO PRESENTER ASSOCIATED WITH THIS ITEM</li>');
       }
       parts.push( "</ol>");
       parts.push('<button class="btn pull-right">Continue</button>');
