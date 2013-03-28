@@ -42,18 +42,10 @@ define([], function () {
   };
 
   loginview.prototype.renderView = function (data) {
-    var contentAsString = '<div class="row">'
-        + '<div class="span12">'
-        + '<h3>Please scan your user barcode. </h3>'
+    var contentAsString = '<h3>Please scan your user barcode.</h3>'
         + '<div class="user_barcode"></div>'
-        + '</div>'
-        + '</div>'
-        + '<div class="row">'
-        + '<div class="span12">'
         + '<h3>Please scan the tube barcode.</h3>'
         + '<div class="labware_barcode"></div>'
-        + '</div>'
-        + '</div>'
         + '<button class="btn pull-right" id="login_button">Continue</button>';
 
     if (data) {

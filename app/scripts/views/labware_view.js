@@ -59,18 +59,15 @@ define([], function () {
 
     var parent = this.jquerySelector(),
       htmlParts = [
-        '<div class="row">',
-        '<h3 class="title span11"></h3>',
-        '<button class="btn btn-small removeButton span1" style="z-index: 2;"><i class="icon-remove"></i></button>',
-        '</div>',
-        '<div class="row">',
-        '<div class="alert alert-success span12" style="top: 3em; opacity: 0.9; position: absolute; max-width: 9em; display: none; z-index: 4;"></div>',
+        '<button class="removeButton" style="z-index: 2;"><i class="icon-remove"></i></button>',
+        '<h3 class="title"></h3>',
 
-
-        '<div class="resource span12"></div>',
-        '<div class="barcodeScanner span12"></div>',
+        '<div class="row">',
+          '<div class="alert alert-success" style="top: 3em; opacity: 0.9; position: absolute; max-width: 9em; display: none; z-index: 4;"></div>',
+          '<div class="resource"></div>',
+          '<div class="barcodeScanner"></div>',
         '</div>',
-        '<div class="labwareDisabled" style="position: absolute; top: 0px; left: 0px; opacity: 0.6; width: 100%; height: 100%; background: #eeeeee; z-index: 3; display: none;"></div></div>'],
+        '<div class="labwareDisabled" style="position: absolute; top: 0px; left: 0px; opacity: 0.6; width: 100%; height: 100%; background: #eeeeee; z-index: 3; display: none;"></div>'],
       htmlString = htmlParts.join('');
 
     // We have to append to the document or events won't register

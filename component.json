@@ -8,7 +8,6 @@
     "requirejs-domready": "~2.0.1",
     "S2Mapper": "https://github.com/sanger/S2Mapper.git",
     "labware": "https://github.com/sanger/labware.git",
-    "requirejs-text": "~2.0.5",
-    "s2-api-examples": "https://github.com/sanger/s2-api-examples.git"
+    "requirejs-text": "~2.0.5"
   }
 }

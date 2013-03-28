@@ -33,7 +33,7 @@ define([], function () {
 
       parts.push( "<ol>");
       for (var i = 0; i < model.capacity; i++) {
-        parts.push( '<li>' + i + ' - NO PRESENTER ASSOCIATED WITH THIS ITEM</li>');
+        parts.push( '<li class="labware">' + i + ' - NO PRESENTER ASSOCIATED WITH THIS ITEM</li>');
       }
       parts.push( "</ol>");
       parts.push('<button class="btn pull-right">Continue</button>');
