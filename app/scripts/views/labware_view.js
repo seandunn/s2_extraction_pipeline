@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 
-define([], function () {
+define(['text!extraction_pipeline/html_partials/labware_partial.html'], function (labwarePartialHtml) {
 
   function getKey(e) {
     if (window.event) {
@@ -57,20 +57,10 @@ define([], function () {
       this.model = model;
     }
 
-    var parent = this.jquerySelector(),
-      htmlParts = [
-        '<button class="removeButton" style="z-index: 2;"><i class="icon-remove"></i></button>',
-        '<h3 class="title"></h3>',
-        '<div>',
-          '<div class="alert alert-success" style="top: 3em; opacity: 0.9; position: absolute; max-width: 9em; display: none; z-index: 4;"></div>',
-          '<div class="resource"></div>',
-          '<div class="barcodeScanner"></div>',
-        '</div>',
-        '<div class="labwareDisabled" style="position: absolute; top: 0px; left: 0px; opacity: 0.6; width: 100%; height: 100%; background: #eeeeee; z-index: 3; display: none;"></div>'],
-      htmlString = htmlParts.join('');
+    var parent = this.jquerySelector();
 
     // We have to append to the document or events won't register
-    parent.empty().append(htmlString);
+    parent.empty().append(labwarePartialHtml);
 
     var removeButton = parent.find('.removeButton');
     var that = this;
