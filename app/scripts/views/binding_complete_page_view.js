@@ -1,4 +1,4 @@
-define([], function () {
+define(['text!extraction_pipeline/html_partials/binding_complete_partial.html'], function (bindingCompletePartialHtml) {
 
   function getKey(e) {
     if (window.event) {
@@ -26,28 +26,11 @@ define([], function () {
     }
 
 
-    var parent = this.jquerySelector(),
-      htmlParts = [
-        '<h2 class="title">Binding Complete for order: </h2>',
-        '<hr />',
-        '<div class="row0" style="display:inline-table; height:250px;"></div>',
-        '<div class="row1" style="display:inline-table; height:250px;"></div>',
-        '<div class="row2" style="display:inline-table; height:250px;"></div>',
-        '<div class="row3" style="display:inline-table; height:250px;"></div>',
-        '<div class="row4" style="display:inline-table; height:250px;"></div>',
-        '<div class="row5" style="display:inline-table; height:250px;"></div>',
-        '<div class="row6" style="display:inline-table; height:250px;"></div>',
-        '<div class="row7" style="display:inline-table; height:250px;"></div>',
-        '<div class="row8" style="display:inline-table; height:250px;"></div>',
-        '<div class="row9" style="display:inline-table; height:250px;"></div>',
-        '<div class="row10" style="display:inline-table; height:250px;"></div>',
-        '<div class="row11" style="display:inline-table; height:250px;"></div>',
-        '<p align="right"><button class="btn finishButton">Finish Binding</button></p>'],
-      htmlString = htmlParts.join('');
+    var parent = this.jquerySelector();
 
     // We have to append to the document or events won't register
     parent.empty().
-      append(htmlString);
+      append(bindingCompletePartialHtml);
     var finishButton = parent.find(".finishButton");
     var that = this;
 

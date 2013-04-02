@@ -1,4 +1,4 @@
-define([], function () {
+define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (kitPartialHtml) {
 
   var that = this;
   function onNext_clicked(owner, view) {
@@ -39,38 +39,11 @@ define([], function () {
       model = this.model;
     }
 
-    var parent = this.jquerySelector(),
-      htmlParts = [
-        '<div style="overflow: hidden"><div style="float: left; overflow: auto;">',
-        '<div class="barcode"></div>',
-        'Kit Type ',
-        '<select class="kitSelect">',
-        '<option>DNA</option>',
-        '<option>RNA</option>',
-        '<option>DNA/RNA</option>',
-        '</select></div>',
-        '<div style="float: right; overflow: auto;"><p class="validationText"></p></div>',
-        '</div>',
-        '<h2>Start Transfers</h2>',
-        '<hr />',
-        '<div class="row0" style="display:inline-table; height:250px;"></div>',
-        '<div class="row1" style="display:inline-table; height:250px;"></div>',
-        '<div class="row2" style="display:inline-table; height:250px;"></div>',
-        '<div class="row3" style="display:inline-table; height:250px;"></div>',
-        '<div class="row4" style="display:inline-table; height:250px;"></div>',
-        '<div class="row5" style="display:inline-table; height:250px;"></div>',
-        '<div class="row6" style="display:inline-table; height:250px;"></div>',
-        '<div class="row7" style="display:inline-table; height:250px;"></div>',
-        '<div class="row8" style="display:inline-table; height:250px;"></div>',
-        '<div class="row9" style="display:inline-table; height:250px;"></div>',
-        '<div class="row10" style="display:inline-table; height:250px;"></div>',
-        '<div class="row11" style="display:inline-table; height:250px;"></div>',
-        '<p align="right"><button class="btn printButton">Print Barcode</button><button class="btn nextBtn">Next</button></p>'],
-      htmlString = htmlParts.join('');
+    var parent = this.jquerySelector();
 
     // We have to append to the document or events won't register
     parent.empty().
-      append(htmlString);
+      append(kitPartialHtml);
 
     var input = parent.find("input");
     var selector = parent.find(".kitSelect");
