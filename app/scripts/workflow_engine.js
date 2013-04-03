@@ -32,10 +32,8 @@ define(['config'
 
   workflowEngine.prototype.getNextPresenterFromName = function (presenterFactory, presenterName) {
     switch (presenterName) {
-      case "binding_complete_page":
-        return presenterFactory.createBindingCompletePage(this.mainController);
-      case "kit_presenter_page":
-        return presenterFactory.createKitPresenter(this.mainController);
+      case "kit_binding_page_presenter":
+        return presenterFactory.createKitBindingPagePresenter(this.mainController);
       case "selection_page_presenter":
         return presenterFactory.createSelectionPagePresenter(this.mainController);
       case "binding_finished_page_presenter":

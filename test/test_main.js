@@ -22,9 +22,9 @@ require.config({
 });
  
 require(['domReady!'
-//   ,'spec/app_spec'
+   ,'spec/app_spec'
 //   ,'spec/selection_page_model_spec'
-//  , 'spec/default_page_presenter_spec'
+  , 'spec/default_page_presenter_spec'
    ,'spec/default_model_spec'
 //   ,'spec/selection_page_presenter_spec'
 //   ,'spec/workflow_engine_spec'

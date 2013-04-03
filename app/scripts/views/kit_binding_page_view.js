@@ -1,6 +1,7 @@
 define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (kitPartialHtml) {
 
   var that = this;
+
   function onNext_clicked(owner, view) {
     /*
      * response to the click on the login button...
@@ -8,7 +9,7 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
      */
     return function () {
       if (owner) {
-        owner.childDone(view , "next",{ });
+        owner.childDone(view, "next", { });
       }
     }
   }
@@ -47,10 +48,10 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
 
     var input = parent.find("input");
     var selector = parent.find(".kitSelect");
-    var printBtn = parent.find(".printButton");
+    var printBtn = parent.find(".kitPrintButton");
     var that = this;
 
-    printBtn.on('click', function(e) {
+    printBtn.on('click', function (e) {
       that.owner.childDone(that, "printBC", {});
     });
 
@@ -71,7 +72,6 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
     this.jquerySelector().find(".nextBtn").click(onNext_clicked(this.owner, this));
 
 
-
   };
 
   kitView.prototype.setKitValidState = function (valid) {
@@ -79,14 +79,14 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
     var jquerySelection = this.jquerySelector();
 
     if (valid) {
-      result = 'This kit is valid for the selected tubes';
+      result = '<div class="alert alert-success">This kit is valid for the selected tubes</div>';
       jquerySelection.
-        find('.printButton').removeAttr('disabled');
+        find('.kitPrintButton').removeAttr('disabled');
     }
     else {
-      result = 'This kit is not valid for the selected tubes';
+      result = '<div class="alert alert-error">This kit is not valid for the selected tubes</div>';
       jquerySelection.
-        find('.printButton').attr('disabled', 'disabled');
+        find('.kitPrintButton').attr('disabled', 'disabled');
     }
 
     jquerySelection.
@@ -95,8 +95,23 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
       append(result);
   };
 
-  kitView.getKitTypeSelection = function() {
+  kitView.prototype.getKitTypeSelection = function () {
     return this.jquerySelector().find('.kitSelect').val().split('/');
+  };
+
+  kitView.prototype.toggleHeaderEnabled = function (isEnabled) {
+    var selection = this.jquerySelector();
+    var kitSelect = selection.find('.kitSelect')
+    var kitPrintButton = selection.find('.kitPrintButton');
+
+    if (isEnabled) {
+      kitSelect.removeAttr('disabled');
+      kitPrintButton.removeAttr('disabled');
+    }
+    else {
+      kitSelect.attr('disabled', 'disabled');
+      kitPrintButton.attr('disabled', 'disabled');
+    }
   };
 
 //

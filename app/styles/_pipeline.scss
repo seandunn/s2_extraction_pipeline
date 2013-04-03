@@ -25,3 +25,33 @@ svg text{
     @extend .pull-right;
     margin: 5px;
 }
+
+ul{
+  list-style-type: none;
+}
+
+.kitSelect{
+  margin-top: 20px;
+}
+
+#kitPageHeader{
+  margin-top: 20px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+.kitPrintButton{
+  float: right;
+}
+
+.labwareDisplay input{
+  width: 10em;
+}
+
+.labwareRow{
+  position: relative;
+  li{
+    position: relative;
+  }
+}
