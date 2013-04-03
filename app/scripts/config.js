@@ -1,4 +1,4 @@
-define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_extraction.json'], function (mapperConfig, json) {
+define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_extraction.json'], function (mapperConfig, json) {
   'use strict';
   var config = $.extend(mapperConfig, {
   });
@@ -25,14 +25,18 @@ define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_
 
   config.ajax = function (options) {
     // a blank options.url should default to '/'
-    options.url = options.url.replace(/http:\/\/localhost:\d+/, '');
+    options.url = options.url.replace(/http:\/\/localhost:\d+/,'');
 
-    if (options.url.length === 0) {
-      options.url = '/'
+    if (options.url.length === 0){
+      options.url  = '/'
       options.type = 'get'
       options.data = null
     }
 
+    //increment the step if not a GET
+
+
+    console.log('------------------------');
 //    console.log('Sending ajax message for ' + config.stage);
     if (options.data == undefined) {
       options.data = null;
@@ -40,6 +44,7 @@ define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_
     config.reqParams = config.currentStep + '-' + options.url + options.type.toLowerCase() + (options.data);
 //    console.log(config.reqParams);
     config.log('Sending ajax message for "' + config.reqParams + '"');
+
 
     // The real $.ajax returns a promise.  Please leave this as a defered as
     // it lets us spy on reject and resolve.
@@ -51,8 +56,11 @@ define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_
 
     var response = config.completeWorkflow[config.reqParams];
     if (response === undefined) {
-      config.log(config.reqParams, 1);
-      config.log('\nRequest for: \n' + config.reqParams + '\nnot found in test data.', 2);
+      // if the stored result can't be found in the data but the url is in the root then
+      // it means that the system couldn't find the data.
+
+      console.log("AJAX <<<\n" + config.reqParams + "\n >>>: not found ");
+      console.log("shouldn't it be :\n<<<\n" + JSON.stringify(config.completeSteps[config.currentStep]) + "\n >>>");
 
       var tmp = config.completeSteps[config.currentStep];
       var text = config.currentStep + '-' + tmp.url + tmp.method + JSON.stringify(tmp.request);
@@ -101,6 +109,9 @@ define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_
       config.completeSteps.push(step);
     }
   }
+
+  config.printServiceUrl = 'http://psd-dev.internal.sanger.ac.uk:8000/printers/legacy/soap';
+  config.printers = [ {name: 'e367bc', type: 2} ];
 
   return config;
 });

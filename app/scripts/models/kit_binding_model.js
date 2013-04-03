@@ -38,6 +38,7 @@ define([
       this.batch = undefined;
       this.tubes = [];
       this.availableBarcodes = [];
+      this.kitSaved = false;
       return this;
     },
     setBatch:function (batch) {
@@ -49,8 +50,8 @@ define([
     },
     dirtySetTubes:function () {
       var that = this;
-      this.setTestData(dataJSON);
-      this.fetchResourcePromiseFromBarcode("XX111111K")
+//      this.setTestData(dataJSON);
+      this.fetchResourcePromiseFromBarcode("1220017279667")
         .then(function (rsc) {
           that.tubes.push(rsc);
           that.tubes.push(rsc);
@@ -59,12 +60,11 @@ define([
         });
 //      this.uuids = this.owner.tubeUUIDs;
     },
-    createMissingSpinColumnBarcodes:function () {
+    createMissingSpinColumnBarcodes:function(){
       var that = this;
       this.barcodes = []
-      for (var tube in that.tubes) {
+      for (var tube in that.tubes){
         // TODO: create a spin column barcode for every tube
-
 
         // generate SC barcodes
 
@@ -76,7 +76,7 @@ define([
 //        var spinColumn = this.owner.getS2Root().spin
       }
     },
-    validateKitTubes:function (kitType) {
+    validateKitTubes:function(kitType) {
       var valid = true;
       var tubeTypes = [];
 
@@ -95,6 +95,68 @@ define([
         }
       }
       return valid;
+    },
+    validateTubeUuid:function (data) {
+      var valid = false;
+
+      for (var i = 0; i < this.tubes.length; i++) {
+        if (this.tubes[i].uuid == data.uuid) {
+          valid = true;
+          break;
+        }
+      }
+
+      return valid;
+    },
+    validateSCBarcode:function(data) {
+      return data == "1220017279667" ? true : false;
+    },
+    getRowModel:function (rowNum) {
+      var rowModel = {};
+
+      if (!this.kitSaved) {
+        rowModel = {
+          "rowNum":rowNum,
+          "labware1":{
+            "resource":this.tubes[rowNum],
+            "expected_type":"tube",
+            "display_remove":false,
+            "display_barcode":false
+          },
+          "labware2":{
+            "expected_type":"spin_columns",
+            "display_remove":false,
+            "display_barcode":false
+          },
+          "labware3":{
+            "expected_type":"waste_tube",
+            "display_remove":false,
+            "display_barcode":false
+          }
+        };
+      }
+      else {
+        rowModel = {
+          "rowNum":rowNum,
+          "labware1":{
+            "expected_type":"tube",
+            "display_remove":true,
+            "display_barcode":true
+          },
+          "labware2":{
+            "expected_type":"spin_columns",
+            "display_remove":false,
+            "display_barcode":true
+          },
+          "labware3":{
+            "expected_type":"waste_tube",
+            "display_remove":false,
+            "display_barcode":false
+          }
+        };
+      }
+
+      return rowModel;
     },
 
     createSpinColumns:function () {

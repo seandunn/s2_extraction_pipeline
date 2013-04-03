@@ -122,6 +122,9 @@ define([ 'config'
             this.displayError(data.message);
 
           } else if (action == "login") {
+            if (data === undefined) {
+              throw new Error("DataSchemaError");
+            }
             this.updateModel(data);
           }
 

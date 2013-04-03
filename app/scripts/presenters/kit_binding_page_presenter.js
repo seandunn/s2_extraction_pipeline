@@ -18,9 +18,9 @@
  */
 
 
-define(['extraction_pipeline/views/kit_view'
+define(['extraction_pipeline/views/kit_binding_page_view'
   , 'extraction_pipeline/presenters/base_presenter'
-  , 'extraction_pipeline/models/kit_model'
+  , 'extraction_pipeline/models/kit_binding_model'
 ],
   function (View, BasePresenter, KitModel) {
     // interface ....
@@ -86,25 +86,7 @@ define(['extraction_pipeline/views/kit_view'
             }
           }
 
-          var rowModel = {
-            "rowNum":i,
-            "labware1":{
-              "resource":this.kitModel.tubes[i],
-              "expected_type":"tube",
-              "display_remove":false,
-              "display_barcode":false
-            },
-            "labware2":{
-              "expected_type":"spin_columns",
-              "display_remove":false,
-              "display_barcode":false
-            },
-            "labware3":{
-              "expected_type":"waste_tube",
-              "display_remove":false,
-              "display_barcode":false
-            }
-          };
+          var rowModel = this.kitModel.getRowModel(i);
           this.rowPresenters[i].setupPresenter(rowModel, jquerySelectionForRow(i));
         }
         this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
@@ -131,6 +113,29 @@ define(['extraction_pipeline/views/kit_view'
 
         return valid;
       },
+
+      getTube:function(child, data) {
+        var result = this.kitModel.findTubeFromBarcode(data.BC);
+        if (result == "notFound") {
+          child.displayErrorMessage("Barcode not found");
+        } else {
+          if (this.kitModel.validateTubeUuid(result)){
+            child.updateModel(result);
+          } else {
+            child.displayErrorMessage("Tube is not in kit");
+          }
+        }
+
+      },
+
+      getSpinColumn:function(child, data) {
+        if (this.kitModel.validateSCBarcode(data.BC)) {
+          child.updateModel({"resourceType": "spin_columns",
+            "BC" : data.BC});
+        } else {
+          child.displayErrorMessage("Spin column is not in kit");
+        }
+      },
       release:function () {
         this.currentView.clear();
         return this;
@@ -150,8 +155,11 @@ define(['extraction_pipeline/views/kit_view'
               this.owner.childDone(this, "error", {"message":"Error: The kit isn't validated."});
             }
           } else if (action == "printBC") {
+            this.kitModel.kitSaved = true;
             this.kitModel.createMissingSpinColumnBarcodes();
             this.owner.childDone(this, "error", {"message" : "Spin Column Barcodes printed"});
+            this.setupSubPresenters();
+            this.currentView.toggleHeaderEnabled(false);
           }
         }
 
@@ -161,7 +169,13 @@ define(['extraction_pipeline/views/kit_view'
           if (this.tubeTypes.length == this.numRows) {
             this.setValidState();
           }
-        }
+        } else if (action == "barcodeScanned") {
+      if (child.labwareModel.expected_type == "tube") {
+        this.getTube(child, data);
+      } else if (child.labwareModel.expected_type == "spin_columns") {
+        this.getSpinColumn(child, data);
+      }
+    }
       }
 
     });

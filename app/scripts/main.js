@@ -9,12 +9,14 @@ require.config({
     esprima:'vendor/esprima',
     jquery:'vendor/jquery.min',
     mapper:'/components/S2Mapper/app/scripts/mapper',
-    mapper_test: '/components/S2Mapper/test',
+    mapper_services:'/components/S2Mapper/app/scripts/services',
+    mapper_test: 'components/S2Mapper/test',
     labware:'/components/labware/app/scripts',
     config:'scripts/config',
     json:'/components/S2Mapper/app/test/json',
     text: '/components/requirejs-text/text',
-    extraction_pipeline: 'scripts'  }
+    extraction_pipeline: 'scripts'
+  }
 });
 
 require(['extraction_pipeline/app',
