@@ -1,4 +1,4 @@
-define([], function () {
+define(['text!extraction_pipeline/html_partials/scan_barcode_partial.html'], function (scanBarcodePartialHtml) {
 
   function getKey(e) {
     if (window.event) {
@@ -35,22 +35,25 @@ define([], function () {
       this.model = model;
     }
 
-    var parent = this.jquerySelector(),
-      htmlParts = [
-        '<div class="input-prepend"><span class="add-on">Scan ',
-        this.model.type,
-        '</span><input type="text" class="barcodeInput" value="', model.barcode,
-        '"', model.busy ? ' disabled="true"' : '' , '>',
-        model.value,
-        '</input>',
-        '</div>',
-        '<div class="alert alert-error hide" >',
-        '</div>'
-      ],
-      htmlString = htmlParts.join('');
+    var parent = this.jquerySelector();
+
+    _.templateSettings.variable = 'rc';
+
+    // Use underscore to insert the model values
+    var template = _.template(scanBarcodePartialHtml);
+    var templateData = {
+      type : this.model.type,
+      barcode : this.model.barcode,
+      value : this.model.value
+    };
+
+    if (model.busy){
+      $(".barcodeInput").attr("disabled", "true");
+    }
 
     // We have to append to the document or events won't register
-    parent.empty().append(htmlString);
+    parent.empty().append(template(templateData));
+
     var input = parent.find("input");
     var that = this;
     input.on("keypress", function (e) {
