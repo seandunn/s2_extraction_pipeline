@@ -44,12 +44,13 @@ define([ 'config'
           console.log("fast forward activated");
           this.pageModel.addTubeFromBarcode("1220017279668");
           this.pageModel.makeBatch();
+          return this;
         }
       }
       this.setupView();
       this.setupSubPresenters();
       this.renderView();
-
+      debugger;
       return this;
     },
     setupView:function () {

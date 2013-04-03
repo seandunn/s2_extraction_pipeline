@@ -5,69 +5,102 @@ define(['config'
   var workflowEngine = function (owner, config) {
 
     this.mainController = owner;
-    this.default = config["default"];
-    this.rules = config["rules"];
+    this.default = config["default_presenter"];
+    this.role_priority = config["workflow"]["role_priority"];
+    this.role_configuration = config["workflow"]["role_configuration"];
   };
 
   // Returns a function that finds the first "ready" item in the batch that matches the given rule.
-  function itemMatcherForBatch(batch) {
-
-    var items = batch.items;
-    //debugger;
-    return function(rule) {
+  function itemMatcherForBatchItems(items) {
+    console.log("mathc items",items);
+    return function (rule) {
+      console.log("*****",rule);
       return _.chain(items)
-              .filter(function(item) { return item.status === 'done'; })
-              .filter(function(item) { return item.role === rule[0]; })
-              .first()
-              .value();
+          .filter(function (item) {
+            console.log("?? ",item);
+            return item.status === 'done';
+          })
+          .filter(function (item) {
+            console.log("rule ",rule);
+            return item.role === rule;
+          })
+          .first()
+          .value();
     };
   }
 
-  workflowEngine.prototype.getNextPresenterName = function (inputDataForWorkflow) {
+  workflowEngine.prototype.getNextPresenterName = function (batch) {
     /**
      * inputDataForWorkflow is a batch
      */
-    console.log(inputDataForWorkflow);
-    var presenterRule = _.chain(this.rules).find(itemMatcherForBatch(inputDataForWorkflow)).value();
-    return presenterRule ? presenterRule[1] : this.default;
+    var deffered = $.Deferred();
+
+    console.log("\n\n\n==================================\n\n\n");
+
+    var items;
+    var that = this;
+    console.log("gN batch : ",batch);
+    batch.items.then(function (result) {
+      items = result;
+      console.log("gN items : ",items);
+      console.log(that.role_priority);
+      var matchingRole = _.chain(that.role_priority).find(itemMatcherForBatchItems(items)).value();
+      console.log("gN presenterRule : ",matchingRole);
+//      debugger;
+
+
+      deffered.resolve(matchingRole ? that.role_configuration[matchingRole]["presenter"]["presenter_name"] : this.default);
+    }).fail(function(){
+          deffered.reject();
+    });
+
+
+
+    return deffered.promise();
   };
 
-  workflowEngine.prototype.getNextPresenterFromName = function (presenterFactory, presenterName) {
+  workflowEngine.prototype.setNextPresenterFromName = function (presenterFactory, presenterName) {
+    var presenter = null;
     switch (presenterName) {
       case "binding_complete_page":
-        return presenterFactory.createBindingCompletePage(this.mainController);
-      case "kit_presenter_page":
-        return presenterFactory.createKitPresenter(this.mainController, {});
+        presenter = presenterFactory.createBindingCompletePage(this.mainController);
+        break;
+      case "kit_presenter":
+        presenter = presenterFactory.createKitPresenter(this.mainController, {});
+        break;
       case "selection_page_presenter":
-        return presenterFactory.createSelectionPagePresenter(this.mainController);
+        presenter = presenterFactory.createSelectionPagePresenter(this.mainController);
+        break;
       case "binding_finished_page_presenter":
-        return presenterFactory.createBindingFinishedPage(this.mainController);
+        presenter = presenterFactory.createBindingFinishedPage(this.mainController);
+        break;
       case "elution_loading_page_presenter":
-        return presenterFactory.createElutionLoadingPage(this.mainController);
+        presenter = presenterFactory.createElutionLoadingPage(this.mainController);
+        break;
       case "elution_wash_page_presenter":
-        return presenterFactory.createElutionWashPage(this.mainController);
+        presenter = presenterFactory.createElutionWashPage(this.mainController);
+        break;
       default:
-        return presenterFactory.createDefaultPresenter(this.mainController);
+        presenter = presenterFactory.createDefaultPresenter(this.mainController);
     }
+    this.mainController.childDone(this, "foundNextPresenter", presenter);
   };
 
-
-  workflowEngine.prototype.getNextPresenter = function (presenterFactory, inputDataForWorkflow) {
-    var presenterName = undefined;
+  workflowEngine.prototype.askForNextPresenter = function (presenterFactory, inputDataForWorkflow) {
     if (!inputDataForWorkflow.userUUID) {
       console.log(">> to default");
-      // what ever happened, if there's no user, nothing can happen!
-      presenterName = this.default;
+      this.setNextPresenterFromName(presenterFactory, this.default);
     } else if (!inputDataForWorkflow.batch && inputDataForWorkflow.labware) {
       console.log(">> to selection_page_presenter");
-      presenterName = "selection_page_presenter";
+      this.setNextPresenterFromName(presenterFactory, "selection_page_presenter");
     } else {
-      presenterName = this.getNextPresenterName(inputDataForWorkflow.batch);
+      var that = this;
+      this.getNextPresenterName(inputDataForWorkflow.batch).then(function (presenterName) {
+        console.log(">> to getNextPresenterName :  ", presenterName);
+        that.setNextPresenterFromName(presenterFactory, presenterName);
+      });
     }
-
-    return this.getNextPresenterFromName(presenterFactory, presenterName);
   };
-
 
   return workflowEngine;
 });

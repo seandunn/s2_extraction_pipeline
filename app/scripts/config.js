@@ -3,7 +3,7 @@ define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_
   var config = $.extend(mapperConfig, {
   });
 
-  config.logToConsole = true;
+  config.logToConsole = false;
 
   config.log = function (message, level) {
     if (!config.logToConsole) return; // do nothing
