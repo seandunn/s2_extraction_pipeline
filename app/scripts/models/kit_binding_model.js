@@ -22,7 +22,7 @@
 define([
   'extraction_pipeline/models/base_page_model'
 //  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
-], function(BasePageModel) {
+], function (BasePageModel) {
 
   var KitModel = Object.create(BasePageModel);
 
@@ -37,6 +37,7 @@ define([
       this.user = undefined;
       this.batch = undefined;
       this.tubes = [];
+      this.kitSaved = false;
       return this;
     },
     setBatch:function (batch) {
@@ -46,38 +47,38 @@ define([
       this.dirtySetTubes(); // as in: from the batch, I get the tubes involved...
       this.owner.childDone(this, "batchAdded");
     },
-    makeTransfer:function(source,destination_SC_BR){
+    makeTransfer:function (source, destination_SC_BR) {
       var root, that = this;
       var spinColumn;
       this.owner.getS2Root()
-        .then(function(r){
+        .then(function (r) {
           root = r;
           // creates sc with the given BC
           return SC.creates();
 //          return {}; //...
         })
-        .then(function(sc){
+        .then(function (sc) {
           spinColumn = sc;
 
           return root.tube_spin_column_transfers.new({"source":source, "destination":sc});
         })
-        .then(function(){
+        .then(function () {
           return source.order();
         })
-        .then(function(ord){
-          return ord.updateRole(source,{event:"complete"});
+        .then(function (ord) {
+          return ord.updateRole(source, {event:"complete"});
         })
-        .then(function(ord){
-          return ord.updateRole(spinColumn,{event:"complete"});
+        .then(function (ord) {
+          return ord.updateRole(spinColumn, {event:"complete"});
         })
-        .then(function(){
-          that.owner.childDone(that,"modelUpdated", {});
+        .then(function () {
+          that.owner.childDone(that, "modelUpdated", {});
         })
-        .fail(function(){
+        .fail(function () {
           // ...
         });
     },
-    dirtySetTubes:function(){
+    dirtySetTubes:function () {
       var that = this;
 //      this.setTestData(dataJSON);
       this.fetchResourcePromiseFromBarcode("1220017279667")
@@ -89,10 +90,10 @@ define([
         });
 //      this.uuids = this.owner.tubeUUIDs;
     },
-    createMissingSpinColumnBarcodes:function(){
+    createMissingSpinColumnBarcodes:function () {
       var that = this;
       this.barcodes = []
-      for (var tube in that.tubes){
+      for (var tube in that.tubes) {
         // TODO: create a spin column barcode for every tube
 
         // generate SC barcodes
@@ -104,8 +105,9 @@ define([
         // use tube and BC to generate SC
 //        var spinColumn = this.owner.getS2Root().spin
       }
+      this.printBarcodes(this.tubes);
     },
-    validateKitTubes:function(kitType) {
+    validateKitTubes:function (kitType) {
       var valid = true;
       var tubeTypes = [];
 
@@ -124,6 +126,68 @@ define([
         }
       }
       return valid;
+    },
+    validateTubeUuid:function (data) {
+      var valid = false;
+
+      for (var i = 0; i < this.tubes.length; i++) {
+        if (this.tubes[i].uuid == data.uuid) {
+          valid = true;
+          break;
+        }
+      }
+
+      return valid;
+    },
+    validateSCBarcode:function(data) {
+      return data == "1220017279667" ? true : false;
+    },
+    getRowModel:function (rowNum) {
+      var rowModel = {};
+
+      if (!this.kitSaved) {
+        rowModel = {
+          "rowNum":rowNum,
+          "labware1":{
+            "resource":this.tubes[rowNum],
+            "expected_type":"tube",
+            "display_remove":false,
+            "display_barcode":false
+          },
+          "labware2":{
+            "expected_type":"spin_columns",
+            "display_remove":false,
+            "display_barcode":false
+          },
+          "labware3":{
+            "expected_type":"waste_tube",
+            "display_remove":false,
+            "display_barcode":false
+          }
+        };
+      }
+      else {
+        rowModel = {
+          "rowNum":rowNum,
+          "labware1":{
+            "expected_type":"tube",
+            "display_remove":true,
+            "display_barcode":true
+          },
+          "labware2":{
+            "expected_type":"spin_columns",
+            "display_remove":false,
+            "display_barcode":true
+          },
+          "labware3":{
+            "expected_type":"waste_tube",
+            "display_remove":false,
+            "display_barcode":false
+          }
+        };
+      }
+
+      return rowModel;
     }
 
   });

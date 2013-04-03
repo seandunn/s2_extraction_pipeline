@@ -1,18 +1,15 @@
-define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_extraction.json'], function(mapperConfig, json) {
+define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_extraction.json'], function (mapperConfig, json) {
   'use strict';
   var config = $.extend(mapperConfig, {
   });
 
 
-
-
-
-  config.ajax = function (options){
+  config.ajax = function (options) {
     // a blank options.url should default to '/'
-    options.url = options.url.replace(/http:\/\/localhost:\d+/,'');
+    options.url = options.url.replace(/http:\/\/localhost:\d+/, '');
 
-    if (options.url.length === 0){
-      options.url  = '/'
+    if (options.url.length === 0) {
+      options.url = '/'
       options.type = 'get'
       options.data = null
     }
@@ -20,11 +17,9 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
     //increment the step if not a GET
 
 
-
-
     console.log('------------------------');
 //    console.log('Sending ajax message for ' + config.stage);
-    if (options.data == undefined){
+    if (options.data == undefined) {
       options.data = null;
     }
     config.reqParams = config.currentStep + '-' + options.url + options.type.toLowerCase() + (options.data);
@@ -45,7 +40,7 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
       // it means that the system couldn't find the data.
 
       console.log("AJAX <<<\n" + config.reqParams + "\n >>>: not found ");
-      console.log("shouldn't it be :\n<<<\n"+       JSON.stringify(config.completeSteps[config.currentStep]) + "\n >>>");
+      console.log("shouldn't it be :\n<<<\n" + JSON.stringify(config.completeSteps[config.currentStep]) + "\n >>>");
 
 //      // Check whether this is a search we need to fake.
 //      if (options.url === '/searches' && options.type.toLowerCase() === 'post') {
@@ -60,17 +55,17 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
 //
 //      } else {
 
-        fakeAjaxDeferred.reject(fakeAjaxDeferred, '404 error');
+      fakeAjaxDeferred.reject(fakeAjaxDeferred, '404 error');
 //      }
     } else {
       console.log("AJAX[" + config.reqParams + "]: responding with:");
       console.log(response);
 
       fakeAjaxDeferred.resolve({
-        url:           options.url,
-        'status':      200,
-        responseTime:  750,
-        responseText:  response
+        url:options.url,
+        'status':200,
+        responseTime:750,
+        responseText:response
       });
       config.currentStep++;
     }
@@ -83,15 +78,18 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
   config.completeWorkflow = {}
   config.completeSteps = []
   var absoluteStep = 0;
-  for (var stageNum in json){
-    for  (var stepNum in json[stageNum].steps) {
+  for (var stageNum in json) {
+    for (var stepNum in json[stageNum].steps) {
       var step = json[stageNum].steps[stepNum];
 
       config.completeWorkflow[absoluteStep + '-' + step.url + step.method + JSON.stringify(step.request)] = step.response;
-      absoluteStep ++;
+      absoluteStep++;
       config.completeSteps.push(step);
     }
   }
+
+  config.printServiceUrl = 'http://psd-dev.internal.sanger.ac.uk:8000/printers/legacy/soap';
+  config.printers = [ {name: 'e367bc', type: 2} ];
 
   return config;
 });
