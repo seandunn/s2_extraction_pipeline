@@ -47,9 +47,6 @@ define(['text!extraction_pipeline/html_partials/scan_barcode_partial.html'], fun
       value : this.model.value
     };
 
-    //TODO: Append the below using a jquery selection
-    var disableHtml = model.busy ? 'disabled="true"': '';
-
     if (model.busy){
       $(".barcodeInput").attr("disabled", "true");
     }

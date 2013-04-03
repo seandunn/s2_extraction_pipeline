@@ -53,7 +53,7 @@ define([
     setLabwareFromBarcode:function (barcode) {
       var that = this;
 //      this.setTestData(dataJSON);
-      this.fetchResourcePromiseFromBarcode(barcode)
+      return this.fetchResourcePromiseFromBarcode(barcode)
           .then(function (rsc) {
             that.setLabware(rsc);
           })
