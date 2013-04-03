@@ -1,4 +1,4 @@
-define([], function () {
+define(['text!extraction_pipeline/html_partials/selection_page_partial.html'], function (selectionPagePartialHtml) {
 
   var SelectionPageView = function (owner, selection) {
     /* Constructor for SelectionPageView
@@ -24,25 +24,29 @@ define([], function () {
 
      */
     if (model) {
-      var parts = [
-        '<h3 class="alert">',
-        '<p>User Barcode : ', model.user, '<p>',
-        '<p>Batch UUID : ', model.batch !== undefined ? model.batch : 'new', '<p>',
-        '</h3>'
-      ];
 
-      parts.push( "<ol>");
-      for (var i = 0; i < model.capacity; i++) {
-        parts.push( '<li class="labware">' + i + ' - NO PRESENTER ASSOCIATED WITH THIS ITEM</li>');
-      }
-      parts.push( "</ol>");
-      parts.push('<button class="btn pull-right">Continue</button>');
-      var html = parts.join('');
-      this.jquerySelector().empty().append(html);
+      //create a list for underscore to iterate through in partial html
+      var indices = new Array();
+
+      for (var i = 1; i <= model.capacity; i++){
+        indices.push(i);
+      };
+
+      var template = _.template(selectionPagePartialHtml);
+
+      // set the user and indices as template data
+      var templateData = {
+        user: model.user,
+        indices: indices
+      };
+
+
+      this.jquerySelector().empty().append(template(templateData));
       this.attachEvents();
     } else {
       this.jquerySelector().empty().append("loading...");
     }
+
     return this;
   };
 
