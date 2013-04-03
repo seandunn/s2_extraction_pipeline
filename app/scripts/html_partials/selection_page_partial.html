@@ -1,0 +1,12 @@
+<h3 class="alert">
+    <p>
+        User Barcode : <%- rc.user %>
+    <p>
+</h3>
+<ol class="labware">
+    <!--This should contain a list of EMPTY PRESENTER warnings -->
+    <% _.each (rc.indices, function (index) { %>
+    <li> <p><%- index %> - NO PRESENTER ASSOCIATED WITH THIS ITEM</p></li>
+    <% }); %>
+</ol>
+<button class="btn pull-right">Continue</button>
