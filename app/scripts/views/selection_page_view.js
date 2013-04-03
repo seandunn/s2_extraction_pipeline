@@ -28,8 +28,6 @@ define(['text!extraction_pipeline/html_partials/selection_page_partial.html'], f
       //create a list for underscore to iterate through in partial html
       var indices = new Array();
 
-      debugger;
-
       for (var i = 1; i <= model.capacity; i++){
         indices.push(i);
       };
