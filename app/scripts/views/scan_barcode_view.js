@@ -38,10 +38,10 @@ define([], function () {
     var parent = this.jquerySelector(),
       htmlParts = [
         '<div class="input-prepend"><span class="add-on">Scan ',
-        this.model.type,
-        '</span><input type="text" class="barcodeInput" value="', model.barcode,
+        '<%- rc.type %>',
+        '</span><input type="text" class="barcodeInput" value="', '<%- rc.barcode %>',
         '"', model.busy ? ' disabled="true"' : '' , '>',
-        model.value,
+        '<%- rc.value %>',
         '</input>',
         '</div>',
         '<div class="alert alert-error hide" >',
@@ -49,8 +49,17 @@ define([], function () {
       ],
       htmlString = htmlParts.join('');
 
+    _.templateSettings.variable = 'rc';
+
+    var template = _.template(htmlString);
+    var templateData = {
+                        type : this.model.type,
+                        barcode : this.model.barcode,
+                        value : this.model.value
+    };
+
     // We have to append to the document or events won't register
-    parent.empty().append(htmlString);
+    parent.empty().append(template(templateData));
     var input = parent.find("input");
     var that = this;
     input.on("keypress", function (e) {

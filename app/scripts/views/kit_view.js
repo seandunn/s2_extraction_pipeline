@@ -106,12 +106,12 @@ define([], function () {
     var jquerySelection = this.jquerySelector();
 
     if (valid) {
-      result = 'This kit is valid for the selected tubes';
+      result = '<div class="alert alert-success">This kit is valid for the selected tubes</div>';
       jquerySelection.
         find('.printButton').removeAttr('disabled');
     }
     else {
-      result = 'This kit is not valid for the selected tubes';
+      result = '<div class="alert alert-error">This kit is not valid for the selected tubes</div>';
       jquerySelection.
         find('.printButton').attr('disabled', 'disabled');
     }

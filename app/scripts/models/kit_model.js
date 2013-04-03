@@ -79,8 +79,8 @@ define([
     },
     dirtySetTubes:function(){
       var that = this;
-      this.setTestData(dataJSON);
-      this.fetchResourcePromiseFromBarcode("XX111111K")
+//      this.setTestData(dataJSON);
+      this.fetchResourcePromiseFromBarcode("1220017279667")
         .then(function (rsc) {
           that.tubes.push(rsc);
           that.tubes.push(rsc);
