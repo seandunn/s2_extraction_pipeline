@@ -39,14 +39,16 @@ define([ 'config'
         this.pageModel.setBatch(setupData.batch); // the batch BEFORE the labware!
         this.pageModel.setSeminalLabware(setupData.labware);
         this.pageModel.setUser(setupData.userUUID);
+        // for test purposes only
+        if (this.pageModel.tubes.length == 1){
+          console.log("fast forward activated");
+          this.pageModel.addTubeFromBarcode("1220017279668");
+          this.pageModel.makeBatch();
+        }
       }
       this.setupView();
       this.setupSubPresenters();
       this.renderView();
-
-      // for test purposes only
-//      this.pageModel.addTubeFromBarcode("1220017279668");
-//      this.pageModel.makeBatch();
 
       return this;
     },
@@ -159,6 +161,8 @@ define([ 'config'
           // TODO: use the data provided by the model to only update the relevant subpresenters...
           this.setupSubPresenters();
           this.renderView();
+
+
         } else if (action === "batchSaved") {
           var dataForOwner = {
             userUUID:this.pageModel.user,

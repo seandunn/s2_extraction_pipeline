@@ -46,6 +46,7 @@ define(['config'
          */
         setupPresenter:function (setupData, jquerySelection) {
           this.setupPlaceholder(jquerySelection);
+          this.pageModel = Object.create(DefaultPageModel).init(this);
           this.setupView();
           this.setupSubPresenters();
           this.renderView();

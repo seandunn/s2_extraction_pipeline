@@ -11,8 +11,11 @@ define(['config'
 
   // Returns a function that finds the first "ready" item in the batch that matches the given rule.
   function itemMatcherForBatch(batch) {
+
+    var items = batch.items;
+    //debugger;
     return function(rule) {
-      return _.chain(batch.items)
+      return _.chain(items)
               .filter(function(item) { return item.status === 'done'; })
               .filter(function(item) { return item.role === rule[0]; })
               .first()
@@ -34,7 +37,7 @@ define(['config'
       case "binding_complete_page":
         return presenterFactory.createBindingCompletePage(this.mainController);
       case "kit_presenter_page":
-        return presenterFactory.createKitPresenter(this.mainController);
+        return presenterFactory.createKitPresenter(this.mainController, {});
       case "selection_page_presenter":
         return presenterFactory.createSelectionPagePresenter(this.mainController);
       case "binding_finished_page_presenter":

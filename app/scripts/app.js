@@ -82,28 +82,7 @@ define([ 'config'
           this.currentPagePresenter = undefined;
         }
 
-//        var inputModelForWorkflowEngine = {
-//          userUUID:this.model.userUUID,
-//          labwareUUID:this.model.labwareUUID,
-//          batchUUID:this.model.batchUUID
-//        };
-//
-//        if (this.model.hasOwnProperty("HACK")) {
-//          inputModelForWorkflowEngine.HACK = "hack";
-//        }
-
         this.currentPagePresenter = this.workflow.getNextPresenter(this.presenterFactory, this.model);
-//    //this.currentPagePresenter = this.workflow.get_default_presenter(this.presenterFactory);
-//
-//    // marshalling the data for the default presenter... here... nothing to do!
-//        var inputModelForPresenter = {
-//          userUUID:this.model.userUUID,
-//          labwareUUID:this.model.labwareUUID,
-//          batchUUID:this.model.batchUUID
-//        };
-//        if (this.model.hasOwnProperty("HACK")) {
-//          inputModelForPresenter.HACK = "hack";
-//        }
 
         this.currentPagePresenter.setupPresenter(this.model, this.jquerySelection);
         this.model.labware = undefined;
@@ -132,23 +111,13 @@ define([ 'config'
       app.prototype.childDone = function (child, action, data) {
         console.log("A child of App (", child, ") said it has done the following action '" + action + "' with data :", data);
         try {
-          var inputDataForModel;
           if (action == "done") {
 
             $('html, body').animate({scrollTop:0}, 'slow');
 //            $('#content').toggle('slow');
 //            $('#content').toggle('slow');
 
-
-//            inputDataForModel = {
-//              userUUID:this.model.userUUID,
-//              labwareUUID:this.model.labwareUUID,
-//              batchUUID:data.batchUUID
-//            };
-//            if (data.hasOwnProperty("HACK")) {
-//              inputDataForModel.HACK = "hack";
-//            }
-            this.updateModel(inputDataForModel);
+            this.updateModel(data);
           } else if (action == "error") {
             this.displayError(data.message);
 
@@ -170,11 +139,6 @@ define([ 'config'
         }
 
       };
-
-      app.prototype.HACK_add_global_tube_uuids = function (tubeUUIDs) {
-        this.tubeUUIDs = tubeUUIDs;
-      }
-
 
       return app;
     });

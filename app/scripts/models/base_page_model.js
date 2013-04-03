@@ -75,14 +75,7 @@ define(['config'
         }
       }
       return deferredS2Resource.promise();
-    },
-    setTestData:function (testData) {
-      this.testData = testData;
-    },
-    activateTestData:function () {
-      config.setupTest(this.testData);
     }
-
   });
 
   return BasePageModel;
