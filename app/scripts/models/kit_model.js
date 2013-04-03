@@ -20,9 +20,9 @@
 "use strict";
 
 define([
-  'extraction_pipeline/models/base_page_model'
-//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
-], function(BasePageModel) {
+  'extraction_pipeline/models/base_page_model',
+  'mapper/operations'
+], function (BasePageModel, Operations) {
 
   var KitModel = Object.create(BasePageModel);
 
@@ -37,6 +37,7 @@ define([
       this.user = undefined;
       this.batch = undefined;
       this.tubes = [];
+      this.availableBarcodes = [];
       return this;
     },
     setBatch:function (batch) {
@@ -46,38 +47,7 @@ define([
       this.dirtySetTubes(); // as in: from the batch, I get the tubes involved...
       this.owner.childDone(this, "batchAdded");
     },
-    makeTransfer:function(source,destination_SC_BR){
-      var root, that = this;
-      var spinColumn;
-      this.owner.getS2Root()
-        .then(function(r){
-          root = r;
-          // creates sc with the given BC
-          return SC.creates();
-//          return {}; //...
-        })
-        .then(function(sc){
-          spinColumn = sc;
-
-          return root.tube_spin_column_transfers.new({"source":source, "destination":sc});
-        })
-        .then(function(){
-          return source.order();
-        })
-        .then(function(ord){
-          return ord.updateRole(source,{event:"complete"});
-        })
-        .then(function(ord){
-          return ord.updateRole(spinColumn,{event:"complete"});
-        })
-        .then(function(){
-          that.owner.childDone(that,"modelUpdated", {});
-        })
-        .fail(function(){
-          // ...
-        });
-    },
-    dirtySetTubes:function(){
+    dirtySetTubes:function () {
       var that = this;
       this.setTestData(dataJSON);
       this.fetchResourcePromiseFromBarcode("XX111111K")
@@ -89,11 +59,12 @@ define([
         });
 //      this.uuids = this.owner.tubeUUIDs;
     },
-    createMissingSpinColumnBarcodes:function(){
+    createMissingSpinColumnBarcodes:function () {
       var that = this;
       this.barcodes = []
-      for (var tube in that.tubes){
+      for (var tube in that.tubes) {
         // TODO: create a spin column barcode for every tube
+
 
         // generate SC barcodes
 
@@ -105,7 +76,7 @@ define([
 //        var spinColumn = this.owner.getS2Root().spin
       }
     },
-    validateKitTubes:function(kitType) {
+    validateKitTubes:function (kitType) {
       var valid = true;
       var tubeTypes = [];
 
@@ -124,8 +95,69 @@ define([
         }
       }
       return valid;
-    }
+    },
 
+    createSpinColumns:function () {
+      var that = this;
+      var listOfPromises = [];
+
+      _.each(this.tubes, function (tube) {
+        var registerLabwarePromise = $.Deferred();
+        listOfPromises.push(registerLabwarePromise);
+
+        Operations.registerLabware(
+          root.tubes,
+          'DNA',
+          'stock'
+        ).then(function (state) {
+            that.stash_by_BC[state.barcode] = state.labware;
+            that.stash_by_UUID [state.labware.uuid] = state.labware;
+            that.availableBarcodes.push(state.barcode);
+            registerLabwarePromise.resolve();
+          }).fail(function () {
+            registerLabwarePromise.reject();
+            that.owner.childDone(that, "failed", {});
+          });
+      });
+
+      $.when.apply(listOfPromises).then(function () {
+        that.owner.childDone(that, "success", {});
+      }).fail(function () {
+          that.owner.childDone(that, "failed", {});
+        });
+    },
+
+    makeTransfer:function (source, destination_SC_BR, index) {
+      var root, that = this;
+      var spinColumn;
+      this.owner.getS2Root()
+        .then(function (r) {
+          root = r;
+          // creates sc with the given BC
+          return SC.creates();
+//          return {}; //...
+        })
+        .then(function (sc) {
+          spinColumn = sc;
+
+          return root.tube_spin_column_transfers.new({"source":source, "destination":sc});
+        })
+        .then(function () {
+          return source.order();
+        })
+        .then(function (ord) {
+          return ord.updateRole(source, {event:"complete"});
+        })
+        .then(function (ord) {
+          return ord.updateRole(spinColumn, {event:"complete"});
+        })
+        .then(function () {
+          that.owner.childDone(that, "modelUpdated", {index:index});
+        })
+        .fail(function () {
+          // ...
+        });
+    }
   });
 
   return KitModel;
