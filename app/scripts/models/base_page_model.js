@@ -97,7 +97,7 @@ define(['config'
 
       var printer = PrintService.printers[0];
 
-//      printer.print(labels)
+//      printer.print([{prefix:'P1',barcode:'B1',suffix:'S1',name:'N1',description:'D1',project:'PR1'}])
 //        .done(function (result) {
 //          complete = true;
 //        })
@@ -110,7 +110,6 @@ define(['config'
 
       return complete;
     }
-
   });
 
   return BasePageModel;

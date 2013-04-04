@@ -103,7 +103,7 @@ define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_
   }
 
   config.printServiceUrl = 'http://psd-dev.internal.sanger.ac.uk:8000/printers/legacy/soap';
-  config.printers = [ {name: 'e367bc', type: 2} ];
+  config.printers = [ {name: 'e367bc', type: 1} ];
 
   return config;
 });
