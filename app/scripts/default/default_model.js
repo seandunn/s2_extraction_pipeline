@@ -85,16 +85,6 @@ define([
             });
       }
     }
-//    , dirtySetup:function () {
-//      var that = this;
-//      this.setTestData(dataJSON);
-//      this.fetchResourcePromiseFromBarcode("XX111111K")
-//          .then(function (rsc) {
-//            that.setLabware(rsc);
-//            that.setUser("XX111111K");
-//          });
-//    }
-
   });
 
   return DefaultPageModel;

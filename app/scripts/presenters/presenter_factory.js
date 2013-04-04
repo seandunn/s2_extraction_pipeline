@@ -5,7 +5,7 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
   'extraction_pipeline/presenters/row_presenter',
   'extraction_pipeline/presenters/labware_presenter',
   'extraction_pipeline/presenters/binding_finished_page_presenter',
-  'extraction_pipeline/presenters/elution_loading_page_presenter',
+  'extraction_pipeline/presenters/elution_page_presenter',
   'extraction_pipeline/presenters/elution_wash_page_presenter',
   'labware/presenters/tube_presenter',
   'labware/presenters/spin_column_presenter',
@@ -17,7 +17,7 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
               RowPresenter,
               LabwarePresenter,
               BindingFinishedPagePresenter,
-              ElutionLoadingPagePresenter,
+              ElutionPagePresenter,
               ElutionWashPagePresenter,
               TubePresenter,
               SpinColumnPresenter,
@@ -52,8 +52,8 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
       };
 
     PresenterFactory.prototype.createKitBindingPagePresenter =
-      function (owner) {
-        return Object.create(KitBindingPagePresenter).init(owner, this);
+      function (owner, initData) {
+        return Object.create(KitBindingPagePresenter).init(owner, this, initData);
       };
 
     PresenterFactory.prototype.createRowPresenter =
@@ -81,9 +81,9 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
           return Object.create(BindingFinishedPagePresenter).init(owner, this);
         };
 
-      PresenterFactory.prototype.createElutionLoadingPage =
+      PresenterFactory.prototype.createElutionPage =
         function (owner) {
-          return new ElutionLoadingPagePresenter(owner, this);
+          return Object.create(ElutionPagePresenter).init(owner, this);
         };
 
       PresenterFactory.prototype.createElutionWashPage =

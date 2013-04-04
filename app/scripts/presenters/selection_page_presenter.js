@@ -22,9 +22,7 @@ define([ 'config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/views/selection_page_view'
   , 'extraction_pipeline/models/selection_page_model'
-  , 'mapper/s2_root'
-  , 'text!components/S2Mapper/test/json/unit/root.json'
-], function (config, BasePresenter, SelectionPageView, SelectionPageModel, S2Root, rootTestJson) {
+], function (config, BasePresenter, SelectionPageView, SelectionPageModel ) {
 
   var PagePresenter = Object.create(BasePresenter);
 
@@ -35,18 +33,23 @@ define([ 'config'
       return this;
     },
     setupPresenter:function (setupData, jquerySelection) {
-      console.log("selection presenter  setupPresenter");
       this.setupPlaceholder(jquerySelection);
       this.pageModel = Object.create(SelectionPageModel).init(this);
       if (setupData) {
         this.pageModel.setBatch(setupData.batch); // the batch BEFORE the labware!
         this.pageModel.setSeminalLabware(setupData.labware);
         this.pageModel.setUser(setupData.userUUID);
+        // for test purposes only
+//        if (this.pageModel.tubes.length == 1){
+//          console.log("fast forward activated");
+//          this.pageModel.addTubeFromBarcode("1220017279668");
+//          this.pageModel.makeBatch();
+//          return this;
+//        }
       }
       this.setupView();
       this.setupSubPresenters();
       this.renderView();
-      this.pageModel.addTubeFromBarcode("1220017279668");
       return this;
     },
     setupView:function () {
@@ -158,11 +161,13 @@ define([ 'config'
           // TODO: use the data provided by the model to only update the relevant subpresenters...
           this.setupSubPresenters();
           this.renderView();
+
+
         } else if (action === "batchSaved") {
           var dataForOwner = {
             userUUID:this.pageModel.user,
             labware:this.pageModel.labware,
-            "batch":data
+            "batch":this.pageModel.batch
           };
           this.owner.childDone(this,"done",dataForOwner);
         } else if (action === "barcodeNotFound") {

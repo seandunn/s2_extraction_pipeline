@@ -1,30 +1,45 @@
-define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_extraction.json'], function (mapperConfig, json) {
+define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_extraction.json'], function (mapperConfig, json) {
   'use strict';
   var config = $.extend(mapperConfig, {
   });
 
+  config.logToConsole = true;
+
+  config.log = function (message, level) {
+    if (!config.logToConsole) return; // do nothing
+
+    var formats = [
+      'background-color:darkgreen; color:white;',
+      'background-color:darkblue; color:white;',
+      'background-color:red; color:white;'
+    ];
+
+    if (typeof message === 'object') {
+      console.log(message);
+    }
+    else {
+      console.log('%c' + message, formats[level]);
+    }
+
+  };
 
   config.ajax = function (options) {
     // a blank options.url should default to '/'
-    options.url = options.url.replace(/http:\/\/localhost:\d+/, '');
+    options.url = options.url.replace(/http:\/\/localhost:\d+/,'');
 
-    if (options.url.length === 0) {
-      options.url = '/'
+    if (options.url.length === 0){
+      options.url  = '/'
       options.type = 'get'
       options.data = null
     }
 
-    //increment the step if not a GET
-
-
-    console.log('------------------------');
 //    console.log('Sending ajax message for ' + config.stage);
     if (options.data == undefined) {
       options.data = null;
     }
     config.reqParams = config.currentStep + '-' + options.url + options.type.toLowerCase() + (options.data);
 //    console.log(config.reqParams);
-
+    config.log('Sending ajax message for "' + config.reqParams + '"');
 
     // The real $.ajax returns a promise.  Please leave this as a defered as
     // it lets us spy on reject and resolve.
@@ -36,12 +51,12 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
 
     var response = config.completeWorkflow[config.reqParams];
     if (response === undefined) {
-      // if the stored result can't be found in the data but the url is in the root then
-      // it means that the system couldn't find the data.
+      config.log(config.reqParams, 1);
+      config.log('\nRequest for: \n' + config.reqParams + '\nnot found in test data.', 2);
 
-      console.log("AJAX <<<\n" + config.reqParams + "\n >>>: not found ");
-      console.log("shouldn't it be :\n<<<\n" + JSON.stringify(config.completeSteps[config.currentStep]) + "\n >>>");
-
+      var tmp = config.completeSteps[config.currentStep];
+      var text = config.currentStep + '-' + tmp.url + tmp.method + JSON.stringify(tmp.request);
+      config.log('\Found this instead: \n' + text, 2);
 //      // Check whether this is a search we need to fake.
 //      if (options.url === '/searches' && options.type.toLowerCase() === 'post') {
 //        console.log('But we are searching for a ' + options.data.search.model  + ', so need to return the empty data');
@@ -54,16 +69,15 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
 //        });
 //
 //      } else {
-
       fakeAjaxDeferred.reject(fakeAjaxDeferred, '404 error');
 //      }
     } else {
-      console.log("AJAX[" + config.reqParams + "]: responding with:");
-      console.log(response);
+      config.log("Responding with:", 0);
+      config.log(response);
 
       fakeAjaxDeferred.resolve({
-        url:options.url,
-        'status':200,
+        url:         options.url,
+        'status':    200,
         responseTime:750,
         responseText:response
       });
@@ -71,7 +85,7 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
     }
     return fakeAjaxDeferred;
   };
-  json = JSON.parse(json)
+  json = JSON.parse(json);
 
   //initialise step count
   config.currentStep = 0;
@@ -89,7 +103,7 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
   }
 
   config.printServiceUrl = 'http://psd-dev.internal.sanger.ac.uk:8000/printers/legacy/soap';
-  config.printers = [ {name: 'e367bc', type: 2} ];
+  config.printers = [ {name: 'e367bc', type: 1} ];
 
   return config;
 });
