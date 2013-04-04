@@ -62,9 +62,6 @@ define(['config'
   workflowEngine.prototype.setNextPresenterFromName = function (presenterFactory, presenterName) {
     var presenter = null;
     switch (presenterName) {
-      case "binding_complete_page":
-        presenter = presenterFactory.createBindingCompletePage(this.mainController);
-        break;
       case "kit_presenter":
         presenter = presenterFactory.createKitBindingPagePresenter(this.mainController, {});
         break;
@@ -74,8 +71,8 @@ define(['config'
       case "binding_finished_page_presenter":
         presenter = presenterFactory.createBindingFinishedPage(this.mainController);
         break;
-      case "elution_loading_page_presenter":
-        presenter = presenterFactory.createElutionLoadingPage(this.mainController);
+      case "elution_page_presenter":
+        presenter = presenterFactory.createElutionPage(this.mainController);
         break;
       case "elution_wash_page_presenter":
         presenter = presenterFactory.createElutionWashPage(this.mainController);

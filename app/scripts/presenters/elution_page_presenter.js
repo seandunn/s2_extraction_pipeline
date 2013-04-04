@@ -18,9 +18,10 @@
  */
 
 
-define(['extraction_pipeline/views/elution_loading_page_view',
-  'extraction_pipeline/presenters/base_presenter'
-], function (View, BasePresenter) {
+define(['extraction_pipeline/views/elution_page_view',
+  'extraction_pipeline/presenters/base_presenter',
+  'extraction_pipeline/models/elution_model'
+], function (View, BasePresenter, ElutionModel) {
 
   var ElutionLoadingPresenter = Object.create(BasePresenter);
 
@@ -39,26 +40,23 @@ define(['extraction_pipeline/views/elution_loading_page_view',
      * -------
      * this
      */
-
-
     // interface ....
     init:function (owner, presenterFactory) {
       this.owner = owner;
+      this.elutionModel = Object.create(ElutionModel).init(this);
       this.currentView = undefined;
       this.barcodePresenter = undefined;
       this.rowPresenters = [];
-      this.tubeTypes = [];
       this.presenterFactory = presenterFactory;
       return this;
     },
 
     setupPresenter:function (input_model, jquerySelection) {
 //    console.log("et  : setupPresenter");
-      this.tubeTypes = [];
       this.setupPlaceholder(jquerySelection);
       this.setupView();
       this.renderView();
-      this.updateModel(input_model);
+      this.setupSubPresenters();
       return this;
     },
 
@@ -96,28 +94,6 @@ define(['extraction_pipeline/views/elution_loading_page_view',
       return this;
     },
 
-    /* Updates the presenters model and delegates to subpresenters
-     *
-     *
-     * Arguments
-     * ---------
-     * model:     The model to be used by the presenter to display data
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    updateModel:function (model) {
-      if (model.hasOwnProperty('tubes')) {
-        this.model = model.tubes;
-      }
-      this.model = this.owner.tubeUUIDs;
-      this.numRows = this.model.length;
-      this.setupSubPresenters();
-      return this;
-    },
-
     /* Sets up any subpresenters to be displayed in this instance
      *
      *
@@ -133,7 +109,7 @@ define(['extraction_pipeline/views/elution_loading_page_view',
       if (!this.barcodePresenter) {
         this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
       }
-      for (var i = 0; i < this.numRows; i++) {
+      for (var i = 0; i < this.elutionModel.spin_columns.length; i++) {
         if (!this.rowPresenters[i]) {
           this.rowPresenters[i] = this.presenterFactory.createRowPresenter(this);
         }
@@ -161,7 +137,7 @@ define(['extraction_pipeline/views/elution_loading_page_view',
         return that.jquerySelection().find('.barcode')
       }
 
-      for (var i = 0; i < this.numRows; i++) {
+      for (var i = 0; i < this.elutionModel.spin_columns.length; i++) {
 
         var jquerySelectionForRow = function (i) {
           return function () {
@@ -169,20 +145,7 @@ define(['extraction_pipeline/views/elution_loading_page_view',
           }
         }
 
-        var rowModel = {
-          "rowNum":i,
-          "remove_arrow":false,
-          "labware1":{
-            "expected_type":"spin_columns",
-            "display_remove":true,
-            "display_barcode":true
-          },
-          "labware2":{
-            "expected_type":"tube",
-            "display_remove":true,
-            "display_barcode":true
-          }
-        };
+        var rowModel = this.elutionModel.getRowModel(i);
 
         this.rowPresenters[i].setupPresenter(rowModel, jquerySelectionForRow(i));
       }
@@ -268,8 +231,8 @@ define(['extraction_pipeline/views/elution_loading_page_view',
     validateUuid:function (child, data) {
       var valid = false;
 
-      for (var i = 0; i < this.model.length; i++) {
-        if (this.model[i].uuid == data.uuid) {
+      for (var i = 0; i < this.model.tubes.length; i++) {
+        if (this.model.spin_columns[i].uuid == data.uuid) {
           valid = true;
           break;
         }
@@ -295,9 +258,14 @@ define(['extraction_pipeline/views/elution_loading_page_view',
     childDone:function (child, action, data) {
 
       if (action == 'elutionStarted') {
-//      if (this.checkPageComplete()) {
-        this.owner.childDone(this, 'done', {});
-//      }
+        if (this.elutionModel.checkPageComplete()) {
+          this.owner.childDone(this, 'elutionStarted', {});
+        }
+      } else if (action == 'printOutputTubeBC') {
+//          this.elutionModel.createOutputTubes();
+        this.elutionModel.printBarcodes([]);
+          this.currentView.setPrintButtonEnabled(false);
+          this.owner.childDone(this, 'error', {message: 'Output tube barcodes printed'});
       }
 
     }
