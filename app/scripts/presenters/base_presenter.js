@@ -17,10 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 
-define(['config'
-//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
-],
-  function (config) {
+define(['config'], function (config) {
 
     var BasePresenter = Object.create(null);
 
