@@ -26,23 +26,22 @@ define(['scripts/default/default_presenter'], function (DefaultPresenter) {
         presenterFactory = {};
         presenterFactory.createDefaultPresenter = function () {
         };
+        presenterFactory.createScanBarcodePresenter = function () {
+        };
 
         spyOn(presenterFactory, 'createDefaultPresenter');
       }
 
       it("default presenter is setup properly", function () {
         configureSpies();
-        defaultPresenter = new DefaultPresenter(owner, presenterFactory);
-        defaultPresenter.updateModel = function () {
-        };
-        spyOn(defaultPresenter, 'updateModel');
-
+        defaultPresenter = Object.create(DefaultPresenter).init(owner, presenterFactory);
+        spyOn(defaultPresenter, 'renderView');
         defaultPresenter.setupPresenter({}, jquerySelection);
 
         expect(defaultPresenter.currentView).toBeDefined();
         expect(defaultPresenter.presenterFactory).toBeDefined();
         expect(defaultPresenter.owner).toBeDefined();
-        expect(defaultPresenter.updateModel).toHaveBeenCalled();
+        expect(defaultPresenter.renderView).toHaveBeenCalled();
 
       });
 

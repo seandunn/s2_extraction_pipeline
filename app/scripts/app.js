@@ -107,7 +107,6 @@ define([ 'config'
 
       app.prototype.renderView = function () {
         // nothing to render
-        this.jquerySelection().append("hello");
         return this;
       };
 
@@ -135,6 +134,9 @@ define([ 'config'
             this.displayError(data.message);
 
           } else if (action == "login") {
+            if (data === undefined) {
+              throw new Error("DataSchemaError");
+            }
             this.updateModel(data);
           } else if (action == "foundNextPresenter") {
             this.setupNextPresenter(data);

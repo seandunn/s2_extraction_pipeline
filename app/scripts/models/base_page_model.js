@@ -17,8 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 define(['config'
+        ,'mapper_services/print'
 //  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
-], function (config) {
+], function (config, PrintService) {
 
   var BasePageModel = Object.create(null);
 
@@ -75,7 +76,31 @@ define(['config'
         }
       }
       return deferredS2Resource.promise();
+    },
+    printBarcodes:function(labwareCollection) {
+      var labels = [];
+      var complete = false;
+
+      labwareCollection.forEach(function (item){
+        labels.push(item.labels);
+      });
+
+      var printer = PrintService.printers[0];
+
+//      printer.print(labels)
+//        .done(function (result) {
+//          complete = true;
+//        })
+//        .fail(function (error) {
+//          console.log(error);
+//        }).
+//        then(function(result) {
+//          console.log(result);
+//        });
+
+      return complete;
     }
+
   });
 
   return BasePageModel;

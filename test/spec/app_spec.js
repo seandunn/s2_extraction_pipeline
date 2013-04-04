@@ -149,8 +149,7 @@ define(['scripts/app'], function (app) {
 
     it("calling childDone() on app with action='login' but wrong data does throw", function () {
       var inputDataForModel = undefined;
-      configuresSpiesOnMainApp();
-      ;
+//      configuresSpiesOnMainApp();
       var f = function () {
         mainApp.childDone(undefined, "login", inputDataForModel);
       }

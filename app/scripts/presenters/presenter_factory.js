@@ -1,10 +1,9 @@
 define(['extraction_pipeline/presenters/scan_barcode_presenter',
   'extraction_pipeline/presenters/selection_page_presenter',
   'extraction_pipeline/default/default_presenter',
-  'extraction_pipeline/presenters/kit_presenter',
+  'extraction_pipeline/presenters/kit_binding_page_presenter',
   'extraction_pipeline/presenters/row_presenter',
   'extraction_pipeline/presenters/labware_presenter',
-  'extraction_pipeline/presenters/binding_complete_page_presenter',
   'extraction_pipeline/presenters/binding_finished_page_presenter',
   'extraction_pipeline/presenters/elution_loading_page_presenter',
   'extraction_pipeline/presenters/elution_wash_page_presenter',
@@ -14,10 +13,9 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
     function (ScanBarcodePresenter,
               SelectionPagePresenter,
               DefaultPresenter,
-              KitPresenter,
+              KitBindingPagePresenter,
               RowPresenter,
               LabwarePresenter,
-              BindingCompletePagePresenter,
               BindingFinishedPagePresenter,
               ElutionLoadingPagePresenter,
               ElutionWashPagePresenter,
@@ -53,9 +51,9 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
         return Object.create(DefaultPresenter).init(owner, this);
       };
 
-    PresenterFactory.prototype.createKitPresenter =
+    PresenterFactory.prototype.createKitBindingPagePresenter =
       function (owner) {
-        return Object.create(KitPresenter).init(owner, this);
+        return Object.create(KitBindingPagePresenter).init(owner, this);
       };
 
     PresenterFactory.prototype.createRowPresenter =
@@ -77,11 +75,6 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
       function (owner) {
         return Object.create(LabwarePresenter).init(owner, this);
       };
-
-      PresenterFactory.prototype.createBindingCompletePage =
-          function (owner) {
-            return Object.create(BindingCompletePagePresenter).init(owner, this);
-          };
 
       PresenterFactory.prototype.createBindingFinishedPage =
         function (owner) {

@@ -89,20 +89,6 @@ define([
         });
 //      this.uuids = this.owner.tubeUUIDs;
     },
-    findTubeFromBarcode:function (barcode) {
-      var that = this;
-      var result = {};
-      this.setTestData(dataJSON);
-      this.fetchResourcePromiseFromBarcode(barcode)
-        .then(function (rsc) {
-          result = rsc;
-        })
-        .fail(function () {
-          result = "notFound"
-        });
-
-      return result;
-    },
     createMissingSpinColumnBarcodes:function(){
       var that = this;
       this.barcodes = []

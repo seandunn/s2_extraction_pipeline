@@ -66,7 +66,7 @@ define(['config'
         presenter = presenterFactory.createBindingCompletePage(this.mainController);
         break;
       case "kit_presenter":
-        presenter = presenterFactory.createKitPresenter(this.mainController, {});
+        presenter = presenterFactory.createKitBindingPagePresenter(this.mainController, {});
         break;
       case "selection_page_presenter":
         presenter = presenterFactory.createSelectionPagePresenter(this.mainController);

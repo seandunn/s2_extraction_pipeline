@@ -25,10 +25,10 @@ define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_
 
   config.ajax = function (options) {
     // a blank options.url should default to '/'
-    options.url = options.url.replace(/http:\/\/localhost:\d+/, '');
+    options.url = options.url.replace(/http:\/\/localhost:\d+/,'');
 
-    if (options.url.length === 0) {
-      options.url = '/'
+    if (options.url.length === 0){
+      options.url  = '/'
       options.type = 'get'
       options.data = null
     }
@@ -101,6 +101,9 @@ define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_
       config.completeSteps.push(step);
     }
   }
+
+  config.printServiceUrl = 'http://psd-dev.internal.sanger.ac.uk:8000/printers/legacy/soap';
+  config.printers = [ {name: 'e367bc', type: 2} ];
 
   return config;
 });
