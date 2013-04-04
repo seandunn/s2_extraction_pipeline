@@ -39,6 +39,7 @@ define([
       this.spinColumns = [];
       this.availableBarcodes = [];
       this.kitSaved = false;
+      this.order = undefined;
 
       this.inputRole = initData["input"];
       this.outputRoleForTube = initData["output"]["tube"];
@@ -47,10 +48,17 @@ define([
       return this;
     },
     setBatch:                       function (batch) {
+      var that = this;
       console.log("setBatch : ", batch);
       this.addResource(batch);
       this.batch = batch;
       this.setAllTubesFromCurrentBatch(); // as in: from the batch, I get the tubes involved...
+
+
+      this.batch.orders.then(function(result) {
+        that.order = result[0];
+      });
+
       this.owner.childDone(this, "batchAdded");
     },
     setAllTubesFromCurrentBatch:    function () {
@@ -85,22 +93,36 @@ define([
     },
     validateKitTubes:function (kitType) {
       var valid = true;
+      var rna = false;
+      var dna = false;
       var tubeTypes = [];
+      var pipeline = '';
 
-      for (var tube in this.tubes) {
-        if (this.tubes[tube].hasOwnProperty('aliquots')) {
-          if (this.tubes[tube].aliquots.length > 0) {
-            tubeTypes.push = this.tubes[tube].aliquots[0].type;
+      pipeline = this.order.pipeline;
+
+      rna = (pipeline.indexOf('RNA') != -1);
+      dna = (pipeline.indexOf('DNA') != -1);
+
+      if (dna) {
+        tubeTypes.push('DNA');
+      }
+      if (rna) {
+        tubeTypes.push('RNA');
+      }
+
+      tubeTypes.sort();
+      kitType.sort();
+
+      if (tubeTypes.length != kitType.length) {
+        valid = false;
+      } else {
+        tubeTypes.forEach(function(tube) {
+          if (kitType.indexOf(tube) == -1) {
+            valid = false;
           }
-        }
+        })
       }
 
-      for (var index in tubeTypes) {
-        if (kitType.indexOf(tubeTypes[index]) == -1) {
-          valid = false;
-          break;
-        }
-      }
       return valid;
     },
     validateTubeUuid:function (data) {

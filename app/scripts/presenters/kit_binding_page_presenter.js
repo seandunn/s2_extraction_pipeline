@@ -153,7 +153,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
             }
           } else if (action == "printBC") {
             this.kitModel.kitSaved = true;
-            this.kitModel.createMissingSpinColumnBarcodes();
+            this.kitModel.createMissingSpinColumns();
             this.owner.childDone(this, "error", {"message":"Spin Column Barcodes printed"});
             this.setupSubPresenters();
             this.currentView.toggleHeaderEnabled(false);
