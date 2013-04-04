@@ -50,8 +50,8 @@ define(['config'
           this.setupView();
           this.setupSubPresenters();
           this.renderView();
-          this.pageModel.setUserFromBarcode("benoit");
-          this.pageModel.setLabwareFromBarcode("1220017279667");
+//          this.pageModel.setUserFromBarcode("benoit");
+//          this.pageModel.setLabwareFromBarcode("1220017279667");
 
           return this;
         },
