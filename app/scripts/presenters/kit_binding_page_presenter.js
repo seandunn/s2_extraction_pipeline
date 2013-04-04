@@ -21,116 +21,117 @@ define(['extraction_pipeline/views/kit_binding_page_view'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/models/kit_binding_model'
 ],
-    function (View, BasePresenter, KitModel) {
-      // interface ....
-      var KitPresenter = Object.create(BasePresenter);
+  function (View, BasePresenter, KitModel) {
+    // interface ....
+    var KitPresenter = Object.create(BasePresenter);
 
-      $.extend(KitPresenter, {
-        init:              function (owner, presenterFactory, setuptData) {
-          this.owner = owner;
-          this.kitModel = Object.create(KitModel).init(this);
-          this.currentView = undefined;
-          this.barcodePresenter = undefined;
-          this.rowPresenters = [];
-          this.tubeTypes = [];
-          this.presenterFactory = presenterFactory;
-          return this;
-        },
-        setupPresenter:    function (input_model, jquerySelection) {
-          this.tubeTypes = [];
+    $.extend(KitPresenter, {
+      init:function (owner, presenterFactory, setuptData) {
+        this.owner = owner;
+        this.kitModel = Object.create(KitModel).init(this);
+        this.currentView = undefined;
+        this.barcodePresenter = undefined;
+        this.rowPresenters = [];
+        this.tubeTypes = [];
+        this.presenterFactory = presenterFactory;
+        return this;
+      },
+      setupPresenter:function (input_model, jquerySelection) {
+        this.tubeTypes = [];
 
-          // TODO: Replace the dirty setTubes with a clean method
-          this.kitModel.dirtySetTubes();
-          this.setupPlaceholder(jquerySelection);
-          this.setupView();
-          this.renderView();
-          this.setupSubPresenters();
-          this.setValidState();
-          return this;
-        },
-        setupPlaceholder:  function (jquerySelection) {
-          this.jquerySelection = jquerySelection;
-          return this;
-        },
-        setupView:         function () {
-          this.currentView = new View(this, this.jquerySelection);
-          return this;
-        },
-        setupSubPresenters:function () {
-          if (!this.barcodePresenter) {
-            this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
+        // TODO: Replace the dirty setTubes with a clean method
+        this.kitModel.dirtySetTubes();
+        this.setupPlaceholder(jquerySelection);
+        this.setupView();
+        this.renderView();
+        this.setupSubPresenters();
+        this.setValidState();
+        return this;
+      },
+      setupPlaceholder:function (jquerySelection) {
+        this.jquerySelection = jquerySelection;
+        return this;
+      },
+      setupView:function () {
+        this.currentView = new View(this, this.jquerySelection);
+        return this;
+      },
+      setupSubPresenters:function () {
+        if (!this.barcodePresenter) {
+          this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
+        }
+        for (var i = 0; i < this.kitModel.tubes.length; i++) {
+          if (!this.rowPresenters[i]) {
+            this.rowPresenters[i] = this.presenterFactory.createRowPresenter(this);
           }
-          for (var i = 0; i < this.kitModel.tubes.length; i++) {
-            if (!this.rowPresenters[i]) {
-              this.rowPresenters[i] = this.presenterFactory.createRowPresenter(this);
+        }
+        this.setupSubModel();
+        return this;
+      },
+      setupSubModel:function () {
+        var modelJson = {
+          "type":"Kit",
+          "value":"Kit0001"
+        };
+        var that = this;
+        var jquerySelectionForBarcode = function () {
+          return that.jquerySelection().find('.barcode')
+        }
+        for (var i = 0; i < this.kitModel.tubes.length; i++) {
+
+          var jquerySelectionForRow = function (i) {
+            return function () {
+              return that.jquerySelection().find('.row' + i);
             }
           }
-          this.setupSubModel();
-          return this;
-        },
-        setupSubModel:     function () {
-          var modelJson = {
-            "type": "Kit",
-            "value":"Kit0001"
-          };
-          var that = this;
-          var jquerySelectionForBarcode = function () {
-            return that.jquerySelection().find('.barcode')
-          }
-          for (var i = 0; i < this.kitModel.tubes.length; i++) {
 
-            var jquerySelectionForRow = function (i) {
-              return function () {
-                return that.jquerySelection().find('.row' + i);
-              }
-            }
-
-            var rowModel = this.kitModel.getRowModel(i);
-            this.rowPresenters[i].setupPresenter(rowModel, jquerySelectionForRow(i));
-          }
-          this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
-          return this;
-        },
-        renderView:        function () {
-          // render view...
-          this.currentView.renderView();
-          if (this.barcodePresenter) {
-            this.barcodePresenter.renderView();
-          }
+          var rowModel = this.kitModel.getRowModel(i);
+          this.rowPresenters[i].setupPresenter(rowModel, jquerySelectionForRow(i));
+        }
+        this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
+        return this;
+      },
+      renderView:function () {
+        // render view...
+        this.currentView.renderView();
+        if (this.barcodePresenter) {
+          this.barcodePresenter.renderView();
+        }
 //      for (var i = 0; i < this.kitModel.tubes.length; i++) {
 //        if (this.rowPresenters[i]) {
 //          this.rowPresenters[i].renderView();
 //        }
 //      }
-          return this;
-        },
-        setValidState:     function () {
+        return this;
+      },
+      setValidState:function () {
 
-          var kitType = this.jquerySelection().find('.kitSelect').val().split('/');
-          var valid = this.kitModel.validateKitTubes(kitType);
-          this.currentView.setKitValidState(valid);
+        var kitType = this.jquerySelection().find('.kitSelect').val().split('/');
+        var valid = this.kitModel.validateKitTubes(kitType);
+        this.currentView.setKitValidState(valid);
 
-          return valid;
-        },
+        return valid;
+      },
+      getTubeFromModel:function (requester, barcode) {
 
-        getTubeFromModel:function(requester, barcode) {
-          //TODO: Create method in MODEL that searches for the tube: returns it if found
-          var result = this.kitModel.findTubeInModelFromBarcode(barcode);
-          if (result == null) {
-            requester.displayErrorMessage("Barcode not found");
-          } else {
-            requester.displaySuccessMessage("Tube found");
-            requester.updateModel(result);
-          }
-          return result;
-        },
+        var result = this.kitModel.findTubeInModelFromBarcode(barcode);
+        if (result == null) {
+          requester.displayErrorMessage("Barcode not found");
+        }
+        else {
+          requester.displaySuccessMessage("Tube found");
+          requester.setupLabware1Model(result);
+        }
+      },
+      getSpinColumnFromModel:function (requester, barcode) {
 
-      getSpinColumn:function(child, data) {
-        if (this.kitModel.validateSCBarcode(data.BC)) {
-          child.updateModel({"resourceType": "spin_columns",
-            "BC" : data.BC});
-        } else {
-          child.displayErrorMessage("Spin column is not in kit");
+        var result = this.kitModel.findSCInModelFromBarcode(barcode);
+        if (result == null) {
+          requester.displayErrorMessage("Spin column is not in kit");
+        }
+        else {
+          requester.displaySuccessMessage("Spin column found");
+          requester.setupLabware2Model(result);
         }
       },
       release:function () {
@@ -154,7 +155,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
           } else if (action == "printBC") {
             this.kitModel.kitSaved = true;
             this.kitModel.createMissingSpinColumnBarcodes();
-            this.owner.childDone(this, "error", {"message" : "Spin Column Barcodes printed"});
+            this.owner.childDone(this, "error", {"message":"Spin Column Barcodes printed"});
             this.setupSubPresenters();
             this.currentView.toggleHeaderEnabled(false);
           }
@@ -167,12 +168,12 @@ define(['extraction_pipeline/views/kit_binding_page_view'
             this.setValidState();
           }
         } else if (action == "barcodeScanned") {
-      if (child.labwareModel.expected_type == "tube") {
-        this.getTubeFromModel(child, data);
-      } else if (child.labwareModel.expected_type == "spin_columns") {
-        this.getSpinColumn(child, data);
-      }
-    }
+          if (child.labwareModel.expected_type == "tube") {
+            this.getTubeFromModel(child, data);
+          } else if (child.labwareModel.expected_type == "spin_columns") {
+            this.getSpinColumnFromModel(child, data);
+          }
+        }
       }
 
     });

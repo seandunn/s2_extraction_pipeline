@@ -37,6 +37,7 @@ define([
       this.user = undefined;
       this.batch = undefined;
       this.tubes = [];
+      this.spinColumns = [];
       this.availableBarcodes = [];
       this.kitSaved = false;
       return this;
@@ -61,27 +62,18 @@ define([
 //      this.uuids = this.owner.tubeUUIDs;
     },
     findTubeInModelFromBarcode:function(barcode){
-      for(var i=0; i<arr.length; i++) {
-        if (tubes[i].barcode == barcode) return tubes[i];
+      for(var i=0; i<this.tubes.length; i++) {
+        if (this.tubes[i].barcode == barcode) return this.tubes[i];
       }
 
       return null;
     },
-    createMissingSpinColumnBarcodes:function(){
-      var that = this;
-      this.barcodes = []
-      for (var tube in that.tubes){
-        // TODO: create a spin column barcode for every tube
-
-        // generate SC barcodes
-
-        // save the barcodes
-        this.barcodes.push(); // barcodes!
-
-
-        // use tube and BC to generate SC
-//        var spinColumn = this.owner.getS2Root().spin
+    findSCInModelFromBarcode:function(barcode){
+      for(var i=0; i<this.spinColumns.length; i++){
+        if (this.spinColumns[i].barcode == barcode) return this.spinColumns[i];
       }
+
+      return null;
     },
     validateKitTubes:function(kitType) {
       var valid = true;
@@ -166,7 +158,7 @@ define([
       return rowModel;
     },
 
-    createSpinColumns:function () {
+    createMissingSpinColumns:function () {
       var that = this;
       var listOfPromises = [];
 
@@ -181,7 +173,7 @@ define([
         ).then(function (state) {
             that.stash_by_BC[state.barcode] = state.labware;
             that.stash_by_UUID [state.labware.uuid] = state.labware;
-            that.availableBarcodes.push(state.barcode);
+            that.spinColumns.push(state.labware);
             registerLabwarePromise.resolve();
           }).fail(function () {
             registerLabwarePromise.reject();
