@@ -60,6 +60,13 @@ define([
         });
 //      this.uuids = this.owner.tubeUUIDs;
     },
+    findTubeInModelFromBarcode:function(barcode){
+      for(var i=0; i<arr.length; i++) {
+        if (tubes[i].barcode == barcode) return tubes[i];
+      }
+
+      return null;
+    },
     createMissingSpinColumnBarcodes:function(){
       var that = this;
       this.barcodes = []

@@ -114,18 +114,15 @@ define(['extraction_pipeline/views/kit_binding_page_view'
         },
 
         getTubeFromModel:function(requester, barcode) {
-          var result = this.kitModel.findTubeFromBarcode(barcode);
-          if (result == "notFound") {
-            child.displayErrorMessage("Barcode not found");
+          //TODO: Create method in MODEL that searches for the tube: returns it if found
+          var result = this.kitModel.findTubeInModelFromBarcode(barcode);
+          if (result == null) {
+            requester.displayErrorMessage("Barcode not found");
           } else {
-            if (this.kitModel.validateTubeUuid(result)){
-              child.displaySuccessMessage("Tube");
-              child.updateModel(result);
-            } else {
-              child.displayErrorMessage("Tube is not in kit");
-            }
+            requester.displaySuccessMessage("Tube found");
+            requester.updateModel(result);
           }
-
+          return result;
         },
 
       getSpinColumn:function(child, data) {
@@ -171,7 +168,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
           }
         } else if (action == "barcodeScanned") {
       if (child.labwareModel.expected_type == "tube") {
-        this.getTube(child, data);
+        this.getTubeFromModel(child, data);
       } else if (child.labwareModel.expected_type == "spin_columns") {
         this.getSpinColumn(child, data);
       }
