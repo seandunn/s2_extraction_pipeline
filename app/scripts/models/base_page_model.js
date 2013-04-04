@@ -118,6 +118,24 @@ define(['config'
 //        });
 
       return complete;
+    },
+    createLabwareResource:function(type) {
+
+      this.owner.getS2Root()
+        .then(function (root) {
+          var labwareType = {};
+
+          switch (type) {
+            case 'tube':
+                labwareType = root.tubes;
+              break;
+            case 'spin_column':
+                labwareType = root.spin_columns;
+              break;
+          };
+
+
+        });
     }
 
   });

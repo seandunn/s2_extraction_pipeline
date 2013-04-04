@@ -55,3 +55,14 @@ ul{
     position: relative;
   }
 }
+.rowDisabled{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  opacity: 0.6;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  z-index: 3;
+  display: none;
+}
