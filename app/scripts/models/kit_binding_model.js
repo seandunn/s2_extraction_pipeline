@@ -56,20 +56,15 @@ define([
     setAllTubesFromCurrentBatch:    function () {
       var that = this;
       this.batch.items.then(function (items) {
-            console.log(items);
             _.each(items, function (item) {
               if (item.role === that.inputRole && item.status === "done") {
-                _.each(items, function (tube) {
-                  //if (tube.)
-                  that.fetchResourcePromiseFromUUID(tube.uuid)
+                  that.fetchResourcePromiseFromUUID(item.uuid)
                       .then(function (rsc) {
-                        //that.tubes.push(rsc);
-
+                        that.addResource(rsc);
+                        that.tubes.push(rsc);
                       });
-                });
-              }
+                }
             });
-
           }
       );
 //      this.uuids = this.owner.tubeUUIDs;
