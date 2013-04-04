@@ -9,6 +9,7 @@ require.config({
     domReady:'components/requirejs-domready/domReady',
     mapper:'components/S2Mapper/app/scripts/mapper',
     mapper_test:'components/S2Mapper/test',
+    mapper_services:'/components/S2Mapper/app/scripts/services',
     extraction_pipeline:'scripts/',
     labware:'components/labware/app/scripts/',
     config:'test_config',
