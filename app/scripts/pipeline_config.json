@@ -1,8 +1,25 @@
 {
-    "rules":[
-      [
-        {"tube_to_be_extracted": "selection_page_presenter"}
-      ]
-    ],
-    "default":"default_presenter"
+  "workflow":{
+  "rules":  [
+    "tube_to_be_extracted",
+    "tube_to_be_extracted_na+p"
+  ],
+  "details":{
+      "tube_to_be_extracted_na+p":{
+        "output":   {
+          "tube": "binding_tube_to_be_extracted_na+p"
+        },
+        "presenter":{"filename":"kit_presenter", "default_printer":"the one next to the coffee machine"}
+      },
+      "binding_tube_to_be_extracted_na+p":{
+      "output":   {
+        "tube": "byproduct_tube_rna+p",
+        "spin_coloumn":"spin_column_dna"
+      },
+      "presenter":{"filename":"binding_presenter", "default_printer":"the one next to the coffee machine"}
+    }
+  },
+  "default":"default_presenter"
+  },
+  "printers":[{"name":"my lovely printer"}]
 }

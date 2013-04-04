@@ -3,13 +3,32 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
   var config = $.extend(mapperConfig, {
   });
 
+  config.logToConsole = true;
+
+  config.log = function (message, level) {
+    if (!config.logToConsole) return; // do nothing
+
+    var formats = [
+      'background-color:darkgreen; color:white;',
+      'background-color:darkblue; color:white;',
+      'background-color:red; color:white;'
+    ];
+
+    if (typeof message === 'object') {
+      console.log(message);
+    }
+    else {
+      console.log('%c' + message, formats[level]);
+    }
+
+  };
 
   config.ajax = function (options) {
     // a blank options.url should default to '/'
-    options.url = options.url.replace(/http:\/\/localhost:\d+/, '');
+    options.url = options.url.replace(/http:\/\/localhost:\d+/,'');
 
-    if (options.url.length === 0) {
-      options.url = '/'
+    if (options.url.length === 0){
+      options.url  = '/'
       options.type = 'get'
       options.data = null
     }
@@ -24,6 +43,7 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
     }
     config.reqParams = config.currentStep + '-' + options.url + options.type.toLowerCase() + (options.data);
 //    console.log(config.reqParams);
+    config.log('Sending ajax message for "' + config.reqParams + '"');
 
 
     // The real $.ajax returns a promise.  Please leave this as a defered as
@@ -42,6 +62,9 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
       console.log("AJAX <<<\n" + config.reqParams + "\n >>>: not found ");
       console.log("shouldn't it be :\n<<<\n" + JSON.stringify(config.completeSteps[config.currentStep]) + "\n >>>");
 
+      var tmp = config.completeSteps[config.currentStep];
+      var text = config.currentStep + '-' + tmp.url + tmp.method + JSON.stringify(tmp.request);
+      config.log('\Found this instead: \n' + text, 2);
 //      // Check whether this is a search we need to fake.
 //      if (options.url === '/searches' && options.type.toLowerCase() === 'post') {
 //        console.log('But we are searching for a ' + options.data.search.model  + ', so need to return the empty data');
@@ -54,16 +77,15 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
 //        });
 //
 //      } else {
-
       fakeAjaxDeferred.reject(fakeAjaxDeferred, '404 error');
 //      }
     } else {
-      console.log("AJAX[" + config.reqParams + "]: responding with:");
-      console.log(response);
+      config.log("Responding with:", 0);
+      config.log(response);
 
       fakeAjaxDeferred.resolve({
-        url:options.url,
-        'status':200,
+        url:         options.url,
+        'status':    200,
         responseTime:750,
         responseText:response
       });

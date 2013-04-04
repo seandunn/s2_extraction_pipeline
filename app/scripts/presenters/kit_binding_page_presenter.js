@@ -27,7 +27,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
     var KitPresenter = Object.create(BasePresenter);
 
     $.extend(KitPresenter, {
-      init:function (owner, presenterFactory) {
+      init:function (owner, presenterFactory, setuptData) {
         this.owner = owner;
         this.kitModel = Object.create(KitModel).init(this);
         this.currentView = undefined;
