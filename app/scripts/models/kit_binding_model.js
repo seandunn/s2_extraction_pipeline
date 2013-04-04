@@ -28,7 +28,7 @@ define([
 
   $.extend(KitModel, {
 
-    init:                           function (owner, initData) {
+    init:function (owner, initData) {
       this.owner = Object.create(owner);
       this.stash_by_BC = {};
       this.stash_by_UUID = {};
@@ -46,26 +46,26 @@ define([
 
       return this;
     },
-    setBatch:                       function (batch) {
+    setBatch:function (batch) {
       console.log("setBatch : ", batch);
       this.addResource(batch);
       this.batch = batch;
       this.setAllTubesFromCurrentBatch(); // as in: from the batch, I get the tubes involved...
       this.owner.childDone(this, "batchAdded");
     },
-    setAllTubesFromCurrentBatch:    function () {
+    setAllTubesFromCurrentBatch:function () {
       var that = this;
       this.batch.items.then(function (items) {
-            _.each(items, function (item) {
-              if (item.role === that.inputRole && item.status === "done") {
-                  that.fetchResourcePromiseFromUUID(item.uuid)
-                      .then(function (rsc) {
-                        that.addResource(rsc);
-                        that.tubes.push(rsc);
-                      });
-                }
-            });
-          }
+          _.each(items, function (item) {
+            if (item.role === that.inputRole && item.status === "done") {
+              that.fetchResourcePromiseFromUUID(item.uuid)
+                .then(function (rsc) {
+                  that.addResource(rsc);
+                  that.tubes.push(rsc);
+                });
+            }
+          });
+        }
       );
 //      this.uuids = this.owner.tubeUUIDs;
     },
@@ -197,27 +197,37 @@ define([
     },
     makeTransfer:function (source, destination, rowPresenter) {
       var that = this;
-      Operations.betweenLabware(root.actions.transfer_tubes_to_tubes, [
-        function (operations, state) {
-          operations.push({
-            input:{ resource:source, role:'inputRole', order:results.get('order') },
-            output:{ resource:destination, role:this.outputRoleForSC },
-            fraction:0.5,
-            aliquot_type:'DNA'
-          });
-        }
-      ]).operation()
-        .then(function () {
+      var s2root = null;
 
-          // refreshing cache
-          that.stash_by_BC[source.labels.barcode] = undefined;
-          that.stash_by_UUID[source.uuid] = undefined;
-          that.fetchResourcePromiseFromUUID(source.uuid);
-          that.stash_by_BC[destination.labels.barcode] = undefined;
-          that.stash_by_UUID[destination.uuid] = undefined;
-          that.fetchResourcePromiseFromUUID(destination.uuid);
+      this.owner.getS2Root().then(function (result) {
+        s2root = result;
+        return source.order;
+      })
+        .then(function (order) {
+          Operations.betweenLabware(s2root.actions.transfer_tubes_to_tubes, [
+            function (operations, state) {
+              operations.push({
+                input:{ resource:source, role:that.inputRole, order:order },
+                output:{ resource:destination, role:that.outputRoleForSC},
+                fraction:1.0,
+                aliquot_type:source.aliquots[0].type
+              });
+            }
+          ]
+          ).
+            operation
+            .then(function () {
 
-          rowPresenter.childDone("...");
+              // refreshing cache
+              that.stash_by_BC[source.labels.barcode] = undefined;
+              that.stash_by_UUID[source.uuid] = undefined;
+              that.fetchResourcePromiseFromUUID(source.uuid);
+              that.stash_by_BC[destination.labels.barcode] = undefined;
+              that.stash_by_UUID[destination.uuid] = undefined;
+              that.fetchResourcePromiseFromUUID(destination.uuid);
+
+              rowPresenter.childDone("...");
+            });
         });
     }
   });

@@ -60,15 +60,12 @@ define(['config'
       case "selection_page_presenter":
         presenter = presenterFactory.createSelectionPagePresenter(this.mainController);
         break;
-      case "binding_finished_page_presenter":
-        presenter = presenterFactory.createBindingFinishedPage(this.mainController);
-        break;
       case "elution_page_presenter":
-        presenter = presenterFactory.createElutionPage(this.mainController);
+        presenter = presenterFactory.createElutionPage(this.mainController, initData);
         break;
-      case "elution_wash_page_presenter":
-        presenter = presenterFactory.createElutionWashPage(this.mainController);
-        break;
+//      case "elution_wash_page_presenter":
+//        presenter = presenterFactory.createElutionWashPage(this.mainController, initData);
+//        break;
       default:
         presenter = presenterFactory.createDefaultPresenter(this.mainController);
     }

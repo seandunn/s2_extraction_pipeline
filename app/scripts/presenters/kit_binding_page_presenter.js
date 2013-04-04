@@ -44,6 +44,12 @@ define(['extraction_pipeline/views/kit_binding_page_view'
         this.renderView();
         this.setupSubPresenters();
         this.setValidState();
+
+        // for test : make a transfer HERE
+        this.kitModel.makeTransfer(this.kitModel.tubes[0], this.kitModel.spinColumns[0], this.rowPresenters[0]);
+
+
+
         return this;
       },
       setupPlaceholder:function (jquerySelection) {
