@@ -1,9 +1,9 @@
-define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_extraction.json'], function (mapperConfig, json) {
+define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_extraction.json'], function (mapperConfig, json) {
   'use strict';
   var config = $.extend(mapperConfig, {
   });
 
-  config.logToConsole = true;
+  config.logToConsole = false;
 
   config.log = function (message, level) {
     if (!config.logToConsole) return; // do nothing
@@ -33,10 +33,6 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
       options.data = null
     }
 
-    //increment the step if not a GET
-
-
-    console.log('------------------------');
 //    console.log('Sending ajax message for ' + config.stage);
     if (options.data == undefined) {
       options.data = null;
@@ -44,7 +40,6 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
     config.reqParams = config.currentStep + '-' + options.url + options.type.toLowerCase() + (options.data);
 //    console.log(config.reqParams);
     config.log('Sending ajax message for "' + config.reqParams + '"');
-
 
     // The real $.ajax returns a promise.  Please leave this as a defered as
     // it lets us spy on reject and resolve.
@@ -56,11 +51,8 @@ define(['mapper_test/test_config', 'text!mapper_test/json/dna_and_rna_manual_ext
 
     var response = config.completeWorkflow[config.reqParams];
     if (response === undefined) {
-      // if the stored result can't be found in the data but the url is in the root then
-      // it means that the system couldn't find the data.
-
-      console.log("AJAX <<<\n" + config.reqParams + "\n >>>: not found ");
-      console.log("shouldn't it be :\n<<<\n" + JSON.stringify(config.completeSteps[config.currentStep]) + "\n >>>");
+      config.log(config.reqParams, 1);
+      config.log('\nRequest for: \n' + config.reqParams + '\nnot found in test data.', 2);
 
       var tmp = config.completeSteps[config.currentStep];
       var text = config.currentStep + '-' + tmp.url + tmp.method + JSON.stringify(tmp.request);

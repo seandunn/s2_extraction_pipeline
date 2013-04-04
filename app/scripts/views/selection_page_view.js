@@ -1,5 +1,7 @@
 define(['text!extraction_pipeline/html_partials/selection_page_partial.html'], function (selectionPagePartialHtml) {
 
+  'use strict';
+
   var SelectionPageView = function (owner, selection) {
     /* Constructor for SelectionPageView
      *
@@ -55,7 +57,7 @@ define(['text!extraction_pipeline/html_partials/selection_page_partial.html'], f
     /* Renders the next button
      */
 
-    var button = this.jquerySelector().find("div button.nextBtn");
+    var button = this.jquerySelector().find("button.btn");
     var thatOwner = this.owner;
     var that = this;
     button.on("click", function () {

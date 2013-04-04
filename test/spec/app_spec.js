@@ -61,7 +61,7 @@ define(['scripts/app'], function (app) {
       fakeWorkflow = {};
       fakeWorkflow.getNextPresenter = function (getNextPresenter, data) {
       };
-      spyOn(fakeWorkflow, 'getNextPresenter').andCallFake(function(){
+      spyOn(fakeWorkflow, 'askForNextPresenter').andCallFake(function(){
         return fakePresenter;
       });
     }
@@ -104,11 +104,11 @@ define(['scripts/app'], function (app) {
 
     it("app calls the workflow after setupPresenter()", function () {
       mainApp.setupPresenter({});
-      expect(fakeWorkflow.getNextPresenter).toHaveBeenCalled();
+      expect(fakeWorkflow.askForNextPresenter).toHaveBeenCalled();
     });
 
     it("app calls the workflow after updateModel()", function () {
-      expect(fakeWorkflow.getNextPresenter).toHaveBeenCalled();
+      expect(fakeWorkflow.askForNextPresenter).toHaveBeenCalled();
     });
 
     it("calling childDone() on app with action='done' calls updateModel()", function () {

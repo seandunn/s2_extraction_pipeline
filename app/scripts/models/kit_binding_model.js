@@ -109,7 +109,7 @@ define([
       return valid;
     },
     validateSCBarcode:function(data) {
-      return data == "1220017279667" ? true : false;
+      return true;
     },
     getRowModel:function (rowNum) {
       var rowModel = {};

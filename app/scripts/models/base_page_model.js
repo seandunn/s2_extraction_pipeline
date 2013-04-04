@@ -77,32 +77,13 @@ define(['config'
       }
       return deferredS2Resource.promise();
     },
-    setTestData:function (testData) {
-      this.testData = testData;
-    },
-    activateTestData:function () {
-      config.setupTest(this.testData);
-    },
-    findTubeFromBarcode:function (barcode) {
-      var that = this;
-      var result = {};
-      this.fetchResourcePromiseFromBarcode(barcode)
-        .then(function (rsc) {
-          result = rsc;
-        })
-        .fail(function () {
-          result = "notFound"
-        });
-
-      return result;
-    },
     printBarcodes:function(labwareCollection) {
       var labels = [];
       var complete = false;
 
       labwareCollection.forEach(function (item){
         labels.push(item.labels);
-      })
+      });
 
       var printer = PrintService.printers[0];
 
