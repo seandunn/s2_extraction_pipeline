@@ -1395,7 +1395,7 @@
 
 
     {
-      "description":"get tube",
+      "description":"19 get tube",
       "method":     "get",
       "url":        "/tube1_UUID",
       "request":    null,
@@ -1445,7 +1445,7 @@
     },
 
     {
-      "description":"get tube",
+      "description":"20 - get tube",
       "method":     "get",
       "url":        "/tube2_UUID",
       "request":    null,
@@ -1490,6 +1490,29 @@
               "type": "ean13-barcode"
             }
           }
+        }
+      }
+    },
+
+    {
+      "description":"Create new spin columns",
+      "method":     "post",
+      "url":        "/spin_columns",
+      "request":    {
+        "spin_column":{
+          "user":"username"
+        }
+      },
+      "response":   {
+        "spin_column":{
+          "actions": {
+            "read":  "http://localhost:9292/9d28a0f0-738b-0130-e17c-282066132de2",
+            "create":"http://localhost:9292/9d28a0f0-738b-0130-e17c-282066132de2",
+            "update":"http://localhost:9292/9d28a0f0-738b-0130-e17c-282066132de2",
+            "delete":"http://localhost:9292/9d28a0f0-738b-0130-e17c-282066132de2"
+          },
+          "uuid":    "sc_UUID",
+          "aliquots":[]
         }
       }
     },
