@@ -27,9 +27,8 @@ define([
   var KitModel = Object.create(BasePageModel);
 
   $.extend(KitModel, {
-    //TODO: add suitable methods for the model
 
-    init:                           function (owner, initData) {
+    init:function (owner, initData) {
       this.owner = Object.create(owner);
       this.stash_by_BC = {};
       this.stash_by_UUID = {};
@@ -41,55 +40,55 @@ define([
       this.availableBarcodes = [];
       this.kitSaved = false;
 
-      this.inputRole = "binding_tube_to_be_extracted_na+p" || initData["inputRole"] || "binding_tube_to_be_extracted";
-      this.outputRoleForTube = "binding_tube_to_be_extracted_na+p" || initData["outputRoles"]["tube"];
-      this.outputRoleForSC = "binding_tube_to_be_extracted_na+p" || initData["outputRoles"]["spin_column"];
+      this.inputRole = initData["input"];
+      this.outputRoleForTube = initData["output"]["tube"];
+      this.outputRoleForSC = initData["output"]["spin_column"];
 
       return this;
     },
-    setBatch:                       function (batch) {
+    setBatch:function (batch) {
       console.log("setBatch : ", batch);
       this.addResource(batch);
       this.batch = batch;
       this.setAllTubesFromCurrentBatch(); // as in: from the batch, I get the tubes involved...
       this.owner.childDone(this, "batchAdded");
     },
-    setAllTubesFromCurrentBatch:    function () {
+    setAllTubesFromCurrentBatch:function () {
       var that = this;
       this.batch.items.then(function (items) {
-            console.log(items);
-            _.each(items, function (item) {
-              if (item.role === that.inputRole && item.status === "done") {
-                _.each(items, function (tube) {
-                  //if (tube.)
-                  that.fetchResourcePromiseFromUUID(tube.uuid)
-                      .then(function (rsc) {
-                        //that.tubes.push(rsc);
+          console.log(items);
+          _.each(items, function (item) {
+            if (item.role === that.inputRole && item.status === "done") {
+              _.each(items, function (tube) {
+                //if (tube.)
+                that.fetchResourcePromiseFromUUID(tube.uuid)
+                  .then(function (rsc) {
+                    //that.tubes.push(rsc);
 
-                      });
-                });
-              }
-            });
+                  });
+              });
+            }
+          });
 
-          }
+        }
       );
 //      this.uuids = this.owner.tubeUUIDs;
     },
-    findTubeInModelFromBarcode:function(barcode){
-      for(var i=0; i<this.tubes.length; i++) {
+    findTubeInModelFromBarcode:function (barcode) {
+      for (var i = 0; i < this.tubes.length; i++) {
         if (this.tubes[i].barcode == barcode) return this.tubes[i];
       }
 
       return null;
     },
-    findSCInModelFromBarcode:function(barcode){
-      for(var i=0; i<this.spinColumns.length; i++){
+    findSCInModelFromBarcode:function (barcode) {
+      for (var i = 0; i < this.spinColumns.length; i++) {
         if (this.spinColumns[i].barcode == barcode) return this.spinColumns[i];
       }
 
       return null;
     },
-    validateKitTubes:               function (kitType) {
+    validateKitTubes:function (kitType) {
       var valid = true;
       var tubeTypes = [];
 
@@ -109,7 +108,7 @@ define([
       }
       return valid;
     },
-    validateTubeUuid:               function (data) {
+    validateTubeUuid:function (data) {
       var valid = false;
 
       for (var i = 0; i < this.tubes.length; i++) {
@@ -121,49 +120,49 @@ define([
 
       return valid;
     },
-    validateSCBarcode:              function (data) {
+    validateSCBarcode:function (data) {
       return true;
     },
-    getRowModel:                    function (rowNum) {
+    getRowModel:function (rowNum) {
       var rowModel = {};
 
       if (!this.kitSaved) {
         rowModel = {
-          "rowNum":  rowNum,
+          "rowNum":rowNum,
           "labware1":{
-            "resource":       this.tubes[rowNum],
-            "expected_type":  "tube",
-            "display_remove": false,
+            "resource":this.tubes[rowNum],
+            "expected_type":"tube",
+            "display_remove":false,
             "display_barcode":false
           },
           "labware2":{
-            "expected_type":  "spin_columns",
-            "display_remove": false,
+            "expected_type":"spin_columns",
+            "display_remove":false,
             "display_barcode":false
           },
           "labware3":{
-            "expected_type":  "waste_tube",
-            "display_remove": false,
+            "expected_type":"waste_tube",
+            "display_remove":false,
             "display_barcode":false
           }
         };
       }
       else {
         rowModel = {
-          "rowNum":  rowNum,
+          "rowNum":rowNum,
           "labware1":{
-            "expected_type":  "tube",
-            "display_remove": true,
+            "expected_type":"tube",
+            "display_remove":true,
             "display_barcode":true
           },
           "labware2":{
-            "expected_type":  "spin_columns",
-            "display_remove": false,
+            "expected_type":"spin_columns",
+            "display_remove":false,
             "display_barcode":true
           },
           "labware3":{
-            "expected_type":  "waste_tube",
-            "display_remove": false,
+            "expected_type":"waste_tube",
+            "display_remove":false,
             "display_barcode":false
           }
         };
@@ -206,16 +205,16 @@ define([
     makeTransfer:function (source, destination, rowPresenter) {
       var that = this;
       Operations.betweenLabware(root.actions.transfer_tubes_to_tubes, [
-        function(operations, state) {
+        function (operations, state) {
           operations.push({
-            input:  { resource: source,  role: 'inputRole', order: results.get('order') },
-            output: { resource: destination, role: this.outputRoleForSC },
-            fraction: 0.5,
-            aliquot_type: 'DNA'
+            input:{ resource:source, role:'inputRole', order:results.get('order') },
+            output:{ resource:destination, role:this.outputRoleForSC },
+            fraction:0.5,
+            aliquot_type:'DNA'
           });
         }
       ]).operation()
-        .then(function(){
+        .then(function () {
 
           // refreshing cache
           that.stash_by_BC[source.labels.barcode] = undefined;
@@ -226,41 +225,6 @@ define([
           that.fetchResourcePromiseFromUUID(destination.uuid);
 
           rowPresenter.childDone("...");
-        })
-
-
-      ; //.done(results.expected).fail(results.unexpected);
-
-
-      //TODO: CHECK THIS FUNCTION
-      var root, that = this;
-      var spinColumn;
-      this.owner.getS2Root()
-        .then(function (r) {
-          root = r;
-          // creates sc with the given BC
-          return SC.creates();
-//          return {}; //...
-        })
-        .then(function (sc) {
-          spinColumn = sc;
-
-          return root.tube_spin_column_transfers.new({"source":source, "destination":sc});
-        })
-        .then(function () {
-          return source.order();
-        })
-        .then(function (ord) {
-          return ord.updateRole(source, {event:"complete"});
-        })
-        .then(function (ord) {
-          return ord.updateRole(spinColumn, {event:"complete"});
-        })
-        .then(function () {
-          that.owner.childDone(that, "modelUpdated", {index:index});
-        })
-        .fail(function () {
-          // ...
         });
     }
   });
