@@ -52,7 +52,17 @@ define(['config'
         if (rsc) {
           return deferredS2Resource.resolve(rsc).promise();
         } else {
-          debugger;
+          this.owner.getS2Root()
+              .then(function (root) {
+                return root.find(resourceDetails.uuid);
+              }).then(function (result) {
+                rsc = result;
+                that.addResource(rsc);
+                deferredS2Resource.resolve(rsc);
+              }).fail(function () {
+                deferredS2Resource.reject();
+              })
+          ;
           return deferredS2Resource.reject().promise();
         }
       }
