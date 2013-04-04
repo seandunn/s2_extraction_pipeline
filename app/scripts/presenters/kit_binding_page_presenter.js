@@ -114,12 +114,13 @@ define(['extraction_pipeline/views/kit_binding_page_view'
         return valid;
       },
 
-      getTube:function(child, data) {
-        var result = this.kitModel.findTubeFromBarcode(data.BC);
+      getTubeFromModel:function(requester, barcode) {
+        var result = this.kitModel.findTubeFromBarcode(barcode);
         if (result == "notFound") {
           child.displayErrorMessage("Barcode not found");
         } else {
           if (this.kitModel.validateTubeUuid(result)){
+            child.displaySuccessMessage("Tube");
             child.updateModel(result);
           } else {
             child.displayErrorMessage("Tube is not in kit");

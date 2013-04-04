@@ -190,6 +190,21 @@ define([
     },
 
     makeTransfer:function (source, destination_SC_BR, index) {
+
+      Operations.betweenLabware(root.actions.transfer_tubes_to_tubes, [
+        function(operations, state) {
+          operations.push({
+            input:  { resource: results.get('inputTube'),  role: 'inputRole', order: results.get('order') },
+            output: { resource: results.get('outputTube'), role: 'outputRole' },
+            fraction: 0.5,
+            aliquot_type: 'DNA'
+          });
+          return $.Deferred().resolve('Woot!').promise();
+        }
+      ]).operation().done(results.expected).fail(results.unexpected);
+
+
+      //TODO: CHECK THIS FUNCTION
       var root, that = this;
       var spinColumn;
       this.owner.getS2Root()
