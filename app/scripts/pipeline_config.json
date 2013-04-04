@@ -1,39 +1,41 @@
 {
-  "workflow":         {
-    "role_priority":     [
-      "tube_to_be_extracted_na+p",
-      "binding_tube_to_be_extracted_na+p"
-    ],
-    "role_configuration":{
-      "tube_to_be_extracted_na+p":{
-        "output":   {
-          "tube":"binding_tube_to_be_extracted_na+p"
-        },
-        "presenter":{
-          "presenter_name": "selection_page_presenter",
-          "default_printer":{
-            "name":       "",
-            "description":"",
-            "url":        "http://localhost:9999"
-          }
-        }
-      },
+    "workflow":{
+        "role_priority":[
+            "tube_to_be_extracted_na+p",
+            "binding_tube_to_be_extracted_na+p"
+        ],
+        "role_configuration":{
+            "tube_to_be_extracted_na+p":{
+                "input":"tube_to_be_extracted_na+p",
+                "output":{
+                    "tube":"binding_tube_to_be_extracted_na+p"
+                },
+                "presenter":{
+                    "presenter_name":"selection_page_presenter",
+                    "default_printer":{
+                        "name":"",
+                        "description":"",
+                        "url":"http://localhost:9999"
+                    }
+                }
+            },
 
-      "binding_tube_to_be_extracted_na+p":{
-        "output":   {
-          "tube":        "byproduct_tube_rna+p",
-          "spin_coloumn":"spin_column_dna"
-        },
-        "presenter":{
-          "presenter_name": "kit_presenter",
-          "default_printer":{
-            "name":       "",
-            "description":"",
-            "url":        "http://localhost:9999"
-          }
+            "binding_tube_to_be_extracted_na+p":{
+                "input":"binding_tube_to_be_extracted_na+p",
+                "output":{
+                    "tube":"byproduct_tube_rna+p",
+                    "spin_column":"spin_column_dna"
+                },
+                "presenter":{
+                    "presenter_name":"kit_presenter",
+                    "default_printer":{
+                        "name":"",
+                        "description":"",
+                        "url":"http://localhost:9999"
+                    }
+                }
+            }
         }
-      }
-    }
-  },
-  "default_presenter":"default_presenter"
+    },
+    "default_presenter":"default_presenter"
 }

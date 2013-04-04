@@ -27,7 +27,6 @@ define([
   var KitModel = Object.create(BasePageModel);
 
   $.extend(KitModel, {
-    //TODO: add suitable methods for the model
 
     init:                           function (owner, initData) {
       this.owner = Object.create(owner);
@@ -37,12 +36,13 @@ define([
       this.user = undefined;
       this.batch = undefined;
       this.tubes = [];
+      this.spinColumns = [];
       this.availableBarcodes = [];
       this.kitSaved = false;
 
-      this.inputRole = "binding_tube_to_be_extracted_na+p" || initData["inputRole"] || "binding_tube_to_be_extracted";
-      this.outputRoleForTube = "binding_tube_to_be_extracted_na+p" || initData["outputRoles"]["tube"];
-      this.outputRoleForSC = "binding_tube_to_be_extracted_na+p" || initData["outputRoles"]["spin_column"];
+      this.inputRole = initData["input"];
+      this.outputRoleForTube = initData["output"]["tube"];
+      this.outputRoleForSC = initData["output"]["spin_column"];
 
       return this;
     },
@@ -69,22 +69,21 @@ define([
       );
 //      this.uuids = this.owner.tubeUUIDs;
     },
-    createMissingSpinColumnBarcodes:function () {
-      var that = this;
-      this.barcodes = []
-      for (var tube in that.tubes) {
-        // TODO: create a spin column barcode for every tube
-
-        // generate SC barcodes
-
-        // save the barcodes
-        this.barcodes.push(); // barcodes!
-
-        // use tube and BC to generate SC
-//        var spinColumn = this.owner.getS2Root().spin
+    findTubeInModelFromBarcode:function (barcode) {
+      for (var i = 0; i < this.tubes.length; i++) {
+        if (this.tubes[i].barcode == barcode) return this.tubes[i];
       }
+
+      return null;
     },
-    validateKitTubes:               function (kitType) {
+    findSCInModelFromBarcode:function (barcode) {
+      for (var i = 0; i < this.spinColumns.length; i++) {
+        if (this.spinColumns[i].barcode == barcode) return this.spinColumns[i];
+      }
+
+      return null;
+    },
+    validateKitTubes:function (kitType) {
       var valid = true;
       var tubeTypes = [];
 
@@ -104,7 +103,7 @@ define([
       }
       return valid;
     },
-    validateTubeUuid:               function (data) {
+    validateTubeUuid:function (data) {
       var valid = false;
 
       for (var i = 0; i < this.tubes.length; i++) {
@@ -116,49 +115,49 @@ define([
 
       return valid;
     },
-    validateSCBarcode:              function (data) {
+    validateSCBarcode:function (data) {
       return true;
     },
-    getRowModel:                    function (rowNum) {
+    getRowModel:function (rowNum) {
       var rowModel = {};
 
       if (!this.kitSaved) {
         rowModel = {
-          "rowNum":  rowNum,
+          "rowNum":rowNum,
           "labware1":{
-            "resource":       this.tubes[rowNum],
-            "expected_type":  "tube",
-            "display_remove": false,
+            "resource":this.tubes[rowNum],
+            "expected_type":"tube",
+            "display_remove":false,
             "display_barcode":false
           },
           "labware2":{
-            "expected_type":  "spin_columns",
-            "display_remove": false,
+            "expected_type":"spin_columns",
+            "display_remove":false,
             "display_barcode":false
           },
           "labware3":{
-            "expected_type":  "waste_tube",
-            "display_remove": false,
+            "expected_type":"waste_tube",
+            "display_remove":false,
             "display_barcode":false
           }
         };
       }
       else {
         rowModel = {
-          "rowNum":  rowNum,
+          "rowNum":rowNum,
           "labware1":{
-            "expected_type":  "tube",
-            "display_remove": true,
+            "expected_type":"tube",
+            "display_remove":true,
             "display_barcode":true
           },
           "labware2":{
-            "expected_type":  "spin_columns",
-            "display_remove": false,
+            "expected_type":"spin_columns",
+            "display_remove":false,
             "display_barcode":true
           },
           "labware3":{
-            "expected_type":  "waste_tube",
-            "display_remove": false,
+            "expected_type":"waste_tube",
+            "display_remove":false,
             "display_barcode":false
           }
         };
@@ -167,7 +166,7 @@ define([
       return rowModel;
     },
 
-    createSpinColumns:function () {
+    createMissingSpinColumns:function () {
       var that = this;
       var listOfPromises = [];
 
@@ -176,57 +175,52 @@ define([
         listOfPromises.push(registerLabwarePromise);
 
         Operations.registerLabware(
-            root.tubes,
-            'DNA',
-            'stock'
+          root.tubes,
+          'DNA',
+          'stock'
         ).then(function (state) {
-              that.stash_by_BC[state.barcode] = state.labware;
-              that.stash_by_UUID [state.labware.uuid] = state.labware;
-              that.availableBarcodes.push(state.barcode);
-              registerLabwarePromise.resolve();
-            }).fail(function () {
-              registerLabwarePromise.reject();
-              that.owner.childDone(that, "failed", {});
-            });
+            that.stash_by_BC[state.barcode] = state.labware;
+            that.stash_by_UUID [state.labware.uuid] = state.labware;
+            that.spinColumns.push(state.labware);
+            registerLabwarePromise.resolve();
+
+          }).fail(function () {
+            registerLabwarePromise.reject();
+            that.owner.childDone(that, "failed", {});
+          });
       });
 
       $.when.apply(listOfPromises).then(function () {
         that.owner.childDone(that, "success", {});
       }).fail(function () {
-            that.owner.childDone(that, "failed", {});
-          });
+          that.owner.childDone(that, "failed", {});
+        });
     },
 
-    makeTransfer:function (source, destination_SC_BR, index) {
-      var root, that = this;
-      var spinColumn;
-      this.owner.getS2Root()
-          .then(function (r) {
-            root = r;
-            // creates sc with the given BC
-            return SC.creates();
-//          return {}; //...
-          })
-          .then(function (sc) {
-            spinColumn = sc;
-
-            return root.tube_spin_column_transfers.new({"source":source, "destination":sc});
-          })
-          .then(function () {
-            return source.order();
-          })
-          .then(function (ord) {
-            return ord.updateRole(source, {event:"complete"});
-          })
-          .then(function (ord) {
-            return ord.updateRole(spinColumn, {event:"complete"});
-          })
-          .then(function () {
-            that.owner.childDone(that, "modelUpdated", {index:index});
-          })
-          .fail(function () {
-            // ...
+    makeTransfer:function (source, destination, rowPresenter) {
+      var that = this;
+      Operations.betweenLabware(root.actions.transfer_tubes_to_tubes, [
+        function (operations, state) {
+          operations.push({
+            input:{ resource:source, role:'inputRole', order:results.get('order') },
+            output:{ resource:destination, role:this.outputRoleForSC },
+            fraction:0.5,
+            aliquot_type:'DNA'
           });
+        }
+      ]).operation()
+        .then(function () {
+
+          // refreshing cache
+          that.stash_by_BC[source.labels.barcode] = undefined;
+          that.stash_by_UUID[source.uuid] = undefined;
+          that.fetchResourcePromiseFromUUID(source.uuid);
+          that.stash_by_BC[destination.labels.barcode] = undefined;
+          that.stash_by_UUID[destination.uuid] = undefined;
+          that.fetchResourcePromiseFromUUID(destination.uuid);
+
+          rowPresenter.childDone("...");
+        });
     }
   });
 

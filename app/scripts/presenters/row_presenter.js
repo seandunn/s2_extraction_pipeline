@@ -60,18 +60,27 @@ define([
       // TODO: check whether anything else required
       return this;
     },
-    setupModel:function(inputModel){
-      this.labware1 = inputModel.labware1;
-      this.labware2 = inputModel.labware2;
-      this.labware3 = inputModel.labware3;
+    setupModel:function (inputModel) {
+      this.setupLabware1Model(inputModel.labware1);
+      this.setupLabware2Model(inputModel.labware2);
+      this.setupLabware3Model(inputModel.labware3);
+    },
+    setupLabware1Model:function (labware1Model) {
+      this.labware1 = labware1Model;
+    },
+    setupLabware2Model:function (labware2Model) {
+      this.labware2 = labware2Model;
+    },
+    setupLabware3Model:function (labware3Model) {
+      this.labware3 = labware3Model;
     },
     setResource:function (value) {
       this.resource = value
     },
     getTubeType:function () {
-     // use the resource to get the aliquot type
-      if (this.resource){
-         return this.resource.aliquots.type;
+      // use the resource to get the aliquot type
+      if (this.resource) {
+        return this.resource.aliquots.type;
       }
       return;
     }
@@ -104,7 +113,7 @@ define([
       this.labware3Presenter = undefined;
 
       this.rowModel = Object.create(RowModel).init(this);
-      if (input_model){
+      if (input_model) {
         this.rowModel.setupModel(input_model);
       }
       this.rowNum = input_model.rowNum;
@@ -197,15 +206,15 @@ define([
       return complete;
     },
 
-    setLabwareVisibility:function() {
+    setLabwareVisibility:function () {
       var labware1Enabled = true;
       var labware2Enabled = true;
       var labware3Enabled = true;
 
       if (this.labware2Presenter) {
         if (this.labware2Presenter.isComplete() &&
-            this.labware1Presenter.isComplete() &&
-            this.labware1Presenter.labwareModel.display_barcode) {
+          this.labware1Presenter.isComplete() &&
+          this.labware1Presenter.labwareModel.display_barcode) {
           labware1Enabled = false;
         }
         if (!this.labware2Presenter.isComplete() && !this.labware1Presenter.isComplete()) {
