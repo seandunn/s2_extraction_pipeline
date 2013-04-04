@@ -28,7 +28,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
     $.extend(KitPresenter, {
       init:function (owner, presenterFactory, initData) {
         this.owner = owner;
-        this.kitModel = Object.create(KitModel).init(this,initData);
+        this.kitModel = Object.create(KitModel).init(this, initData);
         this.currentView = undefined;
         this.barcodePresenter = undefined;
         this.rowPresenters = [];
@@ -38,9 +38,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
       },
       setupPresenter:function (input_model, jquerySelection) {
         this.tubeTypes = [];
-
-        // TODO: Replace the dirty setTubes with a clean method
-        this.kitModel.dirtySetTubes();
+        this.kitModel.setBatch(input_model.batch);
         this.setupPlaceholder(jquerySelection);
         this.setupView();
         this.renderView();
@@ -60,11 +58,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
         if (!this.barcodePresenter) {
           this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
         }
-        for (var i = 0; i < this.kitModel.tubes.length; i++) {
-          if (!this.rowPresenters[i]) {
-            this.rowPresenters[i] = this.presenterFactory.createRowPresenter(this);
-          }
-        }
+
         this.setupSubModel();
         return this;
       },

@@ -29,7 +29,7 @@ define([
   $.extend(KitModel, {
     //TODO: add suitable methods for the model
 
-    init:function (owner) {
+    init:                           function (owner, initData) {
       this.owner = Object.create(owner);
       this.stash_by_BC = {};
       this.stash_by_UUID = {};
@@ -40,25 +40,39 @@ define([
       this.spinColumns = [];
       this.availableBarcodes = [];
       this.kitSaved = false;
+
+      this.inputRole = "binding_tube_to_be_extracted_na+p" || initData["inputRole"] || "binding_tube_to_be_extracted";
+      this.outputRoleForTube = "binding_tube_to_be_extracted_na+p" || initData["outputRoles"]["tube"];
+      this.outputRoleForSC = "binding_tube_to_be_extracted_na+p" || initData["outputRoles"]["spin_column"];
+
       return this;
     },
-    setBatch:function (batch) {
+    setBatch:                       function (batch) {
       console.log("setBatch : ", batch);
       this.addResource(batch);
       this.batch = batch;
-      this.dirtySetTubes(); // as in: from the batch, I get the tubes involved...
+      this.setAllTubesFromCurrentBatch(); // as in: from the batch, I get the tubes involved...
       this.owner.childDone(this, "batchAdded");
     },
-    dirtySetTubes:function () {
+    setAllTubesFromCurrentBatch:    function () {
       var that = this;
-//      this.setTestData(dataJSON);
-      this.fetchResourcePromiseFromBarcode("1220017279667")
-        .then(function (rsc) {
-          that.tubes.push(rsc);
-          that.tubes.push(rsc);
-          that.tubes.push(rsc);
-          that.tubes.push(rsc);
-        });
+      this.batch.items.then(function (items) {
+            console.log(items);
+            _.each(items, function (item) {
+              if (item.role === that.inputRole && item.status === "done") {
+                _.each(items, function (tube) {
+                  //if (tube.)
+                  that.fetchResourcePromiseFromUUID(tube.uuid)
+                      .then(function (rsc) {
+                        //that.tubes.push(rsc);
+
+                      });
+                });
+              }
+            });
+
+          }
+      );
 //      this.uuids = this.owner.tubeUUIDs;
     },
     findTubeInModelFromBarcode:function(barcode){
@@ -75,7 +89,7 @@ define([
 
       return null;
     },
-    validateKitTubes:function(kitType) {
+    validateKitTubes:               function (kitType) {
       var valid = true;
       var tubeTypes = [];
 
@@ -95,7 +109,7 @@ define([
       }
       return valid;
     },
-    validateTubeUuid:function (data) {
+    validateTubeUuid:               function (data) {
       var valid = false;
 
       for (var i = 0; i < this.tubes.length; i++) {
@@ -107,49 +121,49 @@ define([
 
       return valid;
     },
-    validateSCBarcode:function(data) {
+    validateSCBarcode:              function (data) {
       return true;
     },
-    getRowModel:function (rowNum) {
+    getRowModel:                    function (rowNum) {
       var rowModel = {};
 
       if (!this.kitSaved) {
         rowModel = {
-          "rowNum":rowNum,
+          "rowNum":  rowNum,
           "labware1":{
-            "resource":this.tubes[rowNum],
-            "expected_type":"tube",
-            "display_remove":false,
+            "resource":       this.tubes[rowNum],
+            "expected_type":  "tube",
+            "display_remove": false,
             "display_barcode":false
           },
           "labware2":{
-            "expected_type":"spin_columns",
-            "display_remove":false,
+            "expected_type":  "spin_columns",
+            "display_remove": false,
             "display_barcode":false
           },
           "labware3":{
-            "expected_type":"waste_tube",
-            "display_remove":false,
+            "expected_type":  "waste_tube",
+            "display_remove": false,
             "display_barcode":false
           }
         };
       }
       else {
         rowModel = {
-          "rowNum":rowNum,
+          "rowNum":  rowNum,
           "labware1":{
-            "expected_type":"tube",
-            "display_remove":true,
+            "expected_type":  "tube",
+            "display_remove": true,
             "display_barcode":true
           },
           "labware2":{
-            "expected_type":"spin_columns",
-            "display_remove":false,
+            "expected_type":  "spin_columns",
+            "display_remove": false,
             "display_barcode":true
           },
           "labware3":{
-            "expected_type":"waste_tube",
-            "display_remove":false,
+            "expected_type":  "waste_tube",
+            "display_remove": false,
             "display_barcode":false
           }
         };
