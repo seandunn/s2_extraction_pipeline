@@ -836,7 +836,7 @@
               "delete":"http://localhost:9292/order1_UUID"
             },
             "uuid":      "order1_UUID",
-            "pipeline":  "DNA manual extraction",
+            "pipeline":  "RNA manual extraction",
             "status":    "draft",
             "parameters":{},
             "state":     {},

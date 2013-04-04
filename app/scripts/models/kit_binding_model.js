@@ -165,7 +165,6 @@ define([
 
       return rowModel;
     },
-
     createMissingSpinColumns:function () {
       var that = this;
       var listOfPromises = [];
@@ -196,7 +195,6 @@ define([
           that.owner.childDone(that, "failed", {});
         });
     },
-
     makeTransfer:function (source, destination, rowPresenter) {
       var that = this;
       Operations.betweenLabware(root.actions.transfer_tubes_to_tubes, [
