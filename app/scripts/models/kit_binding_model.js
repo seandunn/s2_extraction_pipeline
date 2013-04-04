@@ -175,6 +175,7 @@ define([
             that.stash_by_UUID [state.labware.uuid] = state.labware;
             that.spinColumns.push(state.labware);
             registerLabwarePromise.resolve();
+
           }).fail(function () {
             registerLabwarePromise.reject();
             that.owner.childDone(that, "failed", {});
@@ -188,19 +189,33 @@ define([
         });
     },
 
-    makeTransfer:function (source, destination_SC_BR, index) {
-
+    makeTransfer:function (source, destination, rowPresenter) {
+      var that = this;
       Operations.betweenLabware(root.actions.transfer_tubes_to_tubes, [
         function(operations, state) {
           operations.push({
-            input:  { resource: results.get('inputTube'),  role: 'inputRole', order: results.get('order') },
-            output: { resource: results.get('outputTube'), role: 'outputRole' },
+            input:  { resource: source,  role: 'inputRole', order: results.get('order') },
+            output: { resource: destination, role: this.outputRoleForSC },
             fraction: 0.5,
             aliquot_type: 'DNA'
           });
-          return $.Deferred().resolve('Woot!').promise();
         }
-      ]).operation().done(results.expected).fail(results.unexpected);
+      ]).operation()
+        .then(function(){
+
+          // refreshing cache
+          that.stash_by_BC[source.labels.barcode] = undefined;
+          that.stash_by_UUID[source.uuid] = undefined;
+          that.fetchResourcePromiseFromUUID(source.uuid);
+          that.stash_by_BC[destination.labels.barcode] = undefined;
+          that.stash_by_UUID[destination.uuid] = undefined;
+          that.fetchResourcePromiseFromUUID(destination.uuid);
+
+          rowPresenter.childDone("...");
+        })
+
+
+      ; //.done(results.expected).fail(results.unexpected);
 
 
       //TODO: CHECK THIS FUNCTION

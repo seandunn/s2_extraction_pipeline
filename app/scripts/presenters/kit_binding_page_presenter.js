@@ -26,9 +26,9 @@ define(['extraction_pipeline/views/kit_binding_page_view'
     var KitPresenter = Object.create(BasePresenter);
 
     $.extend(KitPresenter, {
-      init:function (owner, presenterFactory, setuptData) {
+      init:function (owner, presenterFactory, initData) {
         this.owner = owner;
-        this.kitModel = Object.create(KitModel).init(this);
+        this.kitModel = Object.create(KitModel).init(this,initData);
         this.currentView = undefined;
         this.barcodePresenter = undefined;
         this.rowPresenters = [];
@@ -132,6 +132,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
         else {
           requester.displaySuccessMessage("Spin column found");
           requester.setupLabware2Model(result);
+          this.kitModel.makeTransfer(requester.labware1, requester.labware2, requester);
         }
       },
       release:function () {
