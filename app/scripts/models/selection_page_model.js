@@ -103,9 +103,9 @@ define([
             return savedBatch.getResourcesGroupedByOrders();
           }).then(function (tubesByOrders) {
             _.each(tubesByOrders, function (orderKey) {
-              console.log(" ORDER :: ", orderKey);
+//              console.log(" ORDER :: ", orderKey);
               _.each(orderKey.items, function (tube) {
-                console.log(" TUBE :: ", tube);
+//                console.log(" TUBE :: ", tube);
 
                 addingRoles.updates.push({
                   input: {

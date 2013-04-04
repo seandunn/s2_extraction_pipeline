@@ -2,7 +2,7 @@
   "useCase1":{
     "description":"",
     "workflowConfig":{
-      "rules":[
+      "role_priority":[
         [
           "roleA", "A_2_B_presenter"
         ],
@@ -97,7 +97,7 @@
   "useCase2":{
     "description":"just for the sake of it",
     "workflowConfig":{
-      "rules":[
+      "role_priority":[
         [
           "tube_DNA", "do_something_with_DNA_presenter"
         ],

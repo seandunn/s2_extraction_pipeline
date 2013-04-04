@@ -5,13 +5,17 @@ define([ 'config'
   , 'text!scripts/pipeline_config.json'
 //  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/1.json'
 ],
+
     function (config, workflowEngine, S2Root, S2Ajax, workflowConfiguration) {
+      'use strict';
+
       var app = function (thePresenterFactory) {
         this.presenterFactory = thePresenterFactory;
-        this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
-
         this.currentPagePresenter = undefined;
         this.model = undefined;
+        this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
+
+
 
         return this;
       };
@@ -82,7 +86,14 @@ define([ 'config'
           this.currentPagePresenter = undefined;
         }
 
-        this.currentPagePresenter = this.workflow.getNextPresenter(this.presenterFactory, this.model);
+        this.workflow.askForNextPresenter(this.presenterFactory, this.model);
+        this.renderView();
+      };
+
+
+
+      app.prototype.setupNextPresenter = function(nextPresenter){
+        this.currentPagePresenter = nextPresenter;
 
         this.currentPagePresenter.setupPresenter(this.model, this.jquerySelection);
         this.model.labware = undefined;
@@ -100,6 +111,7 @@ define([ 'config'
       };
 
       app.prototype.release = function () {
+        this.jquerySelection().empty();
         return this;
       };
 
@@ -126,7 +138,9 @@ define([ 'config'
               throw new Error("DataSchemaError");
             }
             this.updateModel(data);
-          }
+          } else if (action == "foundNextPresenter") {
+            this.setupNextPresenter(data);
+        }
 
           return this;
         } catch (err) {
