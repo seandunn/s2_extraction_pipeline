@@ -34,22 +34,14 @@ define(['config'
      * inputDataForWorkflow is a batch
      */
     var deffered = $.Deferred();
-
-    console.log("\n\n\n==================================\n\n\n");
-
     var items;
     var that = this;
-    console.log("gN batch : ",batch);
     batch.items.then(function (result) {
       items = result;
-      console.log("gN items : ",items);
-      console.log(that.role_priority);
       var matchingRole = _.chain(that.role_priority).find(itemMatcherForBatchItems(items)).value();
-      console.log("gN presenterRule : ",matchingRole);
-//      debugger;
-
-
-      deffered.resolve(matchingRole ? that.role_configuration[matchingRole]["presenter"]["presenter_name"] : this.default);
+      var presenterName = matchingRole ? that.role_configuration[matchingRole]["presenter"]["presenter_name"] : this.default;
+      var presenterInitData = matchingRole ? that.role_configuration[matchingRole] : {};
+      deffered.resolve({presenterName:presenterName, initData:presenterInitData});
     }).fail(function(){
           deffered.reject();
     });
@@ -59,11 +51,11 @@ define(['config'
     return deffered.promise();
   };
 
-  workflowEngine.prototype.setNextPresenterFromName = function (presenterFactory, presenterName) {
+  workflowEngine.prototype.setNextPresenterFromName = function (presenterFactory, presenterName, initData) {
     var presenter = null;
     switch (presenterName) {
       case "kit_presenter":
-        presenter = presenterFactory.createKitBindingPagePresenter(this.mainController, {});
+        presenter = presenterFactory.createKitBindingPagePresenter(this.mainController, initData);
         break;
       case "selection_page_presenter":
         presenter = presenterFactory.createSelectionPagePresenter(this.mainController);
@@ -92,9 +84,10 @@ define(['config'
       this.setNextPresenterFromName(presenterFactory, "selection_page_presenter");
     } else {
       var that = this;
-      this.getNextPresenterName(inputDataForWorkflow.batch).then(function (presenterName) {
-        console.log(">> to getNextPresenterName :  ", presenterName);
-        that.setNextPresenterFromName(presenterFactory, presenterName);
+      this.getNextPresenterName(inputDataForWorkflow.batch).then(function (data) {
+        console.log(">> to getNextPresenterName :  ", data.presenterName);
+        that.setNextPresenterFromName(presenterFactory, data.presenterName, data.initData
+        );
       });
     }
   };

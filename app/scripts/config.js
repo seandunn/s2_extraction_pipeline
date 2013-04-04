@@ -3,7 +3,7 @@ define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_
   var config = $.extend(mapperConfig, {
   });
 
-  config.logToConsole = false;
+  config.logToConsole = true;
 
   config.log = function (message, level) {
     if (!config.logToConsole) return; // do nothing
@@ -85,7 +85,7 @@ define(['mapper_test/test_config', 'text!extraction_pipeline/dna_and_rna_manual_
     }
     return fakeAjaxDeferred;
   };
-  json = JSON.parse(json)
+  json = JSON.parse(json);
 
   //initialise step count
   config.currentStep = 0;

@@ -52,8 +52,8 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
       };
 
     PresenterFactory.prototype.createKitBindingPagePresenter =
-      function (owner) {
-        return Object.create(KitBindingPagePresenter).init(owner, this);
+      function (owner, initData) {
+        return Object.create(KitBindingPagePresenter).init(owner, this, initData);
       };
 
     PresenterFactory.prototype.createRowPresenter =
