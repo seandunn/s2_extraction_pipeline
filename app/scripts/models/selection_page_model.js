@@ -92,20 +92,22 @@ define([
       var batchBySideEffect;
       var addingRoles = {updates:[]};
       var changingRoles = {updates:[]};
-      var input_role = "tube_to_be_extracted_na+p";
-      var ouput_role = "binding_tube_to_be_extracted_na+p";
+      var input_role = "tube_to_be_extracted_nap";
+      var ouput_role = "binding_tube_to_be_extracted_nap";
 
       this.owner.getS2Root()
           .then(function (root) {
             return root.batches.new({resources:that.tubes}).save();
           }).then(function (savedBatch) {
             batchBySideEffect = savedBatch;
+//            debugger;
             return savedBatch.getResourcesGroupedByOrders();
           }).then(function (tubesByOrders) {
+             debugger;
             _.each(tubesByOrders, function (orderKey) {
-//              console.log(" ORDER :: ", orderKey);
+              console.log(" ORDER :: ", orderKey);
               _.each(orderKey.items, function (tube) {
-//                console.log(" TUBE :: ", tube);
+                console.log(" TUBE :: ", tube);
 
                 addingRoles.updates.push({
                   input: {

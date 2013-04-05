@@ -62,7 +62,7 @@ define([ 'config'
       }
       //marshalling data for the view
       var dataForView = {
-        batch:this.pageModel.batch && this.model.batch.uuid,
+        batch:this.pageModel.batch && this.pageModel.batch.uuid,
         user:this.pageModel.user,
         capacity:this.pageModel.getCapacity()
       };

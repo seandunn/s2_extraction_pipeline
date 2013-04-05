@@ -18,7 +18,6 @@
  */
 define(['config'
         ,'mapper_services/print'
-//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
 ], function (config, PrintService) {
 
   var BasePageModel = Object.create(null);
@@ -45,6 +44,7 @@ define(['config'
 
       var rsc, that = this;
 
+//      debugger;
 
 
       if (resourceDetails.uuid) {
@@ -54,8 +54,10 @@ define(['config'
         } else {
           this.owner.getS2Root()
               .then(function (root) {
+//                debugger;
                 return root.find(resourceDetails.uuid);
               }).then(function (result) {
+//                debugger;
                 rsc = result;
                 that.addResource(rsc);
                 deferredS2Resource.resolve(rsc);
@@ -87,28 +89,11 @@ define(['config'
       }
       return deferredS2Resource.promise();
     },
-    printBarcodes:function(labwareCollection) {
-      var labels = [];
-      var complete = false;
+    setTestData:function (testData) {
+      this.testData = testData;
+    },
+    activateTestData:function () {
 
-      labwareCollection.forEach(function (item){
-        labels.push(item.labels);
-      });
-
-      var printer = PrintService.printers[0];
-
-//      printer.print([{prefix:'P1',barcode:'B1',suffix:'S1',name:'N1',description:'D1',project:'PR1'}])
-//        .done(function (result) {
-//          complete = true;
-//        })
-//        .fail(function (error) {
-//          console.log(error);
-//        }).
-//        then(function(result) {
-//          console.log(result);
-//        });
-
-      return complete;
     }
   });
 

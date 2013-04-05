@@ -1,4 +1,4 @@
-define(['presenters/kit_presenter'], function (KitPresenter) {
+define(['presenters/kit_binding_page_presenter'], function (KitPresenter) {
   'use strict';
 
   describe("KitPagePresenter", function () {

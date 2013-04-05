@@ -3,7 +3,6 @@ define([ 'config'
   , 'mapper/s2_root'
   , 'mapper/s2_ajax'
   , 'text!scripts/pipeline_config.json'
-//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/1.json'
 ],
 
     function (config, workflowEngine, S2Root, S2Ajax, workflowConfiguration) {
