@@ -44,6 +44,7 @@ define(['config'
 
       var rsc, that = this;
 
+//      debugger;
 
 
       if (resourceDetails.uuid) {
@@ -53,8 +54,10 @@ define(['config'
         } else {
           this.owner.getS2Root()
               .then(function (root) {
+//                debugger;
                 return root.find(resourceDetails.uuid);
               }).then(function (result) {
+//                debugger;
                 rsc = result;
                 that.addResource(rsc);
                 deferredS2Resource.resolve(rsc);

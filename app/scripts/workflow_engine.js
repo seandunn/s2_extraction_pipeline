@@ -48,7 +48,6 @@ define(['config'
 
           data.batch.items.then(function (result) {
             items = result;
-            debugger;
             var matchingRoleData = that.getMatchingRoleDataFromItems(items);
             deffered.resolve(matchingRoleData);
           }).fail(function () {

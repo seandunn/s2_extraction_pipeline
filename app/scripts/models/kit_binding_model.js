@@ -57,17 +57,20 @@ define([
 
       this.batch.orders.then(function(result) {
         that.order = result[0];
+        that.owner.childDone(that, "batchAdded");
       });
 
-      this.owner.childDone(this, "batchAdded");
     },
     setAllTubesFromCurrentBatch:    function () {
       var that = this;
+      debugger;
       this.batch.items.then(function (items) {
             _.each(items, function (item) {
+              debugger;
               if (item.role === that.inputRole && item.status === "done") {
                   that.fetchResourcePromiseFromUUID(item.uuid)
                       .then(function (rsc) {
+                        debugger;
                         that.addResource(rsc);
                         that.tubes.push(rsc);
                       });

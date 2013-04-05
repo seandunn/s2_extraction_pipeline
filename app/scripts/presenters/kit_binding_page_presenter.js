@@ -43,13 +43,13 @@ define(['extraction_pipeline/views/kit_binding_page_view'
           this.setupView();
           this.renderView();
           this.setupSubPresenters();
-          this.setValidState();
+          //this.setValidState();
 
           // for test : make a transfer HERE
-          var that = this;
-          this.kitModel.createMissingSpinColumns().then(function () {
-            that.kitModel.makeTransfer(that.kitModel.tubes[0], that.kitModel.spinColumns[0], that.rowPresenters[0]);
-          });
+//          var that = this;
+//          this.kitModel.createMissingSpinColumns().then(function () {
+//            that.kitModel.makeTransfer(that.kitModel.tubes[0], that.kitModel.spinColumns[0], that.rowPresenters[0]);
+//          });
 
           return this;
         },
