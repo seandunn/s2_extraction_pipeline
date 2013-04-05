@@ -9,7 +9,7 @@ require.config({
     domReady:'components/requirejs-domready/domReady',
     mapper:'components/S2Mapper/app/scripts/mapper',
     mapper_test:'components/S2Mapper/test',
-    mapper_services:'/components/S2Mapper/app/scripts/services',
+    mapper_services:'components/S2Mapper/app/scripts/services',
     extraction_pipeline:'scripts/',
     labware:'components/labware/app/scripts/',
     config:'test_config',
@@ -23,12 +23,12 @@ require.config({
 });
  
 require(['domReady!'
-   ,'spec/app_spec'
+//   ,'spec/app_spec'
 //   ,'spec/selection_page_model_spec'
-  , 'spec/default_page_presenter_spec'
-   ,'spec/default_model_spec'
+//  , 'spec/default_page_presenter_spec'
+//   ,'spec/default_model_spec'
 //   ,'spec/selection_page_presenter_spec'
-//   ,'spec/workflow_engine_spec'
+   ,'spec/workflow_engine_spec'
 //   ,'spec/kit_presenter_spec'
 //   ,'spec/scan_barcode_presenter_spec'
 ],

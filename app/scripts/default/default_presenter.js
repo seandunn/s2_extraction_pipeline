@@ -137,6 +137,7 @@ define(['config'
                   labware:this.pageModel.labware,
                   "batch":this.pageModel.batch
                 };
+                  console.log(dataForOwner.batch);
                 this.owner.childDone(this, "login", dataForOwner);
                 break;
             }

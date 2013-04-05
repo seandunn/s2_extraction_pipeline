@@ -1,14 +1,14 @@
 {
     "workflow":{
         "role_priority":[
-            "tube_to_be_extracted_na+p",
-            "binding_tube_to_be_extracted_na+p"
+            "tube_to_be_extracted_nap",
+            "binding_tube_to_be_extracted_nap"
         ],
         "role_configuration":{
-            "tube_to_be_extracted_na+p":{
-                "input":"tube_to_be_extracted_na+p",
+            "tube_to_be_extracted_nap":{
+                "input":"tube_to_be_extracted_nap",
                 "output":{
-                    "tube":"binding_tube_to_be_extracted_na+p"
+                    "tube":"binding_tube_to_be_extracted_nap"
                 },
                 "presenter":{
                     "presenter_name":"selection_page_presenter",
@@ -20,10 +20,10 @@
                 }
             },
 
-            "binding_tube_to_be_extracted_na+p":{
-                "input":"binding_tube_to_be_extracted_na+p",
+            "binding_tube_to_be_extracted_nap":{
+                "input":"binding_tube_to_be_extracted_nap",
                 "output":{
-                    "tube":"byproduct_tube_rna+p",
+                    "tube":"byproduct_tube_rnap",
                     "spin_column":"spin_column_dna"
                 },
                 "presenter":{
