@@ -41,24 +41,25 @@ define([
     it("workflow engine has the expected methods", function () {
       var workflowEngine = new WorkflowEngine(undefined, configurationFile);
 
-      expect(workflowEngine.getNextPresenter).toBeDefined();
-      expect(typeof workflowEngine.getNextPresenter).toEqual("function");
+      expect(workflowEngine.askForNextPresenter).toBeDefined();
+      expect(typeof workflowEngine.askForNextPresenter).toEqual("function");
     });
 
     it("workflow engine can read configuration file", function () {
       var workflowEngine = new WorkflowEngine(undefined, configurationFile);
-      expect(workflowEngine.rules).toBeDefined();
-      expect(typeof workflowEngine.rules).toEqual("object");
+      expect(workflowEngine.role_priority).toBeDefined();
+      expect(typeof workflowEngine.role_priority).toEqual("object");
+      expect(workflowEngine.role_configuration).toBeDefined();
+      expect(typeof workflowEngine.role_configuration).toEqual("object");
+      expect(workflowEngine.default).toBeDefined();
     });
 
     it("configuration inside the engine is well formed... (not just really testing the workflowEngine)", function () {
       var workflowEngine = new WorkflowEngine(undefined, configurationFile);
-      expect(workflowEngine.rules).toBeDefined();
-      expect(Array.isArray(workflowEngine.rules)).toBeTruthy();
-      expect(workflowEngine.rules.length).toEqual(3);
-      expect(typeof workflowEngine.rules[0]).toEqual("object");
-      expect(workflowEngine.rules[0][0]).toEqual("roleA");
-      expect(workflowEngine.rules[0][1]).toEqual("A_2_B_presenter");
+      expect(workflowEngine.role_priority).toBeDefined();
+      expect(Array.isArray(workflowEngine.role_priority)).toBeTruthy();
+      expect(workflowEngine.role_priority.length).toEqual(_.keys(workflowEngine.role_configuration).length);
+      expect(typeof workflowEngine.role_priority[0]).toEqual("string");
       expect(workflowEngine.default).toBeDefined();
       expect(Array.isArray(workflowEngine.default)).toBeFalsy();
       expect(workflowEngine.default).toEqual("default_presenter");
@@ -74,29 +75,11 @@ define([
 
     it("in " + useCase + " we have the correct presenters", function () {
       for (var testName in tests) {
-        var inputData = tests[testName]["input"]["batch"];
+        var inputData = tests[testName]["input"]["batch"]["items"];
         var expectedPresenterName = tests[testName]["expected"]["pagePresenter"];
         var workflowEngine = new WorkflowEngine(undefined, configurationFile);
-        var calculatedPresenterName = workflowEngine.getNextPresenterName(inputData);
-        console.log(testName, inputData, expectedPresenterName);
-
-        expect(calculatedPresenterName).toEqual(expectedPresenterName);
-      }
-    });
-  });
-
-  describe("The workflow works: ", function () {
-    var useCase = "useCase2";
-    var tests = testData[useCase]["tests"];
-    var configurationFile = testData[useCase]["workflowConfig"];
-
-    it("in " + useCase + " we have the correct presenters", function () {
-      for (var testName in tests) {
-        var inputData = tests[testName]["input"]["batch"];
-        var expectedPresenterName = tests[testName]["expected"]["pagePresenter"];
-        var workflowEngine = new WorkflowEngine(undefined, configurationFile);
-        var calculatedPresenterName = workflowEngine.getNextPresenterName(inputData);
-        expect(calculatedPresenterName).toEqual(expectedPresenterName);
+        var data = workflowEngine.getMatchingRoleDataFromItems(inputData);
+        expect(data.presenterName).toEqual(expectedPresenterName);
       }
     });
   });

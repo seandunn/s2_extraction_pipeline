@@ -19,16 +19,13 @@
 
 define([
   'extraction_pipeline/models/base_page_model'
-  , 'config'
-//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/2.json'
-], function (BasePageModel, config) {
-
+  , 'mapper/operations'
+], function (BasePageModel, Operations) {
 
   var SelectionPageModel = Object.create(BasePageModel);
 
   $.extend(SelectionPageModel, {
-    init:function (owner) {
-      console.log("selection model init");
+    init:              function (owner) {
       this.owner = Object.create(owner);
       this.stash_by_BC = {};
       this.stash_by_UUID = {};
@@ -38,27 +35,24 @@ define([
       this.user = undefined;
       return this;
     },
-    setBatch:function (batch) {
-      console.log("setBatch : ", batch);
+    setBatch:          function (batch) {
       this.addResource(batch);
       this.batch = batch;
       this.owner.childDone(this, "batchAdded");
     },
-    setSeminalLabware:function (labware) {
-      console.log("setSeminalLabware : ", labware);
+    setSeminalLabware: function (labware) {
       this.addResource(labware);
       this.tubes.push(labware);
-      if(this.batch){
+      if (this.batch) {
 
       }
       this.owner.childDone(this, "seminalLabwareAdded");
     },
-    setUser:function (user) {
-      console.log("setUser : ", user);
+    setUser:           function (user) {
       this.user = user;
       this.owner.childDone(this, "userAdded");
     },
-    addTube:function (newTube) {
+    addTube:           function (newTube) {
       if (this.tubes.length > this.capacity - 1) {
         throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
       }
@@ -77,10 +71,10 @@ define([
             that.owner.childDone(that, "barcodeNotFound", {});
           });
     },
-    getCapacity:function () {
+    getCapacity:       function () {
       return this.capacity;
     },
-    removeTubeByUuid:function (uuid) {
+    removeTubeByUuid:  function (uuid) {
       for (var i = 0; i < this.tubes.length; i++) {
         if (this.tubes[i].uuid === uuid) {
           this.tubes.splice(i, 1);
@@ -89,25 +83,61 @@ define([
         }
       }
     },
-    getNumberOfTubes:function () {
+    getNumberOfTubes:  function () {
       return this.tubes.length;
     },
-    makeBatch:function(){
+    makeBatch:         function () {
       //TODO: for now, let's pretend there is no batch... we create one.
       var that = this;
+      var batchBySideEffect;
+      var addingRoles = {updates:[]};
+      var changingRoles = {updates:[]};
+      var input_role = "tube_to_be_extracted_nap";
+      var ouput_role = "binding_tube_to_be_extracted_nap";
+
       this.owner.getS2Root()
-          .then(function(root){
-            return root.batches.new({resources:that.tubes});
-          }).then(function(batch){
-            console.log(batch);
+          .then(function (root) {
+            return root.batches.new({resources:that.tubes}).save();
+          }).then(function (savedBatch) {
+            batchBySideEffect = savedBatch;
 //            debugger;
-            return batch.save();
-          }).then(function(savedBatch){
-            debugger;
-            that.batch = savedBatch;
-            that.owner.childDone(that,"batchSaved", savedBatch);
-          }).fail( function(){
-          debugger;
+            return savedBatch.getResourcesGroupedByOrders();
+          }).then(function (tubesByOrders) {
+             debugger;
+            _.each(tubesByOrders, function (orderKey) {
+              console.log(" ORDER :: ", orderKey);
+              _.each(orderKey.items, function (tube) {
+                console.log(" TUBE :: ", tube);
+
+                addingRoles.updates.push({
+                  input: {
+                    order:orderKey.order
+                  },
+                  output:{
+                    resource:tube,
+                    role:    ouput_role
+                  }});
+
+                changingRoles.updates.push({
+                  input: {
+                    order:   orderKey.order,
+                    resource:tube,
+                    role:    input_role
+                  },
+                  output:{
+                    resource:tube,
+                    role:    ouput_role
+                  }});
+              });
+            });
+            return Operations.stateManagement().start(addingRoles);})
+          .then(function () {
+              return Operations.stateManagement().complete(changingRoles);})
+          .then(function () {
+            that.batch = batchBySideEffect; // updating the batch in the model, once all the requests succeeded.
+            that.owner.childDone(that, "batchSaved", that.batch);
+          }).fail(function () {
+            throw "Something wrong happend...";
           }
       );
     }

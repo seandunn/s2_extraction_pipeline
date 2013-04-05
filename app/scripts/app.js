@@ -3,15 +3,18 @@ define([ 'config'
   , 'mapper/s2_root'
   , 'mapper/s2_ajax'
   , 'text!scripts/pipeline_config.json'
-//  , 'text!components/S2Mapper/test/json/dna_and_rna_manual_extraction/1.json'
 ],
+
     function (config, workflowEngine, S2Root, S2Ajax, workflowConfiguration) {
+      'use strict';
+
       var app = function (thePresenterFactory) {
         this.presenterFactory = thePresenterFactory;
-        this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
-
         this.currentPagePresenter = undefined;
         this.model = undefined;
+        this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
+
+
 
         return this;
       };
@@ -26,7 +29,6 @@ define([ 'config'
 
         if (!this.s2Root) {
           var that = this;
-//          config.setupTest(rootTestJson); // TODO: remove this line to activate the real mapper
           S2Root.load({user:"username"}).done(function (result) {
             that.s2Root = result;
             deferredS2Root.resolve(result);
@@ -65,13 +67,6 @@ define([ 'config'
          };
          */
         this.model = $.extend(this.model, newData);
-//        if(newData && newData.batch){
-//          this.model.batch = newData.batch;
-//        }
-//        if(newData && newData.userUUID){
-//          this.model.userUUID = newData.userUUID;
-//        }
-        //this.model = newData;
         this.updateSubPresenters();
         return this;
       };
@@ -90,28 +85,14 @@ define([ 'config'
           this.currentPagePresenter = undefined;
         }
 
-//        var inputModelForWorkflowEngine = {
-//          userUUID:this.model.userUUID,
-//          labwareUUID:this.model.labwareUUID,
-//          batchUUID:this.model.batchUUID
-//        };
-//
-//        if (this.model.hasOwnProperty("HACK")) {
-//          inputModelForWorkflowEngine.HACK = "hack";
-//        }
+        this.workflow.askForNextPresenter(this.presenterFactory, this.model);
+        this.renderView();
+      };
 
-        this.currentPagePresenter = this.workflow.getNextPresenter(this.presenterFactory, this.model);
-//    //this.currentPagePresenter = this.workflow.get_default_presenter(this.presenterFactory);
-//
-//    // marshalling the data for the default presenter... here... nothing to do!
-//        var inputModelForPresenter = {
-//          userUUID:this.model.userUUID,
-//          labwareUUID:this.model.labwareUUID,
-//          batchUUID:this.model.batchUUID
-//        };
-//        if (this.model.hasOwnProperty("HACK")) {
-//          inputModelForPresenter.HACK = "hack";
-//        }
+
+
+      app.prototype.setupNextPresenter = function(nextPresenter){
+        this.currentPagePresenter = nextPresenter;
 
         this.currentPagePresenter.setupPresenter(this.model, this.jquerySelection);
         this.model.labware = undefined;
@@ -129,6 +110,7 @@ define([ 'config'
       };
 
       app.prototype.release = function () {
+        this.jquerySelection().empty();
         return this;
       };
 
@@ -140,21 +122,13 @@ define([ 'config'
       app.prototype.childDone = function (child, action, data) {
         console.log("A child of App (", child, ") said it has done the following action '" + action + "' with data :", data);
         try {
-          var inputDataForModel;
           if (action == "done") {
 
             $('html, body').animate({scrollTop:0}, 'slow');
-            inputDataForModel = data;
+//            $('#content').toggle('slow');
+//            $('#content').toggle('slow');
 
-//            inputDataForModel = {
-//              userUUID:this.model.userUUID,
-//              labwareUUID:this.model.labwareUUID,
-//              batchUUID:data.batchUUID
-//            };
-//            if (data.hasOwnProperty("HACK")) {
-//              inputDataForModel.HACK = "hack";
-//            }
-            this.updateModel(inputDataForModel);
+            this.updateModel(data);
           } else if (action == "error") {
             this.displayError(data.message);
 
@@ -163,7 +137,9 @@ define([ 'config'
               throw new Error("DataSchemaError");
             }
             this.updateModel(data);
-          }
+          } else if (action == "foundNextPresenter") {
+            this.setupNextPresenter(data);
+        }
 
           return this;
         } catch (err) {
@@ -179,11 +155,6 @@ define([ 'config'
         }
 
       };
-
-      app.prototype.HACK_add_global_tube_uuids = function (tubeUUIDs) {
-        this.tubeUUIDs = tubeUUIDs;
-      }
-
 
       return app;
     });

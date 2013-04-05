@@ -5,112 +5,102 @@ define(['config'
   var workflowEngine = function (owner, config) {
 
     this.mainController = owner;
-    this.default = config["default"];
-    this.rules = config["rules"];
+    this.default = config["default_presenter"];
+    this.role_priority = config["workflow"]["role_priority"];
+    this.role_configuration = config["workflow"]["role_configuration"];
   };
 
   // Returns a function that finds the first "ready" item in the batch that matches the given rule.
-  function itemMatcherForBatch(batch) {
-    return function(rule) {
-      return _.chain(batch.items)
-              .filter(function(item) { return item.status === 'complete'; })
-              .filter(function(item) { return item.role === rule[0]; })
-              .first()
-              .value();
+  function itemMatcherForBatchItems(items) {
+//    console.log("match items",items);
+    return function (role) {
+//      debugger;
+//      console.log(" role in config file currently tested : ",role);
+      return _.chain(items)
+          .filter(function (item) {
+//            console.log(" filtering status ",item);
+            return item.status === 'done';
+          })
+          .filter(function (item) {
+//            console.log(" filtering role ",role);
+            return item.role === role;
+          })
+          .first()
+          .value();
     };
   }
 
-  workflowEngine.prototype.getNextPresenterName = function (inputDataForWorkflow) {
+  workflowEngine.prototype.getMatchingRoleDataFromItems = function (items) {
+    var matchingRole = _.chain(this.role_priority).find(itemMatcherForBatchItems(items)).value();
+//    console.log("matching role :: ", matchingRole);
+    var presenterName = matchingRole ? this.role_configuration[matchingRole]["presenter"]["presenter_name"] : this.default;
+    var presenterInitData = matchingRole ? this.role_configuration[matchingRole] : {};
+    return {presenterName:presenterName, initData:presenterInitData};
+  };
+
+  workflowEngine.prototype.getNextPresenterName = function (data) {
     /**
      * inputDataForWorkflow is a batch
      */
-    console.log(inputDataForWorkflow.items);
+    var deffered = $.Deferred();
+    var items, root;
+    var that = this;
 
-    var presenterRule = _.chain(this.rules).find(itemMatcherForBatch(inputDataForWorkflow)).value();
-    return presenterRule ? presenterRule[1] : this.default;
+          data.batch.items.then(function (result) {
+            items = result;
+            debugger;
+            var matchingRoleData = that.getMatchingRoleDataFromItems(items);
+            deffered.resolve(matchingRoleData);
+          }).fail(function () {
+                deffered.reject();
+              });
+//        }).fail(function(){
+//          console.log("fail");
+//          deffered.reject();
+//        });
+
+
+
+    return deffered.promise();
   };
 
-  workflowEngine.prototype.getNextPresenterFromName = function (presenterFactory, presenterName) {
+  workflowEngine.prototype.setNextPresenterFromName = function (presenterFactory, presenterName, initData) {
+    var presenter = null;
     switch (presenterName) {
-      case "kit_binding_page_presenter":
-        return presenterFactory.createKitBindingPagePresenter(this.mainController);
+      case "kit_presenter":
+        presenter = presenterFactory.createKitBindingPagePresenter(this.mainController, initData);
+        break;
       case "selection_page_presenter":
-        return presenterFactory.createSelectionPagePresenter(this.mainController);
-      case "binding_finished_page_presenter":
-        return presenterFactory.createBindingFinishedPage(this.mainController);
-      case "elution_loading_page_presenter":
-        return presenterFactory.createElutionLoadingPage(this.mainController);
-      case "elution_wash_page_presenter":
-        return presenterFactory.createElutionWashPage(this.mainController);
+        presenter = presenterFactory.createSelectionPagePresenter(this.mainController);
+        break;
+      case "elution_page_presenter":
+        presenter = presenterFactory.createElutionPage(this.mainController, initData);
+        break;
+//      case "elution_wash_page_presenter":
+//        presenter = presenterFactory.createElutionWashPage(this.mainController, initData);
+//        break;
       default:
-        return presenterFactory.createDefaultPresenter(this.mainController);
+        presenter = presenterFactory.createDefaultPresenter(this.mainController);
     }
+    this.mainController.childDone(this, "foundNextPresenter", presenter);
   };
 
-
-  workflowEngine.prototype.getNextPresenter = function (presenterFactory, inputDataForWorkflow) {
-    var presenterName = undefined;
+  workflowEngine.prototype.askForNextPresenter = function (presenterFactory, inputDataForWorkflow) {
     if (!inputDataForWorkflow.userUUID) {
       console.log(">> to default");
-      // what ever happened, if there's no user, nothing can happen!
-      presenterName = this.default;
+      this.setNextPresenterFromName(presenterFactory, this.default);
     } else if (!inputDataForWorkflow.batch && inputDataForWorkflow.labware) {
       console.log(">> to selection_page_presenter");
-      presenterName = "selection_page_presenter";
+      this.setNextPresenterFromName(presenterFactory, "selection_page_presenter");
     } else {
-      presenterName = this.getNextPresenterName(inputDataForWorkflow.batch);
+      var that = this;
+      this.getNextPresenterName(inputDataForWorkflow).then(function (data) {
+        console.log(">> to getNextPresenterName :  ", data.presenterName);
+        that.setNextPresenterFromName(presenterFactory, data.presenterName, data.initData
+        );
+      });
     }
-
-
-
-//    else {
-//
-//      if (inputDataForWorkflow.hasOwnProperty("batch") && inputDataForWorkflow.batch) {
-//        batch = inputDataForWorkflow.batch;
-//      } else if (inputDataForWorkflow.hasOwnProperty("labware") && inputDataForWorkflow.labware) {
-//        // get batch from labwareUUID...
-////        batch = {
-////          items:{
-////            "tube_to_be_extracted":[
-////              {
-////                "uuid":"f1628770-6c81-0130-e02d-282066132de2",
-////                "status":"ready",
-////                "batch":null
-////              }
-////            ]
-////          }
-////        };
-//      }
-
-
-
-
-
-
-    return this.getNextPresenterFromName(presenterFactory, presenterName);
-
-//
-//    if (!inputDataForWorkflow.userUUID) {
-//      return this.getNextPresenterFromName("default");
-//    }
-//
-//    if (inputDataForWorkflow.HACK) {
-//      return this.getNextPresenterFromName("binding_complete_page");
-//
-//    }
-//
-//    if (inputDataForWorkflow.batchUUID) {
-//      return this.getNextPresenterFromName("kit_presenter_page");
-//    }
-//
-//    if (inputDataForWorkflow.labwareUUID) {
-//      return this.getNextPresenterFromName("selection_page_presenter");
-//    }
-//
-//    return this.getNextPresenterFromName("default");
-
   };
-
 
   return workflowEngine;
 });

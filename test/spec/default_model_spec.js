@@ -52,11 +52,12 @@ define(['scripts/default/default_model'
       });
 
       it("when a tube is added, the model sends back the msg 'modelUpdated' with the tube.", function () {
-        defaultModel.setLabwareFromBarcode("1220017279667");
-        expect(owner.getS2Root).toHaveBeenCalled();
-        expect(Object.keys(defaultModel.stash_by_BC).length).toEqual(1);
-        expect(owner.childDone).toHaveBeenCalledWith(defaultModel, "modelUpdated", defaultModel.stash_by_BC["1220017279667"]);
-
+        defaultModel.setLabwareFromBarcode("1220017279667")
+          .then(function () {
+            expect(owner.getS2Root).toHaveBeenCalled();
+            expect(Object.keys(defaultModel.stash_by_BC).length).toEqual(1);
+            expect(owner.childDone).toHaveBeenCalledWith(defaultModel, "modelUpdated", defaultModel.stash_by_BC["1220017279667"]);
+          });
       });
 
       it("handles a case where a labware barcode is not found", function () {

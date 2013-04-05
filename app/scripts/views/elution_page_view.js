@@ -10,7 +10,7 @@ define(['text!extraction_pipeline/html_partials/elution_loading_partial.html'], 
     return null;
   }
 
-  var bindingView = function (owner, jquerySelector) {
+  var elutionView = function (owner, jquerySelector) {
     console.log("hello");
     this.owner = owner;
     this.jquerySelector = jquerySelector;
@@ -18,7 +18,7 @@ define(['text!extraction_pipeline/html_partials/elution_loading_partial.html'], 
     return this;
   };
 
-  bindingView.prototype.renderView = function (model) {
+  elutionView.prototype.renderView = function (model) {
     if (model !== null) {
       this.model = model;
     }
@@ -33,10 +33,15 @@ define(['text!extraction_pipeline/html_partials/elution_loading_partial.html'], 
     parent.empty().
       append(elutionLoadingPartialHtml);
     var startButton = parent.find(".startButton");
+    var printButton = parent.find(".printButton");
     var that = this;
 
     startButton.on('click', function(e) {
         that.owner.childDone(that, "elutionStarted", {});
+    });
+    printButton.on('click', function(e) {
+        that.owner.childDone(that, "printOutputTubeBC", {});
+
     });
 
 //    $('li').addClass("kit");
@@ -44,25 +49,14 @@ define(['text!extraction_pipeline/html_partials/elution_loading_partial.html'], 
 //    $('ul h3').addClass("kit");
   };
 
-  bindingView.prototype.setKitValidState = function (valid) {
-    var result = '';
-    var jquerySelection = this.jquerySelector();
+  elutionView.prototype.setPrintButtonEnabled = function (isEnabled) {
+    var printButton = this.jquerySelector().find('.printButton');
 
-    if (valid) {
-      result = 'This kit is valid for the selected tubes';
-      jquerySelection.
-        find('.printButton').removeAttr('disabled');
+    if (isEnabled) {
+      printButton.removeAttr('disabled');
+    } else {
+      printButton.attr('disabled', 'disabled');
     }
-    else {
-      result = 'This kit is not valid for the selected tubes';
-      jquerySelection.
-        find('.printButton').attr('disabled', 'disabled');
-    }
-
-    jquerySelection.
-      find('.validationText').
-      empty().
-      append(result);
   };
 
 //
@@ -75,12 +69,12 @@ define(['text!extraction_pipeline/html_partials/elution_loading_partial.html'], 
 //  }
 
 
-  bindingView.prototype.clear = function () {
+  elutionView.prototype.clear = function () {
     /* clear the view from the current page
      */
     var children = this.jquerySelector().empty();
   };
 
-  return bindingView;
+  return elutionView;
 
 });
