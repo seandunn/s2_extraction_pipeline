@@ -28,7 +28,7 @@ define([
 
   $.extend(KitModel, {
 
-    init:                           function (owner, initData) {
+    init:function (owner, initData) {
       this.owner = Object.create(owner);
       this.stash_by_BC = {};
       this.stash_by_UUID = {};
@@ -47,7 +47,7 @@ define([
 
       return this;
     },
-    setBatch:                       function (batch) {
+    setBatch:function (batch) {
       var that = this;
       console.log("setBatch : ", batch);
       this.addResource(batch);
@@ -55,41 +55,43 @@ define([
       this.setAllTubesFromCurrentBatch(); // as in: from the batch, I get the tubes involved...
 
 
-      this.batch.orders.then(function(result) {
+      this.batch.orders.then(function (result) {
         that.order = result[0];
-        that.owner.childDone(that, "batchAdded");
       });
 
+      this.owner.childDone(this, "batchAdded");
     },
-    setAllTubesFromCurrentBatch:    function () {
+    setAllTubesFromCurrentBatch:function () {
       var that = this;
-      debugger;
       this.batch.items.then(function (items) {
-            _.each(items, function (item) {
-              debugger;
-              if (item.role === that.inputRole && item.status === "done") {
-                  that.fetchResourcePromiseFromUUID(item.uuid)
-                      .then(function (rsc) {
-                        debugger;
-                        that.addResource(rsc);
-                        that.tubes.push(rsc);
-                      });
-                }
-            });
-          }
+          _.each(items, function (item) {
+            if (item.role === that.inputRole && item.status === "done") {
+              that.fetchResourcePromiseFromUUID(item.uuid)
+                .then(function (rsc) {
+                  that.addResource(rsc);
+                  that.tubes.push(rsc);
+                });
+            }
+          });
+        }
       );
 //      this.uuids = this.owner.tubeUUIDs;
     },
     findTubeInModelFromBarcode:function (barcode) {
+
       for (var i = 0; i < this.tubes.length; i++) {
-        if (this.tubes[i].barcode == barcode) return this.tubes[i];
+        if (this.tubes[i].rawJson.tube.labels.barcode.value == barcode.BC) {
+          return this.tubes[i];
+        }
       }
 
       return null;
     },
     findSCInModelFromBarcode:function (barcode) {
       for (var i = 0; i < this.spinColumns.length; i++) {
-        if (this.spinColumns[i].barcode == barcode) return this.spinColumns[i];
+        if (this.spinColumns[i].barcode == barcode) {
+          return this.spinColumns[i];
+        }
       }
 
       return null;
@@ -119,7 +121,7 @@ define([
       if (tubeTypes.length != kitType.length) {
         valid = false;
       } else {
-        tubeTypes.forEach(function(tube) {
+        tubeTypes.forEach(function (tube) {
           if (kitType.indexOf(tube) == -1) {
             valid = false;
           }
@@ -148,41 +150,41 @@ define([
 
       if (!this.kitSaved) {
         rowModel = {
-          "rowNum":  rowNum,
+          "rowNum":rowNum,
           "labware1":{
-            "resource":       this.tubes[rowNum],
-            "expected_type":  "tube",
-            "display_remove": false,
+            "resource":this.tubes[rowNum],
+            "expected_type":"tube",
+            "display_remove":false,
             "display_barcode":false
           },
           "labware2":{
-            "expected_type":  "spin_columns",
-            "display_remove": false,
+            "expected_type":"spin_columns",
+            "display_remove":false,
             "display_barcode":false
           },
           "labware3":{
-            "expected_type":  "waste_tube",
-            "display_remove": false,
+            "expected_type":"waste_tube",
+            "display_remove":false,
             "display_barcode":false
           }
         };
       }
       else {
         rowModel = {
-          "rowNum":  rowNum,
+          "rowNum":rowNum,
           "labware1":{
-            "expected_type":  "tube",
-            "display_remove": true,
+            "expected_type":"tube",
+            "display_remove":true,
             "display_barcode":true
           },
           "labware2":{
-            "expected_type":  "spin_columns",
-            "display_remove": false,
+            "expected_type":"spin_columns",
+            "display_remove":false,
             "display_barcode":true
           },
           "labware3":{
-            "expected_type":  "waste_tube",
-            "display_remove": false,
+            "expected_type":"waste_tube",
+            "display_remove":false,
             "display_barcode":false
           }
         };
@@ -190,22 +192,25 @@ define([
 
       return rowModel;
     },
-    createMissingSpinColumns:   function () {
+
+    createMissingSpinColumns:function () {
       var that = this;
       var listOfPromises = [];
-      var root;
+      var root = null;
 
-      this.owner.getS2Root().then(function (result) {
-        root = result;
-        _.each(that.tubes, function (tube) {
-          var registerLabwarePromise = $.Deferred();
-          listOfPromises.push(registerLabwarePromise);
+      this.owner.getS2Root().
+        then(function (result) {
+          root = result;
+        }).then(function () {
+          _.each(that.tubes, function (tube) {
+            var registerLabwarePromise = $.Deferred();
+            listOfPromises.push(registerLabwarePromise);
 
-          Operations.registerLabware(
+            Operations.registerLabware(
               root.spin_columns,
               'DNA',
               'stock'
-          ).then(function (state) {
+            ).then(function (state) {
                 that.stash_by_BC[state.barcode] = state.labware;
                 that.stash_by_UUID [state.labware.uuid] = state.labware;
                 that.spinColumns.push(state.labware);
@@ -215,56 +220,49 @@ define([
                 registerLabwarePromise.reject();
                 that.owner.childDone(that, "failed", {});
               });
+          });
         });
-      });
 
-      var all_deferred = $.Deferred();
       $.when.apply(listOfPromises).then(function () {
-        all_deferred.resolve();
         that.owner.childDone(that, "success", {});
       }).fail(function () {
-            all_deferred.reject();
-            that.owner.childDone(that, "failed", {});
-          });
+          that.owner.childDone(that, "failed", {});
+        });
 
-      return all_deferred.promise();
+
     },
-    makeTransfer:               function (source, destination, rowPresenter) {
+
+    makeTransfer:function (source, destination, rowPresenter) {
       var that = this;
       var s2root = null;
+
       this.owner.getS2Root().then(function (result) {
         s2root = result;
         return source.order;
       })
-          .then(function (order) {
-            Operations.betweenLabware(s2root.actions.transfer_tubes_to_tubes, [
-              function (operations, state) {
-                operations.push({
-                  input:       { resource:source, role:that.inputRole, order:order },
-                  output:      { resource:destination, role:that.outputRoleForSC},
-                  fraction:    1.0,
-                  aliquot_type:source.aliquots[0].type
-                });
-                return $.Deferred().resolve();
-              }
-            ]
-            ).operation()
-                .then(function () {
+        .then(function (order) {
+          Operations.betweenLabware(s2root.actions.transfer_tubes_to_tubes, [
+            function (operations, state) {
+              operations.push({
+                input:{ resource:source, role:that.inputRole, order:order },
+                output:{ resource:destination, role:that.outputRoleForSC},
+                fraction:1.0,
+                aliquot_type:source.aliquots[0].type
+              });
+            }
+          ]
+          ).
+            operation()
+            .then(function () {
 
-                  // refreshing cache
-                  that.stash_by_BC[source.labels.barcode] = undefined;
-                  that.stash_by_UUID[source.uuid] = undefined;
-                  that.fetchResourcePromiseFromUUID(source.uuid);
-                  that.stash_by_BC[destination.labels.barcode] = undefined;
-                  that.stash_by_UUID[destination.uuid] = undefined;
-                  that.fetchResourcePromiseFromUUID(destination.uuid);
+              rowPresenter.childDone("...");
+            });
 
-                  rowPresenter.childDone("...");
-                });
-          });
+        });
     }
+
   });
 
   return KitModel;
 
-})
+});
