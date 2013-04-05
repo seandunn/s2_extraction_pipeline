@@ -74,10 +74,14 @@ define([
               });
             })
             .then(function (batch) {
-              this.batch = batch;
+              console.log("batch found :", batch );
+              that.batch = batch;
               that.owner.childDone(that, "modelValidated");
             })
             .fail(function () {
+              console.log("batch not found :");
+              that.batch = null;
+
               // we still inform the owner that this is a valid model, even if we don't have batch
               that.owner.childDone(that, "modelValidated");
             });

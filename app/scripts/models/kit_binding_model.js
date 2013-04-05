@@ -28,7 +28,7 @@ define([
 
   $.extend(KitModel, {
 
-    init:                       function (owner, initData) {
+    init:                           function (owner, initData) {
       this.owner = Object.create(owner);
       this.stash_by_BC = {};
       this.stash_by_UUID = {};
@@ -39,6 +39,7 @@ define([
       this.spinColumns = [];
       this.availableBarcodes = [];
       this.kitSaved = false;
+      this.order = undefined;
 
       this.inputRole = initData["input"];
       this.outputRoleForTube = initData["output"]["tube"];
@@ -46,64 +47,85 @@ define([
 
       return this;
     },
-    setBatch:                   function (batch) {
+    setBatch:                       function (batch) {
+      var that = this;
       console.log("setBatch : ", batch);
       this.addResource(batch);
       this.batch = batch;
       this.setAllTubesFromCurrentBatch(); // as in: from the batch, I get the tubes involved...
+
+
+      this.batch.orders.then(function(result) {
+        that.order = result[0];
+      });
+
       this.owner.childDone(this, "batchAdded");
     },
-    setAllTubesFromCurrentBatch:function () {
+    setAllTubesFromCurrentBatch:    function () {
       var that = this;
       this.batch.items.then(function (items) {
             _.each(items, function (item) {
               if (item.role === that.inputRole && item.status === "done") {
-                that.fetchResourcePromiseFromUUID(item.uuid)
-                    .then(function (rsc) {
-                      that.addResource(rsc);
-                      that.tubes.push(rsc);
-                    });
-              }
+                  that.fetchResourcePromiseFromUUID(item.uuid)
+                      .then(function (rsc) {
+                        that.addResource(rsc);
+                        that.tubes.push(rsc);
+                      });
+                }
             });
           }
       );
 //      this.uuids = this.owner.tubeUUIDs;
     },
-    findTubeInModelFromBarcode: function (barcode) {
+    findTubeInModelFromBarcode:function (barcode) {
       for (var i = 0; i < this.tubes.length; i++) {
         if (this.tubes[i].barcode == barcode) return this.tubes[i];
       }
 
       return null;
     },
-    findSCInModelFromBarcode:   function (barcode) {
+    findSCInModelFromBarcode:function (barcode) {
       for (var i = 0; i < this.spinColumns.length; i++) {
         if (this.spinColumns[i].barcode == barcode) return this.spinColumns[i];
       }
 
       return null;
     },
-    validateKitTubes:           function (kitType) {
+    validateKitTubes:function (kitType) {
       var valid = true;
+      var rna = false;
+      var dna = false;
       var tubeTypes = [];
+      var pipeline = '';
 
-      for (var tube in this.tubes) {
-        if (this.tubes[tube].hasOwnProperty('aliquots')) {
-          if (this.tubes[tube].aliquots.length > 0) {
-            tubeTypes.push = this.tubes[tube].aliquots[0].type;
+      pipeline = this.order.pipeline;
+
+      rna = (pipeline.indexOf('RNA') != -1);
+      dna = (pipeline.indexOf('DNA') != -1);
+
+      if (dna) {
+        tubeTypes.push('DNA');
+      }
+      if (rna) {
+        tubeTypes.push('RNA');
+      }
+
+      tubeTypes.sort();
+      kitType.sort();
+
+      if (tubeTypes.length != kitType.length) {
+        valid = false;
+      } else {
+        tubeTypes.forEach(function(tube) {
+          if (kitType.indexOf(tube) == -1) {
+            valid = false;
           }
-        }
+        })
       }
 
-      for (var index in tubeTypes) {
-        if (kitType.indexOf(tubeTypes[index]) == -1) {
-          valid = false;
-          break;
-        }
-      }
       return valid;
     },
-    validateTubeUuid:           function (data) {
+    validateTubeUuid:function (data) {
       var valid = false;
 
       for (var i = 0; i < this.tubes.length; i++) {
@@ -115,10 +137,10 @@ define([
 
       return valid;
     },
-    validateSCBarcode:          function (data) {
+    validateSCBarcode:function (data) {
       return true;
     },
-    getRowModel:                function (rowNum) {
+    getRowModel:function (rowNum) {
       var rowModel = {};
 
       if (!this.kitSaved) {

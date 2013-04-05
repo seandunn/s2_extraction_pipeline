@@ -12,39 +12,52 @@ define(['config'
 
   // Returns a function that finds the first "ready" item in the batch that matches the given rule.
   function itemMatcherForBatchItems(items) {
-    console.log("mathc items",items);
-    return function (rule) {
-      console.log("*****",rule);
+//    console.log("match items",items);
+    return function (role) {
+//      debugger;
+//      console.log(" role in config file currently tested : ",role);
       return _.chain(items)
           .filter(function (item) {
-            console.log("?? ",item);
+//            console.log(" filtering status ",item);
             return item.status === 'done';
           })
           .filter(function (item) {
-            console.log("rule ",rule);
-            return item.role === rule;
+//            console.log(" filtering role ",role);
+            return item.role === role;
           })
           .first()
           .value();
     };
   }
 
-  workflowEngine.prototype.getNextPresenterName = function (batch) {
+  workflowEngine.prototype.getMatchingRoleDataFromItems = function (items) {
+    var matchingRole = _.chain(this.role_priority).find(itemMatcherForBatchItems(items)).value();
+//    console.log("matching role :: ", matchingRole);
+    var presenterName = matchingRole ? this.role_configuration[matchingRole]["presenter"]["presenter_name"] : this.default;
+    var presenterInitData = matchingRole ? this.role_configuration[matchingRole] : {};
+    return {presenterName:presenterName, initData:presenterInitData};
+  };
+
+  workflowEngine.prototype.getNextPresenterName = function (data) {
     /**
      * inputDataForWorkflow is a batch
      */
     var deffered = $.Deferred();
-    var items;
+    var items, root;
     var that = this;
-    batch.items.then(function (result) {
-      items = result;
-      var matchingRole = _.chain(that.role_priority).find(itemMatcherForBatchItems(items)).value();
-      var presenterName = matchingRole ? that.role_configuration[matchingRole]["presenter"]["presenter_name"] : this.default;
-      var presenterInitData = matchingRole ? that.role_configuration[matchingRole] : {};
-      deffered.resolve({presenterName:presenterName, initData:presenterInitData});
-    }).fail(function(){
-          deffered.reject();
-    });
+
+          data.batch.items.then(function (result) {
+            items = result;
+            debugger;
+            var matchingRoleData = that.getMatchingRoleDataFromItems(items);
+            deffered.resolve(matchingRoleData);
+          }).fail(function () {
+                deffered.reject();
+              });
+//        }).fail(function(){
+//          console.log("fail");
+//          deffered.reject();
+//        });
 
 
 
@@ -81,7 +94,7 @@ define(['config'
       this.setNextPresenterFromName(presenterFactory, "selection_page_presenter");
     } else {
       var that = this;
-      this.getNextPresenterName(inputDataForWorkflow.batch).then(function (data) {
+      this.getNextPresenterName(inputDataForWorkflow).then(function (data) {
         console.log(">> to getNextPresenterName :  ", data.presenterName);
         that.setNextPresenterFromName(presenterFactory, data.presenterName, data.initData
         );

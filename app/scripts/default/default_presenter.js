@@ -49,8 +49,8 @@ define(['config'
           this.setupView();
           this.setupSubPresenters();
           this.renderView();
-          this.pageModel.setUserFromBarcode("benoit");
-          this.pageModel.setLabwareFromBarcode("1220017279667");
+//          this.pageModel.setUserFromBarcode("benoit");
+//          this.pageModel.setLabwareFromBarcode("1220017279667");
 
           return this;
         },
@@ -137,6 +137,7 @@ define(['config'
                   labware:this.pageModel.labware,
                   "batch":this.pageModel.batch
                 };
+                  console.log(dataForOwner.batch);
                 this.owner.childDone(this, "login", dataForOwner);
                 break;
             }

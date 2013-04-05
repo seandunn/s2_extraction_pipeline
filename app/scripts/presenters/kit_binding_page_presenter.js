@@ -166,6 +166,12 @@ define(['extraction_pipeline/views/kit_binding_page_view'
               this.setupSubPresenters();
               this.currentView.toggleHeaderEnabled(false);
             }
+          } else if (action == "printBC") {
+            this.kitModel.kitSaved = true;
+            this.kitModel.createMissingSpinColumns();
+            this.owner.childDone(this, "error", {"message":"Spin Column Barcodes printed"});
+            this.setupSubPresenters();
+            this.currentView.toggleHeaderEnabled(false);
           }
 
           if (action == 'tubeFinished') {

@@ -1,23 +1,68 @@
 {
   "useCase1":{
-    "description":"",
+    "description":   "",
     "workflowConfig":{
-      "role_priority":[
-        [
-          "roleA", "A_2_B_presenter"
+      "workflow":         {
+        "role_priority":     [
+          "tube_to_be_extracted_nap",
+          "binding_tube_to_be_extracted_nap",
+          "third_role"
         ],
-        [
-          "roleB", "B_2_C_presenter"
-        ],
-        [
-          "roleC", "C_2_D_presenter"
-        ]
-      ],
-      "default":"default_presenter"
+        "role_configuration":{
+          "tube_to_be_extracted_nap":{
+            "input":    "tube_to_be_extracted_nap",
+            "output":   {
+              "tube":"binding_tube_to_be_extracted_nap"
+            },
+            "presenter":{
+              "presenter_name": "selection_page_presenter",
+              "default_printer":{
+                "name":       "",
+                "description":"",
+                "url":        "http://localhost:9999"
+              }
+            }
+          },
+
+          "binding_tube_to_be_extracted_nap":{
+            "input":    "binding_tube_to_be_extracted_nap",
+            "output":   {
+              "tube":       "byproduct_tube_rnap",
+              "spin_column":"spin_column_dna"
+            },
+            "presenter":{
+              "presenter_name": "kit_presenter",
+              "default_printer":{
+                "name":       "",
+                "description":"",
+                "url":        "http://localhost:9999"
+              }
+            }
+          },
+
+          "third_role":{
+            "input":    "third_role",
+            "output":   {
+              "tube":       "byproduct_tube_rnap",
+              "spin_column":"spin_column_dna"
+            },
+            "presenter":{
+              "presenter_name": "third_presenter",
+              "default_printer":{
+                "name":       "",
+                "description":"",
+                "url":        "http://localhost:9999"
+              }
+            }
+          }
+        }
+      },
+      "default_presenter":"default_presenter"
     },
+
     "tests":{
       "test0":{
-        "input":{
+        "input":   {
           "batch":{
             "items":[
             ]
@@ -28,150 +73,234 @@
         }
       },
       "test1":{
-        "input":{
+        "input":   {
           "batch":{
             "items":[
               {
-                "uuid":"uuid_for_roleA",
-                "status":"ready",
-                "role":"roleA"
+                "uuid":  "uuid_for_DNA",
+                "status":"done",
+                "role":  "tube_to_be_extracted_nap"
               }
             ]
           }
         },
         "expected":{
-          "pagePresenter":"A_2_B_presenter"
+          "pagePresenter":"selection_page_presenter"
         }
       },
       "test2":{
-        "input":{
+        "input":   {
           "batch":{
             "items":[
               {
-                "uuid":"uuid_for_roleB",
-                "status":"ready",
-                "role":"roleB"
+                "uuid":  "uuid1",
+                "status":"done",
+                "role":  "tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid2",
+                "status":"done",
+                "role":  "tube_to_be_extracted_nap"
               }
             ]
           }
         },
         "expected":{
-          "pagePresenter":"B_2_C_presenter"
+          "pagePresenter":"selection_page_presenter"
         }
       },
       "test3":{
-        "input":{
+        "input":   {
           "batch":{
             "items":[
               {
-                "uuid":"uuid_for_roleC",
-                "status":"ready",
-                "role":"roleC"
+                "uuid":  "uuid1",
+                "status":"done",
+                "role":  "tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid2",
+                "status":"unused",
+                "role":  "tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid2",
+                "status":"done",
+                "role":  "binding_tube_to_be_extracted_nap"
               }
             ]
           }
         },
         "expected":{
-          "pagePresenter":"C_2_D_presenter"
+          "pagePresenter":"selection_page_presenter"
         }
       },
       "test4":{
-        "input":{
+        "input":   {
           "batch":{
             "items":[
               {
-                "uuid":"uuid_for_roleD",
-                "status":"ready",
-                "role":"roleD"
-              }
-            ]
-          }
-        },
-        "expected":{
-          "pagePresenter":"default_presenter"
-        }
-      }
-
-    }
-  },
-  "useCase2":{
-    "description":"just for the sake of it",
-    "workflowConfig":{
-      "role_priority":[
-        [
-          "tube_DNA", "do_something_with_DNA_presenter"
-        ],
-        [
-          "tube_RNA", "do_something_with_RNA_presenter"
-        ]
-      ],
-      "default":"default_presenter"
-    },
-    "tests":{
-      "test1":{
-        "description":"",
-        "input":{
-          "batch":{
-            "items":[
-              {
-                "uuid":"uuid_for_DNA",
-                "status":"ready",
-                "role":"tube_DNA"
+                "uuid":  "uuid2",
+                "status":"done",
+                "role":  "binding_tube_to_be_extracted_nap"
               },
               {
-                "uuid":"uuid_for_RNA",
-                "status":"ready",
-                "role":"tube_RNA"
+                "uuid":  "uuid1",
+                "status":"done",
+                "role":  "tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid2",
+                "status":"unused",
+                "role":  "tube_to_be_extracted_nap"
               }
             ]
           }
         },
         "expected":{
-          "pagePresenter":"do_something_with_DNA_presenter"
+          "pagePresenter":"selection_page_presenter"
         }
       },
-      "test2":{
-        "input":{
+      "test5":{
+        "input":   {
           "batch":{
             "items":[
               {
-                "uuid":"uuid_for_DNA",
-                "status":"not_used",
-                "role":"tube_DNA"
+                "uuid":  "uuid1",
+                "status":"unused",
+                "role":  "tube_to_be_extracted_nap"
               },
               {
-                "uuid":"uuid_for_RNA",
-                "status":"ready",
-                "role":"tube_RNA"
+                "uuid":  "uuid1",
+                "status":"done",
+                "role":  "binding_tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid2",
+                "status":"unused",
+                "role":  "tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid2",
+                "status":"done",
+                "role":  "binding_tube_to_be_extracted_nap"
               }
             ]
           }
         },
         "expected":{
-          "pagePresenter":"do_something_with_RNA_presenter"
+          "pagePresenter":"kit_presenter"
         }
       },
-      "test3":{
-        "input":{
+      "test6":{
+        "input":   {
           "batch":{
             "items":[
               {
-                "uuid":"uuid_for_RNA",
-                "status":"ready",
-                "role":"tube_RNA"
+                "uuid":  "uuid1",
+                "status":"unused",
+                "role":  "tube_to_be_extracted_nap"
               },
               {
-                "uuid":"uuid_for_DNA",
-                "status":"not_used",
-                "role":"tube_DNA"
+                "uuid":  "uuid1",
+                "status":"unused",
+                "role":  "binding_tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid2",
+                "status":"unused",
+                "role":  "tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid2",
+                "status":"done",
+                "role":  "binding_tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":"uuid3",
+                "status":"done",
+                "role":"third_role"
               }
             ]
           }
         },
         "expected":{
-          "pagePresenter":"do_something_with_RNA_presenter"
+          "pagePresenter":"kit_presenter"
+        }
+      },
+      "test7":{
+        "input":   {
+          "batch":{
+            "items":[
+              {
+                "uuid":  "uuid1",
+                "status":"unused",
+                "role":  "tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid1",
+                "status":"unused",
+                "role":  "binding_tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid2",
+                "status":"unused",
+                "role":  "tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid2",
+                "status":"unused",
+                "role":  "binding_tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":"uuid3",
+                "status":"done",
+                "role":"third_role"
+              }
+            ]
+          }
+        },
+        "expected":{
+          "pagePresenter":"third_presenter"
+        }
+      },
+      "test8":{
+        "input":   {
+          "batch":{
+            "items":[
+              {
+                "uuid":  "uuid1",
+                "status":"done",
+                "role":  "tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid1",
+                "status":"unused",
+                "role":  "binding_tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid2",
+                "status":"unused",
+                "role":  "tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":  "uuid2",
+                "status":"unused",
+                "role":  "binding_tube_to_be_extracted_nap"
+              },
+              {
+                "uuid":"uuid3",
+                "status":"done",
+                "role":"third_role"
+              }
+            ]
+          }
+        },
+        "expected":{
+          "pagePresenter":"selection_page_presenter"
         }
       }
     }
   }
+
 }
