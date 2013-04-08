@@ -51,8 +51,8 @@ define(['config'
           this.renderView();
           this.userBCSubPresenter.focus();
 
-//          this.pageModel.setUserFromBarcode("benoit");
-//          this.pageModel.setLabwareFromBarcode("1220017279667");
+          this.pageModel.setUserFromBarcode("benoit");
+          this.pageModel.setLabwareFromBarcode("1220017279667");
 
           return this;
         },

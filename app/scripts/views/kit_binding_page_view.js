@@ -48,11 +48,11 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
 
     var input = parent.find("input");
     var selector = parent.find(".kitSelect");
-    var printBtn = parent.find(".kitPrintButton");
+    var savePrintBtn = parent.find(".kitSavePrintButton");
     var that = this;
 
-    printBtn.on('click', function (e) {
-      that.owner.childDone(that, "printBC", {});
+    savePrintBtn.on('click', function (e) {
+      that.owner.childDone(that, "savePrintBC", {});
     });
 
     $('li').addClass("kit");
@@ -70,8 +70,7 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
     });
 
     this.jquerySelector().find(".nextBtn").click(onNext_clicked(this.owner, this));
-
-
+    this.jquerySelector().find(".kitSelect").prop('selectedIndex', -1);
   };
 
   kitView.prototype.setKitValidState = function (valid) {
@@ -81,12 +80,12 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
     if (valid) {
       result = '<div class="alert alert-success">This kit is valid for the selected tubes</div>';
       jquerySelection.
-        find('.kitPrintButton').removeAttr('disabled');
+        find('.kitSavePrintButton').removeAttr('disabled');
     }
     else {
       result = '<div class="alert alert-error">This kit is not valid for the selected tubes</div>';
       jquerySelection.
-        find('.kitPrintButton').attr('disabled', 'disabled');
+        find('.kitSavePrintButton').attr('disabled', 'disabled');
     }
 
     jquerySelection.
@@ -102,15 +101,15 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
   kitView.prototype.toggleHeaderEnabled = function (isEnabled) {
     var selection = this.jquerySelector();
     var kitSelect = selection.find('.kitSelect')
-    var kitPrintButton = selection.find('.kitPrintButton');
+    var kitSavePrintButton = selection.find('.kitSavePrintButton');
 
     if (isEnabled) {
       kitSelect.removeAttr('disabled');
-      kitPrintButton.removeAttr('disabled');
+      kitSavePrintButton.removeAttr('disabled');
     }
     else {
       kitSelect.attr('disabled', 'disabled');
-      kitPrintButton.attr('disabled', 'disabled');
+      kitSavePrintButton.attr('disabled', 'disabled');
     }
   };
 

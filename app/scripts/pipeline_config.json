@@ -22,6 +22,7 @@
 
             "binding_tube_to_be_extracted_nap":{
                 "input":"binding_tube_to_be_extracted_nap",
+                "kitType":"DNA/RNA",
                 "output":{
                     "tube":"byproduct_tube_rnap",
                     "spin_column":"spin_column_dna"

@@ -9,6 +9,9 @@ define([], function(mapperConfig) {
 
     // Configure the print service
     printServiceUrl: 'http://psd-dev.internal.sanger.ac.uk:8000/printers/legacy/soap',
-    printers: [ {name: 'e367bc', type: 2} ]
+    printers: [ {name: 'e367bc', type: 2} ],
+    inputTubeKitTypes: { "binding_tube_for_extraction_nap" : "DNA/RNA",
+                         "binding_tube_for_extraction_dnap" : "DNA",
+                         "binding_tube_for_extraction_rnap" : "RNA"}
   };
 });
