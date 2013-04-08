@@ -73,6 +73,8 @@ define([ 'config'
           this.presenters[i].renderView();
         }
       }
+
+      this.presenters[this.pageModel.getNumberOfTubes()].barcodeFocus();
       return this;
     },
     setupSubPresenters:function () {

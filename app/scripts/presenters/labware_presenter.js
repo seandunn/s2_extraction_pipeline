@@ -281,6 +281,12 @@ define(['config'
       }
     },
 
+    barcodeFocus:function() {
+      if (this.barcodeInputPresenter) {
+        this.barcodeInputPresenter.focus();
+      }
+    },
+
     displayErrorMessage:function (message) {
       this.barcodeInputPresenter.displayErrorMessage(message);
     }
