@@ -44,9 +44,6 @@ define(['config'
 
       var rsc, that = this;
 
-//      debugger;
-
-
       if (resourceDetails.uuid) {
         rsc = this.stash_by_UUID[resourceDetails.uuid];
         if (rsc) {
@@ -54,10 +51,8 @@ define(['config'
         } else {
           this.owner.getS2Root()
               .then(function (root) {
-//                debugger;
                 return root.find(resourceDetails.uuid);
               }).then(function (result) {
-//                debugger;
                 rsc = result;
                 that.addResource(rsc);
                 deferredS2Resource.resolve(rsc);

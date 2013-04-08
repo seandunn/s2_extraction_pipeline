@@ -40,8 +40,8 @@ define(['extraction_pipeline/presenters/scan_barcode_presenter',
       };
 
     PresenterFactory.prototype.createSelectionPagePresenter =
-      function (owner) {
-        return Object.create(SelectionPagePresenter).init(owner, this);
+      function (owner,initData) {
+        return Object.create(SelectionPagePresenter).init(owner, this, initData);
       };
 
     PresenterFactory.prototype.createDefaultPresenter =

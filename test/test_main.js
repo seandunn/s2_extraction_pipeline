@@ -18,13 +18,14 @@ require.config({
     presenters:'scripts/presenters',
     spec:'spec',
     testjson:'components/S2Mapper/test/json',
+    pipelinetestjson:'json',
     text:'/components/requirejs-text/text'
   }
 });
  
 require(['domReady!'
 //   ,'spec/app_spec'
-//   ,'spec/selection_page_model_spec'
+   ,'spec/selection_page_model_spec'
 //  , 'spec/default_page_presenter_spec'
 //   ,'spec/default_model_spec'
 //   ,'spec/selection_page_presenter_spec'

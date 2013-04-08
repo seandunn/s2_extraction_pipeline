@@ -27,14 +27,14 @@ define([ 'config'
   var PagePresenter = Object.create(BasePresenter);
 
   $.extend(PagePresenter, {
-    init:function (owner, presenterFactory) {
+    init:function (owner, presenterFactory, initData) {
       this.presenterFactory = presenterFactory;
+      this.pageModel = Object.create(SelectionPageModel).init(this, initData);
       this.owner = owner;
       return this;
     },
     setupPresenter:function (setupData, jquerySelection) {
       this.setupPlaceholder(jquerySelection);
-      this.pageModel = Object.create(SelectionPageModel).init(this);
       if (setupData) {
         this.pageModel.setBatch(setupData.batch); // the batch BEFORE the labware!
         this.pageModel.setSeminalLabware(setupData.labware);
