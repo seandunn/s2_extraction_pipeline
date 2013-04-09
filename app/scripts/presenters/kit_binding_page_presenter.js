@@ -29,11 +29,9 @@ function (View, BasePresenter, KitModel) {
 
   $.extend(KitPresenter, {
     init: function (owner, presenterFactory, initData) {
-      this.owner = owner;
-      this.kitModel = Object.create(KitModel).init(this, initData);
-      this.currentView = undefined;
-      this.barcodePresenter = undefined;
-      this.rowPresenters = [];
+      this.owner            = owner;
+      this.kitModel         = Object.create(KitModel).init(this, initData);
+      this.rowPresenters    = [];
       this.presenterFactory = presenterFactory;
       return this;
     },
@@ -121,7 +119,7 @@ function (View, BasePresenter, KitModel) {
     getTubeFromModel: function (requester, barcode) {
 
       var result = this.kitModel.findTubeInModelFromBarcode(barcode);
-      if (result == null) {
+      if (!result) {
         requester.displayErrorMessage("Barcode not found");
       }
       else {
@@ -132,10 +130,9 @@ function (View, BasePresenter, KitModel) {
     getSpinColumnFromModel: function (requester, barcode) {
 
       var result = this.kitModel.findSCInModelFromBarcode(barcode);
-      if (result == null) {
+      if (!result) {
         requester.displayErrorMessage("Spin column is not in kit");
-      }
-      else {
+      } else {
         requester.updateModel(result);
         this.kitModel.makeTransfer(requester.labware1, requester.labware2, requester);
       }
@@ -149,7 +146,7 @@ function (View, BasePresenter, KitModel) {
     childDone:function (child, action, data) {
 
       if (child === this.currentView) {
-        if (action == "next") {
+        if (action === "next") {
 
           if (this.setValidState()) {
             // Confirm complete...
@@ -157,14 +154,14 @@ function (View, BasePresenter, KitModel) {
             this.owner.childDone(this, "error", {"message":"Error: The kit isn't validated."});
           }
 
-        } else if (action == "savePrintBC") {
+        } else if (action === "savePrintBC") {
           this.kitModel.saveKitCreateBarcodes();
           // TODO : print call here !
           this.owner.childDone(this, "error", {"message":"Kit saved and Spin Column Barcodes printed"});
           this.setupSubPresenters();
           this.currentView.toggleHeaderEnabled(false);
 
-        } else if (action == "printBC") {
+        } else if (action === "printBC") {
           this.kitModel.kitSaved = true;
           this.kitModel.createMissingSpinColumns();
           this.owner.childDone(this, "error", {"message":"Spin Column Barcodes printed"});
@@ -173,14 +170,13 @@ function (View, BasePresenter, KitModel) {
         }
       }
 
-      if (action == "barcodeScanned") {
-        if (child.labwareModel.expected_type == "tube") {
+      if (action === "barcodeScanned") {
+        if (child.labwareModel.expected_type === "tube") {
           this.getTubeFromModel(child, data);
-        } else if (child.labwareModel.expected_type == "spin_columns") {
+        } else if (child.labwareModel.expected_type === "spin_columns") {
           this.getSpinColumnFromModel(child, data);
         }
       }
-
     }
 
   });
