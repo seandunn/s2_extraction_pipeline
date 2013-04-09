@@ -1,5 +1,5 @@
 define(['config', 'mapper/s2_base_resource'], function(config, S2Resource) {
-  config.setTestJson('dna_only_extraction');
+  //config.setTestJson('dna_only_extraction');
 
   config.currentStage = 'stage1';
 

@@ -17,7 +17,7 @@ require.config({
     models:'scripts/models',
     presenters:'scripts/presenters',
     spec:'spec',
-    json:'components/S2Mapper/test/json',
+    testjson:'components/S2Mapper/test/json',
     text:'/components/requirejs-text/text'
   }
 });

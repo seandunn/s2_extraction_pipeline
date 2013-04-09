@@ -186,7 +186,7 @@ module.exports = function( grunt ) {
     },
 
     server:{
-      port:3502
+      port:3501
     }
 
   });
