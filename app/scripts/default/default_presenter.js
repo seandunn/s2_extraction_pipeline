@@ -49,8 +49,10 @@ define(['config'
           this.setupView();
           this.setupSubPresenters();
           this.renderView();
-//          this.pageModel.setUserFromBarcode("benoit");
-//          this.pageModel.setLabwareFromBarcode("1220017279667");
+          this.userBCSubPresenter.focus();
+
+          this.pageModel.setUserFromBarcode("benoit");
+          this.pageModel.setLabwareFromBarcode("1220017279667");
 
           return this;
         },
@@ -112,6 +114,7 @@ define(['config'
           } else if (child === this.userBCSubPresenter) {
             if (action === "barcodeScanned") {
               that.pageModel.setUserFromBarcode(data.BC);
+              this.labwareBCSubPresenter.focus();
               return;
             }
 //          } else if (child === this.currentView) {

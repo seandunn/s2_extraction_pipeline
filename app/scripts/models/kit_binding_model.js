@@ -44,6 +44,7 @@ define([
       this.inputRole = initData["input"];
       this.outputRoleForTube = initData["output"]["tube"];
       this.outputRoleForSC = initData["output"]["spin_column"];
+      this.validKitType = initData["kitType"];
 
       return this;
     },
@@ -64,25 +65,23 @@ define([
     setAllTubesFromCurrentBatch:function () {
       var that = this;
       this.batch.items.then(function (items) {
-          _.each(items, function (item) {
-            if (item.role === that.inputRole && item.status === "done") {
-              that.fetchResourcePromiseFromUUID(item.uuid)
-                .then(function (rsc) {
-                  that.addResource(rsc);
-                  that.tubes.push(rsc);
-                });
-            }
-          });
-        }
+            _.each(items, function (item) {
+              if (item.role === that.inputRole && item.status === "done") {
+                  that.fetchResourcePromiseFromUUID(item.uuid)
+                      .then(function (rsc) {
+                        that.addResource(rsc);
+                        that.tubes.push(rsc);
+                      });
+                }
+            });
+          }
       );
 //      this.uuids = this.owner.tubeUUIDs;
     },
     findTubeInModelFromBarcode:function (barcode) {
 
       for (var i = 0; i < this.tubes.length; i++) {
-        if (this.tubes[i].rawJson.tube.labels.barcode.value == barcode.BC) {
-          return this.tubes[i];
-        }
+        if (this.tubes[i].rawJson.tube.labels.barcode.value == barcode.BC) return this.tubes[i];
       }
 
       return null;
@@ -97,38 +96,7 @@ define([
       return null;
     },
     validateKitTubes:function (kitType) {
-      var valid = true;
-      var rna = false;
-      var dna = false;
-      var tubeTypes = [];
-      var pipeline = '';
-
-      pipeline = this.order.pipeline;
-
-      rna = (pipeline.indexOf('RNA') != -1);
-      dna = (pipeline.indexOf('DNA') != -1);
-
-      if (dna) {
-        tubeTypes.push('DNA');
-      }
-      if (rna) {
-        tubeTypes.push('RNA');
-      }
-
-      tubeTypes.sort();
-      kitType.sort();
-
-      if (tubeTypes.length != kitType.length) {
-        valid = false;
-      } else {
-        tubeTypes.forEach(function (tube) {
-          if (kitType.indexOf(tube) == -1) {
-            valid = false;
-          }
-        })
-      }
-
-      return valid;
+      return (this.validKitType == kitType);
     },
     validateTubeUuid:function (data) {
       var valid = false;
@@ -148,6 +116,9 @@ define([
     getRowModel:function (rowNum) {
       var rowModel = {};
 
+      var labware3ExpectedType = (this.validKitType == 'DNA/RNA') ? 'tube' : 'waste_tube';
+      var labware3DisplayBarcode = (this.validKitType == 'DNA/RNA') ? true : false;
+
       if (!this.kitSaved) {
         rowModel = {
           "rowNum":rowNum,
@@ -163,8 +134,8 @@ define([
             "display_barcode":false
           },
           "labware3":{
-            "expected_type":"waste_tube",
-            "display_remove":false,
+            "expected_type":  labware3ExpectedType,
+            "display_remove": false,
             "display_barcode":false
           }
         };
@@ -183,9 +154,9 @@ define([
             "display_barcode":true
           },
           "labware3":{
-            "expected_type":"waste_tube",
-            "display_remove":false,
-            "display_barcode":false
+            "expected_type":  labware3ExpectedType,
+            "display_remove": false,
+            "display_barcode":labware3DisplayBarcode
           }
         };
       }
@@ -240,25 +211,41 @@ define([
         s2root = result;
         return source.order;
       })
-        .then(function (order) {
-          Operations.betweenLabware(s2root.actions.transfer_tubes_to_tubes, [
-            function (operations, state) {
-              operations.push({
-                input:{ resource:source, role:that.inputRole, order:order },
-                output:{ resource:destination, role:that.outputRoleForSC},
-                fraction:1.0,
-                aliquot_type:source.aliquots[0].type
-              });
-            }
-          ]
-          ).
-            operation()
-            .then(function () {
+          .then(function (order) {
+            Operations.betweenLabware(s2root.actions.transfer_tubes_to_tubes, [
+              function (operations, state) {
+                operations.push({
+                  input:       { resource:source, role:that.inputRole, order:order },
+                  output:      { resource:destination, role:that.outputRoleForSC},
+                  fraction:    1.0,
+                  aliquot_type:source.aliquots[0].type
+                });
+                return $.Deferred().resolve();
+              }
+            ]
+            ).operation()
+                .then(function () {
 
-              rowPresenter.childDone("...");
-            });
+                  // refreshing cache
+                  that.stash_by_BC[source.labels.barcode] = undefined;
+                  that.stash_by_UUID[source.uuid] = undefined;
+                  that.fetchResourcePromiseFromUUID(source.uuid);
+                  that.stash_by_BC[destination.labels.barcode] = undefined;
+                  that.stash_by_UUID[destination.uuid] = undefined;
+                  that.fetchResourcePromiseFromUUID(destination.uuid);
 
-        });
+                  rowPresenter.childDone("...");
+                });
+          });
+    },
+    saveKitCreateBarcodes:function(kitBC) {
+
+      if (this.batch) {
+        this.batch.update({"kit" : kitBC});
+        this.kitSaved = true;
+      }
+
+      this.createMissingSpinColumns();
     }
 
   });

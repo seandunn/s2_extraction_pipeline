@@ -107,7 +107,6 @@ define([
 //            debugger;
             return savedBatch.getResourcesGroupedByOrders();
           }).then(function (tubesByOrders) {
-//             debugger;
             _.each(tubesByOrders, function (orderKey) {
 //              console.log(" ORDER :: ", orderKey);
               _.each(orderKey.items, function (tube) {
