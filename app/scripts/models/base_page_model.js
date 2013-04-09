@@ -65,7 +65,7 @@ define(['config'
                 deferredS2Resource.reject();
               })
           ;
-          return deferredS2Resource.reject().promise();
+          return deferredS2Resource.promise();
         }
       }
 
