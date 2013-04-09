@@ -61,7 +61,6 @@ define(['config'
         .then(function (result) {
           items = result;
           var matchingRoleData = that.getMatchingRoleDataFromItems(items);
-          debugger;
           deffered.resolve(matchingRoleData);
         }).fail(function () {
           deffered.reject();
@@ -71,23 +70,7 @@ define(['config'
   };
 
   workflowEngine.prototype.setNextPresenterFromName = function (presenterFactory, presenterName, initData) {
-    var presenter = null;
-    switch (presenterName) {
-      case "kit_presenter":
-        presenter = presenterFactory.createKitBindingPagePresenter(this.mainController, initData);
-        break;
-      case "selection_page_presenter":
-        presenter = presenterFactory.createSelectionPagePresenter(this.mainController, initData);
-        break;
-      case "elution_page_presenter":
-        presenter = presenterFactory.createElutionPage(this.mainController, initData);
-        break;
-//      case "elution_wash_page_presenter":
-//        presenter = presenterFactory.createElutionWashPage(this.mainController, initData);
-//        break;
-      default:
-        presenter = presenterFactory.createDefaultPresenter(this.mainController);
-    }
+    var presenter = presenterFactory.create(presenterName, this.mainController, initData);
     this.mainController.childDone(this, "foundNextPresenter", presenter);
   };
 

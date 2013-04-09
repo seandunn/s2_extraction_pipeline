@@ -28,6 +28,12 @@ function (View, BasePresenter, KitModel) {
   var KitPresenter = Object.create(BasePresenter);
 
   $.extend(KitPresenter, {
+    register: function(callback) {
+      callback('kit_presenter', function(owner, factory, initData) {
+        return Object.create(KitPresenter).init(owner, factory, initData);
+      });
+    },
+
     init: function (owner, presenterFactory, initData) {
       this.owner            = owner;
       this.kitModel         = Object.create(KitModel).init(this, initData);

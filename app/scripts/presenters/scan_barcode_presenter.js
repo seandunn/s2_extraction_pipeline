@@ -103,6 +103,9 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
 //    return false;
 //  };
 
-  return ScanBarcodePresenter;
-
+  return {
+    register: function(callback) {
+      callback('scan_barcode_presenter', function(owner, factory) { return new ScanBarcodePresenter(owner, factory); });
+    }
+  };
 });

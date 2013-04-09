@@ -46,6 +46,12 @@ define(['config'
 //    this.barcodeInputPresenter = undefined;
 //  };
   $.extend(LabwarePresenter, {
+    register: function(callback) {
+      callback('labware_presenter', function(owner, factory) {
+        return Object.create(LabwarePresenter).init(owner, factory);
+      });
+    },
+
     init:function (owner, presenterFactory) {
       this.owner = owner;
       this.presenterFactory = presenterFactory;
@@ -149,7 +155,7 @@ define(['config'
           this.view.setTitle(type);
         }
         if (!this.barcodeInputPresenter && this.labwareModel.display_barcode) {
-          this.barcodeInputPresenter = this.presenterFactory.createScanBarcodePresenter(this);
+          this.barcodeInputPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
         }
         this.setupSubModel();
       }
