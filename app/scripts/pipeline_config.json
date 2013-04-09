@@ -1,42 +1,110 @@
 {
-    "workflow":{
-        "role_priority":[
-            "tube_to_be_extracted_nap",
-            "binding_tube_to_be_extracted_nap"
-        ],
-        "role_configuration":{
-            "tube_to_be_extracted_nap":{
-                "input":"tube_to_be_extracted_nap",
-                "output":{
-                    "tube":"binding_tube_to_be_extracted_nap"
-                },
-                "presenter":{
-                    "presenter_name":"selection_page_presenter",
-                    "default_printer":{
-                        "name":"",
-                        "description":"",
-                        "url":"http://localhost:9999"
-                    }
-                }
-            },
+  "workflow":{
+    "role_priority":[
+      "tube_to_be_extracted_nap",
+       "binding_tube_to_be_extracted_nap",
+       "tube_to_be_extracted_dnap",
+       "binding_tube_to_be_extracted_dnap",
+       "byproduct_tube_rnap",
+       "binding_spin_column_dna",
+       "tube_to_be_extracted_rnap",
+       "binding_tube_to_be_extracted_rnap",
+       "binding_spin_column_rna"
+    ],
 
-            "binding_tube_to_be_extracted_nap":{
-                "input":"binding_tube_to_be_extracted_nap",
-                "kitType":"DNA/RNA",
-                "output":{
-                    "tube":"byproduct_tube_rnap",
-                    "spin_column":"spin_column_dna"
-                },
-                "presenter":{
-                    "presenter_name":"kit_presenter",
-                    "default_printer":{
-                        "name":"",
-                        "description":"",
-                        "url":"http://localhost:9999"
-                    }
-                }
-            }
+    "role_configuration":{
+
+      "tube_to_be_extracted_nap": {
+        "presenterName":   "selection_page_presenter",
+        "input":            "tube_to_be_extracted_nap",
+        "output":{
+          "tube":"binding_tube_to_be_extracted_nap"
         }
-    },
-    "default_presenter":"default_presenter"
+      },
+
+      "binding_tube_to_be_extracted_nap": {
+        "presenterName":   "kit_presenter",
+        "defaultPrinter":  "Tube Printer",
+        "kitType":          "DNA/RNA",
+        "input":            "binding_tube_to_be_extracted_nap",
+
+        "output":{
+          "tube":         "byproduct_tube_rnap",
+          "spin_column":  "spin_column_dna"
+        }
+      },
+
+      "byproduct_tube_rnap": {
+        "presenterName":   "byproduct_transfer_presenter",
+        "defaultPrinter":  "Tube Printer",
+        "input":            "byproduct_tube_rnap",
+        "output": {
+          "tube": "binding_tube_to_be_extracted_rnap"
+        }
+      },
+
+      "binding_spin_column_dna": {
+        "presenterName":   "elution_presenter",
+        "defaultPrinter":  "Tube Printer",
+        "input":            "binding_spin_column_dna",
+        "output":  {
+          "tube": "extracted_tube_dna"
+        }
+      },
+
+      "binding_tube_to_be_extracted_rnap": {
+        "presenterName":   "kit_presenter",
+        "defaultPrinter":  "Tube Printer",
+        "input":            "binding_tube_to_be_extracted_rnap",
+        "output":  {
+          "spin_column":  "binding_spin_column_rna"
+        }
+      },
+
+      "binding_spin_column_rna": {
+        "presenterName":   "elution_presenter",
+        "defaultPrinter":  "Tube Printer",
+        "input":            "binding_spin_column_rna",
+        "output":  {
+          "tube": "extracted_tube_rna"
+        }
+      },
+
+
+
+      "tube_to_be_extracted_dnap": {
+        "presenterName":   "selection_page_presenter",
+        "input":            "tube_to_be_extracted_dnap",
+        "output": {
+          "tube":"binding_tube_to_be_extracted_dnap"
+        }
+      },
+
+      "binding_tube_to_be_extracted_dnap":{
+        "presenterName":   "kit_presenter",
+        "defaultPrinter":  "Tube Printer",
+        "kitType":          "DNA/RNA",
+        "input":            "binding_tube_to_be_extracted_dnap",
+
+        "output": {
+          "spin_column":  "spin_column_dna"
+        }
+      },
+
+
+
+
+      "tube_to_be_extracted_rnap": {
+        "presenterName":   "selection_page_presenter",
+        "input":            "tube_to_be_extracted_rnap",
+        "output": {
+          "tube": "binding_tube_to_be_extracted_rnap"
+        }
+      }
+
+    }
+  },
+
+  "defaultPresenter": "default_presenter"
 }
+

@@ -19,68 +19,80 @@
 
 
 define([
-  'scripts/workflow_engine'
+       'scripts/workflow_engine'
   , 'config'
-  , 'text!/json/workflow_test_data.json'
+  , 'text!scripts/pipeline_config.json'
 ], function (WorkflowEngine, config, testData) {
   'use strict';
 
-  testData = $.parseJSON(testData);
-  var configurationFile = undefined;
-  describe("There is a workflow engine:-", function () {
-    beforeEach(function () {
-      var useCase = "useCase1";
-      configurationFile = testData[useCase]["workflowConfig"];
+  describe("WorkflowEngine:-",function(){
+    var testConfig, workflowEngine, presenterData;
+
+    beforeEach(function(){
+      testConfig     = $.parseJSON(testData);
+      workflowEngine = new WorkflowEngine(undefined, testConfig);
     });
 
-    it("workflow engine is instantiated", function () {
-      var workflowEngine = new WorkflowEngine(undefined, configurationFile);
-      expect(workflowEngine).toBeDefined();
+    describe("Loading the workflow,", function(){
+      it("is instantiated.", function () {
+        expect(workflowEngine).toBeDefined();
+      });
+
+      it("an askForNextPresenter method.", function () {
+        expect(typeof workflowEngine.askForNextPresenter).toEqual("function");
+      });
+
+      it("has a role priority array.", function () {
+        expect(workflowEngine.role_priority instanceof Array).toBe(true);
+      });
+
+      it("has a role configuration object.", function(){
+        expect(typeof workflowEngine.role_configuration).toEqual("object");
+      });
+
+      it("has a defaultPresenter attribute.", function(){
+        expect(workflowEngine.defaultPresenter).toBeDefined();
+      });
+
+
+      describe("A formed pipeline_config.json file,", function(){
+        it("has a matching number of roles and rolePriority entries.", function(){
+          expect(workflowEngine.role_priority.length).toEqual(_.keys(workflowEngine.role_configuration).length);
+        });
+
+        it("has role_priority entries which are strings.", function () {
+          expect(typeof workflowEngine.role_priority[0]).toEqual("string");
+        });
+      });
     });
 
-    it("workflow engine has the expected methods", function () {
-      var workflowEngine = new WorkflowEngine(undefined, configurationFile);
+    describe("Passing in an empty set of roles,", function (){
 
-      expect(workflowEngine.askForNextPresenter).toBeDefined();
-      expect(typeof workflowEngine.askForNextPresenter).toEqual("function");
+      beforeEach(function(){
+        presenterData = workflowEngine.getMatchingRoleDataFromItems([]);
+      });
+
+      it("returns the default presenter.", function(){
+        expect(presenterData.presenterName).toEqual("default_presenter");
+      });
     });
 
-    it("workflow engine can read configuration file", function () {
-      var workflowEngine = new WorkflowEngine(undefined, configurationFile);
-      expect(workflowEngine.role_priority).toBeDefined();
-      expect(typeof workflowEngine.role_priority).toEqual("object");
-      expect(workflowEngine.role_configuration).toBeDefined();
-      expect(typeof workflowEngine.role_configuration).toEqual("object");
-      expect(workflowEngine.default).toBeDefined();
+    describe("Looking up a presenter for a DNA+P tube,", function (){
+
+      beforeEach(function(){
+        presenterData = workflowEngine.getMatchingRoleDataFromItems([{
+          "uuid":  "UUID_FOR_DNAP_TUBE",
+          "status":"done",
+          "role":  "tube_to_be_extracted_nap"
+        }]);
+      });
+
+      it("returns the default presenter.", function(){
+        expect(presenterData.presenterName).toEqual("selection_page_presenter");
+      });
     });
 
-    it("configuration inside the engine is well formed... (not just really testing the workflowEngine)", function () {
-      var workflowEngine = new WorkflowEngine(undefined, configurationFile);
-      expect(workflowEngine.role_priority).toBeDefined();
-      expect(Array.isArray(workflowEngine.role_priority)).toBeTruthy();
-      expect(workflowEngine.role_priority.length).toEqual(_.keys(workflowEngine.role_configuration).length);
-      expect(typeof workflowEngine.role_priority[0]).toEqual("string");
-      expect(workflowEngine.default).toBeDefined();
-      expect(Array.isArray(workflowEngine.default)).toBeFalsy();
-      expect(workflowEngine.default).toEqual("default_presenter");
-    });
   });
 
 
-  describe("The workflow works: ", function () {
-
-    var useCase = "useCase1";
-    var tests = testData[useCase]["tests"];
-    var configurationFile = testData[useCase]["workflowConfig"];
-
-    it("in " + useCase + " we have the correct presenters", function () {
-      for (var testName in tests) {
-        var inputData = tests[testName]["input"]["batch"]["items"];
-        var expectedPresenterName = tests[testName]["expected"]["pagePresenter"];
-        var workflowEngine = new WorkflowEngine(undefined, configurationFile);
-        var data = workflowEngine.getMatchingRoleDataFromItems(inputData);
-        expect(data.presenterName).toEqual(expectedPresenterName);
-      }
-    });
-  });
 });
