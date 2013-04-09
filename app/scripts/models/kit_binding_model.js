@@ -23,6 +23,11 @@ define([
   'extraction_pipeline/models/base_page_model',
   'mapper/operations'
 ], function (BasePageModel, Operations) {
+  function findByBarcode(barcode, array) {
+    return _.chain(array).find(function(resource) {
+      return resource.labels.barcode.value === barcode.BC;
+    }).value();
+  }
 
   var KitModel = Object.create(BasePageModel);
 
@@ -35,11 +40,11 @@ define([
       this.labware = undefined;
       this.user = undefined;
       this.batch = undefined;
-      this.tubes = [];
+      this.tubes = $.Deferred();
       this.spinColumns = [];
       this.availableBarcodes = [];
       this.kitSaved = false;
-      this.order = undefined;
+      this.order = $.Deferred();
 
       this.inputRole = initData["input"];
       this.outputRoleForTube = initData["output"]["tube"];
@@ -57,43 +62,33 @@ define([
 
 
       this.batch.orders.then(function (result) {
-        that.order = result[0];
+        that.order.resolve(result[0]);
       });
 
       this.owner.childDone(this, "batchAdded");
     },
     setAllTubesFromCurrentBatch:function () {
       var that = this;
-      this.batch.items.then(function (items) {
-            _.each(items, function (item) {
-              if (item.role === that.inputRole && item.status === "done") {
-                  that.fetchResourcePromiseFromUUID(item.uuid)
-                      .then(function (rsc) {
-                        that.addResource(rsc);
-                        that.tubes.push(rsc);
-                      });
-                }
-            });
-          }
-      );
-//      this.uuids = this.owner.tubeUUIDs;
+      this.batch.items.then(function(items) {
+        var tubes = []
+        $.when.apply(null, _.chain(items).filter(function(item) {
+          return item.role === that.inputRole && item.status === "done";
+        }).map(function(item) {
+          return that.fetchResourcePromiseFromUUID(item.uuid).then(function(rsc) {
+            that.addResource(rsc);
+            tubes.push(rsc);
+          });
+        }).value()).then(function() {
+          that.tubes.resolve(tubes);
+        });
+      });
     },
+
     findTubeInModelFromBarcode:function (barcode) {
-
-      for (var i = 0; i < this.tubes.length; i++) {
-        if (this.tubes[i].rawJson.tube.labels.barcode.value == barcode.BC) return this.tubes[i];
-      }
-
-      return null;
+      return this.tubes.then(_.partial(findByBarcode, barcode));
     },
     findSCInModelFromBarcode:function (barcode) {
-      for (var i = 0; i < this.spinColumns.length; i++) {
-        if (this.spinColumns[i].barcode == barcode) {
-          return this.spinColumns[i];
-        }
-      }
-
-      return null;
+      return findByBarcode(barcode, this.spinColumns);
     },
     validateKitTubes:function (kitType) {
       return (this.validKitType == kitType);
@@ -173,34 +168,29 @@ define([
         then(function (result) {
           root = result;
         }).then(function () {
-          _.each(that.tubes, function (tube) {
-            var registerLabwarePromise = $.Deferred();
-            listOfPromises.push(registerLabwarePromise);
-
-            Operations.registerLabware(
-              root.spin_columns,
-              'DNA',
-              'stock'
-            ).then(function (state) {
+          that.tubes.then(function(tubes) {
+            var spinColumnPromises = _.chain(tubes).map(function(tube) {
+              return Operations.registerLabware(
+                root.spin_columns,
+                'DNA',
+                'stock'
+              ).then(function (state) {
                 that.stash_by_BC[state.barcode] = state.labware;
                 that.stash_by_UUID [state.labware.uuid] = state.labware;
                 that.spinColumns.push(state.labware);
-                registerLabwarePromise.resolve();
-
+                return state.labware;
               }).fail(function () {
-                registerLabwarePromise.reject();
                 that.owner.childDone(that, "failed", {});
               });
+            }).value();
+
+            $.when.apply(null, spinColumnPromises).then(function () {
+              that.owner.childDone(that, "success", {});
+            }).fail(function () {
+              that.owner.childDone(that, "failed", {});
+            });
           });
         });
-
-      $.when.apply(listOfPromises).then(function () {
-        that.owner.childDone(that, "success", {});
-      }).fail(function () {
-          that.owner.childDone(that, "failed", {});
-        });
-
-
     },
 
     makeTransfer:function (source, destination, rowPresenter) {

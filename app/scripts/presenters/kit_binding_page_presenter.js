@@ -65,13 +65,15 @@ function (View, BasePresenter, KitModel) {
 
     setupSubPresenters:    function () {
       if (!this.barcodePresenter) {
-        this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
+        this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
       }
-      for (var i = 0; i < this.kitModel.tubes.length; i++) {
-        if (!this.rowPresenters[i]) {
-          this.rowPresenters[i] = this.presenterFactory.createRowPresenter(this);
-        }
-      }
+
+      var that = this;
+      this.kitModel.tubes.then(function(tubes) {
+        that.rowPresenters = _.chain(tubes).map(function() {
+          return that.presenterFactory.create('row_presenter', that);
+        }).value();
+      });
       this.setupSubModel();
       return this;
     },
@@ -83,19 +85,18 @@ function (View, BasePresenter, KitModel) {
       };
 
       var that = this;
-
       var jquerySelectionForBarcode = function () {
         return that.jquerySelection().find('.barcode')
       }
-
-      for (var i = 0; i < this.kitModel.tubes.length; i++) {
-
-        var jquerySelectionForRow = function (i) {
-          return function () {
-            return that.jquerySelection().find('.row' + i);
-          }
-        };
-      };
+      this.kitModel.tubes.then(function(tubes) {
+        for (var i = 0; i < tubes.length; ++i) {
+          var row = i;
+          var rowModel = that.kitModel.getRowModel(row);
+          that.rowPresenters[row].setupPresenter(rowModel, function () {
+            return that.jquerySelection().find('.row' + row);
+          });
+        }
+      });
 
       this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
       this.barcodePresenter.focus();
@@ -123,14 +124,13 @@ function (View, BasePresenter, KitModel) {
     },
 
     getTubeFromModel: function (requester, barcode) {
-
-      var result = this.kitModel.findTubeInModelFromBarcode(barcode);
-      if (!result) {
-        requester.displayErrorMessage("Barcode not found");
-      }
-      else {
-        requester.updateModel(result);
-      }
+      this.kitModel.findTubeInModelFromBarcode(barcode).then(function(result) {
+        if (!result) {
+          requester.displayErrorMessage("Barcode not found");
+        } else {
+          requester.updateModel(result);
+        }
+      });
     },
 
     getSpinColumnFromModel: function (requester, barcode) {
