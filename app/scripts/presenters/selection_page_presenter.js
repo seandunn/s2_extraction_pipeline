@@ -39,13 +39,6 @@ define([ 'config'
         this.pageModel.setBatch(setupData.batch); // the batch BEFORE the labware!
         this.pageModel.setSeminalLabware(setupData.labware);
         this.pageModel.setUser(setupData.userUUID);
-        // for test purposes only
-        if (this.pageModel.tubes.length == 1){
-          console.log("fast forward activated");
-          this.pageModel.addTubeFromBarcode("1220017279668");
-          this.pageModel.makeBatch();
-          return this;
-        }
       }
       this.setupView();
       this.setupSubPresenters();

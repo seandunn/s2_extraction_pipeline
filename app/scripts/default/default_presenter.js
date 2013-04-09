@@ -50,10 +50,6 @@ define(['config'
           this.setupSubPresenters();
           this.renderView();
           this.userBCSubPresenter.focus();
-
-          this.pageModel.setUserFromBarcode("benoit");
-          this.pageModel.setLabwareFromBarcode("1220017279667");
-
           return this;
         },
         setupSubPresenters:function () {
