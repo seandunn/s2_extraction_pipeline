@@ -26,6 +26,12 @@ define(['extraction_pipeline/views/elution_page_view',
   var ElutionLoadingPresenter = Object.create(BasePresenter);
 
   $.extend(ElutionLoadingPresenter, {
+    register: function(callback) {
+      callback('elution_page_presenter', function(owner, factory, initData) {
+        return Object.create(ElutionLoadingPresenter).init(owner, factory, initData);
+      });
+    },
+
     /* Initialises the presenter and defines the view to be used
      *
      *
@@ -107,11 +113,11 @@ define(['extraction_pipeline/views/elution_page_view',
      */
     setupSubPresenters:function () {
       if (!this.barcodePresenter) {
-        this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
+        this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
       }
       for (var i = 0; i < this.elutionModel.spin_columns.length; i++) {
         if (!this.rowPresenters[i]) {
-          this.rowPresenters[i] = this.presenterFactory.createRowPresenter(this);
+          this.rowPresenters[i] = this.presenterFactory.create('row_presenter', this);
         }
       }
       this.setupSubModel();

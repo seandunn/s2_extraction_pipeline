@@ -31,6 +31,12 @@ define(['config'
       var DefaultPresenter = Object.create(BasePresenter);
 
       $.extend(DefaultPresenter, {
+        register: function(callback) {
+          callback('default', function(owner, factory, initData) {
+            return Object.create(DefaultPresenter).init(owner, factory, initData);
+          });
+        },
+
         init:function (owner, presenterFactory) {
           this.presenterFactory = presenterFactory;
           this.owner = owner;
@@ -54,8 +60,8 @@ define(['config'
         },
         setupSubPresenters:function () {
           // check with this.model for the needed subpresenters...
-          this.userBCSubPresenter = this.presenterFactory.createScanBarcodePresenter(this);
-          this.labwareBCSubPresenter = this.presenterFactory.createScanBarcodePresenter(this);
+          this.userBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
+          this.labwareBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
           this.setupSubModel();
           return this;
         },

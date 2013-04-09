@@ -27,6 +27,12 @@ define([ 'config'
   var PagePresenter = Object.create(BasePresenter);
 
   $.extend(PagePresenter, {
+    register: function(callback) {
+      callback('selection_page_presenter', function(owner, factory, initData) {
+        return Object.create(PagePresenter).init(owner, factory, initData);
+      });
+    },
+
     init:function (owner, presenterFactory, initData) {
       this.presenterFactory = presenterFactory;
       this.pageModel = Object.create(SelectionPageModel).init(this, initData);
@@ -73,7 +79,7 @@ define([ 'config'
     setupSubPresenters:function () {
       this.presenters = [];
       for (var i = 0; i < this.pageModel.getCapacity(); i++) {
-        var subPresenter = this.presenterFactory.createLabwarePresenter(this);
+        var subPresenter = this.presenterFactory.create('labware_presenter', this);
         this.presenters.push(subPresenter);
       }
       this.setupSubModel();

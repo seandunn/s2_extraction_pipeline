@@ -100,6 +100,12 @@ define([
 
 
   $.extend(RowPresenter, {
+    register: function(callback) {
+      callback('row_presenter', function(owner, factory) {
+        return Object.create(RowPresenter).init(owner, factory);
+      });
+    },
+
     init:function (owner, presenterFactory) {
       this.presenterFactory = presenterFactory;
       this.owner = owner;
@@ -137,13 +143,13 @@ define([
     },
     setupSubPresenters:function () {
       if (!this.labware1Presenter && this.rowModel.hasOwnProperty('labware1')) {
-        this.labware1Presenter = this.presenterFactory.createLabwarePresenter(this);
+        this.labware1Presenter = this.presenterFactory.create('labware_presenter', this);
       }
       if (!this.labware2Presenter && this.rowModel.hasOwnProperty('labware2')) {
-        this.labware2Presenter = this.presenterFactory.createLabwarePresenter(this);
+        this.labware2Presenter = this.presenterFactory.create('labware_presenter', this);
       }
       if (!this.labware3Presenter && this.rowModel.hasOwnProperty('labware3')) {
-        this.labware3Presenter = this.presenterFactory.createLabwarePresenter(this);
+        this.labware3Presenter = this.presenterFactory.create('labware_presenter', this);
       }
 
       // TODO: for now, the tube is always the same... no use of the mapper

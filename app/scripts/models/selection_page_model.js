@@ -104,21 +104,18 @@ define([
           }).then(function (savedBatch) {
 //            console.log("batch saved");
             batchBySideEffect = savedBatch;
-//            debugger;
             return savedBatch.getResourcesGroupedByOrders();
           }).then(function (tubesByOrders) {
             _.each(tubesByOrders, function (orderKey) {
-//              console.log(" ORDER :: ", orderKey);
               _.each(orderKey.items, function (tube) {
-//                console.log(" TUBE :: ", tube);
-
                 addingRoles.updates.push({
                   input: {
                     order:orderKey.order
                   },
                   output:{
                     resource:tube,
-                    role:    that.outputRoleForTube
+                    role:    that.outputRoleForTube,
+                    batch:   batchBySideEffect.uuid
                   }});
 
                 changingRoles.updates.push({

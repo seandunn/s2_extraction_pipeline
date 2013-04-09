@@ -25,6 +25,12 @@ define(['extraction_pipeline/views/elution_wash_page_view',
   var ElutionWashPresenter = Object.create(BasePresenter);
 
   $.extend(ElutionWashPresenter, {
+    register: function(callback) {
+      callback('elution_wash_page_presenter', function(owner, factory) {
+        return new ElutionWashPresenter(owner, factory);
+      });
+    },
+
     // interface ....
     init:function (owner, presenterFactory) {
       this.owner = owner;
@@ -130,11 +136,11 @@ define(['extraction_pipeline/views/elution_wash_page_view',
      */
     setupSubPresenters:function () {
       if (!this.barcodePresenter) {
-        this.barcodePresenter = this.presenterFactory.createScanBarcodePresenter(this);
+        this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
       }
       for (var i = 0; i < this.numRows; i++) {
         if (!this.rowPresenters[i]) {
-          this.rowPresenters[i] = this.presenterFactory.createRowPresenter(this);
+          this.rowPresenters[i] = this.presenterFactory.create('row_presenter', this);
         }
       }
       this.setupSubModel();
