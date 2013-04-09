@@ -13,9 +13,6 @@ define([ 'config'
         this.currentPagePresenter = undefined;
         this.model = undefined;
         this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
-
-
-
         return this;
       };
 
@@ -26,15 +23,14 @@ define([ 'config'
 
       app.prototype.getS2Root = function () {
         var deferredS2Root = new $.Deferred();
-
         if (!this.s2Root) {
           var that = this;
           S2Root.load({user:"username"}).done(function (result) {
             that.s2Root = result;
             deferredS2Root.resolve(result);
           }).fail(function () {
-            deferredS2Root.reject();
-          });
+                deferredS2Root.reject();
+              });
         } else {
           deferredS2Root.resolve(this.s2Root);
         }
@@ -43,8 +39,6 @@ define([ 'config'
 
       app.prototype.setupPresenter = function (inputModel) {
         this.setupPlaceholder();
-        this.setupView();
-        this.renderView(); // render empty view...
         if (!inputModel) {
           inputModel = {
             userUUID:undefined,
@@ -79,33 +73,17 @@ define([ 'config'
       };
 
       app.prototype.updateSubPresenters = function () {
-
         if (this.currentPagePresenter) {
           this.currentPagePresenter.release();
           this.currentPagePresenter = undefined;
         }
-
         this.workflow.askForNextPresenter(this.presenterFactory, this.model);
-        this.renderView();
       };
 
-
-
-      app.prototype.setupNextPresenter = function(nextPresenter){
+      app.prototype.setupNextPresenter = function (nextPresenter) {
         this.currentPagePresenter = nextPresenter;
-
         this.currentPagePresenter.setupPresenter(this.model, this.jquerySelection);
         this.model.labware = undefined;
-        return this;
-      };
-
-      app.prototype.setupView = function () {
-        // no view for this presenter...
-        return this;
-      };
-
-      app.prototype.renderView = function () {
-        // nothing to render
         return this;
       };
 
@@ -114,7 +92,7 @@ define([ 'config'
         return this;
       };
 
-      app.prototype.displayError = function(message) {
+      app.prototype.displayError = function (message) {
         bootbox.alert(message);
         return this;
       };
@@ -131,27 +109,15 @@ define([ 'config'
             this.updateModel(data);
           } else if (action == "error") {
             this.displayError(data.message);
-
           } else if (action == "login") {
-            if (data === undefined) {
-              throw new Error("DataSchemaError");
-            }
             this.updateModel(data);
           } else if (action == "foundNextPresenter") {
             this.setupNextPresenter(data);
-        }
+          }
 
           return this;
         } catch (err) {
-          if (err.message == "DataSchemaError") {
-            // do something ?
-            throw {
-              type:"DataSchemaError",
-              message:"DataSchemaError"
-            }
-          } else {
-            throw err;
-          }
+          this.displayError("Something wrong happend... "+err.message);
         }
 
       };

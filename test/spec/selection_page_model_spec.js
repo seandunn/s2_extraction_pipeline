@@ -2,159 +2,107 @@ define([
   'config'
   , 'mapper/s2_root'
   , 'models/selection_page_model'
-  , 'text!/json/minidb.json'
-], function (config,S2Root, Model, minidb) {
+  , 'text!testjson/unit/root.json'
+  , 'text!pipelinetestjson/selection_page_model_test_data.json'
+], function (config, S2Root, Model, rootTestData, testData) {
 
   'use strict';
 
-  config.loadTestData(minidb);
+  function getAResource(owner, uuid) {
+    var deferredS2Resource = new $.Deferred();
+    owner.getS2Root()
+        .then(function (root) {
+          return root.find(uuid);
+        }).then(function (result) {
+          deferredS2Resource.resolve(result);
+        }).fail(function () {
+          deferredS2Resource.reject();
+        });
+    return deferredS2Resource.promise();
+  }
 
-  describe("model with 0 tubes", function () {
+  config.loadTestData(testData);
+  config.cummulativeLoadingTestDataInFirstStage(rootTestData);
 
-    var fakeOwner = {
-      getS2Root:function () {
-        var deferredS2Root = new $.Deferred();
-        if (!this.s2Root) {
-          var that = this;
-          S2Root.load({user:"username"}).done(function (result) {
-            that.s2Root = result;
-            deferredS2Root.resolve(result);
-          }).fail(function () {
-                deferredS2Root.reject();
-              });
-        } else {
-          deferredS2Root.resolve(this.s2Root);
-        }
-        return deferredS2Root.promise();
+  var fakeOwner = {
+    getS2Root:function () {
+      var deferredS2Root = new $.Deferred();
+      if (!this.s2Root) {
+        var that = this;
+        S2Root.load({user:"username"}).done(function (result) {
+          that.s2Root = result;
+          deferredS2Root.resolve(result);
+        }).fail(function () {
+              deferredS2Root.reject();
+            });
+      } else {
+        deferredS2Root.resolve(this.s2Root);
       }
-    };
+      return deferredS2Root.promise();
+    },
+    childDone:function(){
+    }
+  };
 
-    it("has capacity of 12 tubes", function () {
-      expect(12).toEqual(12);
+  var initData = {
+    "input":"tube_to_be_extracted_nap",
+    "output":{
+      "tube":"binding_tube_to_be_extracted_nap"
+    },
+    "presenter":{
+      "presenter_name":"selection_page_presenter",
+      "default_printer":{
+        "name":"",
+        "description":"",
+        "url":"http://localhost:9999"
+      }
+    }
+  };
+
+  describe("Selection page model", function () {
+
+    var m = Object.create(Model).init(fakeOwner, initData);
+
+    it("can add a seminal labware, and then contains one tube", function () {
+      spyOn(fakeOwner,"childDone");
+      getAResource(fakeOwner,"tube1_UUID").then(function (tube) {
+        expect(tube.uuid).toEqual("tube1_UUID");
+        m.setSeminalLabware(tube);
+        expect(m.tubes.length).toEqual(1);
+        expect(m.tubes[0].uuid).toEqual("tube1_UUID");
+        expect(fakeOwner.childDone).toHaveBeenCalled();
+      }).fail(function () {
+            throw "oops"
+          });
     });
-    it("has capacity of 12 tubes", function () {
-      var m = Object.create(Model).init(fakeOwner);
-      m.fetchResourcePromiseFromUUID("1234567890");
-      expect(12).toEqual(12);
+
+    it("can make a batch", function () {
+
+      spyOn(config,"ajax").andCallThrough();
+      fakeOwner.childDone = function (){
+        expect(config.ajax).toHaveBeenCalled();
+      };
+      spyOn(fakeOwner,"childDone");
+      m.makeBatch();
+      expect(fakeOwner.childDone).toHaveBeenCalled();
     });
   });
-//
 
-//  var firstBatchUuid = '11111111-222222-00000000-111111111111';
-//  var secondBatchUuid = '11111111-222222-00000000-111111111112';
-//  var nextObjectUuid = '';
-//  var nextBatchUuid = '';
-//  var haveMutated = false;
-//  var owner = null;
-//  var barcodePresenter = {}; // minimal mock is acceptable
-//
-//  DummyResource.prototype.mutateJson = function (json) {
-//
-//    json.tube.uuid = nextObjectUuid;
-//    if (nextBatchUuid !== '') {
-//      json.tube.batch = {
-//        rawJson:{
-//          uuid:nextBatchUuid
-//        }
-//      };
-//    }
-//    haveMutated = true;
-//
-//    return json;
-//
-//  }
-//
-//  var createSpyOwner = function () {
-//    owner = {
-//      childDone:function (child, action, data) {
-//      }
-//    };
-//    spyOn(owner, 'childDone');
-//  }
+  describe("Selection page model", function () {
 
-//  xdescribe("SelectionPageModel", function () {
-//
-//    var helper = new SelectionPageHelper();
-//
-//    describe("model with 0 tubes", function () {
-//      var model;
-//
-//      beforeEach(function () {
-//        createSpyOwner();
-//        var inputModel = {
-//          userUUID:null,
-//          labwareUUID:null,
-//          batchUUID:null
-//        }
-//        model = new SelectionPageModel(owner, inputModel);
-//        haveMutated = false;
-//      });
-//
-//      it("has capacity of 12 tubes", function () {
-//        expect(model.getCapacity()).toEqual(12);
-//      });
-//    });
-//
-//
-//    describe("model with 1 tube", function () {
-//      var model;
-//
-//      beforeEach(function () {
-//        createSpyOwner();
-//        var inputModel = {
-//          userUUID:null,
-//          labwareUUID:"2345678901234",
-//          batchUUID:null
-//        }
-//        model = new SelectionPageModel(owner, inputModel);
-//        model.retrieveBatchFromSeminalLabware();
-//      });
-//
-//      it("contains one tube", function () {
-//        expect(model.getNumberOfTubes()).toEqual(1);
-//      });
-//
-//      it("can add a new tube", function () {
-//        model.addTube("1234567890");
-//        expect(model.getNumberOfTubes()).toEqual(2);
-//      });
-//
-//      xit("attempting to add same tube again sends error message to parent", function () {
-//          model.addTube("2345678901234");
-//        expect(model.getNumberOfTubes()).toBe(1);
-//        expect(owner.childDone).toHaveBeenCalledWith(barcodePresenter, "error",
-//            {"type":"UuidMismatch", "message":"This tube has already been scanned."});
-//      });
-//
-//    });
-//
-//  describe("model with 12 tubes", function () {
-//    var model;
-//
-//    beforeEach(function () {
-//      createSpyOwner();
-//      var inputModel = {
-//        userUUID:null,
-//        labwareUUID:null,
-//        batchUUID:null
-//      }
-//      model = new SelectionPageModel(owner, inputModel);
-//      for (var i = 0; i < 12; i++) {
-//        model.addTube("1234567890" + i);
-//      }
-//    });
-//
-//    it("contains 12 tubes", function () {
-//      expect(model.getNumberOfTubes()).toEqual(12);
-//    });
-//
-//    it("attempting to remove an tube with no matching uuid leaves model unchanged", function () {
-//      model.removeTubeByUuid("12300000");
-//
-//      expect(model.getNumberOfTubes()).toEqual(12);
-//    });
-//  })
-//});
+    var m = Object.create(Model).init(fakeOwner, initData);
 
-})
-;
+    it("can add a tube only once", function () {
+      spyOn(fakeOwner,"childDone");
+      getAResource(fakeOwner,"tube1_UUID").then(function (tube) {
+        expect(tube.uuid).toEqual("tube1_UUID");
+        expect(function(){m.addTube(tube)}).not.toThrow();
+        expect(function(){m.addTube(tube)}).toThrow();
+      }).fail(function () {
+            throw "oops"
+          });
+    });
+
+  });
+
+});

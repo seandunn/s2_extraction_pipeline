@@ -25,14 +25,18 @@ define([
   var SelectionPageModel = Object.create(BasePageModel);
 
   $.extend(SelectionPageModel, {
-    init:              function (owner) {
+    init:              function (owner, initData) {
       this.owner = Object.create(owner);
       this.stash_by_BC = {};
       this.stash_by_UUID = {};
       this.tubes = [];
-      this.capacity = 12;
+      this.capacity = initData["capacity"] || 12 ;
       this.batch = undefined;
       this.user = undefined;
+
+      this.inputRole = initData["input"];
+      this.outputRoleForTube = initData["output"]["tube"];
+
       return this;
     },
     setBatch:          function (batch) {
@@ -43,9 +47,6 @@ define([
     setSeminalLabware: function (labware) {
       this.addResource(labware);
       this.tubes.push(labware);
-      if (this.batch) {
-
-      }
       this.owner.childDone(this, "seminalLabwareAdded");
     },
     setUser:           function (user) {
@@ -56,7 +57,10 @@ define([
       if (this.tubes.length > this.capacity - 1) {
         throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
       }
-
+      var listOfIdenticalTubes = _.filter(this.tubes, function(tube){return tube.uuid === newTube.uuid});
+      if (listOfIdenticalTubes.length > 0){
+        throw {"type":"SelectionPageException", "message":"Can add a tube only once." };
+      }
       this.tubes.push(newTube);
       this.owner.childDone(this, "modelUpdated", {index:this.tubes.length, updateType:"addition"});
       return this;
@@ -92,22 +96,22 @@ define([
       var batchBySideEffect;
       var addingRoles = {updates:[]};
       var changingRoles = {updates:[]};
-      var input_role = "tube_to_be_extracted_nap";
-      var ouput_role = "binding_tube_to_be_extracted_nap";
 
       this.owner.getS2Root()
           .then(function (root) {
+//            console.log("saving batch");
             return root.batches.new({resources:that.tubes}).save();
           }).then(function (savedBatch) {
+//            console.log("batch saved");
             batchBySideEffect = savedBatch;
 //            debugger;
             return savedBatch.getResourcesGroupedByOrders();
           }).then(function (tubesByOrders) {
-             debugger;
+//             debugger;
             _.each(tubesByOrders, function (orderKey) {
-              console.log(" ORDER :: ", orderKey);
+//              console.log(" ORDER :: ", orderKey);
               _.each(orderKey.items, function (tube) {
-                console.log(" TUBE :: ", tube);
+//                console.log(" TUBE :: ", tube);
 
                 addingRoles.updates.push({
                   input: {
@@ -115,18 +119,18 @@ define([
                   },
                   output:{
                     resource:tube,
-                    role:    ouput_role
+                    role:    that.outputRoleForTube
                   }});
 
                 changingRoles.updates.push({
                   input: {
                     order:   orderKey.order,
                     resource:tube,
-                    role:    input_role
+                    role:    that.inputRole
                   },
                   output:{
                     resource:tube,
-                    role:    ouput_role
+                    role:    that.outputRoleForTube
                   }});
               });
             });
@@ -137,7 +141,7 @@ define([
             that.batch = batchBySideEffect; // updating the batch in the model, once all the requests succeeded.
             that.owner.childDone(that, "batchSaved", that.batch);
           }).fail(function () {
-            throw "Something wrong happend...";
+            throw "Could not make a batch";
           }
       );
     }
