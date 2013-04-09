@@ -37,7 +37,7 @@
       "byproduct_tube_rnap": {
         "presenterName":   "byproduct_transfer_presenter",
         "defaultPrinter":  "Tube Printer",
-        "input":            "byproduct_tube_rnap",
+        "input":           "byproduct_tube_rnap",
         "output": {
           "tube": "binding_tube_to_be_extracted_rnap"
         }
@@ -46,7 +46,7 @@
       "binding_spin_column_dna": {
         "presenterName":   "elution_presenter",
         "defaultPrinter":  "Tube Printer",
-        "input":            "binding_spin_column_dna",
+        "input":           "binding_spin_column_dna",
         "output":  {
           "tube": "extracted_tube_dna"
         }
@@ -55,7 +55,8 @@
       "binding_tube_to_be_extracted_rnap": {
         "presenterName":   "kit_presenter",
         "defaultPrinter":  "Tube Printer",
-        "input":            "binding_tube_to_be_extracted_rnap",
+        "kitType":         "RNA",
+        "input":           "binding_tube_to_be_extracted_rnap",
         "output":  {
           "spin_column":  "binding_spin_column_rna"
         }
@@ -64,7 +65,7 @@
       "binding_spin_column_rna": {
         "presenterName":   "elution_presenter",
         "defaultPrinter":  "Tube Printer",
-        "input":            "binding_spin_column_rna",
+        "input":           "binding_spin_column_rna",
         "output":  {
           "tube": "extracted_tube_rna"
         }
@@ -83,9 +84,8 @@
       "binding_tube_to_be_extracted_dnap":{
         "presenterName":   "kit_presenter",
         "defaultPrinter":  "Tube Printer",
-        "kitType":          "DNA/RNA",
-        "input":            "binding_tube_to_be_extracted_dnap",
-
+        "kitType":         "DNA",
+        "input":           "binding_tube_to_be_extracted_dnap",
         "output": {
           "spin_column":  "spin_column_dna"
         }
@@ -95,8 +95,8 @@
 
 
       "tube_to_be_extracted_rnap": {
-        "presenterName":   "selection_page_presenter",
-        "input":            "tube_to_be_extracted_rnap",
+        "presenterName":  "selection_page_presenter",
+        "input":          "tube_to_be_extracted_rnap",
         "output": {
           "tube": "binding_tube_to_be_extracted_rnap"
         }

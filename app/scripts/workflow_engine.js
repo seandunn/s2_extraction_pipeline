@@ -57,7 +57,8 @@ define([], function () {
   };
 
   workflowEngine.prototype.setNextPresenterFromName = function (presenterFactory, presenterName, initData) {
-    var presenter = null;
+    var presenter;
+
     switch (presenterName) {
       case "kit_presenter":
         presenter = presenterFactory.createKitBindingPagePresenter(this.mainController, initData);
@@ -71,6 +72,7 @@ define([], function () {
       default:
         presenter = presenterFactory.createDefaultPresenter(this.mainController);
     }
+
     this.mainController.childDone(this, "foundNextPresenter", presenter);
   };
 
