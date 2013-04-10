@@ -30,7 +30,7 @@
 
         "output":{
           "tube":         "byproduct_tube_rnap",
-          "spin_column":  "spin_column_dna"
+          "spin_column":  "binding_spin_column_dna"
         }
       },
 
@@ -87,7 +87,7 @@
         "kitType":         "DNA",
         "input":           "binding_tube_to_be_extracted_dnap",
         "output": {
-          "spin_column":  "spin_column_dna"
+          "spin_column":  "binding_spin_column_dna"
         }
       },
 

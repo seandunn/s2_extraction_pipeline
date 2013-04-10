@@ -27,7 +27,7 @@ define(['extraction_pipeline/views/elution_page_view',
 
   $.extend(ElutionLoadingPresenter, {
     register: function(callback) {
-      callback('elution_page_presenter', function(owner, factory, initData) {
+      callback('elution_presenter', function(owner, factory, initData) {
         return Object.create(ElutionLoadingPresenter).init(owner, factory, initData);
       });
     },
