@@ -114,7 +114,7 @@ define(['text!extraction_pipeline/html_partials/labware_partial.html'], function
       case 'tube':
         title = 'Tube';
         break;
-      case 'spin_columns':
+      case 'spin_column':
         title = 'Spin Column';
         break;
       case 'waste_tube':

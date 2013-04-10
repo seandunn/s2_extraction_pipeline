@@ -179,7 +179,7 @@ function (View, BasePresenter, KitModel) {
       if (action === "barcodeScanned") {
         if (child.labwareModel.expected_type === "tube") {
           this.getTubeFromModel(child, data);
-        } else if (child.labwareModel.expected_type === "spin_columns") {
+        } else if (child.labwareModel.expected_type === "spin_column") {
           this.getSpinColumnFromModel(child, data);
         }
       }
