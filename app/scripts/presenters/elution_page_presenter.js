@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 
-
 define(['extraction_pipeline/views/elution_page_view',
   'extraction_pipeline/presenters/base_presenter',
   'extraction_pipeline/models/elution_model'
@@ -26,8 +25,8 @@ define(['extraction_pipeline/views/elution_page_view',
   var ElutionLoadingPresenter = Object.create(BasePresenter);
 
   $.extend(ElutionLoadingPresenter, {
-    register: function(callback) {
-      callback('elution_presenter', function(owner, factory, initData) {
+    register:function (callback) {
+      callback('elution_presenter', function (owner, factory, initData) {
         return Object.create(ElutionLoadingPresenter).init(owner, factory, initData);
       });
     },
@@ -47,22 +46,21 @@ define(['extraction_pipeline/views/elution_page_view',
      * this
      */
     // interface ....
-    init:function (owner, presenterFactory) {
+    init:function (owner, presenterFactory, initData) {
       this.owner = owner;
-      this.elutionModel = Object.create(ElutionModel).init(this);
-      this.currentView = undefined;
-      this.barcodePresenter = undefined;
+      this.elutionModel = Object.create(ElutionModel).init(this, initData);
       this.rowPresenters = [];
       this.presenterFactory = presenterFactory;
       return this;
     },
 
     setupPresenter:function (input_model, jquerySelection) {
-//    console.log("et  : setupPresenter");
       this.setupPlaceholder(jquerySelection);
+      this.elutionModel.setBatch(input_model.batch);
       this.setupView();
       this.renderView();
       this.setupSubPresenters();
+
       return this;
     },
 
@@ -96,7 +94,6 @@ define(['extraction_pipeline/views/elution_page_view',
      */
     setupView:function () {
       this.currentView = new View(this, this.jquerySelection);
-      console.log(this.currentView);
       return this;
     },
 
@@ -112,14 +109,12 @@ define(['extraction_pipeline/views/elution_page_view',
      * this
      */
     setupSubPresenters:function () {
-      if (!this.barcodePresenter) {
-        this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
-      }
-      for (var i = 0; i < this.elutionModel.spin_columns.length; i++) {
-        if (!this.rowPresenters[i]) {
-          this.rowPresenters[i] = this.presenterFactory.create('row_presenter', this);
-        }
-      }
+      var that = this;
+      this.elutionModel.spinColumns.then(function (tubes) {
+        that.rowPresenters = _.chain(tubes).map(function () {
+          return that.presenterFactory.create('row_presenter', that);
+        }).value();
+      });
       this.setupSubModel();
       return this;
     },
@@ -136,26 +131,20 @@ define(['extraction_pipeline/views/elution_page_view',
      * this
      */
     setupSubModel:function () {
-      var modelJson = {"type":"Kit",
-        "value":"Kit0001"}
+
       var that = this;
-      var jquerySelectionForBarcode = function () {
-        return that.jquerySelection().find('.barcode')
-      }
 
-      for (var i = 0; i < this.elutionModel.spin_columns.length; i++) {
-
-        var jquerySelectionForRow = function (i) {
+      this.elutionModel.spinColumns.then(function (tubes) {
+        var selectorFunction = function (row) {
           return function () {
-            return that.jquerySelection().find('.row' + i);
-          }
+            return that.jquerySelection().find('.row' + row);
+          };
+        };
+        for (var rowIndex = 0; rowIndex < tubes.length; rowIndex++) {
+          var rowModel = that.elutionModel.getRowModel(rowIndex);
+          that.rowPresenters[rowIndex].setupPresenter(rowModel, selectorFunction(rowIndex));
         }
-
-        var rowModel = this.elutionModel.getRowModel(i);
-
-        this.rowPresenters[i].setupPresenter(rowModel, jquerySelectionForRow(i));
-      }
-      this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
+      });
       return this;
     },
 
@@ -172,11 +161,7 @@ define(['extraction_pipeline/views/elution_page_view',
      */
     renderView:function () {
       // render view...
-//    console.log("et  : presenter::renderView, ", this.jquerySelection());
       this.currentView.renderView();
-      if (this.barcodePresenter) {
-        this.barcodePresenter.renderView();
-      }
       return this;
     },
 
@@ -192,19 +177,30 @@ define(['extraction_pipeline/views/elution_page_view',
      * this
      */
     checkPageComplete:function () {
-
-      var complete = true;
-
       for (var i = 0; i < this.rowPresenters.length; i++) {
         if (!this.rowPresenters[i].isRowComplete()) {
-          complete = false;
-          break;
+          return false;
         }
       }
+      return true;
+    },
 
-      //TODO: Add check that tube barcodes have been printed
-
-      return complete;
+    getSpinColumnFromModel:function (requester, barcode) {
+      this.elutionModel.findSCInModelFromBarcode(barcode).then(function (result) {
+        if (!result) {
+          requester.displayErrorMessage("Barcode not found");
+        } else {
+          requester.updateModel(result);
+        }
+      });
+    },
+    getTubeFromModel:function (requester, barcode) {
+      var result = this.elutionModel.findTubeInModelFromBarcode(barcode);
+      if (!result) {
+        requester.displayErrorMessage("Tube is unknown");
+      } else {
+        requester.updateModel(result);
+      }
     },
 
     /* Clears the current view and all of its children
@@ -223,28 +219,17 @@ define(['extraction_pipeline/views/elution_page_view',
       return this;
     },
 
-    /* Ensure that the user entered UUID matches the expected list
-     *
-     *
-     * Arguments
-     * ---------
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    validateUuid:function (child, data) {
-      var valid = false;
+    makeAllTransfers:function () {
 
-      for (var i = 0; i < this.model.tubes.length; i++) {
-        if (this.model.spin_columns[i].uuid == data.uuid) {
-          valid = true;
-          break;
-        }
-      }
+      var destBySrc = _.chain(this.rowPresenters).reduce(function (memo, presenter) {
+        memo[presenter.labware1Presenter.labwareModel.resource.uuid] = {
+          source:presenter.labware1Presenter.labwareModel.resource,
+          destination:presenter.labware2Presenter.labwareModel.resource
+        };
+        return memo
+      }, {}).value();
 
-      return valid;
+      this.elutionModel.makeAllTransfers(destBySrc);
     },
 
     /* Indicates a child has completed an action
@@ -263,20 +248,45 @@ define(['extraction_pipeline/views/elution_page_view',
      */
     childDone:function (child, action, data) {
 
-      if (action == 'elutionStarted') {
-        if (this.elutionModel.checkPageComplete()) {
-          this.owner.childDone(this, 'elutionStarted', {});
-        }
-      } else if (action == 'printOutputTubeBC') {
-//          this.elutionModel.createOutputTubes();
-        this.elutionModel.printBarcodes([]);
-          this.currentView.setPrintButtonEnabled(false);
-          this.owner.childDone(this, 'error', {message: 'Output tube barcodes printed'});
-      }
+      if (child === this.currentView) {
 
+        if (action === 'elutionStarted') {
+            if (this.checkPageComplete()) {
+              this.makeAllTransfers();
+              this.owner.childDone(this, "error", {"message":"Elution completed"});
+            } else {
+              this.owner.childDone(this, "error", {"message":"Elution started"});
+            }
+        } else if (action === 'printOutputTubeBC') {
+
+          if (!this.elutionModel.hasStarted()) {
+            this.elutionModel.createOutputTubes();
+            this.currentView.setPrintButtonEnabled(false);
+          }
+
+        }
+
+      } else if (child === this.elutionModel) {
+
+        if (action === "allTransferCompleted") {
+          this.owner.childDone(this, "error", {"message":"Elution done"});
+//          this.owner.childDone(this, "done", {"batch":this.elutionModel.batch});
+        }
+
+      } else { // if child is a row presenter....
+
+        if (action === "barcodeScanned") {
+          var originator = data.origin;
+          if (originator.labwareModel.expected_type === "tube") {
+            this.getTubeFromModel(originator, data);
+          } else if (originator.labwareModel.expected_type === "spin_column") {
+            this.getSpinColumnFromModel(originator, data);
+          }
+        }
+
+      }
     }
   });
-
 
   return ElutionLoadingPresenter;
 })

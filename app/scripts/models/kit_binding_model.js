@@ -21,9 +21,8 @@
 
 define([
   'extraction_pipeline/models/base_page_model',
-  'mapper/operations',
-  'mapper_services/print',
-], function (BasePageModel, Operations, PrintService) {
+  'mapper/operations'
+], function (BasePageModel, Operations) {
   function findByBarcode(barcode, array) {
     return _.chain(array).find(function(resource) {
       return resource.labels.barcode.value === barcode.BC;
@@ -106,8 +105,8 @@ define([
     getRowModel:function (rowNum) {
       var rowModel = {};
 
-      var labware3ExpectedType = (this.validKitType == 'DNA/RNA') ? 'tube' : 'waste_tube';
-      var labware3DisplayBarcode = this.validKitType == 'DNA/RNA';
+      var labware3ExpectedType = (this.validKitType === 'DNA/RNA') ? 'tube' : 'waste_tube';
+      var labware3DisplayBarcode = this.validKitType === 'DNA/RNA';
 
       if (!this.kitSaved) {
         rowModel = {
@@ -181,7 +180,7 @@ define([
 
             $.when.apply(null, spinColumnPromises).then(function () {
               that.printBarcodes(that.spinColumns);
-              that.owner.childDone(that, "success", {});
+              that.owner.childDone(that, "labelPrinted", {});
             }).fail(function () {
               that.owner.childDone(that, "failed", {});
             });
@@ -220,7 +219,7 @@ define([
                   that.stash_by_UUID[destination.uuid] = undefined;
                   that.fetchResourcePromiseFromUUID(destination.uuid);
 
-                  rowPresenter.childDone("...");
+                  //rowPresenter.childDone("...");
                 });
           });
     },
@@ -232,25 +231,7 @@ define([
       }
 
       this.createMissingSpinColumns();
-    },
-    printBarcodes:function(collection) {
-      var that = this;
-      var printer = PrintService.printers[0];
-
-      // Extract the print label details from each item in the collection
-      var printItems = _.map(collection, function(item) {
-        return item.returnPrintDetails();
-      });
-
-      printer.print(printItems)
-             .done(function() {
-                    that.owner.childDone(that, 'barcodePrintSuccess', {});
-              })
-             .fail(function() {
-                    that.owner.childDone(that, 'barcodePrintFailure', {});
-              });
     }
-
   });
 
   return KitModel;

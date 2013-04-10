@@ -90,7 +90,6 @@ define([
       return this.tubes.length;
     },
     makeBatch:         function () {
-      //TODO: for now, let's pretend there is no batch... we create one.
       var that = this;
       var batchBySideEffect;
       var addingRoles = {updates:[]};
@@ -98,21 +97,19 @@ define([
 
       this.owner.getS2Root()
           .then(function (root) {
-//            console.log("saving batch");
             return root.batches.new({resources:that.tubes}).save();
           }).then(function (savedBatch) {
-//            console.log("batch saved");
             batchBySideEffect = savedBatch;
             return savedBatch.getItemsGroupedByOrders();
-          }).then(function (tubesByOrders) {
-            _.each(tubesByOrders, function (orderKey) {
-              _.each(orderKey.items, function (tube) {
+          }).then(function (itemsByOrders) {
+            _.each(itemsByOrders, function (orderKey) {
+              _.each(orderKey.items, function (item) {
                 addingRoles.updates.push({
                   input: {
                     order:orderKey.order
                   },
                   output:{
-                    resource:tube,
+                    resource:item,
                     role:    that.outputRoleForTube,
                     batch:   batchBySideEffect.uuid
                   }});
@@ -120,11 +117,11 @@ define([
                 changingRoles.updates.push({
                   input: {
                     order:   orderKey.order,
-                    resource:tube,
+                    resource:item,
                     role:    that.inputRole
                   },
                   output:{
-                    resource:tube,
+                    resource:item,
                     role:    that.outputRoleForTube
                   }});
               });

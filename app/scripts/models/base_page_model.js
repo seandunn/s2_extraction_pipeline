@@ -84,11 +84,22 @@ define(['config'
       }
       return deferredS2Resource.promise();
     },
-    setTestData:function (testData) {
-      this.testData = testData;
-    },
-    activateTestData:function () {
+    printBarcodes:function(collection) {
+      var that = this;
+      var printer = PrintService.printers[0];
 
+      // Extract the print label details from each item in the collection
+      var printItems = _.map(collection, function(item) {
+        return item.returnPrintDetails();
+      });
+
+      return printer.print(printItems)
+          .done(function() {
+            that.owner.childDone(that, 'barcodePrintSuccess', {});
+          })
+          .fail(function() {
+            that.owner.childDone(that, 'barcodePrintFailure', {});
+          });
     }
   });
 
