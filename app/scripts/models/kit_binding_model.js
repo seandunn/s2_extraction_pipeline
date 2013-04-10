@@ -199,7 +199,7 @@ define([
 
       this.owner.getS2Root().then(function (result) {
         s2root = result;
-        return source.order;
+        return source.order();
       })
           .then(function (order) {
             Operations.betweenLabware(s2root.actions.transfer_tubes_to_tubes, [

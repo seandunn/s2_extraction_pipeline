@@ -140,7 +140,6 @@ function (View, BasePresenter, KitModel) {
         requester.displayErrorMessage("Spin column is not in kit");
       } else {
         requester.updateModel(result);
-        this.kitModel.makeTransfer(requester.labware1, requester.labware2, requester);
       }
     },
 
@@ -177,10 +176,17 @@ function (View, BasePresenter, KitModel) {
       }
 
       if (action === "barcodeScanned") {
-        if (child.labwareModel.expected_type === "tube") {
-          this.getTubeFromModel(child, data);
-        } else if (child.labwareModel.expected_type === "spin_column") {
-          this.getSpinColumnFromModel(child, data);
+        var originator = data.origin;
+        if (originator.labwareModel.expected_type === "tube") {
+          this.getTubeFromModel(originator, data);
+        } else if (originator.labwareModel.expected_type === "spin_column") {
+          this.getSpinColumnFromModel(originator, data);
+
+          this.kitModel.makeTransfer(
+            child.labware1Presenter.labwareModel.resource,
+            child.labware2Presenter.labwareModel.resource,
+            child
+          );
         }
       }
     }
