@@ -41,7 +41,10 @@ define([
   // owner and the factory with which the presenter was registered.
   PresenterFactory.prototype.create = function(name, owner) {
     var constructor = this.presenters[name] || this.presenters.default;
-    return _.partial(constructor, owner, this).apply(null, _.chain(arguments).drop(2).value());
+    return $.extend(
+      _.partial(constructor, owner, this).apply(null, _.chain(arguments).drop(2).value()),
+      { presenter_type_name_debug: name }
+    );
   };
 
   PresenterFactory.prototype.createLabwareSubPresenter = function(owner, type) {
