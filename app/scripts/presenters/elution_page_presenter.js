@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 
-
 define(['extraction_pipeline/views/elution_page_view',
   'extraction_pipeline/presenters/base_presenter',
   'extraction_pipeline/models/elution_model'
@@ -26,8 +25,8 @@ define(['extraction_pipeline/views/elution_page_view',
   var ElutionLoadingPresenter = Object.create(BasePresenter);
 
   $.extend(ElutionLoadingPresenter, {
-    register: function(callback) {
-      callback('elution_presenter', function(owner, factory, initData) {
+    register:function (callback) {
+      callback('elution_presenter', function (owner, factory, initData) {
         return Object.create(ElutionLoadingPresenter).init(owner, factory, initData);
       });
     },
@@ -135,12 +134,15 @@ define(['extraction_pipeline/views/elution_page_view',
 
       var that = this;
 
-      this.elutionModel.tubes.then(function (tubes) {
+      this.elutionModel.spinCloumns.then(function (tubes) {
+        var selectorFunction = function (row) {
+          return function () {
+            return that.jquerySelection().find('.row' + row);
+          };
+        };
         for (var rowIndex = 0; rowIndex < tubes.length; rowIndex++) {
           var rowModel = that.elutionModel.getRowModel(rowIndex);
-          that.rowPresenters[rowIndex].setupPresenter(rowModel, function () {
-            return that.jquerySelection().find('.row' + rowIndex);
-          });
+          that.rowPresenters[rowIndex].setupPresenter(rowModel, selectorFunction(rowIndex));
         }
       });
       return this;
@@ -183,8 +185,8 @@ define(['extraction_pipeline/views/elution_page_view',
       return true;
     },
 
-    getSpinColumnFromModel: function (requester, barcode) {
-      this.elutionModel.findSCInModelFromBarcode(barcode).then(function(result) {
+    getSpinColumnFromModel:function (requester, barcode) {
+      this.elutionModel.findSCInModelFromBarcode(barcode).then(function (result) {
         if (!result) {
           requester.displayErrorMessage("Barcode not found");
         } else {
@@ -192,7 +194,7 @@ define(['extraction_pipeline/views/elution_page_view',
         }
       });
     },
-    getTubeFromModel: function (requester, barcode) {
+    getTubeFromModel:function (requester, barcode) {
       var result = this.elutionModel.findTubeInModelFromBarcode(barcode);
       if (!result) {
         requester.displayErrorMessage("Tube is unknown");
@@ -200,7 +202,6 @@ define(['extraction_pipeline/views/elution_page_view',
         requester.updateModel(result);
       }
     },
-
 
     /* Clears the current view and all of its children
      *
@@ -237,7 +238,7 @@ define(['extraction_pipeline/views/elution_page_view',
       if (child === this.currentView) {
         if (action === 'elutionStarted') {
 //          if (this.elutionModel.checkPageComplete()) {
-            //this.owner.childDone(this, 'elutionStarted', {});
+          //this.owner.childDone(this, 'elutionStarted', {});
 //          }
 
         } else if (action === "next") {
@@ -248,19 +249,21 @@ define(['extraction_pipeline/views/elution_page_view',
           } else {
             this.owner.childDone(this, "error", {"message":"Error: The elution task is not complete."});
           }
-        } else if (action === "barcodeScanned") {
-          var originator = data.origin;
-          if (originator.labwareModel.expected_type === "tube") {
-            this.getTubeFromModel(originator, data);
-          } else if (originator.labwareModel.expected_type === "spin_column") {
-            this.getSpinColumnFromModel(originator, data);
+        }
+      }
+
+      if (action === "barcodeScanned") {
+        var originator = data.origin;
+        if (originator.labwareModel.expected_type === "tube") {
+          this.getTubeFromModel(originator, data);
+        } else if (originator.labwareModel.expected_type === "spin_column") {
+          this.getSpinColumnFromModel(originator, data);
 
 //            this.kitModel.makeTransfer(
 //                child.labware1Presenter.labwareModel.resource,
 //                child.labware2Presenter.labwareModel.resource,
 //                child
 //            );
-          }
         }
 
       } else if (action === 'printOutputTubeBC') {
