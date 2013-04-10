@@ -57,22 +57,7 @@ define([], function () {
   };
 
   workflowEngine.prototype.setNextPresenterFromName = function (presenterFactory, presenterName, initData) {
-    var presenter;
-
-    switch (presenterName) {
-      case "kit_presenter":
-        presenter = presenterFactory.createKitBindingPagePresenter(this.mainController, initData);
-      break;
-      case "selection_page_presenter":
-        presenter = presenterFactory.createSelectionPagePresenter(this.mainController, initData);
-      break;
-      case "elution_page_presenter":
-        presenter = presenterFactory.createElutionPage(this.mainController, initData);
-      break;
-      default:
-        presenter = presenterFactory.createDefaultPresenter(this.mainController);
-    }
-
+    var presenter = presenterFactory.create(presenterName, this.mainController, initData);
     this.mainController.childDone(this, "foundNextPresenter", presenter);
   };
 
