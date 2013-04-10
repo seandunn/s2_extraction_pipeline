@@ -255,23 +255,15 @@ define(['extraction_pipeline/views/elution_page_view',
           this.getTubeFromModel(originator, data);
         } else if (originator.labwareModel.expected_type === "spin_column") {
           this.getSpinColumnFromModel(originator, data);
-
-//            this.kitModel.makeTransfer(
-//                child.labware1Presenter.labwareModel.resource,
-//                child.labware2Presenter.labwareModel.resource,
-//                child
-//            );
         }
 
       } else if (action === 'printOutputTubeBC') {
         this.elutionModel.createOutputTubes();
         this.currentView.setPrintButtonEnabled(false);
-//        this.owner.childDone(this, 'error', {message:'Output tube barcodes printed'});
-        //       this.elutionModel.startModel();
       }
-     else if (action === 'barcodePrinted') {
+      else if (action === 'barcodePrinted') {
 //        this.owner.childDone(this, "error", {"message":"Success: The tubes have been created."});
-    }
+      }
     }
   });
 
