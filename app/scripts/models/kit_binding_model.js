@@ -44,7 +44,6 @@ define([
       this.spinColumns = [];
       this.availableBarcodes = [];
       this.kitSaved = false;
-      this.order = $.Deferred();
 
       this.inputRole = initData["input"];
       this.outputRoleForTube = initData["output"]["tube"];
@@ -59,11 +58,6 @@ define([
       this.addResource(batch);
       this.batch = batch;
       this.setAllTubesFromCurrentBatch(); // as in: from the batch, I get the tubes involved...
-
-
-      this.batch.orders.then(function (result) {
-        that.order.resolve(result[0]);
-      });
 
       this.owner.childDone(this, "batchAdded");
     },
@@ -112,7 +106,7 @@ define([
       var rowModel = {};
 
       var labware3ExpectedType = (this.validKitType == 'DNA/RNA') ? 'tube' : 'waste_tube';
-      var labware3DisplayBarcode = (this.validKitType == 'DNA/RNA') ? true : false;
+      var labware3DisplayBarcode = this.validKitType == 'DNA/RNA';
 
       if (!this.kitSaved) {
         rowModel = {
