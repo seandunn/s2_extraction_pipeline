@@ -179,6 +179,7 @@ define([
             }).value();
 
             $.when.apply(null, spinColumnPromises).then(function () {
+              that.printBarcodes(that.spinColumns);
               that.owner.childDone(that, "success", {});
             }).fail(function () {
               that.owner.childDone(that, "failed", {});
@@ -233,11 +234,11 @@ define([
     },
     printBarcodes:function(collection) {
       var that = this;
-      var printItems = [];
       var printer = PrintService.printers[0];
 
-      collection.forEach(function(item) {
-        
+      // Extract the print label details from each item in the collection
+      var printItems = _.map(collection, function(item) {
+        return item.returnPrintDetails();
       })
 
       printer.print(printItems)
