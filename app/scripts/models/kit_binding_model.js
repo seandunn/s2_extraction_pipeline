@@ -200,7 +200,7 @@ define([
               function (operations, state) {
                 operations.push({
                   input:       { resource:source, role:that.inputRole, order:order },
-                  output:      { resource:destination, role:that.outputRoleForSC},
+                  output:      { resource:destination, role:that.outputRoleForSC, batch: that.batch.uuid},
                   fraction:    1.0,
                   aliquot_type:source.aliquots[0].type
                 });
