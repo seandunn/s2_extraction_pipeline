@@ -239,11 +239,12 @@ define([
     },
 
     childDone:function (child, action, data) {
+      var data = $.extend(data, { origin: child });
 
       if (action == "tube rendered") {
         this.owner.childDone(this, "tubeFinished", data);
       } else if (action == "barcodeScanned") {
-        this.owner.childDone(child, "barcodeScanned", data);
+        this.owner.childDone(this, "barcodeScanned", data);
       } else if (action == "labwareRendered") {
         this.setLabwareVisibility();
       }
