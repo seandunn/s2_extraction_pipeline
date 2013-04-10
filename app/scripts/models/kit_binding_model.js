@@ -230,6 +230,23 @@ define([
       }
 
       this.createMissingSpinColumns();
+    },
+    printBarcodes:function(collection) {
+      var that = this;
+      var printItems = [];
+      var printer = PrintService.printers[0];
+
+      collection.forEach(function(item) {
+        
+      })
+
+      printer.print(printItems)
+             .done(function() {
+                    that.owner.childDone(that, 'barcodePrintSuccess', {});
+              })
+             .fail(function() {
+                    that.owner.childDone(that, 'barcodePrintFailure', {});
+              });
     }
 
   });
