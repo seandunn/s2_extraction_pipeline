@@ -45,6 +45,8 @@ define([
       this.spinColumns = $.Deferred();
       this.tubes = [];
 
+      this.elutionStarted = false;
+
       this.inputRole = initData["input"];
       this.outputRoleForTube = initData["output"]["tube"];
 
@@ -186,6 +188,7 @@ define([
             return Operations.stateManagement().start(addingRoles);
           })
           .then(function () {
+            that.elutionStarted = true;
             that.owner.childDone(that, "elutionStarted", {});
           }).fail(function () {
             throw "Could not make a batch";
@@ -193,44 +196,46 @@ define([
       );
     },
 
-    makeTransfer:function (source, destination, rowPresenter) {
+    makeAllTransfers:function (destBySrc) {
+
       var s2root, that = this;
       var spinColumn;
+
       this.owner.getS2Root()
           .then(function (r) {
             s2root = r;
-            return source.order();
-          })
-          .then(function (order) {
-            Operations.betweenLabware(s2root.actions.transfer_spin_columns_to_tubes, [
-              function (operations, state) {
-                operations.push({
-                  input:{ resource:source, role:that.inputRole, order:order },
+
+            return that.batch.getItemsGroupedByOrders();
+          }).then(function (itemsByOrders) {
+
+            var transfertData = [];
+            _.each(itemsByOrders, function (orderKey) {
+              _.each(orderKey.items, function (item) {
+                var source = destBySrc[item.uuid].source;
+                var destination = destBySrc[item.uuid].destination;
+                //destination, order
+                var individualTransfer = {
+                  input:{ resource:source, role:that.inputRole, order:orderKey.order },
                   output:{ resource:destination, role:that.outputRoleForSC},
                   fraction:1.0,
                   aliquot_type:source.aliquots[0].type
-                });
-                return $.Deferred().resolve();
-              }
-            ]
+                };
+
+                transfertData.push(individualTransfer);
+              })
+            });
+
+            Operations.betweenLabware(s2root.actions.transfer_spin_columns_to_tubes, transfertData
             ).operation()
                 .then(function () {
-
-                  // refreshing cache
-                  that.stash_by_BC[source.labels.barcode] = undefined;
-                  that.stash_by_UUID[source.uuid] = undefined;
-                  that.fetchResourcePromiseFromUUID(source.uuid);
-                  that.stash_by_BC[destination.labels.barcode] = undefined;
-                  that.stash_by_UUID[destination.uuid] = undefined;
-                  that.fetchResourcePromiseFromUUID(destination.uuid);
-
-//                  rowPresenter.childDone("...");
+                  that.childDone(that,"allTransferCompleted",{});
                 });
           });
+
     },
 
-    isValid:function () {
-      return false;
+    hasStarted:function () {
+      return this.elutionStarted;
     }
   });
 

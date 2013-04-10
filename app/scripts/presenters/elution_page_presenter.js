@@ -219,6 +219,19 @@ define(['extraction_pipeline/views/elution_page_view',
       return this;
     },
 
+    makeAllTransfers:function () {
+
+      var destBySrc = _.chain(this.rowPresenters).reduce(function (memo, presenter) {
+        memo[presenter.labware1Presenter.labwareModel.resource.uuid] = {
+          source:presenter.labware1Presenter.labwareModel.resource,
+          destination:presenter.labware2Presenter.labwareModel.resource
+        };
+        return memo
+      }, {}).value();
+
+      this.elutionModel.makeAllTransfers(destBySrc);
+    },
+
     /* Indicates a child has completed an action
      *
      *
@@ -236,33 +249,41 @@ define(['extraction_pipeline/views/elution_page_view',
     childDone:function (child, action, data) {
 
       if (child === this.currentView) {
+
         if (action === 'elutionStarted') {
           this.owner.childDone(this, "error", {"message":"Elution started"});
-        } else if (action === "next") {
-          if (this.elutionModel.isValid() && this.checkPageComplete()) {
-            // Confirm complete...
-            this.owner.childDone(this, "error", {"message":"Success: The elution task is now complete."});
 
+        } else if (action === 'printOutputTubeBC') {
+
+          if (!this.elutionModel.hasStarted) {
+            this.elutionModel.createOutputTubes();
+            this.currentView.setPrintButtonEnabled(false);
           } else {
-            this.owner.childDone(this, "error", {"message":"Error: The elution task is not complete."});
+            if (this.checkPageComplete()) {
+              this.makeAllTransfers();
+            }
+          }
+
+        }
+
+      } else if (child === this.elutionModel) {
+
+        if (action === "allTransferCompleted") {
+          this.owner.childDone(this, "error", {"message":"Elution done"});
+//          this.owner.childDone(this, "done", {"batch":this.elutionModel.batch});
+        }
+
+      } else { // if child is a row presenter....
+
+        if (action === "barcodeScanned") {
+          var originator = data.origin;
+          if (originator.labwareModel.expected_type === "tube") {
+            this.getTubeFromModel(originator, data);
+          } else if (originator.labwareModel.expected_type === "spin_column") {
+            this.getSpinColumnFromModel(originator, data);
           }
         }
-      }
 
-      if (action === "barcodeScanned") {
-        var originator = data.origin;
-        if (originator.labwareModel.expected_type === "tube") {
-          this.getTubeFromModel(originator, data);
-        } else if (originator.labwareModel.expected_type === "spin_column") {
-          this.getSpinColumnFromModel(originator, data);
-        }
-
-      } else if (action === 'printOutputTubeBC') {
-        this.elutionModel.createOutputTubes();
-        this.currentView.setPrintButtonEnabled(false);
-      }
-      else if (action === 'barcodePrinted') {
-//        this.owner.childDone(this, "error", {"message":"Success: The tubes have been created."});
       }
     }
   });
