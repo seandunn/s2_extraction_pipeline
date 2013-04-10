@@ -21,8 +21,9 @@
 
 define([
   'extraction_pipeline/models/base_page_model',
-  'mapper/operations'
-], function (BasePageModel, Operations) {
+  'mapper/operations',
+  'mapper_services/print'
+], function (BasePageModel, Operations, PrintService) {
   function findByBarcode(barcode, array) {
     return _.chain(array).find(function(resource) {
       return resource.labels.barcode.value === barcode.BC;
@@ -239,7 +240,7 @@ define([
       // Extract the print label details from each item in the collection
       var printItems = _.map(collection, function(item) {
         return item.returnPrintDetails();
-      })
+      });
 
       printer.print(printItems)
              .done(function() {
