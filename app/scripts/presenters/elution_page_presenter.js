@@ -134,7 +134,7 @@ define(['extraction_pipeline/views/elution_page_view',
 
       var that = this;
 
-      this.elutionModel.spinCloumns.then(function (tubes) {
+      this.elutionModel.spinColumns.then(function (tubes) {
         var selectorFunction = function (row) {
           return function () {
             return that.jquerySelection().find('.row' + row);
@@ -237,10 +237,7 @@ define(['extraction_pipeline/views/elution_page_view',
 
       if (child === this.currentView) {
         if (action === 'elutionStarted') {
-//          if (this.elutionModel.checkPageComplete()) {
-          //this.owner.childDone(this, 'elutionStarted', {});
-//          }
-
+          this.owner.childDone(this, "error", {"message":"Elution started"});
         } else if (action === "next") {
           if (this.elutionModel.isValid() && this.checkPageComplete()) {
             // Confirm complete...
@@ -267,11 +264,14 @@ define(['extraction_pipeline/views/elution_page_view',
         }
 
       } else if (action === 'printOutputTubeBC') {
-        this.elutionModel.printBarcodes([]);
+        this.elutionModel.createOutputTubes();
         this.currentView.setPrintButtonEnabled(false);
-        this.owner.childDone(this, 'error', {message:'Output tube barcodes printed'});
-        this.elutionModel.startModel();
+//        this.owner.childDone(this, 'error', {message:'Output tube barcodes printed'});
+        //       this.elutionModel.startModel();
       }
+     else if (action === 'barcodePrinted') {
+//        this.owner.childDone(this, "error", {"message":"Success: The tubes have been created."});
+    }
     }
   });
 

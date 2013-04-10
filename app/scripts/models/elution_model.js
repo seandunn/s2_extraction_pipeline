@@ -43,6 +43,7 @@ define([
       this.user = undefined;
       this.batch = undefined;
       this.spinColumns = $.Deferred();
+      this.tubes = [];
 
       this.inputRole = initData["input"];
       this.outputRoleForTube = initData["output"]["tube"];
@@ -97,7 +98,7 @@ define([
     },
 
     findTubeInModelFromBarcode:function (barcode) {
-      return findByBarcode(barcode, this.spinColumns);
+      return findByBarcode(barcode, this.tubes);
     },
     findSCInModelFromBarcode:function (barcode) {
       return this.spinColumns.then(_.partial(findByBarcode, barcode));
@@ -150,7 +151,9 @@ define([
               }).value();
 
               $.when.apply(null, tubePromises).then(function () {
-                that.owner.childDone(that, "success", {});
+                that.printBarcodes(that.tubes);
+                that.owner.childDone(that, "barcodePrinted", {});
+                that.startElution();
               }).fail(function () {
                     that.owner.childDone(that, "failed", {});
                   });

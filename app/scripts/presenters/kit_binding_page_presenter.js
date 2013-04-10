@@ -21,182 +21,179 @@ define(['extraction_pipeline/views/kit_binding_page_view'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/models/kit_binding_model'
 ],
-function (View, BasePresenter, KitModel) {
-  "use strict";
+    function (View, BasePresenter, KitModel) {
+      "use strict";
 
-  // interface ....
-  var KitPresenter = Object.create(BasePresenter);
+      // interface ....
+      var KitPresenter = Object.create(BasePresenter);
 
-  $.extend(KitPresenter, {
-    register: function(callback) {
-      callback('kit_presenter', function(owner, factory, initData) {
-        return Object.create(KitPresenter).init(owner, factory, initData);
-      });
-    },
+      $.extend(KitPresenter, {
+        register:function (callback) {
+          callback('kit_presenter', function (owner, factory, initData) {
+            return Object.create(KitPresenter).init(owner, factory, initData);
+          });
+        },
 
-    init: function (owner, presenterFactory, initData) {
-      this.owner            = owner;
-      this.kitModel         = Object.create(KitModel).init(this, initData);
-      this.rowPresenters    = [];
-      this.presenterFactory = presenterFactory;
-      return this;
-    },
+        init:function (owner, presenterFactory, initData) {
+          this.owner = owner;
+          this.kitModel = Object.create(KitModel).init(this, initData);
+          this.rowPresenters = [];
+          this.presenterFactory = presenterFactory;
+          return this;
+        },
 
-    setupPresenter: function (input_model, jquerySelection) {
-      this.tubeTypes = [];
-      this.kitModel.setBatch(input_model.batch);
-      this.setupPlaceholder(jquerySelection);
-      this.setupView();
-      this.renderView();
-      this.setupSubPresenters();
+        setupPresenter:function (input_model, jquerySelection) {
+          this.tubeTypes = [];
+          this.kitModel.setBatch(input_model.batch);
+          this.setupPlaceholder(jquerySelection);
+          this.setupView();
+          this.renderView();
+          this.setupSubPresenters();
 
-      return this;
-    },
+          return this;
+        },
 
-    setupPlaceholder: function (jquerySelection) {
-      this.jquerySelection = jquerySelection;
-      return this;
-    },
+        setupPlaceholder:function (jquerySelection) {
+          this.jquerySelection = jquerySelection;
+          return this;
+        },
 
-    setupView:             function () {
-      this.currentView = new View(this, this.jquerySelection);
-      return this;
-    },
+        setupView:function () {
+          this.currentView = new View(this, this.jquerySelection);
+          return this;
+        },
 
-    setupSubPresenters:    function () {
-      if (!this.barcodePresenter) {
-        this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
-      }
-
-      var that = this;
-      this.kitModel.tubes.then(function(tubes) {
-        that.rowPresenters = _.chain(tubes).map(function() {
-          return that.presenterFactory.create('row_presenter', that);
-        }).value();
-      });
-      this.setupSubModel();
-      return this;
-    },
-
-    setupSubModel: function () {
-      var modelJson = {
-        "type":"Kit",
-        "value":"Kit0001"
-      };
-
-      var that = this;
-      var jquerySelectionForBarcode = function () {
-        return that.jquerySelection().find('.barcode')
-      }
-      this.kitModel.tubes.then(function(tubes) {
-        var selectorFunction = function(row) {
-          return function () {
-            return that.jquerySelection().find('.row' + row);
-          };
-        };
-
-        for (var i = 0; i < tubes.length; ++i) {
-          var rowModel = that.kitModel.getRowModel(i);
-          that.rowPresenters[i].setupPresenter(rowModel, selectorFunction(i));
-        }
-      });
-
-      this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
-      this.barcodePresenter.focus();
-      this.setValidState();
-      return this;
-    },
-
-    renderView: function () {
-      // render view...
-      this.currentView.renderView();
-
-      if (this.barcodePresenter) {
-        this.barcodePresenter.renderView();
-      }
-
-      return this;
-    },
-
-    setValidState: function () {
-      var kitType = this.jquerySelection().find('.kitSelect').val();
-      var valid   = this.kitModel.validateKitTubes(kitType);
-      this.currentView.setKitValidState(valid);
-
-      return valid;
-    },
-
-    getTubeFromModel: function (requester, barcode) {
-      this.kitModel.findTubeInModelFromBarcode(barcode).then(function(result) {
-        if (!result) {
-          requester.displayErrorMessage("Barcode not found");
-        } else {
-          requester.updateModel(result);
-        }
-      });
-    },
-
-    getSpinColumnFromModel: function (requester, barcode) {
-
-      var result = this.kitModel.findSCInModelFromBarcode(barcode);
-      if (!result) {
-        requester.displayErrorMessage("Spin column is not in kit");
-      } else {
-        requester.updateModel(result);
-      }
-    },
-
-    release:function () {
-      this.currentView.clear();
-      return this;
-    },
-
-    childDone:function (child, action, data) {
-
-      if (child === this.currentView) {
-        if (action === "next") {
-
-          if (this.setValidState()) {
-            // Confirm complete...
-          } else {
-            this.owner.childDone(this, "error", {"message":"Error: The kit isn't validated."});
+        setupSubPresenters:function () {
+          if (!this.barcodePresenter) {
+            this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
           }
 
-        } else if (action === "savePrintBC") {
-          this.kitModel.saveKitCreateBarcodes();
-          // TODO : print call here !
-          this.owner.childDone(this, "error", {"message":"Kit saved and Spin Column Barcodes printed"});
+          var that = this;
+          this.kitModel.tubes.then(function (tubes) {
+            that.rowPresenters = _.chain(tubes).map(function () {
+              return that.presenterFactory.create('row_presenter', that);
+            }).value();
+          });
+          this.setupSubModel();
+          return this;
+        },
 
+        setupSubModel:function () {
+          var modelJson = {
+            "type":"Kit",
+            "value":"Kit0001"
+          };
+
+          var that = this;
+          var jquerySelectionForBarcode = function () {
+            return that.jquerySelection().find('.barcode')
+          }
+          this.kitModel.tubes.then(function (tubes) {
+            var selectorFunction = function (row) {
+              return function () {
+                return that.jquerySelection().find('.row' + row);
+              };
+            };
+
+            for (var i = 0; i < tubes.length; ++i) {
+              var rowModel = that.kitModel.getRowModel(i);
+              that.rowPresenters[i].setupPresenter(rowModel, selectorFunction(i));
+            }
+          });
+
+          this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
+          this.barcodePresenter.focus();
+          this.setValidState();
+          return this;
+        },
+
+        renderView:function () {
+          // render view...
+          this.currentView.renderView();
+
+          if (this.barcodePresenter) {
+            this.barcodePresenter.renderView();
+          }
+
+          return this;
+        },
+
+        setValidState:function () {
+          var kitType = this.jquerySelection().find('.kitSelect').val();
+          var valid = this.kitModel.validateKitTubes(kitType);
+          this.currentView.setKitValidState(valid);
+
+          return valid;
+        },
+
+        getTubeFromModel:function (requester, barcode) {
+          this.kitModel.findTubeInModelFromBarcode(barcode).then(function (result) {
+            if (!result) {
+              requester.displayErrorMessage("Barcode not found");
+            } else {
+              requester.updateModel(result);
+            }
+          });
+        },
+
+        getSpinColumnFromModel:function (requester, barcode) {
+
+          var result = this.kitModel.findSCInModelFromBarcode(barcode);
+          if (!result) {
+            requester.displayErrorMessage("Spin column is not in kit");
+          } else {
+            requester.updateModel(result);
+          }
+        },
+
+        release:function () {
+          this.currentView.clear();
+          return this;
+        },
+
+        childDone:function (child, action, data) {
+
+          if (child === this.currentView) {
+            if (action === "next") {
+
+              if (this.setValidState()) {
+                this.owner.childDone(this, "done", { batch:this.kitModel.batch });
+
+              } else {
+                this.owner.childDone(this, "error", {"message":"Error: The kit isn't validated."});
+              }
+
+            } else if (action === "savePrintBC") {
+              this.kitModel.saveKitCreateBarcodes();
+            }
+          }
+
+          if (action === "barcodeScanned") {
+            var originator = data.origin;
+            if (originator.labwareModel.expected_type === "tube") {
+              this.getTubeFromModel(originator, data);
+            } else if (originator.labwareModel.expected_type === "spin_column") {
+              this.getSpinColumnFromModel(originator, data);
+
+              this.kitModel.makeTransfer(
+                  child.labware1Presenter.labwareModel.resource,
+                  child.labware2Presenter.labwareModel.resource,
+                  child
+              );
+            }
+          }
+
+          if (child === this.kitModel) {
+            if (action === "labelPrinted") {
+              this.owner.childDone(this, "error", {"message":"Kit saved and Spin Column Barcodes printed"});
+              this.setupSubPresenters();
+              this.currentView.toggleHeaderEnabled(false);
+            }
+          }
 
         }
-      }
 
-      if (action === "barcodeScanned") {
-        var originator = data.origin;
-        if (originator.labwareModel.expected_type === "tube") {
-          this.getTubeFromModel(originator, data);
-        } else if (originator.labwareModel.expected_type === "spin_column") {
-          this.getSpinColumnFromModel(originator, data);
+      });
 
-          this.kitModel.makeTransfer(
-            child.labware1Presenter.labwareModel.resource,
-            child.labware2Presenter.labwareModel.resource,
-            child
-          );
-        }
-      }
-
-      if (child === this.kitModel){
-       if (action === "labelPrinted") {
-          this.owner.childDone(this, "error", {"message":"Kit saved and Spin Column Barcodes printed"});
-          this.setupSubPresenters();
-          this.currentView.toggleHeaderEnabled(false);
-        }
-      }
-
-    }
-
-  });
-
-  return KitPresenter;
-});
+      return KitPresenter;
+    });

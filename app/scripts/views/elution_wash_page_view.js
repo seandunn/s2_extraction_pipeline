@@ -11,10 +11,8 @@ define(['text!extraction_pipeline/html_partials/elution_wash_partial.html'], fun
   }
 
   var bindingView = function (owner, jquerySelector) {
-    console.log("hello");
     this.owner = owner;
     this.jquerySelector = jquerySelector;
-
     return this;
   };
 
