@@ -104,7 +104,7 @@ define([
           }).then(function (savedBatch) {
 //            console.log("batch saved");
             batchBySideEffect = savedBatch;
-            return savedBatch.getResourcesGroupedByOrders();
+            return savedBatch.getItemsGroupedByOrders();
           }).then(function (tubesByOrders) {
             _.each(tubesByOrders, function (orderKey) {
               _.each(orderKey.items, function (tube) {
