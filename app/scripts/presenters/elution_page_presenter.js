@@ -251,17 +251,17 @@ define(['extraction_pipeline/views/elution_page_view',
       if (child === this.currentView) {
 
         if (action === 'elutionStarted') {
-          this.owner.childDone(this, "error", {"message":"Elution started"});
-
-        } else if (action === 'printOutputTubeBC') {
-
-          if (!this.elutionModel.hasStarted) {
-            this.elutionModel.createOutputTubes();
-            this.currentView.setPrintButtonEnabled(false);
-          } else {
             if (this.checkPageComplete()) {
               this.makeAllTransfers();
+              this.owner.childDone(this, "error", {"message":"Elution completed"});
+            } else {
+              this.owner.childDone(this, "error", {"message":"Elution started"});
             }
+        } else if (action === 'printOutputTubeBC') {
+
+          if (!this.elutionModel.hasStarted()) {
+            this.elutionModel.createOutputTubes();
+            this.currentView.setPrintButtonEnabled(false);
           }
 
         }

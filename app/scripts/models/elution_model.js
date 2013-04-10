@@ -155,7 +155,6 @@ define([
               $.when.apply(null, tubePromises).then(function () {
                 that.printBarcodes(that.tubes);
                 that.owner.childDone(that, "barcodePrinted", {});
-                that.startElution();
               }).fail(function () {
                     that.owner.childDone(that, "failed", {});
                   });
@@ -172,7 +171,7 @@ define([
             _.each(rscByOrders, function (orderKey) {
               _.each(orderKey.items, function (item) {
 
-                if (item.role === that.inputRole) {
+                if (item.role === that.outputRole) {
                   addingRoles.updates.push({
                     input:{
                       order:orderKey.order
@@ -211,24 +210,29 @@ define([
             var transfertData = [];
             _.each(itemsByOrders, function (orderKey) {
               _.each(orderKey.items, function (item) {
-                var source = destBySrc[item.uuid].source;
-                var destination = destBySrc[item.uuid].destination;
-                //destination, order
-                var individualTransfer = {
-                  input:{ resource:source, role:that.inputRole, order:orderKey.order },
-                  output:{ resource:destination, role:that.outputRoleForSC},
-                  fraction:1.0,
-                  aliquot_type:source.aliquots[0].type
-                };
+                if (item.role === that.inputRole) {
+                  var source = destBySrc[item.uuid].source;
+                  var destination = destBySrc[item.uuid].destination;
+                  //destination, order
+                  var individualTransfer = function(operations, state) {
+                    operations.push({
+                      input:{ resource:source, role:that.inputRole, order:orderKey.order },
+                      output:{ resource:destination, role:that.outputRoleForTube},
+                      fraction:1.0,
+                      aliquot_type:source.aliquots[0].type
+                    });
+                    return $.Deferred().resolve();
+                  };
 
-                transfertData.push(individualTransfer);
+                  transfertData.push(individualTransfer);
+                }
               })
             });
 
-            Operations.betweenLabware(s2root.actions.transfer_spin_columns_to_tubes, transfertData
+            Operations.betweenLabware(s2root.actions.transfer_tubes_to_tubes, transfertData
             ).operation()
                 .then(function () {
-                  that.childDone(that,"allTransferCompleted",{});
+                  that.owner.childDone(that,"allTransferCompleted",{});
                 });
           });
 
