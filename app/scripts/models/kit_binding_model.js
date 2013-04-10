@@ -22,7 +22,7 @@
 define([
   'extraction_pipeline/models/base_page_model',
   'mapper/operations',
-  'mapper_services/print'
+  'mapper_services/print',
 ], function (BasePageModel, Operations, PrintService) {
   function findByBarcode(barcode, array) {
     return _.chain(array).find(function(resource) {

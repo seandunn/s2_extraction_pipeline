@@ -89,12 +89,15 @@ function (View, BasePresenter, KitModel) {
         return that.jquerySelection().find('.barcode')
       }
       this.kitModel.tubes.then(function(tubes) {
-        for (var i = 0; i < tubes.length; ++i) {
-          var row = i;
-          var rowModel = that.kitModel.getRowModel(row);
-          that.rowPresenters[row].setupPresenter(rowModel, function () {
+        var selectorFunction = function(row) {
+          return function () {
             return that.jquerySelection().find('.row' + row);
-          });
+          };
+        };
+
+        for (var i = 0; i < tubes.length; ++i) {
+          var rowModel = that.kitModel.getRowModel(i);
+          that.rowPresenters[i].setupPresenter(rowModel, selectorFunction(i));
         }
       });
 
