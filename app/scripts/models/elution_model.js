@@ -29,38 +29,35 @@ define([
   $.extend(ElutionModel, {
     //TODO: add suitable methods for the model
 
-    init:function (owner) {
+    init:function (owner, initData) {
       this.owner = Object.create(owner);
       this.stash_by_BC = {};
       this.stash_by_UUID = {};
       this.labware = undefined;
       this.user = undefined;
       this.batch = undefined;
-      this.spin_columns = [];
-      this.availableBarcodes = [];
-      this.kitSaved = false;
-      this.dirtySetSpinColumns();
+      this.spin_columns = $.Deferred();
+
+      this.inputRole = initData["input"];
+      this.outputRoleForTube = initData["output"]["tube"];
+
+
       return this;
     },
     setBatch:function (batch) {
       console.log("setBatch : ", batch);
       this.addResource(batch);
       this.batch = batch;
-      this.dirtySetTubes(); // as in: from the batch, I get the tubes involved...
-      this.owner.childDone(this, "batchAdded");
-    },
-    dirtySetSpinColumns:function () {
+
+      var data = [];
       var that = this;
-//      this.setTestData(dataJSON);
-      this.fetchResourcePromiseFromBarcode("1220017279667")
-        .then(function (rsc) {
-          that.spin_columns.push(rsc);
-          that.spin_columns.push(rsc);
-          that.spin_columns.push(rsc);
-          that.spin_columns.push(rsc);
-        });
-//      this.uuids = this.owner.tubeUUIDs;
+      _.each(this.spin_columns, function(sc, scIndex){
+        data.push(getRowModel(scIndex));
+      });
+
+      this.owner.childDone(this, "batchAdded", data);
     },
+
     createMissingSpinColumnBarcodes:function(){
       var that = this;
       this.barcodes = []
@@ -77,6 +74,7 @@ define([
 //        var spinColumn = this.owner.getS2Root().spin
       }
     },
+
     validateSpinColumnUuid:function (data) {
       var valid = false;
 
@@ -89,13 +87,13 @@ define([
 
       return valid;
     },
+
     validateSCBarcode:function(data) {
       return true;
     },
-    getRowModel:function (rowNum) {
-      var rowModel = {};
 
-      rowModel = {
+    getRowModel:function (rowNum) {
+      return {
         "rowNum":rowNum,
         "remove_arrow":false,
         "labware1":{
@@ -109,8 +107,6 @@ define([
           "display_barcode":true
         }
       };
-
-      return rowModel;
     },
 
     createOutputTubes:function () {

@@ -47,22 +47,22 @@ define(['extraction_pipeline/views/elution_page_view',
      * this
      */
     // interface ....
-    init:function (owner, presenterFactory) {
+    init:function (owner, presenterFactory, initData) {
       this.owner = owner;
-      this.elutionModel = Object.create(ElutionModel).init(this);
+      this.elutionModel = Object.create(ElutionModel).init(this, initData);
       this.currentView = undefined;
-      this.barcodePresenter = undefined;
       this.rowPresenters = [];
       this.presenterFactory = presenterFactory;
       return this;
     },
 
     setupPresenter:function (input_model, jquerySelection) {
-//    console.log("et  : setupPresenter");
       this.setupPlaceholder(jquerySelection);
+      this.elutionModel.setBatch(input_model.batch);
       this.setupView();
       this.renderView();
       this.setupSubPresenters();
+
       return this;
     },
 
@@ -96,7 +96,6 @@ define(['extraction_pipeline/views/elution_page_view',
      */
     setupView:function () {
       this.currentView = new View(this, this.jquerySelection);
-      console.log(this.currentView);
       return this;
     },
 
@@ -112,14 +111,12 @@ define(['extraction_pipeline/views/elution_page_view',
      * this
      */
     setupSubPresenters:function () {
-      if (!this.barcodePresenter) {
-        this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
-      }
-      for (var i = 0; i < this.elutionModel.spin_columns.length; i++) {
-        if (!this.rowPresenters[i]) {
-          this.rowPresenters[i] = this.presenterFactory.create('row_presenter', this);
-        }
-      }
+      var that = this;
+      this.elutionModel.tubes.then(function(tubes){
+        that.rowPresenters = _.chain(tubes).map(function(){
+          return that.presenterFactory.create('row_presenter', that);
+        }).value();
+      });
       this.setupSubModel();
       return this;
     },
@@ -136,26 +133,20 @@ define(['extraction_pipeline/views/elution_page_view',
      * this
      */
     setupSubModel:function () {
-      var modelJson = {"type":"Kit",
-        "value":"Kit0001"}
+
       var that = this;
       var jquerySelectionForBarcode = function () {
         return that.jquerySelection().find('.barcode')
-      }
+      };
 
-      for (var i = 0; i < this.elutionModel.spin_columns.length; i++) {
-
-        var jquerySelectionForRow = function (i) {
-          return function () {
-            return that.jquerySelection().find('.row' + i);
-          }
+      this.elutionModel.tubes.then(function(tubes) {
+        for (var rowIndex = 0; rowIndex < tubes.length; rowIndex++) {
+          var rowModel = that.elutionModel.getRowModel(row);
+          that.rowPresenters[row].setupPresenter(rowModel, function () {
+            return that.jquerySelection().find('.row' + row);
+          });
         }
-
-        var rowModel = this.elutionModel.getRowModel(i);
-
-        this.rowPresenters[i].setupPresenter(rowModel, jquerySelectionForRow(i));
-      }
-      this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
+      });
       return this;
     },
 
@@ -172,11 +163,7 @@ define(['extraction_pipeline/views/elution_page_view',
      */
     renderView:function () {
       // render view...
-//    console.log("et  : presenter::renderView, ", this.jquerySelection());
       this.currentView.renderView();
-      if (this.barcodePresenter) {
-        this.barcodePresenter.renderView();
-      }
       return this;
     },
 
@@ -192,9 +179,7 @@ define(['extraction_pipeline/views/elution_page_view',
      * this
      */
     checkPageComplete:function () {
-
       var complete = true;
-
       for (var i = 0; i < this.rowPresenters.length; i++) {
         if (!this.rowPresenters[i].isRowComplete()) {
           complete = false;
@@ -223,30 +208,6 @@ define(['extraction_pipeline/views/elution_page_view',
       return this;
     },
 
-    /* Ensure that the user entered UUID matches the expected list
-     *
-     *
-     * Arguments
-     * ---------
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    validateUuid:function (child, data) {
-      var valid = false;
-
-      for (var i = 0; i < this.model.tubes.length; i++) {
-        if (this.model.spin_columns[i].uuid == data.uuid) {
-          valid = true;
-          break;
-        }
-      }
-
-      return valid;
-    },
-
     /* Indicates a child has completed an action
      *
      *
@@ -263,20 +224,18 @@ define(['extraction_pipeline/views/elution_page_view',
      */
     childDone:function (child, action, data) {
 
-      if (action == 'elutionStarted') {
+      if (action === 'elutionStarted') {
         if (this.elutionModel.checkPageComplete()) {
+          this.elutionModel.startModel();
           this.owner.childDone(this, 'elutionStarted', {});
         }
-      } else if (action == 'printOutputTubeBC') {
-//          this.elutionModel.createOutputTubes();
+      } else if (action === 'printOutputTubeBC') {
         this.elutionModel.printBarcodes([]);
-          this.currentView.setPrintButtonEnabled(false);
-          this.owner.childDone(this, 'error', {message: 'Output tube barcodes printed'});
+        this.currentView.setPrintButtonEnabled(false);
+        this.owner.childDone(this, 'error', {message:'Output tube barcodes printed'});
       }
-
     }
   });
-
 
   return ElutionLoadingPresenter;
 })
