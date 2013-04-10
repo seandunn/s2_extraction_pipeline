@@ -140,7 +140,6 @@ function (View, BasePresenter, KitModel) {
         requester.displayErrorMessage("Spin column is not in kit");
       } else {
         requester.updateModel(result);
-        this.kitModel.makeTransfer(requester.labware1, requester.labware2, requester);
       }
     },
 
