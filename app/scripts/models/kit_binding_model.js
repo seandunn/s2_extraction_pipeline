@@ -220,7 +220,7 @@ define([
                   that.stash_by_UUID[destination.uuid] = undefined;
                   that.fetchResourcePromiseFromUUID(destination.uuid);
 
-                  rowPresenter.childDone("...");
+                  //rowPresenter.childDone("...");
                 });
           });
     },

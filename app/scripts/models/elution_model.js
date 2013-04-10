@@ -96,12 +96,12 @@ define([
       }
     },
 
-//    findTubeInModelFromBarcode:function (barcode) {
-//      return findByBarcode(barcode, this.spinColumns);
-//    },
-//    findSCInModelFromBarcode:function (barcode) {
-//      return this.spinColumns.then(_.partial(findByBarcode, barcode));
-//    },
+    findTubeInModelFromBarcode:function (barcode) {
+      return findByBarcode(barcode, this.spinColumns);
+    },
+    findSCInModelFromBarcode:function (barcode) {
+      return this.spinColumns.then(_.partial(findByBarcode, barcode));
+    },
 
     validateSCBarcode:function (data) {
       return true;
@@ -158,37 +158,36 @@ define([
           });
     },
 
-    startElution:function(){
-        var that = this;
-        var addingRoles = {updates:[]};
+    startElution:function () {
+      var that = this;
+      var addingRoles = {updates:[]};
 
-        this.batch.getItemsGroupedByOrders()
-            .then(function (rscByOrders) {
-              _.each(rscByOrders, function (orderKey) {
-                _.each(orderKey.items, function (rsc) {
+      this.batch.getItemsGroupedByOrders()
+          .then(function (rscByOrders) {
+            _.each(rscByOrders, function (orderKey) {
+              _.each(orderKey.items, function (item) {
 
-//                  if (rsc.)
-
+                if (item.role === that.inputRole) {
                   addingRoles.updates.push({
-                    input: {
+                    input:{
                       order:orderKey.order
                     },
                     output:{
-                      resource:rsc,
-                      role:    that.outputRoleForTube,
-                      batch:   that.batch.uuid
+                      resource:item,
+                      role:that.outputRoleForTube,
+                      batch:that.batch.uuid
                     }});
-                });
+                }
               });
-              return Operations.stateManagement().start(addingRoles);})
-            .then(function () {
-              that.batch = batchBySideEffect; // updating the batch in the model, once all the requests succeeded.
-              that.owner.childDone(that, "batchSaved", that.batch);
-            }).fail(function () {
-              throw "Could not make a batch";
-            }
-        );
-
+            });
+            return Operations.stateManagement().start(addingRoles);
+          })
+          .then(function () {
+            that.owner.childDone(that, "elutionStarted", {});
+          }).fail(function () {
+            throw "Could not make a batch";
+          }
+      );
     },
 
     makeTransfer:function (source, destination, rowPresenter) {
@@ -222,12 +221,12 @@ define([
                   that.stash_by_UUID[destination.uuid] = undefined;
                   that.fetchResourcePromiseFromUUID(destination.uuid);
 
-                  rowPresenter.childDone("...");
+//                  rowPresenter.childDone("...");
                 });
           });
     },
 
-    isValid:function(){
+    isValid:function () {
       return false;
     }
   });
