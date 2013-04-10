@@ -124,7 +124,7 @@ define([
             "display_barcode":false
           },
           "labware2":{
-            "expected_type":"spin_columns",
+            "expected_type":"spin_column",
             "display_remove":false,
             "display_barcode":false
           },
@@ -144,7 +144,7 @@ define([
             "display_barcode":true
           },
           "labware2":{
-            "expected_type":"spin_columns",
+            "expected_type":"spin_column",
             "display_remove":false,
             "display_barcode":true
           },

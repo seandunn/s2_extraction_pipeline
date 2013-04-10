@@ -181,7 +181,7 @@ define(['config'
 
       if (this.resourcePresenter) {
         this.resourcePresenter.setupPresenter(data, resourceSelector);
-        if (this.labwareModel.resource && this.labwareModel.resource.resourceType == "spin_columns") {
+        if (this.labwareModel.resource && this.labwareModel.resource.resourceType == "spin_column") {
           this.view.displaySuccessMessage(this.labwareModel.resource.BC + " added.");
         }
       }

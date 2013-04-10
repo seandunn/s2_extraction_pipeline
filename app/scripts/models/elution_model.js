@@ -99,7 +99,7 @@ define([
         "rowNum":rowNum,
         "remove_arrow":false,
         "labware1":{
-          "expected_type":"spin_columns",
+          "expected_type":"spin_column",
           "display_remove":true,
           "display_barcode":true
         },

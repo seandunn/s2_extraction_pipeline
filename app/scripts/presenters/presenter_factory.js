@@ -46,10 +46,10 @@ define([
 
   PresenterFactory.prototype.createLabwareSubPresenter = function(owner, type) {
     switch (type) {
-      case 'tube':         return this.presenters.createTubePresenter(owner);       break;
-      case 'spin_columns': return this.presenters.createSpinColumnPresenter(owner); break;
-      case 'waste_tube':   return this.presenters.createWasteTubePresenter(owner);  break;
-      default:             debugger;
+      case 'tube':        return this.presenters.createTubePresenter(owner);       break;
+      case 'spin_column': return this.presenters.createSpinColumnPresenter(owner); break;
+      case 'waste_tube':  return this.presenters.createWasteTubePresenter(owner);  break;
+      default:            debugger;
     }
   };
 
