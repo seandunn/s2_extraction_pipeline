@@ -24,6 +24,12 @@ define([
   'mapper/operations'
 ], function (BasePageModel, Operations) {
 
+  function findByBarcode(barcode, array) {
+    return _.chain(array).find(function (resource) {
+      return resource.labels.barcode.value === barcode.BC;
+    }).value();
+  }
+
   var ElutionModel = Object.create(BasePageModel);
 
   $.extend(ElutionModel, {
@@ -36,11 +42,10 @@ define([
       this.labware = undefined;
       this.user = undefined;
       this.batch = undefined;
-      this.spin_columns = $.Deferred();
+      this.spinColumns = $.Deferred();
 
       this.inputRole = initData["input"];
       this.outputRoleForTube = initData["output"]["tube"];
-
 
       return this;
     },
@@ -49,19 +54,36 @@ define([
       this.addResource(batch);
       this.batch = batch;
 
-      var data = [];
-      var that = this;
-      _.each(this.spin_columns, function(sc, scIndex){
-        data.push(getRowModel(scIndex));
-      });
+      this.setAllSpinColumnsFromCurrentBatch();
 
-      this.owner.childDone(this, "batchAdded", data);
+//      var data = [];
+//      var that = this;
+//      _.each(this.spin_columns, function (sc, scIndex) {
+//        data.push(getRowModel(scIndex));
+//      });
+
+      this.owner.childDone(this, "batchAdded");
     },
-
-    createMissingSpinColumnBarcodes:function(){
+    setAllSpinColumnsFromCurrentBatch:function () {
+      var that = this;
+      this.batch.items.then(function (items) {
+        var spinColumns = []
+        $.when.apply(null, _.chain(items).filter(function (item) {
+          return item.role === that.inputRole && item.status === "done";
+        }).map(function (item) {
+              return that.fetchResourcePromiseFromUUID(item.uuid).then(function (rsc) {
+                that.addResource(rsc);
+                spinColumns.push(rsc);
+              });
+            }).value()).then(function () {
+              that.spinColumns.resolve(spinColumns);
+            });
+      });
+    },
+    createMissingSpinColumnBarcodes:function () {
       var that = this;
       this.barcodes = []
-      for (var tube in that.tubes){
+      for (var tube in that.tubes) {
         // TODO: create a spin column barcode for every tube
 
         // generate SC barcodes
@@ -69,26 +91,19 @@ define([
         // save the barcodes
         this.barcodes.push(); // barcodes!
 
-
         // use tube and BC to generate SC
 //        var spinColumn = this.owner.getS2Root().spin
       }
     },
 
-    validateSpinColumnUuid:function (data) {
-      var valid = false;
+//    findTubeInModelFromBarcode:function (barcode) {
+//      return findByBarcode(barcode, this.spinColumns);
+//    },
+//    findSCInModelFromBarcode:function (barcode) {
+//      return this.spinColumns.then(_.partial(findByBarcode, barcode));
+//    },
 
-      for (var i = 0; i < this.spin_columns.length; i++) {
-        if (this.spin_columns[i].uuid == data.uuid) {
-          valid = true;
-          break;
-        }
-      }
-
-      return valid;
-    },
-
-    validateSCBarcode:function(data) {
+    validateSCBarcode:function (data) {
       return true;
     },
 
@@ -111,70 +126,112 @@ define([
 
     createOutputTubes:function () {
       var that = this;
-      var listOfPromises = [];
+      var root;
+      var tubePromises;
 
-      _.each(this.spin_columns, function (tube) {
-        var registerLabwarePromise = $.Deferred();
-        listOfPromises.push(registerLabwarePromise);
+      this.owner.getS2Root().
+          then(function (result) {
+            root = result;
+          }).then(function () {
+            that.spinColumns.then(function (spinColumns) {
+              tubePromises = _.chain(spinColumns).map(function (spinColumn) {
+                return Operations.registerLabware(
+                    root.tubes,
+                    'DNA',
+                    'stock'
+                ).then(function (state) {
+                      that.stash_by_BC[state.barcode] = state.labware;
+                      that.stash_by_UUID [state.labware.uuid] = state.labware;
+                      that.tubes.push(state.labware);
+                      return state.labware;
+                    }).fail(function () {
+                      that.owner.childDone(that, "failed", {});
+                    });
+              }).value();
 
-        Operations.registerLabware(
-          root.tubes,
-          'DNA',
-          'stock'
-        ).then(function (state) {
-            that.stash_by_BC[state.barcode] = state.labware;
-            that.stash_by_UUID [state.labware.uuid] = state.labware;
-            that.availableBarcodes.push(state.barcode);
-            registerLabwarePromise.resolve();
-          }).fail(function () {
-            registerLabwarePromise.reject();
-            that.owner.childDone(that, "failed", {});
+              $.when.apply(null, tubePromises).then(function () {
+                that.owner.childDone(that, "success", {});
+              }).fail(function () {
+                    that.owner.childDone(that, "failed", {});
+                  });
+            });
           });
-      });
-
-      $.when.apply(listOfPromises).then(function () {
-        that.owner.childDone(that, "success", {});
-      }).fail(function () {
-          that.owner.childDone(that, "failed", {});
-        });
     },
 
-    makeTransfer:function (source, destination_Tube_BR, index) {
-      var root, that = this;
+    startElution:function(){
+        var that = this;
+        var addingRoles = {updates:[]};
+
+        this.batch.getItemsGroupedByOrders()
+            .then(function (rscByOrders) {
+              _.each(rscByOrders, function (orderKey) {
+                _.each(orderKey.items, function (rsc) {
+
+//                  if (rsc.)
+
+                  addingRoles.updates.push({
+                    input: {
+                      order:orderKey.order
+                    },
+                    output:{
+                      resource:rsc,
+                      role:    that.outputRoleForTube,
+                      batch:   that.batch.uuid
+                    }});
+                });
+              });
+              return Operations.stateManagement().start(addingRoles);})
+            .then(function () {
+              that.batch = batchBySideEffect; // updating the batch in the model, once all the requests succeeded.
+              that.owner.childDone(that, "batchSaved", that.batch);
+            }).fail(function () {
+              throw "Could not make a batch";
+            }
+        );
+
+    },
+
+    makeTransfer:function (source, destination, rowPresenter) {
+      var s2root, that = this;
       var spinColumn;
       this.owner.getS2Root()
-        .then(function (r) {
-          root = r;
-          // creates sc with the given BC
-          return SC.creates();
-//          return {}; //...
-        })
-        .then(function (sc) {
-          spinColumn = sc;
+          .then(function (r) {
+            s2root = r;
+            return source.order();
+          })
+          .then(function (order) {
+            Operations.betweenLabware(s2root.actions.transfer_spin_columns_to_tubes, [
+              function (operations, state) {
+                operations.push({
+                  input:{ resource:source, role:that.inputRole, order:order },
+                  output:{ resource:destination, role:that.outputRoleForSC},
+                  fraction:1.0,
+                  aliquot_type:source.aliquots[0].type
+                });
+                return $.Deferred().resolve();
+              }
+            ]
+            ).operation()
+                .then(function () {
 
-          return root.tube_spin_column_transfers.new({"source":source, "destination":sc});
-        })
-        .then(function () {
-          return source.order();
-        })
-        .then(function (ord) {
-          return ord.updateRole(source, {event:"complete"});
-        })
-        .then(function (ord) {
-          return ord.updateRole(spinColumn, {event:"complete"});
-        })
-        .then(function () {
-          that.owner.childDone(that, "modelUpdated", {index:index});
-        })
-        .fail(function () {
-          // ...
-        });
+                  // refreshing cache
+                  that.stash_by_BC[source.labels.barcode] = undefined;
+                  that.stash_by_UUID[source.uuid] = undefined;
+                  that.fetchResourcePromiseFromUUID(source.uuid);
+                  that.stash_by_BC[destination.labels.barcode] = undefined;
+                  that.stash_by_UUID[destination.uuid] = undefined;
+                  that.fetchResourcePromiseFromUUID(destination.uuid);
+
+                  rowPresenter.childDone("...");
+                });
+          });
     },
-    checkPageComplete:function() {
-      return true;
-  }
+
+    isValid:function(){
+      return false;
+    }
   });
 
   return ElutionModel;
 
-})
+});

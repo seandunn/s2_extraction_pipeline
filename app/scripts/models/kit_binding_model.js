@@ -106,8 +106,8 @@ define([
     getRowModel:function (rowNum) {
       var rowModel = {};
 
-      var labware3ExpectedType = (this.validKitType == 'DNA/RNA') ? 'tube' : 'waste_tube';
-      var labware3DisplayBarcode = this.validKitType == 'DNA/RNA';
+      var labware3ExpectedType = (this.validKitType === 'DNA/RNA') ? 'tube' : 'waste_tube';
+      var labware3DisplayBarcode = this.validKitType === 'DNA/RNA';
 
       if (!this.kitSaved) {
         rowModel = {
@@ -181,7 +181,7 @@ define([
 
             $.when.apply(null, spinColumnPromises).then(function () {
               that.printBarcodes(that.spinColumns);
-              that.owner.childDone(that, "success", {});
+              that.owner.childDone(that, "labelPrinted", {});
             }).fail(function () {
               that.owner.childDone(that, "failed", {});
             });

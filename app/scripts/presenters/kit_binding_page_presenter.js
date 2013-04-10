@@ -166,15 +166,8 @@ function (View, BasePresenter, KitModel) {
           this.kitModel.saveKitCreateBarcodes();
           // TODO : print call here !
           this.owner.childDone(this, "error", {"message":"Kit saved and Spin Column Barcodes printed"});
-          this.setupSubPresenters();
-          this.currentView.toggleHeaderEnabled(false);
 
-        } else if (action === "printBC") {
-          this.kitModel.kitSaved = true;
-          this.kitModel.createMissingSpinColumns();
-          this.owner.childDone(this, "error", {"message":"Spin Column Barcodes printed"});
-          this.setupSubPresenters();
-          this.currentView.toggleHeaderEnabled(false);
+
         }
       }
 
@@ -192,6 +185,15 @@ function (View, BasePresenter, KitModel) {
           );
         }
       }
+
+      if (child === this.kitModel){
+       if (action === "labelPrinted") {
+          this.owner.childDone(this, "error", {"message":"Kit saved and Spin Column Barcodes printed"});
+          this.setupSubPresenters();
+          this.currentView.toggleHeaderEnabled(false);
+        }
+      }
+
     }
 
   });

@@ -132,7 +132,7 @@
             "last":  "http://localhost:9292/plates/page=-1"
           }
         },
-        "spin_columns":             {
+        "spinColumns":             {
           "actions":{
             "create":"http://localhost:9292/spin_columns",
             "read":  "http://localhost:9292/spin_columns",

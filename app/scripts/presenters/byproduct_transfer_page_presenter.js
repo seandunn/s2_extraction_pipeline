@@ -126,7 +126,7 @@ define(['extraction_pipeline/views/byproduct_transfer_page_view',
     setupSubModel:function () {
       var that = this;
 
-      for (var i = 0; i < this.byproductTransferModel.spin_columns.length; i++) {
+      for (var i = 0; i < this.byproductTransferModel.spinColumns.length; i++) {
 
         var jquerySelectionForRow = function (i) {
           return function () {
@@ -219,7 +219,7 @@ define(['extraction_pipeline/views/byproduct_transfer_page_view',
       var valid = false;
 
       for (var i = 0; i < this.model.tubes.length; i++) {
-        if (this.model.spin_columns[i].uuid == data.uuid) {
+        if (this.model.spinColumns[i].uuid == data.uuid) {
           valid = true;
           break;
         }
