@@ -61,11 +61,14 @@ define([ 'config'
       }
       //marshalling data for the view
       var dataForView = {
-        batch:this.pageModel.batch && this.pageModel.batch.uuid,
-        user:this.pageModel.user,
-        capacity:this.pageModel.getCapacity()
+        batch:         this.pageModel.batch && this.pageModel.batch.uuid,
+        user:          this.pageModel.user,
+        capacity:      this.pageModel.getCapacity(),
+        processTitle:  this.pageModel.processTitle
       };
+
       this.currentView.render(dataForView);
+
       // render subviews...
       for (var i = 0; i < this.presenters.length; i++) {
         if (this.presenters[i]) {

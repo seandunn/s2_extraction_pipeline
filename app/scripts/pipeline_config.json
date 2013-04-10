@@ -15,8 +15,9 @@
     "role_configuration":{
 
       "tube_to_be_extracted_nap": {
-        "presenterName":   "selection_page_presenter",
-        "input":            "tube_to_be_extracted_nap",
+        "presenterName":  "selection_page_presenter",
+        "processTitle":   "DNA and RNA Extraction",
+        "input":          "tube_to_be_extracted_nap",
         "output":{
           "tube":"binding_tube_to_be_extracted_nap"
         }
@@ -75,6 +76,7 @@
 
       "tube_to_be_extracted_dnap": {
         "presenterName":   "selection_page_presenter",
+        "processTitle":   "DNA Only Extraction",
         "input":            "tube_to_be_extracted_dnap",
         "output": {
           "tube":"binding_tube_to_be_extracted_dnap"
@@ -96,6 +98,7 @@
 
       "tube_to_be_extracted_rnap": {
         "presenterName":  "selection_page_presenter",
+        "processTitle":   "RNA Only Extraction",
         "input":          "tube_to_be_extracted_rnap",
         "output": {
           "tube": "binding_tube_to_be_extracted_rnap"

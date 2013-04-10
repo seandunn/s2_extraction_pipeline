@@ -31,11 +31,10 @@ define([
       this.stash_by_UUID = {};
       this.tubes = [];
       this.capacity = initData["capacity"] || 12 ;
-      this.batch = undefined;
-      this.user = undefined;
 
       this.inputRole = initData["input"];
       this.outputRoleForTube = initData["output"]["tube"];
+      this.processTitle = initData.processTitle;
 
       return this;
     },

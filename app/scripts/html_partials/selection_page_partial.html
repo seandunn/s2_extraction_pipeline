@@ -1,8 +1,8 @@
-<h3 class="alert">
-    <p>
-        User Barcode : <%- rc.user %>
-    <p>
-</h3>
+<header class="alert">
+  <h3 id="process-title" class="pull-left"><%- rc.processTitle %></h1>
+  <h3 class="pull-right">User Barcode: <%- rc.user %></h3>
+</header>
+
 <ol class="labware">
     <% _.each (rc.indices, function (index) { %>
     <li> <p><%- index %> - NO PRESENTER ASSOCIATED WITH THIS ITEM</p></li>
