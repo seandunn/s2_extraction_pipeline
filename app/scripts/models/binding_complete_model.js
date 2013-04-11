@@ -87,22 +87,6 @@ define([
         });
 //      this.uuids = this.owner.tubeUUIDs;
     },
-    createMissingSpinColumnBarcodes:function(){
-      var that = this;
-      this.barcodes = []
-      for (var tube in that.tubes){
-        // TODO: create a spin column barcode for every tube
-
-        // generate SC barcodes
-
-        // save the barcodes
-        this.barcodes.push(); // barcodes!
-
-
-        // use tube and BC to generate SC
-//        var spinColumn = this.owner.getS2Root().spin
-      }
-    },
     validateSCBarcode:function(data) {
       return data == "XX111111K" ? true : false;
     }

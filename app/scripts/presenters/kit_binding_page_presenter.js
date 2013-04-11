@@ -69,7 +69,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
           }
 
           var that = this;
-          this.kitModel.tubes.then(function (tubes) {
+          this.kitModel.inputs.then(function (tubes) {
             that.rowPresenters = _.chain(tubes).map(function () {
               return that.presenterFactory.create('row_presenter', that);
             }).value();
@@ -88,7 +88,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
           var jquerySelectionForBarcode = function () {
             return that.jquerySelection().find('.barcode')
           }
-          this.kitModel.tubes.then(function (tubes) {
+          this.kitModel.inputs.then(function (tubes) {
             var selectorFunction = function (row) {
               return function () {
                 return that.jquerySelection().find('.row' + row);
@@ -127,7 +127,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
         },
 
         getTubeFromModel:function (requester, barcode) {
-          this.kitModel.findTubeInModelFromBarcode(barcode).then(function (result) {
+          this.kitModel.findInputFromBarcode(barcode).then(function (result) {
             if (!result) {
               requester.displayErrorMessage("Barcode not found");
             } else {
@@ -138,7 +138,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
 
         getSpinColumnFromModel:function (requester, barcode) {
 
-          var result = this.kitModel.findSCInModelFromBarcode(barcode);
+          var result = this.kitModel.findOutputFromBarcode(barcode);
           if (!result) {
             requester.displayErrorMessage("Spin column is not in kit");
           } else {

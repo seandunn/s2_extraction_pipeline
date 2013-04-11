@@ -110,7 +110,7 @@ define(['extraction_pipeline/views/elution_page_view',
      */
     setupSubPresenters:function () {
       var that = this;
-      this.elutionModel.spinColumns.then(function (tubes) {
+      this.elutionModel.inputs.then(function (tubes) {
         that.rowPresenters = _.chain(tubes).map(function () {
           return that.presenterFactory.create('row_presenter', that);
         }).value();
@@ -134,7 +134,7 @@ define(['extraction_pipeline/views/elution_page_view',
 
       var that = this;
 
-      this.elutionModel.spinColumns.then(function (tubes) {
+      this.elutionModel.inputs.then(function (tubes) {
         var selectorFunction = function (row) {
           return function () {
             return that.jquerySelection().find('.row' + row);
@@ -186,7 +186,7 @@ define(['extraction_pipeline/views/elution_page_view',
     },
 
     getSpinColumnFromModel:function (requester, barcode) {
-      this.elutionModel.findSCInModelFromBarcode(barcode).then(function (result) {
+      this.elutionModel.findInputFromBarcode(barcode).then(function (result) {
         if (!result) {
           requester.displayErrorMessage("Barcode not found");
         } else {
@@ -195,7 +195,7 @@ define(['extraction_pipeline/views/elution_page_view',
       });
     },
     getTubeFromModel:function (requester, barcode) {
-      var result = this.elutionModel.findTubeInModelFromBarcode(barcode);
+      var result = this.elutionModel.findOutputFromBarcode(barcode);
       if (!result) {
         requester.displayErrorMessage("Tube is unknown");
       } else {
@@ -258,7 +258,7 @@ define(['extraction_pipeline/views/elution_page_view',
         } else if (action === 'printOutputTubeBC') {
 
           if (!this.elutionModel.hasStarted()) {
-            this.elutionModel.createOutputTubes();
+            this.elutionModel.createOutputs();
             this.currentView.setPrintButtonEnabled(false);
           }
 
