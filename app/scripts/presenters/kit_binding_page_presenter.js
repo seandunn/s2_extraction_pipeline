@@ -109,26 +109,6 @@ define(['extraction_pipeline/views/kit_binding_page_view'
           return valid;
         },
 
-        getTubeFromModel:function (requester, barcode) {
-          this.kitModel.findInputFromBarcode(barcode).then(function (result) {
-            if (!result) {
-              requester.displayErrorMessage("Barcode not found");
-            } else {
-              requester.updateModel(result);
-            }
-          });
-        },
-
-        getSpinColumnFromModel:function (requester, barcode) {
-
-          var result = this.kitModel.findOutputFromBarcode(barcode);
-          if (!result) {
-            requester.displayErrorMessage("Spin column is not in kit");
-          } else {
-            requester.updateModel(result);
-          }
-        },
-
         release:function () {
           this.currentView.clear();
           return this;
@@ -154,9 +134,9 @@ define(['extraction_pipeline/views/kit_binding_page_view'
           if (action === "barcodeScanned") {
             var originator = data.origin;
             if (originator.labwareModel.expected_type === "tube") {
-              this.getTubeFromModel(originator, data);
+              this.kitModel.getInputByBarcode(originator, data);
             } else if (originator.labwareModel.expected_type === "spin_column") {
-              this.getSpinColumnFromModel(originator, data);
+              this.kitModel.getOutputByBarcode(originator, data);
 
               this.kitModel.makeTransfer(
                   child.labware1Presenter.labwareModel.resource,

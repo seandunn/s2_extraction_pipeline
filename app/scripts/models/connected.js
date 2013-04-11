@@ -36,11 +36,11 @@ define([
       }
     },
 
-    findInputFromBarcode: function(barcode) {
-      return this.inputs.then(_.partial(findByBarcode, barcode));
+    getInputByBarcode: function(requester, barcode) {
+      this.inputs.then(_.partial(findByBarcode, barcode)).then(_.partial(handleRetrieveResult, requester));
     },
-    findOutputFromBarcode: function(barcode) {
-      return findByBarcode(barcode, this.outputs);
+    getOutputByBarcode: function(requester, barcode) {
+      handleRetrieveResult(requester, findByBarcode(barcode, this.outputs));
     },
 
     createOutputs: function() {
@@ -98,5 +98,14 @@ define([
         that.inputs.resolve(inputs);
       });
     });
+  }
+
+  // TODO: 'requester' should really have 'found' and 'notFound' callbacks
+  function handleRetrieveResult(requester, result) {
+    if (!result) {
+      requester.displayErrorMessage("Barcode not found");
+    } else {
+      requester.updateModel(result);
+    }
   }
 });

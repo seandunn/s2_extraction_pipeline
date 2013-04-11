@@ -166,24 +166,6 @@ define(['extraction_pipeline/views/elution_page_view',
       return true;
     },
 
-    getSpinColumnFromModel:function (requester, barcode) {
-      this.elutionModel.findInputFromBarcode(barcode).then(function (result) {
-        if (!result) {
-          requester.displayErrorMessage("Barcode not found");
-        } else {
-          requester.updateModel(result);
-        }
-      });
-    },
-    getTubeFromModel:function (requester, barcode) {
-      var result = this.elutionModel.findOutputFromBarcode(barcode);
-      if (!result) {
-        requester.displayErrorMessage("Tube is unknown");
-      } else {
-        requester.updateModel(result);
-      }
-    },
-
     /* Clears the current view and all of its children
      *
      *
@@ -257,9 +239,9 @@ define(['extraction_pipeline/views/elution_page_view',
         if (action === "barcodeScanned") {
           var originator = data.origin;
           if (originator.labwareModel.expected_type === "tube") {
-            this.getTubeFromModel(originator, data);
+            this.elutionModel.getOutputByBarcode(originator, data);
           } else if (originator.labwareModel.expected_type === "spin_column") {
-            this.getSpinColumnFromModel(originator, data);
+            this.elutionModel.getInputByBarcode(originator, data);
           }
         }
 
