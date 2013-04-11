@@ -31,7 +31,6 @@ define([
 
     init:function (owner, initData) {
       this.owner = owner;
-      this.labware = undefined;
       this.user = undefined;
       this.batch = undefined;
 

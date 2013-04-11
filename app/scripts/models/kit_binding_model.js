@@ -30,10 +30,8 @@ define([
 
     init:function (owner, initData) {
       this.owner = owner;
-      this.labware = undefined;
       this.user = undefined;
       this.batch = undefined;
-      this.availableBarcodes = [];
       this.kitSaved = false;
 
       this.config = initData;
@@ -56,7 +54,7 @@ define([
         rowModel = {
           "rowNum":rowNum,
           "labware1":{
-            "resource":this.inputs[rowNum],
+            "resource":input,
             "expected_type":"tube",
             "display_remove":false,
             "display_barcode":false
