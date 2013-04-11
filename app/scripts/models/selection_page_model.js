@@ -32,8 +32,8 @@ define([
       this.tubes = [];
       this.capacity = initData["capacity"] || 12 ;
 
-      this.inputRole = initData["input"];
-      this.outputRoleForTube = initData["output"]["tube"];
+      this.inputRole = initData.input;
+      this.output = initData.output.tube;
       this.processTitle = initData.processTitle;
 
       return this;
@@ -110,7 +110,7 @@ define([
                   },
                   output:{
                     resource:item,
-                    role:    that.outputRoleForTube,
+                    role:    that.output.tube.role,
                     batch:   batchBySideEffect.uuid
                   }});
 
@@ -122,7 +122,7 @@ define([
                   },
                   output:{
                     resource:item,
-                    role:    that.outputRoleForTube
+                    role:    that.output.tube.role
                   }});
               });
             });

@@ -45,10 +45,9 @@ define([
       this.availableBarcodes = [];
       this.kitSaved = false;
 
-      this.inputRole = initData["input"];
-      this.outputRoleForTube = initData["output"]["tube"];
-      this.outputRoleForSC = initData["output"]["spin_column"];
-      this.validKitType = initData["kitType"];
+      this.output           = initData.output;
+      this.inputRole        = initData.input;
+      this.validKitType     = initData.kitType;
 
       return this;
     },
@@ -201,9 +200,9 @@ define([
               function (operations, state) {
                 operations.push({
                   input:       { resource:source, role:that.inputRole, order:order },
-                  output:      { resource:destination, role:that.outputRoleForSC, batch: that.batch.uuid},
+                  output:      { resource:destination, role:that.output.spin_column.role, batch: that.batch.uuid},
                   fraction:    1.0,
-                  aliquot_type:source.aliquots[0].type
+                  aliquot_type:that.output.spin_column.aliquotType
                 });
                 return $.Deferred().resolve();
               }

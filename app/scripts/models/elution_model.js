@@ -47,8 +47,8 @@ define([
 
       this.elutionStarted = false;
 
-      this.inputRole = initData["input"];
-      this.outputRoleForTube = initData["output"]["tube"];
+      this.inputRole = initData.input;
+      this.output = initData.output;
 
       return this;
     },
@@ -178,7 +178,7 @@ define([
                     },
                     output:{
                       resource:item,
-                      role:that.outputRoleForTube,
+                      role:that.output.tube.role,
                       batch:that.batch.uuid
                     }});
                 }
@@ -217,9 +217,9 @@ define([
                   var individualTransfer = function(operations, state) {
                     operations.push({
                       input:{ resource:source, role:that.inputRole, order:orderKey.order },
-                      output:{ resource:destination, role:that.outputRoleForTube},
+                      output:{ resource:destination, role:that.output.tube.role},
                       fraction:1.0,
-                      aliquot_type:source.aliquots[0].type
+                      aliquot_type:that.output.tube.aliquotType
                     });
                     return $.Deferred().resolve();
                   };
