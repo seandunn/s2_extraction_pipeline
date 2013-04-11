@@ -24,22 +24,10 @@ define([
 ], function (ConnectedPresenter, View, Model) {
   "use strict";
 
-  var Presenter = BasePresenter.extend('kit_presenter', Model, View);
+  var Presenter = ConnectedPresenter.extend('kit_presenter', Model, View);
 
   $.extend(Presenter, {
     setupSubModel:function () {
-      if (!this.barcodePresenter) {
-        this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
-      }
-
-      var that = this;
-      this.barcodePresenter.setupPresenter({
-        type: "Kit",
-        value: "Kit0001"
-      }, function() {
-        return that.jquerySelection().find('.barcode')
-      });
-      this.barcodePresenter.focus();
       this.setValidState();
       return this;
     },
@@ -76,7 +64,7 @@ define([
     },
 
     outputDone: function(child, action, data) {
-      this.model.makeTransfer(
+      this.model.makeAllTransfers(
         child.labware1Presenter.labwareModel.resource,
         child.labware2Presenter.labwareModel.resource,
         child
@@ -89,8 +77,8 @@ define([
         this.setupSubPresenters();
         this.currentView.toggleHeaderEnabled(false);
       } else if (action === "allTransferCompleted") {
-        this.fetchResourcePromiseFromUUID(data.transfers[0].source.uuid);
-        this.fetchResourcePromiseFromUUID(data.transfers[0].destination.uuid);
+        this.model.fetchResourcePromiseFromUUID(data.transfers[0].source.uuid);
+        this.model.fetchResourcePromiseFromUUID(data.transfers[0].destination.uuid);
       }
     }
   });

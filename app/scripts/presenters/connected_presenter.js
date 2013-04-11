@@ -25,6 +25,10 @@ define([
           this.model.setBatch(input_model.batch);
           this.setupView();
           this.renderView();
+          this.setupSubPresenters();
+          return this;
+        },
+        setupSubPresenters: function() {
           this.model.setupInputPresenters();
           this.setupSubModel();
           return this;
@@ -55,7 +59,7 @@ define([
         childDone:function (child, action, data) {
           if (child === this.currentView) {
             this.currentViewDone(child, action, data);
-          } elsif (child === this.model) {
+          } else if (child === this.model) {
             this.modelDone(child, action, data);
           } else {
             this.unknownDone(child, action, data);

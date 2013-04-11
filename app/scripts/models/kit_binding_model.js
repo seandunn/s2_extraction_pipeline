@@ -35,8 +35,13 @@ define([
       this.kitSaved = false;
 
       this.initialiseCaching();
-      this.initialiseConnections(this.config);
+      this.initialiseConnections(initData);
       return this;
+    },
+
+    setupInputPresenters: function() {
+      Connected.setupInputPresenters.apply(this, []);
+      setupBarcodePresenter.apply(this.owner, []);
     },
 
     validateKitTubes:function (kitType) {
@@ -94,11 +99,11 @@ define([
     },
 
     makeAllTransfers: function(source, destination) {
-      makeTransfers({
+      this.makeTransfers({
         preflight: function(that) {
           return source.order();
         },
-        process: function(that, items) {
+        process: function(that, order) {
           return [{
             source:      source,
             destination: destination,
@@ -120,4 +125,18 @@ define([
 
   return Model;
 
+  function setupBarcodePresenter() {
+    if (!this.barcodePresenter) {
+      this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
+    }
+
+    var that = this;
+    this.barcodePresenter.setupPresenter({
+      type: "Kit",
+      value: "Kit0001"
+    }, function() {
+      return that.jquerySelection().find('.barcode')
+    });
+    this.barcodePresenter.focus();
+  }
 });

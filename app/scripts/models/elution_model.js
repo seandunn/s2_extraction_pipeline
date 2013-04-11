@@ -91,12 +91,13 @@ define([
     },
 
     makeAllTransfers: function() {
-      makeTransfers({
-        prelight: function(that) {
+      var that = this;
+      this.makeTransfers({
+        preflight: function(that) {
           return that.batch.items;
         },
         process: function(that, items) {
-          var destBySrc = _.chain(this.owner.rowPresenters).reduce(function (memo, presenter) {
+          var destBySrc = _.chain(that.owner.rowPresenters).reduce(function (memo, presenter) {
             memo[presenter.labware1Presenter.labwareModel.resource.uuid] = {
               source:presenter.labware1Presenter.labwareModel.resource,
               destination:presenter.labware2Presenter.labwareModel.resource
@@ -108,9 +109,9 @@ define([
             return item.role === that.config.input.role;
           }).map(function(item) {
             return {
-              source:      destBySrc[item.uuid].source;
-              destination: destBySrc[item.uuid].destination;
-              order:       item.order;
+              source:      destBySrc[item.uuid].source,
+              destination: destBySrc[item.uuid].destination,
+              order:       item.order
             };
           }).flatten().value();
         }
