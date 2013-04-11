@@ -47,7 +47,7 @@ define([
 
       this.elutionStarted = false;
 
-      this.inputRole = initData.input;
+      this.input  = initData.input;
       this.output = initData.output;
 
       return this;
@@ -72,7 +72,7 @@ define([
       this.batch.items.then(function (items) {
         var spinColumns = []
         $.when.apply(null, _.chain(items).filter(function (item) {
-          return item.role === that.inputRole && item.status === "done";
+          return item.role === that.input.role && item.status === "done";
         }).map(function (item) {
               return that.fetchResourcePromiseFromUUID(item.uuid).then(function (rsc) {
                 that.addResource(rsc);
@@ -210,13 +210,13 @@ define([
             var transfertData = [];
             _.each(itemsByOrders, function (orderKey) {
               _.each(orderKey.items, function (item) {
-                if (item.role === that.inputRole) {
+                if (item.role === that.input.role) {
                   var source = destBySrc[item.uuid].source;
                   var destination = destBySrc[item.uuid].destination;
                   //destination, order
                   var individualTransfer = function(operations, state) {
                     operations.push({
-                      input:{ resource:source, role:that.inputRole, order:orderKey.order },
+                      input:{ resource:source, role:that.input.role, order:orderKey.order },
                       output:{ resource:destination, role:that.output.tube.role},
                       fraction:1.0,
                       aliquot_type:that.output.tube.aliquotType

@@ -32,7 +32,7 @@ define([
       this.tubes = [];
       this.capacity = initData["capacity"] || 12 ;
 
-      this.inputRole = initData.input;
+      this.input = initData.input;
       this.output = initData.output.tube;
       this.processTitle = initData.processTitle;
 
@@ -118,7 +118,7 @@ define([
                   input: {
                     order:   orderKey.order,
                     resource:item,
-                    role:    that.inputRole
+                    role:    that.input.role
                   },
                   output:{
                     resource:item,

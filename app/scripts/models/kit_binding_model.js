@@ -46,7 +46,7 @@ define([
       this.kitSaved = false;
 
       this.output           = initData.output;
-      this.inputRole        = initData.input;
+      this.input            = initData.input;
       this.validKitType     = initData.kitType;
 
       return this;
@@ -65,7 +65,7 @@ define([
       this.batch.items.then(function(items) {
         var tubes = []
         $.when.apply(null, _.chain(items).filter(function(item) {
-          return item.role === that.inputRole && item.status === "done";
+          return item.role === that.input.role && item.status === "done";
         }).map(function(item) {
           return that.fetchResourcePromiseFromUUID(item.uuid).then(function(rsc) {
             that.addResource(rsc);
@@ -199,7 +199,7 @@ define([
             Operations.betweenLabware(s2root.actions.transfer_tubes_to_tubes, [
               function (operations, state) {
                 operations.push({
-                  input:       { resource:source, role:that.inputRole, order:order },
+                  input:       { resource:source, role:that.input.role, order:order },
                   output:      { resource:destination, role:that.output.spin_column.role, batch: that.batch.uuid},
                   fraction:    1.0,
                   aliquot_type:that.output.spin_column.aliquotType
