@@ -32,9 +32,7 @@ define([
       this.tubes = [];
       this.capacity = initData["capacity"] || 12 ;
 
-      this.input = initData.input;
-      this.output = initData.output.tube;
-      this.processTitle = initData.processTitle;
+      this.config = initData;
 
       return this;
     },
@@ -110,7 +108,7 @@ define([
                   },
                   output:{
                     resource:item,
-                    role:    that.output.tube.role,
+                    role:    that.config.output.tube.role,
                     batch:   batchBySideEffect.uuid
                   }});
 
@@ -118,11 +116,11 @@ define([
                   input: {
                     order:   orderKey.order,
                     resource:item,
-                    role:    that.input.role
+                    role:    that.config.input.role
                   },
                   output:{
                     resource:item,
-                    role:    that.output.tube.role
+                    role:    that.config.output.tube.role
                   }});
               });
             });

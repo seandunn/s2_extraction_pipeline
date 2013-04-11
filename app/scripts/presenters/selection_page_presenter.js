@@ -64,7 +64,7 @@ define([ 'config'
         batch:         this.pageModel.batch && this.pageModel.batch.uuid,
         user:          this.pageModel.user,
         capacity:      this.pageModel.getCapacity(),
-        processTitle:  this.pageModel.processTitle
+        processTitle:  this.pageModel.config.processTitle
       };
 
       this.currentView.render(dataForView);
