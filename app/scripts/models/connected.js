@@ -5,7 +5,7 @@ define([
 
   return {
     initialiseConnections: function(config) {
-      this.output  = config;          // Configuration of our connections
+      this.config  = config;          // Configuration of our connections
       this.inputs  = $.Deferred();    // Inputs are always a deferred lookup
       this.outputs = [];              // Outputs are always an array
       this.batch   = undefined;       // There is no batch, yet
@@ -53,9 +53,9 @@ define([
         that.inputs.then(function(inputs) {
           var promises = _.chain(inputs).map(function(input) {
             return Operations.registerLabware(
-              root[that.output.model],
-              that.output.aliquotType,
-              that.output.purpose
+              root[that.config.model],
+              that.config.aliquotType,
+              that.config.purpose
             ).then(function(state) {
               that.stash(state.labware, state.barcode);
               that.outputs.push(state.labware);

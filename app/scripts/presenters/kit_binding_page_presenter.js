@@ -17,146 +17,80 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 
-define(['extraction_pipeline/views/kit_binding_page_view'
-  , 'extraction_pipeline/presenters/base_presenter'
-  , 'extraction_pipeline/models/kit_binding_model'
-],
-    function (View, BasePresenter, KitModel) {
-      "use strict";
+define([
+       'extraction_pipeline/presenters/connected_presenter',
+       'extraction_pipeline/views/kit_binding_page_view',
+       'extraction_pipeline/models/kit_binding_model'
+], function (ConnectedPresenter, View, Model) {
+  "use strict";
 
-      // interface ....
-      var KitPresenter = Object.create(BasePresenter);
+  var Presenter = BasePresenter.extend('kit_presenter', Model, View);
 
-      $.extend(KitPresenter, {
-        register:function (callback) {
-          callback('kit_presenter', function (owner, factory, initData) {
-            return Object.create(KitPresenter).init(owner, factory, initData);
-          });
-        },
+  $.extend(Presenter, {
+    setupSubModel:function () {
+      if (!this.barcodePresenter) {
+        this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
+      }
 
-        init:function (owner, presenterFactory, initData) {
-          this.owner = owner;
-          this.kitModel = Object.create(KitModel).init(this, initData);
-          this.rowPresenters = [];
-          this.presenterFactory = presenterFactory;
-          return this;
-        },
-
-        setupPresenter:function (input_model, jquerySelection) {
-          this.tubeTypes = [];
-          this.kitModel.setBatch(input_model.batch);
-          this.setupPlaceholder(jquerySelection);
-          this.setupView();
-          this.renderView();
-          this.setupSubPresenters();
-
-          return this;
-        },
-
-        setupPlaceholder:function (jquerySelection) {
-          this.jquerySelection = jquerySelection;
-          return this;
-        },
-
-        setupView:function () {
-          this.currentView = new View(this, this.jquerySelection);
-          return this;
-        },
-
-        setupSubPresenters:function () {
-          if (!this.barcodePresenter) {
-            this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
-          }
-
-          this.kitModel.setupInputPresenters();
-          this.setupSubModel();
-          return this;
-        },
-
-        setupSubModel:function () {
-          var modelJson = {
-            "type":"Kit",
-            "value":"Kit0001"
-          };
-
-          var that = this;
-          var jquerySelectionForBarcode = function () {
-            return that.jquerySelection().find('.barcode')
-          }
-
-          this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
-          this.barcodePresenter.focus();
-          this.setValidState();
-          return this;
-        },
-
-        renderView:function () {
-          // render view...
-          this.currentView.renderView();
-
-          if (this.barcodePresenter) {
-            this.barcodePresenter.renderView();
-          }
-
-          return this;
-        },
-
-        setValidState:function () {
-          var kitType = this.jquerySelection().find('.kitSelect').val();
-          var valid = this.kitModel.validateKitTubes(kitType);
-          this.currentView.setKitValidState(valid);
-
-          return valid;
-        },
-
-        release:function () {
-          this.currentView.clear();
-          return this;
-        },
-
-        childDone:function (child, action, data) {
-
-          if (child === this.currentView) {
-            if (action === "next") {
-
-              if (this.setValidState()) {
-                this.owner.childDone(this, "done", { batch:this.kitModel.batch });
-
-              } else {
-                this.owner.childDone(this, "error", {"message":"Error: The kit isn't validated."});
-              }
-
-            } else if (action === "savePrintBC") {
-              this.kitModel.saveKitCreateBarcodes();
-            }
-          }
-
-          if (action === "barcodeScanned") {
-            var originator = data.origin;
-            if (originator.labwareModel.expected_type === "tube") {
-              this.kitModel.getInputByBarcode(originator, data);
-            } else if (originator.labwareModel.expected_type === "spin_column") {
-              this.kitModel.getOutputByBarcode(originator, data);
-
-              this.kitModel.makeTransfer(
-                  child.labware1Presenter.labwareModel.resource,
-                  child.labware2Presenter.labwareModel.resource,
-                  child
-              );
-            }
-          }
-
-          if (child === this.kitModel) {
-            if (action === "labelPrinted") {
-              this.owner.childDone(this, "error", {"message":"Kit saved and Spin Column Barcodes printed"});
-              this.setupSubPresenters();
-              this.currentView.toggleHeaderEnabled(false);
-            }
-          }
-
-        }
-
+      var that = this;
+      this.barcodePresenter.setupPresenter({
+        type: "Kit",
+        value: "Kit0001"
+      }, function() {
+        return that.jquerySelection().find('.barcode')
       });
+      this.barcodePresenter.focus();
+      this.setValidState();
+      return this;
+    },
 
-      return KitPresenter;
-    });
+    renderView:function () {
+      // render view...
+      this.currentView.renderView();
+
+      if (this.barcodePresenter) {
+        this.barcodePresenter.renderView();
+      }
+
+      return this;
+    },
+
+    setValidState:function () {
+      var kitType = this.jquerySelection().find('.kitSelect').val();
+      var valid = this.model.validateKitTubes(kitType);
+      this.currentView.setKitValidState(valid);
+
+      return valid;
+    },
+
+    currentViewDone: function(child, action, data) {
+      if (action === "next") {
+        if (this.setValidState()) {
+          this.owner.childDone(this, "done", { batch:this.model.batch });
+        } else {
+          this.owner.childDone(this, "error", {"message":"Error: The kit isn't validated."});
+        }
+      } else if (action === "savePrintBC") {
+        this.model.saveKitCreateBarcodes();
+      }
+    },
+
+    outputDone: function(child, action, data) {
+      this.model.makeTransfer(
+        child.labware1Presenter.labwareModel.resource,
+        child.labware2Presenter.labwareModel.resource,
+        child
+      );
+    },
+
+    modelDone: function(child, action, data) {
+      if (action === "labelPrinted") {
+        this.owner.childDone(this, "error", {"message":"Kit saved and Spin Column Barcodes printed"});
+        this.setupSubPresenters();
+        this.currentView.toggleHeaderEnabled(false);
+      }
+    }
+  });
+
+  return Presenter;
+});

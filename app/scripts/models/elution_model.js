@@ -93,10 +93,16 @@ define([
       );
     },
 
-    makeAllTransfers:function (destBySrc) {
-
+    makeAllTransfers:function () {
       var s2root, that = this;
-      var spinColumn;
+
+      var destBySrc = _.chain(this.owner.rowPresenters).reduce(function (memo, presenter) {
+        memo[presenter.labware1Presenter.labwareModel.resource.uuid] = {
+          source:presenter.labware1Presenter.labwareModel.resource,
+          destination:presenter.labware2Presenter.labwareModel.resource
+        };
+        return memo
+      }, {}).value();
 
       this.owner.getS2Root()
           .then(function (r) {

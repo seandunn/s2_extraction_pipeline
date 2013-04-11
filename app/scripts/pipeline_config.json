@@ -33,7 +33,8 @@
         "defaultPrinter":  "Tube Printer",
         "kitType":          "DNA/RNA",
         "input":{
-          "role":"binding_tube_to_be_extracted_nap"
+          "role":"binding_tube_to_be_extracted_nap",
+          "model":"tubes"
         },
         "output":{
           "tube": {
@@ -70,7 +71,8 @@
         "presenterName":   "elution_presenter",
         "defaultPrinter":  "Tube Printer",
         "input":{
-          "role":"binding_spin_column_dna"
+          "role":"binding_spin_column_dna",
+          "model":"spin_columns"
         },
         "output":  {
           "tube": {
@@ -87,7 +89,8 @@
         "defaultPrinter":  "Tube Printer",
         "kitType":         "RNA",
         "input":{
-          "role":"binding_tube_to_be_extracted_rnap"
+          "role":"binding_tube_to_be_extracted_rnap",
+          "model":"tubes"
         },
         "output":  {
           "spin_column":  {
@@ -103,7 +106,8 @@
         "presenterName":   "elution_presenter",
         "defaultPrinter":  "Tube Printer",
         "input":{
-          "role":"binding_spin_column_rna"
+          "role":"binding_spin_column_rna",
+          "model":"spin_columns"
         },
         "output":  {
           "tube": {
@@ -136,7 +140,8 @@
         "defaultPrinter":  "Tube Printer",
         "kitType":         "DNA",
         "input":{
-          "role":"binding_tube_to_be_extracted_dnap"
+          "role":"binding_tube_to_be_extracted_dnap",
+          "model":"tubes"
         },
         "output": {
           "spin_column":  {
