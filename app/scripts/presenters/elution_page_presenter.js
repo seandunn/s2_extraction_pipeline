@@ -253,8 +253,6 @@ define(['extraction_pipeline/views/elution_page_view',
         if (action === 'elutionStarted') {
             if (this.checkPageComplete()) {
               this.makeAllTransfers();
-              this.owner.childDone(this, "error", {"message":"Elution completed"});
-            } else {
               this.owner.childDone(this, "error", {"message":"Elution started"});
             }
         } else if (action === 'printOutputTubeBC') {
