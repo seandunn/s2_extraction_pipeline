@@ -30,7 +30,7 @@ define([
     //TODO: add suitable methods for the model
 
     init:function (owner, initData) {
-      this.owner = Object.create(owner);
+      this.owner = owner;
       this.labware = undefined;
       this.user = undefined;
       this.batch = undefined;

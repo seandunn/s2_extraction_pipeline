@@ -29,7 +29,7 @@ define([
   $.extend(KitModel, Connected, {
 
     init:function (owner, initData) {
-      this.owner = Object.create(owner);
+      this.owner = owner;
       this.labware = undefined;
       this.user = undefined;
       this.batch = undefined;

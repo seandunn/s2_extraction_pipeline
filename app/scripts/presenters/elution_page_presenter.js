@@ -109,7 +109,7 @@ define(['extraction_pipeline/views/elution_page_view',
      * this
      */
     setupSubPresenters:function () {
-      this.elutionModel.setupInputPresenters(this);
+      this.elutionModel.setupInputPresenters();
       this.setupSubModel();
       return this;
     },

@@ -68,7 +68,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
             this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
           }
 
-          this.kitModel.setupInputPresenters(this);
+          this.kitModel.setupInputPresenters();
           this.setupSubModel();
           return this;
         },
