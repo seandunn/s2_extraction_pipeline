@@ -73,7 +73,34 @@ define([
           });
         });
       });
-    }
+    },
+
+    makeTransfers: function(handler) {
+      var that = this;
+      var s2root;
+
+      this.owner.getS2Root().then(function (result) {
+        s2root = result;
+        return result;
+      }).then(_.partial(handler.preflight, that)).then(_.partial(handler.process, that)).then(function(transferDetails) {
+        Operations.betweenLabware(
+          s2root.actions.transfer_tubes_to_tubes,
+          _.map(transferDetails, function(details) {
+            return function(operations, state) {
+              operations.push({
+                input:       { resource:details.source,      role:that.config.input.role,                             order:details.order },
+                output:      { resource:details.destination, role:that.config.output[that.config.output.target].role, batch:that.batch.uuid},
+                fraction:    1.0,
+                aliquot_type:that.config.output[that.config.output.target].aliquotType
+              });
+              return $.Deferred().resolve();
+            };
+          })
+        ).operation().then(function () {
+          that.owner.childDone(that,"allTransferCompleted",{transfers: transferDetails});
+        });
+      });
+    },
   };
 
   // Convenience method for dealing with finding by barcodes

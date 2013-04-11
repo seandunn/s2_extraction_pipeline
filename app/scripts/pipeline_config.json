@@ -37,6 +37,8 @@
           "model":"tubes"
         },
         "output":{
+          "target": "spin_column",
+
           "tube": {
             "role":         "byproduct_tube_rnap",
             "aliquotType":  "RNA+P",
@@ -75,6 +77,8 @@
           "model":"spin_columns"
         },
         "output":  {
+          "target": "tube",
+
           "tube": {
             "role":         "extracted_tube_dna",
             "aliquotType":  "DNA",
@@ -93,6 +97,8 @@
           "model":"tubes"
         },
         "output":  {
+          "target": "spin_column",
+
           "spin_column":  {
             "role":         "binding_spin_column_rna",
             "aliquotType":  "RNA",
@@ -110,6 +116,8 @@
           "model":"spin_columns"
         },
         "output":  {
+          "target": "tube",
+
           "tube": {
             "role":         "extracted_tube_rna",
             "aliquotType":  "RNA",
@@ -144,6 +152,8 @@
           "model":"tubes"
         },
         "output": {
+          "target": "spin_column",
+
           "spin_column":  {
             "role":         "binding_spin_column_dna",
             "aliquotType":  "DNA",

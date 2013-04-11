@@ -88,6 +88,9 @@ define([
         this.owner.childDone(this, "error", {"message":"Kit saved and Spin Column Barcodes printed"});
         this.setupSubPresenters();
         this.currentView.toggleHeaderEnabled(false);
+      } else if (action === "allTransferCompleted") {
+        this.fetchResourcePromiseFromUUID(data.transfers[0].source.uuid);
+        this.fetchResourcePromiseFromUUID(data.transfers[0].destination.uuid);
       }
     }
   });

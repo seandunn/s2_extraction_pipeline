@@ -24,9 +24,9 @@ define([
   'mapper/operations',
   'extraction_pipeline/models/connected'
 ], function (BasePageModel, Operations, Connected) {
-  var ElutionModel = Object.create(BasePageModel);
+  var Model = Object.create(BasePageModel);
 
-  $.extend(ElutionModel, Connected, {
+  $.extend(Model, Connected, {
     //TODO: add suitable methods for the model
 
     init:function (owner, initData) {
@@ -39,7 +39,7 @@ define([
       this.config = initData;
 
       this.initialiseCaching();
-      this.initialiseConnections(this.config.output.tube);
+      this.initialiseConnections(this.config.output[this.config.output.target]);
       return this;
     },
 
@@ -68,15 +68,14 @@ define([
           .then(function (rscByOrders) {
             _.each(rscByOrders, function (orderKey) {
               _.each(orderKey.items, function (item) {
-
-                if (item.role === that.config.output.role) {
+                if (item.role === that.config.output[that.config.output.target].role) {
                   addingRoles.updates.push({
                     input:{
                       order:orderKey.order
                     },
                     output:{
                       resource:item,
-                      role:that.config.output.tube.role,
+                      role:that.config.output[that.config.output.target].role,
                       batch:that.batch.uuid
                     }});
                 }
@@ -93,53 +92,31 @@ define([
       );
     },
 
-    makeAllTransfers:function () {
-      var s2root, that = this;
+    makeAllTransfers: function() {
+      makeTransfers({
+        prelight: function(that) {
+          return that.batch.items;
+        },
+        process: function(that, items) {
+          var destBySrc = _.chain(this.owner.rowPresenters).reduce(function (memo, presenter) {
+            memo[presenter.labware1Presenter.labwareModel.resource.uuid] = {
+              source:presenter.labware1Presenter.labwareModel.resource,
+              destination:presenter.labware2Presenter.labwareModel.resource
+            };
+            return memo
+          }, {}).value();
 
-      var destBySrc = _.chain(this.owner.rowPresenters).reduce(function (memo, presenter) {
-        memo[presenter.labware1Presenter.labwareModel.resource.uuid] = {
-          source:presenter.labware1Presenter.labwareModel.resource,
-          destination:presenter.labware2Presenter.labwareModel.resource
-        };
-        return memo
-      }, {}).value();
-
-      this.owner.getS2Root()
-          .then(function (r) {
-            s2root = r;
-
-            return that.batch.getItemsGroupedByOrders();
-          }).then(function (itemsByOrders) {
-
-            var transfertData = [];
-            _.each(itemsByOrders, function (orderKey) {
-              _.each(orderKey.items, function (item) {
-                if (item.role === that.config.input.role) {
-                  var source = destBySrc[item.uuid].source;
-                  var destination = destBySrc[item.uuid].destination;
-                  //destination, order
-                  var individualTransfer = function(operations, state) {
-                    operations.push({
-                      input:{ resource:source, role:that.config.input.role, order:orderKey.order },
-                      output:{ resource:destination, role:that.config.output.tube.role},
-                      fraction:1.0,
-                      aliquot_type:that.config.output.tube.aliquotType
-                    });
-                    return $.Deferred().resolve();
-                  };
-
-                  transfertData.push(individualTransfer);
-                }
-              })
-            });
-
-            Operations.betweenLabware(s2root.actions.transfer_tubes_to_tubes, transfertData
-            ).operation()
-                .then(function () {
-                  that.owner.childDone(that,"allTransferCompleted",{});
-                });
-          });
-
+          return _.chain(items).filter(function(item) {
+            return item.role === that.config.input.role;
+          }).map(function(item) {
+            return {
+              source:      destBySrc[item.uuid].source;
+              destination: destBySrc[item.uuid].destination;
+              order:       item.order;
+            };
+          }).flatten().value();
+        }
+      });
     },
 
     hasStarted:function () {
@@ -147,6 +124,6 @@ define([
     }
   });
 
-  return ElutionModel;
+  return Model;
 
 });

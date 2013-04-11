@@ -24,9 +24,9 @@ define([
   'mapper/operations',
   'extraction_pipeline/models/connected'
 ], function (BasePageModel, Operations, Connected) {
-  var KitModel = Object.create(BasePageModel);
+  var Model = Object.create(BasePageModel);
 
-  $.extend(KitModel, Connected, {
+  $.extend(Model, Connected, {
 
     init:function (owner, initData) {
       this.owner = owner;
@@ -37,7 +37,7 @@ define([
       this.config = initData;
 
       this.initialiseCaching();
-      this.initialiseConnections(this.config.output.spin_column);
+      this.initialiseConnections(this.config.output[this.config.output.target]);
       return this;
     },
 
@@ -95,40 +95,19 @@ define([
       return rowModel;
     },
 
-    makeTransfer:function (source, destination, rowPresenter) {
-      var that = this;
-      var s2root = null;
-
-      this.owner.getS2Root().then(function (result) {
-        s2root = result;
-        return source.order();
-      })
-          .then(function (order) {
-            Operations.betweenLabware(s2root.actions.transfer_tubes_to_tubes, [
-              function (operations, state) {
-                operations.push({
-                  input:       { resource:source, role:that.config.input.role, order:order },
-                  output:      { resource:destination, role:that.config.output.spin_column.role, batch: that.batch.uuid},
-                  fraction:    1.0,
-                  aliquot_type:that.config.output.spin_column.aliquotType
-                });
-                return $.Deferred().resolve();
-              }
-            ]
-            ).operation()
-                .then(function () {
-
-                  // refreshing cache
-                  that.stash_by_BC[source.labels.barcode] = undefined;
-                  that.stash_by_UUID[source.uuid] = undefined;
-                  that.fetchResourcePromiseFromUUID(source.uuid);
-                  that.stash_by_BC[destination.labels.barcode] = undefined;
-                  that.stash_by_UUID[destination.uuid] = undefined;
-                  that.fetchResourcePromiseFromUUID(destination.uuid);
-
-                  //rowPresenter.childDone("...");
-                });
-          });
+    makeAllTransfers: function(source, destination) {
+      makeTransfers({
+        preflight: function(that) {
+          return source.order();
+        },
+        process: function(that, items) {
+          return [{
+            source:      source,
+            destination: destination,
+            order:       order
+          }];
+        }
+      });
     },
     saveKitCreateBarcodes:function(kitBC) {
 
@@ -141,6 +120,6 @@ define([
     }
   });
 
-  return KitModel;
+  return Model;
 
 });
