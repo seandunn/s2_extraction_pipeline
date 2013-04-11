@@ -40,11 +40,7 @@ define([
       this.config = initData;
 
       this.initialiseCaching();
-      this.initialiseConnections({
-        model: 'tubes',
-        aliquotType: 'DNA',
-        role: 'stock'
-      });
+      this.initialiseConnections(this.config.output.tube);
       return this;
     },
 

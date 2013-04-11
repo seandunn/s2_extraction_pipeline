@@ -37,7 +37,7 @@ define([
             return Operations.registerLabware(
               root[that.output.model],
               that.output.aliquotType,
-              that.output.role
+              that.output.purpose
             ).then(function(state) {
               that.stash(state.labware, state.barcode);
               that.outputs.push(state.labware);

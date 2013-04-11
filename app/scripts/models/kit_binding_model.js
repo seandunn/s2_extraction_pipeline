@@ -39,11 +39,7 @@ define([
       this.config = initData;
 
       this.initialiseCaching();
-      this.initialiseConnections({
-        model: 'spin_columns',
-        aliquotType: 'DNA',
-        role: 'stock'
-      });
+      this.initialiseConnections(this.config.output.spin_column);
       return this;
     },
 
