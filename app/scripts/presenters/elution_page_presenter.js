@@ -109,12 +109,7 @@ define(['extraction_pipeline/views/elution_page_view',
      * this
      */
     setupSubPresenters:function () {
-      var that = this;
-      this.elutionModel.inputs.then(function (tubes) {
-        that.rowPresenters = _.chain(tubes).map(function () {
-          return that.presenterFactory.create('row_presenter', that);
-        }).value();
-      });
+      this.elutionModel.setupInputPresenters(this);
       this.setupSubModel();
       return this;
     },
@@ -131,20 +126,6 @@ define(['extraction_pipeline/views/elution_page_view',
      * this
      */
     setupSubModel:function () {
-
-      var that = this;
-
-      this.elutionModel.inputs.then(function (tubes) {
-        var selectorFunction = function (row) {
-          return function () {
-            return that.jquerySelection().find('.row' + row);
-          };
-        };
-        for (var rowIndex = 0; rowIndex < tubes.length; rowIndex++) {
-          var rowModel = that.elutionModel.getRowModel(rowIndex);
-          that.rowPresenters[rowIndex].setupPresenter(rowModel, selectorFunction(rowIndex));
-        }
-      });
       return this;
     },
 

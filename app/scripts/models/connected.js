@@ -18,6 +18,24 @@ define([
       this.owner.childDone(this, "batchAdded");
     },
 
+    setupInputPresenters: function(presenter) {
+      var that = this;
+      this.inputs.then(function(inputs) {
+        presenter.rowPresenters = _.chain(inputs).reduce(function(memo, input) {
+          var rowPresenter = presenter.presenterFactory.create('row_presenter', presenter);
+          rowPresenter.setupPresenter(that.getRowModel(memo.length, input), selectorFunction(presenter, memo.length));
+          memo.push(rowPresenter);
+          return memo;
+        }, []).value();
+      });
+
+      function selectorFunction(presenter, row) {
+        return function() {
+          return presenter.jquerySelection().find('.row' + row);
+        };
+      }
+    },
+
     findInputFromBarcode: function(barcode) {
       return this.inputs.then(_.partial(findByBarcode, barcode));
     },

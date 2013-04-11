@@ -68,12 +68,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
             this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
           }
 
-          var that = this;
-          this.kitModel.inputs.then(function (tubes) {
-            that.rowPresenters = _.chain(tubes).map(function () {
-              return that.presenterFactory.create('row_presenter', that);
-            }).value();
-          });
+          this.kitModel.setupInputPresenters(this);
           this.setupSubModel();
           return this;
         },
@@ -88,18 +83,6 @@ define(['extraction_pipeline/views/kit_binding_page_view'
           var jquerySelectionForBarcode = function () {
             return that.jquerySelection().find('.barcode')
           }
-          this.kitModel.inputs.then(function (tubes) {
-            var selectorFunction = function (row) {
-              return function () {
-                return that.jquerySelection().find('.row' + row);
-              };
-            };
-
-            for (var i = 0; i < tubes.length; ++i) {
-              var rowModel = that.kitModel.getRowModel(i);
-              that.rowPresenters[i].setupPresenter(rowModel, selectorFunction(i));
-            }
-          });
 
           this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
           this.barcodePresenter.focus();

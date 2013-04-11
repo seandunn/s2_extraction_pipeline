@@ -46,7 +46,7 @@ define([
     validateKitTubes:function (kitType) {
       return (this.config.kitType == kitType);
     },
-    getRowModel:function (rowNum) {
+    getRowModel:function (rowNum, input) {
       var rowModel = {};
 
       var labware3ExpectedType = (this.config.kitType === 'DNA/RNA') ? 'tube' : 'waste_tube';

@@ -44,7 +44,7 @@ define([
       return this;
     },
 
-    getRowModel:function (rowNum) {
+    getRowModel:function (rowNum, input) {
       return {
         "rowNum":rowNum,
         "remove_arrow":false,
