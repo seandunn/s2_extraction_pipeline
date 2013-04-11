@@ -23,6 +23,17 @@ define(['config'
   var BasePageModel = Object.create(null);
 
   $.extend(BasePageModel, {
+    initialiseCaching: function() {
+      this.stash_by_BC = {};
+      this.stash_by_UUID = {};
+    },
+
+    // Stashing for caching
+    stash: function(resource, barcode) {
+      this.stash_by_BC[barcode]         = resource;
+      this.stash_by_UUID[resource.uuid] = resource;
+    },
+
     addResource:function (resource) {
       if (!resource) return;
 

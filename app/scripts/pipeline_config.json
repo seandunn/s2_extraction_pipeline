@@ -38,12 +38,16 @@
         "output":{
           "tube": {
             "role":         "byproduct_tube_rnap",
-            "aliquotType":  "RNA+P"
+            "aliquotType":  "RNA+P",
+            "purpose":      "stock",
+            "model":        "tubes"
           },
 
           "spin_column":  {
             "role":         "binding_spin_column_dna",
-            "aliquotType":  "DNA"
+            "aliquotType":  "DNA",
+            "purpose":      "stock",
+            "model":        "spin_columns"
           }
         }
       },
@@ -71,7 +75,9 @@
         "output":  {
           "tube": {
             "role":         "extracted_tube_dna",
-            "aliquotType":  "DNA"
+            "aliquotType":  "DNA",
+            "purpose":      "stock",
+            "model":        "tubes"
           }
         }
       },
@@ -86,7 +92,9 @@
         "output":  {
           "spin_column":  {
             "role":         "binding_spin_column_rna",
-            "aliquotType":  "RNA"
+            "aliquotType":  "RNA",
+            "purpose":      "stock",
+            "model":        "spin_columns"
           }
         }
       },
@@ -99,8 +107,10 @@
         },
         "output":  {
           "tube": {
-          "role":         "extracted_tube_rna",
-          "aliquotType":  "RNA"
+            "role":         "extracted_tube_rna",
+            "aliquotType":  "RNA",
+            "purpose":      "stock",
+            "model":        "tubes"
           }
         }
       },
@@ -130,8 +140,10 @@
         },
         "output": {
           "spin_column":  {
-           "role":         "binding_spin_column_dna",
-           "aliquotType":  "DNA"
+            "role":         "binding_spin_column_dna",
+            "aliquotType":  "DNA",
+            "purpose":      "stock",
+            "model":        "spin_columns"
           }
         }
       },

@@ -68,12 +68,7 @@ define(['extraction_pipeline/views/kit_binding_page_view'
             this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
           }
 
-          var that = this;
-          this.kitModel.tubes.then(function (tubes) {
-            that.rowPresenters = _.chain(tubes).map(function () {
-              return that.presenterFactory.create('row_presenter', that);
-            }).value();
-          });
+          this.kitModel.setupInputPresenters();
           this.setupSubModel();
           return this;
         },
@@ -88,18 +83,6 @@ define(['extraction_pipeline/views/kit_binding_page_view'
           var jquerySelectionForBarcode = function () {
             return that.jquerySelection().find('.barcode')
           }
-          this.kitModel.tubes.then(function (tubes) {
-            var selectorFunction = function (row) {
-              return function () {
-                return that.jquerySelection().find('.row' + row);
-              };
-            };
-
-            for (var i = 0; i < tubes.length; ++i) {
-              var rowModel = that.kitModel.getRowModel(i);
-              that.rowPresenters[i].setupPresenter(rowModel, selectorFunction(i));
-            }
-          });
 
           this.barcodePresenter.setupPresenter(modelJson, jquerySelectionForBarcode);
           this.barcodePresenter.focus();
@@ -124,26 +107,6 @@ define(['extraction_pipeline/views/kit_binding_page_view'
           this.currentView.setKitValidState(valid);
 
           return valid;
-        },
-
-        getTubeFromModel:function (requester, barcode) {
-          this.kitModel.findTubeInModelFromBarcode(barcode).then(function (result) {
-            if (!result) {
-              requester.displayErrorMessage("Barcode not found");
-            } else {
-              requester.updateModel(result);
-            }
-          });
-        },
-
-        getSpinColumnFromModel:function (requester, barcode) {
-
-          var result = this.kitModel.findSCInModelFromBarcode(barcode);
-          if (!result) {
-            requester.displayErrorMessage("Spin column is not in kit");
-          } else {
-            requester.updateModel(result);
-          }
         },
 
         release:function () {
@@ -171,9 +134,9 @@ define(['extraction_pipeline/views/kit_binding_page_view'
           if (action === "barcodeScanned") {
             var originator = data.origin;
             if (originator.labwareModel.expected_type === "tube") {
-              this.getTubeFromModel(originator, data);
+              this.kitModel.getInputByBarcode(originator, data);
             } else if (originator.labwareModel.expected_type === "spin_column") {
-              this.getSpinColumnFromModel(originator, data);
+              this.kitModel.getOutputByBarcode(originator, data);
 
               this.kitModel.makeTransfer(
                   child.labware1Presenter.labwareModel.resource,

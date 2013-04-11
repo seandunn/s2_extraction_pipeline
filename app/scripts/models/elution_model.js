@@ -21,95 +21,29 @@
 
 define([
   'extraction_pipeline/models/base_page_model',
-  'mapper/operations'
-], function (BasePageModel, Operations) {
-
-  function findByBarcode(barcode, array) {
-    return _.chain(array).find(function (resource) {
-      return resource.labels.barcode.value === barcode.BC;
-    }).value();
-  }
-
+  'mapper/operations',
+  'extraction_pipeline/models/connected'
+], function (BasePageModel, Operations, Connected) {
   var ElutionModel = Object.create(BasePageModel);
 
-  $.extend(ElutionModel, {
+  $.extend(ElutionModel, Connected, {
     //TODO: add suitable methods for the model
 
     init:function (owner, initData) {
-      this.owner = Object.create(owner);
-      this.stash_by_BC = {};
-      this.stash_by_UUID = {};
-      this.labware = undefined;
+      this.owner = owner;
       this.user = undefined;
       this.batch = undefined;
-      this.spinColumns = $.Deferred();
-      this.tubes = [];
 
       this.elutionStarted = false;
 
       this.config = initData;
 
+      this.initialiseCaching();
+      this.initialiseConnections(this.config.output.tube);
       return this;
     },
-    setBatch:function (batch) {
-      console.log("setBatch : ", batch);
-      this.addResource(batch);
-      this.batch = batch;
 
-      this.setAllSpinColumnsFromCurrentBatch();
-
-//      var data = [];
-//      var that = this;
-//      _.each(this.spin_columns, function (sc, scIndex) {
-//        data.push(getRowModel(scIndex));
-//      });
-
-      this.owner.childDone(this, "batchAdded");
-    },
-    setAllSpinColumnsFromCurrentBatch:function () {
-      var that = this;
-      this.batch.items.then(function (items) {
-        var spinColumns = []
-        $.when.apply(null, _.chain(items).filter(function (item) {
-          return item.role === that.config.input.role && item.status === "done";
-        }).map(function (item) {
-              return that.fetchResourcePromiseFromUUID(item.uuid).then(function (rsc) {
-                that.addResource(rsc);
-                spinColumns.push(rsc);
-              });
-            }).value()).then(function () {
-              that.spinColumns.resolve(spinColumns);
-            });
-      });
-    },
-    createMissingSpinColumnBarcodes:function () {
-      var that = this;
-      this.barcodes = []
-      for (var tube in that.tubes) {
-        // TODO: create a spin column barcode for every tube
-
-        // generate SC barcodes
-
-        // save the barcodes
-        this.barcodes.push(); // barcodes!
-
-        // use tube and BC to generate SC
-//        var spinColumn = this.owner.getS2Root().spin
-      }
-    },
-
-    findTubeInModelFromBarcode:function (barcode) {
-      return findByBarcode(barcode, this.tubes);
-    },
-    findSCInModelFromBarcode:function (barcode) {
-      return this.spinColumns.then(_.partial(findByBarcode, barcode));
-    },
-
-    validateSCBarcode:function (data) {
-      return true;
-    },
-
-    getRowModel:function (rowNum) {
+    getRowModel:function (rowNum, input) {
       return {
         "rowNum":rowNum,
         "remove_arrow":false,
@@ -124,41 +58,6 @@ define([
           "display_barcode":true
         }
       };
-    },
-
-    createOutputTubes:function () {
-      var that = this;
-      var root;
-      var tubePromises;
-
-      this.owner.getS2Root().
-          then(function (result) {
-            root = result;
-          }).then(function () {
-            that.spinColumns.then(function (spinColumns) {
-              tubePromises = _.chain(spinColumns).map(function (spinColumn) {
-                return Operations.registerLabware(
-                    root.tubes,
-                    'DNA',
-                    'stock'
-                ).then(function (state) {
-                      that.stash_by_BC[state.barcode] = state.labware;
-                      that.stash_by_UUID [state.labware.uuid] = state.labware;
-                      that.tubes.push(state.labware);
-                      return state.labware;
-                    }).fail(function () {
-                      that.owner.childDone(that, "failed", {});
-                    });
-              }).value();
-
-              $.when.apply(null, tubePromises).then(function () {
-                that.printBarcodes(that.tubes);
-                that.owner.childDone(that, "barcodePrinted", {});
-              }).fail(function () {
-                    that.owner.childDone(that, "failed", {});
-                  });
-            });
-          });
     },
 
     startElution:function () {

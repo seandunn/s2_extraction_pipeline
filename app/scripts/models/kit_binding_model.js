@@ -21,85 +21,30 @@
 
 define([
   'extraction_pipeline/models/base_page_model',
-  'mapper/operations'
-], function (BasePageModel, Operations) {
-  function findByBarcode(barcode, array) {
-    return _.chain(array).find(function(resource) {
-      return resource.labels.barcode.value === barcode.BC;
-    }).value();
-  }
-
+  'mapper/operations',
+  'extraction_pipeline/models/connected'
+], function (BasePageModel, Operations, Connected) {
   var KitModel = Object.create(BasePageModel);
 
-  $.extend(KitModel, {
+  $.extend(KitModel, Connected, {
 
     init:function (owner, initData) {
-      this.owner = Object.create(owner);
-      this.stash_by_BC = {};
-      this.stash_by_UUID = {};
-      this.labware = undefined;
+      this.owner = owner;
       this.user = undefined;
       this.batch = undefined;
-      this.tubes = $.Deferred();
-      this.spinColumns = [];
-      this.availableBarcodes = [];
       this.kitSaved = false;
 
       this.config = initData;
 
+      this.initialiseCaching();
+      this.initialiseConnections(this.config.output.spin_column);
       return this;
     },
-    setBatch:function (batch) {
-      var that = this;
-      console.log("setBatch : ", batch);
-      this.addResource(batch);
-      this.batch = batch;
-      this.setAllTubesFromCurrentBatch(); // as in: from the batch, I get the tubes involved...
 
-      this.owner.childDone(this, "batchAdded");
-    },
-    setAllTubesFromCurrentBatch:function () {
-      var that = this;
-      this.batch.items.then(function(items) {
-        var tubes = []
-        $.when.apply(null, _.chain(items).filter(function(item) {
-          return item.role === that.config.input.role && item.status === "done";
-        }).map(function(item) {
-          return that.fetchResourcePromiseFromUUID(item.uuid).then(function(rsc) {
-            that.addResource(rsc);
-            tubes.push(rsc);
-          });
-        }).value()).then(function() {
-          that.tubes.resolve(tubes);
-        });
-      });
-    },
-
-    findTubeInModelFromBarcode:function (barcode) {
-      return this.tubes.then(_.partial(findByBarcode, barcode));
-    },
-    findSCInModelFromBarcode:function (barcode) {
-      return findByBarcode(barcode, this.spinColumns);
-    },
     validateKitTubes:function (kitType) {
       return (this.config.kitType == kitType);
     },
-    validateTubeUuid:function (data) {
-      var valid = false;
-
-      for (var i = 0; i < this.tubes.length; i++) {
-        if (this.tubes[i].uuid == data.uuid) {
-          valid = true;
-          break;
-        }
-      }
-
-      return valid;
-    },
-    validateSCBarcode:function (data) {
-      return true;
-    },
-    getRowModel:function (rowNum) {
+    getRowModel:function (rowNum, input) {
       var rowModel = {};
 
       var labware3ExpectedType = (this.config.kitType === 'DNA/RNA') ? 'tube' : 'waste_tube';
@@ -109,7 +54,7 @@ define([
         rowModel = {
           "rowNum":rowNum,
           "labware1":{
-            "resource":this.tubes[rowNum],
+            "resource":input,
             "expected_type":"tube",
             "display_remove":false,
             "display_barcode":false
@@ -148,41 +93,6 @@ define([
       }
 
       return rowModel;
-    },
-
-    createMissingSpinColumns:function () {
-      var that = this;
-      var listOfPromises = [];
-      var root = null;
-
-      this.owner.getS2Root().
-        then(function (result) {
-          root = result;
-        }).then(function () {
-          that.tubes.then(function(tubes) {
-            var spinColumnPromises = _.chain(tubes).map(function(tube) {
-              return Operations.registerLabware(
-                root.spin_columns,
-                'DNA',
-                'stock'
-              ).then(function (state) {
-                that.stash_by_BC[state.barcode] = state.labware;
-                that.stash_by_UUID [state.labware.uuid] = state.labware;
-                that.spinColumns.push(state.labware);
-                return state.labware;
-              }).fail(function () {
-                that.owner.childDone(that, "failed", {});
-              });
-            }).value();
-
-            $.when.apply(null, spinColumnPromises).then(function () {
-              that.printBarcodes(that.spinColumns);
-              that.owner.childDone(that, "labelPrinted", {});
-            }).fail(function () {
-              that.owner.childDone(that, "failed", {});
-            });
-          });
-        });
     },
 
     makeTransfer:function (source, destination, rowPresenter) {
@@ -227,7 +137,7 @@ define([
         this.kitSaved = true;
       }
 
-      this.createMissingSpinColumns();
+      this.createOutputs();
     }
   });
 
