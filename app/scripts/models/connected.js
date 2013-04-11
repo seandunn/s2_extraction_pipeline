@@ -53,9 +53,9 @@ define([
         that.inputs.then(function(inputs) {
           var promises = _.chain(inputs).map(function(input) {
             return Operations.registerLabware(
-              root[that.config.model],
-              that.config.aliquotType,
-              that.config.purpose
+              root[that.config.output[that.config.output.target].model],
+              that.config.output[that.config.output.target].aliquotType,
+              that.config.output[that.config.output.target].purpose
             ).then(function(state) {
               that.stash(state.labware, state.barcode);
               that.outputs.push(state.labware);

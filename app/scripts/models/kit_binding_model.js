@@ -34,10 +34,8 @@ define([
       this.batch = undefined;
       this.kitSaved = false;
 
-      this.config = initData;
-
       this.initialiseCaching();
-      this.initialiseConnections(this.config.output[this.config.output.target]);
+      this.initialiseConnections(this.config);
       return this;
     },
 

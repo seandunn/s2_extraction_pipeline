@@ -36,10 +36,8 @@ define([
 
       this.elutionStarted = false;
 
-      this.config = initData;
-
       this.initialiseCaching();
-      this.initialiseConnections(this.config.output[this.config.output.target]);
+      this.initialiseConnections(initData);
       return this;
     },
 
