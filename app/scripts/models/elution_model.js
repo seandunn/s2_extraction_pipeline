@@ -47,8 +47,7 @@ define([
 
       this.elutionStarted = false;
 
-      this.inputRole = initData["input"];
-      this.outputRoleForTube = initData["output"]["tube"];
+      this.config = initData;
 
       return this;
     },
@@ -72,7 +71,7 @@ define([
       this.batch.items.then(function (items) {
         var spinColumns = []
         $.when.apply(null, _.chain(items).filter(function (item) {
-          return item.role === that.inputRole && item.status === "done";
+          return item.role === that.config.input.role && item.status === "done";
         }).map(function (item) {
               return that.fetchResourcePromiseFromUUID(item.uuid).then(function (rsc) {
                 that.addResource(rsc);
@@ -171,14 +170,14 @@ define([
             _.each(rscByOrders, function (orderKey) {
               _.each(orderKey.items, function (item) {
 
-                if (item.role === that.outputRole) {
+                if (item.role === that.config.output.role) {
                   addingRoles.updates.push({
                     input:{
                       order:orderKey.order
                     },
                     output:{
                       resource:item,
-                      role:that.outputRoleForTube,
+                      role:that.config.output.tube.role,
                       batch:that.batch.uuid
                     }});
                 }
@@ -210,16 +209,16 @@ define([
             var transfertData = [];
             _.each(itemsByOrders, function (orderKey) {
               _.each(orderKey.items, function (item) {
-                if (item.role === that.inputRole) {
+                if (item.role === that.config.input.role) {
                   var source = destBySrc[item.uuid].source;
                   var destination = destBySrc[item.uuid].destination;
                   //destination, order
                   var individualTransfer = function(operations, state) {
                     operations.push({
-                      input:{ resource:source, role:that.inputRole, order:orderKey.order },
-                      output:{ resource:destination, role:that.outputRoleForTube},
+                      input:{ resource:source, role:that.config.input.role, order:orderKey.order },
+                      output:{ resource:destination, role:that.config.output.tube.role},
                       fraction:1.0,
-                      aliquot_type:source.aliquots[0].type
+                      aliquot_type:that.config.output.tube.aliquotType
                     });
                     return $.Deferred().resolve();
                   };

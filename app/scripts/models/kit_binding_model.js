@@ -45,10 +45,7 @@ define([
       this.availableBarcodes = [];
       this.kitSaved = false;
 
-      this.inputRole = initData["input"];
-      this.outputRoleForTube = initData["output"]["tube"];
-      this.outputRoleForSC = initData["output"]["spin_column"];
-      this.validKitType = initData["kitType"];
+      this.config = initData;
 
       return this;
     },
@@ -66,7 +63,7 @@ define([
       this.batch.items.then(function(items) {
         var tubes = []
         $.when.apply(null, _.chain(items).filter(function(item) {
-          return item.role === that.inputRole && item.status === "done";
+          return item.role === that.config.input.role && item.status === "done";
         }).map(function(item) {
           return that.fetchResourcePromiseFromUUID(item.uuid).then(function(rsc) {
             that.addResource(rsc);
@@ -85,7 +82,7 @@ define([
       return findByBarcode(barcode, this.spinColumns);
     },
     validateKitTubes:function (kitType) {
-      return (this.validKitType == kitType);
+      return (this.config.kitType == kitType);
     },
     validateTubeUuid:function (data) {
       var valid = false;
@@ -105,8 +102,8 @@ define([
     getRowModel:function (rowNum) {
       var rowModel = {};
 
-      var labware3ExpectedType = (this.validKitType === 'DNA/RNA') ? 'tube' : 'waste_tube';
-      var labware3DisplayBarcode = this.validKitType === 'DNA/RNA';
+      var labware3ExpectedType = (this.config.kitType === 'DNA/RNA') ? 'tube' : 'waste_tube';
+      var labware3DisplayBarcode = this.config.kitType === 'DNA/RNA';
 
       if (!this.kitSaved) {
         rowModel = {
@@ -200,10 +197,10 @@ define([
             Operations.betweenLabware(s2root.actions.transfer_tubes_to_tubes, [
               function (operations, state) {
                 operations.push({
-                  input:       { resource:source, role:that.inputRole, order:order },
-                  output:      { resource:destination, role:that.outputRoleForSC, batch: that.batch.uuid},
+                  input:       { resource:source, role:that.config.input.role, order:order },
+                  output:      { resource:destination, role:that.config.output.spin_column.role, batch: that.batch.uuid},
                   fraction:    1.0,
-                  aliquot_type:source.aliquots[0].type
+                  aliquot_type:that.config.output.spin_column.aliquotType
                 });
                 return $.Deferred().resolve();
               }
