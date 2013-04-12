@@ -52,13 +52,6 @@ define([
         child.handleResources(function() { model.makeAllTransfers.apply(model, arguments); });
       }
     },
-
-    modelDone: function(child, action, data) {
-      if (action === "allTransferCompleted") {
-        this.owner.childDone(this, "error", {"message":"Transfer done"});
-//          this.owner.childDone(this, "done", {"batch":this.model.batch});
-      }
-    }
   });
 
   return Presenter;

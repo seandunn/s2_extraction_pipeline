@@ -89,6 +89,15 @@ define([
         rowDone: function(child, action, data) {
         },
 
+        modelDone: function(child, action, data) {
+          if (action === "labelPrinted") {
+            this.owner.childDone(this, "error", {"message":"Barcodes printed"});
+            this.setupSubPresenters();
+            this.currentView.toggleHeaderEnabled(false);
+          } else if (action === "allTransferCompleted") {
+            this.owner.childDone(this, "error", {"message":"Transfer completed"});
+          }
+        }
       });
       return presenter;
     }

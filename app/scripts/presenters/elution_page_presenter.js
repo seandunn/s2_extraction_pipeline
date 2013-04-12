@@ -40,13 +40,6 @@ define([
         }
       }
     },
-
-    modelDone: function(child, action, data) {
-      if (action === "allTransferCompleted") {
-        this.owner.childDone(this, "error", {"message":"Elution done"});
-//          this.owner.childDone(this, "done", {"batch":this.model.batch});
-      }
-    }
   });
 
   return Presenter;

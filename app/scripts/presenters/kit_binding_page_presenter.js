@@ -69,17 +69,6 @@ define([
         child.handleResources(function() { model.makeAllTransfers.apply(model, arguments); });
       }
     },
-
-    modelDone: function(child, action, data) {
-      if (action === "labelPrinted") {
-        this.owner.childDone(this, "error", {"message":"Kit saved and Spin Column Barcodes printed"});
-        this.setupSubPresenters();
-        this.currentView.toggleHeaderEnabled(false);
-      } else if (action === "allTransferCompleted") {
-        this.model.fetchResourcePromiseFromUUID(data.transfers[0].source.uuid);
-        this.model.fetchResourcePromiseFromUUID(data.transfers[0].destination.uuid);
-      }
-    },
   });
 
   return Presenter;
