@@ -108,10 +108,13 @@ define([
           return _.chain(items).filter(function(item) {
             return item.role === that.config.input.role;
           }).map(function(item) {
+            var source = destBySrc[item.uuid].source;
+            var destination = destBySrc[item.uuid].destination;
             return {
-              source:      destBySrc[item.uuid].source,
-              destination: destBySrc[item.uuid].destination,
-              order:       item.order
+              source:      source,
+              destination: destination,
+              order:       item.order,
+              details:     that.config.output[destination.resourceType]
             };
           }).flatten().value();
         }

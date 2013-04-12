@@ -95,6 +95,8 @@ define([
         },
         outputDone: function(child, action, data) {
         },
+        rowDone: function(child, action, data) {
+        },
 
       });
       return presenter;
