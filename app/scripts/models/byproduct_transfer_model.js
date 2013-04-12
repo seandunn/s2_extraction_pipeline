@@ -45,12 +45,14 @@ define([
         "rowNum":rowNum,
         "remove_arrow":false,
         "labware1":{
+          "input":true,
           "resource":input,
           "expected_type":"tube",
           "display_remove":true,
           "display_barcode":true
         },
         "labware2":{
+          "input":false,
           "expected_type":"tube",
           "display_remove":true,
           "display_barcode":true

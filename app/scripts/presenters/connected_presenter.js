@@ -71,21 +71,12 @@ define([
             var originator = data.origin;
 
             // HACK: Identify the input as the first labware presenter in the row
-            switch(originator) {
-            case child.labware1Presenter:
-              if (originator.labwareModel.expected_type === this.config.input.model.singularize()) {
-                this.model.getInputByBarcode(originator, data);
-                this.inputDone(child, action, data);
-              }
-              break;
-
-            case child.labware2Presenter:
-            case child.labware3Presenter:
-              if (this.config.output[originator.labwareModel.expected_type]) {
-                this.model.getOutputByBarcode(originator, data);
-                this.outputDone(child, action, data);
-              }
-              break;
+            if (originator.labwareModel.input && (originator.labwareModel.expected_type === this.config.input.model.singularize())) {
+              this.model.getInputByBarcode(originator, data);
+              this.inputDone(child, action, data);
+            } else if (!originator.labwareModel.input && this.config.output[originator.labwareModel.expected_type]) {
+              this.model.getOutputByBarcode(originator, data);
+              this.outputDone(child, action, data);
             }
           } else if (action === 'completed') {
             this.rowDone(child, action, data);

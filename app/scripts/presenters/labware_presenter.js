@@ -15,6 +15,7 @@ define(['config'
       this.display_remove = undefined;
       this.display_barcode = undefined;
       this.expected_type = undefined;
+      this.input = undefined;
       return this;
     },
     reset:function () {
@@ -31,6 +32,9 @@ define(['config'
     },
     setExpectedType:function (value) {
       this.expected_type = value
+    },
+    setInput: function(value) {
+      this.input = value;
     }
   });
 
@@ -65,6 +69,7 @@ define(['config'
         this.labwareModel.setDisplayRemove(setupData.display_remove);
         this.labwareModel.setDisplayBarcode(setupData.display_barcode);
         this.labwareModel.setExpectedType(setupData.expected_type);
+        this.labwareModel.setInput(setupData.input);
       }
       //this.updateModel(input_model);
       this.setupView();

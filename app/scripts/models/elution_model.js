@@ -46,11 +46,13 @@ define([
         "rowNum":rowNum,
         "remove_arrow":false,
         "labware1":{
+          "input":true,
           "expected_type":"spin_column",
           "display_remove":true,
           "display_barcode":true
         },
         "labware2":{
+          "input":false,
           "expected_type":"tube",
           "display_remove":true,
           "display_barcode":true
@@ -98,10 +100,12 @@ define([
         },
         process: function(that, items) {
           var destBySrc = _.chain(that.owner.rowPresenters).reduce(function (memo, presenter) {
-            memo[presenter.labware1Presenter.labwareModel.resource.uuid] = {
-              source:presenter.labware1Presenter.labwareModel.resource,
-              destination:presenter.labware2Presenter.labwareModel.resource
-            };
+            presenter.handleResources(function(source, destination) {
+              memo[source.uuid] = {
+                source: source,
+                destination: destination
+              };
+            })
             return memo
           }, {}).value();
 

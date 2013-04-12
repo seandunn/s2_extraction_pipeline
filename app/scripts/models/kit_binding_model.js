@@ -57,17 +57,20 @@ define([
         rowModel = {
           "rowNum":rowNum,
           "labware1":{
+            "input":true,
             "resource":input,
             "expected_type":"tube",
             "display_remove":false,
             "display_barcode":false
           },
           "labware2":{
+            "input":false,
             "expected_type":"spin_column",
             "display_remove":false,
             "display_barcode":false
           },
           "labware3":{
+            "input":false,
             "expected_type":  labware3ExpectedType,
             "display_remove": false,
             "display_barcode":false
@@ -78,16 +81,19 @@ define([
         rowModel = {
           "rowNum":rowNum,
           "labware1":{
+            "input":true,
             "expected_type":"tube",
             "display_remove":true,
             "display_barcode":true
           },
           "labware2":{
+            "input":false,
             "expected_type":"spin_column",
             "display_remove":false,
             "display_barcode":true
           },
           "labware3":{
+            "input":false,
             "expected_type":  labware3ExpectedType,
             "display_remove": false,
             "display_barcode":labware3DisplayBarcode
