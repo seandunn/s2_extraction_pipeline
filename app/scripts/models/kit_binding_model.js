@@ -98,22 +98,26 @@ define([
       return rowModel;
     },
 
-    makeAllTransfers: function(source, destination) {
+    makeAllTransfers: function(tube) {
+      var destinations = _.chain(arguments).drop(1);
       this.makeTransfers({
         preflight: function(that) {
-          return source.order();
+          return tube.order();
         },
         process: function(that, order) {
-          return [{
-            source:      source,
-            destination: destination,
-            order:       order
-          }];
+          return destinations.map(function(destination) {
+            return {
+              source:      tube,
+              destination: destination,
+              order:       order,
+              details:     that.config.output[destination.resourceType]
+            };
+          }).value();
         }
       });
     },
-    saveKitCreateBarcodes:function(kitBC) {
 
+    saveKitCreateBarcodes:function(kitBC) {
       if (this.batch) {
         this.batch.update({"kit" : kitBC});
         this.kitSaved = true;

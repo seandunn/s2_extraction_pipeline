@@ -245,14 +245,7 @@ define(['config'
     },
 
     isComplete:function () {
-      var complete = true;
-
-      // If the labware module requires input but there is no model to populate it, we can assume it's incomplete
-      if (this.labwareModel.display_barcode && !this.labwareModel.resource) {
-        complete = false;
-      }
-
-      return complete;
+      return this.labwareModel.resource;
     },
 
     labwareEnabled:function (isEnabled) {

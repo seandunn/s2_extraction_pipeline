@@ -200,17 +200,6 @@ define([
       this.jquerySelection().release();
       return this;
     },
-    isRowComplete:function () {
-      var complete = false;
-
-      if (this.labware1Presenter.isComplete() &&
-        this.labware2Presenter.isComplete() &&
-        this.labware3Presenter.isComplete()) {
-        complete = true;
-      }
-
-      return complete;
-    },
 
     setLabwareVisibility:function () {
       var labware1Enabled = true;
@@ -245,9 +234,23 @@ define([
         this.owner.childDone(this, "tubeFinished", data);
       } else if (action == "barcodeScanned") {
         this.owner.childDone(this, "barcodeScanned", data);
+        if (this.isRowComplete() && (child === this.presenters().last().value())) {
+          this.owner.childDone(this, "completed", data);
+        }
       } else if (action == "labwareRendered") {
         this.setLabwareVisibility();
       }
+    },
+
+    presenters: function() {
+      return _.chain([ this.labware1Presenter, this.labware2Presenter, this.labware3Presenter ]).compact();
+    },
+    isRowComplete: function() {
+      return this.presenters().all(function(p) { return p.isComplete(); }).value();
+    },
+
+    handleResources: function(callback) {
+      callback.apply(null, this.presenters().map(function(p) { return p.labwareModel.resource; }).value());
     }
   });
 

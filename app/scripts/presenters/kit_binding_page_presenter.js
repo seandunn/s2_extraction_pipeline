@@ -63,12 +63,11 @@ define([
       }
     },
 
-    outputDone: function(child, action, data) {
-      this.model.makeAllTransfers(
-        child.labware1Presenter.labwareModel.resource,
-        child.labware2Presenter.labwareModel.resource,
-        child
-      );
+    rowDone: function(child, action, data) {
+      if (action === 'completed') {
+        var model = this.model;
+        child.handleResources(function() { model.makeAllTransfers.apply(model, arguments); });
+      }
     },
 
     modelDone: function(child, action, data) {
@@ -80,7 +79,7 @@ define([
         this.model.fetchResourcePromiseFromUUID(data.transfers[0].source.uuid);
         this.model.fetchResourcePromiseFromUUID(data.transfers[0].destination.uuid);
       }
-    }
+    },
   });
 
   return Presenter;

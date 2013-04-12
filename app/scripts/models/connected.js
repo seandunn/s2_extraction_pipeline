@@ -52,18 +52,21 @@ define([
       }).then(function() {
         that.inputs.then(function(inputs) {
           var promises = _.chain(inputs).map(function(input) {
-            return Operations.registerLabware(
-              root[that.config.output[that.config.output.target].model],
-              that.config.output[that.config.output.target].aliquotType,
-              that.config.output[that.config.output.target].purpose
-            ).then(function(state) {
-              that.stash(state.labware, state.barcode);
-              that.outputs.push(state.labware);
-              return state.labware;
-            }).fail(function() {
-              that.owner.childDone(that, "failed", {});
-            });
-          }).value();
+            return _.chain(that.config.output).pairs().map(function(outputNameAndDetails) {
+              var details = outputNameAndDetails[1];
+              return Operations.registerLabware(
+                root[details.model],
+                details.aliquotType,
+                details.purpose
+              ).then(function(state) {
+                that.stash(state.labware, state.barcode);
+                that.outputs.push(state.labware);
+                return state.labware;
+              }).fail(function() {
+                that.owner.childDone(that, "failed", {});
+              });
+            }).value();
+          }).flatten().value();
 
           $.when.apply(null, promises).then(function() {
             that.printBarcodes(that.outputs);
@@ -88,10 +91,10 @@ define([
           _.map(transferDetails, function(details) {
             return function(operations, state) {
               operations.push({
-                input:       { resource:details.source,      role:that.config.input.role,                             order:details.order },
-                output:      { resource:details.destination, role:that.config.output[that.config.output.target].role, batch:that.batch.uuid},
+                input:       { resource:details.source,      role:that.config.input.role, order:details.order },
+                output:      { resource:details.destination, role:details.details.role,   batch:that.batch.uuid},
                 fraction:    1.0,
-                aliquot_type:that.config.output[that.config.output.target].aliquotType
+                aliquot_type:details.details.aliquotType
               });
               return $.Deferred().resolve();
             };
