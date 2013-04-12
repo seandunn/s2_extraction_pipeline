@@ -37,32 +37,10 @@ define([
       return this;
     },
 
-    /* Ensure that the user entered UUID matches the expected list
-     *
-     *
-     * Arguments
-     * ---------
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    validateUuid:function (child, data) {
-      var valid = false;
-
-      for (var i = 0; i < this.model.tubes.length; i++) {
-        if (this.model.spinColumns[i].uuid == data.uuid) {
-          valid = true;
-          break;
-        }
-      }
-
-      return valid;
-    },
-
     currentViewDone: function(child, action, data) {
-      if (action == 'printOutputTubeBC') {
+      if (action === "next") {
+        this.owner.childDone(this, "done", { batch:this.model.batch });
+      } else if (action == 'printOutputTubeBC') {
         this.model.createOutputs();
         this.currentView.setPrintButtonEnabled(false);
       }
