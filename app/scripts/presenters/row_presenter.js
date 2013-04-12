@@ -53,26 +53,15 @@ define([
   $.extend(RowModel, {
     init:function (owner) {
       this.owner = owner;
-      this.labware1 = undefined;
-      this.labware2 = undefined;
-      this.labware3 = undefined;
 
       // TODO: check whether anything else required
       return this;
     },
     setupModel:function (inputModel) {
-      this.setupLabware1Model(inputModel.labware1);
-      this.setupLabware2Model(inputModel.labware2);
-      this.setupLabware3Model(inputModel.labware3);
-    },
-    setupLabware1Model:function (labware1Model) {
-      this.labware1 = labware1Model;
-    },
-    setupLabware2Model:function (labware2Model) {
-      this.labware2 = labware2Model;
-    },
-    setupLabware3Model:function (labware3Model) {
-      this.labware3 = labware3Model;
+      var that = this;
+      _.chain(inputModel).pairs().each(function(nameToDetails) {
+        that[nameToDetails[0]] = nameToDetails[1];
+      });
     },
     setResource:function (value) {
       this.resource = value
