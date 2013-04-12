@@ -11,6 +11,7 @@ define([
   'extraction_pipeline/presenters/labware_presenter',
   'extraction_pipeline/presenters/elution_page_presenter',
   'extraction_pipeline/presenters/scan_barcode_presenter',
+  'extraction_pipeline/presenters/byproduct_transfer_page_presenter',
   //  'extraction_pipeline/presenters/elution_wash_page_presenter',
 ], function(TubePresenter, SpinColumnPresenter, WasteTubePresenter) {
   'use strict';

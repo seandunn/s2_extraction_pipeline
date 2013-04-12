@@ -57,12 +57,15 @@
         "presenterName":   "byproduct_transfer_presenter",
         "defaultPrinter":  "Tube Printer",
         "input":{
-          "role":"byproduct_tube_rnap"
+          "role":"byproduct_tube_rnap",
+          "model":"tubes"
         },
         "output": {
           "tube": {
             "role":         "binding_tube_to_be_extracted_rnap",
-            "aliquotType":  "RNA+P"
+            "aliquotType":  "RNA+P",
+            "purpose":      "stock",
+            "model":        "tubes"
           }
         }
       },
