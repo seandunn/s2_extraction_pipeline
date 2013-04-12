@@ -232,7 +232,7 @@ define([
     },
 
     presenters: function() {
-      return _.chain([ this.labware1Presenter, this.labware2Presenter, this.labware3Presenter ]).compact();
+      return _.chain([ this.labware1Presenter, this.labware2Presenter, this.labware3Presenter ]).compact().filter(function(p) { return !p.isSpecial(); });
     },
     isRowComplete: function() {
       return this.presenters().all(function(p) { return p.isComplete(); }).value();
