@@ -157,9 +157,16 @@ define([
           return false
         }
 
-        var complete = presenter.isComplete();
-        presenter.labwareEnabled(!complete);
-        return complete;
+        if (presenter.isSpecial()) {
+          presenter.labwareEnabled(false);
+          return true;
+        } else if (presenter.isComplete()) {
+          presenter.labwareEnabled(false);
+          return true;
+        } else {
+          presenter.labwareEnabled(true);
+          return false;
+        }
       }, true).value();
     },
 
