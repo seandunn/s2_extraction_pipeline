@@ -52,17 +52,20 @@ define([
 
   $.extend(RowModel, {
     init:function (owner) {
-      this.owner = owner;
-      this.labwares = {};
+      this.owner        = owner;
+      this.labwares     = {};
       this.remove_arrow = false;
+      this.enabled      = true;
       return this;
     },
     setupModel:function (inputModel) {
-      this.rowNum   = inputModel.rowNum;
+      this.rowNum       = inputModel.rowNum;
       this.remove_arrow = inputModel.remove_arrow;
-      this.labwares = inputModel;
+      this.enabled      = inputModel.enabled;
+      this.labwares     = inputModel;
       delete this.labwares.rowNum;
       delete this.labwares.remove_arrow;
+      delete this.labwares.enabled;
     },
     setResource:function (value) {
       this.resource = value
@@ -125,7 +128,9 @@ define([
 
     setupSubPresenters:function () {
       var that = this;
-      this.presenters = _.chain(this.rowModel.labwares).pairs().map(function(nameToDetails) {
+
+      // NOTE: sort() call is needed here to ensure labware1,labware2,labware3... ordering
+      this.presenters = _.chain(this.rowModel.labwares).pairs().sort().map(function(nameToDetails) {
         var name = nameToDetails[0], details = nameToDetails[1];
         var presenter = that.presenterFactory.create('labware_presenter', that);
         presenter.setupPresenter(details, function() { return that.jquerySelection().find('.' + name); });
@@ -167,7 +172,7 @@ define([
           presenter.labwareEnabled(true);
           return false;
         }
-      }, true).value();
+      }, this.rowModel.enabled).value();
     },
 
     childDone:function (child, action, data) {
