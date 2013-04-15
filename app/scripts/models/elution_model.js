@@ -41,26 +41,6 @@ define([
       return this;
     },
 
-    getRowModel:function (rowNum, input) {
-      return {
-        "rowNum":rowNum,
-        "remove_arrow":false,
-        "enabled":!!this.outputs.length,
-        "labware1":{
-          "input":true,
-          "expected_type":"spin_column",
-          "display_remove":true,
-          "display_barcode":true
-        },
-        "labware2":{
-          "input":false,
-          "expected_type":"tube",
-          "display_remove":true,
-          "display_barcode":true
-        }
-      };
-    },
-
     startElution:function () {
       var that = this;
       var addingRoles = {updates:[]};

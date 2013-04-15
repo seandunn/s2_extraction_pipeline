@@ -37,31 +37,6 @@ define([
       return this;
     },
 
-    getRowModel:function (rowNum, input) {
-      var rowModel = {};
-
-      rowModel = {
-        "rowNum":rowNum,
-        "remove_arrow":false,
-        "enabled":!!this.outputs.length,
-        "labware1":{
-          "input":true,
-          "resource":input,
-          "expected_type":"tube",
-          "display_remove":true,
-          "display_barcode":true
-        },
-        "labware2":{
-          "input":false,
-          "expected_type":"tube",
-          "display_remove":true,
-          "display_barcode":true
-        }
-      };
-
-      return rowModel;
-    },
-
     makeAllTransfers: function(tube) {
       var destinations = _.chain(arguments).drop(1);
       this.makeTransfers({

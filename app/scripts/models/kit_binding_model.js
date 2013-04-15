@@ -48,7 +48,7 @@ define([
     },
     getRowModel:function (rowNum, input) {
       var that = this;
-      return _.chain(this.config.output).pairs().reduce(function(rowModel, nameToDetails, index) {
+      return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {
         var details = nameToDetails[1];
         var name    = 'labware' + (index+2);  // index=0, labware1=input, therefore labware2 first output
         rowModel[name] = {
