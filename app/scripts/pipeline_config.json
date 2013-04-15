@@ -6,11 +6,11 @@
        "tube_to_be_extracted_dnap",
        "binding_tube_to_be_extracted_dnap",
        "byproduct_tube_rnap",
-       "binding_tube_to_be_extracted_nap_rnap",
        "binding_spin_column_dna",
        "tube_to_be_extracted_rnap",
        "binding_tube_to_be_extracted_rnap",
-       "binding_spin_column_rna"
+       "binding_spin_column_rna",
+       "binding_tube_to_be_extracted_nap_rnap"
     ],
 
     "role_configuration":{
