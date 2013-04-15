@@ -18,140 +18,16 @@
  */
 
 
-define(['extraction_pipeline/views/byproduct_transfer_page_view',
-  'extraction_pipeline/presenters/base_presenter',
-  'extraction_pipeline/models/byproduct_transfer_model'
-], function (View, BasePresenter, ByproductTransferModel) {
+define([
+       'extraction_pipeline/presenters/connected_presenter',
+       'extraction_pipeline/views/byproduct_transfer_page_view',
+       'extraction_pipeline/models/byproduct_transfer_model'
+], function (ConnectedPresenter, View, Model) {
+  "use strict";
 
-  var ByproductTransferPresenter = Object.create(BasePresenter);
+  var Presenter = ConnectedPresenter.extend('byproduct_transfer_presenter', Model, View);
 
-  $.extend(ByproductTransferPresenter, {
-    /* Initialises the presenter and defines the view to be used
-     *
-     *
-     * Arguments
-     * ---------
-     * input_model:     The input model containing the current pipeline state
-     *
-     * jquerySelection: The selector method for the HTML container this presenter is responsible for
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    // interface ....
-    init:function (owner, presenterFactory) {
-      this.owner = owner;
-      this.byproductTransferModel = Object.create(ByproductTransferModel).init(this);
-      this.rowPresenters = [];
-      this.presenterFactory = presenterFactory;
-      return this;
-    },
-
-    setupPresenter:function (input_model, jquerySelection) {
-      this.setupPlaceholder(jquerySelection);
-      this.setupView();
-      this.renderView();
-      this.setupSubPresenters();
-      return this;
-    },
-
-    /* Sets the container selector method for the presenter
-     *
-     *
-     * Arguments
-     * ---------
-     * jquerySelection: The selector method for the presenter
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    setupPlaceholder:function (jquerySelection) {
-      this.jquerySelection = jquerySelection;
-      return this;
-    },
-
-    /* Sets up the presenters view
-     *
-     *
-     * Arguments
-     * ---------
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    setupView:function () {
-      this.currentView = new View(this, this.jquerySelection);
-      console.log(this.currentView);
-      return this;
-    },
-
-    /* Sets up any subpresenters to be displayed in this instance
-     *
-     *
-     * Arguments
-     * ---------
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    setupSubPresenters:function () {
-      for (var i = 0; i < this.byproductTransferModel.tubes.length; i++) {
-        if (!this.rowPresenters[i]) {
-          this.rowPresenters[i] = this.presenterFactory.createRowPresenter(this);
-        }
-      }
-      this.setupSubModel();
-      return this;
-    },
-
-    /* Delegates the models for the subpresenters
-     *
-     *
-     * Arguments
-     * ---------
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    setupSubModel:function () {
-      var that = this;
-
-      for (var i = 0; i < this.byproductTransferModel.spinColumns.length; i++) {
-
-        var jquerySelectionForRow = function (i) {
-          return function () {
-            return that.jquerySelection().find('.row' + i);
-          }
-        }
-
-        var rowModel = this.byproductTransferModel.getRowModel(i);
-
-        this.rowPresenters[i].setupPresenter(rowModel, jquerySelectionForRow(i));
-      }
-      return this;
-    },
-
-    /* Renders the current view and its internal placeholders
-     *
-     *
-     * Arguments
-     * ---------
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
+  $.extend(Presenter, {
     renderView:function () {
       // render view...
       this.currentView.renderView();
@@ -161,102 +37,23 @@ define(['extraction_pipeline/views/byproduct_transfer_page_view',
       return this;
     },
 
-    /* Checks if all of the pages tasks have been completed before moving forward in the pipeline
-     *
-     *
-     * Arguments
-     * ---------
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    checkPageComplete:function () {
-
-      var complete = true;
-
-      for (var i = 0; i < this.rowPresenters.length; i++) {
-        if (!this.rowPresenters[i].isRowComplete()) {
-          complete = false;
-          break;
-        }
-      }
-
-      //TODO: Add check that tube barcodes have been printed
-
-      return complete;
-    },
-
-    /* Clears the current view and all of its children
-     *
-     *
-     * Arguments
-     * ---------
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    release:function () {
-      this.currentView.clear();
-      return this;
-    },
-
-    /* Ensure that the user entered UUID matches the expected list
-     *
-     *
-     * Arguments
-     * ---------
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    validateUuid:function (child, data) {
-      var valid = false;
-
-      for (var i = 0; i < this.model.tubes.length; i++) {
-        if (this.model.spinColumns[i].uuid == data.uuid) {
-          valid = true;
-          break;
-        }
-      }
-
-      return valid;
-    },
-
-    /* Indicates a child has completed an action
-     *
-     *
-     * Arguments
-     * ---------
-     * child:     The child that has completed
-     * action:    The action completed
-     * data:      Supplementary data to the completed action
-     *
-     *
-     * Returns
-     * -------
-     * this
-     */
-    childDone:function (child, action, data) {
-
-      if (action == 'barcodeScanned') {
-          //TODO: FIX MAKETRANSFER
-          this.byproductTransferModel.makeTransfer();
+    currentViewDone: function(child, action, data) {
+      if (action === "next") {
+        this.owner.childDone(this, "done", { batch:this.model.batch });
       } else if (action == 'printOutputTubeBC') {
-          this.byproductTransferModel.printBarcodes([]);
-          this.currentView.setPrintButtonEnabled(false);
-          this.owner.childDone(this, 'error', {message: 'Output tube barcodes printed'});
+        this.model.createOutputs();
+        this.currentView.setPrintButtonEnabled(false);
       }
+    },
 
-    }
+    rowDone: function(child, action, data) {
+      if (action === 'completed') {
+        var model = this.model;
+        child.handleResources(function() { model.makeAllTransfers.apply(model, arguments); });
+      }
+    },
   });
 
-
-  return ByproductTransferPresenter;
+  return Presenter;
 })
 ;

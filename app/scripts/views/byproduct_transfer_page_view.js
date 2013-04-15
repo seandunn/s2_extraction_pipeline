@@ -36,12 +36,22 @@ define(['text!extraction_pipeline/html_partials/byproduct_transfer_partial.html'
     var that = this;
 
     nextButton.on('click', function(e) {
-        that.owner.childDone(that, "transferComplete", {});
+        that.owner.childDone(that, "next", {});
     });
 
     printButton.on('click', function(e) {
       that.owner.childDone(that, "printOutputTubeBC", {});
     });
+  };
+
+  transferView.prototype.setPrintButtonEnabled = function (isEnabled) {
+    var printButton = this.jquerySelector().find('.printButton');
+
+    if (isEnabled) {
+      printButton.removeAttr('disabled');
+    } else {
+      printButton.attr('disabled', 'disabled');
+    }
   };
 
   transferView.prototype.setNextButtonEnabled = function (isEnabled) {

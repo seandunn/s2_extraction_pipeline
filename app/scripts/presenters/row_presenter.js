@@ -52,37 +52,23 @@ define([
 
   $.extend(RowModel, {
     init:function (owner) {
-      this.owner = owner;
-      this.labware1 = undefined;
-      this.labware2 = undefined;
-      this.labware3 = undefined;
-
-      // TODO: check whether anything else required
+      this.owner        = owner;
+      this.labwares     = {};
+      this.remove_arrow = false;
+      this.enabled      = true;
       return this;
     },
     setupModel:function (inputModel) {
-      this.setupLabware1Model(inputModel.labware1);
-      this.setupLabware2Model(inputModel.labware2);
-      this.setupLabware3Model(inputModel.labware3);
-    },
-    setupLabware1Model:function (labware1Model) {
-      this.labware1 = labware1Model;
-    },
-    setupLabware2Model:function (labware2Model) {
-      this.labware2 = labware2Model;
-    },
-    setupLabware3Model:function (labware3Model) {
-      this.labware3 = labware3Model;
+      this.rowNum       = inputModel.rowNum;
+      this.remove_arrow = inputModel.remove_arrow;
+      this.enabled      = inputModel.enabled;
+      this.labwares     = inputModel;
+      delete this.labwares.rowNum;
+      delete this.labwares.remove_arrow;
+      delete this.labwares.enabled;
     },
     setResource:function (value) {
       this.resource = value
-    },
-    getTubeType:function () {
-      // use the resource to get the aliquot type
-      if (this.resource) {
-        return this.resource.aliquots.type;
-      }
-      return;
     }
   });
 
@@ -114,10 +100,6 @@ define([
     setupPresenter:function (input_model, jquerySelection) {
       this.setupPlaceholder(jquerySelection);
 
-      this.labware1Presenter = undefined;
-      this.labware2Presenter = undefined;
-      this.labware3Presenter = undefined;
-
       this.rowModel = Object.create(RowModel).init(this);
       if (input_model) {
         this.rowModel.setupModel(input_model);
@@ -133,109 +115,64 @@ define([
 
       return this;
     },
+
     setupPlaceholder:function (jquerySelection) {
       this.jquerySelection = jquerySelection;
       return this;
     },
+
     setupView:function () {
       this.currentView = new View(this, this.jquerySelection);
       return this;
     },
+
     setupSubPresenters:function () {
-      if (!this.labware1Presenter && this.rowModel.hasOwnProperty('labware1')) {
-        this.labware1Presenter = this.presenterFactory.create('labware_presenter', this);
-      }
-      if (!this.labware2Presenter && this.rowModel.hasOwnProperty('labware2')) {
-        this.labware2Presenter = this.presenterFactory.create('labware_presenter', this);
-      }
-      if (!this.labware3Presenter && this.rowModel.hasOwnProperty('labware3')) {
-        this.labware3Presenter = this.presenterFactory.create('labware_presenter', this);
-      }
-
-      // TODO: for now, the tube is always the same... no use of the mapper
-
-      this.setupSubModel();
-
-      return this;
-    },
-    setupSubModel:function () {
       var that = this;
 
-      var jquerySelectionForLabware1 = function () {
-        return that.jquerySelection().find('.labware1')
-      };
-
-      var jquerySelectionForLabware2 = function () {
-        return that.jquerySelection().find('.labware2')
-      };
-
-      var jquerySelectionForLabware3 = function () {
-        return that.jquerySelection().find('.labware3')
-      };
-
-      if (this.labware1Presenter) {
-        this.labware1Presenter.setupPresenter(this.rowModel.labware1, jquerySelectionForLabware1);
-      }
-      if (this.labware2Presenter) {
-        this.labware2Presenter.setupPresenter(this.rowModel.labware2, jquerySelectionForLabware2);
-      }
-      if (this.labware3Presenter) {
-        this.labware3Presenter.setupPresenter(this.rowModel.labware3, jquerySelectionForLabware3);
-      }
+      // NOTE: sort() call is needed here to ensure labware1,labware2,labware3... ordering
+      this.presenters = _.chain(this.rowModel.labwares).pairs().sort().map(function(nameToDetails) {
+        var name = nameToDetails[0], details = nameToDetails[1];
+        var presenter = that.presenterFactory.create('labware_presenter', that);
+        presenter.setupPresenter(details, function() { return that.jquerySelection().find('.' + name); });
+        return presenter;
+      });
       return this;
     },
+
+    setupSubModel:function () {
+      return this;
+    },
+
     renderView:function () {
-      // render view...
       this.currentView.renderView();
-      if (this.labware1Presenter)
-        this.labware1Presenter.renderView();
-      if (this.labware2Presenter) {
-        this.labware2Presenter.renderView();
-      }
-      if (this.labware3Presenter)
-        this.labware3Presenter.renderView();
+      this.presenters.each(function(p) { p.renderView(); }).value();
       return this;
     },
+
     release:function () {
       this.jquerySelection().release();
       return this;
     },
-    isRowComplete:function () {
-      var complete = false;
-
-      if (this.labware1Presenter.isComplete() &&
-        this.labware2Presenter.isComplete() &&
-        this.labware3Presenter.isComplete()) {
-        complete = true;
-      }
-
-      return complete;
-    },
 
     setLabwareVisibility:function () {
-      var labware1Enabled = true;
-      var labware2Enabled = true;
-      var labware3Enabled = true;
+      // Each labware presenter is only enabled if it's previous is complete and it is not complete
+      this.presenters.reduce(function(memo, presenter) {
+        if (!memo) {
+          presenter.labwareEnabled(false);
+          return false
+        }
 
-      if (this.labware2Presenter) {
-        if (this.labware2Presenter.isComplete() &&
-          this.labware1Presenter.isComplete() &&
-          this.labware1Presenter.labwareModel.display_barcode) {
-          labware1Enabled = false;
+        if (presenter.isSpecial()) {
+          presenter.labwareEnabled(false);
+          return true;
+        } else if (presenter.isComplete()) {
+          presenter.labwareEnabled(false);
+          return true;
+        } else {
+          presenter.labwareEnabled(true);
+          return false;
         }
-        if (!this.labware2Presenter.isComplete() && !this.labware1Presenter.isComplete()) {
-          labware2Enabled = false;
-        }
-        this.labware2Presenter.labwareEnabled(labware2Enabled);
-        this.labware1Presenter.labwareEnabled(labware1Enabled);
-      }
-      if (this.labware2Presenter && this.labware3Presenter) {
-        if (!this.labware3Presenter.isComplete() && !this.labware2Presenter.isComplete()) {
-          labware3Enabled = false;
-        }
-        this.labware3Presenter.labwareEnabled(labware3Enabled);
-      }
-
+      }, this.rowModel.enabled).value();
     },
 
     childDone:function (child, action, data) {
@@ -245,9 +182,23 @@ define([
         this.owner.childDone(this, "tubeFinished", data);
       } else if (action == "barcodeScanned") {
         this.owner.childDone(this, "barcodeScanned", data);
+        if (this.isRowComplete() && (child === this.editablePresenters().last().value())) {
+          this.owner.childDone(this, "completed", data);
+        }
       } else if (action == "labwareRendered") {
         this.setLabwareVisibility();
       }
+    },
+
+    editablePresenters: function() {
+      return this.presenters.compact().filter(function(p) { return !p.isSpecial(); });
+    },
+    isRowComplete: function() {
+      return this.editablePresenters().all(function(p) { return p.isComplete(); }).value();
+    },
+
+    handleResources: function(callback) {
+      callback.apply(null, this.editablePresenters().map(function(p) { return p.labwareModel.resource; }).value());
     }
   });
 

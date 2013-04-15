@@ -178,11 +178,13 @@ define(['extraction_pipeline/views/elution_wash_page_view',
           "rowNum":i,
           "remove_arrow":false,
           "labware1":{
+            "input":true,
             "expected_type":"spin_column",
             "display_remove":true,
             "display_barcode":true
           },
           "labware2":{
+            "input":false,
             "expected_type":"tube",
             "display_remove":true,
             "display_barcode":true

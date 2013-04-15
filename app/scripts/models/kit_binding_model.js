@@ -24,114 +24,81 @@ define([
   'mapper/operations',
   'extraction_pipeline/models/connected'
 ], function (BasePageModel, Operations, Connected) {
-  var KitModel = Object.create(BasePageModel);
+  var Model = Object.create(BasePageModel);
 
-  $.extend(KitModel, Connected, {
-
+  $.extend(Model, Connected, {
     init:function (owner, initData) {
       this.owner = owner;
       this.user = undefined;
       this.batch = undefined;
       this.kitSaved = false;
 
-      this.config = initData;
-
       this.initialiseCaching();
-      this.initialiseConnections(this.config.output.spin_column);
+      this.initialiseConnections(initData);
       return this;
+    },
+
+    setupInputPresenters: function() {
+      Connected.setupInputPresenters.apply(this, arguments);
+      setupBarcodePresenter.apply(this.owner, []);
     },
 
     validateKitTubes:function (kitType) {
       return (this.config.kitType == kitType);
     },
     getRowModel:function (rowNum, input) {
-      var rowModel = {};
-
-      var labware3ExpectedType = (this.config.kitType === 'DNA/RNA') ? 'tube' : 'waste_tube';
-      var labware3DisplayBarcode = this.config.kitType === 'DNA/RNA';
-
-      if (!this.kitSaved) {
-        rowModel = {
-          "rowNum":rowNum,
-          "labware1":{
-            "resource":input,
-            "expected_type":"tube",
-            "display_remove":false,
-            "display_barcode":false
-          },
-          "labware2":{
-            "expected_type":"spin_column",
-            "display_remove":false,
-            "display_barcode":false
-          },
-          "labware3":{
-            "expected_type":  labware3ExpectedType,
-            "display_remove": false,
-            "display_barcode":false
-          }
-        };
-      }
-      else {
-        rowModel = {
-          "rowNum":rowNum,
-          "labware1":{
-            "expected_type":"tube",
-            "display_remove":true,
-            "display_barcode":true
-          },
-          "labware2":{
-            "expected_type":"spin_column",
-            "display_remove":false,
-            "display_barcode":true
-          },
-          "labware3":{
-            "expected_type":  labware3ExpectedType,
-            "display_remove": false,
-            "display_barcode":labware3DisplayBarcode
-          }
-        };
-      }
-
-      return rowModel;
-    },
-
-    makeTransfer:function (source, destination, rowPresenter) {
       var that = this;
-      var s2root = null;
+      return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {
+        var details = nameToDetails[1];
+        var name    = 'labware' + (index+2);  // index=0, labware1=input, therefore labware2 first output
+        rowModel[name] = {
+          input:           false,
+          expected_type:   details.model.singularize(),
+          display_remove:  that.kitSaved,
+          display_barcode: that.kitSaved
+        }
+        return rowModel;
+      }, {
+        rowNum: rowNum,
+        enabled: this.kitSaved,
 
-      this.owner.getS2Root().then(function (result) {
-        s2root = result;
-        return source.order();
-      })
-          .then(function (order) {
-            Operations.betweenLabware(s2root.actions.transfer_tubes_to_tubes, [
-              function (operations, state) {
-                operations.push({
-                  input:       { resource:source, role:that.config.input.role, order:order },
-                  output:      { resource:destination, role:that.config.output.spin_column.role, batch: that.batch.uuid},
-                  fraction:    1.0,
-                  aliquot_type:that.config.output.spin_column.aliquotType
-                });
-                return $.Deferred().resolve();
-              }
-            ]
-            ).operation()
-                .then(function () {
-
-                  // refreshing cache
-                  that.stash_by_BC[source.labels.barcode] = undefined;
-                  that.stash_by_UUID[source.uuid] = undefined;
-                  that.fetchResourcePromiseFromUUID(source.uuid);
-                  that.stash_by_BC[destination.labels.barcode] = undefined;
-                  that.stash_by_UUID[destination.uuid] = undefined;
-                  that.fetchResourcePromiseFromUUID(destination.uuid);
-
-                  //rowPresenter.childDone("...");
-                });
-          });
+        // TODO: The labware entries should be generated from the config, not by knowing there are 3!
+        labware1: {
+          input:           true,
+          resource:        input,
+          expected_type:   that.config.input.model.singularize(),
+          display_remove:  that.kitSaved,
+          display_barcode: that.kitSaved
+        },
+        labware3: {
+          input:           false,
+          expected_type:   'waste_tube',
+          display_remove:  false,
+          display_barcode: false
+        }
+      }).value();
     },
-    saveKitCreateBarcodes:function(kitBC) {
 
+    makeAllTransfers: function(tube) {
+      var destinations = _.chain(arguments).drop(1);
+      this.makeTransfers({
+        preflight: function(that) {
+          return tube.order();
+        },
+        process: function(that, order) {
+          return destinations.map(function(destination) {
+            return {
+              source:      tube,
+              destination: destination,
+              order:       order,
+              details:     that.config.output[destination.resourceType]
+            };
+          }).value();
+        }
+      });
+    },
+
+    saveKitCreateBarcodes:function(kitBC) {
       if (this.batch) {
         this.batch.update({"kit" : kitBC});
         this.kitSaved = true;
@@ -141,6 +108,20 @@ define([
     }
   });
 
-  return KitModel;
+  return Model;
 
+  function setupBarcodePresenter() {
+    if (!this.barcodePresenter) {
+      this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
+    }
+
+    var that = this;
+    this.barcodePresenter.setupPresenter({
+      type: "Kit",
+      value: "Kit0001"
+    }, function() {
+      return that.jquerySelection().find('.barcode')
+    });
+    this.barcodePresenter.focus();
+  }
 });

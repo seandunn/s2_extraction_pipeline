@@ -15,6 +15,7 @@ define(['config'
       this.display_remove = undefined;
       this.display_barcode = undefined;
       this.expected_type = undefined;
+      this.input = undefined;
       return this;
     },
     reset:function () {
@@ -31,6 +32,9 @@ define(['config'
     },
     setExpectedType:function (value) {
       this.expected_type = value
+    },
+    setInput: function(value) {
+      this.input = value;
     }
   });
 
@@ -65,6 +69,7 @@ define(['config'
         this.labwareModel.setDisplayRemove(setupData.display_remove);
         this.labwareModel.setDisplayBarcode(setupData.display_barcode);
         this.labwareModel.setExpectedType(setupData.expected_type);
+        this.labwareModel.setInput(setupData.input);
       }
       //this.updateModel(input_model);
       this.setupView();
@@ -222,19 +227,6 @@ define(['config'
       this.owner.childDone(this, "labwareRendered", {});
     },
 
-    specialType:function (type) {
-      var specialType = false;
-      var typesList = ['waste_tube', 'qia_cube', 'centrifuge'];
-
-      if (type) {
-        if (typesList.indexOf(type) > -1) {
-          specialType = true;
-        }
-      }
-
-      return specialType;
-    },
-
     resetLabware:function () {
       this.release();
       this.labwareModel.reset();// = undefined;
@@ -244,15 +236,11 @@ define(['config'
       this.renderView();
     },
 
+    isSpecial: function() {
+      return specialType(this.labwareModel.expected_type);
+    },
     isComplete:function () {
-      var complete = true;
-
-      // If the labware module requires input but there is no model to populate it, we can assume it's incomplete
-      if (this.labwareModel.display_barcode && !this.labwareModel.resource) {
-        complete = false;
-      }
-
-      return complete;
+      return !this.isSpecial() && this.labwareModel.resource;
     },
 
     labwareEnabled:function (isEnabled) {
@@ -301,4 +289,7 @@ define(['config'
 
   return LabwarePresenter;
 
+  function specialType(type) {
+    return _.contains(['waste_tube', 'qia_cube', 'centrifuge'], type);
+  }
 });
