@@ -45,6 +45,7 @@ define([
       return {
         "rowNum":rowNum,
         "remove_arrow":false,
+        "enabled":!!this.outputs.length,
         "labware1":{
           "input":true,
           "expected_type":"spin_column",

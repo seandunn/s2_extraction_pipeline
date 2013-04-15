@@ -43,6 +43,7 @@ define([
       rowModel = {
         "rowNum":rowNum,
         "remove_arrow":false,
+        "enabled":!!this.outputs.length,
         "labware1":{
           "input":true,
           "resource":input,
