@@ -24,10 +24,9 @@ define([
   'mapper/operations',
   'extraction_pipeline/models/connected'
 ], function (BasePageModel, Operations, Connected) {
+  var Model = Object.create(BasePageModel);
 
-  var TransferModel = Object.create(BasePageModel);
-
-  $.extend(TransferModel, Connected, {
+  $.extend(Model, Connected, {
     init:function (owner, initData) {
       this.owner = owner;
       this.user = undefined;
@@ -86,6 +85,6 @@ define([
     }
   });
 
-  return TransferModel;
+  return Model;
 
 })
