@@ -39,7 +39,7 @@ define([
     },
 
     setupInputPresenters: function() {
-      Connected.setupInputPresenters.apply(this, []);
+      Connected.setupInputPresenters.apply(this, arguments);
       setupBarcodePresenter.apply(this.owner, []);
     },
 
@@ -54,7 +54,7 @@ define([
         rowModel[name] = {
           input:           false,
           expected_type:   details.model.singularize(),
-          display_remove:  false,
+          display_remove:  that.kitSaved,
           display_barcode: that.kitSaved
         }
         return rowModel;

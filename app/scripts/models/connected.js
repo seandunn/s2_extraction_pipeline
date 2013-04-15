@@ -18,15 +18,15 @@ define([
       this.owner.childDone(this, "batchAdded");
     },
 
-    setupInputPresenters: function() {
+    setupInputPresenters: function(reset) {
       var that = this;
       this.inputs.then(function(inputs) {
-        that.owner.rowPresenters = _.chain(inputs).reduce(function(memo, input) {
+        that.owner.rowPresenters = _.chain(inputs).map(function(input, index) {
+          var input        = reset ? undefined : input;
           var rowPresenter = that.owner.presenterFactory.create('row_presenter', that.owner);
-          rowPresenter.setupPresenter(that.getRowModel(memo.length, input), selectorFunction(that.owner, memo.length));
-          memo.push(rowPresenter);
-          return memo;
-        }, []).value();
+          rowPresenter.setupPresenter(that.getRowModel(index, input), selectorFunction(that.owner, index));
+          return rowPresenter;
+        }).value();
       });
 
       function selectorFunction(presenter, row) {

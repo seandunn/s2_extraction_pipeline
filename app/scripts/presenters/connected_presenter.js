@@ -28,8 +28,8 @@ define([
           this.setupSubPresenters();
           return this;
         },
-        setupSubPresenters: function() {
-          this.model.setupInputPresenters();
+        setupSubPresenters: function(reset) {
+          this.model.setupInputPresenters(reset);
           this.setupSubModel();
           return this;
         },
@@ -92,7 +92,8 @@ define([
         modelDone: function(child, action, data) {
           if (action === "labelPrinted") {
             this.owner.childDone(this, "error", {"message":"Barcodes printed"});
-            this.setupSubPresenters();
+            this.setupSubPresenters(true);
+
             this.currentView.toggleHeaderEnabled(false);
           } else if (action === "allTransferCompleted") {
             this.owner.childDone(this, "error", {"message":"Transfer completed"});

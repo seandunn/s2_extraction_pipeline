@@ -75,20 +75,15 @@ define(['text!extraction_pipeline/html_partials/labware_partial.html'], function
   };
 
   LabwareView.prototype.labwareEnabled = function(isEnabled) {
-    var lightboxSelection = this.jquerySelector().find('.labwareDisabled');
-    var inputSelection = this.jquerySelector().find('input');
-    var buttonSelection = this.jquerySelector().find('.removeButton');
-    var display = isEnabled ? 'none' : 'block';
-    lightboxSelection.css('display', display);
-
-    if (isEnabled) {
-      inputSelection.removeAttr('disabled');
-      buttonSelection.removeAttr('disabled');
-    } else {
-      inputSelection.attr('disabled', 'disabled');
-      buttonSelection.attr('disabled', 'disabled');
+    var actions = ['removeAttr','attr'];
+    if (this.owner.labwareModel.resource) {
+      actions = ['attr','removeAttr'];
+    } else if (!isEnabled) {
+      actions = ['attr','attr'];
     }
 
+    var selector = this.jquerySelector();
+    _.chain(['input','.removeButton']).zip(actions).each(function(pair) { selector.find(pair[0])[pair[1]]('disabled','disabled'); });
     return this;
   }
 
