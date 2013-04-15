@@ -6,6 +6,7 @@
        "tube_to_be_extracted_dnap",
        "binding_tube_to_be_extracted_dnap",
        "byproduct_tube_rnap",
+       "binding_tube_to_be_extracted_nap_rnap",
        "binding_spin_column_dna",
        "tube_to_be_extracted_rnap",
        "binding_tube_to_be_extracted_rnap",
@@ -37,22 +38,20 @@
           "model":"tubes"
         },
         "output":{
-          "tube": {
-            "role":         "byproduct_tube_rnap",
-            "aliquotType":  "RNA+P",
-            "purpose":      "stock",
-            "model":        "tubes"
-          },
-
           "spin_column":  {
             "role":         "binding_spin_column_dna",
             "aliquotType":  "DNA",
             "purpose":      "stock",
             "model":        "spin_columns"
+          },
+          "tube": {
+            "role":         "byproduct_tube_rnap",
+            "aliquotType":  "RNA+P",
+            "purpose":      "stock",
+            "model":        "tubes"
           }
         }
       },
-
       "byproduct_tube_rnap": {
         "presenterName":   "byproduct_transfer_presenter",
         "defaultPrinter":  "Tube Printer",
@@ -62,10 +61,27 @@
         },
         "output": {
           "tube": {
-            "role":         "binding_tube_to_be_extracted_rnap",
+            "role":         "binding_tube_to_be_extracted_nap_rnap",
             "aliquotType":  "RNA+P",
             "purpose":      "stock",
             "model":        "tubes"
+          }
+        }
+      },
+      "binding_tube_to_be_extracted_nap_rnap": {
+        "presenterName":   "kit_presenter",
+        "defaultPrinter":  "Tube Printer",
+        "kitType":         "DNA/RNA",
+        "input":{
+          "role":"binding_tube_to_be_extracted_nap_rnap",
+          "model":"tubes"
+        },
+        "output":  {
+          "spin_column":  {
+            "role":         "binding_spin_column_rna",
+            "aliquotType":  "RNA",
+            "purpose":      "stock",
+            "model":        "spin_columns"
           }
         }
       },

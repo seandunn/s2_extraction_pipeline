@@ -27,7 +27,6 @@ define([
   var Model = Object.create(BasePageModel);
 
   $.extend(Model, Connected, {
-
     init:function (owner, initData) {
       this.owner = owner;
       this.user = undefined;
@@ -48,60 +47,36 @@ define([
       return (this.config.kitType == kitType);
     },
     getRowModel:function (rowNum, input) {
-      var rowModel = {};
+      var that = this;
+      return _.chain(this.config.output).pairs().reduce(function(rowModel, nameToDetails, index) {
+        var details = nameToDetails[1];
+        var name    = 'labware' + (index+2);  // index=0, labware1=input, therefore labware2 first output
+        rowModel[name] = {
+          input:           false,
+          expected_type:   details.model.singularize(),
+          display_remove:  false,
+          display_barcode: that.kitSaved
+        }
+        return rowModel;
+      }, {
+        rowNum: rowNum,
+        enabled: this.kitSaved,
 
-      var labware3ExpectedType = (this.config.kitType === 'DNA/RNA') ? 'tube' : 'waste_tube';
-      var labware3DisplayBarcode = this.config.kitType === 'DNA/RNA';
-
-      if (!this.kitSaved) {
-        rowModel = {
-          "rowNum":rowNum,
-          "labware1":{
-            "input":true,
-            "resource":input,
-            "expected_type":"tube",
-            "display_remove":false,
-            "display_barcode":false
-          },
-          "labware2":{
-            "input":false,
-            "expected_type":"spin_column",
-            "display_remove":false,
-            "display_barcode":false
-          },
-          "labware3":{
-            "input":false,
-            "expected_type":  labware3ExpectedType,
-            "display_remove": false,
-            "display_barcode":false
-          }
-        };
-      }
-      else {
-        rowModel = {
-          "rowNum":rowNum,
-          "labware1":{
-            "input":true,
-            "expected_type":"tube",
-            "display_remove":true,
-            "display_barcode":true
-          },
-          "labware2":{
-            "input":false,
-            "expected_type":"spin_column",
-            "display_remove":false,
-            "display_barcode":true
-          },
-          "labware3":{
-            "input":false,
-            "expected_type":  labware3ExpectedType,
-            "display_remove": false,
-            "display_barcode":labware3DisplayBarcode
-          }
-        };
-      }
-
-      return rowModel;
+        // TODO: The labware entries should be generated from the config, not by knowing there are 3!
+        labware1: {
+          input:           true,
+          resource:        input,
+          expected_type:   that.config.input.model.singularize(),
+          display_remove:  that.kitSaved,
+          display_barcode: that.kitSaved
+        },
+        labware3: {
+          input:           false,
+          expected_type:   'waste_tube',
+          display_remove:  false,
+          display_barcode: false
+        }
+      }).value();
     },
 
     makeAllTransfers: function(tube) {
