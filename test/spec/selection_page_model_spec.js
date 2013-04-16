@@ -45,9 +45,9 @@ define([
   };
 
   var initData = {
-    "input":"tube_to_be_extracted_nap",
-    "output":{
-      "tube":"binding_tube_to_be_extracted_nap"
+    "input": "samples.extraction.manual.dna_and_rna.input_tube_nap",
+    "output": {
+      "tube": "samples.extraction.manual.dna_and_rna.binding_input_tube_nap"
     },
     "presenter":{
       "presenter_name":"selection_page_presenter",
