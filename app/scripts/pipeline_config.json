@@ -1,84 +1,89 @@
 {
   "workflow":{
     "role_priority":[
-      "tube_to_be_extracted_nap",
-       "binding_tube_to_be_extracted_nap",
-       "tube_to_be_extracted_dnap",
-       "binding_tube_to_be_extracted_dnap",
-       "byproduct_tube_rnap",
-       "binding_spin_column_dna",
-       "tube_to_be_extracted_rnap",
-       "binding_tube_to_be_extracted_rnap",
-       "binding_spin_column_rna",
-       "binding_tube_to_be_extracted_nap_rnap"
+      "samples.extraction.manual.dna_and_rna.input_tube_nap",
+      "samples.extraction.manual.dna_and_rna.binding_input_tube_nap",
+      "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap",
+
+      "samples.extraction.manual.spin_column_dna",
+
+      "samples.extraction.manual.dna_and_rna.binding_input_tube_rnap",
+
+      "samples.extraction.manual.dna_only.input_tube_dnap",
+      "samples.extraction.manual.dna_only.binding_input_tube_dnap",
+
+      "samples.extraction.manual.rna_only.input_tube_rnap",
+      "samples.extraction.manual.rna_only.binding_input_tube_rnap",
+
+      "samples.extraction.manual.spin_column_rna",
     ],
 
     "role_configuration":{
 
-      "tube_to_be_extracted_nap": {
+      "samples.extraction.manual.dna_and_rna.input_tube_nap": {
         "presenterName":  "selection_page_presenter",
         "processTitle":   "DNA and RNA Extraction",
         "input":{
-          "role":"tube_to_be_extracted_nap"
+          "role":"samples.extraction.manual.dna_and_rna.input_tube_nap"
         },
         "output":{
           "tube": {
-            "role":         "binding_tube_to_be_extracted_nap",
+            "role":         "samples.extraction.manual.dna_and_rna.binding_input_tube_nap",
             "aliquotType":  "NA+P"
           }
         }
       },
 
-      "binding_tube_to_be_extracted_nap": {
+      "samples.extraction.manual.dna_and_rna.binding_input_tube_nap": {
         "presenterName":   "kit_presenter",
         "defaultPrinter":  "Tube Printer",
         "kitType":          "DNA/RNA",
         "input":{
-          "role":"binding_tube_to_be_extracted_nap",
+          "role":"samples.extraction.manual.dna_and_rna.binding_input_tube_nap",
           "model":"tubes"
         },
         "output":{
           "spin_column":  {
-            "role":         "binding_spin_column_dna",
+            "role":         "samples.extraction.manual.spin_column_dna",
             "aliquotType":  "DNA",
             "purpose":      "stock",
             "model":        "spin_columns"
           },
           "tube": {
-            "role":         "byproduct_tube_rnap",
+            "role":         "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap",
             "aliquotType":  "RNA+P",
             "purpose":      "stock",
             "model":        "tubes"
           }
         }
       },
-      "byproduct_tube_rnap": {
+      "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap": {
         "presenterName":   "byproduct_transfer_presenter",
         "defaultPrinter":  "Tube Printer",
         "input":{
-          "role":"byproduct_tube_rnap",
+          "role":"samples.extraction.manual.dna_and_rna.byproduct_tube_rnap",
           "model":"tubes"
         },
         "output": {
           "tube": {
-            "role":         "binding_tube_to_be_extracted_nap_rnap",
+            "role":         "samples.extraction.manual.dna_and_rna.binding_input_tube_rnap",
             "aliquotType":  "RNA+P",
             "purpose":      "stock",
             "model":        "tubes"
           }
         }
       },
-      "binding_tube_to_be_extracted_nap_rnap": {
+      "samples.extraction.manual.dna_and_rna.binding_input_tube_rnap": {
         "presenterName":   "kit_presenter",
         "defaultPrinter":  "Tube Printer",
         "kitType":         "DNA/RNA",
         "input":{
-          "role":"binding_tube_to_be_extracted_nap_rnap",
+          "role":"samples.extraction.manual.dna_and_rna.binding_input_tube_rnap",
           "model":"tubes"
         },
         "output":  {
           "spin_column":  {
-            "role":         "binding_spin_column_rna",
+            "role":         "samples.extraction.manual.spin_column_rna",
             "aliquotType":  "RNA",
             "purpose":      "stock",
             "model":        "spin_columns"
@@ -86,16 +91,16 @@
         }
       },
 
-      "binding_spin_column_dna": {
+      "samples.extraction.manual.spin_column_dna": {
         "presenterName":   "elution_presenter",
         "defaultPrinter":  "Tube Printer",
         "input":{
-          "role":"binding_spin_column_dna",
+          "role":"samples.extraction.manual.spin_column_dna",
           "model":"spin_columns"
         },
         "output":  {
           "tube": {
-            "role":         "extracted_tube_dna",
+            "role":         "samples.extraction.manual.extracted_tube_dna",
             "aliquotType":  "DNA",
             "purpose":      "stock",
             "model":        "tubes"
@@ -103,17 +108,17 @@
         }
       },
 
-      "binding_tube_to_be_extracted_rnap": {
+      "samples.extraction.manual.rna_only.binding_input_tube_rnap": {
         "presenterName":   "kit_presenter",
         "defaultPrinter":  "Tube Printer",
         "kitType":         "RNA",
         "input":{
-          "role":"binding_tube_to_be_extracted_rnap",
+          "role":"samples.extraction.manual.rna_only.binding_input_tube_rnap",
           "model":"tubes"
         },
         "output":  {
           "spin_column":  {
-            "role":         "binding_spin_column_rna",
+            "role":         "samples.extraction.manual.spin_column_rna",
             "aliquotType":  "RNA",
             "purpose":      "stock",
             "model":        "spin_columns"
@@ -121,16 +126,16 @@
         }
       },
 
-      "binding_spin_column_rna": {
+      "samples.extraction.manual.spin_column_rna": {
         "presenterName":   "elution_presenter",
         "defaultPrinter":  "Tube Printer",
         "input":{
-          "role":"binding_spin_column_rna",
+          "role":"samples.extraction.manual.spin_column_rna",
           "model":"spin_columns"
         },
         "output":  {
           "tube": {
-            "role":         "extracted_tube_rna",
+            "role":         "samples.extraction.manual.extracted_tube_rna",
             "aliquotType":  "RNA",
             "purpose":      "stock",
             "model":        "tubes"
@@ -140,31 +145,31 @@
 
 
 
-      "tube_to_be_extracted_dnap": {
+      "samples.extraction.manual.dna_only.input_tube_dnap": {
         "presenterName":   "selection_page_presenter",
         "processTitle":   "DNA Only Extraction",
         "input":{
-          "role":"tube_to_be_extracted_dnap"
+          "role":"samples.extraction.manual.dna_only.input_tube_dnap"
         },
         "output": {
           "tube": {
-           "role":         "binding_tube_to_be_extracted_dnap",
+           "role":         "samples.extraction.manual.dna_only.binding_input_tube_dnap",
            "aliquotType":  "DNA+P"
           }
         }
       },
 
-      "binding_tube_to_be_extracted_dnap":{
+      "samples.extraction.manual.dna_only.binding_input_tube_dnap":{
         "presenterName":   "kit_presenter",
         "defaultPrinter":  "Tube Printer",
         "kitType":         "DNA",
         "input":{
-          "role":"binding_tube_to_be_extracted_dnap",
+          "role":"samples.extraction.manual.dna_only.binding_input_tube_dnap",
           "model":"tubes"
         },
         "output": {
           "spin_column":  {
-            "role":         "binding_spin_column_dna",
+            "role":         "samples.extraction.manual.spin_column_dna",
             "aliquotType":  "DNA",
             "purpose":      "stock",
             "model":        "spin_columns"
@@ -175,15 +180,15 @@
 
 
 
-      "tube_to_be_extracted_rnap": {
+      "samples.extraction.manual.rna_only.input_tube_rnap": {
         "presenterName":  "selection_page_presenter",
         "processTitle":   "RNA Only Extraction",
         "input":{
-          "role":"tube_to_be_extracted_rnap"
+          "role":"samples.extraction.manual.rna_only.input_tube_rnap"
         },
         "output": {
           "tube": {
-           "role": "binding_tube_to_be_extracted_rnap",
+           "role": "samples.extraction.manual.rna_only.binding_input_tube_rnap",
            "aliquotType": "RNA+P"
           }
         }
