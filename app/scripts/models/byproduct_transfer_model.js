@@ -44,12 +44,12 @@ define([
           return tube.order();
         },
         process: function(that, order) {
-          return destinations.map(function(destination) {
+          return destinations.map(function(destination, index) {
             return {
               source:      tube,
               destination: destination,
               order:       order,
-              details:     that.config.output[destination.resourceType]
+              details:     that.config.output[index]
             };
           }).value();
         }

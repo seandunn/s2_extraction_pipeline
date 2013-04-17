@@ -74,7 +74,7 @@ define([
             if (originator.labwareModel.input && (originator.labwareModel.expected_type === this.config.input.model.singularize())) {
               this.model.getInputByBarcode(originator, data);
               this.inputDone(child, action, data);
-            } else if (!originator.labwareModel.input && this.config.output[originator.labwareModel.expected_type]) {
+            } else if (!originator.labwareModel.input) {
               this.model.getOutputByBarcode(originator, data);
               this.outputDone(child, action, data);
             }
