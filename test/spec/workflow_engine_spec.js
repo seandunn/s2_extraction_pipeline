@@ -83,7 +83,7 @@ define([
         presenterData = workflowEngine.getMatchingRoleDataFromItems([{
           "uuid":  "UUID_FOR_DNAP_TUBE",
           "status":"done",
-          "role":  "tube_to_be_extracted_nap"
+          "role":  "samples.extraction.manual.dna_and_rna.input_tube_nap"
         }]);
       });
 
