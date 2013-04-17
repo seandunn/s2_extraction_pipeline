@@ -108,7 +108,7 @@ define([
                   },
                   output:{
                     resource:item,
-                    role:    that.config.output.tube.role,
+                    role:    that.config.output[0].role,
                     batch:   batchBySideEffect.uuid
                   }});
 
@@ -120,7 +120,7 @@ define([
                   },
                   output:{
                     resource:item,
-                    role:    that.config.output.tube.role
+                    role:    that.config.output[0].role
                   }});
               });
             });
