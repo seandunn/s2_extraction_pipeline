@@ -40,7 +40,7 @@ define(['text!extraction_pipeline/html_partials/elution_loading_partial.html'], 
         that.owner.childDone(that, "elutionStarted", {});
     });
     printButton.on('click', function(e) {
-        that.owner.childDone(that, "printOutputTubeBC", {});
+        that.owner.childDone(that, "savePrintBC", {});
 
     });
 

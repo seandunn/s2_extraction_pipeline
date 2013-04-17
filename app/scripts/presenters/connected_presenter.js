@@ -87,6 +87,14 @@ define([
         outputDone: function(child, action, data) {
         },
         rowDone: function(child, action, data) {
+          if (action === 'completed') {
+            var model = this.model;
+            model.behaviours.transfer.rowDone(action, function() {
+              child.handleResources(function() {
+                model.makeAllTransfers.apply(model, arguments);
+              });
+            });
+          }
         },
 
         modelDone: function(child, action, data) {
@@ -98,7 +106,31 @@ define([
           } else if (action === "allTransferCompleted") {
             this.owner.childDone(this, "error", {"message":"Transfer completed"});
           }
-        }
+        },
+
+        checkPageComplete: function() {
+          return true;
+        },
+        readyToCreateOutputs: function() {
+          return true;
+        },
+        currentViewDone: function(child, action, data) {
+          if (action === "next") {
+            if (this.checkPageComplete()) {
+              var that = this;
+              this.model.behaviours.transfer.pageDone(function() {
+                that.model.makeAllTransfers();
+                that.owner.childDone(that, 'error', {message: 'Transfer done'});
+              });
+              this.owner.childDone(this, "done", { batch:this.model.batch });
+            }
+          } else if (action === "savePrintBC") {
+            if (this.readyToCreateOuputs()) {
+              this.model.createOutputs();
+              this.currentView.setPrintButtonEnabled(false);
+            }
+          }
+        },
       });
       return presenter;
     }

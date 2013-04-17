@@ -1,6 +1,7 @@
 define([
   'mapper/operations',
-], function(Operations) {
+  'extraction_pipeline/behaviours',
+], function(Operations, Behaviour) {
   'use strict';
 
   return {
@@ -9,6 +10,12 @@ define([
       this.inputs  = $.Deferred();    // Inputs are always a deferred lookup
       this.outputs = [];              // Outputs are always an array
       this.batch   = undefined;       // There is no batch, yet
+
+      // Configure the behaviours based on the configuration
+      this.behaviours = _.chain(this.config.behaviours).pairs().reduce(function(memo, nameToBehaviourName) {
+        memo[nameToBehavourName[0]] = Behaviour(nameToBehaviourName[1]);
+        return memo;
+      });
     },
 
     setBatch: function(batch) {

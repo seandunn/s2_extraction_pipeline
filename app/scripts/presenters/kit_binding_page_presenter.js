@@ -50,25 +50,6 @@ define([
 
       return valid;
     },
-
-    currentViewDone: function(child, action, data) {
-      if (action === "next") {
-        if (this.setValidState()) {
-          this.owner.childDone(this, "done", { batch:this.model.batch });
-        } else {
-          this.owner.childDone(this, "error", {"message":"Error: The kit isn't validated."});
-        }
-      } else if (action === "savePrintBC") {
-        this.model.saveKitCreateBarcodes();
-      }
-    },
-
-    rowDone: function(child, action, data) {
-      if (action === 'completed') {
-        var model = this.model;
-        child.handleResources(function() { model.makeAllTransfers.apply(model, arguments); });
-      }
-    },
   });
 
   return Presenter;

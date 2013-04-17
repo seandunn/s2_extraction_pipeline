@@ -40,7 +40,7 @@ define(['text!extraction_pipeline/html_partials/byproduct_transfer_partial.html'
     });
 
     printButton.on('click', function(e) {
-      that.owner.childDone(that, "printOutputTubeBC", {});
+      that.owner.childDone(that, "savePrintBC", {});
     });
   };
 

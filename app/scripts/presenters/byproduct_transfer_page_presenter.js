@@ -36,22 +36,6 @@ define([
       }
       return this;
     },
-
-    currentViewDone: function(child, action, data) {
-      if (action === "next") {
-        this.owner.childDone(this, "done", { batch:this.model.batch });
-      } else if (action == 'printOutputTubeBC') {
-        this.model.createOutputs();
-        this.currentView.setPrintButtonEnabled(false);
-      }
-    },
-
-    rowDone: function(child, action, data) {
-      if (action === 'completed') {
-        var model = this.model;
-        child.handleResources(function() { model.makeAllTransfers.apply(model, arguments); });
-      }
-    },
   });
 
   return Presenter;

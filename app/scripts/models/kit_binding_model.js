@@ -98,13 +98,12 @@ define([
       });
     },
 
-    saveKitCreateBarcodes:function(kitBC) {
+    createOutputs:function(kitBC) {
       if (this.batch) {
         this.batch.update({"kit" : kitBC});
         this.kitSaved = true;
       }
-
-      this.createOutputs();
+      Connected.createOutputs.apply(this, []);
     }
   });
 
