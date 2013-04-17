@@ -99,7 +99,7 @@ define([
               source:      source,
               destination: destination,
               order:       item.order,
-              details:     that.config.output[destination.resourceType]
+              details:     that.config.output[0]
             };
           }).flatten().value();
         }
