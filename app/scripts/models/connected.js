@@ -12,10 +12,9 @@ define([
       this.batch   = undefined;       // There is no batch, yet
 
       // Configure the behaviours based on the configuration
-      this.behaviours = _.chain(this.config.behaviours).pairs().reduce(function(memo, nameToBehaviourName) {
-        memo[nameToBehavourName[0]] = Behaviour(nameToBehaviourName[1]);
-        return memo;
-      });
+      this.behaviours = _.chain(this.config.behaviours).map(function(behaviourName, name) {
+        return [name, Behaviour(behaviourName)];
+      }).object().value();
     },
 
     setBatch: function(batch) {

@@ -73,19 +73,29 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
     this.jquerySelector().find(".kitSelect").prop('selectedIndex', -1);
   };
 
+  kitView.prototype.setPrintButtonEnabled = function (isEnabled) {
+    var printButton = this.jquerySelector().find('.kitSavePrintButton');
+
+    if (isEnabled) {
+      printButton.removeAttr('disabled');
+    } else {
+      printButton.attr('disabled', 'disabled');
+    }
+  };
+
   kitView.prototype.setKitValidState = function (valid) {
     var result = '';
     var jquerySelection = this.jquerySelector();
 
     if (valid) {
       result = '<div class="alert alert-success">This kit is valid for the selected tubes</div>';
-      jquerySelection.
-        find('.kitSavePrintButton').removeAttr('disabled');
+//      jquerySelection.
+//        find('.kitSavePrintButton').removeAttr('disabled');
     }
     else {
       result = '<div class="alert alert-error">This kit is not valid for the selected tubes</div>';
-      jquerySelection.
-        find('.kitSavePrintButton').attr('disabled', 'disabled');
+//      jquerySelection.
+//        find('.kitSavePrintButton').attr('disabled', 'disabled');
     }
 
     jquerySelection.

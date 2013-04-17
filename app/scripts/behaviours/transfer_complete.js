@@ -1,20 +1,20 @@
 define([], function() {
-  var row_by_row = {
+  var transfer_complete = {
     rowDone: function(callback) {
-      callback();
+      // Does nothing on a row being completed
     },
     pageDone: function(callback) {
-      // Does nothing on a page being completed
+      // Does nothing on page done
     },
     transferDone: function(callback) {
-      // Does nothing on a transfer done
+      callback();
     }
   };
 
   return {
     register: function(callback) {
-      callback('row_by_row', function() {
-        return row_by_row;
+      callback('transfer_complete', function() {
+        return transfer_complete;
       });
     }
   };

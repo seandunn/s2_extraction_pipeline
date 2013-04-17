@@ -44,6 +44,9 @@ define(['text!extraction_pipeline/html_partials/byproduct_transfer_partial.html'
     });
   };
 
+  transferView.prototype.toggleHeaderEnabled = function () {
+  };
+
   transferView.prototype.setPrintButtonEnabled = function (isEnabled) {
     var printButton = this.jquerySelector().find('.printButton');
 

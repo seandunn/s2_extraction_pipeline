@@ -5,6 +5,9 @@ define([], function() {
     },
     pageDone: function(callback) {
       callback();
+    },
+    transferDone: function(callback) {
+      // Does nothing on a transfer done
     }
   };
 
