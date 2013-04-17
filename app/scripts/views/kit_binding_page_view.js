@@ -40,6 +40,16 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
       model = this.model;
     }
 
+    var indices = new Array();
+
+    var template = _.template(kitPartialHtml);
+
+    // set the user and indices as template data
+    var templateData = {
+      user: model.user,
+      processTitle: model.processTitle
+    };
+
     var parent = this.jquerySelector();
 
     // We have to append to the document or events won't register
@@ -69,6 +79,7 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
       that.owner.setValidState();
     });
 
+    this.jquerySelector().empty().append(template(templateData));
     this.jquerySelector().find(".nextBtn").click(onNext_clicked(this.owner, this));
     this.jquerySelector().find(".kitSelect").prop('selectedIndex', -1);
   };
