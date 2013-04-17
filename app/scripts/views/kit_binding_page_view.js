@@ -40,8 +40,6 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
       model = this.model;
     }
 
-    var indices = new Array();
-
     var template = _.template(kitPartialHtml);
 
     // set the user and indices as template data
