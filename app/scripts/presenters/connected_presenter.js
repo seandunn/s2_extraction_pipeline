@@ -99,7 +99,7 @@ define([
         rowDone: function(child, action, data) {
           if (action === 'completed') {
             var model = this.model;
-            model.makeTransfers('row', [child]);
+            model.operate('row', [child]);
           }
         },
 
@@ -133,7 +133,7 @@ define([
             }
           } else if (this.checkPageComplete()) {
             var that = this;
-            that.model.makeTransfers(action, that.rowPresenters);
+            that.model.operate(action, that.rowPresenters);
             that.model.behaviours.done[action](function() {
               that.owner.childDone(that, "done", { batch:that.model.batch });
             });

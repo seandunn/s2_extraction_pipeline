@@ -110,7 +110,7 @@ define([
       });
     },
 
-    makeTransfers: function(happeningAt, presenters) {
+    operate: function(happeningAt, presenters) {
       var that = this;
       var s2root, events = [];
 

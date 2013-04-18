@@ -131,9 +131,9 @@
         "presenterName":   "elution_presenter",
         "processTitle":  "Manual Extraction, Spin Column DNA",
         "behaviours": {
-          "start": "next",
-          "operate": "next",
-          "complete": "next",
+          "start": "start",
+          "operate": "start",
+          "complete": "end",
           "done": "transfer"
         },
         "defaultPrinter":"Tube Printer",
@@ -180,9 +180,9 @@
         "presenterName":   "elution_presenter",
         "processTitle":  "Manual Extraction, Spin Column RNA",
         "behaviours": {
-          "start": "next",
-          "operate": "next",
-          "complete": "next",
+          "start": "start",
+          "operate": "start",
+          "complete": "end",
           "done": "transfer"
         },
         "defaultPrinter":"Tube Printer",
