@@ -26,12 +26,19 @@ define(['text!extraction_pipeline/html_partials/elution_loading_partial.html'], 
       model = this.model;
     }
 
+    var template = _.template(elusionLoadingPartialHtml);
+
+    // set the user and indices as template data
+    var templateData = {
+      user: model.user,
+      processTitle: model.processTitle
+    };
 
     var parent = this.jquerySelector();
+    parent.empty().append(template(templateData));
+
 
     // We have to append to the document or events won't register
-    parent.empty().
-      append(elutionLoadingPartialHtml);
     var startButton = parent.find(".startButton");
     var printButton = parent.find(".printButton");
     var that = this;
@@ -43,10 +50,6 @@ define(['text!extraction_pipeline/html_partials/elution_loading_partial.html'], 
         that.owner.childDone(that, "savePrintBC", {});
 
     });
-
-//    $('li').addClass("kit");
-//    $('ul p').addClass("kit");
-//    $('ul h3').addClass("kit");
   };
 
   elutionView.prototype.toggleHeaderEnabled = function() {
@@ -62,16 +65,6 @@ define(['text!extraction_pipeline/html_partials/elution_loading_partial.html'], 
       printButton.attr('disabled', 'disabled');
     }
   };
-
-//
-//  ScanBarcodeView.prototype.getError = function(model) {
-//    var errorMessage = model.customError;
-//    if (!errorMessage && !model.isValid()) {
-//      errorMessage = "Invalid barcode entered";
-//    }
-//    return errorMessage ? '<p class="alert-error">' + errorMessage + '</p>' : '';
-//  }
-
 
   elutionView.prototype.clear = function () {
     /* clear the view from the current page

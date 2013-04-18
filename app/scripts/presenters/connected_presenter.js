@@ -46,7 +46,17 @@ define([
           return this;
         },
         renderView:function () {
-          this.currentView.renderView();
+          var dataForView = null;
+
+          if (this.model && this.model.config){
+              var dataForView = {
+                batch:this.model.batch && this.model.batch.uuid,
+                user:this.model.user,
+                processTitle:this.model.config.processTitle
+            }
+          }
+
+          this.currentView.renderView(dataForView);
           return this;
         },
 
