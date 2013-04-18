@@ -1,108 +1,147 @@
 define([
   'config'
+  , 'mapper_test/resource_test_helper'
   , 'mapper/s2_root'
   , 'models/selection_page_model'
   , 'text!testjson/unit/root.json'
   , 'text!pipelinetestjson/selection_page_model_test_data.json'
-], function (config, S2Root, Model, rootTestData, testData) {
+], function (config, TestHelper, S2Root, Model, rootTestData, testData) {
 
   'use strict';
+  TestHelper(function (results) {
 
-  function getAResource(owner, uuid) {
-    var deferredS2Resource = new $.Deferred();
-    owner.getS2Root()
-        .then(function (root) {
-          return root.find(uuid);
-        }).then(function (result) {
-          deferredS2Resource.resolve(result);
-        }).fail(function () {
-          deferredS2Resource.reject();
-        });
-    return deferredS2Resource.promise();
-  }
-
-  config.loadTestData(testData);
-  config.cummulativeLoadingTestDataInFirstStage(rootTestData);
-
-  var fakeOwner = {
-    getS2Root:function () {
-      var deferredS2Root = new $.Deferred();
-      if (!this.s2Root) {
-        var that = this;
-        S2Root.load({user:"username"}).done(function (result) {
-          that.s2Root = result;
-          deferredS2Root.resolve(result);
-        }).fail(function () {
-              deferredS2Root.reject();
-            });
-      } else {
-        deferredS2Root.resolve(this.s2Root);
-      }
-      return deferredS2Root.promise();
-    },
-    childDone:function(){
+    function getAResource(owner, uuid) {
+      var deferredS2Resource = new $.Deferred();
+      owner.getS2Root()
+          .then(function (root) {
+            return root.find(uuid);
+          }).then(function (result) {
+            deferredS2Resource.resolve(result);
+          }).fail(function () {
+            deferredS2Resource.reject();
+          });
+      return deferredS2Resource.promise();
     }
-  };
+
+    config.loadTestData(testData);
+    config.cummulativeLoadingTestDataInFirstStage(rootTestData);
+
+    var fakeOwner = {
+      getS2Root:function () {
+        var deferredS2Root = new $.Deferred();
+        if (!this.s2Root) {
+          var that = this;
+          S2Root.load({user:"username"}).done(function (result) {
+            that.s2Root = result;
+            deferredS2Root.resolve(result);
+          }).fail(function () {
+                deferredS2Root.reject();
+              });
+        } else {
+          deferredS2Root.resolve(this.s2Root);
+        }
+        return deferredS2Root.promise();
+      },
+      childDone:function () {
+      }
+    };
 
   var initData = {
-    "input": "samples.extraction.manual.dna_and_rna.input_tube_nap",
-    "output": {
-      "tube": "samples.extraction.manual.dna_and_rna.binding_input_tube_nap"
+    "input":{
+      "role":"samples.extraction.manual.dna_and_rna.input_tube_nap",
+      "model":"tube"
     },
-    "presenter":{
-      "presenter_name":"selection_page_presenter",
-      "default_printer":{
-        "name":"",
-        "description":"",
-        "url":"http://localhost:9999"
-      }
+    "output":[{
+      "role":"samples.extraction.manual.dna_and_rna.binding_input_tube_nap",
+      "aliquotType":"RNA+P",
+      "purpose":"stock",
+      "model":"tube"
+    }],
+    "presenter_name":"selection_page_presenter",
+    "behaviours": {
+      "transfer": "row_by_row",
+      "complete": "page_complete"
     }
   };
 
-  describe("Selection page model", function () {
+    describe("Selection page model", function () {
+      var m;
+      beforeEach(function(){
+        m = Object.create(Model).init(fakeOwner, initData);
 
-    var m = Object.create(Model).init(fakeOwner, initData);
+        runs(function(){
+          results.resetFinishedFlag();
+          getAResource(fakeOwner, "tube1_UUID")
+            .then(results.assignTo('tube1'))
+            .then(results.expected)
+            .fail(results.unexpected);
+        });
 
-    it("can add a seminal labware, and then contains one tube", function () {
-      spyOn(fakeOwner,"childDone");
-      getAResource(fakeOwner,"tube1_UUID").then(function (tube) {
-        expect(tube.uuid).toEqual("tube1_UUID");
+        waitsFor(results.hasFinished);
+
+      });
+
+      it("can add a seminal labware, and then contains one tube", function () {
+          var tube =results.get('tube1');
+          expect(tube.uuid).toEqual("tube1_UUID");
+          spyOn(fakeOwner, "childDone");
+          m.setSeminalLabware(tube);
+          expect(m.tubes.length).toEqual(1);
+          expect(m.tubes[0].uuid).toEqual("tube1_UUID");
+          expect(fakeOwner.childDone).toHaveBeenCalled();
+      });
+
+      it("can make a batch", function () {
+        var tube =results.get('tube1');
         m.setSeminalLabware(tube);
         expect(m.tubes.length).toEqual(1);
         expect(m.tubes[0].uuid).toEqual("tube1_UUID");
-        expect(fakeOwner.childDone).toHaveBeenCalled();
-      }).fail(function () {
-            throw "oops"
-          });
+
+        spyOn(config, "ajax").andCallThrough();
+        fakeOwner.childDone = function () {
+          expect(config.ajax).toHaveBeenCalled();
+        };
+        spyOn(fakeOwner, "childDone");
+        var waitedEnough = false;
+        runs(function () {
+          m.makeBatch();
+          // we have to wait, as we have no way to
+          // know that the method call has ended
+          setTimeout(function () {
+            waitedEnough = true;
+          }, 1000);
+        });
+
+        waitsFor(function () {
+          return waitedEnough;
+        });
+
+        runs(function () {
+          expect(fakeOwner.childDone).toHaveBeenCalled();
+        });
+      });
     });
 
-    it("can make a batch", function () {
+    describe("Selection page model", function () {
 
-      spyOn(config,"ajax").andCallThrough();
-      fakeOwner.childDone = function (){
-        expect(config.ajax).toHaveBeenCalled();
-      };
-      spyOn(fakeOwner,"childDone");
-      m.makeBatch();
-      expect(fakeOwner.childDone).toHaveBeenCalled();
+      var m = Object.create(Model).init(fakeOwner, initData);
+
+      it("can add a tube only once", function () {
+        spyOn(fakeOwner, "childDone");
+        getAResource(fakeOwner, "tube1_UUID").then(function (tube) {
+          expect(tube.uuid).toEqual("tube1_UUID");
+          expect(function () {
+            m.addTube(tube)
+          }).not.toThrow();
+          expect(function () {
+            m.addTube(tube)
+          }).toThrow();
+        }).fail(function () {
+              throw "oops"
+            });
+      });
+
     });
+
   });
-
-  describe("Selection page model", function () {
-
-    var m = Object.create(Model).init(fakeOwner, initData);
-
-    it("can add a tube only once", function () {
-      spyOn(fakeOwner,"childDone");
-      getAResource(fakeOwner,"tube1_UUID").then(function (tube) {
-        expect(tube.uuid).toEqual("tube1_UUID");
-        expect(function(){m.addTube(tube)}).not.toThrow();
-        expect(function(){m.addTube(tube)}).toThrow();
-      }).fail(function () {
-            throw "oops"
-          });
-    });
-
-  });
-
 });
