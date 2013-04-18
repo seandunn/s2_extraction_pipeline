@@ -35,7 +35,6 @@ define([
       this.batch = undefined;
 
       this.elutionStarted = false;
-      this.config = initData;
 
       this.initialiseCaching();
       this.initialiseConnections(initData);

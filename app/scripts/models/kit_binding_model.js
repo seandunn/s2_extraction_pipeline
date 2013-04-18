@@ -33,8 +33,6 @@ define([
       this.batch = undefined;
       this.kitSaved = false;
 
-      this.config = initData;
-
       this.initialiseCaching();
       this.initialiseConnections(initData);
       return this;
