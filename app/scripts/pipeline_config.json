@@ -405,7 +405,7 @@
            "role": "samples.extraction.qiacube.rna_only.binding_input_tube_rnap",
            "aliquotType": "RNA+P"
           }
-        ]
+        }
       }
 
     }
@@ -413,3 +413,4 @@
 
   "defaultPresenter": "default_presenter"
 }
+
