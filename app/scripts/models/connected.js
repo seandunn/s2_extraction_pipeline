@@ -110,7 +110,7 @@ define([
       });
     },
 
-    makeTransfers: function(presenters) {
+    makeTransfers: function(happeningAt, presenters) {
       var that = this;
       var s2root;
 
@@ -132,32 +132,37 @@ define([
           presenter.handleResources(function(source) {
             memo.push(_.chain(arguments).drop(1).map(function(destination, index) {
               return {
-                source:      source,
-                destination: destination,
-                details:     that.config.output[index],
-                order:       sourceToOrder[source.uuid]
+                input:        { resource: source,      role: that.config.input.role,         order: sourceToOrder[source.uuid] },
+                output:       { resource: destination, role: that.config.output[index].role, batch: that.batch.uuid },
+                fraction:     1.0,
+                aliquot_type: that.config.output[index].aliquotType
               };
             }).value());
           });
           return memo;
         }, []).flatten().value();
       }).then(function(transferDetails) {
-        // STEP 4: Perform the transfers as described
-        Operations.betweenLabware(
+        // STEP 4: Setup the operation
+        return Operations.betweenLabware(
           s2root.actions.transfer_tubes_to_tubes,
           _.map(transferDetails, function(details) {
             return function(operations, state) {
-              operations.push({
-                input:       { resource:details.source,      role:that.config.input.role, order:details.order },
-                output:      { resource:details.destination, role:details.details.role,   batch:that.batch.uuid},
-                fraction:    1.0,
-                aliquot_type:details.details.aliquotType
-              });
+              operations.push(details);
               return $.Deferred().resolve();
             };
           })
-        ).operation().then(function () {
-          that.owner.childDone(that,"allTransferCompleted",{transfers: transferDetails});
+        )
+      }).then(function(operation) {
+        // STEP 5: Override the behaviour of the operation so that we do the correct things
+        var doNothing = function() { };
+        that.behaviours.start[happeningAt](undefined,    function() { operation.start    = doNothing; });
+        that.behaviours.operate[happeningAt](undefined,  function() { operation.operate  = doNothing; });
+        that.behaviours.complete[happeningAt](undefined, function() { operation.complete = doNothing; });
+        return operation;
+      }).then(function(operation) {
+        // STEP 6: Finally perform the operation
+        operation.operation().then(function () {
+          that.owner.childDone(that,"allTransferCompleted",{});
         });
       });
     },

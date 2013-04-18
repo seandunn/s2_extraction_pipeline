@@ -99,9 +99,7 @@ define([
         rowDone: function(child, action, data) {
           if (action === 'completed') {
             var model = this.model;
-            model.behaviours.transfer.rowDone(function() {
-              model.makeTransfers([child]);
-            });
+            model.makeTransfers('row', [child]);
           }
         },
 
@@ -115,7 +113,7 @@ define([
             this.owner.childDone(this, "error", {"message":"Transfer completed"});
 
             var that = this;
-            this.model.behaviours.complete.transferDone(function() {
+            this.model.behaviours.done.transfer(function() {
               that.owner.childDone(that, "done", { batch:that.model.batch });
             });
           }
@@ -128,21 +126,17 @@ define([
           return true;
         },
         currentViewDone: function(child, action, data) {
-          if (action === "next") {
-            if (this.checkPageComplete()) {
-              var that = this;
-              this.model.behaviours.transfer.pageDone(function() {
-                that.model.makeTransfers(that.rowPresenters);
-              });
-              this.model.behaviours.complete.pageDone(function() {
-                that.owner.childDone(that, "done", { batch:that.model.batch });
-              });
-            }
-          } else if (action === "savePrintBC") {
+          if (action === 'savePrintBC') {
             if (this.readyToCreateOutputs()) {
               this.model.createOutputs();
               this.currentView.setPrintButtonEnabled(false);
             }
+          } else if (this.checkPageComplete()) {
+            var that = this;
+            that.model.makeTransfers(action, that.rowPresenters);
+            that.model.behaviours.done[action](function() {
+              that.owner.childDone(that, "done", { batch:that.model.batch });
+            });
           }
         }
       });
