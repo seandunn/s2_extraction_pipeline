@@ -87,18 +87,53 @@ define([
         outputDone: function(child, action, data) {
         },
         rowDone: function(child, action, data) {
+          if (action === 'completed') {
+            var model = this.model;
+            model.behaviours.transfer.rowDone(function() {
+              model.makeTransfers([child]);
+            });
+          }
         },
 
         modelDone: function(child, action, data) {
           if (action === "labelPrinted") {
             this.owner.childDone(this, "error", {"message":"Barcodes printed"});
             this.setupSubPresenters(true);
-
             this.currentView.toggleHeaderEnabled(false);
           } else if (action === "allTransferCompleted") {
             this.owner.childDone(this, "error", {"message":"Transfer completed"});
+
+            var that = this;
+            this.model.behaviours.complete.transferDone(function() {
+              that.owner.childDone(that, "done", { batch:that.model.batch });
+            });
           }
-        }
+        },
+
+        checkPageComplete: function() {
+          return true;
+        },
+        readyToCreateOutputs: function() {
+          return true;
+        },
+        currentViewDone: function(child, action, data) {
+          if (action === "next") {
+            if (this.checkPageComplete()) {
+              var that = this;
+              this.model.behaviours.transfer.pageDone(function() {
+                that.model.makeTransfers(that.rowPresenters);
+              });
+              this.model.behaviours.complete.pageDone(function() {
+                that.owner.childDone(that, "done", { batch:that.model.batch });
+              });
+            }
+          } else if (action === "savePrintBC") {
+            if (this.readyToCreateOutputs()) {
+              this.model.createOutputs();
+              this.currentView.setPrintButtonEnabled(false);
+            }
+          }
+        },
       });
       return presenter;
     }

@@ -250,7 +250,11 @@
       },
 
       "samples.extraction.qiacube.dna_and_rna.binding_input_tube_nap": {
-        "presenterName":   "connected_presenter",
+        "presenterName":   "kit_presenter",
+        "behaviours": {
+          "transfer": "page_complete",
+          "complete": "transfer_complete"
+        },
         "processTitle":    "Automated DNA and RNA Extraction (QiaCUBE)",
         "defaultPrinter":  "Tube Printer",
         "kitType":         "DNA/RNA",
@@ -296,7 +300,11 @@
       },
 
       "samples.extraction.qiacube.dna_and_rna.binding_input_tube_rnap": {
-        "presenterName":   "connected_presenter",
+        "presenterName":   "kit_presenter",
+        "behaviours": {
+          "transfer": "page_complete",
+          "complete": "transfer_complete"
+        },
         "processTitle":    "Automated DNA and RNA Extraction (QiaCUBE)",
         "defaultPrinter":  "Tube Printer",
         "kitType":         "DNA/RNA",
@@ -316,7 +324,11 @@
 
 
       "samples.extraction.qiacube.rna_only.binding_input_tube_rnap": {
-        "presenterName":   "connected_presenter",
+        "presenterName":   "kit_presenter",
+        "behaviours": {
+          "transfer": "page_complete",
+          "complete": "transfer_complete"
+        },
         "processTitle":   "Automated RNA Only Extraction (QiaCUBE)",
         "defaultPrinter":  "Tube Printer",
         "kitType":         "RNA",
@@ -352,7 +364,11 @@
       },
 
       "samples.extraction.qiacube.dna_only.binding_input_tube_dnap":{
-        "presenterName":   "connected_presenter",
+        "presenterName":   "kit_presenter",
+        "behaviours": {
+          "transfer": "row_by_row",
+          "complete": "page_complete"
+        },
         "processTitle":   "Automated DNA Only Extraction (QiaCUBE)",
         "defaultPrinter":  "Tube Printer",
         "kitType":         "DNA",

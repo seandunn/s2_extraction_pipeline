@@ -1,6 +1,7 @@
 define([
   'mapper/operations',
-], function(Operations) {
+  'extraction_pipeline/behaviours',
+], function(Operations, Behaviour) {
   'use strict';
 
   return {
@@ -9,6 +10,11 @@ define([
       this.inputs  = $.Deferred();    // Inputs are always a deferred lookup
       this.outputs = [];              // Outputs are always an array
       this.batch   = undefined;       // There is no batch, yet
+
+      // Configure the behaviours based on the configuration
+      this.behaviours = _.chain(this.config.behaviours).map(function(behaviourName, name) {
+        return [name, Behaviour(behaviourName)];
+      }).object().value();
     },
 
     setBatch: function(batch) {
@@ -104,14 +110,39 @@ define([
       });
     },
 
-    makeTransfers: function(handler) {
+    makeTransfers: function(presenters) {
       var that = this;
       var s2root;
 
       this.owner.getS2Root().then(function (result) {
+        // STEP 1: We're going to need the root later!
         s2root = result;
         return result;
-      }).then(_.partial(handler.preflight, that)).then(_.partial(handler.process, that)).then(function(transferDetails) {
+      }).then(function() {
+        // STEP 2: Retrieve the items for the batch we're working with
+        return that.batch.items;
+      }).then(function(items) {
+        // STEP 3: Map the presenters to the appropriate transfers that are required
+        var sourceToOrder = _.chain(items).reduce(function(memo, item) {
+          memo[item.uuid] = item.order;
+          return memo;
+        }, {}).value();
+
+        return _.chain(presenters).reduce(function(memo, presenter) {
+          presenter.handleResources(function(source) {
+            memo.push(_.chain(arguments).drop(1).map(function(destination, index) {
+              return {
+                source:      source,
+                destination: destination,
+                details:     that.config.output[index],
+                order:       sourceToOrder[source.uuid]
+              };
+            }).value());
+          });
+          return memo;
+        }, []).flatten().value();
+      }).then(function(transferDetails) {
+        // STEP 4: Perform the transfers as described
         Operations.betweenLabware(
           s2root.actions.transfer_tubes_to_tubes,
           _.map(transferDetails, function(details) {

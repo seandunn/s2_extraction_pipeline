@@ -27,18 +27,8 @@ define([
   var Presenter = ConnectedPresenter.extend('elution_presenter', Model, View);
 
   $.extend(Presenter, {
-    currentViewDone: function(child, action, data) {
-      if (action === 'elutionStarted') {
-        if (this.checkPageComplete()) {
-          this.model.makeAllTransfers();
-          this.owner.childDone(this, "error", {"message":"Elution started"});
-        }
-      } else if (action === 'printOutputTubeBC') {
-        if (!this.model.hasStarted()) {
-          this.model.createOutputs();
-          this.currentView.setPrintButtonEnabled(false);
-        }
-      }
+    readyToCreateOutputs: function() {
+      return !this.model.hasStarted();
     },
   });
 

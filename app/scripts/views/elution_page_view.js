@@ -37,16 +37,20 @@ define(['text!extraction_pipeline/html_partials/elution_loading_partial.html'], 
     var that = this;
 
     startButton.on('click', function(e) {
-        that.owner.childDone(that, "elutionStarted", {});
+        that.owner.childDone(that, "next", {});
     });
     printButton.on('click', function(e) {
-        that.owner.childDone(that, "printOutputTubeBC", {});
+        that.owner.childDone(that, "savePrintBC", {});
 
     });
 
 //    $('li').addClass("kit");
 //    $('ul p').addClass("kit");
 //    $('ul h3').addClass("kit");
+  };
+
+  elutionView.prototype.toggleHeaderEnabled = function() {
+
   };
 
   elutionView.prototype.setPrintButtonEnabled = function (isEnabled) {
