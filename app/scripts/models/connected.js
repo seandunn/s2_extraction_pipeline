@@ -112,7 +112,7 @@ define([
 
     makeTransfers: function(happeningAt, presenters) {
       var that = this;
-      var s2root;
+      var s2root, events = [];
 
       this.owner.getS2Root().then(function (result) {
         // STEP 1: We're going to need the root later!
@@ -155,14 +155,23 @@ define([
       }).then(function(operation) {
         // STEP 5: Override the behaviour of the operation so that we do the correct things
         var doNothing = function() { };
-        that.behaviours.start[happeningAt](undefined,    function() { operation.start    = doNothing; });
-        that.behaviours.operate[happeningAt](undefined,  function() { operation.operate  = doNothing; });
-        that.behaviours.complete[happeningAt](undefined, function() { operation.complete = doNothing; });
+        var helper    = function(event) {
+          return [
+            function() { events.push(event); },           // record an event on a positive behaviour
+            function() { operation[event] = doNothing; }  // remove the operation on a negative behaviour
+          ];
+        };
+
+        _.each(['start','operate','complete'], function(event) {
+          that.behaviours[event][happeningAt].apply(null, helper(event));
+        });
         return operation;
       }).then(function(operation) {
-        // STEP 6: Finally perform the operation
+        // STEP 6: Finally perform the operation and report the events that should happen
         operation.operation().then(function () {
-          that.owner.childDone(that,"allTransferCompleted",{});
+          _.each(events, function(event) {
+            that.owner.childDone(that,event+"Operation",{});
+          });
         });
       });
     },

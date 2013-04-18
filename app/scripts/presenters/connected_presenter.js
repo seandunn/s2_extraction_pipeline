@@ -109,7 +109,7 @@ define([
             this.setupSubPresenters(true);
 
             this.currentView.toggleHeaderEnabled(false);
-          } else if (action === "allTransferCompleted") {
+          } else if (action === "completeOperation") {
             this.owner.childDone(this, "error", {"message":"Transfer completed"});
 
             var that = this;

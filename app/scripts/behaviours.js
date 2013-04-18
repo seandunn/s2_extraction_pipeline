@@ -1,6 +1,10 @@
 define([], function() {
   // Here are all of the events that behaviours can receive.
-  var events = [ 'row', 'start', 'end', 'next', 'transfer' ];
+  var events = [
+    'row', 'page',              // Big scale events
+    'start', 'end', 'next',     // button events
+    'transfer'                  // result events
+  ];
 
   // There is a standard basic behaviour that is completely negative.  It is built
   // from all of the events that can happen.
@@ -18,6 +22,6 @@ define([], function() {
   }, {}).value();
 
   return function(name) {
-    return behaviours[name]();
+    return behaviours[name];
   };
 });

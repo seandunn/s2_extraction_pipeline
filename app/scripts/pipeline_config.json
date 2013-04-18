@@ -131,9 +131,9 @@
         "presenterName":   "elution_presenter",
         "processTitle":  "Manual Extraction, Spin Column DNA",
         "behaviours": {
-          "start": "page",
-          "operate": "page",
-          "complete": "page",
+          "start": "next",
+          "operate": "next",
+          "complete": "next",
           "done": "transfer"
         },
         "defaultPrinter":"Tube Printer",
@@ -180,9 +180,9 @@
         "presenterName":   "elution_presenter",
         "processTitle":  "Manual Extraction, Spin Column RNA",
         "behaviours": {
-          "start": "page",
-          "operate": "page",
-          "complete": "page",
+          "start": "next",
+          "operate": "next",
+          "complete": "next",
           "done": "transfer"
         },
         "defaultPrinter":"Tube Printer",
@@ -273,9 +273,9 @@
       "samples.extraction.qiacube.dna_and_rna.binding_input_tube_nap": {
         "presenterName":   "kit_presenter",
         "behaviours": {
-          "start": "page",
-          "operate": "page",
-          "complete": "page",
+          "start": "next",
+          "operate": "next",
+          "complete": "next",
           "done": "transfer"
         },
         "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
@@ -328,9 +328,9 @@
       "samples.extraction.qiacube.dna_and_rna.binding_input_tube_rnap": {
         "presenterName":   "kit_presenter",
         "behaviours": {
-          "start": "page",
-          "operate": "page",
-          "complete": "page",
+          "start": "next",
+          "operate": "next",
+          "complete": "next",
           "done": "transfer"
         },
         "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
@@ -353,9 +353,9 @@
       "samples.extraction.qiacube.rna_only.binding_input_tube_rnap": {
         "presenterName":   "kit_presenter",
         "behaviours": {
-          "start": "page",
-          "operate": "page",
-          "complete": "page",
+          "start": "next",
+          "operate": "next",
+          "complete": "next",
           "done": "transfer"
         },
         "processTitle":  "Automated RNA Only Extraction (QIAcube)",
