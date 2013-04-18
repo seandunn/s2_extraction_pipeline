@@ -23,7 +23,6 @@ define([
         setupPresenter:function (input_model, jquerySelection) {
           this.jquerySelection = jquerySelection;
           this.model.setBatch(input_model.batch);
-          this.model.setUser(input_model.userUUID);
           this.setupView();
           this.renderView();
           this.setupSubPresenters();
@@ -145,7 +144,7 @@ define([
               this.currentView.setPrintButtonEnabled(false);
             }
           }
-        },
+        }
       });
       return presenter;
     }
