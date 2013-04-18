@@ -79,25 +79,6 @@ define([
       }).value();
     },
 
-    makeAllTransfers: function(tube) {
-      var destinations = _.chain(arguments).drop(1);
-      this.makeTransfers({
-        preflight: function(that) {
-          return tube.order();
-        },
-        process: function(that, order) {
-          return destinations.map(function(destination, index) {
-            return {
-              source:      tube,
-              destination: destination,
-              order:       order,
-              details:     that.config.output[index]
-            };
-          }).value();
-        }
-      });
-    },
-
     createOutputs:function(kitBC) {
       if (this.batch) {
         this.batch.update({"kit" : kitBC});

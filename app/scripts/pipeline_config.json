@@ -253,7 +253,7 @@
         "presenterName":   "kit_presenter",
         "behaviours": {
           "transfer": "page_complete",
-          "complete": "page_complete"
+          "complete": "transfer_complete"
         },
         "processTitle":    "Automated DNA and RNA Extraction (QiaCUBE)",
         "defaultPrinter":  "Tube Printer",
@@ -303,7 +303,7 @@
         "presenterName":   "kit_presenter",
         "behaviours": {
           "transfer": "page_complete",
-          "complete": "page_complete"
+          "complete": "transfer_complete"
         },
         "processTitle":    "Automated DNA and RNA Extraction (QiaCUBE)",
         "defaultPrinter":  "Tube Printer",
@@ -327,7 +327,7 @@
         "presenterName":   "kit_presenter",
         "behaviours": {
           "transfer": "page_complete",
-          "complete": "page_complete"
+          "complete": "transfer_complete"
         },
         "processTitle":   "Automated RNA Only Extraction (QiaCUBE)",
         "defaultPrinter":  "Tube Printer",

@@ -73,39 +73,6 @@ define([
       );
     },
 
-    makeAllTransfers: function() {
-      var that = this;
-      this.makeTransfers({
-        preflight: function(that) {
-          return that.batch.items;
-        },
-        process: function(that, items) {
-          var destBySrc = _.chain(that.owner.rowPresenters).reduce(function (memo, presenter) {
-            presenter.handleResources(function(source, destination) {
-              memo[source.uuid] = {
-                source: source,
-                destination: destination
-              };
-            })
-            return memo
-          }, {}).value();
-
-          return _.chain(items).filter(function(item) {
-            return item.role === that.config.input.role;
-          }).map(function(item) {
-            var source = destBySrc[item.uuid].source;
-            var destination = destBySrc[item.uuid].destination;
-            return {
-              source:      source,
-              destination: destination,
-              order:       item.order,
-              details:     that.config.output[0]
-            };
-          }).flatten().value();
-        }
-      });
-    },
-
     hasStarted:function () {
       return this.elutionStarted;
     }

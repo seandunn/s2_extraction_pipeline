@@ -90,9 +90,7 @@ define([
           if (action === 'completed') {
             var model = this.model;
             model.behaviours.transfer.rowDone(function() {
-              child.handleResources(function() {
-                model.makeAllTransfers.apply(model, arguments);
-              });
+              model.makeTransfers([child]);
             });
           }
         },
@@ -123,8 +121,7 @@ define([
             if (this.checkPageComplete()) {
               var that = this;
               this.model.behaviours.transfer.pageDone(function() {
-                that.model.makeAllTransfers();
-                that.owner.childDone(that, 'error', {message: 'Transfer done'});
+                that.model.makeTransfers(that.rowPresenters);
               });
               this.model.behaviours.complete.pageDone(function() {
                 that.owner.childDone(that, "done", { batch:that.model.batch });
