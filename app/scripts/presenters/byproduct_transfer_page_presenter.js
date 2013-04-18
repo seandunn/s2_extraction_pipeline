@@ -30,7 +30,17 @@ define([
   $.extend(Presenter, {
     renderView:function () {
       // render view...
-      this.currentView.renderView();
+      var dataForView = null;
+
+      if (this.model && this.model.config){
+        dataForView = {
+          batch:this.model.batch && this.model.batch.uuid,
+          user:this.model.user,
+          processTitle:this.model.config.processTitle
+        }
+      }
+
+      this.currentView.renderView(dataForView);
       if (this.barcodePresenter) {
         this.barcodePresenter.renderView();
       }

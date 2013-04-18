@@ -25,11 +25,18 @@ define(['text!extraction_pipeline/html_partials/elution_wash_partial.html'], fun
     }
 
 
+    var template = _.template(elusionWashPartialHtml);
+
+    // set the user and indices as template data
+    var templateData = {
+      user: model.user,
+      processTitle: model.processTitle
+    };
+
     var parent = this.jquerySelector();
+    parent.empty().append(template(templateData));
 
     // We have to append to the document or events won't register
-    parent.empty().
-      append(elutionWashPartialHtml);
     var finishButton = parent.find(".finishButton");
     var that = this;
 

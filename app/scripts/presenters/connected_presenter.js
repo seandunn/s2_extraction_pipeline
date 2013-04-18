@@ -46,12 +46,22 @@ define([
           return this;
         },
         renderView:function () {
-          this.currentView.renderView();
+          var dataForView = null;
+
+          if (this.model && this.model.config) {
+            dataForView = {
+              batch:this.model.batch && this.model.batch.uuid,
+              user:this.model.user,
+              processTitle:this.model.config.processTitle
+            }
+          }
+
+          this.currentView.renderView(dataForView);
           return this;
         },
 
         checkPageComplete:function () {
-          return _.all(this.rowPresenters, function(presenter) {
+          return _.all(this.rowPresenters, function (presenter) {
             return presenter.isRowComplete();
           });
         },
@@ -66,7 +76,7 @@ define([
           }
         },
 
-        unknownDone: function(child, action, data) {
+        unknownDone:function (child, action, data) {
           if (action === "barcodeScanned") {
             var originator = data.origin;
 
@@ -99,6 +109,7 @@ define([
           if (action === "labelPrinted") {
             this.owner.childDone(this, "error", {"message":"Barcodes printed"});
             this.setupSubPresenters(true);
+
             this.currentView.toggleHeaderEnabled(false);
           } else if (action === "allTransferCompleted") {
             this.owner.childDone(this, "error", {"message":"Transfer completed"});
@@ -133,7 +144,7 @@ define([
               this.currentView.setPrintButtonEnabled(false);
             }
           }
-        },
+        }
       });
       return presenter;
     }

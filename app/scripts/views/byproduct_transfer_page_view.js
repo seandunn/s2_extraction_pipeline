@@ -25,12 +25,18 @@ define(['text!extraction_pipeline/html_partials/byproduct_transfer_partial.html'
       model = this.model;
     }
 
+    var template = _.template(byproductTransferPartialHtml);
+
+    // set the user and indices as template data
+    var templateData = {
+      user: model.user,
+      processTitle: model.processTitle
+    };
 
     var parent = this.jquerySelector();
+    parent.empty().append(template(templateData));
 
     // We have to append to the document or events won't register
-    parent.empty().
-      append(byproductTransferPartialHtml);
     var nextButton = parent.find(".nextButton");
     var printButton = parent.find('.printButton');
     var that = this;

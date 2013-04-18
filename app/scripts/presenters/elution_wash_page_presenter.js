@@ -25,8 +25,8 @@ define(['extraction_pipeline/views/elution_wash_page_view',
   var ElutionWashPresenter = Object.create(BasePresenter);
 
   $.extend(ElutionWashPresenter, {
-    register: function(callback) {
-      callback('elution_wash_page_presenter', function(owner, factory) {
+    register:function (callback) {
+      callback('elution_wash_page_presenter', function (owner, factory) {
         return new ElutionWashPresenter(owner, factory);
       });
     },
@@ -211,7 +211,16 @@ define(['extraction_pipeline/views/elution_wash_page_view',
     renderView:function () {
       // render view...
 //    console.log("et  : presenter::renderView, ", this.jquerySelection());
-      this.currentView.renderView();
+      if (model) {
+        var dataForView = {
+          batch:this.model.batch && this.model.batch.uuid,
+          user:this.model.user,
+          processTitle:this.model.config.processTitle
+        };
+      }
+
+      this.currentView.renderView(dataForView);
+
       if (this.barcodePresenter) {
         this.barcodePresenter.renderView();
       }

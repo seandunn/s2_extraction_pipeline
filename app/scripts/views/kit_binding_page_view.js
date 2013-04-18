@@ -40,11 +40,19 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
       model = this.model;
     }
 
+
+    // set the user and indices as template data
+    var templateData = {
+      user: model.user,
+      processTitle: model.processTitle
+    };
+
+
     var parent = this.jquerySelector();
 
     // We have to append to the document or events won't register
-    parent.empty().
-      append(kitPartialHtml);
+    var template = _.template(kitPartialHtml);
+    parent.empty().append(template(templateData));
 
     var input = parent.find("input");
     var selector = parent.find(".kitSelect");
@@ -122,16 +130,6 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
       kitSavePrintButton.attr('disabled', 'disabled');
     }
   };
-
-//
-//  ScanBarcodeView.prototype.getError = function(model) {
-//    var errorMessage = model.customError;
-//    if (!errorMessage && !model.isValid()) {
-//      errorMessage = "Invalid barcode entered";
-//    }
-//    return errorMessage ? '<p class="alert-error">' + errorMessage + '</p>' : '';
-//  }
-
 
   kitView.prototype.clear = function () {
     /* clear the view from the current page
