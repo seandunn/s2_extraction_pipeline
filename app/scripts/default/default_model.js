@@ -69,8 +69,8 @@ define([
         var dataForOwner;
         this.labware.order()
             .then(function (order) {
-              return order.batchFor(function () {
-                return true;
+              return order.batchFor(function (item) {
+                return item.uuid === that.labware.uuid;
               });
             })
             .then(function (batch) {
