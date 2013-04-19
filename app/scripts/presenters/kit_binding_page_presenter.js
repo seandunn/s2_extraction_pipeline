@@ -20,7 +20,7 @@
 define([
        'extraction_pipeline/presenters/connected_presenter',
        'extraction_pipeline/views/connected_view',
-       'extraction_pipeline/models/kit_binding_model'
+       'extraction_pipeline/models/connected'
 ], function (ConnectedPresenter, View, Model) {
   "use strict";
 

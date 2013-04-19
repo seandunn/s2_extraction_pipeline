@@ -71,27 +71,27 @@ define([
     },
 
     getRowModel:function (rowNum, input) {
-      var that = this;
+      var that = this, previous = this.previous;
       return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {
         var details = nameToDetails[1];
         var name    = 'labware' + (index+2);  // index=0, labware1=input, therefore labware2 first output
         rowModel[name] = {
           input:           false,
           expected_type:   details.model.singularize(),
-          display_remove:  true,
-          display_barcode: true
+          display_remove:  previous,
+          display_barcode: previous
         }
         return rowModel;
       }, {
         rowNum: rowNum,
-        enabled: !!this.outputs.length,
+        enabled: previous,
 
         labware1: {
           input:           true,
           resource:        input,
           expected_type:   that.config.input.model.singularize(),
-          display_remove:  true,
-          display_barcode: true
+          display_remove:  previous,
+          display_barcode: previous
         }
       }).value();
     },

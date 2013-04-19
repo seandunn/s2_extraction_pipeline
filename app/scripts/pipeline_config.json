@@ -140,6 +140,8 @@
                 "aliquotType":"RNA",
                 "purpose":    "stock",
                 "model":      "spin_columns"
+              }, {
+                "model": "waste_tube"
               }
             ]
           }
@@ -201,6 +203,8 @@
                 "aliquotType":"RNA",
                 "purpose":    "stock",
                 "model":      "spin_columns"
+              }, {
+                "model": "waste_tube"
               }
             ]
           }
@@ -277,6 +281,8 @@
                 "aliquotType":"DNA",
                 "purpose":    "stock",
                 "model":      "spin_columns"
+              }, {
+                "model": "waste_tube"
               }
             ]
           }
@@ -406,6 +412,8 @@
                 "aliquotType":"RNA",
                 "purpose":    "stock",
                 "model":      "tubes"
+              }, {
+                "model": "waste_tube"
               }
             ]
           }
@@ -438,6 +446,8 @@
                 "aliquotType":"RNA",
                 "purpose":    "stock",
                 "model":      "tubes"
+              }, {
+                "model": "waste_tube"
               }
             ]
           }
@@ -485,6 +495,8 @@
                 "aliquotType":"DNA",
                 "purpose":    "stock",
                 "model":      "tubes"
+              }, {
+                "model": "waste_tube"
               }
             ]
           }

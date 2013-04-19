@@ -159,7 +159,7 @@ define(['config'
           this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
           this.view.setTitle(type);
         }
-        if (!this.barcodeInputPresenter && this.labwareModel.display_barcode) {
+        if (!this.barcodeInputPresenter && this.labwareModel.display_barcode && !this.isSpecial()) {
           this.barcodeInputPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
         }
         this.setupSubModel();
@@ -223,7 +223,7 @@ define(['config'
       }
 
       this.setupSubPresenters(this.labwareModel.expected_type);
-      this.setRemoveButtonVisibility(this.labwareModel.display_remove);
+      this.setRemoveButtonVisibility(this.labwareModel.display_remove && !this.isSpecial());
       this.owner.childDone(this, "labwareRendered", {});
     },
 
