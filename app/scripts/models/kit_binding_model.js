@@ -27,21 +27,6 @@ define([
   var Model = Object.create(BasePageModel);
 
   $.extend(Model, Connected, {
-    init:function (owner, initData) {
-      this.owner = owner;
-      this.user = undefined;
-      this.batch = undefined;
-      this.previous = false;
-
-      this.initialiseCaching();
-      this.initialiseConnections(initData);
-      return this;
-    },
-
-    previousDone: function() {
-      this.previous = true;
-    },
-
     getRowModel:function (rowNum, input) {
       var that = this, kitSaved = this.previous;
       return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {

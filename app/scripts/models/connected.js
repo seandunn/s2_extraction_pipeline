@@ -6,6 +6,17 @@ define([
   'use strict';
 
   return {
+    init: function(owner, config) {
+      this.owner = owner;
+      this.user = undefined;
+      this.batch = undefined;
+      this.previous = false;
+
+      this.initialiseCaching();
+      this.initialiseConnections(config);
+      return this;
+    },
+
     initialiseConnections: function(config) {
       this.config  = config;          // Configuration of our connections
       this.inputs  = $.Deferred();    // Inputs are always a deferred lookup

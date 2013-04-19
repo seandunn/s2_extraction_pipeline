@@ -134,6 +134,10 @@ define([
         currentViewDone: function(child, action, data) {
         },
 
+        previousDone: function(child, action, data) {
+          this.model.previous = true;
+        },
+
         print: function(child, action, data) {
           if (this.readyToCreateOutputs()) {
             this.model.createOutputs();

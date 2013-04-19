@@ -21,13 +21,6 @@ define([
       this.factory = factory;
 
       var presenter = this;
-      this.fallback = {
-        model: {
-          previousDone:function() {
-            presenter.owner.childDone.apply(presenter.owner, arguments);
-          }
-        }
-      };
       return this;
     },
 
@@ -84,8 +77,12 @@ define([
         var index = _.indexOf(this.presenters, child);
         if (index !== -1) {
           var presenter = this;
-          var active = presenter.presenters[index+1] || presenter.fallback;
-          active.model.previousDone(child, action, data);
+          var active = presenter.presenters[index+1] || {
+            previousDone:function() {
+              presenter.owner.childDone.apply(presenter.owner, arguments);
+            }
+          };
+          active.previousDone(child, action, data);
           presenter.activePresenter = active;
         }
       } else {

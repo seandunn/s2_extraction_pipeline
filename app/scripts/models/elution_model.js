@@ -36,34 +36,6 @@ define([
       this.initialiseConnections(initData);
       return this;
     },
-
-    startElution:function () {
-      var that = this;
-      var addingRoles = {updates:[]};
-
-      this.batch.getItemsGroupedByOrders()
-      .then(function (rscByOrders) {
-        _.each(rscByOrders, function (orderKey) {
-          _.each(orderKey.items, function (item) {
-            if (item.role === that.config.output[that.config.output.target].role) {
-              addingRoles.updates.push({
-                input:{
-                  order:orderKey.order
-                },
-                output:{
-                  resource:item,
-                  role:that.config.output[that.config.output.target].role,
-                  batch:that.batch.uuid
-                }
-              });
-            }
-          });
-        });
-        return Operations.stateManagement().start(addingRoles);
-      }).fail(function () {
-        throw "Could not make a batch";
-      });
-    },
   });
 
   return Model;
