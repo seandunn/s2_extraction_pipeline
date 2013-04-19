@@ -26,7 +26,7 @@ define([
         view.owner.childDone(view, 'next', {});
       });
       parent.find(".printButton").on('click', function (e) {
-        that.owner.childDone(that, "savePrintBC", {});
+        that.owner.childDone(that, "print", {});
       });
     },
 

@@ -127,7 +127,7 @@ define([
           return true;
         },
         currentViewDone: function(child, action, data) {
-          if (action === 'savePrintBC') {
+          if (action === 'print') {
             if (this.readyToCreateOutputs()) {
               this.model.createOutputs();
               this.currentView.setPrintButtonEnabled(false);
