@@ -1,7 +1,8 @@
 define([
   'mapper/operations',
-  'extraction_pipeline/behaviours',
+  'extraction_pipeline/behaviours'
 ], function(Operations, Behaviour) {
+
   'use strict';
 
   return {

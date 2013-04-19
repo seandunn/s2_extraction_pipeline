@@ -1,5 +1,7 @@
 define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (kitPartialHtml) {
 
+  'use strict';
+
   var that = this;
 
   function onNext_clicked(owner, view) {
@@ -13,7 +15,6 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
       }
     }
   }
-
 
   function getKey(e) {
     if (window.event) {
@@ -92,24 +93,25 @@ define(['text!extraction_pipeline/html_partials/kit_partial.html'], function (ki
   };
 
   kitView.prototype.setKitValidState = function (valid) {
-    var result = '';
+    var result = {};
     var jquerySelection = this.jquerySelector();
 
     if (valid) {
-      result = '<div class="alert alert-success">This kit is valid for the selected tubes</div>';
-//      jquerySelection.
-//        find('.kitSavePrintButton').removeAttr('disabled');
+      result = $('<div/>', {
+        class: 'alert alert-success',
+        text: 'This kit is valid for the selected tubes'
+      });
     }
     else {
-      result = '<div class="alert alert-error">This kit is not valid for the selected tubes</div>';
-//      jquerySelection.
-//        find('.kitSavePrintButton').attr('disabled', 'disabled');
+      result = $('<div/>', {
+        class: 'alert alert-error',
+        text: 'This kit is not valid for the selected tubes'
+      });
     }
 
-    jquerySelection.
-      find('.validationText').
-      empty().
-      append(result);
+    result.appendTo(jquerySelection.
+                    find('.validationText').
+                    empty());
   };
 
   kitView.prototype.getKitTypeSelection = function () {

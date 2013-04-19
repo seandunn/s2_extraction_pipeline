@@ -1,5 +1,7 @@
 define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/views/scan_barcode_view'], function(ScanBarcodeModel, ScanBarcodeView) {
 
+  'use strict';
+
   var ScanBarcodePresenter = function (owner, presenterFactory) {
     this.owner = owner;
     this.presenterFactory = presenterFactory;
@@ -73,15 +75,6 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
       BC:barcode
     };
     this.owner.childDone(this, "barcodeScanned", dataForBarcodeScanned);
-
-//    if (this.model.isValid()) {
-//      this.model.busy = true;
-//      this.renderView();
-//      this.owner.childDone(this, "barcodeScanned", barcode);
-//    }
-//    else {
-//      this.renderView();
-//    }
   };
 
   ScanBarcodePresenter.prototype.displayErrorMessage = function(message) {
@@ -98,10 +91,6 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
 
     return this;
   }
-
-//  ScanBarcodePresenter.prototype.validateBarcode = function (barcode) {
-//    return false;
-//  };
 
   return {
     register: function(callback) {

@@ -1,5 +1,7 @@
 define(['text!extraction_pipeline/html_partials/elution_wash_partial.html'], function (elutionWashPartialHtml) {
 
+  'use strict';
+
   function getKey(e) {
     if (window.event) {
       return window.event.keyCode;
@@ -43,10 +45,6 @@ define(['text!extraction_pipeline/html_partials/elution_wash_partial.html'], fun
     finishButton.on('click', function (e) {
       that.owner.childDone(that, "elutionFinished", {});
     });
-
-//    $('li').addClass("kit");
-//    $('ul p').addClass("kit");
-//    $('ul h3').addClass("kit");
   };
 
   bindingView.prototype.setKitValidState = function (valid) {
@@ -69,16 +67,6 @@ define(['text!extraction_pipeline/html_partials/elution_wash_partial.html'], fun
       empty().
       append(result);
   };
-
-//
-//  ScanBarcodeView.prototype.getError = function(model) {
-//    var errorMessage = model.customError;
-//    if (!errorMessage && !model.isValid()) {
-//      errorMessage = "Invalid barcode entered";
-//    }
-//    return errorMessage ? '<p class="alert-error">' + errorMessage + '</p>' : '';
-//  }
-
 
   bindingView.prototype.clear = function () {
     /* clear the view from the current page

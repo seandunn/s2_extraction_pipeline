@@ -1,5 +1,7 @@
 define(['text!extraction_pipeline/html_partials/scan_barcode_partial.html'], function (scanBarcodePartialHtml) {
 
+  'use strict';
+
   function getKey(e) {
     if (window.event) {
       return window.event.keyCode;
@@ -75,25 +77,21 @@ define(['text!extraction_pipeline/html_partials/scan_barcode_partial.html'], fun
     model.barcode = this.jquerySelector().find('.barcodeInput').val();
   };
 
-  ScanBarcodeView.prototype.getError = function (model) {
-    var errorMessage = model.customError;
-    if (!errorMessage && !model.isValid()) {
-      errorMessage = "Invalid barcode entered";
-    }
-    return errorMessage ? '<span class="alert-error">' + errorMessage + '</span>' : '';
-  }
-
   ScanBarcodeView.prototype.displayErrorMessage = function(message) {
 
     var selection = this.jquerySelector().find('.alert-error');
-
-    var tmp = '<h4 class="alert-heading">Error!</h4>';
+    var text = 'Error!';
 
     if (message) {
-      tmp += message;
+      text += message;
     }
 
-    selection.empty().append(tmp);
+    var tmp = $('<h4/>', {
+      class: 'alert-heading',
+      text: text
+    });
+
+    tmp.appendTo(selection.empty());
     selection.css('display', 'block');
   };
 

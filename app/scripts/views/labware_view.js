@@ -1,23 +1,6 @@
-/*
- * S2 - An open source lab information management systems (LIMS)
- * Copyright (C) 2013  Wellcome Trust Sanger Insitute
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 1, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
- */
-
 define(['text!extraction_pipeline/html_partials/labware_partial.html'], function (labwarePartialHtml) {
+
+  'use strict';
 
   function getKey(e) {
     if (window.event) {
@@ -90,14 +73,18 @@ define(['text!extraction_pipeline/html_partials/labware_partial.html'], function
   LabwareView.prototype.displaySuccessMessage = function(message) {
 
     var selection = this.jquerySelector().find('.alert-success');
-
-    var tmp = '<h4 class="alert-heading">Success!</h4>';
+    var text = 'Success!';
 
     if (message) {
-      tmp += message;
+      text += message;
     }
 
-    selection.empty().append(tmp);
+    var tmp = $('<h4/>', {
+      class: 'alert-heading',
+      text: text
+    });
+
+    tmp.appendTo(selection.empty());
     selection.css('display', 'block');
   };
 
@@ -119,16 +106,6 @@ define(['text!extraction_pipeline/html_partials/labware_partial.html'], function
 
     this.jquerySelector().find('.title').empty().append(title);
   };
-
-//
-//  ScanBarcodeView.prototype.getError = function(model) {
-//    var errorMessage = model.customError;
-//    if (!errorMessage && !model.isValid()) {
-//      errorMessage = "Invalid barcode entered";
-//    }
-//    return errorMessage ? '<p class="alert-error">' + errorMessage + '</p>' : '';
-//  }
-
 
   LabwareView.prototype.clear = function () {
     /* clear the view from the current page

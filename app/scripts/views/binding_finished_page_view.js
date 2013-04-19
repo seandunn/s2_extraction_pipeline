@@ -1,5 +1,7 @@
 define(['text!extraction_pipeline/html_partials/binding_finished_partial.html'], function (bindingFinishedPartialHtml) {
 
+  'use strict';
+
   function getKey(e) {
     if (window.event) {
       return window.event.keyCode;

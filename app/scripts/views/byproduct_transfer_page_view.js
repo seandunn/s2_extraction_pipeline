@@ -1,5 +1,7 @@
 define(['text!extraction_pipeline/html_partials/byproduct_transfer_partial.html'], function (byproductTransferPartialHtml) {
 
+  'use strict';
+
   function getKey(e) {
     if (window.event) {
       return window.event.keyCode;
