@@ -13,12 +13,23 @@ define([
       this.user = undefined;
       this.batch = undefined;
       this.kitSaved = false;
+      this.kit = { barcode: undefined, valid: false };
       return this;
     },
 
     validateKitTubes:function (kitType) {
       return (this.config.kitType == kitType);
     },
+
+    fire: function() {
+      var model = this;
+      if (model.kit.barcode && model.kit.valid) {
+        model.batch.update({kit: model.kit.barcode}).then(function() {
+          model.kitSaved = true;
+          model.owner.childDone(model, 'saved', {});
+        });
+      }
+    }
   });
 
   return Model;

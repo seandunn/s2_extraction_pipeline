@@ -23,7 +23,8 @@ define([
     },
 
     setupPresenter: function(model, selector) {
-      this.selector = selector;
+      this.selector    = selector;
+      this.model.batch = model.batch;
 
       this.setupView();
       this.renderView();
@@ -67,7 +68,13 @@ define([
     },
 
     childDone: function(child, action, data) {
-    },
+      if (action === 'barcodeScanned') {
+        this.model.kit.barcode = data.BC;
+        this.model.fire();
+      } else if (action === 'saved') {
+        this.view.message('info', 'Kit details saved');
+      }
+    }
   });
 
   return Presenter;

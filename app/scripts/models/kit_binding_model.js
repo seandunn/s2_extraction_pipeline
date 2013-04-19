@@ -31,7 +31,6 @@ define([
       this.owner = owner;
       this.user = undefined;
       this.batch = undefined;
-      this.kitSaved = false;
 
       this.initialiseCaching();
       this.initialiseConnections(initData);
@@ -45,7 +44,7 @@ define([
       if (!this.kitPresenter) {
         this.kitPresenter = presenter.presenterFactory.create('kit_presenter', this, {kitType:this.config.kitType});
       }
-      this.kitPresenter.setupPresenter({}, function() {
+      this.kitPresenter.setupPresenter({batch: this.batch}, function() {
         return presenter.jquerySelection().find('#kitPageHeader')
       });
     },
@@ -58,21 +57,21 @@ define([
         rowModel[name] = {
           input:           false,
           expected_type:   details.model.singularize(),
-          display_remove:  that.kitSaved,
-          display_barcode: that.kitSaved
+          display_remove:  that.kitPresenter.model.kitSaved,
+          display_barcode: that.kitPresenter.model.kitSaved
         }
         return rowModel;
       }, {
         rowNum: rowNum,
-        enabled: this.kitSaved,
+        enabled: that.kitPresenter.model.kitSaved,
 
         // TODO: The labware entries should be generated from the config, not by knowing there are 3!
         labware1: {
           input:           true,
           resource:        input,
           expected_type:   that.config.input.model.singularize(),
-          display_remove:  that.kitSaved,
-          display_barcode: that.kitSaved
+          display_remove:  that.kitPresenter.model.kitSaved,
+          display_barcode: that.kitPresenter.model.kitSaved
         },
         labware3: {
           input:           false,
@@ -84,10 +83,6 @@ define([
     },
 
     createOutputs:function(kitBC) {
-      if (this.batch) {
-        this.batch.update({"kit" : kitBC});
-        this.kitSaved = true;
-      }
       Connected.createOutputs.apply(this, []);
     }
   });

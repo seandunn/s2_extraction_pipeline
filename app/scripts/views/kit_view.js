@@ -24,7 +24,13 @@ define([
       });
       container.find('.kitSelect').on('change', function(event) {
         var valid = component.owner.model.validateKitTubes(event.srcElement.value);
-        component.setKitValidState(valid);
+        component.message(
+          valid ? 'success' : 'error',
+          'This kit ' + (valid ? 'is' : 'is not') + ' valid for the selected tubes'
+        );
+
+        component.owner.model.kit.valid = valid;
+        component.owner.model.fire();
       });
     },
     toggleHeaderEnabled: function(isEnabled) {
@@ -34,10 +40,8 @@ define([
       this.selector().empty();
     },
 
-    setKitValidState: function(valid) {
-      var box = this.selector().find('.validationText');
-      box.text('This kit ' + (valid ? 'is' : 'is not') + ' valid for the selected tubes');
-      box.addClass(valid ? 'alert-success' : 'alert-error').removeClass(valid ? 'alert-error' : 'alert-success');
+    message: function(type, message) {
+      this.selector().find('.validationText').removeClass('alert-error alert-info alert-success').addClass('alert-' + type).text(message);
     },
     getKitTypeSelection: function() {
       return this.selector().find('.kitSelect').val().split('/');
