@@ -39,6 +39,14 @@ ul{
   padding: 10px;
   background: #f9f9f9;
   border-radius: 10px;
+  .kitSelection{
+    float: left;
+    overflow: auto;
+  }
+  .validationSection{
+    float: right;
+    overflow: auto;
+  }
 }
 
 .kitPrintButton{
@@ -49,10 +57,29 @@ ul{
   width: 10em;
 }
 
+.labwareDisplay .alert-success{
+  top: 3em;
+  opacity: 0.9;
+  position: absolute;
+  max-width: 9em;
+  display: none;
+  z-index: 4;
+}
+
 .labwareRow{
   position: relative;
   li{
     position: relative;
+  }
+  .containerList{
+    overflow: auto;
+  }
+  .containerElement{
+    float: left;
+  }
+  .transferArrow{
+    font-size: 6em;
+    padding-top: 100px;
   }
 }
 .rowDisabled{
