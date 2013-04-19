@@ -31,47 +31,40 @@ define([
       this.owner = owner;
       this.user = undefined;
       this.batch = undefined;
+      this.previous = false;
 
       this.initialiseCaching();
       this.initialiseConnections(initData);
       return this;
     },
 
-    setupInputPresenters: function() {
-      Connected.setupInputPresenters.apply(this, arguments);
-
-      var presenter = this.owner;
-      if (!this.kitPresenter) {
-        this.kitPresenter = presenter.presenterFactory.create('kit_presenter', this, {kitType:this.config.kitType});
-      }
-      this.kitPresenter.setupPresenter({batch: this.batch}, function() {
-        return presenter.jquerySelection().find('#kitPageHeader')
-      });
+    previousDone: function() {
+      this.previous = true;
     },
 
     getRowModel:function (rowNum, input) {
-      var that = this;
+      var that = this, kitSaved = this.previous;
       return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {
         var details = nameToDetails[1];
         var name    = 'labware' + (index+2);  // index=0, labware1=input, therefore labware2 first output
         rowModel[name] = {
           input:           false,
           expected_type:   details.model.singularize(),
-          display_remove:  that.kitPresenter.model.kitSaved,
-          display_barcode: that.kitPresenter.model.kitSaved
+          display_remove:  kitSaved,
+          display_barcode: kitSaved
         }
         return rowModel;
       }, {
         rowNum: rowNum,
-        enabled: that.kitPresenter.model.kitSaved,
+        enabled: kitSaved,
 
         // TODO: The labware entries should be generated from the config, not by knowing there are 3!
         labware1: {
           input:           true,
           resource:        input,
           expected_type:   that.config.input.model.singularize(),
-          display_remove:  that.kitPresenter.model.kitSaved,
-          display_barcode: that.kitPresenter.model.kitSaved
+          display_remove:  kitSaved,
+          display_barcode: kitSaved
         },
         labware3: {
           input:           false,

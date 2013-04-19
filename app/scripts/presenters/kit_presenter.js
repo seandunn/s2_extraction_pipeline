@@ -43,7 +43,6 @@ define([
       }, function() {
         return presenter.selector().find('.barcode');
       });
-      presenter.barcodePresenter.focus();
       return this;
     },
     setupSubModel: function() {
@@ -51,6 +50,9 @@ define([
       return this;
     },
 
+    focus: function() {
+      this.barcodePresenter.focus();
+    },
     setupView: function() {
       this.view = new View(this, this.selector);
       return this;
@@ -61,8 +63,8 @@ define([
     },
     renderView: function() {
       this.view.renderView({
-        batch:        this.model.batch && this.model.batch.uuid,
-        user:         this.model.user
+        batch: this.model.batch && this.model.batch.uuid,
+        user:  this.model.user
       });
       return this;
     },
@@ -73,6 +75,7 @@ define([
         this.model.fire();
       } else if (action === 'saved') {
         this.view.message('info', 'Kit details saved');
+        this.owner.childDone(this, 'done', data);
       }
     }
   });

@@ -127,12 +127,16 @@ define([
           return true;
         },
         currentViewDone: function(child, action, data) {
-          if (action === 'print') {
-            if (this.readyToCreateOutputs()) {
-              this.model.createOutputs();
-              this.currentView.setPrintButtonEnabled(false);
-            }
-          } else if (this.checkPageComplete()) {
+        },
+
+        print: function(child, action, data) {
+          if (this.readyToCreateOutputs()) {
+            this.model.createOutputs();
+            this.currentView.setPrintButtonEnabled(false);
+          }
+        },
+        next: function(child, action, data) {
+          if (this.checkPageComplete()) {
             var that = this;
             that.model.operate(action, that.rowPresenters);
             that.model.behaviours.done[action](function() {
