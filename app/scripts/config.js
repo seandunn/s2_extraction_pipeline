@@ -13,6 +13,11 @@ define([], function(mapperConfig) {
     printers: [{
       name: 'e367bc',
       type: 2
-    }]
+    }],
+
+    // Handler for exceptions (does absolutely nothing, but could try..catch!)
+    exceptionHandling: function(callback) {
+      callback();
+    }
   };
 });
