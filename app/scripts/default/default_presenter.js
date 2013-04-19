@@ -56,6 +56,7 @@ define(['config'
           this.setupSubPresenters();
           this.renderView();
           this.userBCSubPresenter.focus();
+          this.labwareBCSubPresenter.disable();
           return this;
         },
         setupSubPresenters:function () {
@@ -108,26 +109,19 @@ define(['config'
         childDone:function (child, action, data) {
           // called when a child  wants to say something...
           var that = this;
-          if (child === this.labwareBCSubPresenter) {
+          if (child === this.userBCSubPresenter) {
+            if (action === "barcodeScanned") {
+              that.pageModel.setUserFromBarcode(data.BC);
+              this.userBCSubPresenter.disable();
+              this.labwareBCSubPresenter.enable();
+              this.labwareBCSubPresenter.focus();
+              return;
+            }
+          } else if (child === this.labwareBCSubPresenter) {
             if (action === "barcodeScanned") {
               this.pageModel.setLabwareFromBarcode(data.BC);
               return;
             }
-          } else if (child === this.userBCSubPresenter) {
-            if (action === "barcodeScanned") {
-              that.pageModel.setUserFromBarcode(data.BC);
-              this.labwareBCSubPresenter.focus();
-              return;
-            }
-//          } else if (child === this.currentView) {
-//            if (action === "login") {
-//              var dataForLogin = {
-//                userBC:data.userBC,
-//                labwareBC:data.labwareBC
-//              };
-//              this.login(dataForLogin);
-//              return;
-//            }
           } else if (child === this.pageModel) {
             switch (action) {
               case "modelUpdated":
