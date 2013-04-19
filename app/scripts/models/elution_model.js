@@ -27,8 +27,6 @@ define([
   var Model = Object.create(BasePageModel);
 
   $.extend(Model, Connected, {
-    //TODO: add suitable methods for the model
-
     init:function (owner, initData) {
       this.owner = owner;
       this.user = undefined;

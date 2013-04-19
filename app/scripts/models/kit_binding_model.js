@@ -80,10 +80,6 @@ define([
           display_barcode: false
         }
       }).value();
-    },
-
-    createOutputs:function(kitBC) {
-      Connected.createOutputs.apply(this, []);
     }
   });
 

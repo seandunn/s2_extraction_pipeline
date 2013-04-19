@@ -24,26 +24,5 @@ define([
 ], function (ConnectedPresenter, View, Model) {
   "use strict";
 
-  var Presenter = ConnectedPresenter.extend('kit_binding_presenter', Model, View);
-
-  $.extend(Presenter, {
-    setupSubModel:function () {
-      return this;
-    },
-
-    renderView:function () {
-      // render view...
-      var dataForView = {
-        batch:         this.model.batch && this.model.batch.uuid,
-        user:          this.model.user,
-        processTitle:  this.model.config.processTitle
-      };
-
-      this.currentView.renderView(dataForView);
-
-      return this;
-    },
-  });
-
-  return Presenter;
+  return ConnectedPresenter.extend('kit_binding_presenter', Model, View);
 });
