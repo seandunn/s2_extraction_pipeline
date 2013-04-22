@@ -108,6 +108,16 @@ define(['text!extraction_pipeline/html_partials/scan_barcode_partial.html'], fun
     var children = this.jquerySelector().empty();
   };
 
+  ScanBarcodeView.prototype.enable = function(){
+    var selection = this.jquerySelector().find(".barcodeInput");
+    selection.removeAttr('disabled', 'disabled');
+  };
+
+  ScanBarcodeView.prototype.disable = function(){
+    var selection = this.jquerySelector().find(".barcodeInput");
+    selection.attr('disabled', 'disabled');
+  };
+
   return ScanBarcodeView;
 
 });

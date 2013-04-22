@@ -97,7 +97,20 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
     this.view.focus();
 
     return this;
-  }
+  };
+
+  ScanBarcodePresenter.prototype.enable = function(){
+    if (this.view) {
+      this.view.enable();
+    }
+  };
+
+  ScanBarcodePresenter.prototype.disable = function(){
+    if (this.view) {
+      this.view.disable();
+    }
+  };
+
 
 //  ScanBarcodePresenter.prototype.validateBarcode = function (barcode) {
 //    return false;
