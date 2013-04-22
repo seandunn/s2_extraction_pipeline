@@ -40,12 +40,16 @@ define([
 
     setupInputPresenters: function() {
       Connected.setupInputPresenters.apply(this, arguments);
-      setupBarcodePresenter.apply(this.owner, []);
+
+      var presenter = this.owner;
+      if (!this.kitPresenter) {
+        this.kitPresenter = presenter.presenterFactory.create('kit_presenter', this, {kitType:this.config.kitType});
+      }
+      this.kitPresenter.setupPresenter({}, function() {
+        return presenter.jquerySelection().find('#kitPageHeader')
+      });
     },
 
-    validateKitTubes:function (kitType) {
-      return (this.config.kitType == kitType);
-    },
     getRowModel:function (rowNum, input) {
       var that = this;
       return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {
@@ -89,19 +93,4 @@ define([
   });
 
   return Model;
-
-  function setupBarcodePresenter() {
-    if (!this.barcodePresenter) {
-      this.barcodePresenter = this.presenterFactory.create('scan_barcode_presenter', this);
-    }
-
-    var that = this;
-    this.barcodePresenter.setupPresenter({
-      type: "Kit",
-      value: "Kit0001"
-    }, function() {
-      return that.jquerySelection().find('.barcode')
-    });
-    this.barcodePresenter.focus();
-  }
 });

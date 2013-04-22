@@ -24,11 +24,10 @@ define([
 ], function (ConnectedPresenter, View, Model) {
   "use strict";
 
-  var Presenter = ConnectedPresenter.extend('kit_presenter', Model, View);
+  var Presenter = ConnectedPresenter.extend('kit_binding_presenter', Model, View);
 
   $.extend(Presenter, {
     setupSubModel:function () {
-      this.setValidState();
       return this;
     },
 
@@ -42,19 +41,7 @@ define([
 
       this.currentView.renderView(dataForView);
 
-      if (this.barcodePresenter) {
-        this.barcodePresenter.renderView();
-      }
-
       return this;
-    },
-
-    setValidState:function () {
-      var kitType = this.jquerySelection().find('.kitSelect').val();
-      var valid = this.model.validateKitTubes(kitType);
-      this.currentView.setKitValidState(valid);
-
-      return valid;
     },
   });
 

@@ -48,7 +48,7 @@
       },
 
       "samples.extraction.manual.dna_and_rna.binding_input_tube_nap": {
-        "presenterName":   "kit_presenter",
+        "presenterName":   "kit_binding_presenter",
         "processTitle":  "Manual DNA and RNA Binding",
         "behaviours": {
           "start": "row",
@@ -103,7 +103,7 @@
       },
 
       "samples.extraction.manual.dna_and_rna.binding_input_tube_rnap": {
-        "presenterName":   "kit_presenter",
+        "presenterName":   "kit_binding_presenter",
         "processTitle":  "Manual DNA and RNA Binding, Input tube RNA+P",
         "behaviours": {
           "start": "row",
@@ -152,7 +152,7 @@
       },
 
       "samples.extraction.manual.rna_only.binding_input_tube_rnap": {
-        "presenterName":   "kit_presenter",
+        "presenterName":   "kit_binding_presenter",
         "processTitle":  "Manual RNA Only Binding, Input tube RNA+P",
         "behaviours": {
           "start": "row",
@@ -216,7 +216,7 @@
       },
 
       "samples.extraction.manual.dna_only.binding_input_tube_dnap":{
-        "presenterName":   "kit_presenter",
+        "presenterName":   "kit_binding_presenter",
         "processTitle":  "Manual DNA Only Binding",
         "behaviours": {
           "start": "row",
@@ -271,7 +271,7 @@
       },
 
       "samples.extraction.qiacube.dna_and_rna.binding_input_tube_nap": {
-        "presenterName":   "kit_presenter",
+        "presenterName":   "kit_binding_presenter",
         "behaviours": {
           "start": "next",
           "operate": "next",
@@ -326,7 +326,7 @@
       },
 
       "samples.extraction.qiacube.dna_and_rna.binding_input_tube_rnap": {
-        "presenterName":   "kit_presenter",
+        "presenterName":   "kit_binding_presenter",
         "behaviours": {
           "start": "next",
           "operate": "next",
@@ -351,7 +351,7 @@
       },
 
       "samples.extraction.qiacube.rna_only.binding_input_tube_rnap": {
-        "presenterName":   "kit_presenter",
+        "presenterName":   "kit_binding_presenter",
         "behaviours": {
           "start": "next",
           "operate": "next",
@@ -391,7 +391,7 @@
       },
 
       "samples.extraction.qiacube.dna_only.binding_input_tube_dnap":{
-        "presenterName":   "kit_presenter",
+        "presenterName":   "kit_binding_presenter",
         "behaviours": {
           "start": "row",
           "operate": "row",
