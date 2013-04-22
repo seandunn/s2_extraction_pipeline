@@ -27,6 +27,7 @@ define([
     setupPresenter: function(model, selector) {
       this.selector = selector;
       this.batch    = model.batch;
+      this.user     = model.userUUID;
 
       this.setupView();
       this.renderView();
@@ -64,7 +65,7 @@ define([
     },
     renderView: function() {
       this.view.renderView({
-        user: undefined,
+        user: this.user,
         processTitle: this.config.processTitle
       });
       return this;
