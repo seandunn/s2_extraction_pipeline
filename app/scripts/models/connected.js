@@ -1,11 +1,13 @@
 define([
+  'extraction_pipeline/models/base_page_model',
   'mapper/operations',
-  'extraction_pipeline/behaviours'
-], function(Operations, Behaviour) {
-
+  'extraction_pipeline/behaviours',
+], function(Base, Operations, Behaviour) {
   'use strict';
 
-  return {
+  var Model = Object.create(Base);
+
+  _.extend(Model, {
     init: function(owner, config) {
       this.owner = owner;
       this.user = undefined;
@@ -193,8 +195,10 @@ define([
           });
         });
       });
-    }
-  };
+    },
+  });
+
+  return Model;
 
   // Convenience method for dealing with finding by barcodes
   function findByBarcode(barcode, array) {

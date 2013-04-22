@@ -20,13 +20,12 @@
 "use strict";
 
 define([
-  'extraction_pipeline/models/base_page_model',
+  'extraction_pipeline/models/connected',
   'mapper/operations',
-  'extraction_pipeline/models/connected'
-], function (BasePageModel, Operations, Connected) {
+], function (BasePageModel, Operations) {
   var Model = Object.create(BasePageModel);
 
-  $.extend(Model, Connected, {
+  $.extend(Model, {
     getRowModel:function (rowNum, input) {
       var that = this, kitSaved = this.previous;
       return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {
