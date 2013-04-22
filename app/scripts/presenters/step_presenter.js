@@ -47,6 +47,7 @@ define([
       }).value();
 
       presenter.activePresenter = presenter.presenters[0];
+      presenter.activePresenter.initialPresenter();
       presenter.activePresenter.focus();
     },
     setupSubModel: function() {

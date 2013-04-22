@@ -110,6 +110,7 @@ define([
 
     modelDone: function(child, action, data) {
       if (action === "labelPrinted") {
+        this.model.printed = true;
         this.owner.childDone(this, "error", {"message":"Barcodes printed"});
         this.setupSubPresenters(true);
 
@@ -133,6 +134,9 @@ define([
     currentViewDone: function(child, action, data) {
     },
 
+    initialPresenter: function() {
+      this.model.previous = true;
+    },
     previousDone: function(child, action, data) {
       this.model.previous = true;
     },

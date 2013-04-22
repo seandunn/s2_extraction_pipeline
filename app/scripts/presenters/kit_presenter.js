@@ -69,6 +69,9 @@ define([
       return this;
     },
 
+    initialPresenter: function() {
+      // Does nothing, for the moment!
+    },
     childDone: function(child, action, data) {
       if (action === 'barcodeScanned') {
         this.model.kit.barcode = data.BC;
