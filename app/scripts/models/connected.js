@@ -134,7 +134,7 @@ define([
 
     operate: function(happeningAt, presenters) {
       var that = this;
-      var s2root, events = [];
+      var s2root;
 
       this.owner.getS2Root().then(function (result) {
         // STEP 1: We're going to need the root later!
@@ -177,23 +177,25 @@ define([
       }).then(function(operation) {
         // STEP 5: Override the behaviour of the operation so that we do the correct things
         var doNothing = function() { };
-        var helper    = function(event) {
-          return [
-            function() { events.push(event); },           // record an event on a positive behaviour
-            function() { operation[event] = doNothing; }  // remove the operation on a negative behaviour
-          ];
-        };
-
         _.each(['start','operate','complete'], function(event) {
-          that.behaviours[event][happeningAt].apply(null, helper(event));
+          that.behaviours[event][happeningAt](function() {
+            var handler = operation[event];
+            operation[event] = function() {
+              return handler.apply(this, arguments).then(function() {
+                that.owner.childDone(that,event+'Operation',{});
+              });
+            };
+          }, function() {
+            operation[event] = doNothing;
+          });
         });
         return operation;
       }).then(function(operation) {
-        // STEP 6: Finally perform the operation and report the events that should happen
+        // STEP 6: Finally perform the operation and report the final completion
         operation.operation().then(function () {
-          _.each(events, function(event) {
-            that.owner.childDone(that,event+"Operation",{});
-          });
+          that.owner.childDone(that, 'successfulOperation', {});
+        }).fail(function() {
+          that.owner.childDone(that, 'failedOperation', {});
         });
       });
     },
