@@ -16,7 +16,7 @@ ol.labware {
 }
 
 svg text{
-  font-size:12px;
+  font-size:15px;
 }
 
 .removeButton {
@@ -55,15 +55,6 @@ ul{
 
 .labwareDisplay input{
   width: 10em;
-}
-
-.labwareDisplay .alert-success{
-  top: 3em;
-  opacity: 0.9;
-  position: absolute;
-  max-width: 9em;
-  display: none;
-  z-index: 4;
 }
 
 .labwareRow{

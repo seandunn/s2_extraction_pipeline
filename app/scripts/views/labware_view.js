@@ -70,24 +70,6 @@ define(['text!extraction_pipeline/html_partials/labware_partial.html'], function
     return this;
   }
 
-  LabwareView.prototype.displaySuccessMessage = function(message) {
-
-    var selection = this.jquerySelector().find('.alert-success');
-    var text = 'Success!';
-
-    if (message) {
-      text += message;
-    }
-
-    var tmp = $('<h4/>', {
-      class: 'alert-heading',
-      text: text
-    });
-
-    tmp.appendTo(selection.empty());
-    selection.css('display', 'block');
-  };
-
   LabwareView.prototype.setTitle = function (titleString) {
 
     var title = '';
