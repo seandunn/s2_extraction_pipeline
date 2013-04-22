@@ -1,5 +1,7 @@
 define(['text!extraction_pipeline/html_partials/row_partial.html'], function (rowPartialHtml) {
 
+  'use strict';
+
   function getKey(e) {
     if (window.event) {
       return window.event.keyCode;
@@ -35,16 +37,6 @@ define(['text!extraction_pipeline/html_partials/row_partial.html'], function (ro
     parent.empty().
       append(rowPartialHtml);
   };
-
-//
-//  ScanBarcodeView.prototype.getError = function(model) {
-//    var errorMessage = model.customError;
-//    if (!errorMessage && !model.isValid()) {
-//      errorMessage = "Invalid barcode entered";
-//    }
-//    return errorMessage ? '<p class="alert-error">' + errorMessage + '</p>' : '';
-//  }
-
 
   rowView.prototype.clear = function () {
     /* clear the view from the current page

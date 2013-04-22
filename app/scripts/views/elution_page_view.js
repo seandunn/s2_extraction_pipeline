@@ -1,4 +1,7 @@
 define(['text!extraction_pipeline/html_partials/elution_loading_partial.html'], function (elutionLoadingPartialHtml) {
+
+  'use strict';
+
   var elutionView = function (owner, jquerySelector) {
     console.log("hello");
     this.owner = owner;
