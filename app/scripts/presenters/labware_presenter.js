@@ -40,15 +40,6 @@ define(['config'
 
   var LabwarePresenter = Object.create(BasePresenter);
 
-//  var LabwarePresenter = function (owner, presenterFactory) {
-//    this.model = undefined;
-//    this.uuid = undefined;
-//    this.owner = owner;
-//    this.inputModel = undefined;
-//    this.presenterFactory = presenterFactory;
-//    this.resourcePresenter = undefined;
-//    this.barcodeInputPresenter = undefined;
-//  };
   $.extend(LabwarePresenter, {
     register: function(callback) {
       callback('labware_presenter', function(owner, factory) {
@@ -71,10 +62,8 @@ define(['config'
         this.labwareModel.setExpectedType(setupData.expected_type);
         this.labwareModel.setInput(setupData.input);
       }
-      //this.updateModel(input_model);
       this.setupView();
       this.setupSubPresenters();
-//      this.renderView();
       return this;
     },
 
@@ -90,50 +79,8 @@ define(['config'
 
     updateModel:function (newData) {
 
-//      if (!this.model) this.model = {};
-//
-//      $.extend(this.model, newData);
-
       this.labwareModel.setResource(newData);
 
-//      if (model && model.hasOwnProperty('resource')) {
-//        this.inputModel = model;
-//      }
-
-
-//        if (!this.model.hasOwnProperty('resource') && this.model.hasOwnProperty('uuid')) {
-//
-//          config.setupTest(rootTestJson);
-//          S2Root.load().done(function (result) {
-//            root = result;
-//          })
-//              .then(function () {
-//                config.setupTest(dataTubeJSON);
-//                root.find(model.uuid).done(function (rsc) {
-//                      that.model = rsc.rawJson;
-//                      that.uuid = model.uuid;
-//                      if (model.hasOwnProperty('expected_type')) {
-//                        if (!rsc.rawJson.hasOwnProperty(model.expected_type)) {
-//                          that.model = undefined;
-//                        }
-//                      }
-//                    }
-//                );
-//                that.setupView();
-//                that.renderView();
-//  //        that.owner.childDone(that, "Found equipment", model.uuid);
-//              }
-//          );
-//        }
-//      } else {
-//          var expectedType = undefined;
-//          if (model) {
-//            expectedType = model.expected_type;
-//          }
-//          this.setupView();
-//          this.renderView();
-//
-//      }
       this.setupView();
       this.renderView();
       return this;
@@ -145,9 +92,9 @@ define(['config'
       }
     },
 
-    setupSubPresenters:function (expectedType) {
+    setupSubPresenters:function () {
       if (!this.resourcePresenter) {
-        var type = expectedType;
+        var type = this.labwareModel.expected_type;
       }
       if (this.labwareModel.resource) {
         type = this.labwareModel.resource.resourceType;
@@ -193,21 +140,16 @@ define(['config'
           return that.jquerySelection().find("div.barcodeScanner")
         });
       }
-//      console.log(">>>>> ",this.tubePresenter);
-
-      //  }
-      // equivalent to the call to tubePresenter.setupPresenter()
-//      this.tubePresenter.setupView(function () {
-//        console.log(that.jquerySelection());
-//        return that.jquerySelection().find("div.placeholder");
-//      });
-
     },
 
     renderView:function () {
       this.release();
-      this.resourcePresenter = undefined;
-      this.barcodeInputPresenter = undefined;
+//      this.resourcePresenter = undefined;
+//      this.barcodeInputPresenter = undefined;
+
+//      this.setupSubPresenters(this.labwareModel.expected_type);
+
+      this.setupSubModel();
 
       if (this.view) {
         this.view.renderView(this.model);
@@ -219,7 +161,6 @@ define(['config'
         this.barcodeInputPresenter.renderView();
       }
 
-      this.setupSubPresenters(this.labwareModel.expected_type);
       this.setRemoveButtonVisibility(this.labwareModel.display_remove && !this.isSpecial());
       this.owner.childDone(this, "labwareRendered", {});
     },
