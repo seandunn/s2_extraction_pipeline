@@ -1,17 +1,32 @@
 define([
+  'extraction_pipeline/models/base_page_model',
   'mapper/operations',
-  'extraction_pipeline/behaviours'
-], function(Operations, Behaviour) {
-
+  'extraction_pipeline/behaviours',
+], function(Base, Operations, Behaviour) {
   'use strict';
 
-  return {
+  var Model = Object.create(Base);
+
+  _.extend(Model, {
+    init: function(owner, config) {
+      this.owner = owner;
+      this.user = undefined;
+      this.batch = undefined;
+      this.previous = false;
+      this.printed  = false;
+
+      this.initialiseCaching();
+      this.initialiseConnections(config);
+      return this;
+    },
+
     initialiseConnections: function(config) {
       this.config  = config;          // Configuration of our connections
       this.inputs  = $.Deferred();    // Inputs are always a deferred lookup
       this.outputs = [];              // Outputs are always an array
       this.batch   = undefined;       // There is no batch, yet
       this.user    = undefined;       // There is no user, yet
+      this.started = false;           // Has the process started
 
       // Configure the behaviours based on the configuration
       this.behaviours = _.chain(this.config.behaviours).map(function(behaviourName, name) {
@@ -57,27 +72,27 @@ define([
     },
 
     getRowModel:function (rowNum, input) {
-      var that = this;
+      var that = this, previous = this.previous && this.printed;
       return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {
         var details = nameToDetails[1];
         var name    = 'labware' + (index+2);  // index=0, labware1=input, therefore labware2 first output
         rowModel[name] = {
           input:           false,
           expected_type:   details.model.singularize(),
-          display_remove:  true,
-          display_barcode: true
+          display_remove:  previous,
+          display_barcode: previous
         }
         return rowModel;
       }, {
         rowNum: rowNum,
-        enabled: !!this.outputs.length,
+        enabled: previous,
 
         labware1: {
           input:           true,
           resource:        input,
           expected_type:   that.config.input.model.singularize(),
-          display_remove:  true,
-          display_barcode: true
+          display_remove:  previous,
+          display_barcode: previous
         }
       }).value();
     },
@@ -91,7 +106,10 @@ define([
       }).then(function() {
         that.inputs.then(function(inputs) {
           var promises = _.chain(inputs).map(function(input) {
-            return _.chain(that.config.output).pairs().map(function(outputNameAndDetails) {
+            return _.chain(that.config.output).pairs().filter(function(outputNameAndDetails) {
+              var details = outputNameAndDetails[1];
+              return details.tracked === undefined ? true : details.tracked;
+            }).map(function(outputNameAndDetails) {
               var details = outputNameAndDetails[1];
               return Operations.registerLabware(
                 root[details.model],
@@ -119,7 +137,7 @@ define([
 
     operate: function(happeningAt, presenters) {
       var that = this;
-      var s2root, events = [];
+      var s2root;
 
       this.owner.getS2Root().then(function (result) {
         // STEP 1: We're going to need the root later!
@@ -162,27 +180,31 @@ define([
       }).then(function(operation) {
         // STEP 5: Override the behaviour of the operation so that we do the correct things
         var doNothing = function() { };
-        var helper    = function(event) {
-          return [
-            function() { events.push(event); },           // record an event on a positive behaviour
-            function() { operation[event] = doNothing; }  // remove the operation on a negative behaviour
-          ];
-        };
-
         _.each(['start','operate','complete'], function(event) {
-          that.behaviours[event][happeningAt].apply(null, helper(event));
+          that.behaviours[event][happeningAt](function() {
+            var handler = operation[event];
+            operation[event] = function() {
+              return handler.apply(this, arguments).then(function() {
+                that.owner.childDone(that,event+'Operation',{});
+              });
+            };
+          }, function() {
+            operation[event] = doNothing;
+          });
         });
         return operation;
       }).then(function(operation) {
-        // STEP 6: Finally perform the operation and report the events that should happen
+        // STEP 6: Finally perform the operation and report the final completion
         operation.operation().then(function () {
-          _.each(events, function(event) {
-            that.owner.childDone(that,event+"Operation",{});
-          });
+          that.owner.childDone(that, 'successfulOperation', {});
+        }).fail(function() {
+          that.owner.childDone(that, 'failedOperation', {});
         });
       });
-    }
-  };
+    },
+  });
+
+  return Model;
 
   // Convenience method for dealing with finding by barcodes
   function findByBarcode(barcode, array) {

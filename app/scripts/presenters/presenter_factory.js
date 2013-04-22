@@ -4,15 +4,18 @@ define([
   'labware/presenters/waste_tube_presenter',
 
   // Add new presenters after this point for automatic registration
+
+  // The top level presenters (typically these get re-used)
+  'extraction_pipeline/presenters/row_presenter',
+  'extraction_pipeline/presenters/step_presenter',
+  'extraction_pipeline/presenters/scan_barcode_presenter',
+  'extraction_pipeline/presenters/labware_presenter',
+  'extraction_pipeline/presenters/connected_presenter',
+
+  // Presenters that add extra behaviour, for some reason
+  'extraction_pipeline/presenters/kit_presenter',
   'extraction_pipeline/presenters/selection_page_presenter',
   'extraction_pipeline/default/default_presenter',
-  'extraction_pipeline/presenters/kit_binding_page_presenter',
-  'extraction_pipeline/presenters/row_presenter',
-  'extraction_pipeline/presenters/labware_presenter',
-  'extraction_pipeline/presenters/elution_page_presenter',
-  'extraction_pipeline/presenters/scan_barcode_presenter',
-  'extraction_pipeline/presenters/byproduct_transfer_page_presenter',
-  //  'extraction_pipeline/presenters/elution_wash_page_presenter',
 ], function(TubePresenter, SpinColumnPresenter, WasteTubePresenter) {
   'use strict';
 
