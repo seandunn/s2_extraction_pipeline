@@ -67,6 +67,14 @@ define(['models/selection_page_model', 'presenters/selection_page_presenter', 's
       return mockPresenter;
     }
 
+    var createMockPresenter = function(name) {
+      var mockView = Object.create(null);
+      mockView.name = name;
+
+      // todo: finish writing this constructor
+      return mockView;
+    };
+
     function configureMockPartialFactory() {
       partialFactory = {};
       partialFactory.createPresenter = function (name, owner) {
