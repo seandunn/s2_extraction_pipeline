@@ -332,9 +332,9 @@
           }, {
             "presenterName":   "connected_presenter",
             "behaviours": {
-              "start": "next",
-              "operate": "next",
-              "complete": "next",
+              "start": "start",
+              "operate": "start",
+              "complete": "end",
               "done": "transfer"
             },
             "defaultPrinter":"Tube Printer",
@@ -399,9 +399,9 @@
           }, {
             "presenterName":   "connected_presenter",
             "behaviours": {
-              "start": "next",
-              "operate": "next",
-              "complete": "next",
+              "start": "start",
+              "operate": "start",
+              "complete": "end",
               "done": "transfer"
             },
             "defaultPrinter":"Tube Printer",
@@ -434,9 +434,9 @@
           }, {
             "presenterName":   "connected_presenter",
             "behaviours": {
-              "start": "next",
-              "operate": "next",
-              "complete": "next",
+              "start": "start",
+              "operate": "start",
+              "complete": "end",
               "done": "transfer"
             },
             "defaultPrinter":"Tube Printer",
@@ -484,10 +484,10 @@
           }, {
             "presenterName":   "connected_presenter",
             "behaviours": {
-              "start": "row",
-              "operate": "row",
-              "complete": "row",
-              "done": "next"
+              "start": "start",
+              "operate": "start",
+              "complete": "end",
+              "done": "transfer"
             },
             "defaultPrinter":"Tube Printer",
             "input":         {
