@@ -1,6 +1,6 @@
 define([
   'mapper/operations',
-  'extraction_pipeline/behaviours',
+  'extraction_pipeline/behaviours'
 ], function(Operations, Behaviour) {
   'use strict';
 
@@ -10,6 +10,7 @@ define([
       this.inputs  = $.Deferred();    // Inputs are always a deferred lookup
       this.outputs = [];              // Outputs are always an array
       this.batch   = undefined;       // There is no batch, yet
+      this.user    = undefined;       // There is no user, yet
 
       // Configure the behaviours based on the configuration
       this.behaviours = _.chain(this.config.behaviours).map(function(behaviourName, name) {
@@ -22,6 +23,11 @@ define([
       this.batch = batch;
       setupInputs(this);
       this.owner.childDone(this, "batchAdded");
+    },
+
+    setUser: function(userUUID) {
+      this.user = userUUID;
+      this.owner.childDone(this, "userAdded");
     },
 
     setupInputPresenters: function(reset) {
@@ -174,7 +180,7 @@ define([
           });
         });
       });
-    },
+    }
   };
 
   // Convenience method for dealing with finding by barcodes
