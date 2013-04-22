@@ -106,7 +106,10 @@ define([
       }).then(function() {
         that.inputs.then(function(inputs) {
           var promises = _.chain(inputs).map(function(input) {
-            return _.chain(that.config.output).pairs().map(function(outputNameAndDetails) {
+            return _.chain(that.config.output).pairs().filter(function(outputNameAndDetails) {
+              var details = outputNameAndDetails[1];
+              return details.tracked === undefined ? true : details.tracked;
+            }).map(function(outputNameAndDetails) {
               var details = outputNameAndDetails[1];
               return Operations.registerLabware(
                 root[details.model],

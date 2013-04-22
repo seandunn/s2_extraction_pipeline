@@ -141,7 +141,8 @@
                 "purpose":    "stock",
                 "model":      "spin_columns"
               }, {
-                "model": "waste_tube"
+                "model": "waste_tube",
+                "tracked": false
               }
             ]
           }
@@ -204,7 +205,8 @@
                 "purpose":    "stock",
                 "model":      "spin_columns"
               }, {
-                "model": "waste_tube"
+                "model": "waste_tube",
+                "tracked": false
               }
             ]
           }
@@ -282,7 +284,8 @@
                 "purpose":    "stock",
                 "model":      "spin_columns"
               }, {
-                "model": "waste_tube"
+                "model": "waste_tube",
+                "tracked": false
               }
             ]
           }
@@ -413,7 +416,8 @@
                 "purpose":    "stock",
                 "model":      "tubes"
               }, {
-                "model": "waste_tube"
+                "model": "waste_tube",
+                "tracked": false
               }
             ]
           }
@@ -447,7 +451,8 @@
                 "purpose":    "stock",
                 "model":      "tubes"
               }, {
-                "model": "waste_tube"
+                "model": "waste_tube",
+                "tracked": false
               }
             ]
           }
@@ -496,7 +501,8 @@
                 "purpose":    "stock",
                 "model":      "tubes"
               }, {
-                "model": "waste_tube"
+                "model": "waste_tube",
+                "tracked": false
               }
             ]
           }
