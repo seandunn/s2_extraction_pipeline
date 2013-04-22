@@ -24,13 +24,5 @@ define([
 ], function (ConnectedPresenter, View, Model) {
   "use strict";
 
-  var Presenter = ConnectedPresenter.extend('elution_presenter', Model, View);
-
-  $.extend(Presenter, {
-    readyToCreateOutputs: function() {
-      return !this.model.hasStarted();
-    },
-  });
-
-  return Presenter;
+  return ConnectedPresenter.extend('elution_presenter', Model, View);
 });

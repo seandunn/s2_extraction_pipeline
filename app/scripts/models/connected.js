@@ -12,6 +12,7 @@ define([
       this.outputs = [];              // Outputs are always an array
       this.batch   = undefined;       // There is no batch, yet
       this.user    = undefined;       // There is no user, yet
+      this.started = false;           // Has the process started
 
       // Configure the behaviours based on the configuration
       this.behaviours = _.chain(this.config.behaviours).map(function(behaviourName, name) {

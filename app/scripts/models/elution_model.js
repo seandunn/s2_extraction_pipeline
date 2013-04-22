@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
  */
 
-"use strict";
-
 define([
-  'extraction_pipeline/models/base_page_model',
-  'mapper/operations',
-  'extraction_pipeline/models/connected'
+       'extraction_pipeline/models/base_page_model',
+       'mapper/operations',
+       'extraction_pipeline/models/connected'
 ], function (BasePageModel, Operations, Connected) {
+  "use strict";
+
   var Model = Object.create(BasePageModel);
 
   $.extend(Model, Connected, {
@@ -31,8 +31,6 @@ define([
       this.owner = owner;
       this.user = undefined;
       this.batch = undefined;
-
-      this.elutionStarted = false;
 
       this.initialiseCaching();
       this.initialiseConnections(initData);
@@ -44,36 +42,28 @@ define([
       var addingRoles = {updates:[]};
 
       this.batch.getItemsGroupedByOrders()
-          .then(function (rscByOrders) {
-            _.each(rscByOrders, function (orderKey) {
-              _.each(orderKey.items, function (item) {
-                if (item.role === that.config.output[that.config.output.target].role) {
-                  addingRoles.updates.push({
-                    input:{
-                      order:orderKey.order
-                    },
-                    output:{
-                      resource:item,
-                      role:that.config.output[that.config.output.target].role,
-                      batch:that.batch.uuid
-                    }});
+      .then(function (rscByOrders) {
+        _.each(rscByOrders, function (orderKey) {
+          _.each(orderKey.items, function (item) {
+            if (item.role === that.config.output[that.config.output.target].role) {
+              addingRoles.updates.push({
+                input:{
+                  order:orderKey.order
+                },
+                output:{
+                  resource:item,
+                  role:that.config.output[that.config.output.target].role,
+                  batch:that.batch.uuid
                 }
               });
-            });
-            return Operations.stateManagement().start(addingRoles);
-          })
-          .then(function () {
-            that.elutionStarted = true;
-            that.owner.childDone(that, "elutionStarted", {});
-          }).fail(function () {
-            throw "Could not make a batch";
-          }
-      );
+            }
+          });
+        });
+        return Operations.stateManagement().start(addingRoles);
+      }).fail(function () {
+        throw "Could not make a batch";
+      });
     },
-
-    hasStarted:function () {
-      return this.elutionStarted;
-    }
   });
 
   return Model;

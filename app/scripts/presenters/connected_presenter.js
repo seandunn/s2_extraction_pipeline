@@ -112,6 +112,9 @@ define([
             this.setupSubPresenters(true);
 
             this.currentView.toggleHeaderEnabled(false);
+          } else if (action === "startOperation") {
+            this.model.started = true;
+            this.owner.childDone(this, "error", {"message":"Transfer started"});
           } else if (action === "completeOperation") {
             this.owner.childDone(this, "error", {"message":"Transfer completed"});
 
@@ -126,7 +129,7 @@ define([
           return true;
         },
         readyToCreateOutputs: function() {
-          return true;
+          return !this.model.started;
         },
         currentViewDone: function(child, action, data) {
         },

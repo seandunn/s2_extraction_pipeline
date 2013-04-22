@@ -88,6 +88,8 @@ define([
           active.model.previousDone(child, action, data);
           presenter.activePresenter = active;
         }
+      } else {
+        this.owner.childDone(child, action, data);
       }
     }
   });
