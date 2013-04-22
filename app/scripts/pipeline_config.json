@@ -55,7 +55,7 @@
             "presenterName": "kit_presenter",
             "kitType":       "DNA/RNA"
           }, {
-            "presenterName": "kit_binding_presenter",
+            "presenterName": "connected_presenter",
             "behaviours": {
               "start": "row",
               "operate": "row",
@@ -90,7 +90,7 @@
         "presenterName": "step_presenter",
         "presenters": [
           {
-            "presenterName":   "byproduct_transfer_presenter",
+            "presenterName":   "connected_presenter",
             "behaviours": {
               "start": "row",
               "operate": "row",
@@ -122,7 +122,7 @@
             "presenterName": "kit_presenter",
             "kitType":       "DNA/RNA"
           }, {
-            "presenterName":   "kit_binding_presenter",
+            "presenterName":   "connected_presenter",
             "behaviours": {
               "start": "row",
               "operate": "row",
@@ -153,7 +153,7 @@
         "presenterName": "step_presenter",
         "presenters": [
           {
-            "presenterName":   "elution_presenter",
+            "presenterName":   "connected_presenter",
             "behaviours": {
               "start": "start",
               "operate": "start",
@@ -185,7 +185,7 @@
             "presenterName": "kit_presenter",
             "kitType":       "RNA"
           }, {
-            "presenterName":   "kit_binding_presenter",
+            "presenterName":   "connected_presenter",
             "behaviours": {
               "start": "row",
               "operate": "row",
@@ -216,7 +216,7 @@
         "presenterName": "step_presenter",
         "presenters": [
           {
-            "presenterName":   "elution_presenter",
+            "presenterName":   "connected_presenter",
             "behaviours": {
               "start": "start",
               "operate": "start",
@@ -263,7 +263,7 @@
             "presenterName": "kit_presenter",
             "kitType":       "DNA"
           }, {
-            "presenterName":   "kit_binding_presenter",
+            "presenterName":   "connected_presenter",
             "behaviours": {
               "start": "row",
               "operate": "row",
@@ -327,7 +327,7 @@
             "presenterName": "kit_presenter",
             "kitType":       "DNA/RNA"
           }, {
-            "presenterName":   "kit_binding_presenter",
+            "presenterName":   "connected_presenter",
             "behaviours": {
               "start": "next",
               "operate": "next",
@@ -362,7 +362,7 @@
         "presenterName": "step_presenter",
         "presenters": [
           {
-            "presenterName":   "byproduct_transfer_presenter",
+            "presenterName":   "connected_presenter",
             "behaviours": {
               "start": "row",
               "operate": "row",
@@ -394,7 +394,7 @@
             "presenterName": "kit_presenter",
             "kitType":       "DNA/RNA"
           }, {
-            "presenterName":   "kit_binding_presenter",
+            "presenterName":   "connected_presenter",
             "behaviours": {
               "start": "next",
               "operate": "next",
@@ -428,7 +428,7 @@
             "presenterName": "kit_presenter",
             "kitType":       "RNA"
           }, {
-            "presenterName":   "kit_binding_presenter",
+            "presenterName":   "connected_presenter",
             "behaviours": {
               "start": "next",
               "operate": "next",
@@ -477,7 +477,7 @@
             "presenterName": "kit_presenter",
             "kitType":       "DNA"
           }, {
-            "presenterName":   "kit_binding_presenter",
+            "presenterName":   "connected_presenter",
             "behaviours": {
               "start": "row",
               "operate": "row",
