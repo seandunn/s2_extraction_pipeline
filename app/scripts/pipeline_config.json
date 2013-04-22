@@ -142,25 +142,30 @@
       },
 
       "samples.extraction.manual.spin_column_dna": {
-        "presenterName":   "elution_presenter",
         "processTitle":  "Manual Extraction, Spin Column DNA",
-        "behaviours": {
-          "start": "start",
-          "operate": "start",
-          "complete": "end",
-          "done": "transfer"
-        },
-        "defaultPrinter":"Tube Printer",
-        "input":         {
-          "role": "samples.extraction.manual.spin_column_dna",
-          "model":"spin_columns"
-        },
-        "output":        [
+        "presenterName": "step_presenter",
+        "presenters": [
           {
-            "role":       "samples.extraction.manual.extracted_tube_dna",
-            "aliquotType":"DNA",
-            "purpose":    "stock",
-            "model":      "tubes"
+            "presenterName":   "elution_presenter",
+            "behaviours": {
+              "start": "start",
+              "operate": "start",
+              "complete": "end",
+              "done": "transfer"
+            },
+            "defaultPrinter":"Tube Printer",
+            "input":         {
+              "role": "samples.extraction.manual.spin_column_dna",
+              "model":"spin_columns"
+            },
+            "output":        [
+              {
+                "role":       "samples.extraction.manual.extracted_tube_dna",
+                "aliquotType":"DNA",
+                "purpose":    "stock",
+                "model":      "tubes"
+              }
+            ]
           }
         ]
       },
@@ -198,25 +203,30 @@
       },
 
       "samples.extraction.manual.spin_column_rna": {
-        "presenterName":   "elution_presenter",
         "processTitle":  "Manual Extraction, Spin Column RNA",
-        "behaviours": {
-          "start": "start",
-          "operate": "start",
-          "complete": "end",
-          "done": "transfer"
-        },
-        "defaultPrinter":"Tube Printer",
-        "input":         {
-          "role": "samples.extraction.manual.spin_column_rna",
-          "model":"spin_columns"
-        },
-        "output":        [
+        "presenterName": "step_presenter",
+        "presenters": [
           {
-            "role":       "samples.extraction.manual.extracted_tube_rna",
-            "aliquotType":"RNA",
-            "purpose":    "stock",
-            "model":      "tubes"
+            "presenterName":   "elution_presenter",
+            "behaviours": {
+              "start": "start",
+              "operate": "start",
+              "complete": "end",
+              "done": "transfer"
+            },
+            "defaultPrinter":"Tube Printer",
+            "input":         {
+              "role": "samples.extraction.manual.spin_column_rna",
+              "model":"spin_columns"
+            },
+            "output":        [
+              {
+                "role":       "samples.extraction.manual.extracted_tube_rna",
+                "aliquotType":"RNA",
+                "purpose":    "stock",
+                "model":      "tubes"
+              }
+            ]
           }
         ]
       },

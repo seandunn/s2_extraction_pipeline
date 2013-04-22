@@ -38,6 +38,8 @@ define([
           return this;
         },
 
+        focus: function() {
+        },
         setupView:function () {
           this.currentView = new presenterView(this, this.jquerySelection);
           return this;
@@ -135,17 +137,21 @@ define([
             this.currentView.setPrintButtonEnabled(false);
           }
         },
-        next: function(child, action, data) {
-          if (this.checkPageComplete()) {
-            var that = this;
-            that.model.operate(action, that.rowPresenters);
-            that.model.behaviours.done[action](function() {
-              that.owner.childDone(that, "done", { batch:that.model.batch });
-            });
-          }
-        }
+        next:  eventHandler,
+        start: eventHandler,
+        end:   eventHandler
       });
       return presenter;
     }
   };
+
+  function eventHandler(child, action, data) {
+    if (this.checkPageComplete()) {
+      var that = this;
+      that.model.operate(action, that.rowPresenters);
+      that.model.behaviours.done[action](function() {
+        that.owner.childDone(that, "done", { batch:that.model.batch });
+      });
+    }
+  }
 });
