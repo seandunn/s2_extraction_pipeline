@@ -44,6 +44,16 @@ define([
       }, function() {
         return 'Unable to find labware with barcode "' + barcode + '"';
       });
+    },
+
+    // Composite behaviour: find it, if it can't be found create it.
+    composite: function(cache, barcode) {
+      var owner = this;
+      return handlers.find.apply(owner, [cache, barcode]).then(function(labware) {
+        return labware;
+      }, function() {
+        return handlers.create.apply(owner, [cache, barcode]);
+      });
     }
   };
 
