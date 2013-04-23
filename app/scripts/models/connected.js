@@ -5,6 +5,48 @@ define([
 ], function(Base, Operations, Behaviour) {
   'use strict';
 
+  var DeferredCache = Object.create(null);
+  _.extend(DeferredCache, {
+    init: function() {
+      var instance = Object.create(DeferredCache);
+      var results  = $.Deferred();
+      _.extend(instance, {
+        getByBarcode: function(requester, barcode) {
+          results.then(_.partial(findByBarcode, barcode)).then(_.partial(handleRetrieveResult, requester));
+        },
+
+        // Behave like a promise by binding through to the promise!
+        then:    _.bind(results.then, results),
+        resolve: _.bind(results.resolve, results)
+      });
+      return instance;
+    }
+  });
+
+  var ArrayCache = Object.create(null);
+  _.extend(ArrayCache, {
+    init: function() {
+      var instance = Object.create(ArrayCache);
+      var results  = [];
+      _.extend(instance, {
+        getByBarcode: function(requester, barcode) {
+          handleRetrieveResult(requester, findByBarcode(barcode, results));
+        },
+
+        // Behave like a promise
+        then: function(callback) {
+          callback(results);
+          return this;
+        },
+        resolve: function(values) {
+          results = values;
+          return this;
+        }
+      });
+      return instance
+    }
+  });
+
   var Model = Object.create(Base);
 
   _.extend(Model, {
@@ -21,12 +63,12 @@ define([
     },
 
     initialiseConnections: function(config) {
-      this.config  = config;          // Configuration of our connections
-      this.inputs  = $.Deferred();    // Inputs are always a deferred lookup
-      this.outputs = [];              // Outputs are always an array
-      this.batch   = undefined;       // There is no batch, yet
-      this.user    = undefined;       // There is no user, yet
-      this.started = false;           // Has the process started
+      this.config  = config;               // Configuration of our connections
+      this.inputs  = DeferredCache.init(); // Inputs are always a deferred lookup
+      this.outputs = ArrayCache.init();    // Outputs are always an array
+      this.batch   = undefined;            // There is no batch, yet
+      this.user    = undefined;            // There is no user, yet
+      this.started = false;                // Has the process started
 
       // Configure the behaviours based on the configuration
       this.behaviours = _.chain(this.config.behaviours).map(function(behaviourName, name) {
@@ -64,13 +106,6 @@ define([
       }
     },
 
-    getInputByBarcode: function(requester, barcode) {
-      this.inputs.then(_.partial(findByBarcode, barcode)).then(_.partial(handleRetrieveResult, requester));
-    },
-    getOutputByBarcode: function(requester, barcode) {
-      handleRetrieveResult(requester, findByBarcode(barcode, this.outputs));
-    },
-
     getRowModel:function (rowNum, input) {
       var that = this, previous = this.previous && this.printed;
       return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {
@@ -105,6 +140,7 @@ define([
         root = result;
       }).then(function() {
         that.inputs.then(function(inputs) {
+          var labware = [];
           var promises = _.chain(inputs).map(function(input) {
             return _.chain(that.config.output).pairs().filter(function(outputNameAndDetails) {
               var details = outputNameAndDetails[1];
@@ -117,7 +153,7 @@ define([
                 details.purpose
               ).then(function(state) {
                 that.stash(state.labware, state.barcode);
-                that.outputs.push(state.labware);
+                labware.push(state.labware);
                 return state.labware;
               }).fail(function() {
                 that.owner.childDone(that, "failed", {});
@@ -126,7 +162,9 @@ define([
           }).flatten().value();
 
           $.when.apply(null, promises).then(function() {
-            that.printBarcodes(that.outputs);
+            that.outputs.resolve(labware).then(function(outputs) {
+              that.printBarcodes(outputs);
+            });
             that.owner.childDone(that, 'labelPrinted', {});
           }).fail(function() {
             that.owner.childDone(that, 'failed', {});
@@ -206,13 +244,6 @@ define([
 
   return Model;
 
-  // Convenience method for dealing with finding by barcodes
-  function findByBarcode(barcode, array) {
-    return _.chain(array).find(function (resource) {
-      return resource.labels.barcode.value === barcode.BC;
-    }).value();
-  }
-
   // Configures the inputs
   function setupInputs(that) {
     that.batch.items.then(function(items) {
@@ -228,6 +259,13 @@ define([
         that.inputs.resolve(inputs);
       });
     });
+  }
+
+  // Convenience method for dealing with finding by barcodes
+  function findByBarcode(barcode, array) {
+    return _.chain(array).find(function (resource) {
+      return resource.labels.barcode.value === barcode.BC;
+    }).value();
   }
 
   // TODO: 'requester' should really have 'found' and 'notFound' callbacks
