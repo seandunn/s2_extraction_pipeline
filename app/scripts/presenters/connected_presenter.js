@@ -87,10 +87,10 @@ define([
 
         // HACK: Identify the input as the first labware presenter in the row
         if (originator.labwareModel.input && (originator.labwareModel.expected_type === this.config.input.model.singularize())) {
-          this.model.inputs.getByBarcode(originator, data);
+          this.model.inputs.getByBarcode(originator, data.BC);
           this.inputDone(child, action, data);
         } else if (!originator.labwareModel.input) {
-          this.model.outputs.getByBarcode(originator, data);
+          this.model.outputs.getByBarcode(originator, data.BC);
           this.outputDone(child, action, data);
         }
       } else if (action === 'completed') {

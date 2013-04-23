@@ -7,12 +7,25 @@ define([
 
   var DeferredCache = Object.create(null);
   _.extend(DeferredCache, {
-    init: function() {
+    init: function(missingHandler) {
       var instance = Object.create(DeferredCache);
       var results  = $.Deferred();
       _.extend(instance, {
         getByBarcode: function(requester, barcode) {
-          results.then(_.partial(findByBarcode, barcode)).then(_.partial(handleRetrieveResult, requester));
+          results.then(function(array) {
+            var result = _.find(array, function(r) { return r.labels.barcode.value === barcode; });
+            var deferred = $.Deferred();
+            deferred[result ? 'resolve' : 'reject'](result);
+            return deferred;
+          }).then(function(resource) {
+            return resource;                  // Result remains the same on success
+          }, function() {
+            return missingHandler(barcode);   // Result may be handled differently
+          }).fail(function() {
+            requester.displayErrorMessage('Barcode "' + barcode + '" not found');
+          }).done(function(result) {
+            requester.updateModel(result);
+          });
         },
 
         // Behave like a promise by binding through to the promise!
@@ -20,30 +33,6 @@ define([
         resolve: _.bind(results.resolve, results)
       });
       return instance;
-    }
-  });
-
-  var ArrayCache = Object.create(null);
-  _.extend(ArrayCache, {
-    init: function() {
-      var instance = Object.create(ArrayCache);
-      var results  = [];
-      _.extend(instance, {
-        getByBarcode: function(requester, barcode) {
-          handleRetrieveResult(requester, findByBarcode(barcode, results));
-        },
-
-        // Behave like a promise
-        then: function(callback) {
-          callback(results);
-          return this;
-        },
-        resolve: function(values) {
-          results = values;
-          return this;
-        }
-      });
-      return instance
     }
   });
 
@@ -64,8 +53,8 @@ define([
 
     initialiseConnections: function(config) {
       this.config  = config;               // Configuration of our connections
-      this.inputs  = DeferredCache.init(); // Inputs are always a deferred lookup
-      this.outputs = ArrayCache.init();    // Outputs are always an array
+      this.inputs  = DeferredCache.init(function(barcode) { }); // Cache of inputs
+      this.outputs = DeferredCache.init(function(barcode) { }); // Cache of outputs
       this.batch   = undefined;            // There is no batch, yet
       this.user    = undefined;            // There is no user, yet
       this.started = false;                // Has the process started
