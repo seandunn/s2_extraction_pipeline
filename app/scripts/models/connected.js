@@ -1,13 +1,14 @@
 define([
   'extraction_pipeline/models/base_page_model',
   'mapper/operations',
-  'extraction_pipeline/behaviours',
-], function(Base, Operations, Behaviour) {
+  'extraction_pipeline/connected/behaviours',
+  'extraction_pipeline/connected/missing_handlers'
+], function(Base, Operations, Behaviour, Missing) {
   'use strict';
 
   var DeferredCache = Object.create(null);
   _.extend(DeferredCache, {
-    init: function(missingHandler) {
+    init: function(model, missingHandler) {
       var instance = Object.create(DeferredCache);
       var results  = $.Deferred();
       _.extend(instance, {
@@ -18,9 +19,9 @@ define([
             deferred[result ? 'resolve' : 'reject'](result);
             return deferred;
           }).then(function(resource) {
-            return resource;                          // Result remains the same on success
+            return resource;                                 // Result remains the same on success
           }, function() {
-            return missingHandler(instance, barcode); // Result may be handled differently
+            return missingHandler(model, instance, barcode); // Result may be handled differently
           }).fail(function() {
             requester.displayErrorMessage('Barcode "' + barcode + '" not found');
           }).done(function(result) {
@@ -36,16 +37,12 @@ define([
     }
   });
 
-  function Missing(name) {
-    return function(cache, barcode) {
-      // Do nothing!
-    };
-  }
-
   var Model = Object.create(Base);
 
   _.extend(Model, {
     init: function(owner, config) {
+      var instance = this;
+
       this.owner = owner;
       this.user = undefined;
       this.batch = undefined;
@@ -64,7 +61,7 @@ define([
 
       // Configure the behaviour of inputs & outputs from configuration
       _.extend(this, _.chain(['inputs','outputs']).map(function(cacheName) {
-        return [cacheName, DeferredCache.init(Missing((config.cache || {})[cacheName]))];
+        return [cacheName, DeferredCache.init(instance, Missing((config.cache || {})[cacheName]))];
       }).object().value());
 
       this.initialiseCaching();
