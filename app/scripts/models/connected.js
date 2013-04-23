@@ -8,7 +8,7 @@ define([
 
   var DeferredCache = Object.create(null);
   _.extend(DeferredCache, {
-    init: function(model, missingHandler) {
+    init: function(missingHandler) {
       var instance = Object.create(DeferredCache);
       var results  = $.Deferred();
       _.extend(instance, {
@@ -21,19 +21,41 @@ define([
           }).then(function(resource) {
             return resource;                                 // Result remains the same on success
           }, function() {
-            return missingHandler(model, instance, barcode); // Result may be handled differently
-          }).fail(function() {
-            requester.displayErrorMessage('Barcode "' + barcode + '" not found');
+            return missingHandler(instance, barcode); // Result may be handled differently
+          }).fail(function(message) {
+            requester.displayErrorMessage(message);
           }).done(function(result) {
+            recache(result);
             requester.updateModel(result);
           });
         },
 
-        // Behave like a promise by binding through to the promise!
-        then:    _.bind(results.then, results),
-        resolve: _.bind(results.resolve, results)
+        // Behave like a promise but remember that the value of 'results' above can change
+        then:    resultsBound('then'),
+        resolve: resultsBound('resolve')
       });
       return instance;
+
+      // Deals with either maintenance of the cache so that we always have the freshest information
+      // presented.  Essentially if the resource is in the list (by UUID) then we remove it, before
+      // doing the default behaviour of caching it.
+      function recache(resource) {
+        results.then(function(array) {
+          return _.chain(array).reject(function(cached) {
+            return cached.uuid === resource.uuid;
+          }).union([resource]).value();
+        }).then(function(array) {
+          results = $.Deferred().resolve(array);
+        });
+      }
+
+      // Returns a function that will call the named function bound to the results.  This is not
+      // the same as _.bind as the value of results can change on each call.
+      function resultsBound(name) {
+        return function() {
+          return results[name].apply(results, arguments);
+        };
+      }
     }
   });
 
@@ -61,7 +83,8 @@ define([
 
       // Configure the behaviour of inputs & outputs from configuration
       _.extend(this, _.chain(['inputs','outputs']).map(function(cacheName) {
-        return [cacheName, DeferredCache.init(instance, Missing((config.cache || {})[cacheName]))];
+        var name = (config.cache || {})[cacheName] || 'report';
+        return [cacheName, DeferredCache.init(_.bind(Missing(name), instance))];
       }).object().value());
 
       this.initialiseCaching();
