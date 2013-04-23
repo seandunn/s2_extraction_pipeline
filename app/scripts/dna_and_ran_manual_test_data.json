@@ -349,11 +349,11 @@
       "response":   {
         "search":{
           "actions":{
-            "read": "http://localhost:9292/fd883160-8b2e-0130-b5fc-282066132de2",
-            "first":"http://localhost:9292/fd883160-8b2e-0130-b5fc-282066132de2/page=1",
-            "last": "http://localhost:9292/fd883160-8b2e-0130-b5fc-282066132de2/page=-1"
+            "read": "http://localhost:9292/6940a970-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/6940a970-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/6940a970-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "fd883160-8b2e-0130-b5fc-282066132de2"
+          "uuid":   "6940a970-8d8b-0130-b64f-282066132de2"
         }
       },
       "next_stage": 1
@@ -364,22 +364,22 @@
     {
       "description":"Find tube by barcode (1220017279667)",
       "method":     "get",
-      "url":        "/fd883160-8b2e-0130-b5fc-282066132de2",
+      "url":        "/6940a970-8d8b-0130-b64f-282066132de2",
       "response":   {
         "search":{
           "actions":{
-            "read": "http://localhost:9292/fd883160-8b2e-0130-b5fc-282066132de2",
-            "first":"http://localhost:9292/fd883160-8b2e-0130-b5fc-282066132de2/page=1",
-            "last": "http://localhost:9292/fd883160-8b2e-0130-b5fc-282066132de2/page=-1"
+            "read": "http://localhost:9292/6940a970-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/6940a970-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/6940a970-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "fd883160-8b2e-0130-b5fc-282066132de2"
+          "uuid":   "6940a970-8d8b-0130-b64f-282066132de2"
         }
       }
     },
     {
       "description":"Get the search result (tube)",
       "method":     "get",
-      "url":        "/fd883160-8b2e-0130-b5fc-282066132de2/page=1",
+      "url":        "/6940a970-8d8b-0130-b64f-282066132de2/page=1",
       "response":   {
         "actions":{
           "read": "http://localhost:9292/tubes/page=1",
@@ -390,24 +390,24 @@
         "tubes":  [
           {
             "actions":   {
-              "read":  "http://localhost:9292/f43af7d0-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f43af7d0-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f43af7d0-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f43af7d0-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66e0f490-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66e0f490-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66e0f490-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66e0f490-8d8b-0130-b650-282066132de2"
             },
-            "uuid":      "f43af7d0-8b2e-0130-b5fd-282066132de2",
+            "uuid":      "66e0f490-8d8b-0130-b650-282066132de2",
             "type":      null,
             "max_volume":null,
             "aliquots":  [
               {
                 "sample":  {
                   "actions":{
-                    "read":  "http://localhost:9292/f4388bd0-8b2e-0130-b5fd-282066132de2",
-                    "create":"http://localhost:9292/f4388bd0-8b2e-0130-b5fd-282066132de2",
-                    "update":"http://localhost:9292/f4388bd0-8b2e-0130-b5fd-282066132de2",
-                    "delete":"http://localhost:9292/f4388bd0-8b2e-0130-b5fd-282066132de2"
+                    "read":  "http://localhost:9292/66deea10-8d8b-0130-b650-282066132de2",
+                    "create":"http://localhost:9292/66deea10-8d8b-0130-b650-282066132de2",
+                    "update":"http://localhost:9292/66deea10-8d8b-0130-b650-282066132de2",
+                    "delete":"http://localhost:9292/66deea10-8d8b-0130-b650-282066132de2"
                   },
-                  "uuid":   "f4388bd0-8b2e-0130-b5fd-282066132de2",
+                  "uuid":   "66deea10-8d8b-0130-b650-282066132de2",
                   "name":   "sample_0"
                 },
                 "quantity":1000,
@@ -417,12 +417,12 @@
             ],
             "labels":    {
               "actions":{
-                "read":  "http://localhost:9292/f43b08b0-8b2e-0130-b5fd-282066132de2",
-                "create":"http://localhost:9292/f43b08b0-8b2e-0130-b5fd-282066132de2",
-                "update":"http://localhost:9292/f43b08b0-8b2e-0130-b5fd-282066132de2",
-                "delete":"http://localhost:9292/f43b08b0-8b2e-0130-b5fd-282066132de2"
+                "read":  "http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2"
               },
-              "uuid":   "f43b08b0-8b2e-0130-b5fd-282066132de2",
+              "uuid":   "66e10470-8d8b-0130-b650-282066132de2",
               "barcode":{
                 "value":"1220017279667",
                 "type": "ean13-barcode"
@@ -443,7 +443,7 @@
           "model":      "order",
           "criteria":   {
             "item":{
-              "uuid":"f43af7d0-8b2e-0130-b5fd-282066132de2"
+              "uuid":"66e0f490-8d8b-0130-b650-282066132de2"
             }
           }
         }
@@ -451,11 +451,11 @@
       "response":   {
         "search":{
           "actions":{
-            "read": "http://localhost:9292/fdcc5030-8b2e-0130-b5fc-282066132de2",
-            "first":"http://localhost:9292/fdcc5030-8b2e-0130-b5fc-282066132de2/page=1",
-            "last": "http://localhost:9292/fdcc5030-8b2e-0130-b5fc-282066132de2/page=-1"
+            "read": "http://localhost:9292/69509b60-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69509b60-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69509b60-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "fdcc5030-8b2e-0130-b5fc-282066132de2"
+          "uuid":   "69509b60-8d8b-0130-b64f-282066132de2"
         }
       },
       "next_stage": 2
@@ -466,22 +466,22 @@
     {
       "description":"Find the order by tube uuid",
       "method":     "get",
-      "url":        "/fdcc5030-8b2e-0130-b5fc-282066132de2",
+      "url":        "/69509b60-8d8b-0130-b64f-282066132de2",
       "response":   {
         "search":{
           "actions":{
-            "read": "http://localhost:9292/fdcc5030-8b2e-0130-b5fc-282066132de2",
-            "first":"http://localhost:9292/fdcc5030-8b2e-0130-b5fc-282066132de2/page=1",
-            "last": "http://localhost:9292/fdcc5030-8b2e-0130-b5fc-282066132de2/page=-1"
+            "read": "http://localhost:9292/69509b60-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69509b60-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69509b60-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "fdcc5030-8b2e-0130-b5fc-282066132de2"
+          "uuid":   "69509b60-8d8b-0130-b64f-282066132de2"
         }
       }
     },
     {
       "description":"Get the search results (order)",
       "method":     "get",
-      "url":        "/fdcc5030-8b2e-0130-b5fc-282066132de2/page=1",
+      "url":        "/69509b60-8d8b-0130-b64f-282066132de2/page=1",
       "response":   {
         "actions":{
           "read": "http://localhost:9292/orders/page=1",
@@ -492,12 +492,12 @@
         "orders": [
           {
             "actions":   {
-              "read":  "http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
             },
-            "uuid":      "f4404a30-8b2e-0130-b5fd-282066132de2",
+            "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
             "pipeline":  "DNA+RNA manual extraction",
             "status":    "draft",
             "parameters":{},
@@ -505,31 +505,31 @@
             "cost_code": "cost code",
             "creator":   {
               "actions":{
-                "read":  "http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-                "create":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-                "update":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-                "delete":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2"
+                "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
               },
-              "uuid":   "f4377d80-8b2e-0130-b5fd-282066132de2"
+              "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
             },
             "study":     {
               "actions":{
-                "read":  "http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-                "create":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-                "update":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-                "delete":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2"
+                "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
               },
-              "uuid":   "f4378cc0-8b2e-0130-b5fd-282066132de2"
+              "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
             },
             "items":     {
               "samples.extraction.manual.dna_and_rna.input_tube_nap":[
                 {
-                  "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                  "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
                   "batch": null
                 },
                 {
-                  "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                  "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                   "status":"done",
                   "batch": null
                 }
@@ -560,11 +560,11 @@
       "response":   {
         "search":{
           "actions":{
-            "read": "http://localhost:9292/fdfb8c60-8b2e-0130-b5fc-282066132de2",
-            "first":"http://localhost:9292/fdfb8c60-8b2e-0130-b5fc-282066132de2/page=1",
-            "last": "http://localhost:9292/fdfb8c60-8b2e-0130-b5fc-282066132de2/page=-1"
+            "read": "http://localhost:9292/69584790-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69584790-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69584790-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "fdfb8c60-8b2e-0130-b5fc-282066132de2"
+          "uuid":   "69584790-8d8b-0130-b64f-282066132de2"
         }
       },
       "next_stage": 3
@@ -575,22 +575,22 @@
     {
       "description":"Find tube by barcode (1220017279668)",
       "method":     "get",
-      "url":        "/fdfb8c60-8b2e-0130-b5fc-282066132de2",
+      "url":        "/69584790-8d8b-0130-b64f-282066132de2",
       "response":   {
         "search":{
           "actions":{
-            "read": "http://localhost:9292/fdfb8c60-8b2e-0130-b5fc-282066132de2",
-            "first":"http://localhost:9292/fdfb8c60-8b2e-0130-b5fc-282066132de2/page=1",
-            "last": "http://localhost:9292/fdfb8c60-8b2e-0130-b5fc-282066132de2/page=-1"
+            "read": "http://localhost:9292/69584790-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69584790-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69584790-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "fdfb8c60-8b2e-0130-b5fc-282066132de2"
+          "uuid":   "69584790-8d8b-0130-b64f-282066132de2"
         }
       }
     },
     {
       "description":"Get the search result (tube)",
       "method":     "get",
-      "url":        "/fdfb8c60-8b2e-0130-b5fc-282066132de2/page=1",
+      "url":        "/69584790-8d8b-0130-b64f-282066132de2/page=1",
       "response":   {
         "actions":{
           "read": "http://localhost:9292/tubes/page=1",
@@ -601,24 +601,24 @@
         "tubes":  [
           {
             "actions":   {
-              "read":  "http://localhost:9292/f43cc070-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f43cc070-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f43cc070-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f43cc070-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66e299e0-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66e299e0-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66e299e0-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66e299e0-8d8b-0130-b650-282066132de2"
             },
-            "uuid":      "f43cc070-8b2e-0130-b5fd-282066132de2",
+            "uuid":      "66e299e0-8d8b-0130-b650-282066132de2",
             "type":      null,
             "max_volume":null,
             "aliquots":  [
               {
                 "sample":  {
                   "actions":{
-                    "read":  "http://localhost:9292/f4393c60-8b2e-0130-b5fd-282066132de2",
-                    "create":"http://localhost:9292/f4393c60-8b2e-0130-b5fd-282066132de2",
-                    "update":"http://localhost:9292/f4393c60-8b2e-0130-b5fd-282066132de2",
-                    "delete":"http://localhost:9292/f4393c60-8b2e-0130-b5fd-282066132de2"
+                    "read":  "http://localhost:9292/66df85f0-8d8b-0130-b650-282066132de2",
+                    "create":"http://localhost:9292/66df85f0-8d8b-0130-b650-282066132de2",
+                    "update":"http://localhost:9292/66df85f0-8d8b-0130-b650-282066132de2",
+                    "delete":"http://localhost:9292/66df85f0-8d8b-0130-b650-282066132de2"
                   },
-                  "uuid":   "f4393c60-8b2e-0130-b5fd-282066132de2",
+                  "uuid":   "66df85f0-8d8b-0130-b650-282066132de2",
                   "name":   "sample_1"
                 },
                 "quantity":1000,
@@ -628,12 +628,12 @@
             ],
             "labels":    {
               "actions":{
-                "read":  "http://localhost:9292/f43ccf70-8b2e-0130-b5fd-282066132de2",
-                "create":"http://localhost:9292/f43ccf70-8b2e-0130-b5fd-282066132de2",
-                "update":"http://localhost:9292/f43ccf70-8b2e-0130-b5fd-282066132de2",
-                "delete":"http://localhost:9292/f43ccf70-8b2e-0130-b5fd-282066132de2"
+                "read":  "http://localhost:9292/66e2a980-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66e2a980-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66e2a980-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66e2a980-8d8b-0130-b650-282066132de2"
               },
-              "uuid":   "f43ccf70-8b2e-0130-b5fd-282066132de2",
+              "uuid":   "66e2a980-8d8b-0130-b650-282066132de2",
               "barcode":{
                 "value":"1220017279668",
                 "type": "ean13-barcode"
@@ -655,12 +655,12 @@
       "response":   {
         "batch":{
           "actions":{
-            "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+            "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+          "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
           "process":null,
           "kit":    null
         }
@@ -673,16 +673,16 @@
     {
       "description":"Create a new batch",
       "method":     "get",
-      "url":        "/fe285260-8b2e-0130-b5fc-282066132de2",
+      "url":        "/695ff060-8d8b-0130-b64f-282066132de2",
       "response":   {
         "batch":{
           "actions":{
-            "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+            "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+          "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
           "process":null,
           "kit":    null
         }
@@ -699,7 +699,7 @@
           "model":      "order",
           "criteria":   {
             "item":{
-              "uuid":"f43cc070-8b2e-0130-b5fd-282066132de2"
+              "uuid":"66e299e0-8d8b-0130-b650-282066132de2"
             }
           }
         }
@@ -707,11 +707,11 @@
       "response":   {
         "search":{
           "actions":{
-            "read": "http://localhost:9292/fe57aef0-8b2e-0130-b5fc-282066132de2",
-            "first":"http://localhost:9292/fe57aef0-8b2e-0130-b5fc-282066132de2/page=1",
-            "last": "http://localhost:9292/fe57aef0-8b2e-0130-b5fc-282066132de2/page=-1"
+            "read": "http://localhost:9292/69649440-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69649440-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69649440-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "fe57aef0-8b2e-0130-b5fc-282066132de2"
+          "uuid":   "69649440-8d8b-0130-b64f-282066132de2"
         }
       },
       "next_stage": 5
@@ -722,22 +722,22 @@
     {
       "description":"Find the order by tube uuid",
       "method":     "get",
-      "url":        "/fe57aef0-8b2e-0130-b5fc-282066132de2",
+      "url":        "/69649440-8d8b-0130-b64f-282066132de2",
       "response":   {
         "search":{
           "actions":{
-            "read": "http://localhost:9292/fe57aef0-8b2e-0130-b5fc-282066132de2",
-            "first":"http://localhost:9292/fe57aef0-8b2e-0130-b5fc-282066132de2/page=1",
-            "last": "http://localhost:9292/fe57aef0-8b2e-0130-b5fc-282066132de2/page=-1"
+            "read": "http://localhost:9292/69649440-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69649440-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69649440-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "fe57aef0-8b2e-0130-b5fc-282066132de2"
+          "uuid":   "69649440-8d8b-0130-b64f-282066132de2"
         }
       }
     },
     {
       "description":"Get the search results (order)",
       "method":     "get",
-      "url":        "/fe57aef0-8b2e-0130-b5fc-282066132de2/page=1",
+      "url":        "/69649440-8d8b-0130-b64f-282066132de2/page=1",
       "response":   {
         "actions":{
           "read": "http://localhost:9292/orders/page=1",
@@ -748,12 +748,12 @@
         "orders": [
           {
             "actions":   {
-              "read":  "http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
             },
-            "uuid":      "f4404a30-8b2e-0130-b5fd-282066132de2",
+            "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
             "pipeline":  "DNA+RNA manual extraction",
             "status":    "draft",
             "parameters":{},
@@ -761,31 +761,31 @@
             "cost_code": "cost code",
             "creator":   {
               "actions":{
-                "read":  "http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-                "create":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-                "update":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-                "delete":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2"
+                "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
               },
-              "uuid":   "f4377d80-8b2e-0130-b5fd-282066132de2"
+              "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
             },
             "study":     {
               "actions":{
-                "read":  "http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-                "create":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-                "update":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-                "delete":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2"
+                "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
               },
-              "uuid":   "f4378cc0-8b2e-0130-b5fd-282066132de2"
+              "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
             },
             "items":     {
               "samples.extraction.manual.dna_and_rna.input_tube_nap":[
                 {
-                  "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                  "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
                   "batch": null
                 },
                 {
-                  "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                  "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                   "status":"done",
                   "batch": null
                 }
@@ -798,16 +798,16 @@
     {
       "description":"Assign the batch uuid to the tubes in the order items",
       "method":     "put",
-      "url":        "/f4404a30-8b2e-0130-b5fd-282066132de2",
+      "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
       "request":    {
         "user": "username",
         "items":{
           "samples.extraction.manual.dna_and_rna.input_tube_nap":{
-            "f43af7d0-8b2e-0130-b5fd-282066132de2":{
-              "batch_uuid":"fe285260-8b2e-0130-b5fc-282066132de2"
+            "66e0f490-8d8b-0130-b650-282066132de2":{
+              "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
             },
-            "f43cc070-8b2e-0130-b5fd-282066132de2":{
-              "batch_uuid":"fe285260-8b2e-0130-b5fc-282066132de2"
+            "66e299e0-8d8b-0130-b650-282066132de2":{
+              "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
             }
           }
         }
@@ -815,12 +815,12 @@
       "response":   {
         "order":{
           "actions":   {
-            "read":  "http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "create":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "update":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "delete":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2"
+            "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
           },
-          "uuid":      "f4404a30-8b2e-0130-b5fd-282066132de2",
+          "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
           "pipeline":  "DNA+RNA manual extraction",
           "status":    "draft",
           "parameters":{},
@@ -828,50 +828,50 @@
           "cost_code": "cost code",
           "creator":   {
             "actions":{
-              "read":  "http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4377d80-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
           },
           "study":     {
             "actions":{
-              "read":  "http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4378cc0-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
             "samples.extraction.manual.dna_and_rna.input_tube_nap":[
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
@@ -888,16 +888,16 @@
     {
       "description":"Assign the batch uuid to the tubes in the order items",
       "method":     "get",
-      "url":        "/f4404a30-8b2e-0130-b5fd-282066132de2",
+      "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
       "response":   {
         "order":{
           "actions":   {
-            "read":  "http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "create":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "update":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "delete":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2"
+            "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
           },
-          "uuid":      "f4404a30-8b2e-0130-b5fd-282066132de2",
+          "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
           "pipeline":  "DNA+RNA manual extraction",
           "status":    "draft",
           "parameters":{},
@@ -905,50 +905,50 @@
           "cost_code": "cost code",
           "creator":   {
             "actions":{
-              "read":  "http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4377d80-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
           },
           "study":     {
             "actions":{
-              "read":  "http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4378cc0-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
             "samples.extraction.manual.dna_and_rna.input_tube_nap":[
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
@@ -969,7 +969,7 @@
           "model":      "order",
           "criteria":   {
             "item":{
-              "batch":"fe285260-8b2e-0130-b5fc-282066132de2"
+              "batch":"695ff060-8d8b-0130-b64f-282066132de2"
             }
           }
         }
@@ -977,11 +977,11 @@
       "response":   {
         "search":{
           "actions":{
-            "read": "http://localhost:9292/fecbc6a0-8b2e-0130-b5fc-282066132de2",
-            "first":"http://localhost:9292/fecbc6a0-8b2e-0130-b5fc-282066132de2/page=1",
-            "last": "http://localhost:9292/fecbc6a0-8b2e-0130-b5fc-282066132de2/page=-1"
+            "read": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "fecbc6a0-8b2e-0130-b5fc-282066132de2"
+          "uuid":   "69d71f40-8d8b-0130-b64f-282066132de2"
         }
       },
       "next_stage": 7
@@ -992,22 +992,22 @@
     {
       "description":"Create the search order by batch",
       "method":     "get",
-      "url":        "/fecbc6a0-8b2e-0130-b5fc-282066132de2",
+      "url":        "/69d71f40-8d8b-0130-b64f-282066132de2",
       "response":   {
         "search":{
           "actions":{
-            "read": "http://localhost:9292/fecbc6a0-8b2e-0130-b5fc-282066132de2",
-            "first":"http://localhost:9292/fecbc6a0-8b2e-0130-b5fc-282066132de2/page=1",
-            "last": "http://localhost:9292/fecbc6a0-8b2e-0130-b5fc-282066132de2/page=-1"
+            "read": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "fecbc6a0-8b2e-0130-b5fc-282066132de2"
+          "uuid":   "69d71f40-8d8b-0130-b64f-282066132de2"
         }
       }
     },
     {
       "description":"Get the result orders",
       "method":     "get",
-      "url":        "/fecbc6a0-8b2e-0130-b5fc-282066132de2/page=1",
+      "url":        "/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
       "response":   {
         "actions":{
           "read": "http://localhost:9292/orders/page=1",
@@ -1018,12 +1018,12 @@
         "orders": [
           {
             "actions":   {
-              "read":  "http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
             },
-            "uuid":      "f4404a30-8b2e-0130-b5fd-282066132de2",
+            "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
             "pipeline":  "DNA+RNA manual extraction",
             "status":    "draft",
             "parameters":{},
@@ -1031,50 +1031,50 @@
             "cost_code": "cost code",
             "creator":   {
               "actions":{
-                "read":  "http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-                "create":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-                "update":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-                "delete":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2"
+                "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
               },
-              "uuid":   "f4377d80-8b2e-0130-b5fd-282066132de2"
+              "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
             },
             "study":     {
               "actions":{
-                "read":  "http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-                "create":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-                "update":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-                "delete":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2"
+                "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
               },
-              "uuid":   "f4378cc0-8b2e-0130-b5fd-282066132de2"
+              "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
             },
             "items":     {
               "samples.extraction.manual.dna_and_rna.input_tube_nap":[
                 {
-                  "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                  "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
                   "batch": {
                     "actions":{
-                      "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                     },
-                    "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                     "process":null,
                     "kit":    null
                   }
                 },
                 {
-                  "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                  "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                   "status":"done",
                   "batch": {
                     "actions":{
-                      "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                     },
-                    "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                     "process":null,
                     "kit":    null
                   }
@@ -1088,18 +1088,18 @@
     {
       "description":"Add the tube_to_be_extracted_nap under the role binding_tube_to_be_extracted_nap and start them.",
       "method":     "put",
-      "url":        "/f4404a30-8b2e-0130-b5fd-282066132de2",
+      "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
       "request":    {
         "user": "username",
         "items":{
           "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":{
-            "f43af7d0-8b2e-0130-b5fd-282066132de2":{
+            "66e0f490-8d8b-0130-b650-282066132de2":{
               "event":     "start",
-              "batch_uuid":"fe285260-8b2e-0130-b5fc-282066132de2"
+              "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
             },
-            "f43cc070-8b2e-0130-b5fd-282066132de2":{
+            "66e299e0-8d8b-0130-b650-282066132de2":{
               "event":     "start",
-              "batch_uuid":"fe285260-8b2e-0130-b5fc-282066132de2"
+              "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
             }
           }
         }
@@ -1107,12 +1107,12 @@
       "response":   {
         "order":{
           "actions":   {
-            "read":  "http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "create":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "update":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "delete":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2"
+            "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
           },
-          "uuid":      "f4404a30-8b2e-0130-b5fd-282066132de2",
+          "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
           "pipeline":  "DNA+RNA manual extraction",
           "status":    "draft",
           "parameters":{},
@@ -1120,50 +1120,50 @@
           "cost_code": "cost code",
           "creator":   {
             "actions":{
-              "read":  "http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4377d80-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
           },
           "study":     {
             "actions":{
-              "read":  "http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4378cc0-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
             "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
@@ -1171,31 +1171,31 @@
             ],
             "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"in_progress",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"in_progress",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
@@ -1212,16 +1212,16 @@
     {
       "description":"Add the tube_to_be_extracted_nap under the role binding_tube_to_be_extracted_nap and start them.",
       "method":     "get",
-      "url":        "/f4404a30-8b2e-0130-b5fd-282066132de2",
+      "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
       "response":   {
         "order":{
           "actions":   {
-            "read":  "http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "create":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "update":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "delete":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2"
+            "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
           },
-          "uuid":      "f4404a30-8b2e-0130-b5fd-282066132de2",
+          "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
           "pipeline":  "DNA+RNA manual extraction",
           "status":    "draft",
           "parameters":{},
@@ -1229,50 +1229,50 @@
           "cost_code": "cost code",
           "creator":   {
             "actions":{
-              "read":  "http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4377d80-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
           },
           "study":     {
             "actions":{
-              "read":  "http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4378cc0-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
             "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
@@ -1280,31 +1280,31 @@
             ],
             "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"in_progress",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"in_progress",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
@@ -1317,23 +1317,23 @@
     {
       "description":"Change the status of binding_tube_to_be_extracted_nap to done. Change the status of tube_to_be_extracted_nap to unused.",
       "method":     "put",
-      "url":        "/f4404a30-8b2e-0130-b5fd-282066132de2",
+      "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
       "request":    {
         "user": "username",
         "items":{
           "samples.extraction.manual.dna_and_rna.input_tube_nap":        {
-            "f43af7d0-8b2e-0130-b5fd-282066132de2":{
+            "66e0f490-8d8b-0130-b650-282066132de2":{
               "event":"unuse"
             },
-            "f43cc070-8b2e-0130-b5fd-282066132de2":{
+            "66e299e0-8d8b-0130-b650-282066132de2":{
               "event":"unuse"
             }
           },
           "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":{
-            "f43af7d0-8b2e-0130-b5fd-282066132de2":{
+            "66e0f490-8d8b-0130-b650-282066132de2":{
               "event":"complete"
             },
-            "f43cc070-8b2e-0130-b5fd-282066132de2":{
+            "66e299e0-8d8b-0130-b650-282066132de2":{
               "event":"complete"
             }
           }
@@ -1342,12 +1342,12 @@
       "response":   {
         "order":{
           "actions":   {
-            "read":  "http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "create":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "update":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "delete":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2"
+            "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
           },
-          "uuid":      "f4404a30-8b2e-0130-b5fd-282066132de2",
+          "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
           "pipeline":  "DNA+RNA manual extraction",
           "status":    "draft",
           "parameters":{},
@@ -1355,50 +1355,50 @@
           "cost_code": "cost code",
           "creator":   {
             "actions":{
-              "read":  "http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4377d80-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
           },
           "study":     {
             "actions":{
-              "read":  "http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4378cc0-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
             "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"unused",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"unused",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
@@ -1406,31 +1406,31 @@
             ],
             "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
@@ -1447,16 +1447,16 @@
     {
       "description":"Change the status of binding_tube_to_be_extracted_nap to done. Change the status of tube_to_be_extracted_nap to unused.",
       "method":     "get",
-      "url":        "/f4404a30-8b2e-0130-b5fd-282066132de2",
+      "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
       "response":   {
         "order":{
           "actions":   {
-            "read":  "http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "create":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "update":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "delete":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2"
+            "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
           },
-          "uuid":      "f4404a30-8b2e-0130-b5fd-282066132de2",
+          "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
           "pipeline":  "DNA+RNA manual extraction",
           "status":    "draft",
           "parameters":{},
@@ -1464,50 +1464,50 @@
           "cost_code": "cost code",
           "creator":   {
             "actions":{
-              "read":  "http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4377d80-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
           },
           "study":     {
             "actions":{
-              "read":  "http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4378cc0-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
             "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"unused",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"unused",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
@@ -1515,31 +1515,31 @@
             ],
             "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
                   "kit":    null
                 }
@@ -1560,7 +1560,7 @@
           "model":      "order",
           "criteria":   {
             "item":{
-              "batch":"fe285260-8b2e-0130-b5fc-282066132de2"
+              "batch":"695ff060-8d8b-0130-b64f-282066132de2"
             }
           }
         }
@@ -1568,11 +1568,11 @@
       "response":   {
         "search":{
           "actions":{
-            "read": "http://localhost:9292/fecbc6a0-8b2e-0130-b5fc-282066132de2",
-            "first":"http://localhost:9292/fecbc6a0-8b2e-0130-b5fc-282066132de2/page=1",
-            "last": "http://localhost:9292/fecbc6a0-8b2e-0130-b5fc-282066132de2/page=-1"
+            "read": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "fecbc6a0-8b2e-0130-b5fc-282066132de2"
+          "uuid":   "69d71f40-8d8b-0130-b64f-282066132de2"
         }
       },
       "next_stage": 10
@@ -1583,22 +1583,22 @@
     {
       "description":"Create the search order by batch",
       "method":     "get",
-      "url":        "/fecbc6a0-8b2e-0130-b5fc-282066132de2",
+      "url":        "/69d71f40-8d8b-0130-b64f-282066132de2",
       "response":   {
         "search":{
           "actions":{
-            "read": "http://localhost:9292/fecbc6a0-8b2e-0130-b5fc-282066132de2",
-            "first":"http://localhost:9292/fecbc6a0-8b2e-0130-b5fc-282066132de2/page=1",
-            "last": "http://localhost:9292/fecbc6a0-8b2e-0130-b5fc-282066132de2/page=-1"
+            "read": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "fecbc6a0-8b2e-0130-b5fc-282066132de2"
+          "uuid":   "69d71f40-8d8b-0130-b64f-282066132de2"
         }
       }
     },
     {
       "description":"Get the result orders",
       "method":     "get",
-      "url":        "/fecbc6a0-8b2e-0130-b5fc-282066132de2/page=1",
+      "url":        "/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
       "response":   {
         "actions":{
           "read": "http://localhost:9292/orders/page=1",
@@ -1609,12 +1609,12 @@
         "orders": [
           {
             "actions":   {
-              "read":  "http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
             },
-            "uuid":      "f4404a30-8b2e-0130-b5fd-282066132de2",
+            "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
             "pipeline":  "DNA+RNA manual extraction",
             "status":    "draft",
             "parameters":{},
@@ -1622,50 +1622,50 @@
             "cost_code": "cost code",
             "creator":   {
               "actions":{
-                "read":  "http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-                "create":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-                "update":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-                "delete":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2"
+                "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
               },
-              "uuid":   "f4377d80-8b2e-0130-b5fd-282066132de2"
+              "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
             },
             "study":     {
               "actions":{
-                "read":  "http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-                "create":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-                "update":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-                "delete":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2"
+                "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
               },
-              "uuid":   "f4378cc0-8b2e-0130-b5fd-282066132de2"
+              "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
             },
             "items":     {
               "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
                 {
-                  "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                  "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"unused",
                   "batch": {
                     "actions":{
-                      "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                     },
-                    "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                     "process":null,
                     "kit":    null
                   }
                 },
                 {
-                  "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                  "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                   "status":"unused",
                   "batch": {
                     "actions":{
-                      "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                     },
-                    "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                     "process":null,
                     "kit":    null
                   }
@@ -1673,31 +1673,31 @@
               ],
               "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
                 {
-                  "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                  "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
                   "batch": {
                     "actions":{
-                      "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                     },
-                    "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                     "process":null,
                     "kit":    null
                   }
                 },
                 {
-                  "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                  "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                   "status":"done",
                   "batch": {
                     "actions":{
-                      "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                      "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                     },
-                    "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                     "process":null,
                     "kit":    null
                   }
@@ -1711,28 +1711,28 @@
     {
       "description":"Get the result orders",
       "method":     "get",
-      "url":        "/f43af7d0-8b2e-0130-b5fd-282066132de2",
+      "url":        "/66e0f490-8d8b-0130-b650-282066132de2",
       "response":   {
         "tube":{
           "actions":   {
-            "read":  "http://localhost:9292/f43af7d0-8b2e-0130-b5fd-282066132de2",
-            "create":"http://localhost:9292/f43af7d0-8b2e-0130-b5fd-282066132de2",
-            "update":"http://localhost:9292/f43af7d0-8b2e-0130-b5fd-282066132de2",
-            "delete":"http://localhost:9292/f43af7d0-8b2e-0130-b5fd-282066132de2"
+            "read":  "http://localhost:9292/66e0f490-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e0f490-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e0f490-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e0f490-8d8b-0130-b650-282066132de2"
           },
-          "uuid":      "f43af7d0-8b2e-0130-b5fd-282066132de2",
+          "uuid":      "66e0f490-8d8b-0130-b650-282066132de2",
           "type":      null,
           "max_volume":null,
           "aliquots":  [
             {
               "sample":  {
                 "actions":{
-                  "read":  "http://localhost:9292/f4388bd0-8b2e-0130-b5fd-282066132de2",
-                  "create":"http://localhost:9292/f4388bd0-8b2e-0130-b5fd-282066132de2",
-                  "update":"http://localhost:9292/f4388bd0-8b2e-0130-b5fd-282066132de2",
-                  "delete":"http://localhost:9292/f4388bd0-8b2e-0130-b5fd-282066132de2"
+                  "read":  "http://localhost:9292/66deea10-8d8b-0130-b650-282066132de2",
+                  "create":"http://localhost:9292/66deea10-8d8b-0130-b650-282066132de2",
+                  "update":"http://localhost:9292/66deea10-8d8b-0130-b650-282066132de2",
+                  "delete":"http://localhost:9292/66deea10-8d8b-0130-b650-282066132de2"
                 },
-                "uuid":   "f4388bd0-8b2e-0130-b5fd-282066132de2",
+                "uuid":   "66deea10-8d8b-0130-b650-282066132de2",
                 "name":   "sample_0"
               },
               "quantity":1000,
@@ -1742,12 +1742,12 @@
           ],
           "labels":    {
             "actions":{
-              "read":  "http://localhost:9292/f43b08b0-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f43b08b0-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f43b08b0-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f43b08b0-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f43b08b0-8b2e-0130-b5fd-282066132de2",
+            "uuid":   "66e10470-8d8b-0130-b650-282066132de2",
             "barcode":{
               "value":"1220017279667",
               "type": "ean13-barcode"
@@ -1759,28 +1759,28 @@
     {
       "description":"Get the result orders",
       "method":     "get",
-      "url":        "/f43cc070-8b2e-0130-b5fd-282066132de2",
+      "url":        "/66e299e0-8d8b-0130-b650-282066132de2",
       "response":   {
         "tube":{
           "actions":   {
-            "read":  "http://localhost:9292/f43cc070-8b2e-0130-b5fd-282066132de2",
-            "create":"http://localhost:9292/f43cc070-8b2e-0130-b5fd-282066132de2",
-            "update":"http://localhost:9292/f43cc070-8b2e-0130-b5fd-282066132de2",
-            "delete":"http://localhost:9292/f43cc070-8b2e-0130-b5fd-282066132de2"
+            "read":  "http://localhost:9292/66e299e0-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e299e0-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e299e0-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e299e0-8d8b-0130-b650-282066132de2"
           },
-          "uuid":      "f43cc070-8b2e-0130-b5fd-282066132de2",
+          "uuid":      "66e299e0-8d8b-0130-b650-282066132de2",
           "type":      null,
           "max_volume":null,
           "aliquots":  [
             {
               "sample":  {
                 "actions":{
-                  "read":  "http://localhost:9292/f4393c60-8b2e-0130-b5fd-282066132de2",
-                  "create":"http://localhost:9292/f4393c60-8b2e-0130-b5fd-282066132de2",
-                  "update":"http://localhost:9292/f4393c60-8b2e-0130-b5fd-282066132de2",
-                  "delete":"http://localhost:9292/f4393c60-8b2e-0130-b5fd-282066132de2"
+                  "read":  "http://localhost:9292/66df85f0-8d8b-0130-b650-282066132de2",
+                  "create":"http://localhost:9292/66df85f0-8d8b-0130-b650-282066132de2",
+                  "update":"http://localhost:9292/66df85f0-8d8b-0130-b650-282066132de2",
+                  "delete":"http://localhost:9292/66df85f0-8d8b-0130-b650-282066132de2"
                 },
-                "uuid":   "f4393c60-8b2e-0130-b5fd-282066132de2",
+                "uuid":   "66df85f0-8d8b-0130-b650-282066132de2",
                 "name":   "sample_1"
               },
               "quantity":1000,
@@ -1790,12 +1790,12 @@
           ],
           "labels":    {
             "actions":{
-              "read":  "http://localhost:9292/f43ccf70-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f43ccf70-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f43ccf70-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f43ccf70-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66e2a980-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66e2a980-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66e2a980-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66e2a980-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f43ccf70-8b2e-0130-b5fd-282066132de2",
+            "uuid":   "66e2a980-8d8b-0130-b650-282066132de2",
             "barcode":{
               "value":"1220017279668",
               "type": "ean13-barcode"
@@ -1805,24 +1805,24 @@
       }
     },
     {
-      "description":"Add the kit barcode to the batch",
-      "method":     "put",
-      "url":        "/fe285260-8b2e-0130-b5fc-282066132de2",
+      "description":"Create new spin column",
+      "method":     "post",
+      "url":        "/spin_columns",
       "request":    {
-        "user":"username",
-        "kit": "1234567891011"
+        "spin_column":{
+          "user":"username"
+        }
       },
       "response":   {
-        "batch":{
-          "actions":{
-            "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+        "spin_column":{
+          "actions": {
+            "read":  "http://localhost:9292/6a5b4b00-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6a5b4b00-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6a5b4b00-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6a5b4b00-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
-          "process":null,
-          "kit":    "1234567891011"
+          "uuid":    "6a5b4b00-8d8b-0130-b64f-282066132de2",
+          "aliquots":[]
         }
       },
       "next_stage": 11
@@ -1831,42 +1831,43 @@
 }, "11":   {
   "calls":[
     {
-      "description":"Add the kit barcode to the batch",
+      "description":"Create new spin column",
       "method":     "get",
-      "url":        "/fe285260-8b2e-0130-b5fc-282066132de2",
+      "url":        "/6a5b4b00-8d8b-0130-b64f-282066132de2",
       "response":   {
-        "batch":{
-          "actions":{
-            "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+        "spin_column":{
+          "actions": {
+            "read":  "http://localhost:9292/6a5b4b00-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6a5b4b00-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6a5b4b00-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6a5b4b00-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
-          "process":null,
-          "kit":    "1234567891011"
+          "uuid":    "6a5b4b00-8d8b-0130-b64f-282066132de2",
+          "aliquots":[]
         }
       }
     },
     {
-      "description":"Create new spin column",
+      "description":"Create new tube",
       "method":     "post",
-      "url":        "/spin_columns",
+      "url":        "/tubes",
       "request":    {
-        "spin_column":{
+        "tube":{
           "user":"username"
         }
       },
       "response":   {
-        "spin_column":{
-          "actions": {
-            "read":  "http://localhost:9292/ffdba850-8b2e-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/ffdba850-8b2e-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/ffdba850-8b2e-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/ffdba850-8b2e-0130-b5fc-282066132de2"
+        "tube":{
+          "actions":   {
+            "read":  "http://localhost:9292/6a795c60-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6a795c60-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6a795c60-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6a795c60-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":    "ffdba850-8b2e-0130-b5fc-282066132de2",
-          "aliquots":[]
+          "uuid":      "6a795c60-8d8b-0130-b64f-282066132de2",
+          "type":      null,
+          "max_volume":null,
+          "aliquots":  []
         }
       },
       "next_stage": 12
@@ -1875,63 +1876,18 @@
 }, "12":   {
   "calls":[
     {
-      "description":"Create new spin column",
-      "method":     "get",
-      "url":        "/ffdba850-8b2e-0130-b5fc-282066132de2",
-      "response":   {
-        "spin_column":{
-          "actions": {
-            "read":  "http://localhost:9292/ffdba850-8b2e-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/ffdba850-8b2e-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/ffdba850-8b2e-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/ffdba850-8b2e-0130-b5fc-282066132de2"
-          },
-          "uuid":    "ffdba850-8b2e-0130-b5fc-282066132de2",
-          "aliquots":[]
-        }
-      }
-    },
-    {
       "description":"Create new tube",
-      "method":     "post",
-      "url":        "/tubes",
-      "request":    {
-        "tube":{
-          "user":"username"
-        }
-      },
+      "method":     "get",
+      "url":        "/6a795c60-8d8b-0130-b64f-282066132de2",
       "response":   {
         "tube":{
           "actions":   {
-            "read":  "http://localhost:9292/fff8d970-8b2e-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/fff8d970-8b2e-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/fff8d970-8b2e-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/fff8d970-8b2e-0130-b5fc-282066132de2"
+            "read":  "http://localhost:9292/6a795c60-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6a795c60-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6a795c60-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6a795c60-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":      "fff8d970-8b2e-0130-b5fc-282066132de2",
-          "type":      null,
-          "max_volume":null,
-          "aliquots":  []
-        }
-      },
-      "next_stage": 13
-    }
-  ]
-}, "13":   {
-  "calls":[
-    {
-      "description":"Create new tube",
-      "method":     "get",
-      "url":        "/fff8d970-8b2e-0130-b5fc-282066132de2",
-      "response":   {
-        "tube":{
-          "actions":   {
-            "read":  "http://localhost:9292/fff8d970-8b2e-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/fff8d970-8b2e-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/fff8d970-8b2e-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/fff8d970-8b2e-0130-b5fc-282066132de2"
-          },
-          "uuid":      "fff8d970-8b2e-0130-b5fc-282066132de2",
+          "uuid":      "6a795c60-8d8b-0130-b64f-282066132de2",
           "type":      null,
           "max_volume":null,
           "aliquots":  []
@@ -1950,33 +1906,33 @@
       "response":   {
         "spin_column":{
           "actions": {
-            "read":  "http://localhost:9292/002b3550-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/002b3550-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/002b3550-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/002b3550-8b2f-0130-b5fc-282066132de2"
+            "read":  "http://localhost:9292/6ac360e0-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6ac360e0-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6ac360e0-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6ac360e0-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":    "002b3550-8b2f-0130-b5fc-282066132de2",
+          "uuid":    "6ac360e0-8d8b-0130-b64f-282066132de2",
           "aliquots":[]
         }
       },
-      "next_stage": 14
+      "next_stage": 13
     }
   ]
-}, "14":   {
+}, "13":   {
   "calls":[
     {
       "description":"Create new spin column",
       "method":     "get",
-      "url":        "/002b3550-8b2f-0130-b5fc-282066132de2",
+      "url":        "/6ac360e0-8d8b-0130-b64f-282066132de2",
       "response":   {
         "spin_column":{
           "actions": {
-            "read":  "http://localhost:9292/002b3550-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/002b3550-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/002b3550-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/002b3550-8b2f-0130-b5fc-282066132de2"
+            "read":  "http://localhost:9292/6ac360e0-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6ac360e0-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6ac360e0-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6ac360e0-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":    "002b3550-8b2f-0130-b5fc-282066132de2",
+          "uuid":    "6ac360e0-8d8b-0130-b64f-282066132de2",
           "aliquots":[]
         }
       }
@@ -1993,35 +1949,35 @@
       "response":   {
         "tube":{
           "actions":   {
-            "read":  "http://localhost:9292/0045e280-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/0045e280-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/0045e280-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/0045e280-8b2f-0130-b5fc-282066132de2"
+            "read":  "http://localhost:9292/6adecd50-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6adecd50-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6adecd50-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6adecd50-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":      "0045e280-8b2f-0130-b5fc-282066132de2",
+          "uuid":      "6adecd50-8d8b-0130-b64f-282066132de2",
           "type":      null,
           "max_volume":null,
           "aliquots":  []
         }
       },
-      "next_stage": 15
+      "next_stage": 14
     }
   ]
-}, "15":   {
+}, "14":   {
   "calls":[
     {
       "description":"Create new tube",
       "method":     "get",
-      "url":        "/0045e280-8b2f-0130-b5fc-282066132de2",
+      "url":        "/6adecd50-8d8b-0130-b64f-282066132de2",
       "response":   {
         "tube":{
           "actions":   {
-            "read":  "http://localhost:9292/0045e280-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/0045e280-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/0045e280-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/0045e280-8b2f-0130-b5fc-282066132de2"
+            "read":  "http://localhost:9292/6adecd50-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6adecd50-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6adecd50-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6adecd50-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":      "0045e280-8b2f-0130-b5fc-282066132de2",
+          "uuid":      "6adecd50-8d8b-0130-b64f-282066132de2",
           "type":      null,
           "max_volume":null,
           "aliquots":  []
@@ -2049,10 +2005,50 @@
             "create":"http://example.org/11111111-2222-3333-4444-555555555555"
           },
           "uuid":   "11111111-2222-3333-4444-555555555555",
-          "ean13":  "12345",
+          "ean13":  "1",
           "sanger": {
             "prefix":"JD",
-            "number":"12345",
+            "number":"1",
+            "suffix":"U"
+          }
+        }
+      },
+      "next_stage": 15
+    }
+  ]
+}, "15":   {
+  "calls":[
+    {
+      "description":"Generate a new barcode",
+      "method":     "get",
+      "url":        "/11111111-2222-3333-4444-555555555555",
+      "response":   {}
+    },
+    {
+      "description":"Generate a new barcode",
+      "method":     "post",
+      "url":        "/barcodes",
+      "request":    {
+        "barcode":{
+          "user":    "username",
+          "labware": "tube",
+          "role":    "stock",
+          "contents":"RNA+P"
+        }
+      },
+      "response":   {
+        "barcode":{
+          "actions":{
+            "read":  "http://example.org/11111111-2222-3333-4444-555555555555",
+            "update":"http://example.org/11111111-2222-3333-4444-555555555555",
+            "delete":"http://example.org/11111111-2222-3333-4444-555555555555",
+            "create":"http://example.org/11111111-2222-3333-4444-555555555555"
+          },
+          "uuid":   "11111111-2222-3333-4444-555555555555",
+          "ean13":  "2",
+          "sanger": {
+            "prefix":"JD",
+            "number":"2",
             "suffix":"U"
           }
         }
@@ -2075,9 +2071,9 @@
       "request":    {
         "barcode":{
           "user":    "username",
-          "labware": "tube",
+          "labware": "spin_column",
           "role":    "stock",
-          "contents":"RNA+P"
+          "contents":"DNA"
         }
       },
       "response":   {
@@ -2089,10 +2085,10 @@
             "create":"http://example.org/11111111-2222-3333-4444-555555555555"
           },
           "uuid":   "11111111-2222-3333-4444-555555555555",
-          "ean13":  "12345",
+          "ean13":  "3",
           "sanger": {
             "prefix":"JD",
-            "number":"12345",
+            "number":"3",
             "suffix":"U"
           }
         }
@@ -2115,9 +2111,9 @@
       "request":    {
         "barcode":{
           "user":    "username",
-          "labware": "spin_column",
+          "labware": "tube",
           "role":    "stock",
-          "contents":"DNA"
+          "contents":"RNA+P"
         }
       },
       "response":   {
@@ -2129,10 +2125,10 @@
             "create":"http://example.org/11111111-2222-3333-4444-555555555555"
           },
           "uuid":   "11111111-2222-3333-4444-555555555555",
-          "ean13":  "12345",
+          "ean13":  "4",
           "sanger": {
             "prefix":"JD",
-            "number":"12345",
+            "number":"4",
             "suffix":"U"
           }
         }
@@ -2149,31 +2145,46 @@
       "response":   {}
     },
     {
-      "description":"Generate a new barcode",
+      "description":"Add a barcode to 6a5b4b00-8d8b-0130-b64f-282066132de2",
       "method":     "post",
-      "url":        "/barcodes",
+      "url":        "/labellables",
       "request":    {
-        "barcode":{
-          "user":    "username",
-          "labware": "tube",
-          "role":    "stock",
-          "contents":"RNA+P"
+        "labellable":{
+          "user":  "username",
+          "name":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
+          "type":  "resource",
+          "labels":{
+            "barcode":     {
+              "type": "ean13-barcode",
+              "value":"1"
+            },
+            "sanger label":{
+              "type": "sanger-barcode",
+              "value":"JD1U"
+            }
+          }
         }
       },
       "response":   {
-        "barcode":{
+        "labellable":{
           "actions":{
-            "read":  "http://example.org/11111111-2222-3333-4444-555555555555",
-            "update":"http://example.org/11111111-2222-3333-4444-555555555555",
-            "delete":"http://example.org/11111111-2222-3333-4444-555555555555",
-            "create":"http://example.org/11111111-2222-3333-4444-555555555555"
+            "read":  "http://localhost:9292/6b27b640-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6b27b640-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6b27b640-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6b27b640-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":   "11111111-2222-3333-4444-555555555555",
-          "ean13":  "12345",
-          "sanger": {
-            "prefix":"JD",
-            "number":"12345",
-            "suffix":"U"
+          "uuid":   "6b27b640-8d8b-0130-b64f-282066132de2",
+          "name":   "6a5b4b00-8d8b-0130-b64f-282066132de2",
+          "type":   "resource",
+          "labels": {
+            "barcode":     {
+              "value":"1",
+              "type": "ean13-barcode"
+            },
+            "sanger label":{
+              "value":"JD1U",
+              "type": "sanger-barcode"
+            }
           }
         }
       },
@@ -2183,28 +2194,50 @@
 }, "19":   {
   "calls":[
     {
-      "description":"Generate a new barcode",
+      "description":"Add a barcode to 6a5b4b00-8d8b-0130-b64f-282066132de2",
       "method":     "get",
-      "url":        "/11111111-2222-3333-4444-555555555555",
-      "response":   {}
+      "url":        "/6b27b640-8d8b-0130-b64f-282066132de2",
+      "response":   {
+        "labellable":{
+          "actions":{
+            "read":  "http://localhost:9292/6b27b640-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6b27b640-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6b27b640-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6b27b640-8d8b-0130-b64f-282066132de2"
+          },
+          "uuid":   "6b27b640-8d8b-0130-b64f-282066132de2",
+          "name":   "6a5b4b00-8d8b-0130-b64f-282066132de2",
+          "type":   "resource",
+          "labels": {
+            "barcode":     {
+              "value":"1",
+              "type": "ean13-barcode"
+            },
+            "sanger label":{
+              "value":"JD1U",
+              "type": "sanger-barcode"
+            }
+          }
+        }
+      }
     },
     {
-      "description":"Add a barcode to ffdba850-8b2e-0130-b5fc-282066132de2",
+      "description":"Add a barcode to 6a795c60-8d8b-0130-b64f-282066132de2",
       "method":     "post",
       "url":        "/labellables",
       "request":    {
         "labellable":{
           "user":  "username",
-          "name":  "ffdba850-8b2e-0130-b5fc-282066132de2",
+          "name":  "6a795c60-8d8b-0130-b64f-282066132de2",
           "type":  "resource",
           "labels":{
             "barcode":     {
               "type": "ean13-barcode",
-              "value":"12345"
+              "value":"2"
             },
             "sanger label":{
               "type": "sanger-barcode",
-              "value":"JD12345U"
+              "value":"JD2U"
             }
           }
         }
@@ -2212,21 +2245,21 @@
       "response":   {
         "labellable":{
           "actions":{
-            "read":  "http://localhost:9292/0085bb60-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/0085bb60-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/0085bb60-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/0085bb60-8b2f-0130-b5fc-282066132de2"
+            "read":  "http://localhost:9292/6b2c9640-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6b2c9640-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6b2c9640-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6b2c9640-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":   "0085bb60-8b2f-0130-b5fc-282066132de2",
-          "name":   "ffdba850-8b2e-0130-b5fc-282066132de2",
+          "uuid":   "6b2c9640-8d8b-0130-b64f-282066132de2",
+          "name":   "6a795c60-8d8b-0130-b64f-282066132de2",
           "type":   "resource",
           "labels": {
             "barcode":     {
-              "value":"12345",
+              "value":"2",
               "type": "ean13-barcode"
             },
             "sanger label":{
-              "value":"JD12345U",
+              "value":"JD2U",
               "type": "sanger-barcode"
             }
           }
@@ -2238,27 +2271,27 @@
 }, "20":   {
   "calls":[
     {
-      "description":"Add a barcode to ffdba850-8b2e-0130-b5fc-282066132de2",
+      "description":"Add a barcode to 6a795c60-8d8b-0130-b64f-282066132de2",
       "method":     "get",
-      "url":        "/0085bb60-8b2f-0130-b5fc-282066132de2",
+      "url":        "/6b2c9640-8d8b-0130-b64f-282066132de2",
       "response":   {
         "labellable":{
           "actions":{
-            "read":  "http://localhost:9292/0085bb60-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/0085bb60-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/0085bb60-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/0085bb60-8b2f-0130-b5fc-282066132de2"
+            "read":  "http://localhost:9292/6b2c9640-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6b2c9640-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6b2c9640-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6b2c9640-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":   "0085bb60-8b2f-0130-b5fc-282066132de2",
-          "name":   "ffdba850-8b2e-0130-b5fc-282066132de2",
+          "uuid":   "6b2c9640-8d8b-0130-b64f-282066132de2",
+          "name":   "6a795c60-8d8b-0130-b64f-282066132de2",
           "type":   "resource",
           "labels": {
             "barcode":     {
-              "value":"12345",
+              "value":"2",
               "type": "ean13-barcode"
             },
             "sanger label":{
-              "value":"JD12345U",
+              "value":"JD2U",
               "type": "sanger-barcode"
             }
           }
@@ -2266,22 +2299,22 @@
       }
     },
     {
-      "description":"Add a barcode to fff8d970-8b2e-0130-b5fc-282066132de2",
+      "description":"Add a barcode to 6ac360e0-8d8b-0130-b64f-282066132de2",
       "method":     "post",
       "url":        "/labellables",
       "request":    {
         "labellable":{
           "user":  "username",
-          "name":  "fff8d970-8b2e-0130-b5fc-282066132de2",
+          "name":  "6ac360e0-8d8b-0130-b64f-282066132de2",
           "type":  "resource",
           "labels":{
             "barcode":     {
               "type": "ean13-barcode",
-              "value":"12345"
+              "value":"3"
             },
             "sanger label":{
               "type": "sanger-barcode",
-              "value":"JD12345U"
+              "value":"JD3U"
             }
           }
         }
@@ -2289,21 +2322,21 @@
       "response":   {
         "labellable":{
           "actions":{
-            "read":  "http://localhost:9292/00af7710-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/00af7710-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/00af7710-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/00af7710-8b2f-0130-b5fc-282066132de2"
+            "read":  "http://localhost:9292/6b30fd40-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6b30fd40-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6b30fd40-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6b30fd40-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":   "00af7710-8b2f-0130-b5fc-282066132de2",
-          "name":   "fff8d970-8b2e-0130-b5fc-282066132de2",
+          "uuid":   "6b30fd40-8d8b-0130-b64f-282066132de2",
+          "name":   "6ac360e0-8d8b-0130-b64f-282066132de2",
           "type":   "resource",
           "labels": {
             "barcode":     {
-              "value":"12345",
+              "value":"3",
               "type": "ean13-barcode"
             },
             "sanger label":{
-              "value":"JD12345U",
+              "value":"JD3U",
               "type": "sanger-barcode"
             }
           }
@@ -2315,27 +2348,27 @@
 }, "21":   {
   "calls":[
     {
-      "description":"Add a barcode to fff8d970-8b2e-0130-b5fc-282066132de2",
+      "description":"Add a barcode to 6ac360e0-8d8b-0130-b64f-282066132de2",
       "method":     "get",
-      "url":        "/00af7710-8b2f-0130-b5fc-282066132de2",
+      "url":        "/6b30fd40-8d8b-0130-b64f-282066132de2",
       "response":   {
         "labellable":{
           "actions":{
-            "read":  "http://localhost:9292/00af7710-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/00af7710-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/00af7710-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/00af7710-8b2f-0130-b5fc-282066132de2"
+            "read":  "http://localhost:9292/6b30fd40-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6b30fd40-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6b30fd40-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6b30fd40-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":   "00af7710-8b2f-0130-b5fc-282066132de2",
-          "name":   "fff8d970-8b2e-0130-b5fc-282066132de2",
+          "uuid":   "6b30fd40-8d8b-0130-b64f-282066132de2",
+          "name":   "6ac360e0-8d8b-0130-b64f-282066132de2",
           "type":   "resource",
           "labels": {
             "barcode":     {
-              "value":"12345",
+              "value":"3",
               "type": "ean13-barcode"
             },
             "sanger label":{
-              "value":"JD12345U",
+              "value":"JD3U",
               "type": "sanger-barcode"
             }
           }
@@ -2343,22 +2376,22 @@
       }
     },
     {
-      "description":"Add a barcode to 002b3550-8b2f-0130-b5fc-282066132de2",
+      "description":"Add a barcode to 6adecd50-8d8b-0130-b64f-282066132de2",
       "method":     "post",
       "url":        "/labellables",
       "request":    {
         "labellable":{
           "user":  "username",
-          "name":  "002b3550-8b2f-0130-b5fc-282066132de2",
+          "name":  "6adecd50-8d8b-0130-b64f-282066132de2",
           "type":  "resource",
           "labels":{
             "barcode":     {
               "type": "ean13-barcode",
-              "value":"12345"
+              "value":"4"
             },
             "sanger label":{
               "type": "sanger-barcode",
-              "value":"JD12345U"
+              "value":"JD4U"
             }
           }
         }
@@ -2366,21 +2399,21 @@
       "response":   {
         "labellable":{
           "actions":{
-            "read":  "http://localhost:9292/00dd4dd0-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/00dd4dd0-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/00dd4dd0-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/00dd4dd0-8b2f-0130-b5fc-282066132de2"
+            "read":  "http://localhost:9292/6b3612f0-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6b3612f0-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6b3612f0-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6b3612f0-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":   "00dd4dd0-8b2f-0130-b5fc-282066132de2",
-          "name":   "002b3550-8b2f-0130-b5fc-282066132de2",
+          "uuid":   "6b3612f0-8d8b-0130-b64f-282066132de2",
+          "name":   "6adecd50-8d8b-0130-b64f-282066132de2",
           "type":   "resource",
           "labels": {
             "barcode":     {
-              "value":"12345",
+              "value":"4",
               "type": "ean13-barcode"
             },
             "sanger label":{
-              "value":"JD12345U",
+              "value":"JD4U",
               "type": "sanger-barcode"
             }
           }
@@ -2392,27 +2425,27 @@
 }, "22":   {
   "calls":[
     {
-      "description":"Add a barcode to 002b3550-8b2f-0130-b5fc-282066132de2",
+      "description":"Add a barcode to 6adecd50-8d8b-0130-b64f-282066132de2",
       "method":     "get",
-      "url":        "/00dd4dd0-8b2f-0130-b5fc-282066132de2",
+      "url":        "/6b3612f0-8d8b-0130-b64f-282066132de2",
       "response":   {
         "labellable":{
           "actions":{
-            "read":  "http://localhost:9292/00dd4dd0-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/00dd4dd0-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/00dd4dd0-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/00dd4dd0-8b2f-0130-b5fc-282066132de2"
+            "read":  "http://localhost:9292/6b3612f0-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6b3612f0-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6b3612f0-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6b3612f0-8d8b-0130-b64f-282066132de2"
           },
-          "uuid":   "00dd4dd0-8b2f-0130-b5fc-282066132de2",
-          "name":   "002b3550-8b2f-0130-b5fc-282066132de2",
+          "uuid":   "6b3612f0-8d8b-0130-b64f-282066132de2",
+          "name":   "6adecd50-8d8b-0130-b64f-282066132de2",
           "type":   "resource",
           "labels": {
             "barcode":     {
-              "value":"12345",
+              "value":"4",
               "type": "ean13-barcode"
             },
             "sanger label":{
-              "value":"JD12345U",
+              "value":"JD4U",
               "type": "sanger-barcode"
             }
           }
@@ -2420,47 +2453,176 @@
       }
     },
     {
-      "description":"Add a barcode to 0045e280-8b2f-0130-b5fc-282066132de2",
-      "method":     "post",
-      "url":        "/labellables",
-      "request":    {
-        "labellable":{
-          "user":  "username",
-          "name":  "0045e280-8b2f-0130-b5fc-282066132de2",
-          "type":  "resource",
-          "labels":{
+      "description":"Get the barcoded resource",
+      "method":     "get",
+      "url":        "/6a5b4b00-8d8b-0130-b64f-282066132de2",
+      "response":   {
+        "spin_column":{
+          "actions": {
+            "read":  "http://localhost:9292/6a5b4b00-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6a5b4b00-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6a5b4b00-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6a5b4b00-8d8b-0130-b64f-282066132de2"
+          },
+          "uuid":    "6a5b4b00-8d8b-0130-b64f-282066132de2",
+          "aliquots":[],
+          "labels":  {
+            "actions":     {
+              "read":  "http://localhost:9292/6b27b640-8d8b-0130-b64f-282066132de2",
+              "create":"http://localhost:9292/6b27b640-8d8b-0130-b64f-282066132de2",
+              "update":"http://localhost:9292/6b27b640-8d8b-0130-b64f-282066132de2",
+              "delete":"http://localhost:9292/6b27b640-8d8b-0130-b64f-282066132de2"
+            },
+            "uuid":        "6b27b640-8d8b-0130-b64f-282066132de2",
             "barcode":     {
-              "type": "ean13-barcode",
-              "value":"12345"
+              "value":"1",
+              "type": "ean13-barcode"
             },
             "sanger label":{
-              "type": "sanger-barcode",
-              "value":"JD12345U"
+              "value":"JD1U",
+              "type": "sanger-barcode"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description":"Get the barcoded resource",
+      "method":     "get",
+      "url":        "/6a795c60-8d8b-0130-b64f-282066132de2",
+      "response":   {
+        "tube":{
+          "actions":   {
+            "read":  "http://localhost:9292/6a795c60-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6a795c60-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6a795c60-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6a795c60-8d8b-0130-b64f-282066132de2"
+          },
+          "uuid":      "6a795c60-8d8b-0130-b64f-282066132de2",
+          "type":      null,
+          "max_volume":null,
+          "aliquots":  [],
+          "labels":    {
+            "actions":     {
+              "read":  "http://localhost:9292/6b2c9640-8d8b-0130-b64f-282066132de2",
+              "create":"http://localhost:9292/6b2c9640-8d8b-0130-b64f-282066132de2",
+              "update":"http://localhost:9292/6b2c9640-8d8b-0130-b64f-282066132de2",
+              "delete":"http://localhost:9292/6b2c9640-8d8b-0130-b64f-282066132de2"
+            },
+            "uuid":        "6b2c9640-8d8b-0130-b64f-282066132de2",
+            "barcode":     {
+              "value":"2",
+              "type": "ean13-barcode"
+            },
+            "sanger label":{
+              "value":"JD2U",
+              "type": "sanger-barcode"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description":"Get the barcoded resource",
+      "method":     "get",
+      "url":        "/6ac360e0-8d8b-0130-b64f-282066132de2",
+      "response":   {
+        "spin_column":{
+          "actions": {
+            "read":  "http://localhost:9292/6ac360e0-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6ac360e0-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6ac360e0-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6ac360e0-8d8b-0130-b64f-282066132de2"
+          },
+          "uuid":    "6ac360e0-8d8b-0130-b64f-282066132de2",
+          "aliquots":[],
+          "labels":  {
+            "actions":     {
+              "read":  "http://localhost:9292/6b30fd40-8d8b-0130-b64f-282066132de2",
+              "create":"http://localhost:9292/6b30fd40-8d8b-0130-b64f-282066132de2",
+              "update":"http://localhost:9292/6b30fd40-8d8b-0130-b64f-282066132de2",
+              "delete":"http://localhost:9292/6b30fd40-8d8b-0130-b64f-282066132de2"
+            },
+            "uuid":        "6b30fd40-8d8b-0130-b64f-282066132de2",
+            "barcode":     {
+              "value":"3",
+              "type": "ean13-barcode"
+            },
+            "sanger label":{
+              "value":"JD3U",
+              "type": "sanger-barcode"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description":"Get the barcoded resource",
+      "method":     "get",
+      "url":        "/6adecd50-8d8b-0130-b64f-282066132de2",
+      "response":   {
+        "tube":{
+          "actions":   {
+            "read":  "http://localhost:9292/6adecd50-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/6adecd50-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/6adecd50-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/6adecd50-8d8b-0130-b64f-282066132de2"
+          },
+          "uuid":      "6adecd50-8d8b-0130-b64f-282066132de2",
+          "type":      null,
+          "max_volume":null,
+          "aliquots":  [],
+          "labels":    {
+            "actions":     {
+              "read":  "http://localhost:9292/6b3612f0-8d8b-0130-b64f-282066132de2",
+              "create":"http://localhost:9292/6b3612f0-8d8b-0130-b64f-282066132de2",
+              "update":"http://localhost:9292/6b3612f0-8d8b-0130-b64f-282066132de2",
+              "delete":"http://localhost:9292/6b3612f0-8d8b-0130-b64f-282066132de2"
+            },
+            "uuid":        "6b3612f0-8d8b-0130-b64f-282066132de2",
+            "barcode":     {
+              "value":"4",
+              "type": "ean13-barcode"
+            },
+            "sanger label":{
+              "value":"JD4U",
+              "type": "sanger-barcode"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description":"Printer service",
+      "method":     "post",
+      "url":        "/services/print<?xml version = \"1.0\" encoding=\"UTF-8\"?><env:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:n1=\"urn:Barcode/Service\" xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"><env:Body><n1:printLabels><printer>Tube printer</printer><type>2</type><headerLabel>1</headerLabel><footerLabel>1</footerLabel><labels n2:arrayType=\"n1:BarcodeLabelDTO[4]\" xmlns:n2=\"http://schemas.xmlsoap.org/soap/encoding/\" xsi:type=\"n2:Array\"><item><barcode>1</barcode><desc>X</desc><name>X</name><prefix>JD</prefix><project>X</project><suffix>U</suffix></item><item><barcode>2</barcode><desc>X</desc><name>X</name><prefix>JD</prefix><project>X</project><suffix>U</suffix></item><item><barcode>3</barcode><desc>X</desc><name>X</name><prefix>JD</prefix><project>X</project><suffix>U</suffix></item><item><barcode>4</barcode><desc>X</desc><name>X</name><prefix>JD</prefix><project>X</project><suffix>U</suffix></item></labels></n1:printLabels></env:Body></env:Envelope>",
+      "request":    "",
+      "response":   null
+    },
+    {
+      "description":"Create the search order by batch",
+      "method":     "post",
+      "url":        "/searches",
+      "request":    {
+        "search":{
+          "user":       "username",
+          "description":"search order by batch",
+          "model":      "order",
+          "criteria":   {
+            "item":{
+              "batch":"695ff060-8d8b-0130-b64f-282066132de2"
             }
           }
         }
       },
       "response":   {
-        "labellable":{
+        "search":{
           "actions":{
-            "read":  "http://localhost:9292/0107fc00-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/0107fc00-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/0107fc00-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/0107fc00-8b2f-0130-b5fc-282066132de2"
+            "read": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "0107fc00-8b2f-0130-b5fc-282066132de2",
-          "name":   "0045e280-8b2f-0130-b5fc-282066132de2",
-          "type":   "resource",
-          "labels": {
-            "barcode":     {
-              "value":"12345",
-              "type": "ean13-barcode"
-            },
-            "sanger label":{
-              "value":"JD12345U",
-              "type": "sanger-barcode"
-            }
-          }
+          "uuid":   "69d71f40-8d8b-0130-b64f-282066132de2"
         }
       },
       "next_stage": 23
@@ -2469,198 +2631,150 @@
 }, "23":   {
   "calls":[
     {
-      "description":"Add a barcode to 0045e280-8b2f-0130-b5fc-282066132de2",
+      "description":"Create the search order by batch",
       "method":     "get",
-      "url":        "/0107fc00-8b2f-0130-b5fc-282066132de2",
+      "url":        "/69d71f40-8d8b-0130-b64f-282066132de2",
       "response":   {
-        "labellable":{
+        "search":{
           "actions":{
-            "read":  "http://localhost:9292/0107fc00-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/0107fc00-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/0107fc00-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/0107fc00-8b2f-0130-b5fc-282066132de2"
+            "read": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "0107fc00-8b2f-0130-b5fc-282066132de2",
-          "name":   "0045e280-8b2f-0130-b5fc-282066132de2",
-          "type":   "resource",
-          "labels": {
-            "barcode":     {
-              "value":"12345",
-              "type": "ean13-barcode"
-            },
-            "sanger label":{
-              "value":"JD12345U",
-              "type": "sanger-barcode"
-            }
-          }
+          "uuid":   "69d71f40-8d8b-0130-b64f-282066132de2"
         }
       }
     },
     {
-      "description":"Get the barcoded resources",
+      "description":"Get the result orders",
       "method":     "get",
-      "url":        "/ffdba850-8b2e-0130-b5fc-282066132de2",
+      "url":        "/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
       "response":   {
-        "spin_column":{
-          "actions": {
-            "read":  "http://localhost:9292/ffdba850-8b2e-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/ffdba850-8b2e-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/ffdba850-8b2e-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/ffdba850-8b2e-0130-b5fc-282066132de2"
-          },
-          "uuid":    "ffdba850-8b2e-0130-b5fc-282066132de2",
-          "aliquots":[],
-          "labels":  {
-            "actions":     {
-              "read":  "http://localhost:9292/0085bb60-8b2f-0130-b5fc-282066132de2",
-              "create":"http://localhost:9292/0085bb60-8b2f-0130-b5fc-282066132de2",
-              "update":"http://localhost:9292/0085bb60-8b2f-0130-b5fc-282066132de2",
-              "delete":"http://localhost:9292/0085bb60-8b2f-0130-b5fc-282066132de2"
+        "actions":{
+          "read": "http://localhost:9292/orders/page=1",
+          "first":"http://localhost:9292/orders/page=1",
+          "last": "http://localhost:9292/orders/page=-1"
+        },
+        "size":   1,
+        "orders": [
+          {
+            "actions":   {
+              "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
             },
-            "uuid":        "0085bb60-8b2f-0130-b5fc-282066132de2",
-            "barcode":     {
-              "value":"12345",
-              "type": "ean13-barcode"
+            "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
+            "pipeline":  "DNA+RNA manual extraction",
+            "status":    "draft",
+            "parameters":{},
+            "state":     {},
+            "cost_code": "cost code",
+            "creator":   {
+              "actions":{
+                "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
+              },
+              "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
             },
-            "sanger label":{
-              "value":"JD12345U",
-              "type": "sanger-barcode"
+            "study":     {
+              "actions":{
+                "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
+              },
+              "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
+            },
+            "items":     {
+              "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+                {
+                  "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                  "status":"unused",
+                  "batch": {
+                    "actions":{
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                    },
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                    "process":null,
+                    "kit":    null
+                  }
+                },
+                {
+                  "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                  "status":"unused",
+                  "batch": {
+                    "actions":{
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                    },
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                    "process":null,
+                    "kit":    null
+                  }
+                }
+              ],
+              "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+                {
+                  "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                  "status":"done",
+                  "batch": {
+                    "actions":{
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                    },
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                    "process":null,
+                    "kit":    null
+                  }
+                },
+                {
+                  "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                  "status":"done",
+                  "batch": {
+                    "actions":{
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                    },
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                    "process":null,
+                    "kit":    null
+                  }
+                }
+              ]
             }
           }
-        }
+        ]
       }
     },
     {
-      "description":"Get the barcoded resources",
-      "method":     "get",
-      "url":        "/fff8d970-8b2e-0130-b5fc-282066132de2",
-      "response":   {
-        "tube":{
-          "actions":   {
-            "read":  "http://localhost:9292/fff8d970-8b2e-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/fff8d970-8b2e-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/fff8d970-8b2e-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/fff8d970-8b2e-0130-b5fc-282066132de2"
-          },
-          "uuid":      "fff8d970-8b2e-0130-b5fc-282066132de2",
-          "type":      null,
-          "max_volume":null,
-          "aliquots":  [],
-          "labels":    {
-            "actions":     {
-              "read":  "http://localhost:9292/00af7710-8b2f-0130-b5fc-282066132de2",
-              "create":"http://localhost:9292/00af7710-8b2f-0130-b5fc-282066132de2",
-              "update":"http://localhost:9292/00af7710-8b2f-0130-b5fc-282066132de2",
-              "delete":"http://localhost:9292/00af7710-8b2f-0130-b5fc-282066132de2"
-            },
-            "uuid":        "00af7710-8b2f-0130-b5fc-282066132de2",
-            "barcode":     {
-              "value":"12345",
-              "type": "ean13-barcode"
-            },
-            "sanger label":{
-              "value":"JD12345U",
-              "type": "sanger-barcode"
-            }
-          }
-        }
-      }
-    },
-    {
-      "description":"Get the barcoded resources",
-      "method":     "get",
-      "url":        "/002b3550-8b2f-0130-b5fc-282066132de2",
-      "response":   {
-        "spin_column":{
-          "actions": {
-            "read":  "http://localhost:9292/002b3550-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/002b3550-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/002b3550-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/002b3550-8b2f-0130-b5fc-282066132de2"
-          },
-          "uuid":    "002b3550-8b2f-0130-b5fc-282066132de2",
-          "aliquots":[],
-          "labels":  {
-            "actions":     {
-              "read":  "http://localhost:9292/00dd4dd0-8b2f-0130-b5fc-282066132de2",
-              "create":"http://localhost:9292/00dd4dd0-8b2f-0130-b5fc-282066132de2",
-              "update":"http://localhost:9292/00dd4dd0-8b2f-0130-b5fc-282066132de2",
-              "delete":"http://localhost:9292/00dd4dd0-8b2f-0130-b5fc-282066132de2"
-            },
-            "uuid":        "00dd4dd0-8b2f-0130-b5fc-282066132de2",
-            "barcode":     {
-              "value":"12345",
-              "type": "ean13-barcode"
-            },
-            "sanger label":{
-              "value":"JD12345U",
-              "type": "sanger-barcode"
-            }
-          }
-        }
-      }
-    },
-    {
-      "description":"Get the barcoded resources",
-      "method":     "get",
-      "url":        "/0045e280-8b2f-0130-b5fc-282066132de2",
-      "response":   {
-        "tube":{
-          "actions":   {
-            "read":  "http://localhost:9292/0045e280-8b2f-0130-b5fc-282066132de2",
-            "create":"http://localhost:9292/0045e280-8b2f-0130-b5fc-282066132de2",
-            "update":"http://localhost:9292/0045e280-8b2f-0130-b5fc-282066132de2",
-            "delete":"http://localhost:9292/0045e280-8b2f-0130-b5fc-282066132de2"
-          },
-          "uuid":      "0045e280-8b2f-0130-b5fc-282066132de2",
-          "type":      null,
-          "max_volume":null,
-          "aliquots":  [],
-          "labels":    {
-            "actions":     {
-              "read":  "http://localhost:9292/0107fc00-8b2f-0130-b5fc-282066132de2",
-              "create":"http://localhost:9292/0107fc00-8b2f-0130-b5fc-282066132de2",
-              "update":"http://localhost:9292/0107fc00-8b2f-0130-b5fc-282066132de2",
-              "delete":"http://localhost:9292/0107fc00-8b2f-0130-b5fc-282066132de2"
-            },
-            "uuid":        "0107fc00-8b2f-0130-b5fc-282066132de2",
-            "barcode":     {
-              "value":"12345",
-              "type": "ean13-barcode"
-            },
-            "sanger label":{
-              "value":"JD12345U",
-              "type": "sanger-barcode"
-            }
-          }
-        }
-      }
-    },
-    {
-      "description":"Add the new spin columns and new tubes in the order and start each of them",
+      "description":"Add the new spin column and new tube in the order and start each of them",
       "method":     "put",
-      "url":        "/f4404a30-8b2e-0130-b5fd-282066132de2",
+      "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
       "request":    {
         "user": "username",
         "items":{
           "samples.extraction.manual.spin_column_dna":                {
-            "ffdba850-8b2e-0130-b5fc-282066132de2":{
+            "6a5b4b00-8d8b-0130-b64f-282066132de2":{
               "event":     "start",
-              "batch_uuid":"fe285260-8b2e-0130-b5fc-282066132de2"
-            },
-            "002b3550-8b2f-0130-b5fc-282066132de2":{
-              "event":     "start",
-              "batch_uuid":"fe285260-8b2e-0130-b5fc-282066132de2"
+              "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
             }
           },
           "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":{
-            "fff8d970-8b2e-0130-b5fc-282066132de2":{
+            "6a795c60-8d8b-0130-b64f-282066132de2":{
               "event":     "start",
-              "batch_uuid":"fe285260-8b2e-0130-b5fc-282066132de2"
-            },
-            "0045e280-8b2f-0130-b5fc-282066132de2":{
-              "event":     "start",
-              "batch_uuid":"fe285260-8b2e-0130-b5fc-282066132de2"
+              "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
             }
           }
         }
@@ -2668,12 +2782,12 @@
       "response":   {
         "order":{
           "actions":   {
-            "read":  "http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "create":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "update":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "delete":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2"
+            "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
           },
-          "uuid":      "f4404a30-8b2e-0130-b5fd-282066132de2",
+          "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
           "pipeline":  "DNA+RNA manual extraction",
           "status":    "draft",
           "parameters":{},
@@ -2681,148 +2795,118 @@
           "cost_code": "cost code",
           "creator":   {
             "actions":{
-              "read":  "http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4377d80-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
           },
           "study":     {
             "actions":{
-              "read":  "http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4378cc0-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
             "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"unused",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":    "1234567891011"
+                  "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"unused",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":    "1234567891011"
+                  "kit":    null
                 }
               }
             ],
             "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":    "1234567891011"
+                  "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":    "1234567891011"
+                  "kit":    null
                 }
               }
             ],
             "samples.extraction.manual.spin_column_dna":                   [
               {
-                "uuid":  "ffdba850-8b2e-0130-b5fc-282066132de2",
+                "uuid":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":    "1234567891011"
-                }
-              },
-              {
-                "uuid":  "002b3550-8b2f-0130-b5fc-282066132de2",
-                "status":"in_progress",
-                "batch": {
-                  "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
-                  },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
-                  "process":null,
-                  "kit":    "1234567891011"
+                  "kit":    null
                 }
               }
             ],
             "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   [
               {
-                "uuid":  "fff8d970-8b2e-0130-b5fc-282066132de2",
+                "uuid":  "6a795c60-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":    "1234567891011"
-                }
-              },
-              {
-                "uuid":  "0045e280-8b2f-0130-b5fc-282066132de2",
-                "status":"in_progress",
-                "batch": {
-                  "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
-                  },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
-                  "process":null,
-                  "kit":    "1234567891011"
+                  "kit":    null
                 }
               }
             ]
@@ -2835,18 +2919,18 @@
 }, "24":   {
   "calls":[
     {
-      "description":"Add the new spin columns and new tubes in the order and start each of them",
+      "description":"Add the new spin column and new tube in the order and start each of them",
       "method":     "get",
-      "url":        "/f4404a30-8b2e-0130-b5fd-282066132de2",
+      "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
       "response":   {
         "order":{
           "actions":   {
-            "read":  "http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "create":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "update":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2",
-            "delete":"http://localhost:9292/f4404a30-8b2e-0130-b5fd-282066132de2"
+            "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
           },
-          "uuid":      "f4404a30-8b2e-0130-b5fd-282066132de2",
+          "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
           "pipeline":  "DNA+RNA manual extraction",
           "status":    "draft",
           "parameters":{},
@@ -2854,148 +2938,477 @@
           "cost_code": "cost code",
           "creator":   {
             "actions":{
-              "read":  "http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4377d80-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4377d80-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
           },
           "study":     {
             "actions":{
-              "read":  "http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "create":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "update":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2",
-              "delete":"http://localhost:9292/f4378cc0-8b2e-0130-b5fd-282066132de2"
+              "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
             },
-            "uuid":   "f4378cc0-8b2e-0130-b5fd-282066132de2"
+            "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
             "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"unused",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":    "1234567891011"
+                  "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"unused",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":    "1234567891011"
+                  "kit":    null
                 }
               }
             ],
             "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
               {
-                "uuid":  "f43af7d0-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":    "1234567891011"
+                  "kit":    null
                 }
               },
               {
-                "uuid":  "f43cc070-8b2e-0130-b5fd-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                 "status":"done",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":    "1234567891011"
+                  "kit":    null
                 }
               }
             ],
             "samples.extraction.manual.spin_column_dna":                   [
               {
-                "uuid":  "ffdba850-8b2e-0130-b5fc-282066132de2",
+                "uuid":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":    "1234567891011"
-                }
-              },
-              {
-                "uuid":  "002b3550-8b2f-0130-b5fc-282066132de2",
-                "status":"in_progress",
-                "batch": {
-                  "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
-                  },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
-                  "process":null,
-                  "kit":    "1234567891011"
+                  "kit":    null
                 }
               }
             ],
             "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   [
               {
-                "uuid":  "fff8d970-8b2e-0130-b5fc-282066132de2",
+                "uuid":  "6a795c60-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":    "1234567891011"
+                  "kit":    null
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description":"Add the new spin column and new tube in the order and start each of them",
+      "method":     "put",
+      "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
+      "request":    {
+        "user": "username",
+        "items":{
+          "samples.extraction.manual.spin_column_dna":                {
+            "6ac360e0-8d8b-0130-b64f-282066132de2":{
+              "event":     "start",
+              "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
+            }
+          },
+          "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":{
+            "6adecd50-8d8b-0130-b64f-282066132de2":{
+              "event":     "start",
+              "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
+            }
+          }
+        }
+      },
+      "response":   {
+        "order":{
+          "actions":   {
+            "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
+          },
+          "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
+          "pipeline":  "DNA+RNA manual extraction",
+          "status":    "draft",
+          "parameters":{},
+          "state":     {},
+          "cost_code": "cost code",
+          "creator":   {
+            "actions":{
+              "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
+            },
+            "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
+          },
+          "study":     {
+            "actions":{
+              "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
+            },
+            "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
+          },
+          "items":     {
+            "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+              {
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                "status":"unused",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
                 }
               },
               {
-                "uuid":  "0045e280-8b2f-0130-b5fc-282066132de2",
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                "status":"unused",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
+                }
+              }
+            ],
+            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+              {
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                "status":"done",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
+                }
+              },
+              {
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                "status":"done",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
+                }
+              }
+            ],
+            "samples.extraction.manual.spin_column_dna":                   [
+              {
+                "uuid":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
                 "batch": {
                   "actions":{
-                    "read":  "http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "create":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "update":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2",
-                    "delete":"http://localhost:9292/fe285260-8b2e-0130-b5fc-282066132de2"
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
-                  "uuid":   "fe285260-8b2e-0130-b5fc-282066132de2",
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":    "1234567891011"
+                  "kit":    null
+                }
+              },
+              {
+                "uuid":  "6ac360e0-8d8b-0130-b64f-282066132de2",
+                "status":"in_progress",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
+                }
+              }
+            ],
+            "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   [
+              {
+                "uuid":  "6a795c60-8d8b-0130-b64f-282066132de2",
+                "status":"in_progress",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
+                }
+              },
+              {
+                "uuid":  "6adecd50-8d8b-0130-b64f-282066132de2",
+                "status":"in_progress",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
+                }
+              }
+            ]
+          }
+        }
+      },
+      "next_stage": 25
+    }
+  ]
+}, "25":   {
+  "calls":[
+    {
+      "description":"Add the new spin column and new tube in the order and start each of them",
+      "method":     "get",
+      "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
+      "response":   {
+        "order":{
+          "actions":   {
+            "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
+          },
+          "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
+          "pipeline":  "DNA+RNA manual extraction",
+          "status":    "draft",
+          "parameters":{},
+          "state":     {},
+          "cost_code": "cost code",
+          "creator":   {
+            "actions":{
+              "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
+            },
+            "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
+          },
+          "study":     {
+            "actions":{
+              "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
+            },
+            "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
+          },
+          "items":     {
+            "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+              {
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                "status":"unused",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
+                }
+              },
+              {
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                "status":"unused",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
+                }
+              }
+            ],
+            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+              {
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                "status":"done",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
+                }
+              },
+              {
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                "status":"done",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
+                }
+              }
+            ],
+            "samples.extraction.manual.spin_column_dna":                   [
+              {
+                "uuid":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
+                "status":"in_progress",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
+                }
+              },
+              {
+                "uuid":  "6ac360e0-8d8b-0130-b64f-282066132de2",
+                "status":"in_progress",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
+                }
+              }
+            ],
+            "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   [
+              {
+                "uuid":  "6a795c60-8d8b-0130-b64f-282066132de2",
+                "status":"in_progress",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
+                }
+              },
+              {
+                "uuid":  "6adecd50-8d8b-0130-b64f-282066132de2",
+                "status":"in_progress",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    null
                 }
               }
             ]
