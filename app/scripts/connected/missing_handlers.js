@@ -5,14 +5,14 @@ define([
 
   var handlers = {
     // Reports the missing barcode, nothing more
-    report: function(cache, barcode) {
+    report: function(modelName, barcode) {
       return $.Deferred().reject('Barcode "' + barcode + '" not found');
     },
 
     // Creates an instance of the appropriate labware
-    create: function(cache, barcode) {
+    create: function(modelName, barcode) {
       return this.owner.getS2Root().then(function(root) {
-        var labwareModel = root.tubes;
+        var labwareModel = root[modelName];
 
         return Deferred.sequentially(function(state) {
           return labwareModel.create({});
@@ -34,11 +34,9 @@ define([
     },
 
     // Finds an instance of the appropriate labware in the system
-    find: function(cache, barcode) {
+    find: function(modelName, barcode) {
       return this.owner.getS2Root().then(function(root) {
-        var labwareModel = root.tubes;
-
-        return labwareModel.findByEan13Barcode(barcode);
+        return root[modelName].findByEan13Barcode(barcode);
       }).then(function(labware) {
         return labware;
       }, function() {
@@ -47,12 +45,12 @@ define([
     },
 
     // Composite behaviour: find it, if it can't be found create it.
-    composite: function(cache, barcode) {
+    composite: function() {
       var owner = this;
-      return handlers.find.apply(owner, [cache, barcode]).then(function(labware) {
+      return handlers.find.apply(owner, arguments).then(function(labware) {
         return labware;
       }, function() {
-        return handlers.create.apply(owner, [cache, barcode]);
+        return handlers.create.apply(owner, arguments);
       });
     }
   };

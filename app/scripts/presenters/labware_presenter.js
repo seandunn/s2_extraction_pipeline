@@ -208,8 +208,10 @@ define(['config'
       }
 
       else if (action == 'barcodeScanned') {
-        this.owner.childDone(this, 'barcodeScanned', {"BC":data.BC});
-
+        this.owner.childDone(this, 'barcodeScanned', {
+          modelName: this.labwareModel.expected_type.pluralize(),
+          BC:        data.BC
+        });
       }
     },
 

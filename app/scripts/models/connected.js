@@ -12,16 +12,16 @@ define([
       var instance = Object.create(DeferredCache);
       var results  = $.Deferred();
       _.extend(instance, {
-        getByBarcode: function(requester, barcode) {
+        getByBarcode: function(requester, modelName, barcode) {
           results.then(function(array) {
             var result = _.find(array, function(r) { return r.labels.barcode.value === barcode; });
             var deferred = $.Deferred();
             deferred[result ? 'resolve' : 'reject'](result);
             return deferred;
           }).then(function(resource) {
-            return resource;                                 // Result remains the same on success
+            return resource;                           // Result remains the same on success
           }, function() {
-            return missingHandler(instance, barcode); // Result may be handled differently
+            return missingHandler(modelName, barcode); // Result may be handled differently
           }).fail(function(message) {
             requester.displayErrorMessage(message);
           }).done(function(result) {
