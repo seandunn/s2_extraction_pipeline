@@ -18,33 +18,33 @@ define(['config'
         });
       },
 
-      init:function (owner, presenterFactory) {
-        this.presenterFactory = presenterFactory;
-        this.owner = owner;
-        return this;
-      },
-      setupPresenter:function (setupData, jquerySelection) {
-        this.setupPlaceholder(jquerySelection);
-        this.model = Object.create(Model).init(this);
-        this.setupView();
-        this.setupSubPresenters();
-        this.renderView();
-        this.userBCSubPresenter.focus();
-        this.labwareBCSubPresenter.disable();
-        return this;
-      },
-      setupSubPresenters:function () {
-        // check with this.model for the needed subpresenters...
-        this.userBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
-        this.labwareBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
-        this.setupSubModel();
-        return this;
-      },
-      setupSubModel:function () {
-        var that = this;
-        var jQuerySelectionForUser = function () {
-          return that.jquerySelection().find(".user_barcode");
-        };
+        init:function (owner, presenterFactory) {
+          this.presenterFactory = presenterFactory;
+          this.owner = owner;
+          return this;
+        },
+        setupPresenter:function (setupData, jquerySelection) {
+          this.setupPlaceholder(jquerySelection);
+          this.model = Object.create(DefaultPageModel).init(this);
+          this.setupView();
+          this.setupSubPresenters();
+          this.renderView();
+          this.userBCSubPresenter.focus();
+          this.labwareBCSubPresenter.disable();
+          return this;
+        },
+        setupSubPresenters:function () {
+          // check with this.model for the needed subpresenters...
+          this.userBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
+          this.labwareBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
+          this.setupSubModel();
+          return this;
+        },
+        setupSubModel:function () {
+          var that = this;
+          var jQuerySelectionForUser = function () {
+            return that.jquerySelection().find(".user_barcode");
+          };
 
         var jQuerySelectionForLabware = function () {
           return that.jquerySelection().find(".labware_barcode");
