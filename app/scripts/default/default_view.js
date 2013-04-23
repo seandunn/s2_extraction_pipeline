@@ -1,6 +1,6 @@
-define([], function () {
+define(['text!extraction_pipeline/html_partials/default_page_partial.html'], function (defaultPagePartialHtml) {
   "use strict";
-  var that = this;
+
   function onLogin_clicked(owner, view) {
     /*
     * response to the click on the login button...
@@ -42,22 +42,16 @@ define([], function () {
   };
 
   loginview.prototype.renderView = function (data) {
-    var contentAsString = '<h3>Please scan your user barcode.</h3>'
-        + '<div class="user_barcode"></div>'
-        + '<h3>Please scan the tube barcode.</h3>'
-        + '<div class="labware_barcode"></div>'
-        + '<button class="btn pull-right" id="login_button">Continue</button>';
 
-    if (data) {
-      contentAsString += "<div class='alert'>"
-          + "<button type='button' class='close' data-dismiss='alert'>&times;</button>"
-          + "<strong>Error!</strong> " + data
-          + "</div>";
-    }
-    contentAsString += "</div>";
+    var template = _.template(defaultPagePartialHtml);
+
+    // set the data as template data
+    var templateData = {
+      data: data
+    };
 
     // makes sure that the container has been emptied first...
-    this.release().append(contentAsString);
+    this.release().append(template(templateData));
 
     // adds the js response to the ui elements
     // $("#tube_barcode").bind('keypress', onReturnKey_pressed(this.owner));

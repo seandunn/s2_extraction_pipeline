@@ -1,33 +1,14 @@
-/*
- * S2 - An open source lab information management systems (LIMS)
- * Copyright (C) 2013  Wellcome Trust Sanger Insitute
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 1, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
- */
-
-
 define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/default/default_view'
   , 'extraction_pipeline/default/default_model'
 ],
-    function (config, BasePresenter, view, DefaultPageModel) {
+    function (config, BasePresenter, DefaultView, DefaultPageModel) {
+      'use strict';
+
       /*
        The default page presenter. Deals with login.
        */
-
       var DefaultPresenter = Object.create(BasePresenter);
 
       $.extend(DefaultPresenter, {
@@ -42,16 +23,9 @@ define(['config'
           this.owner = owner;
           return this;
         },
-        /*
-         input_model =
-         {
-         userBC : "1234567890"
-         labware : "1234567890"
-         }
-         */
         setupPresenter:function (setupData, jquerySelection) {
           this.setupPlaceholder(jquerySelection);
-          this.pageModel = Object.create(DefaultPageModel).init(this);
+          this.model = Object.create(DefaultPageModel).init(this);
           this.setupView();
           this.setupSubPresenters();
           this.renderView();
@@ -76,34 +50,27 @@ define(['config'
             return that.jquerySelection().find(".labware_barcode");
           };
 
-          if (this.userBCSubPresenter) {
-            this.userBCSubPresenter.setupPresenter({type:"user", value:"1220017279667"}, jQuerySelectionForUser);
-          }
-          if (this.labwareBCSubPresenter) {
-            this.labwareBCSubPresenter.setupPresenter({type:"tube", value:"1220017279667"}, jQuerySelectionForLabware);
-          }
+          this.userBCSubPresenter.setupPresenter({type:"user", value:"1220017279667"}, jQuerySelectionForUser);
+          this.labwareBCSubPresenter.setupPresenter({type:"tube", value:"1220017279667"}, jQuerySelectionForLabware);
+
           return this;
         },
         setupView:function () {
-          this.currentView = new view(this, this.jquerySelection);
+          this.view = new DefaultView(this, this.jquerySelection);
           return this;
         },
         renderView:function () {
           // render view...
           var data = undefined;
-          this.currentView.renderView(data);
-          if (this.userBCSubPresenter) {
-            this.userBCSubPresenter.renderView();
-          }
-          if (this.labwareBCSubPresenter) {
-            this.labwareBCSubPresenter.renderView();
-          }
+          this.view.renderView(data);
+          this.userBCSubPresenter.renderView();
+          this.labwareBCSubPresenter.renderView();
+
           return this;
         },
         release:function () {
-          if (this.currentView) {
-            this.currentView.release();
-          }
+          this.view.release();
+
           return this;
         },
         childDone:function (child, action, data) {
@@ -111,7 +78,7 @@ define(['config'
           var that = this;
           if (child === this.userBCSubPresenter) {
             if (action === "barcodeScanned") {
-              that.pageModel.setUserFromBarcode(data.BC);
+              that.model.setUserFromBarcode(data.BC);
               this.userBCSubPresenter.disable();
               this.labwareBCSubPresenter.enable();
               this.labwareBCSubPresenter.focus();
@@ -119,22 +86,22 @@ define(['config'
             }
           } else if (child === this.labwareBCSubPresenter) {
             if (action === "barcodeScanned") {
-              this.pageModel.setLabwareFromBarcode(data.BC);
+              this.model.setLabwareFromBarcode(data.BC);
               return;
             }
-          } else if (child === this.pageModel) {
+          } else if (child === this.model) {
             switch (action) {
               case "modelUpdated":
-                if (this.currentView) {
+                if (this.view) {
                   this.setupSubPresenters();
                   this.renderView();
                 }
                 break;
               case "modelValidated":
                 var dataForOwner = {
-                  userUUID:this.pageModel.user,
-                  labware:this.pageModel.labware,
-                  "batch":this.pageModel.batch
+                  userUUID:this.model.user,
+                  labware:this.model.labware,
+                  "batch":this.model.batch
                 };
                   console.log(dataForOwner.batch);
                 this.owner.childDone(this, "login", dataForOwner);
