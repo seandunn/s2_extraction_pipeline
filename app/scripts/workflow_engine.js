@@ -1,10 +1,10 @@
 define([], function () {
 
-  var workflowEngine = function (owner, config) {
-    this.mainController     = owner;
-    this.defaultPresenter   = config.defaultPresenter;
-    this.role_priority      = config.workflow.role_priority;
-    this.role_configuration = config.workflow.role_configuration;
+  var workflowEngine = function (application, config) {
+    this.application   = application;
+    this.defaultPresenter = config.defaultPresenter;
+    this.role_priority    = config.role_priority;
+    this.workflows        = config.workflows;
   };
 
   // Returns a function that finds the first "ready" item in the batch that matches the given rule.
@@ -19,67 +19,49 @@ define([], function () {
   }
 
   workflowEngine.prototype.getMatchingRoleDataFromItems = function (items) {
-    var matchingRole      = _.chain(this.role_priority).find(itemMatcherForBatchItems(items)).value();
-    var presenterName     = matchingRole? this.role_configuration[matchingRole].presenterName : this.defaultPresenter;
-    var presenterInitData = matchingRole? this.role_configuration[matchingRole] : {};
+    var activeRole     = _.chain(this.role_priority).find(itemMatcherForBatchItems(items)).value();
 
-    return {presenterName:presenterName, initData:presenterInitData};
+    var byActiveRole   = function(workflow){
+      return _.find(workflow.accepts, function(role){ return role === activeRole; });
+    };
+
+    var foundWorkflows = this.workflows.filter(byActiveRole);
+
+
+    if (foundWorkflows.length > 1) throw "More than 1 workflow active.";
+
+    return foundWorkflows[0] || { presenterName: this.defaultPresenter };
   };
 
-  workflowEngine.prototype.getNextPresenterNameWithoutBatch = function (data) {
-    var deffered = $.Deferred();
-    var items;
-    var that = this;
 
-    data.labware.order()
-    .then(function (order) {
-      items = order.items.filter(function(){return true;});
-      var matchingRoleData = that.getMatchingRoleDataFromItems(items);
-      deffered.resolve(matchingRoleData);
-    }).fail(function () {
-      deffered.reject();
-    });
-
-    return deffered.promise();
-  };
-
-  workflowEngine.prototype.getNextPresenterNameWithBatch = function (data) {
-    var deffered = $.Deferred();
-    var that     = this;
-    data.batch.items.then(function (items) {
-      var matchingRoleData = that.getMatchingRoleDataFromItems(items);
-      deffered.resolve(matchingRoleData);
-    }).fail(function () {
-      deffered.reject();
-    });
-
-    return deffered.promise();
-  };
-
-  workflowEngine.prototype.setNextPresenterFromName = function (presenterFactory, presenterName, initData) {
-    var presenter = presenterFactory.create(presenterName, this.mainController, initData);
-    this.mainController.childDone(this, "foundNextPresenter", presenter);
+  workflowEngine.prototype.setNextPresenterFromName = function (presenterFactory, workflowConfig) {
+    var presenter = presenterFactory.create((workflowConfig || {}).presenterName, this.application, workflowConfig);
+    this.application.childDone(this, "foundNextPresenter", presenter);
   };
 
   workflowEngine.prototype.askForNextPresenter = function (presenterFactory, inputDataForWorkflow) {
     var that = this;
+    var itemsPromise;
+
     if (!inputDataForWorkflow.userUUID) {
-      this.setNextPresenterFromName(presenterFactory, this.defaultPresenter);
-
-    } else if (!inputDataForWorkflow.batch && inputDataForWorkflow.labware) {
-
-      this.getNextPresenterNameWithoutBatch(inputDataForWorkflow)
-      .then(function (data) {
-        that.setNextPresenterFromName(presenterFactory, data.presenterName, data.initData);
-      });
-
-    } else {
-
-      this.getNextPresenterNameWithBatch(inputDataForWorkflow)
-      .then(function (data) {
-        that.setNextPresenterFromName(presenterFactory, data.presenterName, data.initData);
-      });
+      return this.setNextPresenterFromName(presenterFactory);
     }
+
+    if (!inputDataForWorkflow.batch && inputDataForWorkflow.labware) {
+      itemsPromise = inputDataForWorkflow.labware.order()
+      .then(function(order) {
+        return order.items.filter(function(){ return true; });
+      });
+    } else {
+      itemsPromise = inputDataForWorkflow.batch.items;
+    }
+
+    itemsPromise.then(function(items){
+      return that.getMatchingRoleDataFromItems(items);
+    }).then(function(workflowConfig){
+      that.setNextPresenterFromName(presenterFactory, workflowConfig);
+    })
+
   };
 
   return workflowEngine;
