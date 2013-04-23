@@ -35,7 +35,7 @@ define([ 'config'
 
     init:function (owner, presenterFactory, initData) {
       this.presenterFactory = presenterFactory;
-      this.pageModel = Object.create(SelectionPageModel).init(this, initData);
+      this.model = Object.create(SelectionPageModel).init(this, initData);
       this.owner = owner;
       this.config = initData;
       return this;
@@ -43,9 +43,9 @@ define([ 'config'
     setupPresenter:function (setupData, jquerySelection) {
       this.setupPlaceholder(jquerySelection);
       if (setupData) {
-        this.pageModel.setBatch(setupData.batch); // the batch BEFORE the labware!
-        this.pageModel.setSeminalLabware(setupData.labware);
-        this.pageModel.setUser(setupData.userUUID);
+        this.model.setBatch(setupData.batch); // the batch BEFORE the labware!
+        this.model.setSeminalLabware(setupData.labware);
+        this.model.setUser(setupData.userUUID);
       }
       this.setupView();
       this.setupSubPresenters();
@@ -53,94 +53,102 @@ define([ 'config'
       return this;
     },
     setupView:function () {
-      this.currentView = new SelectionPageView(this, this.jquerySelection);
+      this.view = new SelectionPageView(this, this.jquerySelection);
       return this;
     },
     renderView:function () {
-      if (!this.currentView) {
+      if (!this.view) {
         return this;
       }
       //marshalling data for the view
       var dataForView = {
-        batch:         this.pageModel.batch && this.pageModel.batch.uuid,
-        user:          this.pageModel.user,
-        capacity:      this.pageModel.getCapacity(),
-        processTitle:  this.pageModel.config.processTitle
+        batch:         this.model.batch && this.model.batch.uuid,
+        user:          this.model.user,
+        capacity:      this.model.getCapacity(),
+        processTitle:  this.model.config.processTitle
       };
 
-      this.currentView.render(dataForView);
+      this.view.render(dataForView);
 
       // render subviews...
-      for (var i = 0; i < this.presenters.length; i++) {
-        if (this.presenters[i]) {
-          this.presenters[i].renderView();
-        }
-      }
+      _.each(this.presenters, function(presenter){
+          presenter.renderView();
+      });
 
-      this.presenters[this.pageModel.getNumberOfTubes()].barcodeFocus();
+      _.each(this.presenters, function(presenter){
+        presenter.renderView();
+      });
+
+      this.presenters[this.model.getNumberOfTubes()].barcodeFocus();
       return this;
     },
     setupSubPresenters:function () {
+      var that = this;
       this.presenters = [];
-      for (var i = 0; i < this.pageModel.getCapacity(); i++) {
-        var subPresenter = this.presenterFactory.create('labware_presenter', this);
-        this.presenters.push(subPresenter);
-      }
+      _(this.model.getCapacity()).times(function(){
+        var subPresenter = that.presenterFactory.create('labware_presenter', that);
+        that.presenters.push(subPresenter);
+      });
+
       this.setupSubModel();
       return this;
     },
 
     setupSubModel:function () {
-      var that = this;
+      var presenter = this;
       var jQueryForNthChild = function (childIndex) {
         return function () {
-          return that.jquerySelection().find("li :eq(" + childIndex + ")");
+          return presenter.jquerySelection().find("li :eq(" + childIndex + ")");
         };
       };
 
-      if (!this.pageModel) {
+      if (!this.model) {
         return;
       }
 
-      var numTubes = this.pageModel.getNumberOfTubes();
+      var numTubes = this.model.getNumberOfTubes()
+      var presenterData = [];
 
-      for (var i = 0; i < this.pageModel.getCapacity(); i++) {
-        if (i < numTubes) {
-          var dataForExistingLabware_presenter = {
-            resource:        this.pageModel.tubes[i],
-            expected_type:   this.config.input.model.singularize(),
-            display_remove:  true,
-            display_barcode: false
-          };
-          this.presenters[i].setupPresenter(dataForExistingLabware_presenter, jQueryForNthChild(i));
-        } else if (i == numTubes) {
-          var dataForLabwareWithBC_presenter = {
-            expected_type:   this.config.input.model.singularize(),
-            display_remove:  false,
-            display_barcode: true,
-            display_labware: false
-          };
-          this.presenters[i].setupPresenter(dataForLabwareWithBC_presenter, jQueryForNthChild(i));
-        } else {
-          var dataForhiddenLabwarePresenter = {
-            display_remove:  false,
-            display_barcode: false,
-            display_labware: false
-          };
-          this.presenters[i].setupPresenter(dataForhiddenLabwarePresenter, jQueryForNthChild(i));
-        }
-      }
+      _.each(this.model.tubes, function(tube){
+        presenterData.push({
+          "resource":tube,
+          expected_type:   presenter.config.input.model.singularize(),
+          "display_remove":true,
+          "display_barcode":false
+        });
+      });
+
+      presenterData.push({
+        expected_type:   presenter.config.input.model.singularize(),
+        "display_remove":false,
+        "display_barcode":true,
+        display_labware: false
+      });
+
+      // numTubes + 1 to account for the intermediate barcode scan row
+      _(this.model.getCapacity() - (numTubes + 1)).times(function() {
+        presenterData.push({
+          "display_remove":false,
+          "display_barcode":false,
+          display_labware: false
+        });
+      });
+
+      _.chain(this.presenters).zip(presenterData).each(function(pair, index) {
+        var presenter = pair[0], config = pair[1];
+        presenter.setupPresenter(config, jQueryForNthChild(index));
+      }).value();
     },
 
     displayBarcodeError:function (message) {
       //numTubes is the index number of the barcode input view in the array of presenters
-      var numTubes = this.pageModel.getNumberOfTubes();
+      var numTubes = this.model.getNumberOfTubes();
       this.presenters[numTubes].displayErrorMessage(message);
     },
 
     release:function () {
-      if (this.currentView) {
-        this.currentView.clear();
+      if (this.view) {
+        this.view.clear();
       }
       return this;
     },
@@ -160,12 +168,12 @@ define([ 'config'
        * data:       Any data associated with the action.
        *
        */
-      if (child === this.currentView){
+      if (child === this.view){
         if (action === "next") {
           //this.owner.childDone(this,"error",{"message" : "Not hooked up!"});
-          this.pageModel.makeBatch();
+          this.model.makeBatch();
         }
-      } else if (child === this.pageModel) {
+      } else if (child === this.model) {
         if (action === "modelUpdated") {
           // TODO: use the data provided by the model to only update the relevant subpresenters...
           this.setupSubPresenters();
@@ -174,9 +182,9 @@ define([ 'config'
 
         } else if (action === "batchSaved") {
           var dataForOwner = {
-            userUUID:this.pageModel.user,
-            labware:this.pageModel.labware,
-            "batch":this.pageModel.batch
+            userUUID:this.model.user,
+            labware:this.model.labware,
+            "batch":this.model.batch
           };
           this.owner.childDone(this,"done",dataForOwner);
         } else if (action === "barcodeNotFound") {
@@ -184,9 +192,9 @@ define([ 'config'
         }
       } else {
         if (action === "barcodeScanned") {
-          this.pageModel.addTubeFromBarcode(data.BC);
+          this.model.addTubeFromBarcode(data.BC);
         } else if (action === "removeLabware") {
-          this.pageModel.removeTubeByUuid(data.resource.uuid);
+          this.model.removeTubeByUuid(data.resource.uuid);
         }
       }
     }

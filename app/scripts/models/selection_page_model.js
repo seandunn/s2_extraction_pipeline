@@ -75,13 +75,12 @@ define([
       return this.capacity;
     },
     removeTubeByUuid:  function (uuid) {
-      for (var i = 0; i < this.tubes.length; i++) {
-        if (this.tubes[i].uuid === uuid) {
-          this.tubes.splice(i, 1);
-          this.owner.childDone(this, "modelUpdated", {index:i, updateType:"substraction"});
-          return;
-        }
-      }
+
+      this.tubes = _.filter(this.tubes, function(tube){
+        return tube.uuid !== uuid;
+      });
+
+      this.owner.childDone(this, "modelUpdated", {});
     },
     getNumberOfTubes:  function () {
       return this.tubes.length;
