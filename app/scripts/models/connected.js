@@ -4,7 +4,7 @@ define([
   'extraction_pipeline/connected/behaviours',
   'extraction_pipeline/connected/missing_handlers',
   'extraction_pipeline/connected/caching'
-], function(Base, Operations, Behaviour, Missing, DeferredCache) {
+], function(Base, Operations, Behaviour, Missing, Cache) {
   'use strict';
 
   var Model = Object.create(Base);
@@ -33,13 +33,12 @@ define([
       _.extend(this, _.chain(['inputs','outputs']).map(function(cacheName) {
         var name = (config.cache || {})[cacheName] || 'report';
         var missingHandler = _.bind(Missing(name), instance);
-        var cache = _.extend(DeferredCache.init(), {
+        var cache = _.extend(Cache.init(), {
           getByBarcode: function(requester, modelName, barcode) {
             this.get(
-              requester,
               function(r) { return r.labels.barcode.value === barcode; }, // Find by barcode
               function() { return missingHandler(modelName, barcode); }   // Use the missing handler!
-            );
+            ).done(_.bind(requester.updateModel, requester)).fail(_.bind(requester.displayErrorMessage, requester));
           }
         });
 

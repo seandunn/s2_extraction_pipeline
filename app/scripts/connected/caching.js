@@ -10,7 +10,8 @@ define([], function() {
       _.extend(instance, {
         // Retrieve an instance from the cache using the handler, which will filter the cache to
         // find the match, and possibly deal with missing results in a particular fashion.
-        get: function(requester, filter, missing) {
+        get: function(filter, missing) {
+          var deferred = $.Deferred();
           results.then(function(array) {
             var result = _.find(array, filter);
             return ($.Deferred())[result ? 'resolve' : 'reject'](result);
@@ -19,16 +20,22 @@ define([], function() {
           }, function() {
             return missing(); // Result may be handled differently
           }).fail(function(message) {
-            requester.displayErrorMessage(message);
+            deferred.reject(message);
           }).done(function(result) {
             recache(result);
-            requester.updateModel(result);
+            deferred.resolve(result);
           });
+          return deferred;
         },
 
         // Behave like a promise but remember that the value of 'results' above can change
         then:    resultsBound('then'),
-        resolve: resultsBound('resolve')
+        resolve: resultsBound('resolve'),
+
+        // When entries get pushed into the cache we simply recache them
+        push: function() {
+          _.each(arguments, recache);
+        }
       });
       return instance;
 
