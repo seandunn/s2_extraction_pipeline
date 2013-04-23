@@ -32,7 +32,18 @@ define([
       // Configure the behaviour of inputs & outputs from configuration
       _.extend(this, _.chain(['inputs','outputs']).map(function(cacheName) {
         var name = (config.cache || {})[cacheName] || 'report';
-        return [cacheName, DeferredCache.init(_.bind(Missing(name), instance))];
+        var missingHandler = _.bind(Missing(name), instance);
+        var cache = _.extend(DeferredCache.init(), {
+          getByBarcode: function(requester, modelName, barcode) {
+            this.get(
+              requester,
+              function(r) { return r.labels.barcode.value === barcode; }, // Find by barcode
+              function() { return missingHandler(modelName, barcode); }   // Use the missing handler!
+            );
+          }
+        });
+
+        return [cacheName, cache];
       }).object().value());
 
       this.initialiseCaching();

@@ -4,20 +4,20 @@ define([], function() {
   var DeferredCache = Object.create(null);
 
   _.extend(DeferredCache, {
-    init: function(missingHandler) {
+    init: function() {
       var instance = Object.create(DeferredCache);
       var results  = $.Deferred();
       _.extend(instance, {
-        getByBarcode: function(requester, modelName, barcode) {
+        // Retrieve an instance from the cache using the handler, which will filter the cache to
+        // find the match, and possibly deal with missing results in a particular fashion.
+        get: function(requester, filter, missing) {
           results.then(function(array) {
-            var result = _.find(array, function(r) { return r.labels.barcode.value === barcode; });
-            var deferred = $.Deferred();
-            deferred[result ? 'resolve' : 'reject'](result);
-            return deferred;
+            var result = _.find(array, filter);
+            return ($.Deferred())[result ? 'resolve' : 'reject'](result);
           }).then(function(resource) {
-            return resource;                           // Result remains the same on success
+            return resource;  // Result remains the same on success
           }, function() {
-            return missingHandler(modelName, barcode); // Result may be handled differently
+            return missing(); // Result may be handled differently
           }).fail(function(message) {
             requester.displayErrorMessage(message);
           }).done(function(result) {
