@@ -1,34 +1,23 @@
 define([
-  'config',
-  'models/selection_page_model',
-  'presenters/selection_page_presenter'
+  'config'
+  , 'models/selection_page_model'
+  , 'presenters/selection_page_presenter'
+  , 'presenters/presenter_factory'
   , 'text!testjson/unit/root.json'
   , 'text!extraction_pipeline/dna_and_ran_manual_test_data.json'
-], function (config, SelectionPageModel, SelectionPagePresenter,rootTestData, testData) {
+], function (config, SelectionPageModel, SelectionPagePresenter, PresenterFactory, rootTestData, testData) {
   'use strict';
 
   describe("Selection page presenter", function () {
 
 
-    describe("Presenter which has spy subpresenters", function () {
+    describe(" which has spy subpresenters", function () {
 
       beforeEach(function () {
 
         config.loadTestData(testData);
         config.cummulativeLoadingTestDataInFirstStage(rootTestData);
-
-        var partialFactory;
-        function configureMockPartialFactory() {
-          partialFactory = {};
-          partialFactory.createPresenter = function (name, owner) {
-            return createMockPresenter(name);
-          };
-          partialFactory.createScanBarcodePresenter = function (owner, type) {
-            var presenter = this.createPresenter("scanBarcode", owner);
-            presenter.setupPresenter(type);
-            return presenter;
-          };
-        }
+        config.logLevel = 0;
 
         // create a mock of the app
         var app = {};
@@ -45,25 +34,24 @@ define([
           return "row_" + index;
         };
 
-        //spy on the view functions
+        //spy on the mock view functions
         spyOn(view, 'clear');
         spyOn(view, 'render');
 
-        configureMockPartialFactory();
+        var presenter = PresenterFactory.create(presenterName, this.mainController, initData);
 
-//        mockPresenters = [];
-//
-//        configureSpyView();
-//        configureSpyAppController();
-//        configureMockPartialFactory();
-//
-        var presenter = new SelectionPagePresenter(app, partialFactory);
-//        model = new SelectionPageModel(app, "1234567");
+        var configLoaded = false;
 
         // Iterate through the data to a point where two tubes are created
-        for (var i=1; i<10; i++){
-          config.progress(String(i));
-        }
+        runs(function(){
+          for (var i=1; i<10; i++){
+            config.progress(String(i));
+          }
+          var hasConfigLoaded = true;
+        });
+        waitsFor(function(){
+          return configLoaded;
+        });
 
 
         presenter.setupPresenter(model, function () {
@@ -77,8 +65,10 @@ define([
       });
 
       it("kjh",function(){
-        expect(1).toEqual(7);
-      })
+        runs(function(){
+          expect(1).toEqual(7);
+        });
+      });
 
       /*
 
