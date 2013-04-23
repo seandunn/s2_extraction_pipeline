@@ -18,9 +18,9 @@ define([
             deferred[result ? 'resolve' : 'reject'](result);
             return deferred;
           }).then(function(resource) {
-            return resource;                  // Result remains the same on success
+            return resource;                          // Result remains the same on success
           }, function() {
-            return missingHandler(barcode);   // Result may be handled differently
+            return missingHandler(instance, barcode); // Result may be handled differently
           }).fail(function() {
             requester.displayErrorMessage('Barcode "' + barcode + '" not found');
           }).done(function(result) {
@@ -36,6 +36,12 @@ define([
     }
   });
 
+  function Missing(name) {
+    return function(cache, barcode) {
+      // Do nothing!
+    };
+  }
+
   var Model = Object.create(Base);
 
   _.extend(Model, {
@@ -46,23 +52,23 @@ define([
       this.previous = false;
       this.printed  = false;
 
-      this.initialiseCaching();
-      this.initialiseConnections(config);
-      return this;
-    },
-
-    initialiseConnections: function(config) {
-      this.config  = config;               // Configuration of our connections
-      this.inputs  = DeferredCache.init(function(barcode) { }); // Cache of inputs
-      this.outputs = DeferredCache.init(function(barcode) { }); // Cache of outputs
-      this.batch   = undefined;            // There is no batch, yet
-      this.user    = undefined;            // There is no user, yet
-      this.started = false;                // Has the process started
+      this.config  = config;                                    // Configuration of our connections
+      this.batch   = undefined;                                 // There is no batch, yet
+      this.user    = undefined;                                 // There is no user, yet
+      this.started = false;                                     // Has the process started
 
       // Configure the behaviours based on the configuration
       this.behaviours = _.chain(this.config.behaviours).map(function(behaviourName, name) {
         return [name, Behaviour(behaviourName)];
       }).object().value();
+
+      // Configure the behaviour of inputs & outputs from configuration
+      _.extend(this, _.chain(['inputs','outputs']).map(function(cacheName) {
+        return [cacheName, DeferredCache.init(Missing((config.cache || {})[cacheName]))];
+      }).object().value());
+
+      this.initialiseCaching();
+      return this;
     },
 
     setBatch: function(batch) {
@@ -248,21 +254,5 @@ define([
         that.inputs.resolve(inputs);
       });
     });
-  }
-
-  // Convenience method for dealing with finding by barcodes
-  function findByBarcode(barcode, array) {
-    return _.chain(array).find(function (resource) {
-      return resource.labels.barcode.value === barcode.BC;
-    }).value();
-  }
-
-  // TODO: 'requester' should really have 'found' and 'notFound' callbacks
-  function handleRetrieveResult(requester, result) {
-    if (!result) {
-      requester.displayErrorMessage("Barcode not found");
-    } else {
-      requester.updateModel(result);
-    }
   }
 });
