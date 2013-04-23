@@ -27,22 +27,21 @@ define([
   $.extend(SelectionPageModel, {
     init:              function (owner, initData) {
       this.owner = Object.create(owner);
-      this.stash_by_BC = {};
-      this.stash_by_UUID = {};
       this.tubes = [];
       this.capacity = initData["capacity"] || 12 ;
 
       this.config = initData;
 
+      this.initialiseCaching();
       return this;
     },
     setBatch:          function (batch) {
-      this.addResource(batch);
+      if (batch) { this.cache.push(batch); }
       this.batch = batch;
       this.owner.childDone(this, "batchAdded");
     },
     setSeminalLabware: function (labware) {
-      this.addResource(labware);
+      this.cache.push(labware);
       this.tubes.push(labware);
       this.owner.childDone(this, "seminalLabwareAdded");
     },
@@ -64,7 +63,7 @@ define([
     },
     addTubeFromBarcode:function (barcode) {
       var that = this;
-      this.fetchResourcePromiseFromBarcode(barcode)
+      this.cache.fetchResourcePromiseFromBarcode(barcode)
           .then(function (rsc) {
             that.addTube(rsc);
           })

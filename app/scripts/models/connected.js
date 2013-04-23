@@ -50,7 +50,7 @@ define([
     },
 
     setBatch: function(batch) {
-      this.addResource(batch);
+      this.cache.push(batch);
       this.batch = batch;
       setupInputs(this);
       this.owner.childDone(this, "batchAdded");
@@ -125,7 +125,7 @@ define([
                 details.aliquotType,
                 details.purpose
               ).then(function(state) {
-                that.stash(state.labware, state.barcode);
+                that.cache.push(state.labware);
                 labware.push(state.labware);
                 return state.labware;
               }).fail(function() {
@@ -224,8 +224,7 @@ define([
       $.when.apply(null, _.chain(items).filter(function(item) {
         return item.role === that.config.input.role && item.status === 'done';
       }).map(function(item) {
-        return that.fetchResourcePromiseFromUUID(item.uuid).then(function(resource) {
-          that.addResource(resource);
+        return that.cache.fetchResourcePromiseFromUUID(item.uuid).then(function(resource) {
           inputs.push(resource);
         });
       }).value()).then(function() {
