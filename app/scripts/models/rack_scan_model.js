@@ -29,7 +29,7 @@ define([
 //      this.owner.childDone(this,"error", {message:"wrong!"});
     },
     setBatch:function (batch) {
-      this.addResource(batch);
+      this.cache.push(batch);
       this.batch = batch;
       var model = this;
       setupInputs(this)
@@ -69,9 +69,8 @@ define([
                 return item.role === that.config.input.role && item.status === 'done';
               })
               .map(function (item) {
-                return that.fetchResourcePromiseFromUUID(item.uuid)
+                return that.cache.fetchResourcePromiseFromUUID(item.uuid)
                     .then(function (resource) {
-                      that.addResource(resource);
                       inputs.push(resource);
                     });
               })

@@ -38,8 +38,10 @@
 
    "samples.extraction.extracted_tube_dna",
    "samples.extraction.racking.tube_to_be_retubed_dna",
+   "samples.extraction.racking.tube_to_be_racked_dna",
    "samples.extraction.extracted_tube_rna",
-   "samples.extraction.racking.tube_to_be_retubed_rna"
+   "samples.extraction.racking.tube_to_be_retubed_rna",
+   "samples.extraction.racking.tube_to_be_racked_rna"
   ],
 
   "workflows":[
@@ -660,6 +662,28 @@
         ]
       }
     ]
+  }, {
+    "accepts": [ "samples.extraction.racking.tube_to_be_racked_dna" ],
+    "presenterName": "step_presenter",
+    "processTitle":   "Post DNA Extraction Racking - Rack Scanning",
+    "presenters": [
+      {
+        "presenterName": "rack_scan_presenter",
+        "defaultPrinter": "Tube Printer",
+        "input": {
+          "role":  "samples.extraction.racking.tube_to_be_racked_dna",
+          "model": "tubes"
+        },
+        "output": [
+          {
+            "role": "samples.racks.stock.dna",
+            "aliquotType": "DNA",
+            "purpose": "stock",
+            "model": "racks"
+          }
+        ]
+      }
+    ]
   },
 
   {
@@ -701,6 +725,28 @@
           {
             "role": "samples.extraction.racking.tube_to_be_racked_rna",
             "model": "tubes"
+          }
+        ]
+      }
+    ]
+  }, {
+    "accepts": [ "samples.extraction.racking.tube_to_be_racked_rjna" ],
+    "presenterName": "step_presenter",
+    "processTitle":   "Post RNA Extraction Racking - Rack Scanning",
+    "presenters": [
+      {
+        "presenterName": "rack_scan_presenter",
+        "defaultPrinter": "Tube Printer",
+        "input": {
+          "role":  "samples.extraction.racking.tube_to_be_racked_rna",
+          "model": "tubes"
+        },
+        "output": [
+          {
+            "role": "samples.racks.stock.rna",
+            "aliquotType": "RNA",
+            "purpose": "stock",
+            "model": "racks"
           }
         ]
       }
