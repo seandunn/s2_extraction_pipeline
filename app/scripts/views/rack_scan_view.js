@@ -108,7 +108,7 @@ define([
       this.selector().empty();
     },
     message: function(type, message) {
-      this.selector().find('.validationText').show().removeClass('alert-error alert-info alert-success').addClass('alert-' + type).text(message);
+      this.selector().find('.validationText').show().removeClass('alert-error alert-info alert-success').addClass('alert-' + type).html(message);
     }
   });
 

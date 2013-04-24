@@ -7,18 +7,20 @@ define([], function () {
       var lines = data.split(/\r\n|\r|\n/g);
 
       var re = new RegExp(
-          "\\s*(\\w+\\d+)\\s*\\" + delimiter
+          "\\s*(\\w\\d\\d)\\s*\\" + delimiter
               +
-              "\\s*\\\"(FR\\w+)\\\"", "i")
+              "\\s*(\\d+).*", "i");  // TODO: add the 'FR' prefix to the regex
 
       var array = [];
       var matches = undefined;
 
       _.each(lines, function (line) {
         matches = re.exec(line);
-        var location = matches[1];
-        var barcode = matches[2];
-        array.push([location, barcode]);
+        if(matches){
+          var location = matches[1];
+          var barcode = matches[2];
+            array.push([location, barcode]);
+        }
       });
 
       return array;
@@ -26,14 +28,11 @@ define([], function () {
     locationArrayToLocalisedBarcodes:function (array) {
       var output = {};
       _.each(array, function (row) {
-        var location = row[0]
-        var barcode = row[1]
-        if (barcode === "Not read") {
-          // does nothing
-        } else {
-          output[location] = {
-            "barcode":barcode
-          }
+        var location = row[0];
+        var barcode = row[1];
+
+        output[barcode] = {
+          "location":location
         }
       });
 

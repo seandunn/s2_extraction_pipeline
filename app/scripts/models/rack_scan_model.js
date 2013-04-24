@@ -1,6 +1,7 @@
 define([
   'extraction_pipeline/models/base_page_model'
-], function (BasePageModel) {
+    ,'extraction_pipeline/csv_parser'
+], function (BasePageModel,CSVParser) {
   'use strict';
 
   var Model = Object.create(BasePageModel);
@@ -24,15 +25,45 @@ define([
       this.owner.childDone(this, "transferDone", {});
     },
     analyseFileContent:function (data) {
-      this.preparedTransferData = {};
-      this.owner.childDone(this, "fileValid");
-//      this.owner.childDone(this,"error", {message:"wrong!"});
+
+      this.preparedTransferData = CSVParser.convertCSVDataToJSON(data.csvAsTxt);
+
+      var expectedNbOfTubes;
+      var arrayOfExpectedBarcodes;
+      this.inputs
+          .then(function(inputs){
+            expectedNbOfTubes = inputs.length;
+            arrayOfExpectedBarcodes = _.map(inputs,function(resource,key){
+              return resource.labels.barcode.value});
+          });
+      var arrayOfBarcodesInRack = _.keys(this.preparedTransferData);
+      var nbOfTubesInRack = arrayOfBarcodesInRack.length;
+
+      if (nbOfTubesInRack !== expectedNbOfTubes){
+        return this.owner.childDone(this,"error", {message:"The number of tube is not correct. The current batch" +
+            " contains "+expectedNbOfTubes+" tubes, while the current transfer file contains "+nbOfTubesInRack+" tubes!"});
+      }
+
+      var missingBarcodes = _.difference(arrayOfExpectedBarcodes,arrayOfBarcodesInRack);
+      if (missingBarcodes.length !== 0){
+        return this.owner.childDone(this,"error", {
+          message:
+              "The number of tube is correct BUT not all the barcodes are matching. " +
+              "The tubes with the following barcodes are missing:<ul>" +
+              _.reduce(missingBarcodes,function(memo,barcode){ return memo + "<li>" + barcode + "</li>"},"") +
+              "</ul>"
+        });
+      }
+
+
+
+      return this.owner.childDone(this, "fileValid");
     },
     setBatch:function (batch) {
       this.cache.push(batch);
       this.batch = batch;
       var model = this;
-      setupInputs(this)
+      setupInputs(model)
           .then(function () {
             model.owner.childDone(model, "batchAdded");
           })
