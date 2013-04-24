@@ -6,7 +6,8 @@ define([], function() {
   _.extend(DeferredCache, {
     init: function() {
       var instance = Object.create(DeferredCache);
-      var results  = $.Deferred();
+      var pulled   = [];              // Resources that have been pulled from the cache
+      var results  = $.Deferred();    // Resources currently in the cache
       _.extend(instance, {
         // Retrieve an instance from the cache using the handler, which will filter the cache to
         // find the match, and possibly deal with missing results in a particular fashion.
@@ -16,9 +17,9 @@ define([], function() {
             var result = _.find(array, filter);
             return ($.Deferred())[result ? 'resolve' : 'reject'](result);
           }).then(function(resource) {
-            return resource;  // Result remains the same on success
+            return resource;                // Result remains the same on success
           }, function() {
-            return missing(); // Result may be handled differently
+            return missing(pulled, filter); // Result may be handled differently
           }).fail(function(message) {
             deferred.reject(message);
           }).done(function(result) {
@@ -49,6 +50,7 @@ define([], function() {
             return cached.uuid === remove.uuid;
           }).union(addition).value();
         }).then(function(array) {
+          pulled  = _.chain(pulled).union([remove]).difference(array).value();
           results = $.Deferred().resolve(array);
         });
       }
