@@ -1,5 +1,4 @@
 define(['text!extraction_pipeline/html_partials/scan_barcode_partial.html'], function (scanBarcodePartialHtml) {
-
   'use strict';
 
   function getKey(e) {
@@ -44,12 +43,12 @@ define(['text!extraction_pipeline/html_partials/scan_barcode_partial.html'], fun
     // Use underscore to insert the model values
     var template = _.template(scanBarcodePartialHtml);
     var templateData = {
-      type : this.model.type,
-      barcode : this.model.barcode,
-      value : this.model.value
+      type:this.model.type,
+      barcode:this.model.barcode,
+      value:this.model.value
     };
 
-    if (model.busy){
+    if (model.busy) {
       $(".barcodeInput").attr("disabled", "true");
     }
 
@@ -73,11 +72,11 @@ define(['text!extraction_pipeline/html_partials/scan_barcode_partial.html'], fun
     });
   };
 
-  ScanBarcodeView.prototype.setModelBarcode = function(model) {
+  ScanBarcodeView.prototype.setModelBarcode = function (model) {
     model.barcode = this.jquerySelector().find('.barcodeInput').val();
   };
 
-  ScanBarcodeView.prototype.displayErrorMessage = function(message) {
+  ScanBarcodeView.prototype.displayErrorMessage = function (message) {
 
     var selection = this.jquerySelector().find('.alert-error');
     var text = 'Error!';
@@ -87,15 +86,15 @@ define(['text!extraction_pipeline/html_partials/scan_barcode_partial.html'], fun
     }
 
     var tmp = $('<h4/>', {
-      class: 'alert-heading',
-      text: text
+      class:'alert-heading',
+      text:text
     });
 
     tmp.appendTo(selection.empty());
     selection.css('display', 'block');
   };
 
-  ScanBarcodeView.prototype.focus = function() {
+  ScanBarcodeView.prototype.focus = function () {
     var selection = this.jquerySelector().find('input');
     selection.focus();
   }
@@ -106,12 +105,12 @@ define(['text!extraction_pipeline/html_partials/scan_barcode_partial.html'], fun
     var children = this.jquerySelector().empty();
   };
 
-  ScanBarcodeView.prototype.enable = function(){
+  ScanBarcodeView.prototype.enable = function () {
     var selection = this.jquerySelector().find(".barcodeInput");
     selection.removeAttr('disabled', 'disabled');
   };
 
-  ScanBarcodeView.prototype.disable = function(){
+  ScanBarcodeView.prototype.disable = function () {
     var selection = this.jquerySelector().find(".barcodeInput");
     selection.attr('disabled', 'disabled');
   };

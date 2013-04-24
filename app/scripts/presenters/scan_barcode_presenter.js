@@ -1,12 +1,9 @@
-define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/views/scan_barcode_view'], function(ScanBarcodeModel, ScanBarcodeView) {
-
+define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/views/scan_barcode_view'], function (Model, View) {
   'use strict';
 
   var ScanBarcodePresenter = function (owner, presenterFactory) {
     this.owner = owner;
     this.presenterFactory = presenterFactory;
-    this.view = undefined;
-    this.model = undefined;
     return this;
   };
 
@@ -26,9 +23,7 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
 
 
   ScanBarcodePresenter.prototype.updateModel = function (input_model) {
-    if (!this.model) {
-      this.model = new ScanBarcodeModel(input_model);
-    }
+    this.model = new Model(input_model);
     return this;
   };
 
@@ -42,19 +37,15 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
   };
 
   ScanBarcodePresenter.prototype.setupView = function () {
-    this.view = new ScanBarcodeView(this, this.jquerySelection);
+    this.view = new View(this, this.jquerySelection);
   };
 
   ScanBarcodePresenter.prototype.renderView = function () {
-    if (this.view) {
-      this.view.render(this.model);
-    }
+    this.view.render(this.model);
   };
 
   ScanBarcodePresenter.prototype.release = function () {
-    if (this.view) {
-      this.view.clear();
-    }
+    this.view.clear();
   };
 
   ScanBarcodePresenter.prototype.childDone = function (presenter, action, data) {
@@ -77,37 +68,35 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
     this.owner.childDone(this, "barcodeScanned", dataForBarcodeScanned);
   };
 
-  ScanBarcodePresenter.prototype.displayErrorMessage = function(message) {
+  ScanBarcodePresenter.prototype.displayErrorMessage = function (message) {
     this.view.displayErrorMessage(message);
   };
 
-  ScanBarcodePresenter.prototype.isValid = function() {
+  ScanBarcodePresenter.prototype.isValid = function () {
     this.view.setModelBarcode(this.model);
     return this.model.isValid();
   };
 
-  ScanBarcodePresenter.prototype.focus = function() {
+  ScanBarcodePresenter.prototype.focus = function () {
     this.view.focus();
 
     return this;
   };
 
-  ScanBarcodePresenter.prototype.enable = function(){
-    if (this.view) {
-      this.view.enable();
-    }
+  ScanBarcodePresenter.prototype.enable = function () {
+    this.view.enable();
   };
 
-  ScanBarcodePresenter.prototype.disable = function(){
-    if (this.view) {
-      this.view.disable();
-    }
+  ScanBarcodePresenter.prototype.disable = function () {
+    this.view.disable();
   };
 
 
   return {
-    register: function(callback) {
-      callback('scan_barcode_presenter', function(owner, factory) { return new ScanBarcodePresenter(owner, factory); });
+    register:function (callback) {
+      callback('scan_barcode_presenter', function (owner, factory) {
+        return new ScanBarcodePresenter(owner, factory);
+      });
     }
   };
 });
