@@ -35,7 +35,7 @@ define([
         var missingHandler = _.bind(Missing(name), instance);
         var cache = _.extend(Cache.init(), {
           getByBarcode: function(requester, modelName, barcode) {
-            this.get(
+            return this.get(
               function(r) { return r.labels.barcode.value === barcode; }, // Find by barcode
               function() { return missingHandler(modelName, barcode); }   // Use the missing handler!
             ).done(_.bind(requester.updateModel, requester)).fail(_.bind(requester.displayErrorMessage, requester));

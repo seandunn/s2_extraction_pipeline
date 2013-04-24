@@ -186,7 +186,7 @@ define([ 'config'
         if (action === "barcodeScanned") {
           this.pageModel.addTubeFromBarcode(data.BC);
         } else if (action === "removeLabware") {
-          this.pageModel.removeTubeByUuid(data.uuid);
+          this.pageModel.removeTubeByUuid(data.resource.uuid);
         }
       }
     }

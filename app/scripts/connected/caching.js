@@ -32,21 +32,22 @@ define([], function() {
         then:    resultsBound('then'),
         resolve: resultsBound('resolve'),
 
-        // When entries get pushed into the cache we simply recache them
-        push: function() {
-          _.each(arguments, recache);
-        }
+        // Caching can be treated as a store, allowing things to be cached and uncached.
+        push: function() { _.each(arguments, recache); },
+        pull: function() { _.each(arguments, uncache); }
       });
       return instance;
 
       // Deals with either maintenance of the cache so that we always have the freshest information
-      // presented.  Essentially if the resource is in the list (by UUID) then we remove it, before
-      // doing the default behaviour of caching it.
-      function recache(resource) {
+      // presented.  Recaching is about removing and then putting the resource back into the cache,
+      // and uncaching is about removing without readding.
+      function recache(resource) { manage(resource, [resource]); }
+      function uncache(resource) { manage(resource, []); }
+      function manage(remove, addition) {
         results.then(function(array) {
           return _.chain(array).reject(function(cached) {
-            return cached.uuid === resource.uuid;
-          }).union([resource]).value();
+            return cached.uuid === remove.uuid;
+          }).union(addition).value();
         }).then(function(array) {
           results = $.Deferred().resolve(array);
         });

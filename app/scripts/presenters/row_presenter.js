@@ -188,6 +188,9 @@ define([
         }
       } else if (action == "labwareRendered") {
         this.setLabwareVisibility();
+      } else if (action == 'removeLabware') {
+        var eventPrefix = child.labwareModel.input ? 'input' : 'output'
+        this.owner.childDone(this, eventPrefix+'Removed', data);
       }
     },
 
