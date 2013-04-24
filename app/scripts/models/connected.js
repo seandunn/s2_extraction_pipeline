@@ -52,8 +52,13 @@ define([
     setBatch: function(batch) {
       this.cache.push(batch);
       this.batch = batch;
-      setupInputs(this);
-      this.owner.childDone(this, "batchAdded");
+
+      var model = this;
+      setupInputs(model).then(function() {
+        model.owner.childDone(model, "batchAdded");
+      }).fail(function() {
+        model.owner.childDone(model, "error", {message:"Couldn't load the batch resource"});
+      });
     },
 
     setUser: function(userUUID) {
@@ -224,9 +229,9 @@ define([
 
   // Configures the inputs
   function setupInputs(that) {
-    that.batch.items.then(function(items) {
+    return that.batch.items.then(function(items) {
       var inputs = [];
-      $.when.apply(null, _.chain(items).filter(function(item) {
+      return $.when.apply(null, _.chain(items).filter(function(item) {
         return item.role === that.config.input.role && item.status === 'done';
       }).map(function(item) {
         return that.cache.fetchResourcePromiseFromUUID(item.uuid).then(function(resource) {
@@ -234,7 +239,7 @@ define([
         });
       }).value()).then(function() {
         that.inputs.resolve(inputs);
-      });
+      }).fail(that.inputs.reject);
     });
   }
 });
