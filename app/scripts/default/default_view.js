@@ -3,24 +3,24 @@ define(['text!extraction_pipeline/html_partials/default_page_partial.html'], fun
 
   function onLogin_clicked(owner, view) {
     /*
-    * response to the click on the login button...
-    * tells the owner that we want to try a login
-    */
+     * response to the click on the login button...
+     * tells the owner that we want to try a login
+     */
     return function () {
       if (owner) {
         var userbarcode = $(".user_barcode input").val();
         var tube_barcode = $(".labware_barcode input").val();
 
-        owner.childDone(view , "login",{ userBC:userbarcode, labwareBC:tube_barcode });
+        owner.childDone(view, "login", { userBC:userbarcode, labwareBC:tube_barcode });
       }
     }
   }
 
   function onReturnKey_pressed(owner) {
     /*
-    * response to a return key pressed.
-    * NB: hacked for now, as it tell reuses the onLogin_clicked method()...
-    */
+     * response to a return key pressed.
+     * NB: hacked for now, as it tell reuses the onLogin_clicked method()...
+     */
     return function (e) {
       // TODO : change the onLogin_clicked() to a callback passed as an argument.
       var code = (e.keyCode ? e.keyCode : e.which);
@@ -43,15 +43,15 @@ define(['text!extraction_pipeline/html_partials/default_page_partial.html'], fun
 
   loginview.prototype.renderView = function (data) {
 
-    var template = _.template(defaultPagePartialHtml);
+    _.templateSettings.variable = 'rc';
 
     // set the data as template data
     var templateData = {
-      data: data
+      data:data
     };
 
     // makes sure that the container has been emptied first...
-    this.release().append(template(templateData));
+    this.release().append(_.template(defaultPagePartialHtml)(templateData));
 
     // adds the js response to the ui elements
     // $("#tube_barcode").bind('keypress', onReturnKey_pressed(this.owner));
