@@ -20,6 +20,15 @@ define([
       this.config = config;
       this.factory = factory;
 
+      if (!this.config.btnConfig){
+        this.config.btnConfig = [
+          {"title":"print", action:"print"},
+          {"title":"start", action:"start"},
+          {"title":"end", action:"end"},
+          {"title":"next", action:"next"}
+        ];
+      }
+
       var presenter = this;
       return this;
     },
@@ -64,21 +73,25 @@ define([
       return this;
     },
     renderView: function() {
+
       this.view.renderView({
         user: this.user,
-        processTitle: this.config.processTitle
+        processTitle: this.config.processTitle,
+        buttons:this.config.btnConfig
       });
       return this;
     },
 
     childDone: function(child, action, data) {
+      var presenter = this;
+      var btnDetailsList;
+
       if (child === this.view) {
         var handler = this.activePresenter[action];
         handler && handler.apply(this.activePresenter, arguments);
       } else if (action === 'done') {
         var index = _.indexOf(this.presenters, child);
         if (index !== -1) {
-          var presenter = this;
           var active = presenter.presenters[index+1] || {
             previousDone:function() {
               presenter.owner.childDone.apply(presenter.owner, arguments);
@@ -87,6 +100,16 @@ define([
           active.previousDone(child, action, data);
           presenter.activePresenter = active;
         }
+      } else if (action === 'enableBtn' || action === 'disableBtn'){
+        btnDetailsList = data.actions || this.config.btnConfig;
+        _.each(btnDetailsList, function(btnDetails){
+          presenter.view.setButtonEnabled(btnDetails.action, action === 'enableBtn');
+        })
+      } else if (action === 'showBtn' || action === 'hideBtn'){
+        btnDetailsList = data.actions || this.config.btnConfig;
+        _.each(btnDetailsList, function(btnDetails){
+          presenter.view.setButtonVisible(btnDetails.action, action === 'showBtn');
+        })
       } else {
         this.owner.childDone(child, action, data);
       }
