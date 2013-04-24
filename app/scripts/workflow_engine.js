@@ -30,6 +30,9 @@ define([], function () {
 
     if (foundWorkflows.length > 1) throw "More than 1 workflow active.";
 
+    // This should not be an exception it should be handled normally...
+    if (foundWorkflows.length === 0) throw "This labware cannot be processed by this pipeline.";
+
     return foundWorkflows[0] || { presenterName: this.defaultPresenter };
   };
 
@@ -66,3 +69,4 @@ define([], function () {
 
   return workflowEngine;
 });
+
