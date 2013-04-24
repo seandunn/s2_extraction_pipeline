@@ -99,28 +99,22 @@ define([ 'config'
 
       app.prototype.childDone = function (child, action, data) {
         console.log("A child of App (", child, ") said it has done the following action '" + action + "' with data :", data);
-        try {
+
+        var application = this;
+        config.exceptionHandling(function() {
           if (action == "done") {
-
             $('html, body').animate({scrollTop:0}, 'slow');
-//            $('#content').toggle('slow');
-//            $('#content').toggle('slow');
-
-            this.updateModel(data);
+            application.updateModel(data);
           } else if (action == "error") {
-            this.displayError(data.message);
+            application.displayError(data.message);
           } else if (action == "login") {
-            this.updateModel(data);
+            application.updateModel(data);
           } else if (action == "foundNextPresenter") {
-            this.setupNextPresenter(data);
+            application.setupNextPresenter(data);
           }
-
-          return this;
-        } catch (err) {
-          this.displayError("Something wrong happend... "+err.message);
-        }
-
-      };
+        });
+        return application;
+      }
 
       return app;
     });
