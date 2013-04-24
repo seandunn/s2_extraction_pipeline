@@ -203,24 +203,32 @@ define(['config'
      */
     childDone:function (child, action, data) {
       if (child === this.view) {
-        if (action == "labwareRemoved") {
-          var dataForOwner = {
-            "uuid":this.labwareModel.resource.uuid
-          };
-          this.resetLabware();
-          this.owner.childDone(this, "removeLabware", dataForOwner);
-        }
-      } else if (action == 'barcodeScanned') {
+        this.viewDone(child, action, data);
+      } else if (child === this.labwareModel) {
+        this.modelDone(child, action, data);
+      } else if (child === this.barcodeInputPresenter) {
+        this.barcodeInputDone(child, action, data);
+      }
+    },
+    viewDone: function(child, action, data) {
+      if (action == "labwareRemoved") {
+        this.resetLabware();
+        this.owner.childDone(this, "removeLabware", { uuid:this.labwareModel.resource.uuid});
+      }
+    },
+    barcodeInputDone: function(child, action, data) {
+      if (action == 'barcodeScanned') {
         this.owner.childDone(this, 'barcodeScanned', {
           modelName: this.labwareModel.expected_type.pluralize(),
           BC:        data.BC
         });
-      } else if (child === this.labwareModel) {
-        if (action === 'resourceUpdated') {
-          this.setupView();
-          this.renderView();
-          this.owner.childDone(this, 'resourceUpdated', {});
-        }
+      }
+    },
+    modelDone: function(child, action, data) {
+      if (action === 'resourceUpdated') {
+        this.setupView();
+        this.renderView();
+        this.owner.childDone(this, 'resourceUpdated', {});
       }
     },
 
