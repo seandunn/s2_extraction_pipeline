@@ -78,11 +78,8 @@ define(['config'
     },
 
     updateModel:function (newData) {
-
       this.labwareModel.setResource(newData);
-
-      this.setupView();
-      this.renderView();
+      this.childDone(this.labwareModel, 'resourceUpdated', {});
       return this;
     },
 
@@ -205,13 +202,17 @@ define(['config'
           this.resetLabware();
           this.owner.childDone(this, "removeLabware", dataForOwner);
         }
-      }
-
-      else if (action == 'barcodeScanned') {
+      } else if (action == 'barcodeScanned') {
         this.owner.childDone(this, 'barcodeScanned', {
           modelName: this.labwareModel.expected_type.pluralize(),
           BC:        data.BC
         });
+      } else if (child === this.labwareModel) {
+        if (action === 'resourceUpdated') {
+          this.setupView();
+          this.renderView();
+          this.owner.childDone(this, 'resourceUpdated', {});
+        }
       }
     },
 
