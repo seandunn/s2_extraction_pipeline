@@ -17,25 +17,33 @@ define([
 
       var component = this;
       var container = this.selector().empty().append(html);
-      var fileNameSpan = container.find('#filenameSpan');
+      var fileNameSpan = container.find('.filenameSpan');
 
       // add listeners to the hiddenFileInput
-      var hiddenFileInput = container.find('#hiddenFileInput');
+      var hiddenFileInput = container.find('.hiddenFileInput');
       hiddenFileInput.bind("change", handleInputFileChanged);
 
       // add Listeners to the dropZone
-      var dropzone = container.find('#drop_zone');
+      var dropzone = container.find('.dropzone');
       dropzone.bind('click', handleClickRerackingFile); // forward the click to the hiddenFileInput
       $(document).bind('drop', handleDropRerackingFile);
       $(document).bind('dragover', handleDragOver);
 
       function handleRerackingFile(fileHandle){
         var reader = new FileReader();
-        reader.onload = (function(FILE){
+
+        reader.onload = (function(fileEvent){
           return function(e){
             fileNameSpan.text(fileHandle.name);
           }
         })(fileHandle);
+
+        reader.onloadend = function(event){
+          if(event.target.readyState === FileReader.DONE){
+            component.owner.childDone(component, "fileRead", {csvAsTxt:event.target.result});
+          }
+        };
+
         reader.readAsText(fileHandle,"UTF-8");
       }
 
@@ -81,14 +89,26 @@ define([
 ////        component.owner.model.fire();
 //      });
     },
+    disableDropZone:function(){
+      var container = this.selector();
+      container.find('.dropzone').hide();
+      this.message('success','The transfert was successful. Click on the \'Next\' button to carry on.');
+//      container.find('#validation_box').show().text("Transfer done");
+    },
+    validateFile:function(){
+      var container = this.selector();
+      this.message('success','The file has been processed properly. Click on the \'Start\' button to validate the process.')
+    },
+    error:function(data){
+      this.message('error',data.message);
+    },
     toggleHeaderEnabled: function(isEnabled) {
-//      this.selector().find('.kitSelect')[isEnabled ? 'removeAttr' : 'attr']('disabled', 'disabled');
     },
     clear: function() {
       this.selector().empty();
     },
     message: function(type, message) {
-//      this.selector().find('.validationText').removeClass('alert-error alert-info alert-success').addClass('alert-' + type).text(message);
+      this.selector().find('.validationText').show().removeClass('alert-error alert-info alert-success').addClass('alert-' + type).text(message);
     }
   });
 
