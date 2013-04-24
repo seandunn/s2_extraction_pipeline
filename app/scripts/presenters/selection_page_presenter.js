@@ -1,41 +1,22 @@
-/*
- * S2 - An open source lab information management systems (LIMS)
- * Copyright (C) 2013  Wellcome Trust Sanger Insitute
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 1, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
- */
-
-
 define([ 'config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/views/selection_page_view'
   , 'extraction_pipeline/models/selection_page_model'
-], function (config, BasePresenter, SelectionPageView, SelectionPageModel ) {
+], function (config, BasePresenter, View, Model) {
+  'use strict';
 
   var PagePresenter = Object.create(BasePresenter);
 
   $.extend(PagePresenter, {
-    register: function(callback) {
-      callback('selection_page_presenter', function(owner, factory, initData) {
+    register:function (callback) {
+      callback('selection_page_presenter', function (owner, factory, initData) {
         return Object.create(PagePresenter).init(owner, factory, initData);
       });
     },
 
     init:function (owner, presenterFactory, initData) {
       this.presenterFactory = presenterFactory;
-      this.model = Object.create(SelectionPageModel).init(this, initData);
+      this.model = Object.create(Model).init(this, initData);
       this.owner = owner;
       this.config = initData;
       return this;
@@ -53,7 +34,7 @@ define([ 'config'
       return this;
     },
     setupView:function () {
-      this.view = new SelectionPageView(this, this.jquerySelection);
+      this.view = new View(this, this.jquerySelection);
       return this;
     },
     renderView:function () {
@@ -62,20 +43,16 @@ define([ 'config'
       }
       //marshalling data for the view
       var dataForView = {
-        batch:         this.model.batch && this.model.batch.uuid,
-        user:          this.model.user,
-        capacity:      this.model.getCapacity(),
-        processTitle:  this.model.config.processTitle
+        batch:this.model.batch && this.model.batch.uuid,
+        user:this.model.user,
+        capacity:this.model.getCapacity(),
+        processTitle:this.model.config.processTitle
       };
 
       this.view.render(dataForView);
 
       // render subviews...
-      _.each(this.presenters, function(presenter){
-          presenter.renderView();
-      });
-
-      _.each(this.presenters, function(presenter){
+      _.each(this.presenters, function (presenter) {
         presenter.renderView();
       });
 
@@ -85,7 +62,7 @@ define([ 'config'
     setupSubPresenters:function () {
       var that = this;
       this.presenters = [];
-      _(this.model.getCapacity()).times(function(){
+      _(this.model.getCapacity()).times(function () {
         var subPresenter = that.presenterFactory.create('labware_presenter', that);
         that.presenters.push(subPresenter);
       });
@@ -109,7 +86,7 @@ define([ 'config'
       var numTubes = this.model.getNumberOfTubes()
       var presenterData = [];
 
-      _.each(this.model.tubes, function(tube){
+      _.each(this.model.tubes, function (tube) {
         presenterData.push({
           "resource":tube,
           expected_type:   presenter.config.input.model.singularize(),
@@ -126,7 +103,7 @@ define([ 'config'
       });
 
       // numTubes + 1 to account for the intermediate barcode scan row
-      _(this.model.getCapacity() - (numTubes + 1)).times(function() {
+      _(this.model.getCapacity() - (numTubes + 1)).times(function () {
         presenterData.push({
           "display_remove":false,
           "display_barcode":false,
@@ -134,7 +111,7 @@ define([ 'config'
         });
       });
 
-      _.chain(this.presenters).zip(presenterData).each(function(pair, index) {
+      _.chain(this.presenters).zip(presenterData).each(function (pair, index) {
         var presenter = pair[0], config = pair[1];
         presenter.setupPresenter(config, jQueryForNthChild(index));
       }).value();
@@ -168,7 +145,7 @@ define([ 'config'
        * data:       Any data associated with the action.
        *
        */
-      if (child === this.view){
+      if (child === this.view) {
         if (action === "next") {
           //this.owner.childDone(this,"error",{"message" : "Not hooked up!"});
           this.model.makeBatch();
@@ -186,7 +163,7 @@ define([ 'config'
             labware:this.model.labware,
             "batch":this.model.batch
           };
-          this.owner.childDone(this,"done",dataForOwner);
+          this.owner.childDone(this, "done", dataForOwner);
         } else if (action === "barcodeNotFound") {
           this.displayBarcodeError("Barcode not found");
         }
