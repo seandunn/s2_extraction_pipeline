@@ -90,7 +90,7 @@ define([ 'config'
       var numTubes = this.model.getNumberOfTubes()
       var presenterData = [];
 
-      _.each(this.model.tubes, function(tube){
+      _.each(this.model.tubes, function (tube) {
         presenterData.push({
           "resource":tube,
           expected_type:   presenter.config.input.model.singularize(),
@@ -107,7 +107,7 @@ define([ 'config'
       });
 
       // numTubes + 1 to account for the intermediate barcode scan row
-      _(this.model.getCapacity() - (numTubes + 1)).times(function() {
+      _(this.model.getCapacity() - (numTubes + 1)).times(function () {
         presenterData.push({
           "display_remove":false,
           "display_barcode":false,
@@ -115,7 +115,7 @@ define([ 'config'
         });
       });
 
-      _.chain(this.presenters).zip(presenterData).each(function(pair, index) {
+      _.chain(this.presenters).zip(presenterData).each(function (pair, index) {
         var presenter = pair[0], config = pair[1];
         presenter.setupPresenter(config, jQueryForNthChild(index));
       }).value();
@@ -149,7 +149,7 @@ define([ 'config'
        * data:       Any data associated with the action.
        *
        */
-      if (child === this.view){
+      if (child === this.view) {
         if (action === "next") {
           //this.owner.childDone(this,"error",{"message" : "Not hooked up!"});
           this.model.makeBatch();
