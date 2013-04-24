@@ -49,7 +49,8 @@
     "presenterName":"selection_page_presenter",
     "processTitle": "Manual DNA and RNA Extraction",
     "input":        {
-      "role":"samples.extraction.manual.dna_and_rna.input_tube_nap"
+      "role":"samples.extraction.manual.dna_and_rna.input_tube_nap",
+      "model":"tubes"
     },
     "output":       [
       {
@@ -272,7 +273,8 @@
     "presenterName":"selection_page_presenter",
     "processTitle": "Manual DNA Only Extraction",
     "input":        {
-      "role":"samples.extraction.manual.dna_only.input_tube_dnap"
+      "role":"samples.extraction.manual.dna_only.input_tube_dnap",
+      "model":"tubes"
     },
     "output":       [
       {
@@ -325,7 +327,8 @@
     "presenterName":"selection_page_presenter",
     "processTitle": "Manual RNA Only Extraction",
     "input":        {
-      "role":"samples.extraction.manual.rna_only.input_tube_rnap"
+      "role":"samples.extraction.manual.rna_only.input_tube_rnap",
+      "model":"tubes"
     },
     "output":       [
       {
@@ -341,7 +344,8 @@
     "presenterName":"selection_page_presenter",
     "processTitle": "Automated DNA and RNA Extraction (QIAcube)",
     "input":        {
-      "role":"samples.extraction.qiacube.dna_and_rna.input_tube_nap"
+      "role":"samples.extraction.qiacube.dna_and_rna.input_tube_nap",
+      "model":"tubes"
     },
     "output":       [
       {
@@ -502,7 +506,8 @@
     "presenterName":"selection_page_presenter",
     "processTitle": "Automated DNA Only Extraction (QIAcube)",
     "input":        {
-      "role":"samples.extraction.qiacube.dna_only.input_tube_dnap"
+      "role":"samples.extraction.qiacube.dna_only.input_tube_dnap",
+      "model":"tubes"
     },
     "output":       [
       {

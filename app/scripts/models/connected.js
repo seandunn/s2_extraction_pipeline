@@ -110,7 +110,7 @@ define([
       this.behaviours.outputs.print(function() {
         var root;
 
-        this.owner.getS2Root().then(function(result) {
+        that.owner.getS2Root().then(function(result) {
           root = result;
         }).then(function() {
           that.inputs.then(function(inputs) {
