@@ -82,19 +82,16 @@ define([
     },
 
     unknownDone:function (child, action, data) {
-      if (action === "barcodeScanned") {
+      if (action === 'inputBarcodeScanned') {
         var originator = data.origin, presenter = this;
-
-        // HACK: Identify the input as the first labware presenter in the row
-        if (originator.labwareModel.input && (originator.labwareModel.expected_type === this.config.input.model.singularize())) {
-          presenter.model.inputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
-            presenter.model.inputs.pull(resource);
-          });
-        } else if (!originator.labwareModel.input) {
-          presenter.model.outputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
-            presenter.model.outputs.pull(resource);
-          });
-        }
+        presenter.model.inputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
+          presenter.model.inputs.pull(resource);
+        });
+      } else if (action === 'outputBarcodeScanned') {
+        var originator = data.origin, presenter = this;
+        presenter.model.outputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
+          presenter.model.outputs.pull(resource);
+        });
       } else if (action === 'inputRemoved') {
         this.model.inputs.push(data.resource);
       } else if (action === 'outputRemoved') {

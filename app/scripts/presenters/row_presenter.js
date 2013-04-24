@@ -180,17 +180,18 @@ define([
 
       if (action == "tube rendered") {
         this.owner.childDone(this, "tubeFinished", data);
-      } else if (action == "barcodeScanned") {
-        this.owner.childDone(this, "barcodeScanned", data);
       } else if (action === 'resourceUpdated') {
         if (this.isRowComplete() && (child === this.editablePresenters().last().value())) {
           this.owner.childDone(this, "completed", data);
         }
       } else if (action == "labwareRendered") {
         this.setLabwareVisibility();
-      } else if (action == 'removeLabware') {
-        var eventPrefix = child.labwareModel.input ? 'input' : 'output'
+      } else if (action === 'removeLabware') {
+        var eventPrefix = child.labwareModel.input ? 'input' : 'output';
         this.owner.childDone(this, eventPrefix+'Removed', data);
+      } else if (action === "barcodeScanned") {
+        var eventPrefix = child.labwareModel.input ? 'input' : 'output';
+        this.owner.childDone(this, eventPrefix+'BarcodeScanned', data);
       }
     },
 
