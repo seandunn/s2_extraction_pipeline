@@ -34,6 +34,7 @@
 
    "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed.batched",
    "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed.batched",
+   "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed.batched",
 
    "samples.extraction.extracted_tube_dna",
    "samples.extraction.racking.tube_to_be_retubed_dna",
