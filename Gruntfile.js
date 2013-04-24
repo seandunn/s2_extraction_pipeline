@@ -68,7 +68,7 @@ module.exports = function( grunt ) {
         files: [
           'app/*.html',
           'app/styles/**/*.css',
-          'app/scripts/**/*.js',
+          'app/scripts/**/*',
           'app/images/**/*',
           'test/spec/**/*.js',
           'test/test_main.js'
