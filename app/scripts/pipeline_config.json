@@ -33,8 +33,12 @@
    "samples.extraction.qiacube.rna_only.input_tube_dnap.to_be_retubed",
 
    "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed.batched",
-   "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed.batched"
+   "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed.batched",
 
+   "samples.extraction.extracted_tube_dna",
+   "samples.extraction.racking.tube_to_be_retubed_dna",
+   "samples.extraction.extracted_tube_rna",
+   "samples.extraction.racking.tube_to_be_retubed_rna"
   ],
 
   "workflows":[
@@ -68,7 +72,8 @@
         "start": "row",
         "operate": "row",
         "complete": "row",
-        "done": "next"
+        "done": "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -104,7 +109,8 @@
         "start": "row",
         "operate": "row",
         "complete": "row",
-        "done": "next"
+        "done": "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -137,7 +143,8 @@
         "start": "row",
         "operate": "row",
         "complete": "row",
-        "done": "next"
+        "done": "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -170,7 +177,8 @@
         "start": "start",
         "operate": "start",
         "complete": "end",
-        "done": "transfer"
+        "done": "transfer",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -179,7 +187,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.manual.extracted_tube_dna",
+        "role":       "samples.extraction.extracted_tube_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "tubes"
@@ -203,7 +211,8 @@
         "start": "row",
         "operate": "row",
         "complete": "row",
-        "done": "next"
+        "done": "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -236,7 +245,8 @@
         "start": "start",
         "operate": "start",
         "complete": "end",
-        "done": "transfer"
+        "done": "transfer",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -245,7 +255,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.manual.extracted_tube_rna",
+        "role":       "samples.extraction.extracted_tube_rna",
         "aliquotType":"RNA",
         "purpose":    "stock",
         "model":      "tubes"
@@ -285,7 +295,8 @@
         "start": "row",
         "operate": "row",
         "complete": "row",
-        "done": "next"
+        "done": "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -353,7 +364,8 @@
         "start": "start",
         "operate": "start",
         "complete": "end",
-        "done": "transfer"
+        "done": "transfer",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -368,7 +380,7 @@
         "model":      "tubes"
       },
       {
-        "role":       "samples.extraction.qiacube.extracted_tube_dna",
+        "role":       "samples.extraction.extracted_tube_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "tubes"
@@ -389,7 +401,8 @@
         "start": "row",
         "operate": "row",
         "complete": "row",
-        "done": "next"
+        "done": "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -422,7 +435,8 @@
         "start": "start",
         "operate": "start",
         "complete": "end",
-        "done": "transfer"
+        "done": "transfer",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -431,7 +445,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.qiacube.extracted_tube_rna",
+        "role":       "samples.extraction.extracted_tube_rna",
         "aliquotType":"RNA",
         "purpose":    "stock",
         "model":      "tubes"
@@ -458,7 +472,8 @@
         "start": "start",
         "operate": "start",
         "complete": "end",
-        "done": "transfer"
+        "done": "transfer",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -467,7 +482,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.qiacube.extracted_tube_rna",
+        "role":       "samples.extraction.extracted_tube_rna",
         "aliquotType":"RNA",
         "purpose":    "stock",
         "model":      "tubes"
@@ -510,7 +525,8 @@
         "start": "start",
         "operate": "start",
         "complete": "end",
-        "done": "transfer"
+        "done": "transfer",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -519,7 +535,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.qiacube.extracted_tube_dna",
+        "role":       "samples.extraction.extracted_tube_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "tubes"
@@ -548,7 +564,6 @@
     ]
   },
 
-
   {
     "accepts": [ "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed" ],
     "presenterName":  "selection_page_presenter",
@@ -571,27 +586,118 @@
     "presenterName": "step_presenter",
     "presenters": [
       {
-      "presenterName":   "connected_presenter",
-      "behaviours": {
-        "start": "row",
-        "operate": "row",
-        "complete": "row",
-        "done": "next"
-      },
-      "defaultPrinter":"Tube Printer",
-      "input":         {
-        "role": "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed.batched",
-        "model":"tubes"
-      },
-      "output":        [
-        {
-        "role":       "samples.extraction.qiacube.dna_and_rna.binding_input_tube_dnap",
-        "aliquotType":"NA+P",
-        "purpose":    "stock",
-        "model":      "tubes"
+        "presenterName": "connected_presenter",
+        "behaviours": {
+          "start":    "row",
+          "operate":  "row",
+          "complete": "row",
+          "done":     "next",
+          "outputs":  "print"
+        },
+        "defaultPrinter":"Tube Printer",
+        "input": {
+          "role":  "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed.batched",
+          "model": "tubes"
+        },
+        "output": [
+          {
+            "role":        "samples.extraction.qiacube.dna_and_rna.binding_input_tube_dnap",
+            "aliquotType": "NA+P",
+            "purpose":     "stock",
+            "model":       "tubes"
+          }
+        ]
       }
-      ]
-    }
+    ]
+  },
+
+  {
+    "accepts": [ "samples.extraction.extracted_tube_dna" ],
+    "presenterName": "selection_page_presenter",
+    "processTitle":  "Post DNA Extraction Racking",
+    "input": {
+      "role":  "samples.extraction.extracted_tube_dna",
+      "model": "tubes"
+    },
+    "output": [
+      {
+        "role": "samples.extraction.racking.tube_to_be_retubed_dna"
+      }
+    ]
+  }, {
+    "accepts": [ "samples.extraction.racking.tube_to_be_retubed_dna" ],
+    "presenterName": "step_presenter",
+    "processTitle":   "Post DNA Extraction Racking - 1D-to-2D Tube Transfers",
+    "presenters": [
+      {
+        "presenterName": "connected_presenter",
+        "behaviours": {
+          "start":    "row",
+          "operate":  "row",
+          "complete": "row",
+          "done":     "next",
+          "outputs":  "never"
+        },
+        "cache": {
+          "outputs": "create"
+        },
+        "defaultPrinter": "Tube Printer",
+        "input": {
+          "role":  "samples.extraction.racking.tube_to_be_retubed_dna",
+          "model": "tubes"
+        },
+        "output": [
+          {
+            "role": "samples.extraction.racking.tube_to_be_racked_dna",
+            "model": "tubes"
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "accepts": [ "samples.extraction.extracted_tube_rna" ],
+    "presenterName": "selection_page_presenter",
+    "processTitle":  "Post RNA Extraction Racking",
+    "input": {
+      "role":  "samples.extraction.extracted_tube_rna",
+      "model": "tubes"
+    },
+    "output": [
+      {
+        "role": "samples.extraction.racking.tube_to_be_retubed_rna"
+      }
+    ]
+  }, {
+    "accepts": [ "samples.extraction.racking.tube_to_be_retubed_rna" ],
+    "presenterName": "step_presenter",
+    "processTitle":   "Post RNA Extraction Racking - 1D-to-2D Tube Transfers",
+    "presenters": [
+      {
+        "presenterName": "connected_presenter",
+        "behaviours": {
+          "start":    "row",
+          "operate":  "row",
+          "complete": "row",
+          "done":     "next",
+          "outputs":  "never"
+        },
+        "cache": {
+          "outputs": "create"
+        },
+        "defaultPrinter": "Tube Printer",
+        "input": {
+          "role":  "samples.extraction.racking.tube_to_be_retubed_rna",
+          "model": "tubes"
+        },
+        "output": [
+          {
+            "role": "samples.extraction.racking.tube_to_be_racked_rna",
+            "model": "tubes"
+          }
+        ]
+      }
     ]
   },
 
@@ -622,7 +728,8 @@
         "start":     "row",
         "operate":   "row",
         "complete":  "row",
-        "done":      "next"
+        "done":      "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -668,7 +775,8 @@
         "start":     "row",
         "operate":   "row",
         "complete":  "row",
-        "done":      "next"
+        "done":      "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {

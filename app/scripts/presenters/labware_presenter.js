@@ -14,6 +14,7 @@ define(['config'
       this.resource = undefined;
       this.display_remove = undefined;
       this.display_barcode = undefined;
+      this.display_labware = undefined;
       this.expected_type = undefined;
       this.input = undefined;
       return this;
@@ -30,11 +31,17 @@ define(['config'
     setDisplayBarcode:function (value) {
       this.display_barcode = value
     },
+    setDisplayLabware: function(value) {
+      this.display_labware = value;
+    },
     setExpectedType:function (value) {
       this.expected_type = value
     },
     setInput: function(value) {
       this.input = value;
+    },
+    displayLabware: function() {
+      return this.display_labware === undefined ? true : this.display_labware;
     }
   });
 
@@ -59,6 +66,7 @@ define(['config'
         this.labwareModel.setResource(setupData.resource);
         this.labwareModel.setDisplayRemove(setupData.display_remove);
         this.labwareModel.setDisplayBarcode(setupData.display_barcode);
+        this.labwareModel.setDisplayLabware(setupData.display_labware);
         this.labwareModel.setExpectedType(setupData.expected_type);
         this.labwareModel.setInput(setupData.input);
       }
@@ -78,11 +86,8 @@ define(['config'
     },
 
     updateModel:function (newData) {
-
       this.labwareModel.setResource(newData);
-
-      this.setupView();
-      this.renderView();
+      this.childDone(this.labwareModel, 'resourceUpdated', {});
       return this;
     },
 
@@ -102,7 +107,7 @@ define(['config'
       if (this.labwareModel.expected_type && type != this.labwareModel.expected_type) {
         //TODO: Set up error message here
       } else {
-        if (type) {
+        if (this.labwareModel.displayLabware()) {
           this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
           this.view.setTitle(type);
         }
@@ -198,18 +203,32 @@ define(['config'
      */
     childDone:function (child, action, data) {
       if (child === this.view) {
-        if (action == "labwareRemoved") {
-          var dataForOwner = {
-            "uuid":this.labwareModel.resource.uuid
-          };
-          this.resetLabware();
-          this.owner.childDone(this, "removeLabware", dataForOwner);
-        }
+        this.viewDone(child, action, data);
+      } else if (child === this.labwareModel) {
+        this.modelDone(child, action, data);
+      } else if (child === this.barcodeInputPresenter) {
+        this.barcodeInputDone(child, action, data);
       }
-
-      else if (action == 'barcodeScanned') {
-        this.owner.childDone(this, 'barcodeScanned', {"BC":data.BC});
-
+    },
+    viewDone: function(child, action, data) {
+      if (action == "labwareRemoved") {
+        this.resetLabware();
+        this.owner.childDone(this, "removeLabware", { uuid:this.labwareModel.resource.uuid});
+      }
+    },
+    barcodeInputDone: function(child, action, data) {
+      if (action == 'barcodeScanned') {
+        this.owner.childDone(this, 'barcodeScanned', {
+          modelName: this.labwareModel.expected_type.pluralize(),
+          BC:        data.BC
+        });
+      }
+    },
+    modelDone: function(child, action, data) {
+      if (action === 'resourceUpdated') {
+        this.setupView();
+        this.renderView();
+        this.owner.childDone(this, 'resourceUpdated', {});
       }
     },
 

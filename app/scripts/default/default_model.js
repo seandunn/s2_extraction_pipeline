@@ -27,16 +27,12 @@ define([
 
   $.extend(DefaultPageModel, {
     init:function (owner) {
-//      BasePageModel.init(owner);
       this.owner = Object.create(owner);
-      this.stash_by_BC = {};
-      this.stash_by_UUID = {};
-
-
-
       this.labware = undefined;
       this.user = undefined;
       this.batch = undefined;
+
+      this.initialiseCaching();
       return this;
     },
     setLabware:function (rsc) {
@@ -51,7 +47,7 @@ define([
     },
     setLabwareFromBarcode:function (barcode) {
       var that = this;
-      return this.fetchResourcePromiseFromBarcode(barcode)
+      return this.cache.fetchResourcePromiseFromBarcode(barcode)
           .then(function (rsc) {
             that.setLabware(rsc);
           })

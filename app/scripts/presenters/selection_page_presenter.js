@@ -37,6 +37,7 @@ define([ 'config'
       this.presenterFactory = presenterFactory;
       this.pageModel = Object.create(SelectionPageModel).init(this, initData);
       this.owner = owner;
+      this.config = initData;
       return this;
     },
     setupPresenter:function (setupData, jquerySelection) {
@@ -106,21 +107,25 @@ define([ 'config'
       for (var i = 0; i < this.pageModel.getCapacity(); i++) {
         if (i < numTubes) {
           var dataForExistingLabware_presenter = {
-            "resource":this.pageModel.tubes[i],
-            "display_remove":true,
-            "display_barcode":false
+            resource:        this.pageModel.tubes[i],
+            expected_type:   this.config.input.model.singularize(),
+            display_remove:  true,
+            display_barcode: false
           };
           this.presenters[i].setupPresenter(dataForExistingLabware_presenter, jQueryForNthChild(i));
         } else if (i == numTubes) {
           var dataForLabwareWithBC_presenter = {
-            "display_remove":false,
-            "display_barcode":true
+            expected_type:   this.config.input.model.singularize(),
+            display_remove:  false,
+            display_barcode: true,
+            display_labware: false
           };
           this.presenters[i].setupPresenter(dataForLabwareWithBC_presenter, jQueryForNthChild(i));
         } else {
           var dataForhiddenLabwarePresenter = {
-            "display_remove":false,
-            "display_barcode":false
+            display_remove:  false,
+            display_barcode: false,
+            display_labware: false
           };
           this.presenters[i].setupPresenter(dataForhiddenLabwarePresenter, jQueryForNthChild(i));
         }

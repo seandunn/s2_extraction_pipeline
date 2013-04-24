@@ -182,6 +182,7 @@ define([
         this.owner.childDone(this, "tubeFinished", data);
       } else if (action == "barcodeScanned") {
         this.owner.childDone(this, "barcodeScanned", data);
+      } else if (action === 'resourceUpdated') {
         if (this.isRowComplete() && (child === this.editablePresenters().last().value())) {
           this.owner.childDone(this, "completed", data);
         }

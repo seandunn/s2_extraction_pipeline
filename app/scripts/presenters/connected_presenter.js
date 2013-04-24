@@ -87,10 +87,10 @@ define([
 
         // HACK: Identify the input as the first labware presenter in the row
         if (originator.labwareModel.input && (originator.labwareModel.expected_type === this.config.input.model.singularize())) {
-          this.model.getInputByBarcode(originator, data);
+          this.model.inputs.getByBarcode(originator, data.modelName, data.BC);
           this.inputDone(child, action, data);
         } else if (!originator.labwareModel.input) {
-          this.model.getOutputByBarcode(originator, data);
+          this.model.outputs.getByBarcode(originator, data.modelName, data.BC);
           this.outputDone(child, action, data);
         }
       } else if (action === 'completed') {
@@ -109,11 +109,13 @@ define([
     },
 
     modelDone: function(child, action, data) {
-      if (action === "labelPrinted") {
-        this.model.printed = true;
-        this.owner.childDone(this, "error", {"message":"Barcodes printed"});
+      if (action === "barcodePrintSuccess") {
+        this.owner.childDone(this, "error", {"message":"Barcode labels printed"});
+      } else if (action === "barcodePrintFailure") {
+        this.owner.childDone(this, "error", {"message":"Barcode labels could not be printed"});
+      } else if (action === 'outputsReady') {
+        this.model.ready = true;
         this.setupSubPresenters(true);
-
         this.currentView.toggleHeaderEnabled(false);
       } else if (action === "startOperation") {
         this.model.started = true;

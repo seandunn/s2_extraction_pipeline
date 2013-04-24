@@ -1,41 +1,56 @@
 define([
   'extraction_pipeline/models/base_page_model',
   'mapper/operations',
-  'extraction_pipeline/behaviours',
-], function(Base, Operations, Behaviour) {
+  'extraction_pipeline/connected/behaviours',
+  'extraction_pipeline/connected/missing_handlers',
+  'extraction_pipeline/connected/caching'
+], function(Base, Operations, Behaviour, Missing, Cache) {
   'use strict';
 
   var Model = Object.create(Base);
 
   _.extend(Model, {
     init: function(owner, config) {
+      var instance = this;
+
       this.owner = owner;
       this.user = undefined;
       this.batch = undefined;
       this.previous = false;
-      this.printed  = false;
+      this.ready    = false;
 
-      this.initialiseCaching();
-      this.initialiseConnections(config);
-      return this;
-    },
-
-    initialiseConnections: function(config) {
-      this.config  = config;          // Configuration of our connections
-      this.inputs  = $.Deferred();    // Inputs are always a deferred lookup
-      this.outputs = [];              // Outputs are always an array
-      this.batch   = undefined;       // There is no batch, yet
-      this.user    = undefined;       // There is no user, yet
-      this.started = false;           // Has the process started
+      this.config  = config;                                    // Configuration of our connections
+      this.batch   = undefined;                                 // There is no batch, yet
+      this.user    = undefined;                                 // There is no user, yet
+      this.started = false;                                     // Has the process started
 
       // Configure the behaviours based on the configuration
       this.behaviours = _.chain(this.config.behaviours).map(function(behaviourName, name) {
         return [name, Behaviour(behaviourName)];
       }).object().value();
+
+      // Configure the behaviour of inputs & outputs from configuration
+      _.extend(this, _.chain(['inputs','outputs']).map(function(cacheName) {
+        var name = (config.cache || {})[cacheName] || 'report';
+        var missingHandler = _.bind(Missing(name), instance);
+        var cache = _.extend(Cache.init(), {
+          getByBarcode: function(requester, modelName, barcode) {
+            this.get(
+              function(r) { return r.labels.barcode.value === barcode; }, // Find by barcode
+              function() { return missingHandler(modelName, barcode); }   // Use the missing handler!
+            ).done(_.bind(requester.updateModel, requester)).fail(_.bind(requester.displayErrorMessage, requester));
+          }
+        });
+
+        return [cacheName, cache];
+      }).object().value());
+
+      this.initialiseCaching();
+      return this;
     },
 
     setBatch: function(batch) {
-      this.addResource(batch);
+      this.cache.push(batch);
       this.batch = batch;
       setupInputs(this);
       this.owner.childDone(this, "batchAdded");
@@ -64,15 +79,8 @@ define([
       }
     },
 
-    getInputByBarcode: function(requester, barcode) {
-      this.inputs.then(_.partial(findByBarcode, barcode)).then(_.partial(handleRetrieveResult, requester));
-    },
-    getOutputByBarcode: function(requester, barcode) {
-      handleRetrieveResult(requester, findByBarcode(barcode, this.outputs));
-    },
-
     getRowModel:function (rowNum, input) {
-      var that = this, previous = this.previous && this.printed;
+      var that = this, previous = this.previous && this.ready;
       return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {
         var details = nameToDetails[1];
         var name    = 'labware' + (index+2);  // index=0, labware1=input, therefore labware2 first output
@@ -99,39 +107,47 @@ define([
 
     createOutputs: function() {
       var that = this;
-      var root;
+      this.behaviours.outputs.print(function() {
+        var root;
 
-      this.owner.getS2Root().then(function(result) {
-        root = result;
-      }).then(function() {
-        that.inputs.then(function(inputs) {
-          var promises = _.chain(inputs).map(function(input) {
-            return _.chain(that.config.output).pairs().filter(function(outputNameAndDetails) {
-              var details = outputNameAndDetails[1];
-              return details.tracked === undefined ? true : details.tracked;
-            }).map(function(outputNameAndDetails) {
-              var details = outputNameAndDetails[1];
-              return Operations.registerLabware(
-                root[details.model],
-                details.aliquotType,
-                details.purpose
-              ).then(function(state) {
-                that.stash(state.labware, state.barcode);
-                that.outputs.push(state.labware);
-                return state.labware;
-              }).fail(function() {
-                that.owner.childDone(that, "failed", {});
+        this.owner.getS2Root().then(function(result) {
+          root = result;
+        }).then(function() {
+          that.inputs.then(function(inputs) {
+            var labware = [];
+            var promises = _.chain(inputs).map(function(input) {
+              return _.chain(that.config.output).pairs().filter(function(outputNameAndDetails) {
+                var details = outputNameAndDetails[1];
+                return details.tracked === undefined ? true : details.tracked;
+              }).map(function(outputNameAndDetails) {
+                var details = outputNameAndDetails[1];
+                return Operations.registerLabware(
+                  root[details.model],
+                  details.aliquotType,
+                  details.purpose
+                ).then(function(state) {
+                  that.cache.push(state.labware);
+                  labware.push(state.labware);
+                  return state.labware;
+                }).fail(function() {
+                  that.owner.childDone(that, "failed", {});
+                });
+              }).value();
+            }).flatten().value();
+
+            $.when.apply(null, promises).then(function() {
+              that.outputs.resolve(labware).then(function(outputs) {
+                that.printBarcodes(outputs);
               });
-            }).value();
-          }).flatten().value();
-
-          $.when.apply(null, promises).then(function() {
-            that.printBarcodes(that.outputs);
-            that.owner.childDone(that, 'labelPrinted', {});
-          }).fail(function() {
-            that.owner.childDone(that, 'failed', {});
+              that.owner.childDone(that, 'outputsReady', {});
+            }).fail(function() {
+              that.owner.childDone(that, 'failed', {});
+            });
           });
         });
+      }, function() {
+        that.outputs.resolve([]);
+        that.owner.childDone(that, 'outputsReady', {});
       });
     },
 
@@ -206,13 +222,6 @@ define([
 
   return Model;
 
-  // Convenience method for dealing with finding by barcodes
-  function findByBarcode(barcode, array) {
-    return _.chain(array).find(function (resource) {
-      return resource.labels.barcode.value === barcode.BC;
-    }).value();
-  }
-
   // Configures the inputs
   function setupInputs(that) {
     that.batch.items.then(function(items) {
@@ -220,22 +229,12 @@ define([
       $.when.apply(null, _.chain(items).filter(function(item) {
         return item.role === that.config.input.role && item.status === 'done';
       }).map(function(item) {
-        return that.fetchResourcePromiseFromUUID(item.uuid).then(function(resource) {
-          that.addResource(resource);
+        return that.cache.fetchResourcePromiseFromUUID(item.uuid).then(function(resource) {
           inputs.push(resource);
         });
       }).value()).then(function() {
         that.inputs.resolve(inputs);
       });
     });
-  }
-
-  // TODO: 'requester' should really have 'found' and 'notFound' callbacks
-  function handleRetrieveResult(requester, result) {
-    if (!result) {
-      requester.displayErrorMessage("Barcode not found");
-    } else {
-      requester.updateModel(result);
-    }
   }
 });

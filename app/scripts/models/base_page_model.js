@@ -1,6 +1,8 @@
-define(['config'
-        ,'mapper_services/print'
-], function (config, PrintService) {
+define([
+  'config',
+  'mapper_services/print',
+  'extraction_pipeline/connected/caching'
+], function (config, PrintService, Cache) {
 
   'use strict';
 
@@ -8,77 +10,24 @@ define(['config'
 
   $.extend(BasePageModel, {
     initialiseCaching: function() {
-      this.stash_by_BC = {};
-      this.stash_by_UUID = {};
-    },
-
-    // Stashing for caching
-    stash: function(resource, barcode) {
-      this.stash_by_BC[barcode]         = resource;
-      this.stash_by_UUID[resource.uuid] = resource;
-    },
-
-    addResource:function (resource) {
-      if (!resource) return;
-
-      if (resource.uuid) {
-        this.stash_by_UUID[resource.uuid] = resource;
-      }
-      if (resource.labels && resource.labels.barcode) {
-        this.stash_by_BC[resource.labels.barcode.value] = resource;
-      }
-    },
-    fetchResourcePromiseFromUUID:function (uuid) {
-      return this.fetchResourcePromise({uuid:uuid});
-    },
-    fetchResourcePromiseFromBarcode:function (barcode) {
-      return this.fetchResourcePromise({barcode:barcode});
-    },
-    fetchResourcePromise:function (resourceDetails) {
-      var deferredS2Resource = new $.Deferred();
-
-      var rsc, that = this;
-
-      if (resourceDetails.uuid) {
-        rsc = this.stash_by_UUID[resourceDetails.uuid];
-        if (rsc) {
-          return deferredS2Resource.resolve(rsc).promise();
-        } else {
-          this.owner.getS2Root()
-              .then(function (root) {
-                return root.find(resourceDetails.uuid);
-              }).then(function (result) {
-                rsc = result;
-                that.addResource(rsc);
-                deferredS2Resource.resolve(rsc);
-              }).fail(function () {
-                deferredS2Resource.reject();
-              })
-          ;
-          return deferredS2Resource.promise();
+      var model = this;
+      this.cache = _.extend(Cache.init(), {
+        fetchResourcePromiseFromUUID:function (uuid) {
+          return this.get(
+            function(r) { return r.uuid === uuid; },
+            _.bind(findByUuid, model, uuid)
+          );
+        },
+        fetchResourcePromiseFromBarcode:function (barcode) {
+          return this.get(
+            function(r) { return r.labels.barcode.value === barcode; },
+            _.bind(findByBarcode, model, barcode)
+          );
         }
-      }
-
-      if (resourceDetails.barcode) {
-        rsc = this.stash_by_BC[resourceDetails.barcode];
-        if (rsc) {
-          return deferredS2Resource.resolve(rsc).promise();
-        } else {
-
-          this.owner.getS2Root()
-              .then(function (root) {
-                return root.tubes.findByEan13Barcode(resourceDetails.barcode);
-              }).then(function (result) {
-                rsc = result;
-                that.addResource(rsc);
-                deferredS2Resource.resolve(rsc);
-              }).fail(function () {
-                deferredS2Resource.reject();
-              });
-        }
-      }
-      return deferredS2Resource.promise();
+      });
+      this.cache.resolve([]);
     },
+
     printBarcodes:function(collection) {
       var that = this;
       var printer = PrintService.printers[0];
@@ -99,4 +48,16 @@ define(['config'
   });
 
   return BasePageModel;
+
+  // Methods for finding things based on the UUID or barcode
+  function findByUuid(uuid) {
+    return this.owner.getS2Root().then(function(root) {
+      return root.find(uuid);
+    });
+  }
+  function findByBarcode(barcode) {
+    return this.owner.getS2Root().then(function(root) {
+      return root.tubes.findByEan13Barcode(barcode);
+    });
+  }
 });
