@@ -20,7 +20,7 @@ define([
         },
         fetchResourcePromiseFromBarcode:function (barcode) {
           return this.get(
-            function(r) { return r.labels.barcode.value === barcode; },
+            function(r) { return r.labels && r.labels.barcode.value === barcode; },
             _.bind(findByBarcode, model, barcode)
           );
         }

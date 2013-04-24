@@ -2,6 +2,7 @@ define([
   'labware/presenters/tube_presenter',
   'labware/presenters/spin_column_presenter',
   'labware/presenters/waste_tube_presenter',
+  'labware/presenters/rack_presenter',
 
   // Add new presenters after this point for automatic registration
 
@@ -17,7 +18,7 @@ define([
   'extraction_pipeline/presenters/rack_scan_presenter',
   'extraction_pipeline/presenters/selection_page_presenter',
   'extraction_pipeline/default/default_presenter'
-], function(TubePresenter, SpinColumnPresenter, WasteTubePresenter) {
+], function(TubePresenter, SpinColumnPresenter, WasteTubePresenter, RackPresenter) {
   'use strict';
 
   var PresenterFactory = function () {
@@ -32,13 +33,14 @@ define([
     return this;
   };
 
-  PresenterFactory.prototype.presenters = _.chain(arguments).drop(3).reduce(function(presenters, presenter) {
+  PresenterFactory.prototype.presenters = _.chain(arguments).drop(4).reduce(function(presenters, presenter) {
     presenter.register(function(name, method) { presenters[name] = method; });
     return presenters;
   }, {
     createSpinColumnPresenter: function(owner) { return new SpinColumnPresenter(owner, this); },
     createTubePresenter:       function(owner) { return new TubePresenter(owner, this); },
-    createWasteTubePresenter:  function(owner) { return new WasteTubePresenter(owner, this); }
+    createWasteTubePresenter:  function(owner) { return new WasteTubePresenter(owner, this); },
+    createRackPresenter:       function(owner) { return new RackPresenter(owner, this); }
   }).value();
 
   // Function can take variable number of parameters, passing them onto the constructor function
@@ -57,6 +59,7 @@ define([
       case 'tube':        return this.presenters.createTubePresenter(owner);       break;
       case 'spin_column': return this.presenters.createSpinColumnPresenter(owner); break;
       case 'waste_tube':  return this.presenters.createWasteTubePresenter(owner);  break;
+      case 'rack':        return this.presenters.createRackPresenter(owner);       break;
       default:            debugger;
     }
   };

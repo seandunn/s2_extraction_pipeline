@@ -93,10 +93,8 @@ define([
       var container = this.selector();
       container.find('.dropzone').hide();
       this.message('success','The transfert was successful. Click on the \'Next\' button to carry on.');
-//      container.find('#validation_box').show().text("Transfer done");
     },
     validateFile:function(){
-      var container = this.selector();
       this.message('success','The file has been processed properly. Click on the \'Start\' button to validate the process.')
     },
     error:function(data){
