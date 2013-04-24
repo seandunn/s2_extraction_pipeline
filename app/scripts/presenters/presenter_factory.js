@@ -14,8 +14,9 @@ define([
 
   // Presenters that add extra behaviour, for some reason
   'extraction_pipeline/presenters/kit_presenter',
+  'extraction_pipeline/presenters/rack_scan_presenter',
   'extraction_pipeline/presenters/selection_page_presenter',
-  'extraction_pipeline/default/default_presenter',
+  'extraction_pipeline/default/default_presenter'
 ], function(TubePresenter, SpinColumnPresenter, WasteTubePresenter) {
   'use strict';
 

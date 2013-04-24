@@ -1,0 +1,62 @@
+{
+  "default":{
+    "description":"searching for pages",
+    "calls":[
+      {
+        "description":"Create the search on labellable with a barcode",
+        "method":"post",
+        "url":"/searches",
+        "request":{
+          "search":{
+            "user":"username",
+            "description":"search for a labellable",
+            "model":"labellable",
+            "criteria":{
+              "label":{
+                "position":"barcode",
+                "type":"ean13-barcode",
+                "value":["FR2345678901234"]
+              }
+            }
+          }
+        },
+        "response":{
+          "search":{
+            "actions":{
+              "read":"http://localhost:9292/4816f830-68ac-0130-7ac8-282066132de2",
+              "first":"http://localhost:9292/4816f830-68ac-0130-7ac8-282066132de2/page=1",
+              "last":"http://localhost:9292/4816f830-68ac-0130-7ac8-282066132de2/page=-1"
+            },
+            "uuid":"4816f830-68ac-0130-7ac8-282066132de2"
+          }
+        }
+      },
+      {
+        "description":"Get first page",
+        "method":"get",
+        "url":"/4816f830-68ac-0130-7ac8-282066132de2/page=1",
+        "request":null,
+        "response":{
+          "actions":{
+            "read":"http://localhost:9292/orders/page=1",
+            "first":"http://localhost:9292/orders/page=1",
+            "last":"http://localhost:9292/orders/page=-1"
+          },
+          "size":1,
+          "labellables":[
+            {
+              "name":"11111111-2222-3333-4444-000000000000",
+              "type":"resource",
+              "labels":{
+                "barcode":{
+                  "value":"FR2345678901234",
+                  "type":"ean13-barcode"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
