@@ -43,7 +43,6 @@ define([
       if (this.user && this.labware) {
         // get the batch...
         var that = this;
-        var dataForOwner;
         this.labware.order()
             .then(function (order) {
               return order.batchFor(function (item) {
