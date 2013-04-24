@@ -52,6 +52,16 @@ define([
       }, function() {
         return handlers.create.apply(owner, arguments);
       });
+    },
+
+    // If the resource has been pulled from the cache then we can treat that as a
+    // failure.  Otherwise we can do a success.
+    singular: function() {
+      var ending = _.drop(arguments, arguments.length-2);
+      var pulled = ending[0], filter = ending[1];
+
+      var resource = _.find(pulled, filter);
+      return resource ? $.Deferred().reject('Already used') : handlers.report.apply(this, arguments);
     }
   };
 

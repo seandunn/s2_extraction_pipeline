@@ -212,8 +212,8 @@ define(['config'
     },
     viewDone: function(child, action, data) {
       if (action == "labwareRemoved") {
+        this.owner.childDone(this, "removeLabware", { resource: this.labwareModel.resource });
         this.resetLabware();
-        this.owner.childDone(this, "removeLabware", { uuid:this.labwareModel.resource.uuid});
       }
     },
     barcodeInputDone: function(child, action, data) {

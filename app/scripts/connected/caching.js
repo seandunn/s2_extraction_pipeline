@@ -6,7 +6,8 @@ define([], function() {
   _.extend(DeferredCache, {
     init: function() {
       var instance = Object.create(DeferredCache);
-      var results  = $.Deferred();
+      var pulled   = [];              // Resources that have been pulled from the cache
+      var results  = $.Deferred();    // Resources currently in the cache
       _.extend(instance, {
         // Retrieve an instance from the cache using the handler, which will filter the cache to
         // find the match, and possibly deal with missing results in a particular fashion.
@@ -16,9 +17,9 @@ define([], function() {
             var result = _.find(array, filter);
             return ($.Deferred())[result ? 'resolve' : 'reject'](result);
           }).then(function(resource) {
-            return resource;  // Result remains the same on success
+            return resource;                // Result remains the same on success
           }, function() {
-            return missing(); // Result may be handled differently
+            return missing(pulled, filter); // Result may be handled differently
           }).fail(function(message) {
             deferred.reject(message);
           }).done(function(result) {
@@ -32,22 +33,24 @@ define([], function() {
         then:    resultsBound('then'),
         resolve: resultsBound('resolve'),
 
-        // When entries get pushed into the cache we simply recache them
-        push: function() {
-          _.each(arguments, recache);
-        }
+        // Caching can be treated as a store, allowing things to be cached and uncached.
+        push: function() { _.each(arguments, recache); },
+        pull: function() { _.each(arguments, uncache); }
       });
       return instance;
 
       // Deals with either maintenance of the cache so that we always have the freshest information
-      // presented.  Essentially if the resource is in the list (by UUID) then we remove it, before
-      // doing the default behaviour of caching it.
-      function recache(resource) {
+      // presented.  Recaching is about removing and then putting the resource back into the cache,
+      // and uncaching is about removing without readding.
+      function recache(resource) { manage(resource, [resource]); }
+      function uncache(resource) { manage(resource, []); }
+      function manage(remove, addition) {
         results.then(function(array) {
           return _.chain(array).reject(function(cached) {
-            return cached.uuid === resource.uuid;
-          }).union([resource]).value();
+            return cached.uuid === remove.uuid;
+          }).union(addition).value();
         }).then(function(array) {
+          pulled  = _.chain(pulled).union([remove]).difference(array).value();
           results = $.Deferred().resolve(array);
         });
       }

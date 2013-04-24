@@ -82,24 +82,23 @@ define([
     },
 
     unknownDone:function (child, action, data) {
-      if (action === "barcodeScanned") {
-        var originator = data.origin;
-
-        // HACK: Identify the input as the first labware presenter in the row
-        if (originator.labwareModel.input && (originator.labwareModel.expected_type === this.config.input.model.singularize())) {
-          this.model.inputs.getByBarcode(originator, data.modelName, data.BC);
-          this.inputDone(child, action, data);
-        } else if (!originator.labwareModel.input) {
-          this.model.outputs.getByBarcode(originator, data.modelName, data.BC);
-          this.outputDone(child, action, data);
-        }
+      if (action === 'inputBarcodeScanned') {
+        var originator = data.origin, presenter = this;
+        presenter.model.inputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
+          presenter.model.inputs.pull(resource);
+        });
+      } else if (action === 'outputBarcodeScanned') {
+        var originator = data.origin, presenter = this;
+        presenter.model.outputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
+          presenter.model.outputs.pull(resource);
+        });
+      } else if (action === 'inputRemoved') {
+        this.model.inputs.push(data.resource);
+      } else if (action === 'outputRemoved') {
+        this.model.outputs.push(data.resource);
       } else if (action === 'completed') {
         this.rowDone(child, action, data);
       }
-    },
-    inputDone: function(child, action, data) {
-    },
-    outputDone: function(child, action, data) {
     },
     rowDone: function(child, action, data) {
       if (action === 'completed') {
