@@ -17,7 +17,7 @@ define([
       this.user = undefined;
       this.batch = undefined;
       this.previous = false;
-      this.printed  = false;
+      this.ready    = false;
 
       this.config  = config;                                    // Configuration of our connections
       this.batch   = undefined;                                 // There is no batch, yet
@@ -80,7 +80,7 @@ define([
     },
 
     getRowModel:function (rowNum, input) {
-      var that = this, previous = this.previous && this.printed;
+      var that = this, previous = this.previous && this.ready;
       return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {
         var details = nameToDetails[1];
         var name    = 'labware' + (index+2);  // index=0, labware1=input, therefore labware2 first output
@@ -139,7 +139,7 @@ define([
               that.outputs.resolve(labware).then(function(outputs) {
                 that.printBarcodes(outputs);
               });
-              that.owner.childDone(that, 'labelPrinted', {});
+              that.owner.childDone(that, 'outputsReady', {});
             }).fail(function() {
               that.owner.childDone(that, 'failed', {});
             });
@@ -147,7 +147,7 @@ define([
         });
       }, function() {
         that.outputs.resolve([]);
-        that.owner.childDone(that, 'labelPrinted', {});
+        that.owner.childDone(that, 'outputsReady', {});
       });
     },
 

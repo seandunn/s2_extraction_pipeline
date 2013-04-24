@@ -109,11 +109,13 @@ define([
     },
 
     modelDone: function(child, action, data) {
-      if (action === "labelPrinted") {
-        this.model.printed = true;
-        this.owner.childDone(this, "error", {"message":"Barcodes printed"});
+      if (action === "barcodePrintSuccess") {
+        this.owner.childDone(this, "error", {"message":"Barcode labels printed"});
+      } else if (action === "barcodePrintFailure") {
+        this.owner.childDone(this, "error", {"message":"Barcode labels could not be printed"});
+      } else if (action === 'outputsReady') {
+        this.model.ready = true;
         this.setupSubPresenters(true);
-
         this.currentView.toggleHeaderEnabled(false);
       } else if (action === "startOperation") {
         this.model.started = true;
