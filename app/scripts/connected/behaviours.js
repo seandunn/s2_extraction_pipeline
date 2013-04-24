@@ -3,7 +3,8 @@ define([], function() {
   var events = [
     'row', 'page',              // Big scale events
     'start', 'end', 'next',     // button events
-    'transfer'                  // result events
+    'transfer',                 // result events
+    'print'                     // print events
   ];
 
   // There is a standard basic behaviour that is completely negative.  It is built
@@ -19,7 +20,9 @@ define([], function() {
     memo[name] = $.extend({}, basic);
     memo[name][name] = function(p, n) { p && p(); };
     return memo;
-  }, {}).value();
+  }, {
+    never: basic        // Completely negative behaviour
+  }).value();
 
   return function(name) {
     return behaviours[name];

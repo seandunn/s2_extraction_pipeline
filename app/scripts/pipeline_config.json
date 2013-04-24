@@ -68,7 +68,8 @@
         "start": "row",
         "operate": "row",
         "complete": "row",
-        "done": "next"
+        "done": "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -104,7 +105,8 @@
         "start": "row",
         "operate": "row",
         "complete": "row",
-        "done": "next"
+        "done": "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -137,7 +139,8 @@
         "start": "row",
         "operate": "row",
         "complete": "row",
-        "done": "next"
+        "done": "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -170,7 +173,8 @@
         "start": "start",
         "operate": "start",
         "complete": "end",
-        "done": "transfer"
+        "done": "transfer",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -179,7 +183,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.manual.extracted_tube_dna",
+        "role":       "samples.extraction.extracted_tube_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "tubes"
@@ -203,7 +207,8 @@
         "start": "row",
         "operate": "row",
         "complete": "row",
-        "done": "next"
+        "done": "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -236,7 +241,8 @@
         "start": "start",
         "operate": "start",
         "complete": "end",
-        "done": "transfer"
+        "done": "transfer",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -245,7 +251,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.manual.extracted_tube_rna",
+        "role":       "samples.extraction.extracted_tube_rna",
         "aliquotType":"RNA",
         "purpose":    "stock",
         "model":      "tubes"
@@ -285,7 +291,8 @@
         "start": "row",
         "operate": "row",
         "complete": "row",
-        "done": "next"
+        "done": "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -353,7 +360,8 @@
         "start": "start",
         "operate": "start",
         "complete": "end",
-        "done": "transfer"
+        "done": "transfer",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -368,7 +376,7 @@
         "model":      "tubes"
       },
       {
-        "role":       "samples.extraction.qiacube.extracted_tube_dna",
+        "role":       "samples.extraction.extracted_tube_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "tubes"
@@ -389,7 +397,8 @@
         "start": "row",
         "operate": "row",
         "complete": "row",
-        "done": "next"
+        "done": "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -422,7 +431,8 @@
         "start": "start",
         "operate": "start",
         "complete": "end",
-        "done": "transfer"
+        "done": "transfer",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -431,7 +441,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.qiacube.extracted_tube_rna",
+        "role":       "samples.extraction.extracted_tube_rna",
         "aliquotType":"RNA",
         "purpose":    "stock",
         "model":      "tubes"
@@ -458,7 +468,8 @@
         "start": "start",
         "operate": "start",
         "complete": "end",
-        "done": "transfer"
+        "done": "transfer",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -467,7 +478,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.qiacube.extracted_tube_rna",
+        "role":       "samples.extraction.extracted_tube_rna",
         "aliquotType":"RNA",
         "purpose":    "stock",
         "model":      "tubes"
@@ -510,7 +521,8 @@
         "start": "start",
         "operate": "start",
         "complete": "end",
-        "done": "transfer"
+        "done": "transfer",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -519,7 +531,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.qiacube.extracted_tube_dna",
+        "role":       "samples.extraction.extracted_tube_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "tubes"
@@ -576,7 +588,8 @@
         "start": "row",
         "operate": "row",
         "complete": "row",
-        "done": "next"
+        "done": "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -622,7 +635,8 @@
         "start":     "row",
         "operate":   "row",
         "complete":  "row",
-        "done":      "next"
+        "done":      "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
@@ -668,7 +682,8 @@
         "start":     "row",
         "operate":   "row",
         "complete":  "row",
-        "done":      "next"
+        "done":      "next",
+        "outputs": "print"
       },
       "defaultPrinter":"Tube Printer",
       "input":         {

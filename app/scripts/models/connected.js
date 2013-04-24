@@ -107,42 +107,47 @@ define([
 
     createOutputs: function() {
       var that = this;
-      var root;
+      this.behaviours.outputs.print(function() {
+        var root;
 
-      this.owner.getS2Root().then(function(result) {
-        root = result;
-      }).then(function() {
-        that.inputs.then(function(inputs) {
-          var labware = [];
-          var promises = _.chain(inputs).map(function(input) {
-            return _.chain(that.config.output).pairs().filter(function(outputNameAndDetails) {
-              var details = outputNameAndDetails[1];
-              return details.tracked === undefined ? true : details.tracked;
-            }).map(function(outputNameAndDetails) {
-              var details = outputNameAndDetails[1];
-              return Operations.registerLabware(
-                root[details.model],
-                details.aliquotType,
-                details.purpose
-              ).then(function(state) {
-                that.cache.push(state.labware);
-                labware.push(state.labware);
-                return state.labware;
-              }).fail(function() {
-                that.owner.childDone(that, "failed", {});
+        this.owner.getS2Root().then(function(result) {
+          root = result;
+        }).then(function() {
+          that.inputs.then(function(inputs) {
+            var labware = [];
+            var promises = _.chain(inputs).map(function(input) {
+              return _.chain(that.config.output).pairs().filter(function(outputNameAndDetails) {
+                var details = outputNameAndDetails[1];
+                return details.tracked === undefined ? true : details.tracked;
+              }).map(function(outputNameAndDetails) {
+                var details = outputNameAndDetails[1];
+                return Operations.registerLabware(
+                  root[details.model],
+                  details.aliquotType,
+                  details.purpose
+                ).then(function(state) {
+                  that.cache.push(state.labware);
+                  labware.push(state.labware);
+                  return state.labware;
+                }).fail(function() {
+                  that.owner.childDone(that, "failed", {});
+                });
+              }).value();
+            }).flatten().value();
+
+            $.when.apply(null, promises).then(function() {
+              that.outputs.resolve(labware).then(function(outputs) {
+                that.printBarcodes(outputs);
               });
-            }).value();
-          }).flatten().value();
-
-          $.when.apply(null, promises).then(function() {
-            that.outputs.resolve(labware).then(function(outputs) {
-              that.printBarcodes(outputs);
+              that.owner.childDone(that, 'labelPrinted', {});
+            }).fail(function() {
+              that.owner.childDone(that, 'failed', {});
             });
-            that.owner.childDone(that, 'labelPrinted', {});
-          }).fail(function() {
-            that.owner.childDone(that, 'failed', {});
           });
         });
+      }, function() {
+        that.outputs.resolve([]);
+        that.owner.childDone(that, 'labelPrinted', {});
       });
     },
 
