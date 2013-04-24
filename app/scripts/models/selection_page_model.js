@@ -1,22 +1,3 @@
-/*
- * S2 - An open source lab information management systems (LIMS)
- * Copyright (C) 2013  Wellcome Trust Sanger Insitute
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 1, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
- */
-
 define([
   'extraction_pipeline/models/base_page_model'
   , 'mapper/operations'
@@ -26,11 +7,10 @@ define([
   var SelectionPageModel = Object.create(BasePageModel);
 
   $.extend(SelectionPageModel, {
-    init:              function (owner, initData) {
+    init:function (owner, initData) {
       this.owner = Object.create(owner);
       this.tubes = [];
-      this.capacity = initData["capacity"] || 12 ;
-
+      this.capacity = initData["capacity"] || 12;
       this.config = initData;
 
       this.initialiseCaching();
@@ -53,16 +33,18 @@ define([
       this.tubes.push(labware);
       this.owner.childDone(this, "seminalLabwareAdded");
     },
-    setUser:           function (user) {
+    setUser:function (user) {
       this.user = user;
       this.owner.childDone(this, "userAdded");
     },
-    addTube:           function (newTube) {
+    addTube:function (newTube) {
       if (this.tubes.length > this.capacity - 1) {
         throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
       }
-      var listOfIdenticalTubes = _.filter(this.tubes, function(tube){return tube.uuid === newTube.uuid});
-      if (listOfIdenticalTubes.length > 0){
+      var listOfIdenticalTubes = _.filter(this.tubes, function (tube) {
+        return tube.uuid === newTube.uuid
+      });
+      if (listOfIdenticalTubes.length > 0) {
         throw {"type":"SelectionPageException", "message":"Can add a tube only once." };
       }
       this.tubes.push(newTube);
@@ -79,21 +61,20 @@ define([
         that.owner.childDone(that, "barcodeNotFound", {});
       });
     },
-    getCapacity:       function () {
+    getCapacity:function () {
       return this.capacity;
     },
-    removeTubeByUuid:  function (uuid) {
-
-      this.tubes = _.filter(this.tubes, function(tube){
+    removeTubeByUuid:function (uuid) {
+      this.tubes = _.filter(this.tubes, function (tube) {
         return tube.uuid !== uuid;
       });
 
       this.owner.childDone(this, "modelUpdated", {});
     },
-    getNumberOfTubes:  function () {
+    getNumberOfTubes:function () {
       return this.tubes.length;
     },
-    makeBatch:         function () {
+    makeBatch:function () {
       var that = this;
       var batchBySideEffect;
       var addingRoles = {updates:[]};
