@@ -20,11 +20,6 @@ define([
 
       var view = this;
 
-//      _.each(['start','end','next','print'], function(action) {
-//        parent.find('.'+action+'Button').on('click', function() {
-//          view.owner.childDone(view, action, {});
-//        });
-//      });
       _.each(model.buttons, function(buttonDetails) {
         parent.find('.'+buttonDetails.action+'Button').on('click', function() {
           view.owner.childDone(view, buttonDetails.action, {});

@@ -80,7 +80,7 @@ define([
         this.modelDone(child, action, data);
       }
     },
-    start:function(child,action, data){
+    print:function(child,action, data){
       this.model.fire();
     },
     next:function(child,action, data){
@@ -98,13 +98,13 @@ define([
       if (action === 'fileValid') {
         this.view.validateFile();
         this.labwarePresenter.updateModel(data);
-        this.owner.childDone(this, "enableBtn", {actions:[{action:"start"}]});
+        this.owner.childDone(this, "enableBtn", {actions:[{action:"print"}]});
       } else if (action === 'error') {
         //this.view.in(data);
         this.view.error(data);
       } else if (action === 'transferDone') {
         this.view.disableDropZone()
-        this.owner.childDone(this, "disableBtn", {actions:[{action:"start"}]});
+        this.owner.childDone(this, "disableBtn", {actions:[{action:"print"}]});
         this.owner.childDone(this, "enableBtn", {actions:[{action:"next"}]});
       }
     }
