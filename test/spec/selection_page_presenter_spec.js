@@ -65,10 +65,12 @@ define([
 
           var presenterName = "selection_page_presenter";
           var initData = {
+            "accepts": [ "samples.extraction.manual.dna_and_rna.input_tube_nap" ],
             "presenterName":"selection_page_presenter",
             "processTitle": "Manual DNA and RNA Extraction",
             "input":        {
-              "role":"samples.extraction.manual.dna_and_rna.input_tube_nap"
+              "role":"samples.extraction.manual.dna_and_rna.input_tube_nap",
+              "model":"tubes"
             },
             "output":       [
               {
