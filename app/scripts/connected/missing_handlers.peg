@@ -1,0 +1,13 @@
+start
+  = function
+
+function
+  = parent:name "(" children:functionlist ")" { return [ parent, children ]; }
+  / fn:name { return [ fn, [] ]; }
+
+functionlist
+  = fn:function "," rest:functionlist { rest.unshift(fn); return rest; }
+  / fn:function { return [ fn ]; }
+
+name
+  = chars:[a-z]+ { return chars.join(""); }
