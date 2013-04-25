@@ -211,7 +211,9 @@ define([
 
         it("Child done stuff",function(){
           runs(function(){
-
+            presenter.currentView.attachEvents();
+            // TODO: test what happens when button is clicked
+            spyOn();
           });
         });
 
