@@ -10,14 +10,12 @@ define([ 'config'
 
       var app = function (thePresenterFactory) {
         this.presenterFactory = thePresenterFactory;
-        this.currentPagePresenter = undefined;
-        this.model = undefined;
         this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
         return this;
       };
 
       app.prototype.resetS2Root = function () {
-        this.s2Root = undefined;
+        delete this.s2Root;
         return this;
       };
 
@@ -39,27 +37,12 @@ define([ 'config'
 
       app.prototype.setupPresenter = function (inputModel) {
         this.setupPlaceholder();
-        if (!inputModel) {
-          inputModel = {
-            userUUID:undefined,
-            labware:undefined,
-            batch:undefined
-          };
-        }
-        this.updateModel(inputModel);
+        this.updateModel(inputModel || {});
 
         return this;
       };
 
       app.prototype.updateModel = function (newData) {
-        /*
-         inputModel =
-         {
-         userUUID    : "", // current user UUID
-         labwareUUID : "", // the seminal labware UUID
-         batchUUID   : "" // the current batch
-         };
-         */
         this.model = $.extend(this.model, newData);
         this.updateSubPresenters();
         return this;
@@ -75,7 +58,7 @@ define([ 'config'
       app.prototype.updateSubPresenters = function () {
         if (this.currentPagePresenter) {
           this.currentPagePresenter.release();
-          this.currentPagePresenter = undefined;
+          delete this.currentPagePresenter;
         }
         this.workflow.askForNextPresenter(this.presenterFactory, this.model);
       };
@@ -83,7 +66,7 @@ define([ 'config'
       app.prototype.setupNextPresenter = function (nextPresenter) {
         this.currentPagePresenter = nextPresenter;
         this.currentPagePresenter.setupPresenter(this.model, this.jquerySelection);
-        this.model.labware = undefined;
+        delete this.model.labware;
         return this;
       };
 

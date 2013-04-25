@@ -20,13 +20,8 @@ define([
 
       var view = this;
 
-      _.each(['start','end','next','print'], function(action) {
-        parent.find('.'+action+'Button').on('click', function() {
-          view.owner.childDone(view, action, {});
-        });
-      });
       _.each(model.buttons, function(buttonDetails) {
-        parent.find('.btn-'+buttonDetails.action+'Button').on('click', function() {
+        parent.find('.'+buttonDetails.action+'Button').on('click', function() {
           view.owner.childDone(view, buttonDetails.action, {});
         });
       });
@@ -66,7 +61,7 @@ define([
   });
 
   function getButtonSelectionByAction(selector,action){
-    return selector.find('.btn-'+action+'Button').show();
+    return selector.find('.'+action+'Button').show();
   }
 
   return View;
