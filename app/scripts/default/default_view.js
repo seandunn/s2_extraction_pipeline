@@ -26,7 +26,6 @@ define(['text!extraction_pipeline/html_partials/default_page_partial.html'], fun
       var code = (e.keyCode ? e.keyCode : e.which);
       if (code == 13) {
         onLogin_clicked(owner)();
-
       }
     };
   }
@@ -41,13 +40,13 @@ define(['text!extraction_pipeline/html_partials/default_page_partial.html'], fun
     return this.jquerySelection().empty();
   };
 
-  loginview.prototype.renderView = function (data) {
+  loginview.prototype.renderView = function (errorText) {
 
-    _.templateSettings.variable = 'rc';
+    _.templateSettings.variable = 'underscoreResource';
 
     // set the data as template data
     var templateData = {
-      data:data
+      errorText:errorText
     };
 
     // makes sure that the container has been emptied first...

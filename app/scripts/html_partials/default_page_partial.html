@@ -4,10 +4,10 @@
 <div class="labware_barcode"></div>
 <button class="btn pull-right" id="login_button">Continue</button>
 
-<% if (rc.data) { %>
+<% if (underscoreResource.errorText) { %>
 <div class='alert'>
   <button type='button' class='close' data-dismiss='alert'>&times;</button>
-  <strong>Error!</strong> <%- rc.data %>
+  <strong>Error!</strong> <%- underscoreResource.errorText %>
 </div>
 <% }; %>
 </div>
