@@ -8,6 +8,6 @@
 
 <div id="buttonRack" style="float:right">
   <% _.each (rc.buttons, function (buttonsDetails) { %>
-    <button class="btn btn-<%- buttonsDetails.action %>Button"><%- buttonsDetails.title %></button>
+    <button class="btn <%- buttonsDetails.action %>Button"><%- buttonsDetails.title %></button>
   <% }); %>
 </div>
