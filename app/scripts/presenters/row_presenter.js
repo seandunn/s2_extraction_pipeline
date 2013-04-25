@@ -202,8 +202,8 @@ define([
       return this.editablePresenters().all(function(p) { return p.isComplete(); }).value();
     },
     lockRow: function() {
-      _.each(this.presenters, function(presenter){
-
+      this.presenters.each(function(presenter) {
+        presenter.hideEditable();
       });
     },
     handleResources: function(callback) {

@@ -128,10 +128,9 @@ define([
         });
       } else if (action === "successfulOperation") {
         _.each(data, function(presenter){
-
+          presenter.lockRow();
         });
       }
-
     },
 
     readyToCreateOutputs: function() {

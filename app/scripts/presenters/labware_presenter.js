@@ -237,7 +237,10 @@ define(['config'
         this.barcodeInputPresenter.focus();
       }
     },
-
+    hideEditable: function() {
+      this.view.hideBarcodeEntry();
+      this.view.hideRemoveButton();
+    },
     displayErrorMessage:function (message) {
       this.barcodeInputPresenter.displayErrorMessage(message);
     }
