@@ -88,26 +88,26 @@ define([ 'config'
 
       _.each(this.model.tubes, function (tube) {
         presenterData.push({
-          "resource":tube,
-          expected_type:   presenter.config.input.model.singularize(),
-          "display_remove":true,
-          "display_barcode":false
+          resource:tube,
+          expected_type:presenter.config.input.model.singularize(),
+          display_remove:true,
+          display_barcode:false
         });
       });
 
       presenterData.push({
-        expected_type:   presenter.config.input.model.singularize(),
-        "display_remove":false,
-        "display_barcode":true,
-        display_labware: false
+        expected_type:presenter.config.input.model.singularize(),
+        display_remove:false,
+        display_barcode:true,
+        display_labware:false
       });
 
       // numTubes + 1 to account for the intermediate barcode scan row
       _(this.model.getCapacity() - (numTubes + 1)).times(function () {
         presenterData.push({
-          "display_remove":false,
-          "display_barcode":false,
-          display_labware: false
+          display_remove:false,
+          display_barcode:false,
+          display_labware:false
         });
       });
 
@@ -147,7 +147,6 @@ define([ 'config'
        */
       if (child === this.view) {
         if (action === "next") {
-          //this.owner.childDone(this,"error",{"message" : "Not hooked up!"});
           this.model.makeBatch();
         }
       } else if (child === this.model) {
@@ -161,7 +160,7 @@ define([ 'config'
           var dataForOwner = {
             userUUID:this.model.user,
             labware:this.model.labware,
-            "batch":this.model.batch
+            batch:this.model.batch
           };
           this.owner.childDone(this, "done", dataForOwner);
         } else if (action === "barcodeNotFound") {
