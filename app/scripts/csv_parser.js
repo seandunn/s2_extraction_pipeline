@@ -9,7 +9,7 @@ define([], function () {
       var re = new RegExp(
           "\\s*(\\w)(\\d\\d)\\s*\\" + delimiter
               +
-              "\\s*(\\d+).*", "i");  // TODO: add the 'FR' prefix to the regex
+              "\\s*(FR\\d+).*", "i");  // TODO: add the 'FR' prefix to the regex
 
       var array = [];
       var matches = undefined;

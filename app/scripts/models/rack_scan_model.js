@@ -211,7 +211,7 @@ define([
           "</ul>";
     }
 
-    return {action:action, status:status, data:message};
+    return {action:action, status:status, data:{message:message}};
   }
 
   function prepareTransferDataPromise(model, locationsSortedByBarcode) {
