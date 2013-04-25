@@ -18,7 +18,6 @@ define([
       this.initialiseCaching();
       return this;
     },
-
     createOutputs:function () {
       var model = this;
       var root;
@@ -28,7 +27,12 @@ define([
             return Operations.registerLabware(
                 root[model.config.output[0].model],
                 model.config.output[0].aliquotType,
-                model.config.output[0].purpose);
+                model.config.output[0].purpose,
+                {
+                  number_of_rows:8,
+                  number_of_columns:12,
+                  tubes:model.preparedTransferData
+                });
           }).then(function (state) {
             model.cache.push(state.labware);
             model.owner.childDone(model, 'outputsReady', {});
@@ -38,52 +42,23 @@ define([
             model.owner.childDone(model, "error", {message:"impossible to create the rack."});
           });
     },
-
-//    makeTransfer:function () {
-//      var model = this;
-//      var root;
+//    printBarcodes:function(item) {
+//      var that = this;
+//      var printer = PrintService.printers[0];
 //
-//      return model.owner.getS2Root()
-//          .then(function (result) {
-//            // STEP 1: We're going to need the root later!
-//            root = result;
-//            return Operations.betweenLabware(
-//                root.actions.transfer_tubes_to_tubes,
-//                _.map(transferDetails, function (details) {
-//                  return function (operations, state) {
-//                    operations.push(details);
-//                    return $.Deferred().resolve();
-//                  };
-//                })
-//            )
-//          }).then(function (operation) {
-//            // STEP 5: Override the behaviour of the operation so that we do the correct things
-//            var doNothing = function () {
-//            };
-//            _.each(['start', 'operate', 'complete'], function (event) {
-//              that.behaviours[event][happeningAt](function () {
-//                var handler = operation[event];
-//                operation[event] = function () {
-//                  return handler.apply(this, arguments).then(function () {
-//                    that.owner.childDone(that, event + 'Operation', {});
-//                  });
-//                };
-//              }, function () {
-//                operation[event] = doNothing;
-//              });
-//            });
-//            return operation;
-//          }).then(function (operation) {
-//            // STEP 6: Finally perform the operation and report the final completion
-//            operation.operation().then(function () {
-//              that.owner.childDone(that, 'successfulOperation', {});
-//            }).fail(function () {
-//                  that.owner.childDone(that, 'failedOperation', {});
-//                });
+//      // Extract the print label details from each item in the collection
+//      var printItems = _.map(collection, function(item) {
+//        return item.returnPrintDetails();
+//      });
+//
+//      return printer.print(printItems)
+//          .done(function() {
+//            that.owner.childDone(that, 'barcodePrintSuccess', {});
+//          })
+//          .fail(function() {
+//            that.owner.childDone(that, 'barcodePrintFailure', {});
 //          });
-//
 //    },
-
     fire:function () {
       var model = this;
       model.createOutputs()
@@ -97,6 +72,8 @@ define([
             model.owner.childDone(model, "error", {message:"An error occured during the transfer process!<BR/> Contact the administrator of the system."});
           });
     },
+
+
     analyseFileContent:function (data) {
       var locationsSortedByBarcode = CSVParser.convertCSVDataToJSON(data.csvAsTxt);
       var model = this;
