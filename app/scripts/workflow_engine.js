@@ -1,12 +1,5 @@
 define([], function () {
 
-  var workflowEngine = function (application, config) {
-    this.application   = application;
-    this.defaultPresenter = config.defaultPresenter;
-    this.role_priority    = config.role_priority;
-    this.workflows        = config.workflows;
-  };
-
   // Returns a function that finds the first "ready" item in the batch that matches the given rule.
   function itemMatcherForBatchItems(items) {
     return function (role) {
@@ -18,15 +11,22 @@ define([], function () {
     };
   }
 
-  workflowEngine.prototype.getMatchingRoleDataFromItems = function (items) {
-    var activeRole     = _.chain(this.role_priority).find(itemMatcherForBatchItems(items)).value();
-
-    var byActiveRole   = function(workflow){
+  function byRole(activeRole){
+    return function(workflow){
       return _.find(workflow.accepts, function(role){ return role === activeRole; });
     };
+  }
 
-    var foundWorkflows = this.workflows.filter(byActiveRole);
+  var workflowEngine = function (application, config) {
+    this.application      = application;
+    this.defaultPresenter = config.defaultPresenter;
+    this.role_priority    = config.role_priority;
+    this.workflows        = config.workflows;
+  };
 
+  workflowEngine.prototype.getMatchingRoleDataFromItems = function (items) {
+    var activeRole     = _.chain(this.role_priority).find(itemMatcherForBatchItems(items)).value();
+    var foundWorkflows = this.workflows.filter(byRole(activeRole));
 
     if (foundWorkflows.length > 1) throw "More than 1 workflow active.";
 
@@ -50,7 +50,9 @@ define([], function () {
     if (!inputDataForWorkflow.batch && inputDataForWorkflow.labware) {
       itemsPromise = inputDataForWorkflow.labware.order()
       .then(function(order) {
-        return order.items.filter(function(){ return true; });
+        return order.items.filter(function(item){ 
+          return item.uuid === inputDataForWorkflow.labware.uuid;
+        });
       });
     } else {
       itemsPromise = inputDataForWorkflow.batch.items;
@@ -66,3 +68,4 @@ define([], function () {
 
   return workflowEngine;
 });
+

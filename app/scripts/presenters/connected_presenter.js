@@ -148,7 +148,14 @@ define([
         this.currentView.setPrintButtonEnabled(false);
       }
     },
-    next:  eventHandler,
+    next:  function(child, action, data){
+      var presenter = this;
+
+      this.model.behaviours.home[action](
+        function(){ presenter.owner.childDone(presenter, 'done') },
+        function(){ eventHandler.call(presenter, child, action, data); }
+      )
+    },
     start: eventHandler,
     end:   eventHandler
   });
@@ -159,7 +166,10 @@ define([
       var that = this;
       that.model.operate(action, that.rowPresenters);
       that.model.behaviours.done[action](function() {
-        that.owner.childDone(that, "done", { batch:that.model.batch });
+        that.owner.childDone(that, "done", {
+          batch: that.model.batch,
+          userUUID: that.model.user
+        });
       });
     }
   }

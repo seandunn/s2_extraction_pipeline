@@ -28,9 +28,6 @@ define([
   $.extend(DefaultPageModel, {
     init:function (owner) {
       this.owner = Object.create(owner);
-      this.labware = undefined;
-      this.user = undefined;
-      this.batch = undefined;
 
       this.initialiseCaching();
       return this;
@@ -76,7 +73,6 @@ define([
             })
             .fail(function () {
               console.log("batch not found :");
-              that.batch = null;
 
               // we still inform the owner that this is a valid model, even if we don't have batch
               that.owner.childDone(that, "modelValidated");

@@ -42,11 +42,15 @@ define([ 'config'
     },
     setupPresenter:function (setupData, jquerySelection) {
       this.setupPlaceholder(jquerySelection);
-      if (setupData) {
+
+      if (setupData.batch) {
         this.pageModel.setBatch(setupData.batch); // the batch BEFORE the labware!
-        this.pageModel.setSeminalLabware(setupData.labware);
-        this.pageModel.setUser(setupData.userUUID);
-      }
+      } else if (setupData.labware) {
+         this.pageModel.setSeminalLabware(setupData.labware);
+      } else throw "This page should not be show without either batch or scanned labware";
+
+      this.pageModel.setUser(setupData.userUUID);
+
       this.setupView();
       this.setupSubPresenters();
       this.renderView();
