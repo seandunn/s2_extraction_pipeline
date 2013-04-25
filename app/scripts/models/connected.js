@@ -217,7 +217,7 @@ define([
       }).then(function(operation) {
         // STEP 6: Finally perform the operation and report the final completion
         operation.operation().then(function () {
-          that.owner.childDone(that, 'successfulOperation', {});
+          that.owner.childDone(that, 'successfulOperation', presenters);
         }).fail(function() {
           that.owner.childDone(that, 'failedOperation', {});
         });

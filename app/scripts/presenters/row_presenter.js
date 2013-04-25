@@ -201,7 +201,11 @@ define([
     isRowComplete: function() {
       return this.editablePresenters().all(function(p) { return p.isComplete(); }).value();
     },
+    lockRow: function() {
+      _.each(this.presenters, function(presenter){
 
+      });
+    },
     handleResources: function(callback) {
       callback.apply(null, this.editablePresenters().map(function(p) { return p.labwareModel.resource; }).value());
     }
