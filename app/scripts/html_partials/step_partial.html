@@ -7,12 +7,7 @@
 <div id="step2" class="row"></div>
 
 <div id="buttonRack" style="float:right">
-    <% _.each (rc.buttons, function (buttonsDetails) { %>
-        <button class="btn btn-<%- buttonsDetails.action %>Button"><%- buttonsDetails.title %></button>
-    <% }); %>
-
-    <button class="btn printButton">Print barcodes</button>
-  <button class="btn startButton">Start process</button>
-  <button class="btn endButton">End process</button>
-  <button class="btn nextButton">Next</button>
+  <% _.each (rc.buttons, function (buttonsDetails) { %>
+    <button class="btn btn-<%- buttonsDetails.action %>Button"><%- buttonsDetails.title %></button>
+  <% }); %>
 </div>

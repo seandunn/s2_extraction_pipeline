@@ -20,14 +20,12 @@ define([
       this.config = config;
       this.factory = factory;
 
-      if (!this.config.btnConfig){
-        this.config.btnConfig = [
-          {"title":"print", action:"print"},
-          {"title":"start", action:"start"},
-          {"title":"end", action:"end"},
-          {"title":"next", action:"next"}
-        ];
-      }
+      this.config.buttons = this.config.buttons || [
+        {action:"print", title:"Print labels"  },
+        {action:"start", title:"Start process" },
+        {action:"end",   title:"End process"   },
+        {action:"next",  title:"Next"          }
+      ];
 
       var presenter = this;
       return this;
@@ -77,7 +75,7 @@ define([
       this.view.renderView({
         user: this.user,
         processTitle: this.config.processTitle,
-        buttons:this.config.btnConfig
+        buttons:this.config.buttons
       });
       return this;
     },
@@ -101,12 +99,12 @@ define([
           presenter.activePresenter = active;
         }
       } else if (action === 'enableBtn' || action === 'disableBtn'){
-        btnDetailsList = data.actions || this.config.btnConfig;
+        btnDetailsList = data.actions || this.config.buttons;
         _.each(btnDetailsList, function(btnDetails){
           presenter.view.setButtonEnabled(btnDetails.action, action === 'enableBtn');
         })
       } else if (action === 'showBtn' || action === 'hideBtn'){
-        btnDetailsList = data.actions || this.config.btnConfig;
+        btnDetailsList = data.actions || this.config.buttons;
         _.each(btnDetailsList, function(btnDetails){
           presenter.view.setButtonVisible(btnDetails.action, action === 'showBtn');
         })

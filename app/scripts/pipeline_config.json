@@ -66,6 +66,10 @@
     "accepts": [ "samples.extraction.manual.dna_and_rna.binding_input_tube_nap" ],
     "processTitle":  "Manual DNA and RNA Binding",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print spin column & labels" },
+      { "action": "next",  "title": "Done" }
+    ],
     "presenters": [
       {
       "presenterName": "kit_presenter",
@@ -106,6 +110,10 @@
     "accepts": [ "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap" ],
     "processTitle":  "Manual DNA and RNA Byproduct Tube",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "next",  "title": "Done" }
+    ],
     "presenters": [
       {
       "presenterName":   "connected_presenter",
@@ -137,6 +145,10 @@
     "accepts": [ "samples.extraction.manual.dna_and_rna.binding_input_tube_rnap" ],
     "processTitle":  "Manual DNA and RNA Binding, Input tube RNA+P",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print spin column labels" },
+      { "action": "next",  "title": "Done" }
+    ],
     "presenters": [
       {
       "presenterName": "kit_presenter",
@@ -174,6 +186,11 @@
     "accepts": [ "samples.extraction.manual.spin_column_dna" ],
     "processTitle":  "Manual Extraction, Spin Column DNA",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "start", "title": "Start elution process" },
+      { "action": "end",   "title": "Elution process completed" }
+    ],
     "presenters": [
       {
       "presenterName":   "connected_presenter",
@@ -205,6 +222,10 @@
     "accepts": [ "samples.extraction.manual.rna_only.binding_input_tube_rnap" ],
     "processTitle":  "Manual RNA Only Binding, Input tube RNA+P",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print spin column labels" },
+      { "action": "next",  "title": "Done" }
+    ],
     "presenters": [
       {
       "presenterName": "kit_presenter",
@@ -242,6 +263,11 @@
     "accepts": [ "samples.extraction.manual.spin_column_rna" ],
     "processTitle":  "Manual Extraction, Spin Column RNA",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "start", "title": "Start elution process" },
+      { "action": "end",   "title": "Elution process completed" }
+    ],
     "presenters": [
       {
       "presenterName":   "connected_presenter",
@@ -290,6 +316,10 @@
     "accepts": [ "samples.extraction.manual.dna_only.binding_input_tube_dnap" ],
     "processTitle":  "Manual DNA Only Binding",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print spin column labels" },
+      { "action": "next",  "title": "Done" }
+    ],
     "presenters": [
       {
       "presenterName": "kit_presenter",
@@ -361,6 +391,12 @@
     "accepts": [ "samples.extraction.qiacube.dna_and_rna.binding_input_tube_nap" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "start", "title": "Loading QIAcube" },
+      { "action": "end",   "title": "Unloading QIAcube" },
+      { "action": "next",  "title": "Done" }
+    ],
     "presenters": [
       {
       "presenterName": "kit_presenter",
@@ -401,6 +437,10 @@
     "accepts": [ "samples.extraction.qiacube.dna_and_rna.byproduct_tube_rnap" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "next",  "title": "Done" }
+    ],
     "presenters": [
       {
       "presenterName":   "connected_presenter",
@@ -432,6 +472,12 @@
     "accepts": [ "samples.extraction.qiacube.dna_and_rna.binding_input_tube_rnap" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "start", "title": "Loading QIAcube" },
+      { "action": "end",   "title": "Unloading QIAcube" },
+      { "action": "next",  "title": "Done" }
+    ],
     "presenters": [
       {
       "presenterName": "kit_presenter",
@@ -469,6 +515,12 @@
     "accepts": [ "samples.extraction.qiacube.rna_only.binding_input_tube_rnap" ],
     "processTitle":  "Automated RNA Only Extraction (QIAcube)",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "start", "title": "Loading QIAcube" },
+      { "action": "end",   "title": "Unloading QIAcube" },
+      { "action": "next",  "title": "Done" }
+    ],
     "presenters": [
       {
       "presenterName": "kit_presenter",
@@ -523,6 +575,12 @@
     "accepts": [ "samples.extraction.qiacube.dna_only.binding_input_tube_dnap" ],
     "processTitle":  "Automated DNA Only Extraction (QIAcube)",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "start", "title": "Loading QIAcube" },
+      { "action": "end",   "title": "Unloading QIAcube" },
+      { "action": "next",  "title": "Done" }
+    ],
     "presenters": [
       {
       "presenterName": "kit_presenter",
@@ -592,6 +650,10 @@
     "accepts": [ "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed.batched" ],
     "processTitle":  "DNA and RNA Re-Tubing",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "next",  "title": "Done" }
+    ],
     "presenters": [
       {
         "presenterName": "connected_presenter",
@@ -635,6 +697,10 @@
   }, {
     "accepts": [ "samples.extraction.racking.tube_to_be_retubed_dna" ],
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Start transfers" },
+      { "action": "next",  "title": "Done" }
+    ],
     "processTitle":   "Post DNA Extraction Racking - 1D-to-2D Tube Transfers",
     "presenters": [
       {
@@ -665,6 +731,10 @@
   }, {
     "accepts": [ "samples.extraction.racking.tube_to_be_racked_dna" ],
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "start", "title": "Accept rack layout" },
+      { "action": "next",  "title": "Done" }
+    ],
     "processTitle":   "Post DNA Extraction Racking - Rack Scanning",
     "presenters": [
       {
@@ -702,6 +772,10 @@
   }, {
     "accepts": [ "samples.extraction.racking.tube_to_be_retubed_rna" ],
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Start transfers" },
+      { "action": "next",  "title": "Done" }
+    ],
     "processTitle":   "Post RNA Extraction Racking - 1D-to-2D Tube Transfers",
     "presenters": [
       {
@@ -732,6 +806,10 @@
   }, {
     "accepts": [ "samples.extraction.racking.tube_to_be_racked_rjna" ],
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "start", "title": "Accept rack layout" },
+      { "action": "next",  "title": "Done" }
+    ],
     "processTitle":   "Post RNA Extraction Racking - Rack Scanning",
     "presenters": [
       {
@@ -773,6 +851,10 @@
     "accepts": [ "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed.batched" ],
     "processTitle":  "DNA Retubing",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "next",  "title": "Done" }
+    ],
     "presenters": [
       {
       "presenterName":  "connected_presenter",
@@ -820,6 +902,10 @@
     "accepts": [ "samples.extraction.qiacube.rna_only.input_tube_dnap.to_be_retubed.batched" ],
     "processTitle":  "RNA Retubing",
     "presenterName": "step_presenter",
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "next",  "title": "Done" }
+    ],
     "presenters": [
       {
       "presenterName":   "connected_presenter",
