@@ -31,7 +31,7 @@ define([
 
       // Configure the behaviour of inputs & outputs from configuration
       _.extend(this, _.chain(['inputs','outputs']).map(function(cacheName) {
-        var name = (config.cache || {})[cacheName] || 'singular';
+        var name = (config.cache || {})[cacheName] || 'singular(report)';
         var missingHandler = _.bind(Missing(name), instance);
         var cache = _.extend(Cache.init(), {
           getByBarcode: function(requester, modelName, barcode) {

@@ -713,7 +713,7 @@
           "outputs":  "never"
         },
         "cache": {
-          "outputs": "create"
+          "outputs": "singular(create)"
         },
         "defaultPrinter": "Tube Printer",
         "input": {
@@ -788,7 +788,7 @@
           "outputs":  "never"
         },
         "cache": {
-          "outputs": "create"
+          "outputs": "singular(create)"
         },
         "defaultPrinter": "Tube Printer",
         "input": {
