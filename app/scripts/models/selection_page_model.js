@@ -28,7 +28,7 @@ define([
         model.owner.childDone(model, "error");
       });
     },
-    setSeminalLabware: function (labware) {
+    setSeminalLabware:function (labware) {
       this.cache.push(labware);
       this.tubes.push(labware);
       this.owner.childDone(this, "seminalLabwareAdded");
@@ -54,12 +54,12 @@ define([
     addTubeFromBarcode:function (barcode) {
       var that = this;
       this.cache.fetchResourcePromiseFromBarcode(barcode)
-      .then(function (rsc) {
-        that.addTube(rsc);
-      })
-      .fail(function () {
-        that.owner.childDone(that, "barcodeNotFound", {});
-      });
+        .then(function (rsc) {
+          that.addTube(rsc);
+        })
+        .fail(function () {
+          that.owner.childDone(that, "barcodeNotFound", {});
+        });
     },
     getCapacity:function () {
       return this.capacity;
