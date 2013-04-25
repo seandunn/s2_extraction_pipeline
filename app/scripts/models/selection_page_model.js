@@ -38,7 +38,13 @@ define([
     setBatch:          function (batch) {
       if (batch) { this.cache.push(batch); }
       this.batch = batch;
-      this.owner.childDone(this, "batchAdded");
+      setupInputs(this)
+          .then(function () {
+            this.owner.childDone(this, "batchAdded");
+          })
+          .fail(function () {
+            this.owner.childDone(this, "error");
+          });
     },
     setSeminalLabware: function (labware) {
       this.cache.push(labware);
@@ -135,5 +141,18 @@ define([
       );
     }
   });
+
+  function setupInputs(that) {
+    return that.batch.items.then(function(items) {
+      return $.when.apply(null, _.chain(items).filter(function(item) {
+        return item.role === that.config.input.role && item.status === 'done';
+      }).map(function(item) {
+            return that.cache.fetchResourcePromiseFromUUID(item.uuid).then(function(resource) {
+              that.addTube.(resource);
+            });
+          }).value());
+    });
+  }
+
   return SelectionPageModel;
 });
