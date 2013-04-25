@@ -65,11 +65,11 @@ define([
 
           var presenterName = "selection_page_presenter";
           var initData = {
-            "accepts": [ "samples.extraction.manual.dna_and_rna.input_tube_nap" ],
+            "accepts":      [ "samples.extraction.manual.dna_and_rna.input_tube_nap" ],
             "presenterName":"selection_page_presenter",
             "processTitle": "Manual DNA and RNA Extraction",
             "input":        {
-              "role":"samples.extraction.manual.dna_and_rna.input_tube_nap",
+              "role": "samples.extraction.manual.dna_and_rna.input_tube_nap",
               "model":"tubes"
             },
             "output":       [
@@ -195,8 +195,8 @@ define([
           });
         });
 
-        it("displays a barcode error on the correct presenter", function(){
-          runs(function(){
+        it("displays a barcode error on the correct presenter", function () {
+          runs(function () {
             var errorMessage = "Generic error message";
             spyOn(presenter.presenters[1], "displayErrorMessage");
             presenter.displayBarcodeError(errorMessage);
@@ -204,22 +204,144 @@ define([
           })
         });
 
-        it("calls the clear method of the view when release is called in the presenter", function(){
-          runs(function(){
+        it("calls the clear method of the view when release is called in the presenter", function () {
+          runs(function () {
             presenter.release();
             expect(presenter.currentView.clear).toHaveBeenCalled();
           });
         });
 
-        it("Child done stuff",function(){
-          runs(function(){
-            presenter.currentView.attachEvents();
-            // TODO: test what happens when button is clicked
-            spyOn();
+        it('creates a batch when child done is called with action next', function () {
+          runs(function () {
+            spyOn(presenter.pageModel, 'makeBatch');
+            presenter.childDone(presenter.currentView, 'next', undefined);
+            expect(presenter.pageModel.makeBatch).toHaveBeenCalled();
+          });
+        });
+
+        it('calls the model to remove a tube when child done called with action removeLabware', function () {
+          runs(function () {
+            spyOn(presenter.pageModel, 'removeTubeByUuid');
+            var data = {
+              resource:{
+                uuid:'1234567890'
+              }
+            };
+            presenter.childDone(undefined, 'removeLabware', data);
+            expect(presenter.pageModel.removeTubeByUuid).toHaveBeenCalledWith(data.resource.uuid);
+          });
+        });
+      });
+
+
+      describe('which is initialised with no tubes', function () {
+        var presenter;
+
+        beforeEach(function () {
+
+          config.loadTestData(testData);
+          config.cummulativeLoadingTestDataInFirstStage(rootTestData);
+          config.logLevel = 0;
+
+          var app = {
+            getS2Root:function () {
+              var deferredS2Root = new $.Deferred();
+              if (!s2Root) {
+                S2Root.load({user:"username"}).done(function (result) {
+                  s2Root = result;
+                  deferredS2Root.resolve(result);
+                }).fail(function () {
+                    deferredS2Root.reject();
+                  });
+              } else {
+                deferredS2Root.resolve(s2Root);
+              }
+              return deferredS2Root.promise();
+            },
+            childDone:function () {
+            }
+          };
+
+
+          var presenterName = "selection_page_presenter";
+          var initData = {
+            "accepts":      [ "samples.extraction.manual.dna_and_rna.input_tube_nap" ],
+            "presenterName":"selection_page_presenter",
+            "processTitle": "Manual DNA and RNA Extraction",
+            "input":        {
+              "role": "samples.extraction.manual.dna_and_rna.input_tube_nap",
+              "model":"tubes"
+            },
+            "output":       [
+              {
+                "role":       "samples.extraction.manual.dna_and_rna.binding_input_tube_nap",
+                "aliquotType":"NA+P"
+              }
+            ]
+          };
+
+          var pf = new PresenterFactory();
+          presenter = pf.create(presenterName, this.mainController, initData);
+
+          var model, initialLabware;
+
+          runs(function () {
+            app.getS2Root().then(function (root) {
+
+            }).then(function () {
+                initialLabware = undefined;
+                model = {
+                  userUUID:"123456789",
+                  labware: initialLabware,
+                  batch:   undefined
+                }
+
+              })
+              .then(results.expected)
+              .fail(results.unexpected)
+          });
+
+          waitsFor(results.hasFinished);
+
+
+          runs(function () {
+            results.resetFinishedFlag();
+            presenter.setupPresenter(model, function () {
+              return $("#content");
+            });
+            spyOn(presenter.currentView, "render");
+            spyOn(presenter.currentView, "attachEvents");
+            spyOn(presenter.currentView, "clear");
+          });
+        });
+
+        it('is defined', function () {
+          expect(presenter).toBeDefined;
+        });
+
+        it('has the first presenter as a scan barcode presenter', function () {
+          var subPresenters = presenter.presenters;
+          expect(subPresenters[0].barcodeInputPresenter).toBeDefined();
+          expect(subPresenters[0].labwareModel.display_barcode).toEqual(true);
+          expect(subPresenters[0].labwareModel.display_remove).toEqual(false);
+        });
+
+        it('has labware presenters for the remaining presenters', function () {
+          runs(function () {
+            var subPresenters = presenter.presenters;
+            _.chain(subPresenters)
+              .drop(1)
+              .each(function (subPresenter) {
+                expect(subPresenter.labwareModel.display_barcode).toEqual(false);
+                expect(subPresenter.labwareModel.display_remove).toEqual(false);
+                expect(subPresenter.resourcePresenter).not.toBeDefined();
+                expect(subPresenter.barcodeInputPresenter).not.toBeDefined();
+              });
           });
         });
 
       });
+
     });
   });
 });
