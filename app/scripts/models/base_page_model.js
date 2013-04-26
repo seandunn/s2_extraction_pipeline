@@ -28,9 +28,16 @@ define([
       this.cache.resolve([]);
     },
 
-    printBarcodes:function(collection) {
+    printBarcodes:function(collection, printerName) {
       var that = this;
-      var printer = PrintService.printers[0];
+
+      var printerID = _.find(config.printers, function(printer){
+        return printer.friendlyName === printerName;
+      });
+
+      var printer = _.find(PrintService.printers, function(printer){
+        return printer.name === printerID.name;
+      });
 
       // Extract the print label details from each item in the collection
       var printItems = _.map(collection, function(item) {

@@ -26,6 +26,9 @@ define(['config'], function (config) {
         setupPlaceholder:function (jquerySelection) {
           this.jquerySelection = jquerySelection;
           return this;
+        },
+        printerList:function() {
+          return _.pluck(config.printers, 'friendlyName');
         }
       }
     );
