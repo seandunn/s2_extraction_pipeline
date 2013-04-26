@@ -24,14 +24,11 @@ define([
     return deferredS2Resource.promise();
   }
 
-
   TestHelper(function (results) {
-
 
     describe("Selection page presenter", function () {
 
       var s2Root = undefined;
-
 
       describe(" which is given one tube", function () {
 
@@ -231,11 +228,59 @@ define([
             expect(presenter.pageModel.removeTubeByUuid).toHaveBeenCalledWith(data.resource.uuid);
           });
         });
+
+        describe('and has the tube removed', function () {
+
+          beforeEach(function () {
+            // remove the tube
+            runs(function () {
+              var data = {
+                resource:{
+                  uuid:'66e0f490-8d8b-0130-b650-282066132de2'
+                }
+              };
+              presenter.childDone(undefined, 'removeLabware', data);
+              presenter.setupSubPresenters();
+            });
+          });
+
+          it('is still defined', function(){
+            expect(presenter).toBeDefined();
+          });
+
+          it('has the first presenter as a scan barcode presenter', function () {
+            runs(function () {
+              var subPresenters = presenter.presenters;
+              expect(subPresenters[0].barcodeInputPresenter).toBeDefined();
+              expect(subPresenters[0].labwareModel.display_barcode).toEqual(true);
+              expect(subPresenters[0].labwareModel.display_remove).toEqual(false);
+            });
+
+
+          });
+
+          it('has labware presenters for the remaining presenters', function () {
+            runs(function () {
+              var subPresenters = presenter.presenters;
+
+              _.chain(subPresenters)
+                .drop()
+                .each(function (subPresenter) {
+                  console.log('subPresenter', subPresenter);
+                  expect(subPresenter.labwareModel.display_barcode).toEqual(false);
+                  expect(subPresenter.labwareModel.display_remove).toEqual(false);
+                  expect(subPresenter.resourcePresenter).not.toBeDefined();
+                  expect(subPresenter.barcodeInputPresenter).not.toBeDefined();
+                });
+            });
+          });
+        });
       });
 
 
-      describe('which is initialised with no tubes', function () {
+      describe('which is not yet initialised', function () {
         var presenter;
+        var app;
 
         beforeEach(function () {
 
@@ -243,7 +288,7 @@ define([
           config.cummulativeLoadingTestDataInFirstStage(rootTestData);
           config.logLevel = 0;
 
-          var app = {
+          app = {
             getS2Root:function () {
               var deferredS2Root = new $.Deferred();
               if (!s2Root) {
@@ -282,66 +327,28 @@ define([
 
           var pf = new PresenterFactory();
           presenter = pf.create(presenterName, this.mainController, initData);
+        });
 
-          var model, initialLabware;
 
-          runs(function () {
-            app.getS2Root().then(function (root) {
-
-            }).then(function () {
-                initialLabware = undefined;
-                model = {
-                  userUUID:"123456789",
-                  labware: initialLabware,
-                  batch:   undefined
-                }
-
-              })
-              .then(results.expected)
-              .fail(results.unexpected)
-          });
-
-          waitsFor(results.hasFinished);
-
+        it('throws an exception if not given either batch or labware when initialised', function () {
 
           runs(function () {
-            results.resetFinishedFlag();
-            presenter.setupPresenter(model, function () {
-              return $("#content");
+            var initialLabware, model;
+            initialLabware = undefined;
+            model = {
+              userUUID:"123456789",
+              labware: initialLabware,
+              batch:   undefined
+            };
+
+            expect(function () {
+              presenter.setupPresenter(model,function () {
+                return $('#content');
+              }).toThrow("This page should not be show without either batch or scanned labware");
             });
-            spyOn(presenter.currentView, "render");
-            spyOn(presenter.currentView, "attachEvents");
-            spyOn(presenter.currentView, "clear");
           });
         });
-
-        it('is defined', function () {
-          expect(presenter).toBeDefined;
-        });
-
-        it('has the first presenter as a scan barcode presenter', function () {
-          var subPresenters = presenter.presenters;
-          expect(subPresenters[0].barcodeInputPresenter).toBeDefined();
-          expect(subPresenters[0].labwareModel.display_barcode).toEqual(true);
-          expect(subPresenters[0].labwareModel.display_remove).toEqual(false);
-        });
-
-        it('has labware presenters for the remaining presenters', function () {
-          runs(function () {
-            var subPresenters = presenter.presenters;
-            _.chain(subPresenters)
-              .drop(1)
-              .each(function (subPresenter) {
-                expect(subPresenter.labwareModel.display_barcode).toEqual(false);
-                expect(subPresenter.labwareModel.display_remove).toEqual(false);
-                expect(subPresenter.resourcePresenter).not.toBeDefined();
-                expect(subPresenter.barcodeInputPresenter).not.toBeDefined();
-              });
-          });
-        });
-
       });
-
     });
   });
 });
