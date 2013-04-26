@@ -1,13 +1,22 @@
 <header class="alert">
-  <h3 id="process-title" class="pull-left"><%- rc.processTitle %></h3>
-  <h3 class="pull-right">User Barcode: <%- rc.user %></h3>
+  <h3 id="process-title" class="pull-left"><%- underscoreResource.processTitle %></h3>
+
+  <h3 class="pull-right">User Barcode: <%- underscoreResource.user %></h3>
 </header>
 
 <div id="step1" class="row"></div>
 <div id="step2" class="row"></div>
 
 <div id="buttonRack" style="float:right">
-  <% _.each (rc.buttons, function (buttonsDetails) { %>
-    <button class="btn <%- buttonsDetails.action %>Button"><%- buttonsDetails.title %></button>
+  <% if (_.contains(_.pluck(underscoreResource.buttons, 'action'), 'print')) { %>
+  Select printer:
+  <select class="printerSelect">
+    <% _.each (underscoreResource.printerList, function (printer) { %>
+    <option><%- printer %></option>
+    <% }); %>
+  </select>
+  <% } %>
+  <% _.each (underscoreResource.buttons, function (buttonsDetails) { %>
+  <button class="btn btn-<%- buttonsDetails.action %>Button"><%- buttonsDetails.title %></button>
   <% }); %>
 </div>

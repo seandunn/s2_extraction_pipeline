@@ -73,7 +73,8 @@
     "presenters": [
       {
       "presenterName": "kit_presenter",
-      "kitType":       "DNA/RNA"
+      "kitType":       "DNA/RNA",
+      "defaultPrinter":"Tube printer"
     }, {
       "presenterName": "connected_presenter",
       "behaviours": {
@@ -83,7 +84,7 @@
         "done": "next",
         "outputs": "print"
       },
-      "defaultPrinter":"Tube Printer",
+      "defaultPrinter":"Tube printer",
       "input":         {
         "role": "samples.extraction.manual.dna_and_rna.binding_input_tube_nap",
         "model":"tubes"
