@@ -56,6 +56,7 @@ define([
 
       presenter.activePresenter = presenter.presenters[0];
       presenter.activePresenter.initialPresenter();
+      presenter.view.selectPrinter(presenter.activePresenter.config.defaultPrinter);
       presenter.activePresenter.focus();
     },
     setupSubModel: function() {
@@ -64,6 +65,7 @@ define([
 
     setupView: function() {
       this.view = new View(this, this.selector);
+      this.view.setPrinterList(this.printerList());
       return this;
     },
     release: function() {

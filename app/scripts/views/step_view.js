@@ -4,25 +4,26 @@ define([
   var View = function(owner, selector) {
     this.owner    = owner;
     this.selector = selector;
+    _.templateSettings.variable = 'underscoreResource';
     this.template = _.template(partial);
     return this;
   };
 
   _.extend(View.prototype, {
     renderView: function(model) {
-      _.templateSettings.variable = 'rc';
 
       var parent = this.selector().empty().append(this.template({
         user:         model.user,
         processTitle: model.processTitle,
-        buttons: model.buttons
+        buttons: model.buttons,
+        printerList: this.printerList
       }));
 
       var view = this;
 
       _.each(model.buttons, function(buttonDetails) {
         parent.find('.'+buttonDetails.action+'Button').on('click', function() {
-          view.owner.childDone(view, buttonDetails.action, {});
+          view.owner.childDone(view, buttonDetails.action, view.selectedPrinter());
         });
       });
     },
@@ -50,11 +51,18 @@ define([
     setPrintButtonEnabled: function(isEnabled) {
       this.setButtonEnabled('Print',isEnabled);
     },
-
     toggleHeaderEnabled: function() {
 
     },
-
+    selectedPrinter: function() {
+      return this.selector().find('.printerSelect').val();
+    },
+    setPrinterList: function(printers) {
+      this.printerList = printers;
+    },
+    selectPrinter: function(printer) {
+      this.selector().find('.printerSelect').val(printer);
+    },
     clear: function() {
       this.selector().empty();
     }
