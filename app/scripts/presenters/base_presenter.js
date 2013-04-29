@@ -28,7 +28,7 @@ define(['config'], function (config) {
           return this;
         },
         printerList:function() {
-          return _.pluck(config.printers, 'friendlyName');
+          return config.printers;
         }
       }
     );
