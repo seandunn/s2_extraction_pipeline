@@ -69,7 +69,7 @@ define([
         return tube.uuid !== uuid;
       });
 
-      this.owner.childDone(this, "modelUpdated", {});
+      this.owner.childDone(this, "modelUpdated");
     },
     getNumberOfTubes:function () {
       return this.tubes.length;
