@@ -6,6 +6,15 @@ define(['mapper_test/test_config'
     // Handler for exceptions (does absolutely nothing, but could try..catch!)
     exceptionHandling: function(callback) {
       callback();
+    },
+    printerType: function(type) {
+      var types = {
+        1 : '96 Well Plate Printer',
+        2 : '1D Tube Printer',
+        3 : 'Tube RackPrinter'
+      };
+
+      return types[type];
     }
   });
 

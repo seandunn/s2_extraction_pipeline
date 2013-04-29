@@ -12,10 +12,18 @@ define([], function(mapperConfig) {
     printServiceUrl: 'http://psd-dev.internal.sanger.ac.uk:8000/printers/legacy/soap',
     printers: [{
       name: 'e367bc',
-      friendlyName: 'Tube printer',
       type: 2
     }],
 
+    printerType: function(type) {
+      var types = {
+        1 : '96 Well Plate Printer',
+        2 : '1D Tube Printer',
+        3 : 'Tube Rack Printer'
+      };
+
+      return types[type];
+    },
     // Handler for exceptions (does absolutely nothing, but could try..catch!)
     exceptionHandling: function(callback) {
       callback();

@@ -28,6 +28,12 @@ define(['config'], function (config) {
           return this;
         },
         printerList:function() {
+
+          var printerNames = [];
+          _.each(config.printers, function(printer) {
+            printer.friendlyName = printer.name + ' ' + config.printerType(printer.type);
+          });
+
           return config.printers;
         }
       }
