@@ -30,7 +30,7 @@
 
    "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed",
    "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed",
-   "samples.extraction.qiacube.rna_only.input_tube_dnap.to_be_retubed",
+   "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed",
 
    "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed.batched",
    "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed.batched",
@@ -805,7 +805,7 @@
       }
     ]
   }, {
-    "accepts": [ "samples.extraction.racking.tube_to_be_racked_rjna" ],
+    "accepts": [ "samples.extraction.racking.tube_to_be_racked_rna" ],
     "presenterName": "step_presenter",
     "buttons": [
       { "action": "print", "title": "Accept rack layout" },
@@ -826,53 +826,6 @@
             "aliquotType": "RNA",
             "purpose": "stock",
             "model": "racks"
-          }
-        ]
-      }
-    ]
-  },
-
-  {
-    "accepts": [ "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed" ],
-    "presenterName":  "selection_page_presenter",
-    "processTitle":   "Retubing for DNA and RNA Extraction",
-    "input":        {
-      "role":   "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed",
-      "model":  "tubes"
-    },
-    "output":  [
-      {
-        "role":         "samples.extraction.qiacube.dna_and_rna.input_tube_nap.to_be_retubed.batched",
-        "aliquotType":  "NA+P"
-      }
-    ]
-  },
-
-  {
-    "accepts": [ "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed.batched" ],
-    "processTitle":  "Retubing for DNA and RNA Extraction",
-    "presenterName": "step_presenter",
-    "presenters": [
-      {
-        "presenterName": "connected_presenter",
-        "behaviours": {
-          "start":    "row",
-          "operate":  "row",
-          "complete": "row",
-          "done":     "next",
-          "outputs":  "print"
-        },
-        "defaultPrinter":"Tube Printer",
-        "input": {
-          "role":  "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed.batched",
-          "model": "tubes"
-        },
-        "output": [
-          {
-            "role":        "samples.extraction.qiacube.dna_and_rna.binding_input_tube_dnap",
-            "aliquotType": "NA+P",
-            "purpose":     "stock",
-            "model":       "tubes"
           }
         ]
       }
@@ -948,7 +901,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube.rna_only.input_tube_dnap.to_be_retubed.batched" ],
+    "accepts": [ "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed.batched" ],
     "processTitle":  "Retubing for RNA only Extraction",
     "presenterName": "step_presenter",
     "buttons": [
@@ -967,12 +920,12 @@
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
-        "role": "samples.extraction.qiacube.rna_only.input_tube_dnap.to_be_retubed.batched",
+        "role": "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed.batched",
         "model":"tubes"
       },
       "output":        [
         {
-        "role":       "samples.extraction.qiacube.rna_only.input_tube_dnap",
+        "role":       "samples.extraction.qiacube.rna_only.input_tube_rnap",
         "aliquotType":"RNA+P",
         "purpose":    "stock",
         "model":      "tubes"
