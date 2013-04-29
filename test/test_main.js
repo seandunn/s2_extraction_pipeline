@@ -10,7 +10,7 @@ require.config({
     mapper:'components/S2Mapper/app/scripts/mapper',
     mapper_test:'components/S2Mapper/test',
     mapper_services:'components/S2Mapper/app/scripts/services',
-    extraction_pipeline:'scripts',
+    extraction_pipeline:'scripts/',
     labware:'components/labware/app/scripts',
     config:'test_config',
     views:'scripts/views',
@@ -19,7 +19,7 @@ require.config({
     spec:'spec',
     testjson:'components/S2Mapper/test/json',
     pipelinetestjson:'json',
-    text:'components/requirejs-text/text'
+    text:'/components/requirejs-text/text'
   }
 });
  
