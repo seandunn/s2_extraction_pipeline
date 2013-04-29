@@ -40,7 +40,7 @@ define(['scripts/workflow_engine'
           expect(typeof workflowEngine.role_priority[0]).toEqual("string");
         });
 
-        it("has a matching role to each 'accepts' property", function(){
+        it("where every rolePriority has a workflow which accepts it", function(){
           _.each(workflowEngine.role_priority,function(rolePriority){
             var accepts = 0;
             var rp = rolePriority;
@@ -49,10 +49,10 @@ define(['scripts/workflow_engine'
                 if(rp === role){
                   accepts ++;
                 }
-              })
-            })
+              });
+            });
             expect(rp+" has "+accepts+" entries").toEqual(rp+" has "+1+" entries");
-          })
+          });
 
         });
       });
