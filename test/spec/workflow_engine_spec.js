@@ -32,12 +32,33 @@ define(['scripts/workflow_engine'
 
 
       describe("A formed pipeline_config.json file,", function(){
+
+        var acceptedRoles;
+
+        beforeEach(function(){
+            acceptedRoles = _.chain(workflowEngine.workflows).map(function(workflow){
+            return workflow.accepts;
+          }).flatten().value();
+        });
+
         it("has a matching number of roles and rolePriority entries.", function(){
           expect(workflowEngine.role_priority.length).toEqual(_.keys(workflowEngine.workflows).length);
         });
 
         it("has role_priority entries which are strings.", function () {
           expect(typeof workflowEngine.role_priority[0]).toEqual("string");
+        });
+
+        it("where every rolePriority has a workflow which accepts it", function(){
+          expect(_.difference(workflowEngine.role_priority, acceptedRoles)).toEqual([]);
+        });
+
+        it("has no duplicate workflows for any rolePriority", function () {
+          expect(_.uniq(workflowEngine.role_priority).length).toEqual(acceptedRoles.length);
+        });
+
+        it("has no duplicate rolePriorities for any workflows", function(){
+          expect(_.uniq(acceptedRoles).length).toEqual(workflowEngine.role_priority.length);
         });
       });
     });
