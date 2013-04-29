@@ -15,6 +15,19 @@ define([ 'config'
         return this;
       };
 
+      app.prototype.addEventHandlers = function(){
+
+        $("body").on('progressEvent',progressEventHandler);
+
+        function progressEventHandler(event, inProgress){
+          if (inProgress){
+            $(document.body).css( 'cursor', 'progress' );
+          } else {
+            $(document.body).css( 'cursor', 'default' );
+          }
+        }
+      };
+
       app.prototype.resetS2Root = function () {
         delete this.s2Root;
         return this;
