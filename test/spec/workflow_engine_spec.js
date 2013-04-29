@@ -39,6 +39,22 @@ define(['scripts/workflow_engine'
         it("has role_priority entries which are strings.", function () {
           expect(typeof workflowEngine.role_priority[0]).toEqual("string");
         });
+
+        it("has a matching role to each 'accepts' property", function(){
+          _.each(workflowEngine.role_priority,function(rolePriority){
+            var accepts = 0;
+            var rp = rolePriority;
+            _.each(workflowEngine.workflows,function(workflows){
+              _.each(workflows.accepts,function(role){
+                if(rp === role){
+                  accepts ++;
+                }
+              })
+            })
+            expect(rp+" has "+accepts+" entries").toEqual(rp+" has "+1+" entries");
+          })
+
+        });
       });
     });
 
