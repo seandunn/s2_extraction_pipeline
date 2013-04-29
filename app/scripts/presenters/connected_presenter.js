@@ -126,6 +126,10 @@ define([
         this.model.behaviours.done.transfer(function() {
           that.owner.childDone(that, "done", { batch:that.model.batch });
         });
+      } else if (action === "successfulOperation") {
+        _.each(data, function(presenter){
+          presenter.lockRow();
+        });
       }
     },
 

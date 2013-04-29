@@ -57,6 +57,10 @@ define(['text!extraction_pipeline/html_partials/labware_partial.html'], function
     this.jquerySelector().find('.removeButton').css('display', 'none');
   };
 
+  LabwareView.prototype.hideBarcodeEntry = function () {
+    this.jquerySelector().find('.barcodeScanner').css('display', 'none');
+  };
+
   LabwareView.prototype.labwareEnabled = function(isEnabled) {
     var actions = ['removeAttr','attr'];
     if (this.owner.labwareModel.resource) {
