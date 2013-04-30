@@ -8,14 +8,15 @@ require.config({
     hm:                   'vendor/hm',
     esprima:              'vendor/esprima',
     jquery:               'vendor/jquery.min',
-    mapper:               '/components/S2Mapper/app/scripts/mapper',
-    mapper_services:      '/components/S2Mapper/app/scripts/services',
+    text:                 'components/requirejs-text/text',
+
+    labware:              'components/labware/app/scripts',
+    mapper:               'components/S2Mapper/app/scripts/mapper',
+    mapper_services:      'components/S2Mapper/app/scripts/services',
     mapper_test:          'components/S2Mapper/test',
-    labware:              '/components/labware/app/scripts',
-    config:               'scripts/config',
-    testjson:             '/components/S2Mapper/test/json',
-    text:                 '/components/requirejs-text/text',
-    extraction_pipeline:  'scripts'
+    mapper_testjson:      'components/S2Mapper/test/json',
+    extraction_pipeline:  'scripts',
+    config:               'scripts/devel_config'
   }
 });
 

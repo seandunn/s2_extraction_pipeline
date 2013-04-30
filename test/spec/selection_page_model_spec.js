@@ -3,8 +3,8 @@ define([
   , 'mapper_test/resource_test_helper'
   , 'mapper/s2_root'
   , 'models/selection_page_model'
-  , 'text!testjson/unit/root.json'
-  , 'text!pipelinetestjson/selection_page_model_test_data.json'
+  , 'text!mapper_testjson/unit/root.json'
+  , 'text!pipeline_testjson/selection_page_model_test_data.json'
 ], function (config, TestHelper, S2Root, Model, rootTestData, testData) {
 
   'use strict';
