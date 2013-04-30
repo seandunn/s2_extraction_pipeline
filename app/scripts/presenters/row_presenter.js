@@ -74,17 +74,6 @@ define([
 
   var RowPresenter = Object.create(BasePresenter);
 
-  // interface ....
-//  var tp = function (owner, presenterFactory) {
-//    this.owner = owner;
-//    this.currentView = undefined;
-//    this.presenterFactory = presenterFactory;
-//    
-//    this.rowNum = undefined;
-//    return this;
-//  };
-
-
   $.extend(RowPresenter, {
     register: function(callback) {
       callback('row_presenter', function(owner, factory) {
@@ -97,17 +86,26 @@ define([
       this.owner = owner;
       return this;
     },
+
     setupPresenter:function (input_model, jquerySelection) {
+      var presenter = this;
       this.setupPlaceholder(jquerySelection);
 
       this.rowModel = Object.create(RowModel).init(this);
-      if (input_model) {
-        this.rowModel.setupModel(input_model);
-      }
-      this.rowNum = input_model.rowNum;
-      this.setupView();
-      this.setupSubPresenters();
-      this.renderView();
+      this.rowModel.setupModel(input_model);
+
+      this.currentView = new View(this, this.jquerySelection());
+
+      // NOTE: sort() call is needed here to ensure labware1,labware2,labware3... ordering
+      this.presenters = _.chain(this.rowModel.labwares).pairs().sort().map(function(nameToDetails) {
+        var name = nameToDetails[0], details = nameToDetails[1];
+        var subPresenter = presenter.presenterFactory.create('labware_presenter', presenter);
+        subPresenter.setupPresenter(details, function() { return presenter.jquerySelection().find('.' + name); });
+        return subPresenter;
+      });
+
+      this.currentView.renderView();
+      this.presenters.each(function(p) { p.renderView(); });
 
       if (input_model.remove_arrow) {
         this.currentView.removeArrow();
@@ -121,33 +119,6 @@ define([
       return this;
     },
 
-    setupView:function () {
-      this.currentView = new View(this, this.jquerySelection);
-      return this;
-    },
-
-    setupSubPresenters:function () {
-      var that = this;
-
-      // NOTE: sort() call is needed here to ensure labware1,labware2,labware3... ordering
-      this.presenters = _.chain(this.rowModel.labwares).pairs().sort().map(function(nameToDetails) {
-        var name = nameToDetails[0], details = nameToDetails[1];
-        var presenter = that.presenterFactory.create('labware_presenter', that);
-        presenter.setupPresenter(details, function() { return that.jquerySelection().find('.' + name); });
-        return presenter;
-      });
-      return this;
-    },
-
-    setupSubModel:function () {
-      return this;
-    },
-
-    renderView:function () {
-      this.currentView.renderView();
-      this.presenters.each(function(p) { p.renderView(); }).value();
-      return this;
-    },
 
     release:function () {
       this.jquerySelection().release();

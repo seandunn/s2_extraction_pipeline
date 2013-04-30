@@ -97,11 +97,6 @@ define(['text!extraction_pipeline/html_partials/scan_barcode_partial.html'], fun
     selection.focus();
   }
 
-  ScanBarcodeView.prototype.clear = function () {
-    /* clear the view from the current page
-     */
-    var children = this.jquerySelector().empty();
-  };
 
   ScanBarcodeView.prototype.enable = function () {
     var selection = this.jquerySelector().find(".barcodeInput");
