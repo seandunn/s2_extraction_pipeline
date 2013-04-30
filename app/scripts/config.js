@@ -12,7 +12,6 @@ define([], function(mapperConfig) {
     printServiceUrl: 'http://psd-dev.internal.sanger.ac.uk:8000/printers/legacy/soap',
     printers: [{
       name: 'e367bc',
-      friendlyName: 'Tube printer',
       type: 2
     }],
     printerTypes: {
