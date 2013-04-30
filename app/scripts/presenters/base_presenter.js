@@ -31,7 +31,7 @@ define(['config'], function (config) {
 
           var printerNames = [];
           _.each(config.printers, function(printer) {
-            printer.friendlyName = printer.name + ' ' + config.printerType(printer.type);
+            printer.friendlyName = printer.name + ' ' + config.printerTypes[printer.type];
           });
 
           return config.printers;

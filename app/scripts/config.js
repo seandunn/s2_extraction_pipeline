@@ -15,15 +15,10 @@ define([], function(mapperConfig) {
       friendlyName: 'Tube printer',
       type: 2
     }],
-
-    printerType: function(type) {
-      var types = {
+    printerTypes: {
         1 : '96 Well Plate Printer',
         2 : '1D Tube Printer',
         3 : 'Tube Rack Printer'
-      };
-
-      return types[type];
     },
     // Handler for exceptions (does absolutely nothing, but could try..catch!)
     exceptionHandling: function(callback) {

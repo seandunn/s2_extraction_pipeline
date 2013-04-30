@@ -7,14 +7,10 @@ define(['mapper_test/test_config'
     exceptionHandling: function(callback) {
       callback();
     },
-    printerType: function(type) {
-      var types = {
-        1 : '96 Well Plate Printer',
-        2 : '1D Tube Printer',
-        3 : 'Tube RackPrinter'
-      };
-
-      return types[type];
+    printerTypes: {
+      1 : '96 Well Plate Printer',
+      2 : '1D Tube Printer',
+      3 : 'Tube Rack Printer'
     }
   });
 
