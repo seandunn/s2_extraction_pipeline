@@ -5,21 +5,21 @@ require.config({
   baseUrl:'.',
 
   paths:{
-    d3:'components/d3',
-    domReady:'components/requirejs-domready/domReady',
-    mapper:'components/S2Mapper/app/scripts/mapper',
-    mapper_test:'components/S2Mapper/test',
-    mapper_services:'components/S2Mapper/app/scripts/services',
-    extraction_pipeline:'scripts/',
-    labware:'components/labware/app/scripts',
-    config:'test_config',
-    views:'scripts/views',
-    models:'scripts/models',
-    presenters:'scripts/presenters',
-    spec:'spec',
-    testjson:'components/S2Mapper/test/json',
-    pipelinetestjson:'json',
-    text:'/components/requirejs-text/text'
+    d3:                 'components/d3',
+    text:               'components/requirejs-text/text',
+    domReady:           'components/requirejs-domready/domReady',
+    labware:            'components/labware/app/scripts',
+    mapper:             'components/S2Mapper/app/scripts/mapper',
+    mapper_services:    'components/S2Mapper/app/scripts/services',
+    mapper_test:        'components/S2Mapper/test',
+    mapper_testjson:    'components/S2Mapper/test/json',
+    extraction_pipeline:'scripts',
+    views:              'scripts/views',
+    models:             'scripts/models',
+    presenters:         'scripts/presenters',
+    config:             'test_config',
+    spec:               'spec',
+    pipeline_testjson:  'json'
   }
 });
  

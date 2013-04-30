@@ -3,8 +3,8 @@ define([
   , 'config'
   , 'mapper/s2_root'
   , 'mapper_test/resource_test_helper'
-  , 'text!testjson/unit/root.json'
-  , 'text!pipelinetestjson/csv_parser_test_data.json'
+  , 'text!mapper_testjson/unit/root.json'
+  , 'text!pipeline_testjson/csv_parser_test_data.json'
 ], function (csvParser, config, Root, TestHelper, rootTestData, labellableTestData) {
 //  'use strict';
   'use strict';
