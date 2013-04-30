@@ -53,8 +53,8 @@ define(['config'
         // As labware is a resource, we need to ensure it's existence to extract a barcode
         var labwareBarcode = this.model.labware ? this.model.labware.labels.barcode.value : '';
 
-        this.userBCSubPresenter.setupPresenter({type:"user", value:this.model.user}, jQuerySelectionForUser);
-        this.labwareBCSubPresenter.setupPresenter({type:"tube", value:labwareBarcode}, jQuerySelectionForLabware);
+        this.userBCSubPresenter.setupPresenter({type:"user", barcode:this.model.user}, jQuerySelectionForUser);
+        this.labwareBCSubPresenter.setupPresenter({type:"tube", barcode:labwareBarcode}, jQuerySelectionForLabware);
 
         return this;
       },
@@ -81,7 +81,7 @@ define(['config'
         var presenter = this;
         if (child === this.userBCSubPresenter) {
           if (action === "barcodeScanned") {
-            presenter.model.setUserFromBarcode(data.BC);
+            presenter.model.setUserFromBarcode(data.barcode);
             this.userBCSubPresenter.disable();
             this.labwareBCSubPresenter.enable();
             this.labwareBCSubPresenter.focus();
@@ -89,7 +89,7 @@ define(['config'
           }
         } else if (child === this.labwareBCSubPresenter) {
           if (action === "barcodeScanned") {
-            this.model.setLabwareFromBarcode(data.BC);
+            this.model.setLabwareFromBarcode(data.barcode);
             return;
           }
         } else if (child === this.model) {

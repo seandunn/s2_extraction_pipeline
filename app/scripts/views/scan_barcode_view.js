@@ -59,13 +59,8 @@ define(['text!extraction_pipeline/html_partials/scan_barcode_partial.html'], fun
       var key = getKey(e);
       if (key === 13) {
         that.setModelBarcode(model);
-        if (model.isValid()) {
-          that.jquerySelector().find('.alert-error').css('display', 'none');
-          that.owner.childDone(this, "barcodeScanned", this.value);
-        }
-        else {
-          that.displayErrorMessage('Invalid Barcode');
-        }
+        that.jquerySelector().find('.alert-error').css('display', 'none');
+        that.owner.childDone(this, "barcodeScanned", this.value);
       }
     });
   };

@@ -39,7 +39,7 @@ define([
       }
       presenter.barcodePresenter.setupPresenter({
         type:  'Kit',
-        value: 'Kit0001'
+        barcode: 'Kit0001'
       }, function() {
         return presenter.selector().find('.barcode');
       });

@@ -1,4 +1,4 @@
-define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/views/scan_barcode_view'], function (Model, View) {
+define(['extraction_pipeline/views/scan_barcode_view'], function (View) {
   'use strict';
 
   var ScanBarcodePresenter = function (owner, presenterFactory) {
@@ -7,10 +7,12 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
     return this;
   };
 
-  ScanBarcodePresenter.prototype.setupPresenter = function (input_model, jquerySelection) {
+  ScanBarcodePresenter.prototype.setupPresenter = function (inputModel, jquerySelection) {
+    debugger
     this.setupPlaceholder(jquerySelection);
 
-    this.updateModel(input_model); // we do it before the setup view, because we know everything... no need for a tmp view
+    // this.updateModel(inputModel); // we do it before the setup view, because we know everything... no need for a tmp view
+    this.model = inputModel;
     this.setupView();
     this.renderView();
     return this;
@@ -18,12 +20,6 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
 
   ScanBarcodePresenter.prototype.setupPlaceholder = function (jquerySelection) {
     this.jquerySelection = jquerySelection;
-    return this;
-  };
-
-
-  ScanBarcodePresenter.prototype.updateModel = function (input_model) {
-    this.model = new Model(input_model);
     return this;
   };
 
@@ -74,7 +70,7 @@ define(['extraction_pipeline/models/scan_barcode_model', 'extraction_pipeline/vi
 
   ScanBarcodePresenter.prototype.isValid = function () {
     this.view.setModelBarcode(this.model);
-    return this.model.isValid();
+    return true; // replaces model method that always returns true.
   };
 
   ScanBarcodePresenter.prototype.focus = function () {
