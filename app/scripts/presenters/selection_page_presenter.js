@@ -1,41 +1,22 @@
-/*
- * S2 - An open source lab information management systems (LIMS)
- * Copyright (C) 2013  Wellcome Trust Sanger Insitute
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 1, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
- */
-
-
 define([ 'config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/views/selection_page_view'
   , 'extraction_pipeline/models/selection_page_model'
-], function (config, BasePresenter, SelectionPageView, SelectionPageModel ) {
+], function (config, BasePresenter, View, Model) {
+  'use strict';
 
   var PagePresenter = Object.create(BasePresenter);
 
   $.extend(PagePresenter, {
-    register: function(callback) {
-      callback('selection_page_presenter', function(owner, factory, initData) {
+    register:function (callback) {
+      callback('selection_page_presenter', function (owner, factory, initData) {
         return Object.create(PagePresenter).init(owner, factory, initData);
       });
     },
 
     init:function (owner, presenterFactory, initData) {
       this.presenterFactory = presenterFactory;
-      this.pageModel = Object.create(SelectionPageModel).init(this, initData);
+      this.model = Object.create(Model).init(this, initData);
       this.owner = owner;
       this.config = initData;
       return this;
@@ -44,12 +25,12 @@ define([ 'config'
       this.setupPlaceholder(jquerySelection);
 
       if (setupData.batch) {
-        this.pageModel.setBatch(setupData.batch); // the batch BEFORE the labware!
+        this.model.setBatch(setupData.batch); // the batch BEFORE the labware!
       } else if (setupData.labware) {
-         this.pageModel.setSeminalLabware(setupData.labware);
+         this.model.setSeminalLabware(setupData.labware);
       } else throw "This page should not be show without either batch or scanned labware";
 
-      this.pageModel.setUser(setupData.userUUID);
+      this.model.setUser(setupData.userUUID);
 
       this.setupView();
       this.setupSubPresenters();
@@ -57,94 +38,98 @@ define([ 'config'
       return this;
     },
     setupView:function () {
-      this.currentView = new SelectionPageView(this, this.jquerySelection);
+      this.view = new View(this, this.jquerySelection);
       return this;
     },
     renderView:function () {
-      if (!this.currentView) {
+      if (!this.view) {
         return this;
       }
       //marshalling data for the view
       var dataForView = {
-        batch:         this.pageModel.batch && this.pageModel.batch.uuid,
-        user:          this.pageModel.user,
-        capacity:      this.pageModel.getCapacity(),
-        processTitle:  this.pageModel.config.processTitle
+        batch:this.model.batch && this.model.batch.uuid,
+        user:this.model.user,
+        capacity:this.model.getCapacity(),
+        processTitle:this.model.config.processTitle
       };
 
-      this.currentView.render(dataForView);
+      this.view.render(dataForView);
 
       // render subviews...
-      for (var i = 0; i < this.presenters.length; i++) {
-        if (this.presenters[i]) {
-          this.presenters[i].renderView();
-        }
-      }
+      _.each(this.presenters, function (presenter) {
+        presenter.renderView();
+      });
 
-      this.presenters[this.pageModel.getNumberOfTubes()].barcodeFocus();
+      this.presenters[this.model.getNumberOfTubes()].barcodeFocus();
       return this;
     },
     setupSubPresenters:function () {
+      var that = this;
       this.presenters = [];
-      for (var i = 0; i < this.pageModel.getCapacity(); i++) {
-        var subPresenter = this.presenterFactory.create('labware_presenter', this);
-        this.presenters.push(subPresenter);
-      }
+      _(this.model.getCapacity()).times(function () {
+        var subPresenter = that.presenterFactory.create('labware_presenter', that);
+        that.presenters.push(subPresenter);
+      });
+
       this.setupSubModel();
       return this;
     },
 
     setupSubModel:function () {
-      var that = this;
+      var presenter = this;
       var jQueryForNthChild = function (childIndex) {
         return function () {
-          return that.jquerySelection().find("li :eq(" + childIndex + ")");
+          return presenter.jquerySelection().find("li :eq(" + childIndex + ")");
         };
       };
 
-      if (!this.pageModel) {
+      if (!this.model) {
         return;
       }
 
-      var numTubes = this.pageModel.getNumberOfTubes();
+      var numTubes = this.model.getNumberOfTubes()
+      var presenterData = [];
 
-      for (var i = 0; i < this.pageModel.getCapacity(); i++) {
-        if (i < numTubes) {
-          var dataForExistingLabware_presenter = {
-            resource:        this.pageModel.tubes[i],
-            expected_type:   this.config.input.model.singularize(),
-            display_remove:  true,
-            display_barcode: false
-          };
-          this.presenters[i].setupPresenter(dataForExistingLabware_presenter, jQueryForNthChild(i));
-        } else if (i == numTubes) {
-          var dataForLabwareWithBC_presenter = {
-            expected_type:   this.config.input.model.singularize(),
-            display_remove:  false,
-            display_barcode: true,
-            display_labware: false
-          };
-          this.presenters[i].setupPresenter(dataForLabwareWithBC_presenter, jQueryForNthChild(i));
-        } else {
-          var dataForhiddenLabwarePresenter = {
-            display_remove:  false,
-            display_barcode: false,
-            display_labware: false
-          };
-          this.presenters[i].setupPresenter(dataForhiddenLabwarePresenter, jQueryForNthChild(i));
-        }
-      }
+      _.each(this.model.tubes, function (tube) {
+        presenterData.push({
+          resource:tube,
+          expected_type:presenter.config.input.model.singularize(),
+          display_remove:true,
+          display_barcode:false
+        });
+      });
+
+      presenterData.push({
+        expected_type:presenter.config.input.model.singularize(),
+        display_remove:false,
+        display_barcode:true,
+        display_labware:false
+      });
+
+      // numTubes + 1 to account for the intermediate barcode scan row
+      _(this.model.getCapacity() - (numTubes + 1)).times(function () {
+        presenterData.push({
+          display_remove:false,
+          display_barcode:false,
+          display_labware:false
+        });
+      });
+
+      _.chain(this.presenters).zip(presenterData).each(function (pair, index) {
+        var presenter = pair[0], config = pair[1];
+        presenter.setupPresenter(config, jQueryForNthChild(index));
+      }).value();
     },
 
     displayBarcodeError:function (message) {
       //numTubes is the index number of the barcode input view in the array of presenters
-      var numTubes = this.pageModel.getNumberOfTubes();
+      var numTubes = this.model.getNumberOfTubes();
       this.presenters[numTubes].displayErrorMessage(message);
     },
 
     release:function () {
-      if (this.currentView) {
-        this.currentView.clear();
+      if (this.view) {
+        this.view.clear();
       }
       return this;
     },
@@ -164,12 +149,11 @@ define([ 'config'
        * data:       Any data associated with the action.
        *
        */
-      if (child === this.currentView){
+      if (child === this.view) {
         if (action === "next") {
-          //this.owner.childDone(this,"error",{"message" : "Not hooked up!"});
-          this.pageModel.makeBatch();
+          this.model.makeBatch();
         }
-      } else if (child === this.pageModel) {
+      } else if (child === this.model) {
         if (action === "modelUpdated") {
           // TODO: use the data provided by the model to only update the relevant subpresenters...
           this.setupSubPresenters();
@@ -178,19 +162,19 @@ define([ 'config'
 
         } else if (action === "batchSaved") {
           var dataForOwner = {
-            userUUID:this.pageModel.user,
-            labware:this.pageModel.labware,
-            "batch":this.pageModel.batch
+            userUUID:this.model.user,
+            labware:this.model.labware,
+            batch:this.model.batch
           };
-          this.owner.childDone(this,"done",dataForOwner);
+          this.owner.childDone(this, "done", dataForOwner);
         } else if (action === "barcodeNotFound") {
           this.displayBarcodeError("Barcode not found");
         }
       } else {
         if (action === "barcodeScanned") {
-          this.pageModel.addTubeFromBarcode(data.BC);
+          this.model.addTubeFromBarcode(data.BC);
         } else if (action === "removeLabware") {
-          this.pageModel.removeTubeByUuid(data.resource.uuid);
+          this.model.removeTubeByUuid(data.resource.uuid);
         }
       }
     }
