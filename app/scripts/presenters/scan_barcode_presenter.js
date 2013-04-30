@@ -1,4 +1,6 @@
-define(['extraction_pipeline/views/scan_barcode_view'], function (View) {
+define([
+       'extraction_pipeline/views/scan_barcode_view'
+], function (View) {
   'use strict';
 
   var ScanBarcodePresenter = function (owner, presenterFactory) {
@@ -8,64 +10,53 @@ define(['extraction_pipeline/views/scan_barcode_view'], function (View) {
   };
 
   ScanBarcodePresenter.prototype.setupPresenter = function (inputModel, jquerySelection) {
-    debugger
-    this.setupPlaceholder(jquerySelection);
+    this.jquerySelection = jquerySelection;
 
     // this.updateModel(inputModel); // we do it before the setup view, because we know everything... no need for a tmp view
     this.model = inputModel;
-    this.setupView();
-    this.renderView();
+    this.view = new View(this);
+    // this.view.render(this.model);
     return this;
-  };
-
-  ScanBarcodePresenter.prototype.setupPlaceholder = function (jquerySelection) {
-    this.jquerySelection = jquerySelection;
-    return this;
-  };
-
-  ScanBarcodePresenter.prototype.setupSubPresenters = function () {
-    // check with this.model for the needed subpresenters...
-    return this;
-  };
-
-  ScanBarcodePresenter.prototype.setupSubModel = function (model, jquerySelection) {
-    return this;
-  };
-
-  ScanBarcodePresenter.prototype.setupView = function () {
-    this.view = new View(this, this.jquerySelection);
   };
 
   ScanBarcodePresenter.prototype.renderView = function () {
-    this.view.render(this.model);
+    this.jquerySelection().append(this.view.render(this.model, this.jquerySelection()));
   };
 
   ScanBarcodePresenter.prototype.release = function () {
     this.view.clear();
   };
 
-  ScanBarcodePresenter.prototype.childDone = function (presenter, action, data) {
+  ScanBarcodePresenter.prototype.childDone = function (presenter, action, model) {
 
     if (action == "barcodeScanned") {
-      this.handleBarcode(data);
+      this.owner.childDone(this, "barcodeScanned", model);
     } else if (action === "parentError") {
-      this.model.customError = (data && data.message) ? data.message : "Unknown error";
+      this.model.customError = (model && model.message) ? model.message : "Unknown error";
       this.model.busy = false;
       this.model.barcode = "";
-      this.renderView();
     }
   };
 
-  ScanBarcodePresenter.prototype.handleBarcode = function (barcode) {
-    this.model.barcode = barcode;
-    var dataForBarcodeScanned = {
-      BC:barcode
-    };
-    this.owner.childDone(this, "barcodeScanned", dataForBarcodeScanned);
+  ScanBarcodePresenter.prototype.handleBarcode = function (model) {
+    this.model = model
   };
 
   ScanBarcodePresenter.prototype.displayErrorMessage = function (message) {
-    this.view.displayErrorMessage(message);
+    var selection = this.jquerySelector().find('.alert-error');
+    var text = 'Error!';
+
+    if (message) {
+      text += message;
+    }
+
+    var tmp = $('<h4/>', {
+      class:'alert-heading',
+      text:text
+    });
+
+    tmp.appendTo(selection.empty());
+    selection.css('display', 'block');
   };
 
   ScanBarcodePresenter.prototype.isValid = function () {
@@ -74,17 +65,15 @@ define(['extraction_pipeline/views/scan_barcode_view'], function (View) {
   };
 
   ScanBarcodePresenter.prototype.focus = function () {
-    this.view.focus();
-
-    return this;
+    this.jquerySelection().find('input').focus();
   };
 
   ScanBarcodePresenter.prototype.enable = function () {
-    this.view.enable();
+    this.jquerySelection().find(".barcodeInput").removeAttr('disabled', 'disabled');
   };
 
   ScanBarcodePresenter.prototype.disable = function () {
-    this.view.disable();
+    this.jquerySelection().find(".barcodeInput").attr('disabled', 'disabled');
   };
 
 
