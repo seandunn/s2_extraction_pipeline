@@ -11,6 +11,7 @@ define([ 'config'
       var app = function (thePresenterFactory) {
         this.presenterFactory = thePresenterFactory;
         this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
+        _.templateSettings.variable = 'templateData';
         return this;
       };
 

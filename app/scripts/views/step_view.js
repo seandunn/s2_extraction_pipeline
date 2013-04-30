@@ -4,7 +4,6 @@ define([
   var View = function(owner, selector) {
     this.owner    = owner;
     this.selector = selector;
-    _.templateSettings.variable = 'underscoreResource';
     this.template = _.template(partial);
     return this;
   };

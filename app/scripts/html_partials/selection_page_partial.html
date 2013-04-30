@@ -1,10 +1,10 @@
 <header class="alert">
-  <h3 id="process-title" class="pull-left"><%- rc.processTitle %></h3>
-  <h3 class="pull-right">User Barcode: <%- rc.user %></h3>
+  <h3 id="process-title" class="pull-left"><%- templateData.processTitle %></h3>
+  <h3 class="pull-right">User Barcode: <%- templateData.user %></h3>
 </header>
 
 <ol class="labware">
-    <% _.each (rc.indices, function (index) { %>
+    <% _.each (templateData.indices, function (index) { %>
     <li> <p><%- index %> - NO PRESENTER ASSOCIATED WITH THIS ITEM</p></li>
     <% }); %>
 </ol>

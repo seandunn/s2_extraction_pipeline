@@ -38,8 +38,6 @@ define(['text!extraction_pipeline/html_partials/scan_barcode_partial.html'], fun
 
     var parent = this.jquerySelector();
 
-    _.templateSettings.variable = 'rc';
-
     // Use underscore to insert the model values
     var template = _.template(scanBarcodePartialHtml);
     var templateData = {

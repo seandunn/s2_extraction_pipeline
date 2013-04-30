@@ -42,8 +42,6 @@ define(['text!extraction_pipeline/html_partials/default_page_partial.html'], fun
 
   loginview.prototype.renderView = function (errorText) {
 
-    _.templateSettings.variable = 'templateData';
-
     // set the data as template data
     var templateData = {
       errorText:errorText
