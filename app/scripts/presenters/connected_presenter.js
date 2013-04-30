@@ -148,7 +148,7 @@ define([
 
     print: function(child, action, data) {
       if (this.readyToCreateOutputs()) {
-        this.model.createOutputs();
+        this.model.createOutputs(data);
         this.currentView.setPrintButtonEnabled(false);
       }
     },

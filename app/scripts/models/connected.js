@@ -110,7 +110,7 @@ define([
       }).value();
     },
 
-    createOutputs: function() {
+    createOutputs: function(printer) {
       var that = this;
       this.behaviours.outputs.print(function() {
         var root;
@@ -142,7 +142,7 @@ define([
 
             $.when.apply(null, promises).then(function() {
               that.outputs.resolve(labware).then(function(outputs) {
-                that.printBarcodes(outputs);
+                that.printBarcodes(outputs, printer);
               });
               that.owner.childDone(that, 'outputsReady', {});
             }).fail(function() {

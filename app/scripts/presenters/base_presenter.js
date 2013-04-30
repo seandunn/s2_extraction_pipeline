@@ -26,6 +26,15 @@ define(['config'], function (config) {
         setupPlaceholder:function (jquerySelection) {
           this.jquerySelection = jquerySelection;
           return this;
+        },
+        printerList:function() {
+
+          var printerNames = [];
+          _.each(config.printers, function(printer) {
+            printer.friendlyName = printer.name + ' ' + config.printerTypes[printer.type];
+          });
+
+          return config.printers;
         }
       }
     );
