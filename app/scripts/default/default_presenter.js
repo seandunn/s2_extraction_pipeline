@@ -74,19 +74,12 @@ define(['config'
         }
 
         this.view.renderView();
-        this.jquerySelectionForUser().append(this.bindEvents( this.userBCSubPresenter.renderView(), userCallback ));
-        this.jquerySelectionForLabware().append(this.bindEvents( this.labwareBCSubPresenter.renderView(), labwareCallback ));
+        this.jquerySelectionForUser().append(this.bindReturnKey( this.userBCSubPresenter.renderView(), userCallback ));
+        this.jquerySelectionForLabware().append(this.bindReturnKey( this.labwareBCSubPresenter.renderView(), labwareCallback ));
 
         return this;
       },
 
-      bindEvents: function (element, callback) {
-        var presenter = this
-
-        return element.on("keypress", "input", function (e) {
-          if (e.which === 13) { callback(e, element, presenter); }
-        });
-      },
 
       release:function () {
         this.view.release();

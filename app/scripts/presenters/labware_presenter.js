@@ -118,7 +118,16 @@ define(['config'
 
       if (this.barcodeInputPresenter) {
 
-        this.jquerySelection().append(this.barcodeInputPresenter.renderView());
+        var labwareCallback = function(event, template, presenter){
+          presenter.owner.childDone(presenter, 'barcodeScanned', {
+            modelName: presenter.labwareModel.expected_type.pluralize(),
+            BC:        event.currentTarget.value
+          });
+        };
+
+        this.jquerySelection().append(
+          this.bindReturnKey(this.barcodeInputPresenter.renderView(), labwareCallback)
+        );
       }
 
       if (!(this.labwareModel.display_remove && !this.isSpecial())) {
