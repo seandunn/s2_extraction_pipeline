@@ -17,13 +17,13 @@ define(['config', 'text!extraction_pipeline/html_partials/alerts_partial.html'],
       });
     },
     appendView:function (templateData) {
-      var alert = this;
-      this.jquerySelector().append(_.template(alertsPartialHtml)(templateData));
+      var element = $(_.template(alertsPartialHtml)(templateData));
 
-      // Set the message display timeout
-      window.setTimeout(function () {
-        alert.jquerySelector().find('.alert').last().alert('close');
+      setTimeout(function () {
+        element.alert('close');
       }, config.messageTimeout);
+
+      element.appendTo(this.jquerySelector());
     },
     addMessage:function (messageType, message) {
       this.appendView({
