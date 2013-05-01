@@ -15,27 +15,8 @@ define([
   };
 
   ScanBarcodePresenter.prototype.renderView = function () {
-    var partial = $(_.template(scanBarcodePartialHtml)(this.model));
-
-    return this.bindEvents(partial);
+    return $(_.template(scanBarcodePartialHtml)(this.model));
   };
-
-  ScanBarcodePresenter.prototype.bindEvents = function (element) {
-    var view = this
-
-    return element.on("keypress", "input", function (e) {
-      if (e.which === 13) {
-        view.model.barcode = e.currentTarget.value;
-        $(e.currentTarget).trigger('s2.barcode.scanned', e.currentTarget.value );
-        view.owner.childDone(view, "barcodeScanned", view.model);
-
-        // e.currentTarget.closest('.alert-error').css('display', 'none');
-      }
-    });
-  };
-
-
-  ScanBarcodePresenter.prototype.release = function() {};
 
   return {
     register:function (callback) {

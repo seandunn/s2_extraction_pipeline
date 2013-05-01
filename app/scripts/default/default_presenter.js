@@ -58,19 +58,36 @@ define(['config'
 
         return this;
       },
-      setupView:function () {
+      setupView: function () {
         this.view = new View(this, this.jquerySelection);
         return this;
       },
-      renderView:function () {
-        // render view...
-        var data = undefined;
-        this.view.renderView(data);
-        this.jquerySelectionForUser().append(this.userBCSubPresenter.renderView());
-        this.jquerySelectionForLabware().append(this.labwareBCSubPresenter.renderView());
+
+      renderView: function () {
+        var userCallback = function(event, template, presenter){
+          presenter.model.setUserFromBarcode(event.currentTarget.value);
+          template.find(".barcodeInput").attr('disabled', true);
+        };
+
+        var labwareCallback = function(event, template, presenter){
+          presenter.model.setLabwareFromBarcode(event.currentTarget.value);
+        }
+
+        this.view.renderView();
+        this.jquerySelectionForUser().append(this.bindEvents( this.userBCSubPresenter.renderView(), userCallback ));
+        this.jquerySelectionForLabware().append(this.bindEvents( this.labwareBCSubPresenter.renderView(), labwareCallback ));
 
         return this;
       },
+
+      bindEvents: function (element, callback) {
+        var presenter = this
+
+        return element.on("keypress", "input", function (e) {
+          if (e.which === 13) { callback(e, element, presenter); }
+        });
+      },
+
       release:function () {
         this.view.release();
 
@@ -79,34 +96,23 @@ define(['config'
       childDone:function (child, action, data) {
         // called when a child  wants to say something...
         var presenter = this;
-        if (child === this.userBCSubPresenter) {
-          if (action === "barcodeScanned") {
-            presenter.model.setUserFromBarcode(data.barcode);
-            this.jquerySelectionForUser().find(".barcodeInput").removeAttr('disabled').focus();
-            return;
-          }
-        } else if (child === this.labwareBCSubPresenter) {
-          if (action === "barcodeScanned") {
-            this.model.setLabwareFromBarcode(data.barcode);
-            return;
-          }
-        } else if (child === this.model) {
+        if (child === this.model) {
           switch (action) {
             case "modelUpdated":
               if (this.view) {
-                this.setupSubPresenters();
-                this.renderView();
-              }
-              break;
+              this.setupSubPresenters();
+              this.renderView();
+            }
+            break;
             case "modelValidated":
               var dataForOwner = {
-                userUUID:this.model.user,
-                labware:this.model.labware,
-                batch:this.model.batch
-              };
-              console.log(dataForOwner.batch);
-              this.owner.childDone(this, "login", dataForOwner);
-              break;
+              userUUID:this.model.user,
+              labware:this.model.labware,
+              batch:this.model.batch
+            };
+            console.log(dataForOwner.batch);
+            this.owner.childDone(this, "login", dataForOwner);
+            break;
           }
           return;
         }
@@ -116,4 +122,4 @@ define(['config'
 
     return DefaultPresenter;
   }
-);
+      );
