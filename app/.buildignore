@@ -30,6 +30,7 @@ components/labware/partial_examples
 components/labware/app/styles/*.scss
 components/labware/app/styles/compass_twitter_bootstrap
 components/labware/app/scripts/vendor
+components/labware/app/scripts/json_data
 components/s2-api-examples
 
 scripts/devel_config.js
