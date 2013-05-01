@@ -2,10 +2,7 @@ define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/views/labware_view'
   , 'mapper/s2_root'
-  , 'text!components/S2Mapper/test/json/unit/root.json'
-  , 'text!components/S2Mapper/test/json/unit/tube.json'
-  , 'text!components/S2Mapper/test/json/unit/tube_by_barcode.json'
-], function (config, BasePresenter, LabwareView, S2Root, rootTestJson, dataTubeJSON, dataTubeFbyBCJSON) {
+], function (config, BasePresenter, LabwareView, S2Root) {
 
   var LabwareModel = Object.create(null);
   $.extend(LabwareModel, {
