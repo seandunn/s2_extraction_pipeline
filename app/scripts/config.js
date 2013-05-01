@@ -19,6 +19,7 @@ define([], function(mapperConfig) {
         2 : '1D Tube Printer',
         3 : 'Tube Rack Printer'
     },
+    messageTimeout: 5000,
     // Handler for exceptions (does absolutely nothing, but could try..catch!)
     exceptionHandling: function(callback) {
       callback();

@@ -145,3 +145,18 @@ ul {
     opacity: 0.6;
   }
 }
+#alertContainer{
+  .alert{
+    margin-bottom: 0px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  .fade {
+    opacity: 0;
+    -webkit-transition: opacity 0.3s linear;
+    transition: opacity 0.3s linear;
+  }
+  .fade.in {
+    opacity: 1;
+  }
+}
