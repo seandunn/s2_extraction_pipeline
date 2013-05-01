@@ -22,24 +22,15 @@ define(['config'
       this.owner = owner;
       return this;
     },
-    setupPresenter:function (setupData, jquerySelection) {
+
+    setupPresenter: function (setupData, jquerySelection) {
+      var that = this;
       this.setupPlaceholder(jquerySelection);
       this.model = Object.create(Model).init(this);
-      this.setupSubPresenters();
-      this.renderView();
-      this.jquerySelectionForUser().find("input").removeAttr('disabled').focus();
-      this.jquerySelectionForLabware().find("input").attr('disabled', true);
-      return this;
-    },
-    setupSubPresenters:function () {
-      // check with this.model for the needed subpresenters...
-      this.userBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
-      this.labwareBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
-      this.setupSubModel();
-      return this;
-    },
-    setupSubModel:function () {
-      var that = this;
+
+      this.userBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this).init({type:"user"});
+      this.labwareBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this).init({type:"tube"});
+
       this.jquerySelectionForUser = function () {
         return that.jquerySelection().find(".user_barcode");
       };
@@ -48,27 +39,30 @@ define(['config'
         return that.jquerySelection().find(".labware_barcode");
       };
 
-      // As labware is a resource, we need to ensure it's existence to extract a barcode
-      var labwareBarcode = this.model.labware ? this.model.labware.labels.barcode.value : '';
 
-      this.userBCSubPresenter.setupPresenter({type:"user", barcode:this.model.user});
-      this.labwareBCSubPresenter.setupPresenter({type:"tube", barcode:labwareBarcode});
+      this.renderView();
+      this.jquerySelectionForUser().find("input").removeAttr('disabled').focus();
+      this.jquerySelectionForLabware().find("input").attr('disabled', true);
+      return this;
+    },
 
+    setupSubPresenters:function () {
+      // check with this.model for the needed subpresenters...
       return this;
     },
 
     renderView: function () {
       var userCallback = function(event, template, presenter){
         presenter.model.user = event.currentTarget.value;
-        presenter.setupSubPresenters();
-        presenter.renderView();
         template.find("input").attr('disabled', true);
+        presenter.jquerySelectionForLabware().find("input").removeAttr('disabled').focus();
       };
 
       var labwareCallback = function(event, template, presenter){
         presenter.model
         .setLabwareFromBarcode(event.currentTarget.value)
         .then(function(model){
+          template.find("input").attr('disabled', true);
           presenter.owner.childDone(presenter, "login", model);
         });
 

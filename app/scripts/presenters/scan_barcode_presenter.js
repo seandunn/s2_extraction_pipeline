@@ -9,7 +9,7 @@ define([
     return this;
   };
 
-  ScanBarcodePresenter.prototype.setupPresenter = function (inputModel) {
+  ScanBarcodePresenter.prototype.init = function (inputModel) {
     this.model = inputModel;
     return this;
   };
@@ -26,3 +26,4 @@ define([
     }
   };
 });
+
