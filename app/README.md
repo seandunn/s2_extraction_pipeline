@@ -85,3 +85,25 @@ A typical chain may be as follows:
 For example, when childDone is called in 3), a typical sequence of passing information may look like the following:
 3->2->1 (but never directly to 3)). When childDone is called in 3), this information must work its way up the chain. 1) has no knowledge of 3), so
 all commands are passed through 2).
+
+
+Events
+===============
+
+busyBox
+-----------------
+
+To mark a DOM element as 'busy', make it trigger an event of this form:
+
+  $(source).trigger('s2.busybox.start_process');
+
+To unmark a div element as 'busy', make it trigger an event of this form:
+
+  $(source).trigger('s2.busybox.end_process');
+
+It is also possible to use the following form:
+
+  $(source).trigger('s2.busybox.process_event', bool);
+
+where bool indicates whether the source element is busy or not.
+
