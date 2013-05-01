@@ -13,6 +13,7 @@ define([ 'config'
         this.presenterFactory = thePresenterFactory;
         this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
         _.templateSettings.variable = 'templateData';
+        this.addEventHandlers();
         return this;
       };
 
