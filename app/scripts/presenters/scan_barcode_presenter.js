@@ -52,7 +52,7 @@ define([
   };
 
   ScanBarcodePresenter.prototype.displayErrorMessage = function (message) {
-    var selection = this.jquerySelector().find('.alert-error');
+    var selection = this.jquerySelection().find('.alert-error');
     var text = 'Error!';
 
     if (message) {

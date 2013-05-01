@@ -167,9 +167,10 @@ define(['config'
 
     barcodeInputDone: function(child, action, data) {
       if (action == 'barcodeScanned') {
+        debugger
         this.owner.childDone(this, 'barcodeScanned', {
           modelName: this.labwareModel.expected_type.pluralize(),
-          BC:        data.BC
+          BC:        data.barcode
         });
       }
     },
