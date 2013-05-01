@@ -100,7 +100,7 @@ define(['config'
       }
 
       if (this.barcodeInputPresenter) {
-        this.barcodeInputPresenter.setupPresenter(data, function () {
+        this.barcodeInputPresenter.init(data, function () {
           return that.jquerySelection().find("div.barcodeScanner")
         });
       }
