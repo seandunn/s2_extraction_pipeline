@@ -5,9 +5,21 @@ define(['config'
 ], function (config, BasePresenter, defaultPagePartialHtml, Model) {
   'use strict';
 
-  /*
-     The default page presenter. Deals with login.
-     */
+  var userCallback = function(event, template, presenter){
+    presenter.model.user = event.currentTarget.value;
+    template.find("input").attr('disabled', true);
+    presenter.jquerySelectionForLabware().find("input").removeAttr('disabled').focus();
+  };
+
+  var labwareCallback = function(event, template, presenter){
+    presenter.model
+    .setLabwareFromBarcode(event.currentTarget.value)
+    .then(function(model){
+      template.find("input").attr('disabled', true);
+      presenter.owner.childDone(presenter, "login", model);
+    });
+  };
+
   var DefaultPresenter = Object.create(BasePresenter);
 
   $.extend(DefaultPresenter, {
@@ -39,47 +51,23 @@ define(['config'
         return that.jquerySelection().find(".labware_barcode");
       };
 
-
       this.renderView();
       this.jquerySelectionForUser().find("input").removeAttr('disabled').focus();
       this.jquerySelectionForLabware().find("input").attr('disabled', true);
-      return this;
-    },
 
-    setupSubPresenters:function () {
-      // check with this.model for the needed subpresenters...
       return this;
     },
 
     renderView: function () {
-      var userCallback = function(event, template, presenter){
-        presenter.model.user = event.currentTarget.value;
-        template.find("input").attr('disabled', true);
-        presenter.jquerySelectionForLabware().find("input").removeAttr('disabled').focus();
-      };
-
-      var labwareCallback = function(event, template, presenter){
-        presenter.model
-        .setLabwareFromBarcode(event.currentTarget.value)
-        .then(function(model){
-          template.find("input").attr('disabled', true);
-          presenter.owner.childDone(presenter, "login", model);
-        });
-
-      }
-
       this.jquerySelection().append(_.template(defaultPagePartialHtml)({}));
+
       this.jquerySelectionForUser().append(this.bindReturnKey( this.userBCSubPresenter.renderView(), userCallback ));
       this.jquerySelectionForLabware().append(this.bindReturnKey( this.labwareBCSubPresenter.renderView(), labwareCallback ));
 
       return this;
     },
 
-
-    release:function () {
-      this.jquerySelection().empty();
-      return this;
-    }
+    release:function () { }
 
   });
 
