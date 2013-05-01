@@ -1,6 +1,6 @@
 define([
-       'extraction_pipeline/views/scan_barcode_view'
-], function (View) {
+       'text!extraction_pipeline/html_partials/scan_barcode_partial.html'
+], function (scanBarcodePartialHtml) {
   'use strict';
 
   var ScanBarcodePresenter = function (owner, presenterFactory) {
@@ -12,19 +12,32 @@ define([
   ScanBarcodePresenter.prototype.setupPresenter = function (inputModel, jquerySelection) {
     this.jquerySelection = jquerySelection;
 
-    // this.updateModel(inputModel); // we do it before the setup view, because we know everything... no need for a tmp view
     this.model = inputModel;
-    this.view = new View(this);
-    // this.view.render(this.model);
     return this;
   };
 
   ScanBarcodePresenter.prototype.renderView = function () {
-    this.jquerySelection().append(this.view.render(this.model, this.jquerySelection()));
+    var partial = $(_.template(scanBarcodePartialHtml)(this.model));
+
+    return this.jquerySelection().append(this.bindEvents(partial));
   };
 
+  ScanBarcodePresenter.prototype.bindEvents = function (element) {
+    var view = this;
+
+    return element.on("keypress", "input", function (e) {
+      if (e.which === 13) {
+        view.model.barcode = e.currentTarget.value;
+        $(e.currentTarget).trigger('s2.barcode.scanned', e.currentTarget.value );
+        view.childDone(this, "barcodeScanned", view.model);
+
+        // e.currentTarget.closest('.alert-error').css('display', 'none');
+      }
+    });
+  };
+
+
   ScanBarcodePresenter.prototype.release = function () {
-    this.view.clear();
   };
 
   ScanBarcodePresenter.prototype.childDone = function (presenter, action, model) {
@@ -60,7 +73,6 @@ define([
   };
 
   ScanBarcodePresenter.prototype.isValid = function () {
-    this.view.setModelBarcode(this.model);
     return true; // replaces model method that always returns true.
   };
 
