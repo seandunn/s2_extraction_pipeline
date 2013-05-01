@@ -9,7 +9,7 @@ require.config({
     esprima:              'vendor/esprima',
     jquery:               'vendor/jquery.min',
     text:                 'components/requirejs-text/text',
-
+    spinjs:               'components/spin.js/spin',
     labware:              'components/labware/app/scripts',
     mapper:               'components/S2Mapper/app/scripts/mapper',
     mapper_services:      'components/S2Mapper/app/scripts/services',
