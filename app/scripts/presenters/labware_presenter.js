@@ -117,7 +117,8 @@ define(['config'
       }
 
       if (this.barcodeInputPresenter) {
-        this.barcodeInputPresenter.renderView();
+
+        this.jquerySelection().append(this.barcodeInputPresenter.renderView());
       }
 
       if (!(this.labwareModel.display_remove && !this.isSpecial())) {
@@ -167,7 +168,6 @@ define(['config'
 
     barcodeInputDone: function(child, action, data) {
       if (action == 'barcodeScanned') {
-        debugger
         this.owner.childDone(this, 'barcodeScanned', {
           modelName: this.labwareModel.expected_type.pluralize(),
           BC:        data.barcode
@@ -193,7 +193,20 @@ define(['config'
       this.view.hideRemoveButton();
     },
     displayErrorMessage:function (message) {
-      this.barcodeInputPresenter.displayErrorMessage(message);
+      var selection = this.jquerySelection().find('.alert-error');
+      var text = 'Error!';
+
+      if (message) {
+        text += message;
+      }
+
+      var tmp = $('<h4/>', {
+        class:'alert-heading',
+        text:text
+      });
+
+      tmp.appendTo(selection.empty());
+      selection.css('display', 'block');
     }
 
   });

@@ -29,8 +29,8 @@ define(['config'
         this.setupView();
         this.setupSubPresenters();
         this.renderView();
-        this.userBCSubPresenter.focus();
-        this.labwareBCSubPresenter.disable();
+        this.jquerySelectionForUser().find(".barcodeInput").removeAttr('disabled').focus();
+        this.jquerySelectionForLabware().find(".barcodeInput").attr('disabled', true);
         return this;
       },
       setupSubPresenters:function () {
@@ -42,19 +42,19 @@ define(['config'
       },
       setupSubModel:function () {
         var that = this;
-        var jQuerySelectionForUser = function () {
+        this.jquerySelectionForUser = function () {
           return that.jquerySelection().find(".user_barcode");
         };
 
-        var jQuerySelectionForLabware = function () {
+        this.jquerySelectionForLabware = function () {
           return that.jquerySelection().find(".labware_barcode");
         };
 
         // As labware is a resource, we need to ensure it's existence to extract a barcode
         var labwareBarcode = this.model.labware ? this.model.labware.labels.barcode.value : '';
 
-        this.userBCSubPresenter.setupPresenter({type:"user", barcode:this.model.user}, jQuerySelectionForUser);
-        this.labwareBCSubPresenter.setupPresenter({type:"tube", barcode:labwareBarcode}, jQuerySelectionForLabware);
+        this.userBCSubPresenter.setupPresenter({type:"user", barcode:this.model.user});
+        this.labwareBCSubPresenter.setupPresenter({type:"tube", barcode:labwareBarcode});
 
         return this;
       },
@@ -66,8 +66,8 @@ define(['config'
         // render view...
         var data = undefined;
         this.view.renderView(data);
-        this.userBCSubPresenter.renderView();
-        this.labwareBCSubPresenter.renderView();
+        this.jquerySelectionForUser().append(this.userBCSubPresenter.renderView());
+        this.jquerySelectionForLabware().append(this.labwareBCSubPresenter.renderView());
 
         return this;
       },
@@ -82,9 +82,7 @@ define(['config'
         if (child === this.userBCSubPresenter) {
           if (action === "barcodeScanned") {
             presenter.model.setUserFromBarcode(data.barcode);
-            this.userBCSubPresenter.disable();
-            this.labwareBCSubPresenter.enable();
-            this.labwareBCSubPresenter.focus();
+            this.jquerySelectionForUser().find(".barcodeInput").removeAttr('disabled').focus();
             return;
           }
         } else if (child === this.labwareBCSubPresenter) {
