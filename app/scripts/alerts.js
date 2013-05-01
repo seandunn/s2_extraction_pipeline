@@ -1,4 +1,4 @@
-define(['text!extraction_pipeline/html_partials/alerts_partial.html'], function (alertsPartialHtml) {
+define(['config', 'text!extraction_pipeline/html_partials/alerts_partial.html'], function (config, alertsPartialHtml) {
   'use strict';
 
   var alerts = Object.create(null);
@@ -10,33 +10,26 @@ define(['text!extraction_pipeline/html_partials/alerts_partial.html'], function 
 
       // Set both regular and error event handlers on the body
       $('body').on('s2.status.message', function (event, message) {
-        alert.addMessage(message);
+        alert.addMessage('success', message);
       });
       $('body').on('s2.status.error', function (event, message) {
-        alert.addError(message);
+        alert.addMessage('error', message);
       });
     },
     appendView:function (templateData) {
-
+      var alert = this;
       this.jquerySelector().append(_.template(alertsPartialHtml)(templateData));
-    },
-    addMessage:function (message) {
-      // set the user and indices as template data
-      var templateData = {
-        messageType:'success',
-        message:message
-      };
 
-      this.appendView(templateData);
+      // Set the message display timeout
+      window.setTimeout(function () {
+        alert.jquerySelector().find('.alert').last().alert('close');
+      }, config.messageTimeout);
     },
-    addError:function (message) {
-      // set the user and indices as template data
-      var templateData = {
-        messageType:'error',
+    addMessage:function (messageType, message) {
+      this.appendView({
+        messageType:messageType,
         message:message
-      };
-
-      this.appendView(templateData);
+      });
     },
     clear:function () {
       this.jquerySelector().empty();
