@@ -51,9 +51,16 @@ define([ 'config'
         return this;
       };
 
-      app.prototype.updateModel = function (newData) {
-        this.model = $.extend(this.model, newData);
-        this.updateSubPresenters();
+      app.prototype.updateModel = function (model) {
+        this.model = $.extend(this.model, model);
+
+        if (this.currentPagePresenter) {
+          this.currentPagePresenter.release();
+          delete this.currentPagePresenter;
+        }
+
+        this.workflow.askForNextPresenter(this.presenterFactory, this.model);
+
         return this;
       };
 
@@ -65,11 +72,6 @@ define([ 'config'
       };
 
       app.prototype.updateSubPresenters = function () {
-        if (this.currentPagePresenter) {
-          this.currentPagePresenter.release();
-          delete this.currentPagePresenter;
-        }
-        this.workflow.askForNextPresenter(this.presenterFactory, this.model);
       };
 
       app.prototype.setupNextPresenter = function (nextPresenter) {
