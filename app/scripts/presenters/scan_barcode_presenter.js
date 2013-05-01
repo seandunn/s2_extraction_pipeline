@@ -23,13 +23,13 @@ define([
   };
 
   ScanBarcodePresenter.prototype.bindEvents = function (element) {
-    var view = this;
+    var view = this
 
     return element.on("keypress", "input", function (e) {
       if (e.which === 13) {
         view.model.barcode = e.currentTarget.value;
         $(e.currentTarget).trigger('s2.barcode.scanned', e.currentTarget.value );
-        view.childDone(this, "barcodeScanned", view.model);
+        view.owner.childDone(view, "barcodeScanned", view.model);
 
         // e.currentTarget.closest('.alert-error').css('display', 'none');
       }
@@ -37,14 +37,10 @@ define([
   };
 
 
-  ScanBarcodePresenter.prototype.release = function () {
-  };
+  ScanBarcodePresenter.prototype.release = function() {};
 
   ScanBarcodePresenter.prototype.childDone = function (presenter, action, model) {
-
-    if (action == "barcodeScanned") {
-      this.owner.childDone(this, "barcodeScanned", model);
-    } else if (action === "parentError") {
+    if (action === "parentError") {
       this.model.customError = (model && model.message) ? model.message : "Unknown error";
       this.model.busy = false;
       this.model.barcode = "";

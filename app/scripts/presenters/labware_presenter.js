@@ -164,6 +164,7 @@ define(['config'
         this.renderView();
       }
     },
+
     barcodeInputDone: function(child, action, data) {
       if (action == 'barcodeScanned') {
         this.owner.childDone(this, 'barcodeScanned', {
@@ -172,6 +173,7 @@ define(['config'
         });
       }
     },
+
     modelDone: function(child, action, data) {
       if (action === 'resourceUpdated') {
         this.setupView();
