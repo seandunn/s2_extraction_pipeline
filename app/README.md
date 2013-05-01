@@ -103,7 +103,7 @@ To unmark a div element as 'busy', make it trigger an event of this form:
 
 It is also possible to use the following form:
 
-    $(source).trigger('s2.busybox.process_event', bool);
+    $(source).trigger('s2.busybox.process_in_progress', bool);
 
 where bool indicates whether the source element is busy or not.
 

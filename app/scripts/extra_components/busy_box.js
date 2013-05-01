@@ -7,7 +7,7 @@ define([
       return {
         init:function(){
           var body = $('body');
-          body.on('s2.busybox.process_event', this.processEventHandler);
+          body.on('s2.busybox.process_in_progress', this.processEventHandler);
           body.on('s2.busybox.start_process', this.startProcessEventHandler);
           body.on('s2.busybox.end_process', this.endProcessEventHandler);
         },
