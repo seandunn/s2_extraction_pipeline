@@ -95,15 +95,15 @@ busyBox
 
 To mark a DOM element as 'busy', make it trigger an event of this form:
 
-  $(source).trigger('s2.busybox.start_process');
+    $(source).trigger('s2.busybox.start_process');
 
 To unmark a div element as 'busy', make it trigger an event of this form:
 
-  $(source).trigger('s2.busybox.end_process');
+    $(source).trigger('s2.busybox.end_process');
 
 It is also possible to use the following form:
 
-  $(source).trigger('s2.busybox.process_event', bool);
+    $(source).trigger('s2.busybox.process_event', bool);
 
 where bool indicates whether the source element is busy or not.
 
