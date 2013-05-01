@@ -112,11 +112,6 @@ define(['config'
           }
           return;
         }
-
-        console.error("unhandled childDone event:");
-        console.error("child: ", child);
-        console.error("action: " + action);
-        console.error("data: " + JSON.stringify(data));
         return this;
       }
     });

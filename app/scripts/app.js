@@ -3,16 +3,22 @@ define([ 'config'
   , 'mapper/s2_root'
   , 'mapper/s2_ajax'
   , 'text!scripts/pipeline_config.json'
+  , 'extraction_pipeline/extra_components/busy_box'
 ],
 
-    function (config, workflowEngine, S2Root, S2Ajax, workflowConfiguration) {
+    function (config, workflowEngine, S2Root, S2Ajax, workflowConfiguration, BusyBox) {
       'use strict';
 
       var app = function (thePresenterFactory) {
         this.presenterFactory = thePresenterFactory;
         this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
         _.templateSettings.variable = 'templateData';
+        this.addEventHandlers();
         return this;
+      };
+
+      app.prototype.addEventHandlers = function(){
+        BusyBox.init();
       };
 
       app.prototype.resetS2Root = function () {
@@ -98,7 +104,7 @@ define([ 'config'
           }
         });
         return application;
-      }
+      };
 
       return app;
     });
