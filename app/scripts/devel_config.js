@@ -11,7 +11,8 @@ define(['mapper_test/test_config'
       1 : '96 Well Plate Printer',
       2 : '1D Tube Printer',
       3 : 'Tube Rack Printer'
-    }
+    },
+    messageTimeout: 5000
   });
 
   config.loadTestData(json);

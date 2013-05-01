@@ -4,9 +4,8 @@ define([ 'config'
   , 'mapper/s2_ajax'
   , 'text!scripts/pipeline_config.json'
   , 'extraction_pipeline/extra_components/busy_box'
-],
-
-    function (config, workflowEngine, S2Root, S2Ajax, workflowConfiguration, BusyBox) {
+  , 'extraction_pipeline/alerts'
+], function (config, workflowEngine, S2Root, S2Ajax, workflowConfiguration, BusyBox, alerts) {
       'use strict';
 
       var app = function (thePresenterFactory) {
@@ -44,6 +43,9 @@ define([ 'config'
 
       app.prototype.setupPresenter = function (inputModel) {
         this.setupPlaceholder();
+        alerts.setupPlaceholder(function () {
+          return $('#alertContainer');
+        });
         this.updateModel(inputModel || {});
 
         return this;
