@@ -1,9 +1,9 @@
 define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
-  , 'extraction_pipeline/default/default_view'
+  , 'text!extraction_pipeline/html_partials/default_page_partial.html'
   , 'extraction_pipeline/default/default_model'
 ],
-  function (config, BasePresenter, View, Model) {
+  function (config, BasePresenter, defaultPagePartialHtml, Model) {
     'use strict';
 
     /*
@@ -26,11 +26,10 @@ define(['config'
       setupPresenter:function (setupData, jquerySelection) {
         this.setupPlaceholder(jquerySelection);
         this.model = Object.create(Model).init(this);
-        this.setupView();
         this.setupSubPresenters();
         this.renderView();
-        this.jquerySelectionForUser().find(".barcodeInput").removeAttr('disabled').focus();
-        this.jquerySelectionForLabware().find(".barcodeInput").attr('disabled', true);
+        this.jquerySelectionForUser().find("input").removeAttr('disabled').focus();
+        this.jquerySelectionForLabware().find("input").attr('disabled', true);
         return this;
       },
       setupSubPresenters:function () {
@@ -58,22 +57,18 @@ define(['config'
 
         return this;
       },
-      setupView: function () {
-        this.view = new View(this, this.jquerySelection);
-        return this;
-      },
 
       renderView: function () {
         var userCallback = function(event, template, presenter){
           presenter.model.setUserFromBarcode(event.currentTarget.value);
-          template.find(".barcodeInput").attr('disabled', true);
+          template.find("input").attr('disabled', true);
         };
 
         var labwareCallback = function(event, template, presenter){
           presenter.model.setLabwareFromBarcode(event.currentTarget.value);
         }
 
-        this.view.renderView();
+        this.jquerySelection().append(_.template(defaultPagePartialHtml)({}));
         this.jquerySelectionForUser().append(this.bindReturnKey( this.userBCSubPresenter.renderView(), userCallback ));
         this.jquerySelectionForLabware().append(this.bindReturnKey( this.labwareBCSubPresenter.renderView(), labwareCallback ));
 
@@ -82,20 +77,18 @@ define(['config'
 
 
       release:function () {
-        this.view.release();
-
+        this.jquerySelection().empty();
         return this;
       },
+
       childDone:function (child, action, data) {
         // called when a child  wants to say something...
         var presenter = this;
         if (child === this.model) {
           switch (action) {
             case "modelUpdated":
-              if (this.view) {
               this.setupSubPresenters();
               this.renderView();
-            }
             break;
             case "modelValidated":
               var dataForOwner = {

@@ -16,11 +16,7 @@ define([
       this.owner.childDone(this, "modelUpdated", rsc);
       this.checkIfModelIsValid();
     },
-    setUser:function (rsc) {
-      this.user = rsc;
-      this.owner.childDone(this, "modelUpdated", rsc);
-      this.checkIfModelIsValid();
-    },
+
     setLabwareFromBarcode:function (barcode) {
       var that = this;
       return this.cache.fetchResourcePromiseFromBarcode(barcode)
@@ -31,8 +27,11 @@ define([
           //todo: handle error
         });
     },
-    setUserFromBarcode:function (barcode) {
-      this.setUser(barcode);
+
+    setUserFromBarcode: function (barcode) {
+      this.user = barcode;
+      this.owner.childDone(this, "modelUpdated", barcode);
+      this.checkIfModelIsValid();
     },
     checkIfModelIsValid:function () {
       if (this.user && this.labware) {
