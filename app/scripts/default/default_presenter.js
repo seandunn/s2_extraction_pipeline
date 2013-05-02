@@ -15,13 +15,26 @@ define(['config'
     template.find("input").attr('disabled', true);
 
     var login = function(model){
-      presenter.owner.childDone(presenter, "login", model);
+      if (model.labware){
+        presenter.owner.childDone(presenter, "login", model);
+      } else {
+        // [sd9] Ugly! 
+        var selection = presenter.jquerySelectionForLabware().find('.alert-error').empty()
+
+        var tmp = $('<h4/>', {
+          class:'alert-heading',
+          text: "Labware not found on system."
+        });
+
+        selection.empty().append(tmp);
+        selection.css('display', 'block');
+      }
     };
 
     presenter.model
     .setLabwareFromBarcode(event.currentTarget.value)
     .then(login, login);  // Hack!  Login whether or not we find a batch...
-                          // Should be moved to SelectionPresenter.
+    // Should be moved to SelectionPresenter.
   };
 
   var DefaultPresenter = Object.create(BasePresenter);
