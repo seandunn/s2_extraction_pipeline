@@ -193,9 +193,7 @@ define(['config'
     },
 
     barcodeFocus:function() {
-      if (this.barcodeInputPresenter) {
-        this.barcodeInputPresenter.focus();
-      }
+      this.jquerySelection().find('input').focus();
     },
     hideEditable: function() {
       this.view.hideBarcodeEntry();

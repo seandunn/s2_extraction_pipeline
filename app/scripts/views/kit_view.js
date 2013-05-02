@@ -24,7 +24,7 @@ define([
         }
       });
 
-      container.on('change','.kitSelect', function(event) {
+      container.on('change','.kit-select', function(event) {
         var valid = component.owner.model.validateKitTubes(event.currentTarget.value);
         component.message(
           valid ? 'success' : 'error',
@@ -36,7 +36,7 @@ define([
       });
     },
     toggleHeaderEnabled: function(isEnabled) {
-      this.selector().find('.kitSelect')[isEnabled ? 'removeAttr' : 'attr']('disabled', 'disabled');
+      this.selector().find('.kit-select')[isEnabled ? 'removeAttr' : 'attr']('disabled', 'disabled');
     },
     clear: function() {
       this.selector().empty();
@@ -46,7 +46,7 @@ define([
       this.selector().find('.validationText').removeClass('alert-error alert-info alert-success').addClass('alert-' + type).text(message);
     },
     getKitTypeSelection: function() {
-      return this.selector().find('.kitSelect').val().split('/');
+      return this.selector().find('.kit-select').val().split('/');
     }
   });
 
