@@ -9,7 +9,6 @@
 component.json
 
 styles/compass_twitter_bootstrap
-styles/*.scss
 
 components/requirejs/tests
 components/requirejs/docs
