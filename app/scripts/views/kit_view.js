@@ -17,13 +17,15 @@ define([
 
       var component = this;
       var container = this.selector().empty().append(html);
-      container.find('input').on('keypress', function(event) {
-        if (getKey(event) === 13) {
-          component.owner.childDone(component.owner, 'barcodeScanned', this.value);
+
+      container.on('keypress','input', function(event) {
+        if (event.which === 13) {
+          component.owner.childDone(component.owner, 'barcodeScanned', event.currentTarget.value);
         }
       });
-      container.find('.kitSelect').on('change', function(event) {
-        var valid = component.owner.model.validateKitTubes(event.srcElement.value);
+
+      container.on('change','.kitSelect', function(event) {
+        var valid = component.owner.model.validateKitTubes(event.currentTarget.value);
         component.message(
           valid ? 'success' : 'error',
           'This kit ' + (valid ? 'is' : 'is not') + ' valid for the selected tubes'
@@ -50,12 +52,5 @@ define([
 
   return View;
 
-  function getKey(e) {
-    if (window.event) {
-      return window.event.keyCode;
-    } else if (e) {
-      return e.which;
-    }
-    return null;
-  }
 });
+

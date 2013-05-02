@@ -12,10 +12,11 @@ define(['config'
   };
 
   var labwareCallback = function(event, template, presenter){
+    template.find("input").attr('disabled', true);
+
     presenter.model
     .setLabwareFromBarcode(event.currentTarget.value)
     .then(function(model){
-      template.find("input").attr('disabled', true);
       presenter.owner.childDone(presenter, "login", model);
     });
   };
