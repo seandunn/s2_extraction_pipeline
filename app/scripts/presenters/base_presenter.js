@@ -32,7 +32,10 @@ define(['config'], function (config) {
       var presenter = this
 
       return element.on("keypress", "input", function (e) {
-        if (e.which === 13) { callback(e, element, presenter); }
+        // should be proper EAN13 validation including checksum.
+        if (e.which === 13 && e.currentTarget.value.length === 13) {
+          callback(e, element, presenter);
+        }
       });
     },
 
