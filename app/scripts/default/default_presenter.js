@@ -14,11 +14,14 @@ define(['config'
   var labwareCallback = function(event, template, presenter){
     template.find("input").attr('disabled', true);
 
+    var login = function(model){
+      presenter.owner.childDone(presenter, "login", model);
+    };
+
     presenter.model
     .setLabwareFromBarcode(event.currentTarget.value)
-    .then(function(model){
-      presenter.owner.childDone(presenter, "login", model);
-    });
+    .then(login, login);  // Hack!  Login whether or not we find a batch...
+                          // Should be moved to SelectionPresenter.
   };
 
   var DefaultPresenter = Object.create(BasePresenter);
