@@ -43,43 +43,49 @@ define([
 
     fire:function () {
       var model = this;
-
+      function makeJSONUpdateFor(role,uuid,event) {
+        var updateJson = { items: {} };
+        updateJson.items[role] = {};
+        updateJson.items[role][uuid] = {
+          event: event
+        };
+        return updateJson;
+      }
       model.createOutputs()
-      .then(function (rack) {
-        return model.batch.orders.then(function(orders){
-          return $.when.apply(null, _.chain(orders).map(function(order){
+          .then(function (rack) {
+            return model.batch.orders     // promises not chained to make 'rack' part of the scope
+                .then(function (orders) { // of the following methods
+                  return $.when
+                      .apply(null, _.chain(orders)
+                      .map(function (order) {
+                        return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "start"))
+                            .then(function (order) {
+                              return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "complete"))
+                            })
+                      })
+                  );
+                });
 
-            var updateJson = { items: {} };
+          })
+          .then(model.inputs)
+          .then(function(inputs){
+            return $.when
+                .apply(null, _.chain(inputs)
+                .map(function (input) {
+                    return input.order.then(function(order){
+                          return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "start"))
+                        }).then(function(order){
+                          return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "complete"))
+                        });
+                  })
+            );
+          })
+          .then(function () {
+            model.owner.childDone(model, "transferDone", {});
 
-            updateJson.items[model.config.output[0].role] = {};
-
-            updateJson.items[model.config.output[0].role][rack.uuid] = {
-              event: "start"
-            };
-
-            return order
-            .update(updateJson)
-            .then(function(order){
-              var updateJson = { items: {} };
-
-
-            updateJson.items[model.config.output[0].role] = {};
-
-            updateJson.items[model.config.output[0].role][rack.uuid] = {
-              event: "complete"
-            };
-
-              return order.update(updateJson);
-            })
-          }));
-        });
-
-      }).then(function () {
-        model.owner.childDone(model, "transferDone", {});
-
-      }).fail(function () {
-        model.owner.childDone(model, "error", {message:"An error occured during the transfer process!<BR/> Contact the administrator of the system."});
-      });
+          }).fail(function () {
+            model.owner.childDone(model, "error", {message:"An error occured during the transfer process!<BR/> Contact the administrator of the system."});
+          });
     },
 
 
