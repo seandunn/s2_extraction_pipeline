@@ -73,7 +73,9 @@ define([
                 .apply(null, _.chain(inputs)
                 .map(function (input) {
                     return input.order.then(function(order){
-                          return order.update(makeJSONUpdateFor(model.config.output[0].role, input.uuid, "unuse"))
+                          return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "start"))
+                        }).then(function(order){
+                          return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "complete"))
                         });
                   })
             );
