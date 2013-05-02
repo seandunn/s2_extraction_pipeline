@@ -10,8 +10,6 @@ define([
       this.owner = owner;
       this.config = config;
 
-      this.user = undefined;
-      this.batch = undefined;
       this.kitSaved = false;
       this.kit = { barcode: undefined, valid: false };
       return this;

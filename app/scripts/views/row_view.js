@@ -12,38 +12,26 @@ define(['text!extraction_pipeline/html_partials/row_partial.html'], function (ro
     return null;
   }
 
-  var rowView = function (owner, jquerySelector) {
+  var RowView = function (owner, jquerySelector) {
     this.owner = owner;
     this.jquerySelector = jquerySelector;
 
     return this;
   };
 
-  rowView.prototype.removeArrow = function() {
-    this.jquerySelector().find('.arrow').empty();
+  RowView.prototype.removeArrow = function() {
+    this.jquerySelector.find('.arrow').empty();
   };
 
-  rowView.prototype.renderView = function (model) {
-    if (model !== null) {
-      this.model = model;
-    }
-    else {
-      model = this.model;
-    }
-
-    var parent = this.jquerySelector();
-
-    // We have to append to the document or events won't register
-    parent.empty().
-      append(rowPartialHtml);
+  RowView.prototype.renderView = function (model) {
+    this.jquerySelector.empty().append(rowPartialHtml);
   };
 
-  rowView.prototype.clear = function () {
-    /* clear the view from the current page
-     */
-    var children = this.jquerySelector().empty();
+  RowView.prototype.clear = function () {
+    var children = this.jquerySelector.empty();
   };
 
-  return rowView;
+  return RowView;
 
 });
+

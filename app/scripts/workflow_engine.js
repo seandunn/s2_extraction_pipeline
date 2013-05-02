@@ -39,23 +39,23 @@ define([], function () {
     this.application.childDone(this, "foundNextPresenter", presenter);
   };
 
-  workflowEngine.prototype.askForNextPresenter = function (presenterFactory, inputDataForWorkflow) {
+  workflowEngine.prototype.askForNextPresenter = function (presenterFactory, model) {
     var that = this;
     var itemsPromise;
 
-    if (!inputDataForWorkflow.userUUID) {
+    if (!model.user) {
       return this.setNextPresenterFromName(presenterFactory);
     }
 
-    if (!inputDataForWorkflow.batch && inputDataForWorkflow.labware) {
-      itemsPromise = inputDataForWorkflow.labware.order()
+    if (!model.batch && model.labware) {
+      itemsPromise = model.labware.order()
       .then(function(order) {
         return order.items.filter(function(item){ 
-          return item.uuid === inputDataForWorkflow.labware.uuid;
+          return item.uuid === model.labware.uuid;
         });
       });
     } else {
-      itemsPromise = inputDataForWorkflow.batch.items;
+      itemsPromise = model.batch.items;
     }
 
     itemsPromise.then(function(items){

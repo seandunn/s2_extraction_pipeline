@@ -1,121 +1,80 @@
 define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
-  , 'extraction_pipeline/default/default_view'
+  , 'text!extraction_pipeline/html_partials/default_page_partial.html'
   , 'extraction_pipeline/default/default_model'
-],
-  function (config, BasePresenter, View, Model) {
-    'use strict';
+], function (config, BasePresenter, defaultPagePartialHtml, Model) {
+  'use strict';
 
-    /*
-     The default page presenter. Deals with login.
-     */
-    var DefaultPresenter = Object.create(BasePresenter);
+  var userCallback = function(event, template, presenter){
+    presenter.model.user = event.currentTarget.value;
+    template.find("input").attr('disabled', true);
+    presenter.jquerySelectionForLabware().find("input").removeAttr('disabled').focus();
+  };
 
-    $.extend(DefaultPresenter, {
-      register:function (callback) {
-        callback('default', function (owner, factory, initData) {
-          return Object.create(DefaultPresenter).init(owner, factory, initData);
-        });
-      },
+  var labwareCallback = function(event, template, presenter){
+    template.find("input").attr('disabled', true);
 
-      init:function (owner, presenterFactory) {
-        this.presenterFactory = presenterFactory;
-        this.owner = owner;
-        return this;
-      },
-      setupPresenter:function (setupData, jquerySelection) {
-        this.setupPlaceholder(jquerySelection);
-        this.model = Object.create(Model).init(this);
-        this.setupView();
-        this.setupSubPresenters();
-        this.renderView();
-        this.userBCSubPresenter.focus();
-        this.labwareBCSubPresenter.disable();
-        return this;
-      },
-      setupSubPresenters:function () {
-        // check with this.model for the needed subpresenters...
-        this.userBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
-        this.labwareBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
-        this.setupSubModel();
-        return this;
-      },
-      setupSubModel:function () {
-        var that = this;
-        var jQuerySelectionForUser = function () {
-          return that.jquerySelection().find(".user_barcode");
-        };
+    var login = function(model){
+      presenter.owner.childDone(presenter, "login", model);
+    };
 
-        var jQuerySelectionForLabware = function () {
-          return that.jquerySelection().find(".labware_barcode");
-        };
+    presenter.model
+    .setLabwareFromBarcode(event.currentTarget.value)
+    .then(login, login);  // Hack!  Login whether or not we find a batch...
+                          // Should be moved to SelectionPresenter.
+  };
 
-        // As labware is a resource, we need to ensure it's existence to extract a barcode
-        var labwareBarcode = this.model.labware ? this.model.labware.labels.barcode.value : '';
+  var DefaultPresenter = Object.create(BasePresenter);
 
-        this.userBCSubPresenter.setupPresenter({type:"user", value:this.model.user}, jQuerySelectionForUser);
-        this.labwareBCSubPresenter.setupPresenter({type:"tube", value:labwareBarcode}, jQuerySelectionForLabware);
+  $.extend(DefaultPresenter, {
+    register:function (callback) {
+      callback('default', function (owner, factory, initData) {
+        return Object.create(DefaultPresenter).init(owner, factory, initData);
+      });
+    },
 
-        return this;
-      },
-      setupView:function () {
-        this.view = new View(this, this.jquerySelection);
-        return this;
-      },
-      renderView:function () {
-        // render view...
-        var data = undefined;
-        this.view.renderView(data);
-        this.userBCSubPresenter.renderView();
-        this.labwareBCSubPresenter.renderView();
+    init:function (owner, presenterFactory) {
+      this.presenterFactory = presenterFactory;
+      this.owner = owner;
+      return this;
+    },
 
-        return this;
-      },
-      release:function () {
-        this.view.release();
+    setupPresenter: function (setupData, jquerySelection) {
+      var that = this;
+      this.setupPlaceholder(jquerySelection);
+      this.model = Object.create(Model).init(this);
 
-        return this;
-      },
-      childDone:function (child, action, data) {
-        // called when a child  wants to say something...
-        var presenter = this;
-        if (child === this.userBCSubPresenter) {
-          if (action === "barcodeScanned") {
-            presenter.model.setUserFromBarcode(data.BC);
-            this.userBCSubPresenter.disable();
-            this.labwareBCSubPresenter.enable();
-            this.labwareBCSubPresenter.focus();
-            return;
-          }
-        } else if (child === this.labwareBCSubPresenter) {
-          if (action === "barcodeScanned") {
-            this.model.setLabwareFromBarcode(data.BC);
-            return;
-          }
-        } else if (child === this.model) {
-          switch (action) {
-            case "modelUpdated":
-              if (this.view) {
-                this.setupSubPresenters();
-                this.renderView();
-              }
-              break;
-            case "modelValidated":
-              var dataForOwner = {
-                userUUID:this.model.user,
-                labware:this.model.labware,
-                batch:this.model.batch
-              };
-              console.log(dataForOwner.batch);
-              this.owner.childDone(this, "login", dataForOwner);
-              break;
-          }
-          return;
-        }
-        return this;
-      }
-    });
+      this.userBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this).init({type:"user"});
+      this.labwareBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this).init({type:"tube"});
 
-    return DefaultPresenter;
-  }
-);
+      this.jquerySelectionForUser = function () {
+        return that.jquerySelection().find(".user_barcode");
+      };
+
+      this.jquerySelectionForLabware = function () {
+        return that.jquerySelection().find(".labware_barcode");
+      };
+
+      this.renderView();
+      this.jquerySelectionForUser().find("input").removeAttr('disabled').focus();
+      this.jquerySelectionForLabware().find("input").attr('disabled', true);
+
+      return this;
+    },
+
+    renderView: function () {
+      this.jquerySelection().append(_.template(defaultPagePartialHtml)({}));
+
+      this.jquerySelectionForUser().append(this.bindReturnKey( this.userBCSubPresenter.renderView(), userCallback ));
+      this.jquerySelectionForLabware().append(this.bindReturnKey( this.labwareBCSubPresenter.renderView(), labwareCallback ));
+
+      return this;
+    },
+
+    release:function () { }
+
+  });
+
+  return DefaultPresenter;
+});
+

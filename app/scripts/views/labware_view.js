@@ -36,9 +36,7 @@ define(['text!extraction_pipeline/html_partials/labware_partial.html'], function
   }
 
   LabwareView.prototype.renderView = function (model) {
-    if (model !== null) {
-      this.model = model;
-    }
+    this.model = model;
 
     var parent = this.jquerySelector();
 
@@ -78,6 +76,7 @@ define(['text!extraction_pipeline/html_partials/labware_partial.html'], function
 
     var title = '';
 
+    // [sd9]Fixme Magic strings!
     switch (titleString) {
       case 'tube':
         title = 'Tube';

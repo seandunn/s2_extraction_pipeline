@@ -1,42 +1,17 @@
 define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/views/labware_view'
-  , 'mapper/s2_root'
-], function (config, BasePresenter, LabwareView, S2Root) {
+], function (config, BasePresenter, LabwareView) {
 
   var LabwareModel = Object.create(null);
   $.extend(LabwareModel, {
-    init:function (owner) {
+    init: function (owner, setupData) {
       this.owner = owner;
-      this.resource = undefined;
-      this.display_remove = undefined;
-      this.display_barcode = undefined;
-      this.display_labware = undefined;
-      this.expected_type = undefined;
-      this.input = undefined;
+      $.extend(this, setupData);
+
       return this;
     },
-    reset:function () {
-      this.resource = undefined;
-    },
-    setResource:function (value) {
-      this.resource = value
-    },
-    setDisplayRemove:function (value) {
-      this.display_remove = value
-    },
-    setDisplayBarcode:function (value) {
-      this.display_barcode = value
-    },
-    setDisplayLabware: function(value) {
-      this.display_labware = value;
-    },
-    setExpectedType:function (value) {
-      this.expected_type = value
-    },
-    setInput: function(value) {
-      this.input = value;
-    },
+
     displayLabware: function() {
       return this.display_labware === undefined ? true : this.display_labware;
     }
@@ -58,15 +33,8 @@ define(['config'
     },
     setupPresenter:function (setupData, jquerySelection) {
       this.setupPlaceholder(jquerySelection);
-      this.labwareModel = Object.create(LabwareModel).init(this);
-      if (setupData) {
-        this.labwareModel.setResource(setupData.resource);
-        this.labwareModel.setDisplayRemove(setupData.display_remove);
-        this.labwareModel.setDisplayBarcode(setupData.display_barcode);
-        this.labwareModel.setDisplayLabware(setupData.display_labware);
-        this.labwareModel.setExpectedType(setupData.expected_type);
-        this.labwareModel.setInput(setupData.input);
-      }
+      this.labwareModel = Object.create(LabwareModel).init(this, setupData);
+
       this.setupView();
       this.setupSubPresenters();
       return this;
@@ -82,16 +50,10 @@ define(['config'
       return this;
     },
 
-    updateModel:function (newData) {
-      this.labwareModel.setResource(newData);
+    updateModel:function (newResource) {
+      this.labwareModel.resource = newResource;
       this.childDone(this.labwareModel, 'resourceUpdated', {});
       return this;
-    },
-
-    setRemoveButtonVisibility:function (displayRemove) {
-      if (!displayRemove) {
-        this.view.hideRemoveButton();
-      }
     },
 
     setupSubPresenters:function () {
@@ -138,42 +100,40 @@ define(['config'
       }
 
       if (this.barcodeInputPresenter) {
-        this.barcodeInputPresenter.setupPresenter(data, function () {
+        this.barcodeInputPresenter.init(data, function () {
           return that.jquerySelection().find("div.barcodeScanner")
         });
       }
     },
 
     renderView:function () {
-      this.release();
-//      this.resourcePresenter = undefined;
-//      this.barcodeInputPresenter = undefined;
-
-//      this.setupSubPresenters(this.labwareModel.expected_type);
-
+      this.view.clear();
       this.setupSubModel();
 
-      if (this.view) {
-        this.view.renderView(this.model);
-      }
+      this.view.renderView(this.model);
+
       if (this.resourcePresenter) {
         this.resourcePresenter.renderView();
       }
+
       if (this.barcodeInputPresenter) {
-        this.barcodeInputPresenter.renderView();
+
+        var labwareCallback = function(event, template, presenter){
+          presenter.owner.childDone(presenter, 'barcodeScanned', {
+            modelName: presenter.labwareModel.expected_type.pluralize(),
+            BC:        event.currentTarget.value
+          });
+        };
+
+        this.jquerySelection().append(
+          this.bindReturnKey(this.barcodeInputPresenter.renderView(), labwareCallback)
+        );
       }
 
-      this.setRemoveButtonVisibility(this.labwareModel.display_remove && !this.isSpecial());
+      if (!(this.labwareModel.display_remove && !this.isSpecial())) {
+        this.view.hideRemoveButton();
+      }
       this.owner.childDone(this, "labwareRendered", {});
-    },
-
-    resetLabware:function () {
-      this.release();
-      this.labwareModel.reset();// = undefined;
-      this.resourcePresenter = undefined;
-      this.barcodeInputPresenter = undefined;
-      this.setupPresenter(this.labwareModel, this.jquerySelection);
-      this.renderView();
     },
 
     isSpecial: function() {
@@ -194,10 +154,6 @@ define(['config'
       }
     },
 
-    /*
-     TODO : update data schema
-     action : "removeTube" -> data == { ?? }
-     */
     childDone:function (child, action, data) {
       if (child === this.view) {
         this.viewDone(child, action, data);
@@ -210,17 +166,24 @@ define(['config'
     viewDone: function(child, action, data) {
       if (action == "labwareRemoved") {
         this.owner.childDone(this, "removeLabware", { resource: this.labwareModel.resource });
-        this.resetLabware();
+        this.release();
+        delete this.resource;
+        delete this.resourcePresenter;
+        delete this.barcodeInputPresenter;
+        this.setupPresenter(this.labwareModel, this.jquerySelection);
+        this.renderView();
       }
     },
+
     barcodeInputDone: function(child, action, data) {
       if (action == 'barcodeScanned') {
         this.owner.childDone(this, 'barcodeScanned', {
           modelName: this.labwareModel.expected_type.pluralize(),
-          BC:        data.BC
+          BC:        data.barcode
         });
       }
     },
+
     modelDone: function(child, action, data) {
       if (action === 'resourceUpdated') {
         this.setupView();
@@ -230,16 +193,27 @@ define(['config'
     },
 
     barcodeFocus:function() {
-      if (this.barcodeInputPresenter) {
-        this.barcodeInputPresenter.focus();
-      }
+      this.jquerySelection().find('input').focus();
     },
     hideEditable: function() {
       this.view.hideBarcodeEntry();
       this.view.hideRemoveButton();
     },
     displayErrorMessage:function (message) {
-      this.barcodeInputPresenter.displayErrorMessage(message);
+      var selection = this.jquerySelection().find('.alert-error');
+      var text = 'Error!';
+
+      if (message) {
+        text += message;
+      }
+
+      var tmp = $('<h4/>', {
+        class:'alert-heading',
+        text:text
+      });
+
+      tmp.appendTo(selection.empty());
+      selection.css('display', 'block');
     }
 
   });
