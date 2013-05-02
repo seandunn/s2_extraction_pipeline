@@ -21,12 +21,10 @@ components/d3/lib
 components/pegjs
 
 components/S2Mapper/test
-components/S2Mapper/app/styles/*.scss
 components/S2Mapper/app/styles/compass_twitter_bootstrap
 components/S2Mapper/app/scripts/vendor
 components/labware/test
 components/labware/partial_examples
-components/labware/app/styles/*.scss
 components/labware/app/styles/compass_twitter_bootstrap
 components/labware/app/scripts/vendor
 components/labware/app/scripts/json_data
