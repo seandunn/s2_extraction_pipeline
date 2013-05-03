@@ -28,8 +28,6 @@ define([
       this.setupView();
       this.setupSubPresenters();
       this.renderView();
-      this.owner.childDone(this, "disableBtn", {});
-
       return this;
     },
     setupSubPresenters:function (reset) {
@@ -71,7 +69,7 @@ define([
       return this;
     },
     initialPresenter:function () {
-      // Does nothing, for the moment!
+      this.owner.childDone(this, "disableBtn", {});
     },
     childDone:function (child, action, data) {
       if (child === this.view) {

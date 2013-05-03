@@ -53,7 +53,6 @@ define([
 
         return subPresenter;
       }).value();
-
       presenter.activePresenter = presenter.presenters[0];
       presenter.activePresenter.initialPresenter();
       presenter.view.selectPrinter(presenter.activePresenter.config.defaultPrinter);
@@ -86,34 +85,62 @@ define([
       var presenter = this;
       var btnDetailsList;
 
-      if (child === this.view) {
+      if (child === this.view)
+      {
         var handler = this.activePresenter[action];
         handler && handler.apply(this.activePresenter, arguments);
-      } else if (action === 'done') {
+      }
+      else if (action === 'done')
+      {
         var index = _.indexOf(this.presenters, child);
         if (index !== -1) {
-          var active = presenter.presenters[index+1] || {
+          var activeSubPresenter = presenter.presenters[index+1] || {
             previousDone:function() {
               presenter.owner.childDone.apply(presenter.owner, arguments);
             }
           };
-          active.previousDone(child, action, data);
-          presenter.activePresenter = active;
+          activeSubPresenter.previousDone(child, action, data);
+          presenter.activePresenter = activeSubPresenter;
+          presenter.activePresenter.initialPresenter();
+          presenter.view.selectPrinter(presenter.activePresenter.config.defaultPrinter);
+          presenter.activePresenter.focus();
         }
-      } else if (action === 'enableBtn' || action === 'disableBtn'){
+      }
+      else if (action === 'enableBtn' || action === 'disableBtn')
+      {
         btnDetailsList = data.actions || this.config.buttons;
         _.each(btnDetailsList, function(btnDetails){
           presenter.view.setButtonEnabled(btnDetails.action, action === 'enableBtn');
         })
-      } else if (action === 'showBtn' || action === 'hideBtn'){
-        btnDetailsList = data.actions || this.config.buttons;
-        _.each(btnDetailsList, function(btnDetails){
-          presenter.view.setButtonVisible(btnDetails.action, action === 'showBtn');
-        })
-      } else {
+      }
+      else if (action === 'showBtn' || action === 'hideBtn')
+      {
+        presenter.changeButonsVisibility(action,data);
+      }
+      else
+      {
         this.owner.childDone(child, action, data);
       }
+    },
+
+    changeButonsVisibility:function(action, data){
+      var btnDetailsList;
+      var presenter = this;
+      btnDetailsList = data.actions || this.config.buttons;
+      _.each(btnDetailsList, function(btnDetails){
+        presenter.view.setButtonVisible(btnDetails.action, action === 'showBtn');
+      })
+    },
+
+    changeButonsStatus:function(action, data){
+      var btnDetailsList;
+      var presenter = this;
+      btnDetailsList = data.actions || this.config.buttons;
+      _.each(btnDetailsList, function(btnDetails){
+        presenter.view.setButtonVisible(btnDetails.action, action === 'showBtn');
+      })
     }
+
   });
 
   return Presenter;
