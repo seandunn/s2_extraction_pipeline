@@ -26,6 +26,7 @@ require.config({
 require(['domReady!'
 //   ,'spec/app_spec'
    ,'spec/selection_page_model_spec'
+    ,'spec/csv_parser_spec'
 //  , 'spec/default_page_presenter_spec'
 //   ,'spec/default_model_spec'
 //   ,'spec/selection_page_presenter_spec'
