@@ -32,6 +32,7 @@ define([
     },
 
     setupPresenter: function(model, selector) {
+      var presenter = this;
       this.selector = selector;
       this.batch    = model.batch;
       this.user     = model.user;

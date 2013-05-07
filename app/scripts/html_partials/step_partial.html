@@ -17,6 +17,6 @@
   </select>
   <% } %>
   <% _.each (templateData.buttons, function (buttonsDetails) { %>
-  <button class="btn <%- buttonsDetails.action %>Button"><%- buttonsDetails.title %></button>
+  <button class="btn <%- buttonsDetails.action %>Button" disabled><%- buttonsDetails.title %></button>
   <% }); %>
 </div>
