@@ -166,7 +166,6 @@ define([
 
     initialPresenter: function() {
       this.model.previous = true;
-//      this.owner.childDone(this, "disableBtn", {});
       this.owner.childDone(this, "enableBtn", {actions:[{action:"print"}]});
 
     },
