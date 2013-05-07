@@ -52,6 +52,10 @@ define([
 
     initialPresenter: function() {
       // Does nothing, for the moment!
+
+      var data = {};
+      data.actions = this.config.buttons;
+      this.owner.childDone(this, 'disableBtn', data);
     },
 
     childDone: function(child, action, data) {

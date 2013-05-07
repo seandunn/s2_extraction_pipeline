@@ -120,7 +120,9 @@ define([
 
         this.owner.childDone(this, "error", {"message":"Barcode labels printed"});
         this.owner.childDone(this, "disableBtn", {actions:[{action:"print"}]});
-        this.owner.childDone(this, "enableBtn", {actions:[{action:"start"}]});
+        if (this.checkPageComplete()) {
+          this.owner.childDone(this, "enableBtn", {actions:[{action:"start"}]});
+        }
 
       } else if (action === "barcodePrintFailure") {
 
@@ -132,12 +134,15 @@ define([
         this.model.started = true;
         this.owner.childDone(this, "error", {"message":"Transfer started"});
         this.owner.childDone(this, "disableBtn", {actions:[{action:"start"}]});
+        this.owner.childDone(this, "enableBtn", {actions:[{action:"end"}]});
 
       } else if (action === "completeOperation") {
 
         this.owner.childDone(this, "error", {"message":"Transfer completed"});
         this.owner.childDone(this, "disableBtn", {actions:[{action:"start"}]});
-        this.owner.childDone(this, "enableBtn", {actions:[{action:"next"}]});
+        if (this.checkPageComplete()) {
+          this.owner.childDone(this, "enableBtn", {actions:[{action:"next"}]});
+        }
 
         var that = this;
         this.model.behaviours.done.transfer(function() {
@@ -161,7 +166,7 @@ define([
 
     initialPresenter: function() {
       this.model.previous = true;
-      this.owner.childDone(this, "disableBtn", {});
+//      this.owner.childDone(this, "disableBtn", {});
       this.owner.childDone(this, "enableBtn", {actions:[{action:"print"}]});
 
     },
