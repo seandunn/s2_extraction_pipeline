@@ -9,14 +9,14 @@ define([
 //  'use strict';
   'use strict';
   TestHelper(function (results) {
-    describe("CSV Parser,", function () {
+    describe("RackingCSV Parser,", function () {
 
-      describe("when transforming CSV with spaces to an Array, ", function () {
+      describe("when transforming RackingCSV with spaces to an Array, ", function () {
         var data = [];
         var array = undefined;
         beforeEach(function () {
           data = " A01, FR1234567\nB01, FR234567890\n D01, FR334567890\n E01, FR434567890";
-          array = csvParser.csvToArray(data);
+          array = csvParser.rackingCsvToArray(data);
         });
 
         it("finds the right number of rows", function () {
@@ -41,12 +41,12 @@ define([
 
       });
 
-      describe("when transforming CSV with no space at all, ", function () {
+      describe("when transforming RackingCSV with no space at all, ", function () {
         var data = [];
         var array = undefined;
         beforeEach(function () {
           data = "A01,FR1234567";
-          array = csvParser.csvToArray(data);
+          array = csvParser.rackingCsvToArray(data);
         });
 
         it("finds the right number of rows", function () {
@@ -97,6 +97,43 @@ define([
         });
       });
 
+    });
+
+    describe("VolumeCSV Parser,", function(){
+
+      describe("when transforming VolumeCSV with spaces to an Array, ", function () {
+        var data = [];
+        var output, array ,rack_barcode;
+        beforeEach(function () {
+          data = "RACKID,TUBE,VOLAVG\n1220214083760,A01,0.8960\n1220214083760,B01,0.5985\n1220214083760,C01,23.3150";
+          output = csvParser.volumeCsvToArray(data);
+          array = output.array;
+          rack_barcode = output.rack_barcode;
+        });
+
+        it("finds the right rack ID", function () {
+          expect(rack_barcode).toEqual("1220214083760");
+        });
+
+        it("finds the right number of rows", function () {
+          expect(array.length).toEqual(3);
+        });
+
+        it("finds the right number of columns", function () {
+          expect(array[0].length).toEqual(2);
+          expect(array[1].length).toEqual(2);
+        });
+
+        it("finds the right content", function () {
+          expect(array[0][0]).toEqual("A1");
+          expect(array[0][1]).toEqual(0.8960);
+          expect(array[1][0]).toEqual("B1");
+          expect(array[1][1]).toEqual(0.5985);
+          expect(array[2][0]).toEqual("C1");
+          expect(array[2][1]).toEqual(23.3150);
+        });
+
+      });
     })
   });
 });
