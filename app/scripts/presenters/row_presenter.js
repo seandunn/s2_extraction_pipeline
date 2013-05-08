@@ -145,6 +145,11 @@ define([
         }
       }, this.rowModel.enabled).value();
     },
+    focus: function() {
+      this.editablePresenters().find(function(p) { return !p.isComplete(); })
+          .value()
+          .barcodeFocus();
+    },
 
     childDone:function (child, action, data) {
       var data = $.extend(data, { origin: child });
@@ -170,7 +175,8 @@ define([
       return this.presenters.compact().filter(function(p) { return !p.isSpecial(); });
     },
     isRowComplete: function() {
-      return this.editablePresenters().all(function(p) { return p.isComplete(); }).value();
+      var result = this.editablePresenters().all(function(p) { return p.isComplete(); }).value();
+      return result;
     },
     lockRow: function() {
       this.presenters.each(function(presenter) {
