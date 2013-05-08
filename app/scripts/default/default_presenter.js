@@ -7,27 +7,48 @@ define(['config'
 
   var userCallback = function(event, template, presenter){
     presenter.model.user = event.currentTarget.value;
+    template.find('.alert-error').addClass('hide');
     template.find("input").attr('disabled', true);
     presenter.jquerySelectionForLabware().find("input").removeAttr('disabled').focus();
   };
 
+  var barcodeError = function(errorText){
+    return $("<h4/>", {
+      class: "alert-heading",
+      text:  errorText
+    });
+  };
+
+  var barcodeErrorCallback = function(errorText){
+    return function(event, template, presenter){
+      template.
+        find('.alert-error').
+        html(barcodeError(errorText)).
+        removeClass('hide');
+
+      template.
+        find('input').
+        removeAttr('disabled');
+    };
+  };
+
   var labwareCallback = function(event, template, presenter){
     template.find("input").attr('disabled', true);
+    template.find('.alert-error').addClass('hide');
 
     var login = function(model){
       if (model.labware){
         presenter.owner.childDone(presenter, "login", model);
       } else {
-        // [sd9] Ugly! 
-        var selection = presenter.jquerySelectionForLabware().find('.alert-error').empty()
+        // [sd9] Ugly!
+        template.
+          find('.alert-error').
+          html(barcodeError("Labware not found on system.")).
+          removeClass('hide');
 
-        var tmp = $('<h4/>', {
-          class:'alert-heading',
-          text: "Labware not found on system."
-        });
-
-        selection.empty().append(tmp);
-        selection.css('display', 'block');
+        template.
+          find('input').
+          removeAttr('disabled');
       }
     };
 
@@ -76,15 +97,16 @@ define(['config'
     },
 
     renderView: function () {
-      this.jquerySelection().append(_.template(defaultPagePartialHtml)({}));
+      this.jquerySelection().html(_.template(defaultPagePartialHtml)({}));
+      var errorCallback = barcodeErrorCallback('Barcode must be a 13 digit number.');
 
-      this.jquerySelectionForUser().append(this.bindReturnKey( this.userBCSubPresenter.renderView(), userCallback ));
-      this.jquerySelectionForLabware().append(this.bindReturnKey( this.labwareBCSubPresenter.renderView(), labwareCallback ));
+      this.jquerySelectionForUser().append(this.bindReturnKey( this.userBCSubPresenter.renderView(), userCallback, errorCallback ));
+      this.jquerySelectionForLabware().append(this.bindReturnKey( this.labwareBCSubPresenter.renderView(), labwareCallback, errorCallback));
 
       return this;
     },
 
-    release:function () { }
+    release: function(){}
 
   });
 

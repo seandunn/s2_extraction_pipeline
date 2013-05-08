@@ -28,13 +28,16 @@ define(['config'], function (config) {
       return this;
     },
 
-    bindReturnKey: function (element, callback) {
+    bindReturnKey: function (element, callback, errorCallback) {
       var presenter = this
 
       return element.on("keypress", "input", function (e) {
-        // should be proper EAN13 validation including checksum.
-        if (e.which === 13 && e.currentTarget.value.length === 13) {
+        if (e.which !== 13) return;
+
+        if (/^\d{13}$/.exec(e.currentTarget.value) !== null) {
           callback(e, element, presenter);
+        } else {
+          errorCallback(e, element, presenter);
         }
       });
     },
