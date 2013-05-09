@@ -8,7 +8,7 @@ require.config({
     d3:                 'components/d3/',
     text:               'components/requirejs-text/text',
     domReady:           'components/requirejs-domready/domReady',
-    labware:            'components/labware/app/scripts/',
+    labware:            'components/labware/app/scripts',
     mapper:             'components/S2Mapper/app/scripts/mapper/',
     mapper_services:    'components/S2Mapper/app/scripts/services/',
     mapper_test:        'components/S2Mapper/test/',
@@ -29,13 +29,14 @@ require(['domReady!'
     ,'spec/csv_parser_spec'
 //  , 'spec/default_page_presenter_spec'
 //   ,'spec/default_model_spec'
-//   ,'spec/selection_page_presenter_spec'
+   ,'spec/selection_page_presenter_spec'
    ,'spec/workflow_engine_spec'
 //   ,'spec/kit_presenter_spec'
 //   ,'spec/scan_barcode_presenter_spec'
 ],
   function () {
     // use app here
+    _.templateSettings.variable = 'templateData';
 
     // Very slight delay seems to be needed to get things synced...
     window.setTimeout(runJasmineTests, 50);

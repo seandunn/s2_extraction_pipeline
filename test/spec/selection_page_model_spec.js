@@ -124,10 +124,15 @@ define([
 
     describe("Selection page model", function () {
 
-      var m = Object.create(Model).init(fakeOwner, initData);
+      var m;
+
+      beforeEach(function(){
+        m = Object.create(Model).init(fakeOwner, initData);
+        m.owner.childDone = function(){};
+        spyOn(fakeOwner, "childDone");
+      });
 
       it("can add a tube only once", function () {
-        spyOn(fakeOwner, "childDone");
         getAResource(fakeOwner, "tube1_UUID").then(function (tube) {
           expect(tube.uuid).toEqual("tube1_UUID");
           expect(function () {
