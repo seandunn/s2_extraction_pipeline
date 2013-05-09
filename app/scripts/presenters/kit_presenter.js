@@ -61,6 +61,8 @@ define([
       } else if (action === 'saved') {
         this.view.message('info', 'Kit details saved');
         this.owner.childDone(this, 'done', data);
+    } else if (action === 'error') {
+        this.view.message('error', data.message);
       }
     }
   });
