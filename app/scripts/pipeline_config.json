@@ -826,7 +826,7 @@
             "role": "samples.racks.stock.rna",
             "aliquotType": "RNA",
             "purpose": "stock",
-            "model": "racks"
+            "model": "tube_racks"
           }
         ]
       }
