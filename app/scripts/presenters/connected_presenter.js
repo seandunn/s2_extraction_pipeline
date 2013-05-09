@@ -114,34 +114,34 @@ define([
         this.model.ready = true;
         this.setupSubPresenters(true);
         this.currentView.toggleHeaderEnabled(false);
-        this.owner.childDone(this, "enableBtn", {actions:[{action:"print"}]});
+        this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "barcodePrintSuccess") {
 
         this.owner.childDone(this, "error", {"message":"Barcode labels printed"});
-        this.owner.childDone(this, "disableBtn", {actions:[{action:"print"}]});
+        this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
         if (this.checkPageComplete()) {
-          this.owner.childDone(this, "enableBtn", {actions:[{action:"start"}]});
+          this.owner.childDone(this, "enableBtn", {buttons:[{action:"start"}]});
         }
 
       } else if (action === "barcodePrintFailure") {
 
         this.owner.childDone(this, "error", {"message":"Barcode labels could not be printed"});
-        this.owner.childDone(this, "enableBtn", {actions:[{action:"print"}]});
+        this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "startOperation") {
 
         this.model.started = true;
         this.owner.childDone(this, "error", {"message":"Transfer started"});
-        this.owner.childDone(this, "disableBtn", {actions:[{action:"start"}]});
-        this.owner.childDone(this, "enableBtn", {actions:[{action:"end"}]});
+        this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
+        this.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
 
       } else if (action === "completeOperation") {
 
         this.owner.childDone(this, "error", {"message":"Transfer completed"});
-        this.owner.childDone(this, "disableBtn", {actions:[{action:"start"}]});
+        this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
         if (this.checkPageComplete()) {
-          this.owner.childDone(this, "enableBtn", {actions:[{action:"next"}]});
+          this.owner.childDone(this, "enableBtn", {buttons:[{action:"next"}]});
         }
 
         var that = this;
@@ -166,7 +166,7 @@ define([
 
     initialPresenter: function() {
       this.model.previous = true;
-      this.owner.childDone(this, "enableBtn", {actions:[{action:"print"}]});
+      this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
 
     },
     previousDone: function(child, action, data) {

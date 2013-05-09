@@ -107,7 +107,7 @@ define([
           presenter.activePresenter.focus();
         }
       } else if (action === 'enableBtn' || action === 'disableBtn') {
-        btnDetailsList = data.actions || this.config.buttons;
+        btnDetailsList = data.buttons || this.config.buttons;
         _.each(btnDetailsList, function (btnDetails) {
           presenter.view.setButtonEnabled(btnDetails.action, action === 'enableBtn');
         })
@@ -123,7 +123,7 @@ define([
     changeButtonsVisibility:function (action, data) {
       var btnDetailsList;
       var presenter = this;
-      btnDetailsList = data.actions || this.config.buttons;
+      btnDetailsList = data.buttons || this.config.buttons;
       _.each(btnDetailsList, function (btnDetails) {
         presenter.view.setButtonVisible(btnDetails.action, action === 'showBtn');
       })

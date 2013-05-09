@@ -54,7 +54,7 @@ define([
       // Does nothing, for the moment!
 
       var data = {};
-      data.actions = this.config.buttons;
+      data.buttons = this.config.buttons;
       this.owner.childDone(this, 'disableBtn', data);
     },
 
