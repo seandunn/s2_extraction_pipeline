@@ -4,6 +4,12 @@ define([
   'extraction_pipeline/models/rack_scan_model',
   'extraction_pipeline/models/volume_check_model'
 ], function (Base, View, RackScanModel, VolumeCheckModel) {
+
+  var models = {
+    RackScanModel: RackScanModel,
+    VolumeCheckModel: VolumeCheckModel
+  };
+
   var Presenter = Object.create(Base);
 
   _.extend(Presenter, {
@@ -18,7 +24,7 @@ define([
       this.owner = owner;
       this.config = config;
       this.presenterFactory = factory;
-      this.model = Object.create(eval(this.config.model)).init(this, config);
+      this.model = Object.create(models[this.config.model]).init(this, config);
       return this;
     },
     setupPresenter:function (input_model, selector) {
