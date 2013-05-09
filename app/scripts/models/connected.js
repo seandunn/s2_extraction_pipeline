@@ -61,8 +61,8 @@ define([
       });
     },
 
-    setUser: function(userUUID) {
-      this.user = userUUID;
+    setUser: function(user) {
+      this.user = user;
       this.owner.childDone(this, "userAdded");
     },
 
