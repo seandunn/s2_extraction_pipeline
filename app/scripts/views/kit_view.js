@@ -23,17 +23,6 @@ define([
           component.owner.childDone(component.owner, 'barcodeScanned', event.currentTarget.value);
         }
       });
-
-      container.on('change','.kit-select', function(event) {
-        var valid = component.owner.model.validateKitTubes(event.currentTarget.value);
-        component.message(
-          valid ? 'success' : 'error',
-          'This kit ' + (valid ? 'is' : 'is not') + ' valid for the selected tubes'
-        );
-
-        component.owner.model.kit.valid = valid;
-        component.owner.model.fire();
-      });
     },
     toggleHeaderEnabled: function(isEnabled) {
       this.selector().find('.kit-select')[isEnabled ? 'removeAttr' : 'attr']('disabled', 'disabled');
