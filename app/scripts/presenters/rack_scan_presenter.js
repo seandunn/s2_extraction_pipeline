@@ -1,8 +1,9 @@
 define([
   'extraction_pipeline/presenters/base_presenter',
   'extraction_pipeline/views/rack_scan_view',
-  'extraction_pipeline/models/rack_scan_model'
-], function (Base, View, Model) {
+  'extraction_pipeline/models/rack_scan_model',
+  'extraction_pipeline/models/volume_check_model'
+], function (Base, View, RackScanModel, VolumeCheckModel) {
   var Presenter = Object.create(Base);
 
   _.extend(Presenter, {
@@ -17,7 +18,7 @@ define([
       this.owner = owner;
       this.config = config;
       this.presenterFactory = factory;
-      this.model = Object.create(Model).init(this, config);
+      this.model = Object.create(eval(this.config.model)).init(this, config);
       return this;
     },
     setupPresenter:function (input_model, selector) {
@@ -83,6 +84,9 @@ define([
     print:function(child,action, data){
       this.model.fire();
     },
+    end:function(child,action, data){
+      this.model.saveVolumes();
+    },
     next:function(child,action, data){
       this.owner.childDone(this, "done", {batch:this.model.batch, user:this.model.user});
     },
@@ -96,15 +100,20 @@ define([
 
     modelDone:function (child, action, data) {
       if (action === 'fileValid') {
-        this.view.validateFile();
-        this.labwarePresenter.updateModel(data);
+        this.view.validateFile(data.message);
+        this.labwarePresenter.updateModel(data.model);
         this.owner.childDone(this, "enableBtn", {actions:[{action:"print"}]});
+        this.owner.childDone(this, "enableBtn", {actions:[{action:"end"}]});
       } else if (action === 'error') {
         //this.view.in(data);
         this.view.error(data);
       } else if (action === 'transferDone') {
         this.view.disableDropZone()
         this.owner.childDone(this, "disableBtn", {actions:[{action:"print"}]});
+        this.owner.childDone(this, "enableBtn", {actions:[{action:"next"}]});
+      } else if (action === 'volumesSaved') {
+        this.view.disableDropZone()
+        this.owner.childDone(this, "disableBtn", {actions:[{action:"end"}]});
         this.owner.childDone(this, "enableBtn", {actions:[{action:"next"}]});
       }
     }

@@ -94,8 +94,8 @@ define([
       container.find('.dropzone').hide();
       this.message('success','The transfert was successful. Click on the \'Next\' button to carry on.');
     },
-    validateFile:function(){
-      this.message('success','The file has been processed properly. Click on the \'Start\' button to validate the process.')
+    validateFile:function(message){
+      this.message('success',message);
     },
     error:function(data){
       this.message('error',data.message);

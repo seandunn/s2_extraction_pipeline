@@ -117,7 +117,7 @@ define([
               tube_rack.tubes[location] = _.find(inputs,function(input){return input.uuid === uuid});
             }
           });
-          model.owner.childDone(model, "fileValid", tube_rack)
+          model.owner.childDone(model, "fileValid", {model: tube_rack, message: 'The file has been processed properly. Click on the \'Start\' button to validate the process.'})
         })
         .fail(function () {
           model.owner.childDone(model, "error", {message:"Impossible to find the required resources. Contact the system administrator."})
