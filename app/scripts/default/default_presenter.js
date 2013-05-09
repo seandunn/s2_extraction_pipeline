@@ -7,23 +7,26 @@ define(['config'
 
   var userCallback = function(event, template, presenter){
     presenter.model.user = event.currentTarget.value;
+
     template.find('.alert-error').addClass('hide');
     template.find("input").attr('disabled', true);
-    presenter.jquerySelectionForLabware().find("input").removeAttr('disabled').focus();
+
+    presenter.jquerySelectionForLabware().
+      find("input").
+      removeAttr('disabled').
+      focus();
   };
 
-  var barcodeError = function(errorText){
-    return $("<h4/>", {
-      class: "alert-heading",
-      text:  errorText
-    });
-  };
 
   var barcodeErrorCallback = function(errorText){
+    var errorHtml = function(errorText){
+      return $("<h4/>", {class: "alert-heading", text: errorText});
+    };
+
     return function(event, template, presenter){
       template.
         find('.alert-error').
-        html(barcodeError(errorText)).
+        html(errorHtml(errorText)).
         removeClass('hide');
 
       template.
@@ -40,15 +43,7 @@ define(['config'
       if (model.labware){
         presenter.owner.childDone(presenter, "login", model);
       } else {
-        // [sd9] Ugly!
-        template.
-          find('.alert-error').
-          html(barcodeError("Labware not found on system.")).
-          removeClass('hide');
-
-        template.
-          find('input').
-          removeAttr('disabled');
+        barcodeErrorCallback("Labware not found on system.")(undefined, template);
       }
     };
 
