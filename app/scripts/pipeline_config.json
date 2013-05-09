@@ -742,6 +742,7 @@
       {
         "presenterName": "rack_scan_presenter",
         "defaultPrinter": "Tube Printer",
+        "model": "RackScanModel",
         "input": {
           "role":  "samples.extraction.racking.tube_to_be_racked_dna",
           "model": "tubes"
@@ -823,6 +824,7 @@
       {
         "presenterName": "rack_scan_presenter",
         "defaultPrinter": "Tube Printer",
+        "model": "RackScanModel",
         "input": {
           "role":  "samples.extraction.racking.tube_to_be_racked_rna",
           "model": "tubes"
