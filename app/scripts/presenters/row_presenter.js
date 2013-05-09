@@ -175,8 +175,7 @@ define([
       return this.presenters.compact().filter(function(p) { return !p.isSpecial(); });
     },
     isRowComplete: function() {
-      var result = this.editablePresenters().all(function(p) { return p.isComplete(); }).value();
-      return result;
+      return this.editablePresenters().all(function(p) { return p.isComplete(); }).value();
     },
     lockRow: function() {
       this.presenters.each(function(presenter) {
