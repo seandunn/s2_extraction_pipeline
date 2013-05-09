@@ -172,7 +172,7 @@ define([
       that.model.behaviours.done[action](function() {
         that.owner.childDone(that, "done", {
           batch: that.model.batch,
-          userUUID: that.model.user
+          user: that.model.user
         });
       });
     }

@@ -23,7 +23,7 @@ define([
     setupPresenter:function (input_model, selector) {
       this.selector = selector;
       this.model.setBatch(input_model.batch);
-      this.model.setUser(input_model.userUUID);
+      this.model.setUser(input_model.user);
 
       this.setupView();
       this.setupSubPresenters();

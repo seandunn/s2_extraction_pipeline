@@ -1,5 +1,7 @@
 <div class="input-prepend">
-  <span class="add-on"><%- templateData.type %> barcode</span>
+  <% if (templateData.type) { %>
+    <span class="add-on"><%- templateData.type %> barcode</span>
+  <% }; %>
   <input type="text" class="barcodeInput" value="<%- templateData.barcode %>">
     <%- templateData.barcode %>
   </input>

@@ -30,7 +30,7 @@ define([ 'config'
          this.model.setSeminalLabware(setupData.labware);
       } else throw "This page should not be show without either batch or scanned labware";
 
-      this.model.setUser(setupData.userUUID);
+      this.model.setUser(setupData.user);
 
       this.setupView();
       this.setupSubPresenters();
@@ -162,7 +162,7 @@ define([ 'config'
 
         } else if (action === "batchSaved") {
           var dataForOwner = {
-            userUUID:this.model.user,
+            user:this.model.user,
             labware:this.model.labware,
             batch:this.model.batch
           };
