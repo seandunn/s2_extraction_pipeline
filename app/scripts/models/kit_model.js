@@ -1,17 +1,17 @@
 define([
-       'extraction_pipeline/models/base_page_model'
-], function(BasePageModel) {
+  'extraction_pipeline/models/base_page_model'
+], function (BasePageModel) {
   'use strict';
 
   var Model = Object.create(BasePageModel);
 
   $.extend(Model, {
-    init: function(owner, config) {
+    init:function (owner, config) {
       this.owner = owner;
       this.config = config;
 
       this.kitSaved = false;
-      this.kit = { barcode: undefined, valid: false };
+      this.kit = { barcode:undefined, valid:false };
       return this;
     },
 
@@ -19,13 +19,31 @@ define([
       return (this.config.kitType == kitType);
     },
 
-    fire: function() {
+    fire:function () {
       var model = this;
-      if (model.kit.barcode && model.kit.valid) {
-        model.batch.update({kit: model.kit.barcode}).then(function() {
-          model.kitSaved = true;
-          model.owner.childDone(model, 'saved', {});
-        });
+      var root;
+
+      if (model.kit.barcode) {
+        this.owner.getS2Root()
+          .then(function (result) {
+            root = result;
+          })
+          .then(function () {
+            return root.kits.findByEan13Barcode(model.kit.barcode);
+          })
+          .then(function (kit) {
+            model.batch.update({kit:model.kit.barcode})
+              .then(function () {
+                model.kitSaved = true;
+                model.owner.childDone(model, 'saved', {});
+              })
+              .fail(function () {
+                model.owner.childDone(model, 'error', {message:"Couldn't save the kit"});
+              })
+          })
+          .fail(function () {
+            model.owner.childDone(model, 'error', {message:"Kit is not valid"});
+          });
       }
     }
   });

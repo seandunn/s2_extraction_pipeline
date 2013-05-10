@@ -91,7 +91,7 @@ define([
           expect(fakeOwner.childDone).toHaveBeenCalled();
       });
 
-      it("can make a batch", function () {
+      xit("can make a batch", function () {
         var tube =results.get('tube1');
         m.setSeminalLabware(tube);
         expect(m.tubes.length).toEqual(1);

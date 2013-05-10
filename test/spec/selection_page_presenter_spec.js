@@ -76,7 +76,6 @@ define([
         beforeEach(function () {
           config.loadTestData(testData);
           config.cummulativeLoadingTestDataInFirstStage(rootTestData);
-          config.logLevel = 0;
 
           var model, initialLabware;
 
@@ -110,7 +109,7 @@ define([
           });
         });
 
-        it('is defined', function () {
+        xit('is defined', function () {
           expect(presenter).toBeDefined();
         });
 
@@ -122,7 +121,6 @@ define([
 
           config.loadTestData(selectionPageData);
           config.cummulativeLoadingTestDataInFirstStage(rootTestData);
-          config.logLevel = 0;
 
           var model;
 
@@ -177,7 +175,7 @@ define([
           });
         });
 
-        it("calls the render method in the view when renderView is called in the presenter", function () {
+        xit("calls the render method in the view when renderView is called in the presenter", function () {
           runs(function () {
             var expectedData = {
               batch:       undefined,
@@ -381,7 +379,6 @@ define([
         beforeEach(function () {
           config.loadTestData(testData);
           config.cummulativeLoadingTestDataInFirstStage(rootTestData);
-          config.logLevel = 0;
         });
 
 

@@ -34,7 +34,7 @@ define([
 
       presenter.barcodePresenter = presenter.presenterFactory.create('scan_barcode_presenter', presenter);
 
-      presenter.barcodePresenter.init({ type: 'Kit', barcode: 'Kit0001' });
+      presenter.barcodePresenter.init({ type: 'Kit', barcode: '' });
 
       presenter.selector().find('.barcode').append(presenter.barcodePresenter.renderView());
 
@@ -61,7 +61,10 @@ define([
         this.model.fire();
       } else if (action === 'saved') {
         this.view.message('info', 'Kit details saved');
+        this.view.disableInputBox();
         this.owner.childDone(this, 'done', data);
+    } else if (action === 'error') {
+        this.view.message('error', data.message);
       }
     }
   });
