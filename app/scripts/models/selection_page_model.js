@@ -61,9 +61,7 @@ define([
           that.owner.childDone(that, "barcodeNotFound", {});
         });
     },
-    getCapacity:function () {
-      return this.capacity;
-    },
+
     removeTubeByUuid:function (uuid) {
       this.tubes = _.filter(this.tubes, function (tube) {
         return tube.uuid !== uuid;
@@ -71,9 +69,7 @@ define([
 
       this.owner.childDone(this, "modelUpdated");
     },
-    getNumberOfTubes:function () {
-      return this.tubes.length;
-    },
+
     makeBatch:function () {
       var that = this;
       var batchBySideEffect;
