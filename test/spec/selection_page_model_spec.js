@@ -90,36 +90,6 @@ define([
           expect(m.tubes[0].uuid).toEqual("tube1_UUID");
           expect(fakeOwner.childDone).toHaveBeenCalled();
       });
-
-      xit("can make a batch", function () {
-        var tube =results.get('tube1');
-        m.setSeminalLabware(tube);
-        expect(m.tubes.length).toEqual(1);
-        expect(m.tubes[0].uuid).toEqual("tube1_UUID");
-
-        spyOn(config, "ajax").andCallThrough();
-        fakeOwner.childDone = function () {
-          expect(config.ajax).toHaveBeenCalled();
-        };
-        spyOn(fakeOwner, "childDone");
-        var waitedEnough = false;
-        runs(function () {
-          m.makeBatch();
-          // we have to wait, as we have no way to
-          // know that the method call has ended
-          setTimeout(function () {
-            waitedEnough = true;
-          }, 1000);
-        });
-
-        waitsFor(function () {
-          return waitedEnough;
-        });
-
-        runs(function () {
-          expect(fakeOwner.childDone).toHaveBeenCalled();
-        });
-      });
     });
 
     describe("Selection page model", function () {

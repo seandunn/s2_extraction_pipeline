@@ -11,7 +11,7 @@ define([
       this.config = config;
 
       this.kitSaved = false;
-      this.kit = { barcode:undefined, valid:false };
+      this.kit = { valid:false };
       return this;
     },
 
