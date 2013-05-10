@@ -77,21 +77,13 @@ define([
           dropzone.removeClass('hover');
         }
       }
-
-
-//      container.find('.selectFileButton').on('click', function(event) {
-//        //var valid = component.owner.model.validateKitTubes(event.srcElement.value);
-////        component.message(
-////          valid ? 'success' : 'error',
-////          'This kit ' + (valid ? 'is' : 'is not') + ' valid for the selected tubes'
-////        );
-////        component.owner.model.kit.valid = valid;
-////        component.owner.model.fire();
-//      });
     },
     disableDropZone:function(){
       var container = this.selector();
-      container.find('.dropzone').hide();
+      container.find('.dropzoneBox').hide();
+      container.find('.dropzone').unbind('click');
+      $(document).unbind('drop');
+      $(document).unbind('dragover');
       this.message('success','The transfert was successful. Click on the \'Next\' button to carry on.');
     },
     validateFile:function(message){

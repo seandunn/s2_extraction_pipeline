@@ -106,19 +106,19 @@ define([
       if (action === 'fileValid') {
         this.view.validateFile(data.message);
         this.labwarePresenter.updateModel(data.model);
-        this.owner.childDone(this, "enableBtn", {actions:[{action:"print"}]});
-        this.owner.childDone(this, "enableBtn", {actions:[{action:"end"}]});
+        this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
+        this.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
       } else if (action === 'error') {
         //this.view.in(data);
         this.view.error(data);
       } else if (action === 'transferDone') {
-        this.view.disableDropZone()
-        this.owner.childDone(this, "disableBtn", {actions:[{action:"print"}]});
-        this.owner.childDone(this, "enableBtn", {actions:[{action:"next"}]});
+        this.view.disableDropZone();
+        this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
+        this.owner.childDone(this, "enableBtn", {buttons:[{action:"next"}]});
       } else if (action === 'volumesSaved') {
-        this.view.disableDropZone()
-        this.owner.childDone(this, "disableBtn", {actions:[{action:"end"}]});
-        this.owner.childDone(this, "enableBtn", {actions:[{action:"next"}]});
+        this.view.disableDropZone();
+        this.owner.childDone(this, "disableBtn", {buttons:[{action:"end"}]});
+        this.owner.childDone(this, "enableBtn", {buttons:[{action:"next"}]});
       }
     }
 
