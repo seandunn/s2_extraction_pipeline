@@ -670,7 +670,7 @@
           },
           "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
           "process":null,
-          "kit":null
+          "kit":"1234567891011"
         }
       },
       "next_stage":4
@@ -692,7 +692,7 @@
           },
           "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
           "process":null,
-          "kit":null
+          "kit":"1234567891011"
         }
       }
     },
@@ -866,7 +866,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               },
               {
@@ -881,7 +881,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               }
             ]
@@ -943,7 +943,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               },
               {
@@ -958,7 +958,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               }
             ]
@@ -1069,7 +1069,7 @@
                     },
                     "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                     "process":null,
-                    "kit":null
+                    "kit":"1234567891011"
                   }
                 },
                 {
@@ -1084,7 +1084,7 @@
                     },
                     "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                     "process":null,
-                    "kit":null
+                    "kit":"1234567891011"
                   }
                 }
               ]
@@ -1158,7 +1158,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               },
               {
@@ -1173,7 +1173,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               }
             ],
@@ -1190,7 +1190,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               },
               {
@@ -1205,7 +1205,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               }
             ]
@@ -1267,7 +1267,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               },
               {
@@ -1282,7 +1282,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               }
             ],
@@ -1299,7 +1299,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               },
               {
@@ -1314,7 +1314,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               }
             ]
@@ -1393,7 +1393,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               },
               {
@@ -1408,7 +1408,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               }
             ],
@@ -1425,7 +1425,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               },
               {
@@ -1440,7 +1440,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               }
             ]
@@ -1502,7 +1502,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               },
               {
@@ -1517,7 +1517,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               }
             ],
@@ -1534,7 +1534,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               },
               {
@@ -1549,7 +1549,7 @@
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                   "process":null,
-                  "kit":null
+                  "kit":"1234567891011"
                 }
               }
             ]
@@ -1660,7 +1660,7 @@
                     },
                     "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                     "process":null,
-                    "kit":null
+                    "kit":"1234567891011"
                   }
                 },
                 {
@@ -1675,7 +1675,7 @@
                     },
                     "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                     "process":null,
-                    "kit":null
+                    "kit":"1234567891011"
                   }
                 }
               ],
@@ -1692,7 +1692,7 @@
                     },
                     "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                     "process":null,
-                    "kit":null
+                    "kit":"1234567891011"
                   }
                 },
                 {
@@ -1707,7 +1707,7 @@
                     },
                     "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
                     "process":null,
-                    "kit":null
+                    "kit":"1234567891011"
                   }
                 }
               ]
@@ -3511,6 +3511,34 @@
 }, "25":   {
   "calls":[
     {
+      "description":"Create the search order by batch",
+      "method":     "post",
+      "url":        "/searches",
+      "request":    {
+        "search":{
+          "user":       "username",
+          "description":"search order by batch",
+          "model":      "order",
+          "criteria":   {
+            "item":{
+              "batch":"695ff060-8d8b-0130-b64f-282066132de2"
+            }
+          }
+        }
+      },
+      "response":   {
+        "search":{
+          "actions":{
+            "read": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=-1"
+          },
+          "uuid":   "69d71f40-8d8b-0130-b64f-282066132de2"
+        }
+      },
+      "next_stage": 26
+    },
+    {
       "description":"Add the new spin column and new tube in the order and start each of them",
       "method":     "get",
       "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
@@ -3677,7 +3705,758 @@
             ]
           }
         }
-      }
+      },
+      "next_stage": 26
     }
   ]
+}, "26":   {
+  "calls":[
+    {
+      "description":"Create the search order by batch",
+      "method":     "get",
+      "url":        "/69d71f40-8d8b-0130-b64f-282066132de2",
+      "response":   {
+        "search":{
+          "actions":{
+            "read": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=-1"
+          },
+          "uuid":   "69d71f40-8d8b-0130-b64f-282066132de2"
+        }
+      }
+    },
+    {
+      "description":"Get the result orders",
+      "method":     "get",
+      "url":        "/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
+      "response":   {
+        "actions":{
+          "read": "http://localhost:9292/orders/page=1",
+          "first":"http://localhost:9292/orders/page=1",
+          "last": "http://localhost:9292/orders/page=-1"
+        },
+        "size":   1,
+        "orders": [
+          {
+            "actions":   {
+              "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
+            },
+            "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
+            "pipeline":  "DNA+RNA manual extraction",
+            "status":    "draft",
+            "parameters":{},
+            "state":     {},
+            "cost_code": "cost code",
+            "creator":   {
+              "actions":{
+                "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
+              },
+              "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
+            },
+            "study":     {
+              "actions":{
+                "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
+              },
+              "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
+            },
+            "items":     {
+              "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+                {
+                  "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                  "status":"unused",
+                  "batch": {
+                    "actions":{
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                    },
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                    "process":null,
+                    "kit":    "1234567891011"
+                  }
+                },
+                {
+                  "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                  "status":"unused",
+                  "batch": {
+                    "actions":{
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                    },
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                    "process":null,
+                    "kit":    "1234567891011"
+                  }
+                }
+              ],
+              "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+                {
+                  "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                  "status":"done",
+                  "batch": {
+                    "actions":{
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                    },
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                    "process":null,
+                    "kit":    "1234567891011"
+                  }
+                },
+                {
+                  "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                  "status":"done",
+                  "batch": {
+                    "actions":{
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                    },
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                    "process":null,
+                    "kit":    "1234567891011"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description":"Create the search order by batch",
+      "method":     "get",
+      "url":        "/69d71f40-8d8b-0130-b64f-282066132de2",
+      "response":   {
+        "search":{
+          "actions":{
+            "read": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69d71f40-8d8b-0130-b64f-282066132de2/page=-1"
+          },
+          "uuid":   "69d71f40-8d8b-0130-b64f-282066132de2"
+        }
+      }
+    },
+    {
+      "description":"Get the result orders",
+      "method":     "get",
+      "url":        "/69d71f40-8d8b-0130-b64f-282066132de2/page=1",
+      "response":   {
+        "actions":{
+          "read": "http://localhost:9292/orders/page=1",
+          "first":"http://localhost:9292/orders/page=1",
+          "last": "http://localhost:9292/orders/page=-1"
+        },
+        "size":   1,
+        "orders": [
+          {
+            "actions":   {
+              "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
+            },
+            "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
+            "pipeline":  "DNA+RNA manual extraction",
+            "status":    "draft",
+            "parameters":{},
+            "state":     {},
+            "cost_code": "cost code",
+            "creator":   {
+              "actions":{
+                "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
+              },
+              "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
+            },
+            "study":     {
+              "actions":{
+                "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+                "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
+              },
+              "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
+            },
+            "items":     {
+              "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+                {
+                  "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                  "status":"unused",
+                  "batch": {
+                    "actions":{
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                    },
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                    "process":null,
+                    "kit":    "1234567891011"
+                  }
+                },
+                {
+                  "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                  "status":"unused",
+                  "batch": {
+                    "actions":{
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                    },
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                    "process":null,
+                    "kit":    "1234567891011"
+                  }
+                }
+              ],
+              "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+                {
+                  "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                  "status":"done",
+                  "batch": {
+                    "actions":{
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                    },
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                    "process":null,
+                    "kit":    "1234567891011"
+                  }
+                },
+                {
+                  "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                  "status":"done",
+                  "batch": {
+                    "actions":{
+                      "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                      "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                    },
+                    "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                    "process":null,
+                    "kit":    "1234567891011"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description":"Add the new spin column and new tube in the order and start each of them",
+      "method":     "put",
+      "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
+      "request":    {
+        "user": "username",
+        "items":{
+          "samples.extraction.manual.spin_column_dna":                {
+            "6ac360e0-8d8b-0130-b64f-282066132de2":{
+              "event":     "start",
+              "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
+            }
+          },
+          "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":{
+            "6adecd50-8d8b-0130-b64f-282066132de2":{
+              "event":     "start",
+              "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
+            }
+          }
+        }
+      },
+      "response":   {
+        "order":{
+          "actions":   {
+            "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
+          },
+          "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
+          "pipeline":  "DNA+RNA manual extraction",
+          "status":    "draft",
+          "parameters":{},
+          "state":     {},
+          "cost_code": "cost code",
+          "creator":   {
+            "actions":{
+              "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
+            },
+            "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
+          },
+          "study":     {
+            "actions":{
+              "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
+            },
+            "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
+          },
+          "items":     {
+            "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+              {
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                "status":"unused",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              },
+              {
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                "status":"unused",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              }
+            ],
+            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+              {
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                "status":"done",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              },
+              {
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                "status":"done",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              }
+            ],
+            "samples.extraction.manual.spin_column_dna":                   [
+              {
+                "uuid":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
+                "status":"in_progress",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              }
+            ],
+            "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   [
+              {
+                "uuid":  "6a795c60-8d8b-0130-b64f-282066132de2",
+                "status":"in_progress",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "next_stage": 27
+    }
+  ]
+}, "27":   {
+  "calls":[
+    {
+      "description":"Start tube to spin column transfer for first tube",
+      "method":     "post",
+      "url":        "/actions/transfer_tubes_to_tubes",
+      "request":    {
+        "transfer_tubes_to_tubes":{
+          "user":     "username",
+          "transfers":[
+            {
+              "fraction":    1,
+              "aliquot_type":"DNA",
+              "source_uuid": "66e299e0-8d8b-0130-b650-282066132de2",
+              "target_uuid": "6ac360e0-8d8b-0130-b64f-282066132de2"
+            },
+            {
+              "fraction":    1,
+              "aliquot_type":"RNA+P",
+              "source_uuid": "66e299e0-8d8b-0130-b650-282066132de2",
+              "target_uuid": "6adecd50-8d8b-0130-b64f-282066132de2"
+            }
+          ]
+        }
+      },
+      "response":   {
+        "transfer_tubes_to_tubes":{
+          "actions":    {},
+          "user":       "user",
+          "application":"application",
+          "result":     {
+            "sources":[
+              {
+                "tube":{
+                  "actions":   {
+                    "read":  "/66e0f490-8d8b-0130-b650-282066132de2",
+                    "create":"/66e0f490-8d8b-0130-b650-282066132de2",
+                    "update":"/66e0f490-8d8b-0130-b650-282066132de2",
+                    "delete":"/66e0f490-8d8b-0130-b650-282066132de2"
+                  },
+                  "uuid":      "/66e0f490-8d8b-0130-b650-282066132de2",
+                  "type":      null,
+                  "max_volume":null,
+                  "aliquots":  [
+                    {
+                      "sample":  {
+                        "actions":{
+                          "read":  "/11111111-2222-3333-0000-000000000000",
+                          "create":"/11111111-2222-3333-0000-000000000000",
+                          "update":"/11111111-2222-3333-0000-000000000000",
+                          "delete":"/11111111-2222-3333-0000-000000000000"
+                        },
+                        "uuid":   "11111111-2222-3333-0000-000000000000",
+                        "name":   "sample 1"
+                      },
+                      "quantity":10,
+                      "type":    "RNA",
+                      "unit":    "mole"
+                    }
+                  ]
+                }
+              }
+            ],
+            "targets":[
+              {
+                "tube":{
+                  "actions":   {
+                    "read":  "/11111111-2222-3333-4444-666666666666",
+                    "create":"/11111111-2222-3333-4444-666666666666",
+                    "update":"/11111111-2222-3333-4444-666666666666",
+                    "delete":"/11111111-2222-3333-4444-666666666666"
+                  },
+                  "uuid":      "11111111-2222-3333-4444-666666666666",
+                  "type":      null,
+                  "max_volume":null,
+                  "aliquots":  [
+                    {
+                      "sample":{
+                        "actions":{
+                          "read":  "/11111111-2222-3333-0000-000000000000",
+                          "create":"/11111111-2222-3333-0000-000000000000",
+                          "update":"/11111111-2222-3333-0000-000000000000",
+                          "delete":"/11111111-2222-3333-0000-000000000000"
+                        },
+                        "uuid":   "11111111-2222-3333-0000-000000000000",
+                        "name":   "sample 1"
+                      },
+                      "type":  "DNA",
+                      "unit":  "mole"
+                    }
+                  ]
+                }
+              },
+              {
+                "tube":{
+                  "actions":   {
+                    "read":  "/11111111-2222-3333-4444-777777777777",
+                    "create":"/11111111-2222-3333-4444-777777777777",
+                    "update":"/11111111-2222-3333-4444-777777777777",
+                    "delete":"/11111111-2222-3333-4444-777777777777"
+                  },
+                  "uuid":      "11111111-2222-3333-4444-777777777777",
+                  "type":      null,
+                  "max_volume":null,
+                  "aliquots":  [
+                    {
+                      "sample":{
+                        "actions":{
+                          "read":  "/11111111-2222-3333-0000-000000000000",
+                          "create":"/11111111-2222-3333-0000-000000000000",
+                          "update":"/11111111-2222-3333-0000-000000000000",
+                          "delete":"/11111111-2222-3333-0000-000000000000"
+                        },
+                        "uuid":   "11111111-2222-3333-0000-000000000000",
+                        "name":   "sample 1"
+                      },
+                      "type":  "RNA",
+                      "unit":  "mole"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transfers":  [
+            {
+              "source_uuid": "11111111-2222-3333-4444-555555555555",
+              "target_uuid": "11111111-2222-3333-4444-666666666666",
+              "amount":      5,
+              "aliquot_type":"DNA"
+            },
+            {
+              "source_uuid": "11111111-2222-3333-4444-555555555555",
+              "target_uuid": "11111111-2222-3333-4444-777777777777",
+              "amount":      5,
+              "aliquot_type":"RNA"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description":"Add the new spin column and new tube in the order and start each of them",
+      "method":     "put",
+      "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
+      "request":    {
+        "user": "username",
+        "items":{
+          "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":{
+            "66e299e0-8d8b-0130-b650-282066132de2":{
+              "event":"unuse"
+            }
+          },
+          "samples.extraction.manual.spin_column_dna":                   {
+            "6ac360e0-8d8b-0130-b64f-282066132de2":{
+              "event":"complete"
+            }
+          },
+          "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   {
+            "6adecd50-8d8b-0130-b64f-282066132de2":{
+              "event":"complete"
+            }
+          }
+        }
+      },
+      "response":   {
+        "order":{
+          "actions":   {
+            "read":  "http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "create":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "update":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2",
+            "delete":"http://localhost:9292/66e60c10-8d8b-0130-b650-282066132de2"
+          },
+          "uuid":      "66e60c10-8d8b-0130-b650-282066132de2",
+          "pipeline":  "DNA+RNA manual extraction",
+          "status":    "draft",
+          "parameters":{},
+          "state":     {},
+          "cost_code": "cost code",
+          "creator":   {
+            "actions":{
+              "read":  "http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddf210-8d8b-0130-b650-282066132de2"
+            },
+            "uuid":   "66ddf210-8d8b-0130-b650-282066132de2"
+          },
+          "study":     {
+            "actions":{
+              "read":  "http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "create":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "update":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2",
+              "delete":"http://localhost:9292/66ddff90-8d8b-0130-b650-282066132de2"
+            },
+            "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
+          },
+          "items":     {
+            "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+              {
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                "status":"unused",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              },
+              {
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                "status":"unused",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              }
+            ],
+            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+              {
+                "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
+                "status":"done",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              },
+              {
+                "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
+                "status":"done",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              }
+            ],
+            "samples.extraction.manual.spin_column_dna":                   [
+              {
+                "uuid":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
+                "status":"in_progress",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              },
+              {
+                "uuid":  "6ac360e0-8d8b-0130-b64f-282066132de2",
+                "status":"in_progress",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              }
+            ],
+            "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   [
+              {
+                "uuid":  "6a795c60-8d8b-0130-b64f-282066132de2",
+                "status":"in_progress",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              },
+              {
+                "uuid":  "6adecd50-8d8b-0130-b64f-282066132de2",
+                "status":"in_progress",
+                "batch": {
+                  "actions":{
+                    "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+                    "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+                  },
+                  "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+                  "process":null,
+                  "kit":    "1234567891011"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "next_stage": 28
+    }
+  ]
+}, "28":   {
+
 }}

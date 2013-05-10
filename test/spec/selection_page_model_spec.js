@@ -91,7 +91,7 @@ define([
           expect(fakeOwner.childDone).toHaveBeenCalled();
       });
 
-      xit("can make a batch", function () {
+      it("can make a batch", function () {
         var tube =results.get('tube1');
         m.setSeminalLabware(tube);
         expect(m.tubes.length).toEqual(1);
@@ -101,24 +101,6 @@ define([
         fakeOwner.childDone = function () {
           expect(config.ajax).toHaveBeenCalled();
         };
-        spyOn(fakeOwner, "childDone");
-        var waitedEnough = false;
-        runs(function () {
-          m.makeBatch();
-          // we have to wait, as we have no way to
-          // know that the method call has ended
-          setTimeout(function () {
-            waitedEnough = true;
-          }, 1000);
-        });
-
-        waitsFor(function () {
-          return waitedEnough;
-        });
-
-        runs(function () {
-          expect(fakeOwner.childDone).toHaveBeenCalled();
-        });
       });
     });
 

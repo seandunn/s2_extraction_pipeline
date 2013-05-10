@@ -109,7 +109,7 @@ define([
           });
         });
 
-        xit('is defined', function () {
+        it('is defined', function () {
           expect(presenter).toBeDefined();
         });
 
@@ -175,11 +175,9 @@ define([
           });
         });
 
-        xit("calls the render method in the view when renderView is called in the presenter", function () {
+        it("calls the render method in the view when renderView is called in the presenter", function () {
           runs(function () {
             var expectedData = {
-              batch:       undefined,
-              user:        '123456789',
               capacity:    12,
               processTitle:'Manual DNA and RNA Extraction'
             };
