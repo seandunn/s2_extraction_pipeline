@@ -36,6 +36,9 @@ define([
     },
     getKitTypeSelection: function() {
       return this.selector().find('.kit-select').val().split('/');
+    },
+    disableInputBox: function() {
+      this.selector().find(".barcodeInput").attr('disabled', true);
     }
   });
 
