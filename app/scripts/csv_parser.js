@@ -2,12 +2,12 @@ define([], function () {
   'use strict';
   return {
     rackingCsvToArray:function (data) {
-      var delimiter = ',';
+      var DELIMITER = ',';
 
       var lines = data.split(/\r\n|\r|\n/g);
 
       var re = new RegExp(
-          "\\s*(\\w)(\\d\\d)\\s*\\" + delimiter
+          "\\s*(\\w)(\\d\\d)\\s*\\" + DELIMITER
               +
               "\\s*(FR\\d+).*", "i");  // TODO: add the 'FR' prefix to the regex
 
@@ -28,15 +28,15 @@ define([], function () {
     },
 
     volumeCsvToArray:function (data) {
-      var delimiter = ',';
+      var DELIMITER = ',';
 
       var lines = data.split(/\r\n|\r|\n/g);
 
       var re = new RegExp(
           "\\s*(\\d+)\\s*" // the barcode
-              + delimiter +
+              + DELIMITER +
               "\\s*(\\w)(\\d\\d)\\s*\\" // the location
-              + delimiter +
+              + DELIMITER +
               "\\s*([\\d\\.\\,]+).*" // the volume
           , "i");  // TODO: add the 'FR' prefix to the regex
 
