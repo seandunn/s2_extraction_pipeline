@@ -1,8 +1,8 @@
 define([ 'config'
   , 'extraction_pipeline/presenters/base_presenter'
-  , 'extraction_pipeline/views/selection_page_view'
   , 'extraction_pipeline/models/selection_page_model'
-], function (config, BasePresenter, View, Model) {
+  , 'text!extraction_pipeline/html_partials/selection_page_partial.html'
+], function(config, BasePresenter, Model, selectionPagePartialHtml) {
   'use strict';
 
   var PagePresenter = Object.create(BasePresenter);
@@ -18,11 +18,10 @@ define([ 'config'
       this.presenterFactory = presenterFactory;
       this.model = Object.create(Model).init(this, initData);
       this.owner = owner;
-      this.config = initData;
       return this;
     },
     setupPresenter:function (setupData, jquerySelection) {
-      this.setupPlaceholder(jquerySelection);
+      this.jquerySelection = jquerySelection;
 
       if (setupData.batch) {
         this.model.setBatch(setupData.batch); // the batch BEFORE the labware!
@@ -32,19 +31,14 @@ define([ 'config'
 
       this.model.setUser(setupData.user);
 
-      this.setupView();
+      // this.view = new View(this, this.jquerySelection);
       this.setupSubPresenters();
       this.renderView();
       return this;
     },
-    setupView:function () {
-      this.view = new View(this, this.jquerySelection);
-      return this;
-    },
+
     renderView:function () {
-      if (!this.view) {
-        return this;
-      }
+
       //marshalling data for the view
       var dataForView = {
         batch:this.model.batch && this.model.batch.uuid,
@@ -53,7 +47,30 @@ define([ 'config'
         processTitle:this.model.config.processTitle
       };
 
-      this.view.render(dataForView);
+      // start of view code
+        var that = this;
+
+        //create a list for underscore to iterate through in partial html
+        var indices = new Array();
+
+        for (var i = 1; i <= dataForView.capacity; i++) { indices.push(i); }
+
+        var template = _.template(selectionPagePartialHtml);
+
+        // set the user and indices as template data
+        var templateData = {
+          user:dataForView.user,
+          indices:indices,
+          processTitle:dataForView.processTitle
+        };
+
+
+        this.jquerySelection().empty().append(template(templateData));
+
+        this.jquerySelection().on("click", "button.btn", function () {
+          that.childDone(that, "next");
+        });
+        // end of view code
 
       // render subviews...
       _.each(this.presenters, function (presenter) {
@@ -93,14 +110,14 @@ define([ 'config'
       _.each(this.model.tubes, function (tube) {
         presenterData.push({
           resource:tube,
-          expected_type:presenter.config.input.model.singularize(),
+          expected_type:presenter.model.config.input.model.singularize(),
           display_remove:true,
           display_barcode:false
         });
       });
 
       presenterData.push({
-        expected_type:presenter.config.input.model.singularize(),
+        expected_type:presenter.model.config.input.model.singularize(),
         display_remove:false,
         display_barcode:true,
         display_labware:false
@@ -128,9 +145,7 @@ define([ 'config'
     },
 
     release:function () {
-      if (this.view) {
-        this.view.clear();
-      }
+      this.jquerySelection().empty();
       return this;
     },
 
@@ -149,11 +164,10 @@ define([ 'config'
        * data:       Any data associated with the action.
        *
        */
-      if (child === this.view) {
         if (action === "next") {
           this.model.makeBatch();
         }
-      } else if (child === this.model) {
+      if (child === this.model) {
         if (action === "modelUpdated") {
           // TODO: use the data provided by the model to only update the relevant subpresenters...
           this.setupSubPresenters();
