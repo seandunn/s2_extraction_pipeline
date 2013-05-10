@@ -41,7 +41,10 @@
    "samples.extraction.racking.tube_to_be_racked_dna",
    "samples.extraction.extracted_tube_rna",
    "samples.extraction.racking.tube_to_be_retubed_rna",
-   "samples.extraction.racking.tube_to_be_racked_rna"
+   "samples.extraction.racking.tube_to_be_racked_rna",
+
+    "samples.racks.stock.dna",
+    "samples.racks.stock.rna"
   ],
 
   "workflows":[
@@ -936,7 +939,77 @@
       ]
     }
     ]
+  },
+  {
+    "accepts":       [ "samples.racks.stock.dna" ],
+    "presenterName": "step_presenter",
+    "buttons":       [
+      {
+        "action": "end",
+        "title":  "Save volumes"
+      },
+      {
+        "action": "next",
+        "title":  "Done"
+      }
+    ],
+    "processTitle":  "Post DNA Extraction Racking - Volume checking",
+    "presenters":    [
+      {
+        "presenterName":  "rack_scan_presenter",
+        "defaultPrinter": "Tube Printer",
+        "model":          "VolumeCheckModel",
+        "input":          {
+          "role":  "samples.racks.stock.dna",
+          "model": "tube_racks"
+        },
+        "output":         [
+          {
+            "role":        "samples.racks.stock.dna.volume_checked",
+            "aliquotType": "DNA",
+            "purpose":     "stock",
+            "model":       "tube_racks"
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "accepts":       [ "samples.racks.stock.rna" ],
+    "presenterName": "step_presenter",
+    "buttons":       [
+      {
+        "action": "end",
+        "title":  "Save volumes"
+      },
+      {
+        "action": "next",
+        "title":  "Done"
+      }
+    ],
+    "processTitle":  "Post DNA Extraction Racking - Volume checking",
+    "presenters":    [
+      {
+        "presenterName":  "rack_scan_presenter",
+        "defaultPrinter": "Tube Printer",
+        "model":          "VolumeCheckModel",
+        "input":          {
+          "role":  "samples.racks.stock.rna",
+          "model": "tube_racks"
+        },
+        "output":         [
+          {
+            "role":        "samples.racks.stock.rna.volume_checked",
+            "aliquotType": "RNA",
+            "purpose":     "stock",
+            "model":       "tube_racks"
+          }
+        ]
+      }
+    ]
   }
+
   ],
 
   "defaultPresenter":"default_presenter"
