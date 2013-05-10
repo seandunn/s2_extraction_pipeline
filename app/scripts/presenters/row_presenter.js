@@ -145,6 +145,11 @@ define([
         }
       }, this.rowModel.enabled).value();
     },
+    focus: function() {
+      this.editablePresenters().find(function(p) { return !p.isComplete(); })
+          .value()
+          .barcodeFocus();
+    },
 
     childDone:function (child, action, data) {
       var data = $.extend(data, { origin: child });

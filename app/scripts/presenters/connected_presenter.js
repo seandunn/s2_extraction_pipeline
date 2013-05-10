@@ -41,6 +41,14 @@ define([
     },
 
     focus: function() {
+      var presenter = _.find(this.rowPresenters, function (presenter) {
+        return !presenter.isRowComplete();
+      });
+
+      // There will not be an incomplete row returned if the entire page is complete. Therefore nothing to focus on.
+      if (presenter) {
+        presenter.focus();
+      }
     },
     setupView:function () {
       this.currentView = new View(this, this.jquerySelection);
@@ -59,6 +67,7 @@ define([
           user:this.model.user,
           processTitle:this.model.config.processTitle
         }
+        this.focus();
       }
 
       this.currentView.renderView(dataForView);
@@ -86,12 +95,16 @@ define([
         var originator = data.origin, presenter = this;
         presenter.model.inputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
           presenter.model.inputs.pull(resource);
-        });
+        }).done(function() {
+            presenter.focus();
+          });
       } else if (action === 'outputBarcodeScanned') {
         var originator = data.origin, presenter = this;
         presenter.model.outputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
           presenter.model.outputs.pull(resource);
-        });
+        }).done(function() {
+            presenter.focus();
+          });
       } else if (action === 'inputRemoved') {
         this.model.inputs.push(data.resource);
       } else if (action === 'outputRemoved') {
@@ -118,7 +131,7 @@ define([
 
       } else if (action === "barcodePrintSuccess") {
 
-        this.owner.childDone(this, "error", {"message":"Barcode labels printed"});
+        $('body').trigger('s2.status.message', 'Barcode labels printed');
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
         if (this.checkPageComplete()) {
           this.owner.childDone(this, "enableBtn", {buttons:[{action:"start"}]});
@@ -132,13 +145,13 @@ define([
       } else if (action === "startOperation") {
 
         this.model.started = true;
-        this.owner.childDone(this, "error", {"message":"Transfer started"});
+        $('body').trigger('s2.status.message', 'Transfer started');
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
         this.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
 
       } else if (action === "completeOperation") {
 
-        this.owner.childDone(this, "error", {"message":"Transfer completed"});
+        $('body').trigger('s2.status.message', 'Transfer completed');
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
         if (this.checkPageComplete()) {
           this.owner.childDone(this, "enableBtn", {buttons:[{action:"next"}]});
