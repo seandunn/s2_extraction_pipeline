@@ -1,8 +1,7 @@
-define([ 'config'
-  , 'extraction_pipeline/presenters/base_presenter'
+define([ 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/models/selection_page_model'
   , 'text!extraction_pipeline/html_partials/selection_page_partial.html'
-], function(config, BasePresenter, Model, selectionPagePartialHtml) {
+], function(BasePresenter, Model, selectionPagePartialHtml) {
   'use strict';
 
   var PagePresenter = Object.create(BasePresenter);
