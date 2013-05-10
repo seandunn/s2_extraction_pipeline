@@ -13,63 +13,34 @@ define([ 'extraction_pipeline/presenters/base_presenter'
       });
     },
 
-    init:function (owner, presenterFactory, initData) {
+    init:function (owner, presenterFactory, workflowConfig) {
       this.presenterFactory = presenterFactory;
-      this.model = Object.create(Model).init(this, initData);
+      this.model = Object.create(Model).init(this, workflowConfig);
       this.owner = owner;
       return this;
     },
     setupPresenter:function (setupData, jquerySelection) {
       this.jquerySelection = jquerySelection;
 
-      if (setupData.batch) {
-        this.model.setBatch(setupData.batch); // the batch BEFORE the labware!
-      } else if (setupData.labware) {
-         this.model.setSeminalLabware(setupData.labware);
-      } else throw "This page should not be show without either batch or scanned labware";
+      this.model.setup(setupData);
 
-      this.model.setUser(setupData.user);
-
-      // this.view = new View(this, this.jquerySelection);
       this.setupSubPresenters();
       this.renderView();
       return this;
     },
 
-    makeBatchHandler: function() { this.model.makeBatch(); },
+    makeBatchHandler: function() {
+      this.model.makeBatch().then(function(batch){
+        this.owner.childDone(this, "done", this.model);
+      });
+    },
 
     renderView:function () {
+      var template = _.template(selectionPagePartialHtml);
 
-      //marshalling data for the view
-      var dataForView = {
-        batch:this.model.batch && this.model.batch.uuid,
-        user:this.model.user,
-        capacity:this.model.capacity,
-        processTitle:this.model.config.processTitle
-      };
+      this.jquerySelection().html(template(this.model));
 
-      // start of view code
-        var that = this;
-
-        //create a list for underscore to iterate through in partial html
-        var indices = new Array();
-
-        for (var i = 1; i <= dataForView.capacity; i++) { indices.push(i); }
-
-        var template = _.template(selectionPagePartialHtml);
-
-        // set the user and indices as template data
-        var templateData = {
-          user:dataForView.user,
-          indices:indices,
-          processTitle:dataForView.processTitle
-        };
-
-
-        this.jquerySelection().empty().append(template(templateData));
-
-        this.jquerySelection().on("click", "button.btn", this.makeBatchHandler);
-        // end of view code
+      this.jquerySelection().on("click", "button.btn", this.makeBatchHandler);
 
       // render subviews...
       _.each(this.presenters, function (presenter) {
@@ -145,23 +116,20 @@ define([ 'extraction_pipeline/presenters/base_presenter'
           // TODO: use the data provided by the model to only update the relevant subpresenters...
           this.setupSubPresenters();
           this.renderView();
-
-
         } else if (action === "batchSaved") {
-          var dataForOwner = {
-            user:this.model.user,
-            labware:this.model.labware,
-            batch:this.model.batch
-          };
-          this.owner.childDone(this, "done", dataForOwner);
-        } else if (action === "barcodeNotFound") {
-          this.displayBarcodeError("Barcode not found");
+          this.owner.childDone(this, "done", this.model);
         }
       } else {
         if (action === "barcodeScanned") {
-          this.model.addTubeFromBarcode(data.BC);
+          this.model.addTubeFromBarcode(data.BC)
+          .fail(function() {
+            this.displayBarcodeError("Barcode not found");
+          });
+
         } else if (action === "removeLabware") {
           this.model.removeTubeByUuid(data.resource.uuid);
+          this.setupSubPresenters();
+          this.renderView();
         }
       }
     }

@@ -7,36 +7,32 @@ define([
   var SelectionPageModel = Object.create(BasePageModel);
 
   $.extend(SelectionPageModel, {
-    init:function (owner, initData) {
+    init:function (owner, workflowConfig) {
       this.owner = Object.create(owner);
       this.tubes = [];
-      this.capacity = initData["capacity"] || 12;
-      this.config = initData;
+      this.capacity = workflowConfig["capacity"] || 12;
+      this.config = workflowConfig;
+
+      // This horrible thing is a refactoring in progress...
+      this.batchSlots = [];
+      for (var i = 1; i <= this.capacity; i++) { this.batchSlots.push(i); };
 
       this.initialiseCaching();
       return this;
     },
-    setBatch:          function (batch) {
-      var model = this;
 
-      if (batch) { model.cache.push(batch); }
-      model.batch = batch;
+    setup: function(setupData){
+      if (setupData.batch) {
+        this.user = setupData.user;
+        this.batch = batch;
+        if (batch) { this.cache.push(batch); }
+        setupInputs(this);
+      } else if (setupData.labware) {
+        this.cache.push(setupData.labware);
+        this.tubes.push(setupData.labware);
+      } else throw "This model should not be show without either batch or scanned labware";
+    },
 
-      setupInputs(model).then(function () {
-        model.owner.childDone(model, "batchAdded");
-      }).fail(function () {
-        model.owner.childDone(model, "error");
-      });
-    },
-    setSeminalLabware:function (labware) {
-      this.cache.push(labware);
-      this.tubes.push(labware);
-      this.owner.childDone(this, "seminalLabwareAdded");
-    },
-    setUser:function (user) {
-      this.user = user;
-      this.owner.childDone(this, "userAdded");
-    },
     addTube:function (newTube) {
       if (this.tubes.length > this.capacity - 1) {
         throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
@@ -48,26 +44,21 @@ define([
         throw {"type":"SelectionPageException", "message":"Can add a tube only once." };
       }
       this.tubes.push(newTube);
-      this.owner.childDone(this, "modelUpdated", {index:this.tubes.length, updateType:"addition"});
       return this;
     },
+
     addTubeFromBarcode:function (barcode) {
       var that = this;
-      this.cache.fetchResourcePromiseFromBarcode(barcode)
-        .then(function (rsc) {
-          that.addTube(rsc);
-        })
-        .fail(function () {
-          that.owner.childDone(that, "barcodeNotFound", {});
-        });
+      return this.cache.fetchResourcePromiseFromBarcode(barcode)
+      .then(function (rsc) {
+        that.addTube(rsc);
+      });
     },
 
     removeTubeByUuid:function (uuid) {
       this.tubes = _.filter(this.tubes, function (tube) {
         return tube.uuid !== uuid;
       });
-
-      this.owner.childDone(this, "modelUpdated");
     },
 
     makeBatch:function () {
@@ -76,8 +67,7 @@ define([
       var addingRoles = {updates:[]};
       var changingRoles = {updates:[]};
 
-      this.owner.getS2Root()
-      .then(function (root) {
+      return this.owner.getS2Root().then(function (root) {
         return root.batches.new({resources:that.tubes}).save();
       }).then(function (savedBatch) {
         batchBySideEffect = savedBatch;
@@ -107,15 +97,15 @@ define([
                 }});
           });
         });
-        return Operations.stateManagement().start(addingRoles);})
-        .then(function () {
-          return Operations.stateManagement().complete(changingRoles);})
-          .then(function () {
-            that.batch = batchBySideEffect; // updating the batch in the model, once all the requests succeeded.
-            that.owner.childDone(that, "batchSaved", that.batch);
-          }).fail(function () {
-            throw "Could not make a batch";
-          });
+
+        return Operations.stateManagement().start(addingRoles);
+      }).then(function() {
+        return Operations.stateManagement().complete(changingRoles);
+      }).then(function() {
+        return that.batch = batchBySideEffect; // updating the batch in the model, once all the requests succeeded.
+      }).fail(function () {
+        throw "Could not make a batch";
+      });
     }
   });
 
