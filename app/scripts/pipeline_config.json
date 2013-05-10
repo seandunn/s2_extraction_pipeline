@@ -752,12 +752,6 @@
             "aliquotType": "DNA",
             "purpose": "stock",
             "model": "tube_racks"
-          },
-          {
-            "role": "samples.extraction.extracted_tube.racked_dna",
-            "aliquotType": "DNA",
-            "purpose": "stock",
-            "model": "tubes"
           }
         ]
       }
@@ -833,12 +827,6 @@
             "aliquotType": "RNA",
             "purpose": "stock",
             "model": "tube_racks"
-          },
-          {
-            "role": "samples.extraction.extracted_tube.racked_rna",
-            "aliquotType": "RNA",
-            "purpose": "stock",
-            "model": "tubes"
           }
         ]
       }
