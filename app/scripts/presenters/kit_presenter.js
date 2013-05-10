@@ -34,7 +34,7 @@ define([
 
       presenter.barcodePresenter = presenter.presenterFactory.create('scan_barcode_presenter', presenter);
 
-      presenter.barcodePresenter.init({ type: 'Kit', barcode: '1234567891011' });
+      presenter.barcodePresenter.init({ type: 'Kit', barcode: '' });
 
       presenter.selector().find('.barcode').append(presenter.barcodePresenter.renderView());
 
