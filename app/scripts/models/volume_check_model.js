@@ -107,7 +107,7 @@ define([
             model.owner.childDone(model, "error", {message: "couldn't load the batch resources!"});
           });
     },
-    setUser:     function (userUUID) {
+    setUser: function (userUUID) {
       this.user = userUUID;
       this.owner.childDone(this, "userAdded");
     }
