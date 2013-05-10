@@ -152,7 +152,7 @@ define([
         it('creates a batch when child done is called with action next', function () {
           runs(function () {
             spyOn(presenter.model, 'makeBatch');
-            presenter.childDone(presenter.view, 'next');
+            presenter.makeBatchHandler();
             expect(presenter.model.makeBatch).toHaveBeenCalled();
           });
         });

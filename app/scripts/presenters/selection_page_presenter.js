@@ -36,6 +36,8 @@ define([ 'extraction_pipeline/presenters/base_presenter'
       return this;
     },
 
+    makeBatchHandler: function() { this.model.makeBatch(); },
+
     renderView:function () {
 
       //marshalling data for the view
@@ -66,9 +68,7 @@ define([ 'extraction_pipeline/presenters/base_presenter'
 
         this.jquerySelection().empty().append(template(templateData));
 
-        this.jquerySelection().on("click", "button.btn", function () {
-          that.childDone(that, "next");
-        });
+        this.jquerySelection().on("click", "button.btn", this.makeBatchHandler);
         // end of view code
 
       // render subviews...
@@ -140,23 +140,6 @@ define([ 'extraction_pipeline/presenters/base_presenter'
     },
 
     childDone:function (child, action, data) {
-      /* Handles done messages from the page view and child presenters.
-       *
-       * Any messages that happen to come from the PageView will be delegated over to
-       * selfDone.
-       *
-       * Arguments
-       * ---------
-       * child : the presenter(or model) instance the done message is coming from. Can be
-       *             either the PagePresenter, one of the PartialPresenters or the model
-       * action:     a string representing the action request, e.g. 'next' for someone
-       *             clicking on the next button
-       * data:       Any data associated with the action.
-       *
-       */
-        if (action === "next") {
-          this.model.makeBatch();
-        }
       if (child === this.model) {
         if (action === "modelUpdated") {
           // TODO: use the data provided by the model to only update the relevant subpresenters...
