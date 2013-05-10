@@ -95,14 +95,14 @@ define([
         var originator = data.origin, presenter = this;
         presenter.model.inputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
           presenter.model.inputs.pull(resource);
-        }).then(function() {
+        }).done(function() {
             presenter.focus();
           });
       } else if (action === 'outputBarcodeScanned') {
         var originator = data.origin, presenter = this;
         presenter.model.outputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
           presenter.model.outputs.pull(resource);
-        }).then(function() {
+        }).done(function() {
             presenter.focus();
           });
       } else if (action === 'inputRemoved') {
