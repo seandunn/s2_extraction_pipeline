@@ -90,18 +90,6 @@ define([
           expect(m.tubes[0].uuid).toEqual("tube1_UUID");
           expect(fakeOwner.childDone).toHaveBeenCalled();
       });
-
-      it("can make a batch", function () {
-        var tube =results.get('tube1');
-        m.setSeminalLabware(tube);
-        expect(m.tubes.length).toEqual(1);
-        expect(m.tubes[0].uuid).toEqual("tube1_UUID");
-
-        spyOn(config, "ajax").andCallThrough();
-        fakeOwner.childDone = function () {
-          expect(config.ajax).toHaveBeenCalled();
-        };
-      });
     });
 
     describe("Selection page model", function () {
