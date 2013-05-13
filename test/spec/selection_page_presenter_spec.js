@@ -12,58 +12,35 @@ define([
   'use strict';
 
 
-  function getAResource(owner, uuid) {
-    var deferredS2Resource = new $.Deferred();
-    owner.getS2Root()
-      .then(function (root) {
-        return root.find(uuid);
-      }).then(function (result) {
-        deferredS2Resource.resolve(result);
-      }).fail(function () {
-        deferredS2Resource.reject();
-      });
-    return deferredS2Resource.promise();
-  }
-
   TestHelper(function (results) {
 
     describe("Selection page presenter", function () {
 
-      var s2Root, app, presenter = undefined;
+      var s2Root, app, presenter;
 
       beforeEach(function(){
         app = {
           getS2Root:function () {
-            var deferredS2Root = new $.Deferred();
-            if (!s2Root) {
-              S2Root.load({user:"username"}).done(function (result) {
-                s2Root = result;
-                deferredS2Root.resolve(result);
-              }).fail(function () {
-                  deferredS2Root.reject();
-                });
-            } else {
-              deferredS2Root.resolve(s2Root);
-            }
-            return deferredS2Root.promise();
+            return S2Root.load({user:"username"}).done(function (result) {
+              s2Root = result;
+            });
           },
-          childDone:function () {
-          }
         };
 
         var presenterName = "selection_page_presenter";
+
         var initData = {
-          "accepts":      [ "samples.extraction.manual.dna_and_rna.input_tube_nap" ],
-          "presenterName":"selection_page_presenter",
-          "processTitle": "Manual DNA and RNA Extraction",
-          "input":        {
-            "role": "samples.extraction.manual.dna_and_rna.input_tube_nap",
-            "model":"tubes"
+          "accepts":        [ "samples.extraction.manual.dna_and_rna.input_tube_nap" ],
+          "presenterName":  "selection_page_presenter",
+          "processTitle":   "Manual DNA and RNA Extraction",
+          "input": {
+            "role":   "samples.extraction.manual.dna_and_rna.input_tube_nap",
+            "model":  "tubes"
           },
-          "output":       [
+          "output": [
             {
-              "role":       "samples.extraction.manual.dna_and_rna.binding_input_tube_nap",
-              "aliquotType":"NA+P"
+              "role":         "samples.extraction.manual.dna_and_rna.binding_input_tube_nap",
+              "aliquotType":  "NA+P"
             }
           ]
         };
@@ -71,54 +48,9 @@ define([
         presenter = pf.create(presenterName, this.mainController, initData);
       });
 
-      describe("which is given a batch with one tube", function () {
-
-        beforeEach(function () {
-          config.loadTestData(testData);
-          config.cummulativeLoadingTestDataInFirstStage(rootTestData);
-
-          var model, initialLabware;
-
-          runs(function () {
-            app.getS2Root()
-              .then(function (root) {
-                config.progress(4);
-                return root.find('695ff060-8d8b-0130-b64f-282066132de2')
-              })
-              .then(function (batch) {
-
-                initialLabware = undefined;
-                model = {
-                  userUUID:"123456789",
-                  labware: initialLabware,
-                  batch:   batch
-                }
-
-              })
-              .then(results.expected)
-              .fail(results.unexpected)
-          });
-
-          waitsFor(results.hasFinished);
-
-
-          runs(function () {
-            presenter.setupPresenter(model, function () {
-              return $("#content");
-            });
-          });
-        });
-
-        it('is defined', function () {
-          expect(presenter).toBeDefined();
-        });
-
-      });
-
       describe("which is given one tube", function () {
 
         beforeEach(function () {
-
           config.loadTestData(selectionPageData);
           config.cummulativeLoadingTestDataInFirstStage(rootTestData);
 
@@ -131,9 +63,8 @@ define([
             }).then(function (initialLabware) {
 
                 model = {
-                  userUUID:"123456789",
-                  labware: initialLabware,
-                  batch:   undefined
+                  user:"123456789",
+                  labware: initialLabware
                 }
 
               })
@@ -149,9 +80,6 @@ define([
             presenter.setupPresenter(model, function () {
               return $("#content");
             });
-            spyOn(presenter.view, "render");
-            spyOn(presenter.view, "attachEvents");
-            spyOn(presenter.view, "clear");
           });
         });
 
@@ -164,28 +92,6 @@ define([
         it("has a model that is defined", function(){
           runs(function(){
             expect(presenter.model).toBeDefined();
-          });
-        });
-
-        it("has a view that has been set up correctly", function () {
-          runs(function () {
-            expect(presenter.view).toBeDefined();
-            expect(presenter.view.owner).toEqual(presenter);
-            expect(presenter.view.jquerySelector).toBeDefined();
-          });
-        });
-
-        it("calls the render method in the view when renderView is called in the presenter", function () {
-          runs(function () {
-            var expectedData = {
-              capacity:    12,
-              processTitle:'Manual DNA and RNA Extraction'
-            };
-
-            presenter.renderView();
-
-            expect(presenter.view.render).toHaveBeenCalledWith(expectedData);
-            expect(presenter.view.render.callCount).toEqual(1);
           });
         });
 
@@ -242,17 +148,12 @@ define([
           })
         });
 
-        it("calls the clear method of the view when release is called in the presenter", function () {
-          runs(function () {
-            presenter.release();
-            expect(presenter.view.clear).toHaveBeenCalled();
-          });
-        });
 
         it('creates a batch when child done is called with action next', function () {
           runs(function () {
+            // this stub needs to return a resolved promise
             spyOn(presenter.model, 'makeBatch');
-            presenter.childDone(presenter.view, 'next', undefined);
+            presenter.makeBatchHandler();
             expect(presenter.model.makeBatch).toHaveBeenCalled();
           });
         });
@@ -384,11 +285,9 @@ define([
 
           runs(function () {
             var initialLabware, model;
-            initialLabware = undefined;
             model = {
-              userUUID:"123456789",
-              labware: initialLabware,
-              batch:   undefined
+              user:"123456789",
+              labware: initialLabware
             };
 
             expect(function () {

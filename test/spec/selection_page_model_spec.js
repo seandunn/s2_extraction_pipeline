@@ -6,8 +6,8 @@ define([
   , 'text!mapper_testjson/unit/root.json'
   , 'text!pipeline_testjson/selection_page_model_test_data.json'
 ], function (config, TestHelper, S2Root, Model, rootTestData, testData) {
-
   'use strict';
+
   TestHelper(function (results) {
 
     function getAResource(owner, uuid) {

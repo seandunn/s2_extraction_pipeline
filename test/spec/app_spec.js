@@ -94,7 +94,7 @@ define(['scripts/app'], function (app) {
       mainApp = new app(presenterFactory);
       mainApp.workflow = fakeWorkflow; // inject fake workflow
       var inputDataForModel = {
-        userUUID:"1234567890",
+        user:"1234567890",
         labwareUUID:"1234567890",
         batchUUID:"1234567890"
       };
@@ -113,7 +113,7 @@ define(['scripts/app'], function (app) {
 
     it("calling childDone() on app with action='done' calls updateModel()", function () {
       var inputDataForModel = {
-        userUUID:"",
+        user:"",
         labwareUUID:"",
         batchUUID:""
       };
@@ -125,7 +125,7 @@ define(['scripts/app'], function (app) {
 
     xit("calling childDone() on app with action='login' calls updateModel()", function () {
       var inputDataForModel = {
-        userUUID:"",
+        user:"",
         labwareUUID:"",
         batchUUID:""
       };
@@ -137,7 +137,7 @@ define(['scripts/app'], function (app) {
 
     it("calling childDone() on app with wrong action='' does not call updateModel()", function () {
       var inputDataForModel = {
-        userUUID:"",
+        user:"",
         labwareUUID:"",
         batchUUID:""
       };

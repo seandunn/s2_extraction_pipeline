@@ -117,7 +117,7 @@ define(['presenters/kit_binding_page_presenter'], function (KitPresenter) {
         configureSpyView();
         presenter.currentView = view;
         var dummyInput = {
-          userUUID:"2345678901234",
+          user:"2345678901234",
           labwareUUID:"106d61c0-6224-0130-90b6-282066132de2",
           batchUUID:"1234567890"
         };
@@ -139,7 +139,7 @@ define(['presenters/kit_binding_page_presenter'], function (KitPresenter) {
         presenter.currentView = view;
         presenter.tubeTypes = ["DNA", "DNA"];
         var dummyInput = {
-          userUUID:"2345678901234",
+          user:"2345678901234",
           labwareUUID:"106d61c0-6224-0130-90b6-282066132de2",
           batchUUID:"1234567890"
         };
