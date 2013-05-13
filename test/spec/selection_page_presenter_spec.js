@@ -63,7 +63,7 @@ define([
             }).then(function (initialLabware) {
 
                 model = {
-                  userUUID:"123456789",
+                  user:"123456789",
                   labware: initialLabware
                 }
 
@@ -286,7 +286,7 @@ define([
           runs(function () {
             var initialLabware, model;
             model = {
-              userUUID:"123456789",
+              user:"123456789",
               labware: initialLabware
             };
 
