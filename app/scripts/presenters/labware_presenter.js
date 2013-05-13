@@ -2,6 +2,13 @@ define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/views/labware_view'
 ], function (config, BasePresenter, LabwareView) {
+  'use strict';
+
+  var defaultTitles = {
+    tube: 'Tube',
+    spin_column: 'Spin Column',
+    waste_tube: 'Waste Tube'
+  };
 
   var LabwareModel = Object.create(null);
   $.extend(LabwareModel, {
@@ -68,7 +75,6 @@ define(['config'
       } else {
         if (this.labwareModel.displayLabware()) {
           this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
-          this.view.setTitle(type);
         }
         if (!this.barcodeInputPresenter && this.labwareModel.display_barcode && !this.isSpecial()) {
           this.barcodeInputPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
@@ -133,6 +139,8 @@ define(['config'
       if (!(this.labwareModel.display_remove && !this.isSpecial())) {
         this.view.hideRemoveButton();
       }
+
+      this.view.setTitle(this.labwareModel.title ? this.labwareModel.title : defaultTitles[this.labwareModel.expected_type]);
       this.owner.childDone(this, "labwareRendered", {});
     },
 

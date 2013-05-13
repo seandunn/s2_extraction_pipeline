@@ -76,7 +76,8 @@ define([ 'extraction_pipeline/presenters/base_presenter'
           resource:tube,
           expected_type:presenter.model.config.input.model.singularize(),
           display_remove:true,
-          display_barcode:false
+          display_barcode:false,
+          title: presenter.config.input.title
         });
       });
 
@@ -84,7 +85,8 @@ define([ 'extraction_pipeline/presenters/base_presenter'
         expected_type:presenter.model.config.input.model.singularize(),
         display_remove:false,
         display_barcode:true,
-        display_labware:false
+        display_labware:false,
+        title: presenter.config.input.title
       });
 
       // numTubes + 1 to account for the intermediate barcode scan row
@@ -92,7 +94,8 @@ define([ 'extraction_pipeline/presenters/base_presenter'
         presenterData.push({
           display_remove:false,
           display_barcode:false,
-          display_labware:false
+          display_labware:false,
+          title: presenter.config.input.title
         });
       });
 

@@ -3,6 +3,7 @@
   <h3 class="pull-right">User Barcode: <%- templateData.user %></h3>
 </header>
 
+<h3 class="labwareTitle"><%- templateData.labwareTitle %></h3>
 <ol class="labware">
     <% _.each (templateData.batchSlots, function (index) { %>
     <li> <p><%- index %> - NO PRESENTER ASSOCIATED WITH THIS ITEM</p></li>
