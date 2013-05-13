@@ -19,10 +19,7 @@ define(['config'], function (config) {
       }
       return deferredS2Root.promise();
     },
-    resetS2Root:function () {
-      this.s2Root = undefined;
-      return this;
-    },
+
     setupPlaceholder:function (jquerySelection) {
       this.jquerySelection = jquerySelection;
       return this;

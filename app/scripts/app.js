@@ -20,11 +20,6 @@ define([ 'config'
         BusyBox.init();
       };
 
-      app.prototype.resetS2Root = function () {
-        delete this.s2Root;
-        return this;
-      };
-
       app.prototype.getS2Root = function () {
         var deferredS2Root = new $.Deferred();
         if (!this.s2Root) {
