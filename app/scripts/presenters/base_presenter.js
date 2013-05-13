@@ -35,8 +35,7 @@ define(['config'], function (config) {
 
       return config.printers;
     }
-  }
-          );
+  });
 
-          return BasePresenter;
+  return BasePresenter;
 });
