@@ -31,7 +31,7 @@ define([
       } else if (setupData.labware) {
         this.cache.push(setupData.labware);
         this.tubes.push(setupData.labware);
-      } else throw "This model should not be show without either batch or scanned labware";
+      } else throw "This model should not be created without either a batch or scanned labware";
     },
 
     addTube:function (newTube) {
