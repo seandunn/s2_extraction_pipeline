@@ -8,9 +8,9 @@ define([
 
   $.extend(SelectionPageModel, {
     init:function (owner, workflowConfig) {
-      this.owner = Object.create(owner);
+      this.owner = owner;
       this.tubes = [];
-      this.capacity = workflowConfig["capacity"] || 12;
+      this.capacity = workflowConfig.capacity || 12;
       this.config = workflowConfig;
 
       // This horrible thing is a refactoring in progress...
@@ -22,10 +22,11 @@ define([
     },
 
     setup: function(setupData){
+      this.user = setupData.user;
+
       if (setupData.batch) {
-        this.user = setupData.user;
         this.batch = batch;
-        if (batch) { this.cache.push(batch); }
+        this.cache.push(batch);
         setupInputs(this);
       } else if (setupData.labware) {
         this.cache.push(setupData.labware);
