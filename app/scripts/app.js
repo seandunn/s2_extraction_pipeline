@@ -20,13 +20,13 @@ define([ 'config'
         BusyBox.init();
       };
 
-      app.prototype.getS2Root = function () {
-        if (this.s2Root) return this.s2Root;
-        var app = this;
+      app.prototype.getS2Root = function() {
+        if (this.rootPromise === undefined) {
+          // User should be passed in here not hard-coded
+          this.rootPromise = S2Root.load({user:"username"});
+        }
 
-        return S2Root.load({user:"username"}).done(function(s2root) {
-          return  app.s2Root = s2root;
-        });
+        return this.rootPromise;
       };
 
       app.prototype.setupPresenter = function (inputModel) {

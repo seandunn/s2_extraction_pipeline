@@ -4,14 +4,8 @@ define(['config'], function (config) {
   var BasePresenter = Object.create(null);
 
   $.extend(BasePresenter, {
-    getS2Root:function () {
-      if (this.s2Root) return this.s2Root;
-
-      var that = this;
-      return this.owner.getS2Root().done(function (result) {
-        return that.s2Root = result;
-      });
-    },
+    // This should be registered with model not presenter
+    getS2Root: function() { return this.owner.getS2Root(); },
 
     setupPlaceholder:function (jquerySelection) {
       this.jquerySelection = jquerySelection;
