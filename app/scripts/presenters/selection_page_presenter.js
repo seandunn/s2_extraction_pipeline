@@ -13,13 +13,13 @@ define([ 'extraction_pipeline/presenters/base_presenter'
       });
     },
 
-    init:function (owner, presenterFactory, workflowConfig) {
+    init: function (owner, presenterFactory, workflowConfig) {
       this.presenterFactory = presenterFactory;
       this.model = Object.create(Model).init(this, workflowConfig);
       this.owner = owner;
       return this;
     },
-    setupPresenter:function (setupData, jquerySelection) {
+    setupPresenter: function (setupData, jquerySelection) {
       this.jquerySelection = jquerySelection;
 
       this.model.setup(setupData);
@@ -30,9 +30,12 @@ define([ 'extraction_pipeline/presenters/base_presenter'
     },
 
     makeBatchHandler: function() {
-      this.model.makeBatch().then(function(batch){
-        this.owner.childDone(this, "done", this.model);
-      });
+      var presenter = this;
+      return function(e){
+        presenter.model.makeBatch().then(function(batch){
+          presenter.owner.childDone(presenter, "done", presenter.model);
+        });
+      }
     },
 
     renderView:function () {
@@ -40,7 +43,7 @@ define([ 'extraction_pipeline/presenters/base_presenter'
 
       this.jquerySelection().html(template(this.model));
 
-      this.jquerySelection().on("click", "button.btn", this.makeBatchHandler);
+      this.jquerySelection().on("click", "button.btn", this.makeBatchHandler());
 
       // render subviews...
       _.each(this.presenters, function (presenter) {
@@ -137,3 +140,4 @@ define([ 'extraction_pipeline/presenters/base_presenter'
 
   return PagePresenter;
 });
+
