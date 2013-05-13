@@ -5,19 +5,12 @@ define(['config'], function (config) {
 
   $.extend(BasePresenter, {
     getS2Root:function () {
-      var deferredS2Root = new $.Deferred();
-      if (!this.s2Root) {
-        var that = this;
-        this.owner.getS2Root().done(function (result) {
-          that.s2Root = result;
-          deferredS2Root.resolve(result);
-        }).fail(function () {
-          deferredS2Root.reject();
-        });
-      } else {
-        deferredS2Root.resolve(this.s2Root);
-      }
-      return deferredS2Root.promise();
+      if (this.s2Root) return this.s2Root;
+
+      var that = this;
+      return this.owner.getS2Root().done(function (result) {
+        return that.s2Root = result;
+      });
     },
 
     setupPlaceholder:function (jquerySelection) {
@@ -28,13 +21,13 @@ define(['config'], function (config) {
     bindReturnKey: function (element, callback, errorCallback) {
       var presenter = this
 
-      return element.on("keypress", "input", function (e) {
-        if (e.which !== 13) return;
+      return element.on("keypress", "input", function(event) {
+        if (event.which !== 13) return;
 
-        if (/^\d{13}$/.exec(e.currentTarget.value) !== null) {
-          callback(e, element, presenter);
+        if (/^\d{13}$/.exec(event.currentTarget.value) !== null) {
+          callback(event, element, presenter);
         } else {
-          errorCallback(e, element, presenter);
+          errorCallback(event, element, presenter);
         }
       });
     },

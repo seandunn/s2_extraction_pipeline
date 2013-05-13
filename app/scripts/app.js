@@ -21,19 +21,12 @@ define([ 'config'
       };
 
       app.prototype.getS2Root = function () {
-        var deferredS2Root = new $.Deferred();
-        if (!this.s2Root) {
-          var that = this;
-          S2Root.load({user:"username"}).done(function (result) {
-            that.s2Root = result;
-            deferredS2Root.resolve(result);
-          }).fail(function () {
-                deferredS2Root.reject();
-              });
-        } else {
-          deferredS2Root.resolve(this.s2Root);
-        }
-        return deferredS2Root.promise();
+        if (this.s2Root) return this.s2Root;
+        var app = this;
+
+        return S2Root.load({user:"username"}).done(function(s2root) {
+          return  app.s2Root = s2root;
+        });
       };
 
       app.prototype.setupPresenter = function (inputModel) {
@@ -106,4 +99,4 @@ define([ 'config'
       };
 
       return app;
-    });
+});
