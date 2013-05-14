@@ -2,10 +2,8 @@
   <h3 id="process-title" class="pull-left"><%- templateData.config.processTitle %></h3>
   <h3 class="pull-right">User Barcode: <%- templateData.user %></h3>
 </header>
-
-<h3 class="labwareTitle"><%- templateData.labwareTitle %></h3>
 <ol class="labware">
-    <% _(templateData.numRows).times(function () { %>
+    <% _(templateData.capacity).times(function () { %>
     <li class="row"> <p>NO PRESENTER ASSOCIATED WITH THIS ITEM</p></li>
     <% }); %>
 </ol>
