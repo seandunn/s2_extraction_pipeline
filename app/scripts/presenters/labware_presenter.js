@@ -140,7 +140,7 @@ define(['config'
         this.view.hideRemoveButton();
       }
 
-      this.view.setTitle(this.labwareModel.title ? this.labwareModel.title : defaultTitles[this.labwareModel.expected_type]);
+      this.view.setTitle(this.labwareModel.title || defaultTitles[this.labwareModel.expected_type]);
       this.owner.childDone(this, "labwareRendered", {});
     },
 

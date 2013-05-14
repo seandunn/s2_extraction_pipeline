@@ -13,6 +13,9 @@ ol.labware {
   li:nth-child(odd) {
     background-color: #f9f9f9;
   }
+  li:before, li:after {
+    content: none;
+  }
 }
 
 svg text {
@@ -165,7 +168,6 @@ ul {
     display: none;
   }
 }
-
 div.row0 .title {
   display: block !important;
 }

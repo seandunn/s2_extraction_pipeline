@@ -5,8 +5,8 @@
 
 <h3 class="labwareTitle"><%- templateData.labwareTitle %></h3>
 <ol class="labware">
-    <% _.each (templateData.batchSlots, function (index) { %>
-    <li> <p><%- index %> - NO PRESENTER ASSOCIATED WITH THIS ITEM</p></li>
+    <% _(templateData.numRows).times(function () { %>
+    <li class="row"> <p>NO PRESENTER ASSOCIATED WITH THIS ITEM</p></li>
     <% }); %>
 </ol>
 <button class="btn pull-right">Continue</button>
