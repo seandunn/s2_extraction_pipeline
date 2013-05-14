@@ -9,6 +9,9 @@ ol.labware {
   margin-left: 0px;
   li {
     padding: 0px 10px 5px 0px;
+    .title  {
+      display: none;
+    }
   }
   li:nth-child(odd) {
     background-color: #f9f9f9;
