@@ -114,20 +114,22 @@ define([ 'extraction_pipeline/presenters/base_presenter'
     },
 
     childDone:function (child, action, data) {
+      var presenter = this;
+
       if (child === this.model) {
-        if (action === "modelUpdated") {
-          // TODO: use the data provided by the model to only update the relevant subpresenters...
-          this.setupSubPresenters();
-          this.renderView();
-        } else if (action === "batchSaved") {
+        if (action === "batchSaved") {
           this.owner.childDone(this, "done", this.model);
         }
       } else {
         if (action === "barcodeScanned") {
           this.model.addTubeFromBarcode(data.BC)
-          .fail(function() {
-            this.displayBarcodeError("Barcode not found");
-          });
+            .done(function() {
+              presenter.setupSubPresenters();
+              presenter.renderView();
+            })
+            .fail(function() {
+              this.displayBarcodeError("Barcode not found");
+            });
 
         } else if (action === "removeLabware") {
           this.model.removeTubeByUuid(data.resource.uuid);
