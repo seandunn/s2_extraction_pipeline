@@ -1,4 +1,6 @@
 define([], function () {
+  "use strict";
+
   (function ($) {
     // Allows the tests to wait for UI element to appear.
     if ($.fn.fakeUser) return; // make sure it is only added once
