@@ -81,14 +81,12 @@ define([
 
       });
 
-      it("can add a seminal labware, and then contains one tube", function () {
+      it("can add a labware, and then contains one tube", function () {
           var tube =results.get('tube1');
           expect(tube.uuid).toEqual("tube1_UUID");
-          spyOn(fakeOwner, "childDone");
-          m.setSeminalLabware(tube);
+          m.setup({labware:tube});
           expect(m.tubes.length).toEqual(1);
           expect(m.tubes[0].uuid).toEqual("tube1_UUID");
-          expect(fakeOwner.childDone).toHaveBeenCalled();
       });
     });
 
