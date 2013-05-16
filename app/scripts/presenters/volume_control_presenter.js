@@ -6,53 +6,6 @@ define(['config'
 ], function (config, BasePresenter, volumeControlPartialHtml, Model, PubSub) {
   'use strict';
 
-//  var userCallback = function(event, template, presenter){
-//    presenter.model.user = event.currentTarget.value;
-//
-//    template.find('.alert-error').addClass('hide');
-//    template.find("input").attr('disabled', true);
-//
-//    presenter.jquerySelectionForRack().
-//        find("input").
-//        removeAttr('disabled').
-//        focus();
-//  };
-
-//  var barcodeErrorCallback = function(errorText){
-//    var errorHtml = function(errorText){
-//      return $("<h4/>", {class: "alert-heading", text: errorText});
-//    };
-//
-//    return function(event, template, presenter){
-//      template.
-//          find('.alert-error').
-//          html(errorHtml(errorText)).
-//          removeClass('hide');
-//
-//      template.
-//          find('input').
-//          removeAttr('disabled');
-//    };
-//  };
-
-//  var labwareCallback = function(event, template, presenter){
-//    template.find("input").attr('disabled', true);
-//    template.find('.alert-error').addClass('hide');
-//
-//    var login = function(model){
-//      if (model.labware){
-//        presenter.owner.childDone(presenter, "login", model);
-//      } else {
-//        barcodeErrorCallback("Labware not found on system.")(undefined, template);
-//      }
-//    };
-//
-//    presenter.model
-//        .setLabwareFromBarcode(event.currentTarget.value)
-//        .then(login, login);  // Hack!  Login whether or not we find a batch...
-//    // Should be moved to SelectionPresenter.
-//  };
-
   var VolumeControlPresenter = Object.create(BasePresenter);
 
   $.extend(VolumeControlPresenter, {
@@ -71,12 +24,9 @@ define(['config'
     },
 
     initialPresenter: function () {
-      // Does nothing, for the moment!
-      //this.owner.childDone(this, 'disableBtn', this.config);
     },
 
     focus: function () {
-      // this.barcodePresenter.focus();
     },
 
     setupPresenter: function (setupData, jquerySelection) {
@@ -111,8 +61,26 @@ define(['config'
               "display_barcode": true
             }, thisPresenter.jquerySelectionForControlTube);
 
-            PubSub.subscribe("s2.labware.barcode_scanned", eventHandler(thisPresenter,thisPresenter.barcodeScanned));
-            PubSub.subscribe("s2.labware.file_dropped", eventHandler(thisPresenter,thisPresenter.fileDropped));
+            PubSub.subscribe("s2.labware.barcode_scanned", barcodeScannedEventHandler);
+            PubSub.subscribe("s2.labware.removed", controlLabwareRemovedEventHandler);
+            PubSub.subscribe("s2.step_presenter.end_clicked", makeTransferEventHandler);
+            PubSub.subscribe("s2.step_presenter.next_clicked", endProcessEventHandler);
+
+            function barcodeScannedEventHandler(event, source, eventData) {
+              thisPresenter.barcodeScanned(event, source, eventData);
+            }
+
+            function controlLabwareRemovedEventHandler(event, source, eventData) {
+              thisPresenter.controlLabwareRemoved(event, source, eventData);
+            }
+
+            function makeTransferEventHandler(event, source, eventData) {
+              thisPresenter.makeTransfer();
+            }
+
+            function endProcessEventHandler(event, source, eventData) {
+              thisPresenter.endProcess();
+            }
 
             thisPresenter.renderView();
           });
@@ -120,42 +88,141 @@ define(['config'
       return this;
     },
 
-    fileDropped: function (event, source, eventData){
-
-    },
-
     barcodeScanned: function (event, source, eventData) {
-      var d= $.Deferred();
-      var b = this.model
-          .fail(failureCallback("coudln't get the model"))
+      var thisPresenter = this;
+      thisPresenter.model
+          .fail(failureCallback("couldn't get the model"))
           .then(function (model) {
             return model.setControlSourceFromBarcode(eventData.BC);
           })
-          .fail(failureCallback("coudln't set the source control "))
-          .then(function(){
-            console.log("success2");
-          })
-          .fail(failureCallback("error2 "))
-          .then(function(){
-            console.log("success3");
-          })
-          .fail(failureCallback("error3"))
+          .fail(failureCallback("couldn't set the source control "))
+          .then(function (model) {
+            thisPresenter.controlPresenter.updateModel(model.controlSource);
+          });
+    },
 
+    controlLabwareRemoved: function (event, source, eventData) {
+      var thisPresenter = this;
+      thisPresenter.model
+          .fail(failureCallback("coudln't get the model"))
+          .then(function (model) {
+            model.removeControlSource();
+            return thisPresenter.controlPresenter.updateModel(model.controlSource);
+          })
+          .fail(failureCallback("coudln't remove the source control from the model."))
+    },
+
+    makeTransfer: function () {
+      var container = this.jquerySelection();
+      container.find('.dropzoneBox').hide();
+      container.find('.dropzone').unbind('click');
+      $(document).unbind('drop');
+      $(document).unbind('dragover');
+
+      this.controlPresenter.hideEditable();
+      // TODO: make the transfer for real !
+      this.message('success','The transfert was successful (Well... not really yet!). Click on the \'Next\' button to carry on.');
+      PubSub.publish("s2.step_presenter.disable_buttons", this, {buttons: [{action:"end"}]});
+      PubSub.publish("s2.step_presenter.enable_buttons", this, {buttons: [{action:"next"}]});
+    },
+
+    endProcess:function(){
+      var thisPresenter = this;
+      this.model.then(function(model){
+        PubSub.publish("s2.step_presenter.next_process", thisPresenter, {batch:model.batch});
+      });
+    },
+
+    responderCallback:function (fileContent) {
+      var thisPresenter = this;
+      thisPresenter.model
+          .then(function (model) {
+            return model.setRackContent(fileContent);
+          })
+          .fail(failureCallback("couldn't set the rack"))
+          .then(function(model){
+            thisPresenter.rackPresenter.updateModel(model.rack_data);
+            var volumeControlPosition = model.getVolumeControlPosition();
+            thisPresenter.rackPresenter.resourcePresenter.fillWell(volumeControlPosition,"blue");
+            if (model.isReady){
+              PubSub.publish("s2.step_presenter.enable_buttons", thisPresenter, {buttons: [{action:"end"}]});
+            }
+          })
     },
 
     renderView: function () {
-      this.jquerySelection().html(_.template(volumeControlPartialHtml)({}));
+      var thisPresenter = this;
+      var container = this.jquerySelection().html(_.template(volumeControlPartialHtml)({}));
       var rackLabwareView = this.rackPresenter.renderView();
       var controlLabwareView = this.controlPresenter.renderView();
 
-      //var errorCallback = barcodeErrorCallback('Barcode must be a 13 digit number.');
-      //var barcodeCallback = function () {};
+      var fileNameSpan = container.find('.filenameSpan');
 
-      //this.bindReturnKey(this.jquerySelectionForControlTube(), barcodeCallback, errorCallback );
-//      this.jquerySelectionForRack().append(this.bindReturnKey( this.labwareBCSubPresenter.renderView(), labwareCallback, errorCallback));
+      // add listeners to the hiddenFileInput
+      var hiddenFileInput = container.find('.hiddenFileInput');
+      hiddenFileInput.bind("change", handleInputFileChanged);
+      var dropzone = container.find('.dropzone');
+      dropzone.bind('click', handleClickOnDropZone); // forward the click to the hiddenFileInput
+      $(document).bind('drop', handleDropFileOnDropZone);
+      $(document).bind('dragover', handleDragFileOverDropZone);
+
+      function handleInputFile(fileHandle) {
+        // what to do when a file has been selected
+        var reader = new FileReader();
+        reader.onload = (function (fileEvent) {
+          return function (e) {
+            fileNameSpan.text(fileHandle.name);
+          }
+        })(fileHandle);
+        reader.onloadend = function (event) {
+          if (event.target.readyState === FileReader.DONE) {
+            thisPresenter.responderCallback(event.target.result);
+          }
+        };
+        reader.readAsText(fileHandle, "UTF-8");
+      }
+
+      function handleInputFileChanged(event) {
+        // what to do when the file selected by the hidden input changed
+        event.stopPropagation();
+        event.preventDefault();
+        handleInputFile(event.originalEvent.target.files[0]);
+      }
+
+      function handleClickOnDropZone(event) {
+        // what to do when one clicks on the drop zone
+        event.stopPropagation();
+        event.preventDefault();
+        if (hiddenFileInput) {
+          hiddenFileInput.click();
+        }
+      }
+
+      function handleDropFileOnDropZone(event) {
+        // what to do when one drops a file
+        event.stopPropagation();
+        event.preventDefault();
+        handleInputFile(event.originalEvent.dataTransfer.files[0]);
+      }
+
+      function handleDragFileOverDropZone(event) {
+        // what to do when one hovers over the dropzone
+        event.stopPropagation();
+        event.preventDefault();
+        if (event.target === dropzone[0]) {
+          dropzone.addClass('hover');
+        } else {
+          dropzone.removeClass('hover');
+        }
+      }
 
       return this;
     },
+
+    message: function(type, message) {
+      this.jquerySelection().find('.validationText').show().removeClass('alert-error alert-info alert-success').addClass('alert-' + type).html(message);
+    },
+
 
     childDone: function (child, action, data) {
     },
@@ -183,16 +250,10 @@ define(['config'
   };
 
   function failureCallback(msg) {
-    return function(error){
-      console.error(msg);
-      return { "error":msg, previousError:error };
+    return function (error) {
+      console.error(msg, error);
+      return { "error": msg, previousError: error };
     }
-  }
-
-  function eventHandler(context,callback){
-    return function (event, source, eventData) {
-      context.callback(event,source,eventData)    }
-
   }
 
   return VolumeControlPresenter;

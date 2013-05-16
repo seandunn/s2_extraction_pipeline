@@ -172,6 +172,9 @@ define(['config'
     viewDone: function(child, action, data) {
       if (action == "labwareRemoved") {
         this.owner.childDone(this, "removeLabware", { resource: this.labwareModel.resource });
+        PubSub.publish("s2.labware.removed", this, {
+          resource:  this.labwareModel.resource
+        });
         this.release();
         delete this.resource;
         delete this.resourcePresenter;
