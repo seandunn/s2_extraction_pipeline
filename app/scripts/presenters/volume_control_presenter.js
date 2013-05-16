@@ -114,12 +114,10 @@ define(['config'
 
     makeTransfer: function () {
       var thisPresenter = this;
-      var container = thisPresenter.jquerySelection();
-      container.find('.dropzoneBox').hide();
-      container.find('.dropzone').unbind('click');
+      thisPresenter.disableDropzone();
+
+      var container = this.jquerySelection();
       container.find('.component').trigger("s2.busybox.start_process");
-      $(document).unbind('drop');
-      $(document).unbind('dragover');
 
       thisPresenter.controlPresenter.hideEditable();
       // TODO: make the transfer for real !
@@ -177,21 +175,29 @@ define(['config'
           })
     },
 
-    renderView: function () {
-      var thisPresenter = this;
-      var container = this.jquerySelection().html(_.template(volumeControlPartialHtml)({}));
-      var rackLabwareView = this.rackPresenter.renderView();
-      var controlLabwareView = this.controlPresenter.renderView();
+    disableDropzone: function () {
+      var container = this.jquerySelection();
+      container.find('.dropzoneBox').hide();
+      container.find('.dropzone').unbind('click');
+      $(document).unbind('drop');
+      $(document).unbind('dragover');
+    },
 
-      var fileNameSpan = container.find('.filenameSpan');
+    enableDropzone: function () {
+      var thisPresenter = this;
+      var container = this.jquerySelection();
+      container.find('.dropzoneBox').show();
+
+      var dropzone = container.find('.dropzone');
 
       // add listeners to the hiddenFileInput
-      var hiddenFileInput = container.find('.hiddenFileInput');
-      hiddenFileInput.bind("change", handleInputFileChanged);
-      var dropzone = container.find('.dropzone');
       dropzone.bind('click', handleClickOnDropZone); // forward the click to the hiddenFileInput
       $(document).bind('drop', handleDropFileOnDropZone);
       $(document).bind('dragover', handleDragFileOverDropZone);
+      var fileNameSpan = container.find('.filenameSpan');
+
+      var hiddenFileInput = container.find('.hiddenFileInput');
+      hiddenFileInput.bind("change", handleInputFileChanged);
 
       function handleInputFile(fileHandle) {
         // what to do when a file has been selected
@@ -242,6 +248,32 @@ define(['config'
           dropzone.removeClass('hover');
         }
       }
+
+    },
+
+    renderView: function () {
+      var thisPresenter = this;
+      thisPresenter.jquerySelection().html(_.template(volumeControlPartialHtml)({}));
+      thisPresenter.rackPresenter.renderView();
+      thisPresenter.controlPresenter.renderView();
+
+
+      thisPresenter.model
+          .then(function (model) {
+            return model.inputs;
+          })
+          .then(function (inputs) {
+            var nbTubesInRack = _.keys(inputs[0].tubes).length;
+            if ( 96 <= nbTubesInRack ) {
+              thisPresenter.disableDropzone();
+              thisPresenter.jquerySelectionForControlTube().hide();
+              thisPresenter.message("info","The tube rack found in batch contains "+nbTubesInRack
+                  +" tubes. It is not possible to add a volume-control tube.");
+              // TODO : enable the possible to carry on to volume checking
+            } else {
+              thisPresenter.enableDropzone();
+            }
+          });
 
       return this;
     },
