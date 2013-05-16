@@ -1,5 +1,5 @@
 define([
-  'scripts/csv_parser'
+  'extraction_pipeline/lib/csv_parser'
   , 'config'
   , 'mapper/s2_root'
   , 'mapper_test/resource_test_helper'
