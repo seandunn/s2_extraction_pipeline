@@ -19,17 +19,19 @@ require.config({
     presenters:         'scripts/presenters/',
     config:             'test_config',
     spec:               'spec/',
+    lib:                'lib/',
     pipeline_testjson:  'json/'
   }
 });
  
 require(['domReady!'
+   ,'spec/fake_user_spec'
 //   ,'spec/app_spec'
    ,'spec/selection_page_model_spec'
     ,'spec/csv_parser_spec'
 //  , 'spec/default_page_presenter_spec'
 //   ,'spec/default_model_spec'
-   ,'spec/selection_page_presenter_spec'
+   ,'spec/selection_page_spec'
    ,'spec/workflow_engine_spec'
 //   ,'spec/kit_presenter_spec'
 //   ,'spec/scan_barcode_presenter_spec'
