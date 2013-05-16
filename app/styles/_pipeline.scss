@@ -9,9 +9,15 @@ ol.labware {
   margin-left: 0px;
   li {
     padding: 0px 10px 5px 0px;
+    .title  {
+      display: none;
+    }
   }
   li:nth-child(odd) {
     background-color: #f9f9f9;
+  }
+  li:before, li:after {
+    content: none;
   }
 }
 
@@ -86,7 +92,7 @@ ul {
   }
   .transferArrow {
     font-size: 6em;
-    padding-top: 100px;
+    padding-top: 60%;
   }
 }
 .rowDisabled {
@@ -159,4 +165,12 @@ ul {
   .fade.in {
     opacity: 1;
   }
+}
+[class*="row"] {
+  .title  {
+    display: none;
+  }
+}
+div.row0 .title {
+  display: block !important;
 }

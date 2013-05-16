@@ -13,10 +13,6 @@ define([
       this.capacity = workflowConfig.capacity || 12;
       this.config = workflowConfig;
 
-      // This horrible thing is a refactoring in progress...
-      this.batchSlots = [];
-      for (var i = 1; i <= this.capacity; i++) { this.batchSlots.push(i); };
-
       this.initialiseCaching();
       return this;
     },

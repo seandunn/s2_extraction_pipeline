@@ -55,12 +55,14 @@
     "processTitle": "Manual DNA and RNA Extraction",
     "input":        {
       "role":"samples.extraction.manual.dna_and_rna.input_tube_nap",
-      "model":"tubes"
+      "model":"tubes",
+      "title": "Input tube"
     },
     "output":       [
       {
       "role":       "samples.extraction.manual.dna_and_rna.binding_input_tube_nap",
-      "aliquotType":"NA+P"
+      "aliquotType":"NA+P",
+      "title": "Output tube"
     }
     ]
   },
@@ -90,20 +92,23 @@
       "defaultPrinter":"Tube printer",
       "input":         {
         "role": "samples.extraction.manual.dna_and_rna.binding_input_tube_nap",
-        "model":"tubes"
+        "model":"tubes",
+        "title": "Input tube"
       },
       "output":        [
         {
         "role":       "samples.extraction.manual.spin_column_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
-        "model":      "spin_columns"
+        "model":      "spin_columns",
+        "title":      "Binding Spin Column"
       },
       {
         "role":       "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap",
         "aliquotType":"RNA+P",
         "purpose":    "stock",
-        "model":      "tubes"
+        "model":      "tubes",
+        "title": "By-product tube"
       }
       ]
     }

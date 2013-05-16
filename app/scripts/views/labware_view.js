@@ -73,23 +73,8 @@ define(['text!extraction_pipeline/html_partials/labware_partial.html'], function
   }
 
   LabwareView.prototype.setTitle = function (titleString) {
-
-    var title = '';
-
-    // [sd9]Fixme Magic strings!
-    switch (titleString) {
-      case 'tube':
-        title = 'Tube';
-        break;
-      case 'spin_column':
-        title = 'Spin Column';
-        break;
-      case 'waste_tube':
-        title = 'Waste Tube';
-        break;
-    };
-
-    this.jquerySelector().find('.title').empty().append(title);
+    this.jquerySelector().find('.title').empty().append(titleString);
+    return this;
   };
 
   LabwareView.prototype.clear = function () {

@@ -93,7 +93,8 @@ define([
           input:           false,
           expected_type:   details.model.singularize(),
           display_remove:  previous,
-          display_barcode: previous
+          display_barcode: previous,
+          title:           details.title
         }
         return rowModel;
       }, {
@@ -105,7 +106,8 @@ define([
           resource:        input,
           expected_type:   that.config.input.model.singularize(),
           display_remove:  previous,
-          display_barcode: previous
+          display_barcode: previous,
+          title:           that.config.input.title
         }
       }).value();
     },

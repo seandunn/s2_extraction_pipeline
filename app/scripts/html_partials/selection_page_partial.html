@@ -2,10 +2,9 @@
   <h3 id="process-title" class="pull-left"><%- templateData.config.processTitle %></h3>
   <h3 class="pull-right">User Barcode: <%- templateData.user %></h3>
 </header>
-
 <ol class="labware">
-    <% _.each (templateData.batchSlots, function (index) { %>
-    <li> <p><%- index %> - NO PRESENTER ASSOCIATED WITH THIS ITEM</p></li>
+    <% _(templateData.capacity).times(function () { %>
+    <li> <p>NO PRESENTER ASSOCIATED WITH THIS ITEM</p></li>
     <% }); %>
 </ol>
 <button class="btn pull-right">Continue</button>
