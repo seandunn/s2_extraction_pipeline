@@ -2,7 +2,7 @@ define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'text!extraction_pipeline/html_partials/volume_control_partial.html'
   , 'extraction_pipeline/models/volume_control_model'
-  , 'extraction_pipeline/pubsub'
+  , 'extraction_pipeline/lib/pubsub'
 ], function (config, BasePresenter, volumeControlPartialHtml, Model, PubSub) {
   'use strict';
 
@@ -17,7 +17,6 @@ define(['config'
 //        removeAttr('disabled').
 //        focus();
 //  };
-
 
 //  var barcodeErrorCallback = function(errorText){
 //    var errorHtml = function(errorText){
@@ -57,26 +56,26 @@ define(['config'
   var VolumeControlPresenter = Object.create(BasePresenter);
 
   $.extend(VolumeControlPresenter, {
-    register:function (callback) {
+    register: function (callback) {
       callback('volume_control_presenter', function (owner, factory, initData) {
         return Object.create(VolumeControlPresenter).init(owner, factory, initData);
       });
     },
 
-    init: function(owner, factory, config) {
-      this.owner            = owner;
-      this.config           = config;
+    init: function (owner, factory, config) {
+      this.owner = owner;
+      this.config = config;
       this.presenterFactory = factory;
-      this.model            = Object.create(Model).init(this, config);
+      this.model = Object.create(Model).init(this, config);
       return this;
     },
 
-    initialPresenter: function() {
+    initialPresenter: function () {
       // Does nothing, for the moment!
       //this.owner.childDone(this, 'disableBtn', this.config);
     },
 
-    focus: function() {
+    focus: function () {
       // this.barcodePresenter.focus();
     },
 
@@ -85,7 +84,7 @@ define(['config'
       thisPresenter.jquerySelection = jquerySelection;
 
       thisPresenter.model
-          .then(function(model){
+          .then(function (model) {
             return model.setupModel(setupData);
           })
           .then(function () {
@@ -112,8 +111,8 @@ define(['config'
               "display_barcode": true
             }, thisPresenter.jquerySelectionForControlTube);
 
-            PubSub.subscribe("s2.labware.barcode_scanned", thisPresenter.barcodeScanned);
-
+            PubSub.subscribe("s2.labware.barcode_scanned", eventHandler(thisPresenter,thisPresenter.barcodeScanned));
+            PubSub.subscribe("s2.labware.file_dropped", eventHandler(thisPresenter,thisPresenter.fileDropped));
 
             thisPresenter.renderView();
           });
@@ -121,17 +120,33 @@ define(['config'
       return this;
     },
 
-    barcodeScanned:function(event, source, eventData){
-      this.model.setControlSourceFromBarcode(eventData.BC)
-          .then()
-          .fail();
+    fileDropped: function (event, source, eventData){
+
+    },
+
+    barcodeScanned: function (event, source, eventData) {
+      var d= $.Deferred();
+      var b = this.model
+          .fail(failureCallback("coudln't get the model"))
+          .then(function (model) {
+            return model.setControlSourceFromBarcode(eventData.BC);
+          })
+          .fail(failureCallback("coudln't set the source control "))
+          .then(function(){
+            console.log("success2");
+          })
+          .fail(failureCallback("error2 "))
+          .then(function(){
+            console.log("success3");
+          })
+          .fail(failureCallback("error3"))
+
     },
 
     renderView: function () {
       this.jquerySelection().html(_.template(volumeControlPartialHtml)({}));
       var rackLabwareView = this.rackPresenter.renderView();
       var controlLabwareView = this.controlPresenter.renderView();
-
 
       //var errorCallback = barcodeErrorCallback('Barcode must be a 13 digit number.');
       //var barcodeCallback = function () {};
@@ -142,19 +157,20 @@ define(['config'
       return this;
     },
 
-    childDone:function (child, action, data) {
+    childDone: function (child, action, data) {
     },
 
-    release: function(){}
+    release: function () {
+    }
 
   });
 
-  var barcodeErrorCallback = function(errorText){
-    var errorHtml = function(errorText){
+  var barcodeErrorCallback = function (errorText) {
+    var errorHtml = function (errorText) {
       return $("<h4/>", {class: "alert-heading", text: errorText});
     };
 
-    return function(event, template, presenter){
+    return function (event, template, presenter) {
       template.
           find('.alert-error').
           html(errorHtml(errorText)).
@@ -166,6 +182,18 @@ define(['config'
     };
   };
 
+  function failureCallback(msg) {
+    return function(error){
+      console.error(msg);
+      return { "error":msg, previousError:error };
+    }
+  }
+
+  function eventHandler(context,callback){
+    return function (event, source, eventData) {
+      context.callback(event,source,eventData)    }
+
+  }
 
   return VolumeControlPresenter;
 });

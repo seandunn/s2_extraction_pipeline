@@ -1,7 +1,7 @@
 define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/views/labware_view'
-  , 'extraction_pipeline/pubsub'
+  , 'extraction_pipeline/lib/pubsub'
 ], function (config, BasePresenter, LabwareView, PubSub) {
 
   var defaultTitles = {

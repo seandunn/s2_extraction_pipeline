@@ -34,6 +34,9 @@ define([
       return this.cache.fetchResourcePromiseFromBarcode(barcode)
           .then(function (rsc) {
             return thisModel.controlSource = rsc;
+          })
+          .fail(function(){
+            return {error:"Couldn't find the tube with barcode: "+barcode};
           });
     }
 
