@@ -113,43 +113,66 @@ define(['config'
     },
 
     makeTransfer: function () {
-      var container = this.jquerySelection();
+      var thisPresenter = this;
+      var container = thisPresenter.jquerySelection();
       container.find('.dropzoneBox').hide();
       container.find('.dropzone').unbind('click');
+      container.find('.component').trigger("s2.busybox.start_process");
       $(document).unbind('drop');
       $(document).unbind('dragover');
 
-      this.controlPresenter.hideEditable();
+      thisPresenter.controlPresenter.hideEditable();
       // TODO: make the transfer for real !
-      this.message('success','The transfert was successful (Well... not really yet!). Click on the \'Next\' button to carry on.');
-      PubSub.publish("s2.step_presenter.disable_buttons", this, {buttons: [{action:"end"}]});
-      PubSub.publish("s2.step_presenter.enable_buttons", this, {buttons: [{action:"next"}]});
+
+      thisPresenter.model
+          .then(function (model) {
+            return model.addVolumeControlToRack();
+          })
+          .fail(function (error) {
+            thisPresenter.message('error', error.message);
+            container.find('.component').trigger("s2.busybox.end_process");
+            PubSub.publish("s2.step_presenter.disable_buttons", thisPresenter, {buttons: [
+              {action: "end"}
+            ]});
+          })
+          .then(function (model) {
+            thisPresenter.message('success', 'The transfert was successful. Click on the \'Done\' button to carry on.');
+            container.find('.component').trigger("s2.busybox.end_process");
+            PubSub.publish("s2.step_presenter.disable_buttons", thisPresenter, {buttons: [
+              {action: "end"}
+            ]});
+            PubSub.publish("s2.step_presenter.enable_buttons", thisPresenter, {buttons: [
+              {action: "next"}
+            ]});
+          })
     },
 
-    endProcess:function(){
+    endProcess: function () {
       var thisPresenter = this;
-      this.model.then(function(model){
-        PubSub.publish("s2.step_presenter.next_process", thisPresenter, {batch:model.batch});
+      this.model.then(function (model) {
+        PubSub.publish("s2.step_presenter.next_process", thisPresenter, {batch: model.batch});
       });
     },
 
-    responderCallback:function (fileContent) {
+    responderCallback: function (fileContent) {
       var thisPresenter = this;
       thisPresenter.model
           .then(function (model) {
             thisPresenter.message();
             return model.setRackContent(fileContent);
           })
-          .fail(function(error){
+          .fail(function (error) {
             thisPresenter.rackPresenter.resourcePresenter.resetWeels();
-            thisPresenter.message('error',error.message);
+            thisPresenter.message('error', error.message);
           })
-          .then(function(model){
+          .then(function (model) {
             thisPresenter.rackPresenter.updateModel(model.rack_data);
-            var volumeControlPosition = model.getVolumeControlPosition();
-            thisPresenter.rackPresenter.resourcePresenter.fillWell(volumeControlPosition,"blue");
-            if (model.isReady){
-              PubSub.publish("s2.step_presenter.enable_buttons", thisPresenter, {buttons: [{action:"end"}]});
+            var volumeControlPosition = model.findVolumeControlPosition();
+            thisPresenter.rackPresenter.resourcePresenter.fillWell(volumeControlPosition, "blue");
+            if (model.isReady) {
+              PubSub.publish("s2.step_presenter.enable_buttons", thisPresenter, {buttons: [
+                {action: "end"}
+              ]});
             }
           })
     },
@@ -223,21 +246,20 @@ define(['config'
       return this;
     },
 
-    message: function(type, message) {
-      if (!type){
+    message: function (type, message) {
+      if (!type) {
         this.jquerySelection()
             .find('.validationText')
             .hide();
       } else {
-      this.jquerySelection()
-          .find('.validationText')
-          .show()
-          .removeClass('alert-error alert-info alert-success')
-          .addClass('alert-' + type)
-          .html(message);
+        this.jquerySelection()
+            .find('.validationText')
+            .show()
+            .removeClass('alert-error alert-info alert-success')
+            .addClass('alert-' + type)
+            .html(message);
       }
     },
-
 
     childDone: function (child, action, data) {
     },

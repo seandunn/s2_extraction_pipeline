@@ -1,7 +1,8 @@
 define([
   'extraction_pipeline/models/base_page_model'
+  , 'mapper/operations'
   , 'extraction_pipeline/lib/csv_parser'
-], function (BasePageModel, CSVParser) {
+], function (BasePageModel, Operations, CSVParser) {
   'use strict';
 
   function deferredHelper(callback) {
@@ -37,7 +38,7 @@ define([
     init: function (owner, config) {
       this.owner = owner;
       this.config = config;
-      this.input = $.Deferred();
+      this.inputs = $.Deferred();
       this.output = [];
       this.isReady = false;
 
@@ -57,7 +58,7 @@ define([
             reject(deferred, {message: error.message, previous_error: error});
           })
           .then(function (inputs) {
-            thisModel.input.resolve(inputs);
+            thisModel.inputs.resolve(inputs);
             return deferred.resolve(thisModel);
           });
       return deferred.promise();
@@ -83,7 +84,7 @@ define([
       return deferred.promise();
     },
 
-    removeControlSource:function(){
+    removeControlSource: function () {
       delete this.controlSource;
       this.isReady = false;
       return $.Deferred().resolve(this).promise();
@@ -118,22 +119,116 @@ define([
       return deferred.promise();
     },
 
-    getVolumeControlPosition: function () {
+    findVolumeControlPosition: function () {
       var keys = _.keys(this.rack_data.tubes);
       if (keys.length < 96) {
-        return getNextToLastPosition(getLastPositions(keys));
+        return this.volumeControlPosition = getNextToLastPosition(getLastPositions(keys));
       } else {
         return null;
       }
     },
 
-    addVolumeControlToRack:function(){
+    addVolumeControlToRack: function () {
+      var deferred = $.Deferred();
+      var thisModel = this;
+      thisModel.createControlTube()
+          .fail(function (error) {
+            reject(deferred, {message: error.message, previousError: error});
+          }).then(function (controlTube) {
+            thisModel.controlTube = controlTube;
+            thisModel.cache.push(controlTube);
+            var tubesLocation = {tubes: {}};
+            tubesLocation.tubes[thisModel.volumeControlPosition] = controlTube.uuid;
+            return thisModel.inputs
+                .fail(function () {
+                  reject(deferred, {message: "Couldn't get the input resources!!!"});
+                })
+                .then(function (inputs) {
+                  return inputs[0].update(tubesLocation);
+                })
+          })
+          .fail(function () {
+            reject(deferred, {message: "Couldn't add the new control tube."});
+          })
+          .then(function(){
+            return thisModel.updateRoles();
+          })
+          .fail(function (error) {
+            reject(deferred, {message: error.message, previous_error: error});
+          })
+          .then(function () {
+            deferred.resolve(thisModel);
+          });
+
+      return deferred.promise();
+    },
+
+    createControlTube: function () {
+      var deferred = $.Deferred();
+      var thisModel = this;
+      thisModel.owner.getS2Root()
+          .then(function (root) {
+            var attributes = {
+              "aliquots": [
+                {
+                  "sample_uuid": thisModel.controlSource.uuid,
+                  "type":        "NA",
+                  "quantity":    5
+                }
+              ]
+            };
+            return root[thisModel.config.output[1].model].create(attributes);
+          })
+          .fail(function () {
+            deferred.reject({message: "Couldn't register the new control tube."});
+          })
+          .then(function (controlTube) {
+            deferred.resolve(controlTube);
+          });
+      return deferred.promise();
+    },
+
+    updateRoles: function () {
       var deferred = $.Deferred();
 
+      var thisModel = this;
 
+      function makeJSONUpdateFor(role, uuid, event) {
+        var updateJson = { items: {} };
+        updateJson.items[role] = {};
+        updateJson.items[role][uuid] = {
+          event: event
+        };
+        return updateJson;
+      }
+
+      thisModel.inputs
+          .fail(function (error) {
+            reject(deferred, {message: "Couldn't get the input items!!"});
+          })
+          .then(function (inputs) {
+            var rack = inputs[0];
+            return inputs[0].order()
+                .then(function (order) {
+                  return order.update(makeJSONUpdateFor(thisModel.config.input.role, rack.uuid, "unuse"))
+                })
+                .then(function (order) {
+                  return order.update(makeJSONUpdateFor(thisModel.config.output[0].role, rack.uuid, "start"))
+                })
+                .then(function (order) {
+                  return order.update(makeJSONUpdateFor(thisModel.config.output[0].role, rack.uuid, "complete"))
+                })
+                .fail(function (error) {
+                  reject(deferred, {message: "Couldn't update the rack role"});
+                })
+                .then(function () {
+                  deferred.resolve(thisModel);
+                });
+          });
 
       return deferred.promise();
     }
+
   });
 
   function getLastPositions(positions) {
@@ -163,7 +258,7 @@ define([
   function checkFileValidity(model, locationVolumeData) {
     var deferred = $.Deferred();
 
-    model.input.then(function (inputs) {
+    model.inputs.then(function (inputs) {
       var arrayOfRackLocations = _.map(locationVolumeData.array, function (volItem) {
         return volItem[0];
       });
@@ -171,9 +266,9 @@ define([
       var nbOfTubesInRack = arrayOfRackLocations.length;
 
       if (nbOfTubesInRack !== expectedNbOfTubes) {
-        reject(deferred, {message:  "The number of tube is not correct. The current batch" +
-                                        " contains " + expectedNbOfTubes + " tubes, while the " +
-                                        "current volume file contains " + nbOfTubesInRack + " tubes!"});
+        reject(deferred, {message: "The number of tube is not correct. The current batch" +
+                                       " contains " + expectedNbOfTubes + " tubes, while the " +
+                                       "current volume file contains " + nbOfTubesInRack + " tubes!"});
       }
       deferred.resolve(model);
     });
