@@ -43,7 +43,7 @@ define([ 'extraction_pipeline/presenters/base_presenter'
 
       this.jquerySelection().html(template(this.model));
 
-      this.jquerySelection().on("click", "button.btn", this.makeBatchHandler());
+      this.jquerySelection().find("button.btn").on("click", this.makeBatchHandler());
 
       // render subviews...
       _.each(this.presenters, function (presenter) {
@@ -112,7 +112,7 @@ define([ 'extraction_pipeline/presenters/base_presenter'
     },
 
     release:function () {
-      this.jquerySelection().empty();
+      this.jquerySelection().empty().off();
       return this;
     },
 
