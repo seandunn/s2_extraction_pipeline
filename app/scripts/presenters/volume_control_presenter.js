@@ -56,7 +56,7 @@ define(['config'
 
             thisPresenter.controlPresenter.setupPresenter({
               "expected_type":   "tube",
-              "display_labware": true,
+              "display_labware": false,
               "display_remove":  true,
               "display_barcode": true
             }, thisPresenter.jquerySelectionForControlTube);
