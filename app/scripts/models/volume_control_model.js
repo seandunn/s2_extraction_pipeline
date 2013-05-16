@@ -86,6 +86,7 @@ define([
     removeControlSource:function(){
       delete this.controlSource;
       this.isReady = false;
+      return $.Deferred().resolve(this).promise();
     },
 
     setRackContent: function (dataAsTxt) {
@@ -124,6 +125,14 @@ define([
       } else {
         return null;
       }
+    },
+
+    addVolumeControlToRack:function(){
+      var deferred = $.Deferred();
+
+
+
+      return deferred.promise();
     }
   });
 
@@ -142,34 +151,32 @@ define([
   }
 
   function getNextToLastPosition(lastElement) {
+    var nextElement;
     if (lastElement[2] < 12) {
-      return lastElement[1] + (lastElement[2] + 1)
-    } //else {
-    return String.fromCharCode((lastElement[1].charCodeAt(0) + 1)) + "1";
-    //}
+      nextElement = lastElement[1] + (lastElement[2] + 1)
+    } else {
+      nextElement = String.fromCharCode((lastElement[1].charCodeAt(0) + 1)) + "1";
+    }
+    return nextElement;
   }
 
   function checkFileValidity(model, locationVolumeData) {
     var deferred = $.Deferred();
 
     model.input.then(function (inputs) {
-      var message, expectedNbOfTubes;
-
       var arrayOfRackLocations = _.map(locationVolumeData.array, function (volItem) {
         return volItem[0];
       });
-      expectedNbOfTubes = _.keys(inputs[0].tubes).length;
+      var expectedNbOfTubes = _.keys(inputs[0].tubes).length;
       var nbOfTubesInRack = arrayOfRackLocations.length;
 
       if (nbOfTubesInRack !== expectedNbOfTubes) {
-        message = "The number of tube is not correct. The current batch" +
-            " contains " + expectedNbOfTubes + " tubes, while the " +
-            "current volume file contains " + nbOfTubesInRack + " tubes!";
-        reject(deferred, {message: message});
+        reject(deferred, {message:  "The number of tube is not correct. The current batch" +
+                                        " contains " + expectedNbOfTubes + " tubes, while the " +
+                                        "current volume file contains " + nbOfTubesInRack + " tubes!"});
       }
       deferred.resolve(model);
     });
-
     return deferred.promise();
   }
 

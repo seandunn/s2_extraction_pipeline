@@ -137,9 +137,13 @@ define(['config'
       var thisPresenter = this;
       thisPresenter.model
           .then(function (model) {
+            thisPresenter.message();
             return model.setRackContent(fileContent);
           })
-          .fail(failureCallback("couldn't set the rack"))
+          .fail(function(error){
+            thisPresenter.rackPresenter.resourcePresenter.resetWeels();
+            thisPresenter.message('error',error.message);
+          })
           .then(function(model){
             thisPresenter.rackPresenter.updateModel(model.rack_data);
             var volumeControlPosition = model.getVolumeControlPosition();
@@ -220,7 +224,18 @@ define(['config'
     },
 
     message: function(type, message) {
-      this.jquerySelection().find('.validationText').show().removeClass('alert-error alert-info alert-success').addClass('alert-' + type).html(message);
+      if (!type){
+        this.jquerySelection()
+            .find('.validationText')
+            .hide();
+      } else {
+      this.jquerySelection()
+          .find('.validationText')
+          .show()
+          .removeClass('alert-error alert-info alert-success')
+          .addClass('alert-' + type)
+          .html(message);
+      }
     },
 
 
