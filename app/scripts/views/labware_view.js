@@ -1,4 +1,5 @@
 define(['text!extraction_pipeline/html_partials/labware_partial.html'], function (labwarePartialHtml) {
+
   'use strict';
 
   function getKey(e) {
