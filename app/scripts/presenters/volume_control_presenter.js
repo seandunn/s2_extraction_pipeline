@@ -120,7 +120,6 @@ define(['config'
       container.find('.component').trigger("s2.busybox.start_process");
 
       thisPresenter.controlPresenter.hideEditable();
-      // TODO: make the transfer for real !
 
       thisPresenter.model
           .then(function (model) {
