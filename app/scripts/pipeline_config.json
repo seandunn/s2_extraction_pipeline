@@ -945,6 +945,47 @@
     }
     ]
   },
+
+  {
+    "accepts":       [ "TEMP_input_role_for_volume_control" ],
+    "presenterName": "step_presenter",
+    "buttons":       [
+      {
+        "action": "end",
+        "title":  "Add control"
+      },
+      {
+        "action": "next",
+        "title":  "Done"
+      }
+    ],
+    "processTitle":  "Volume control",
+    "presenters":    [
+      {
+        "presenterName":  "volume_control_presenter",
+        "defaultPrinter": "Tube Printer",
+        "input":          {
+          "role":  "TEMP_input_role_for_volume_control",
+          "model": "tube_racks"
+        },
+        "output":         [
+          {
+            "role":        "TEMP_output_role_for_volume_rack",
+            "aliquotType": "DNA",
+            "purpose":     "stock",
+            "model":       "tube_racks"
+          },
+          {
+            "role":        "TEMP_output_role_for_volume_control_tube",
+            "aliquotType": "TEMP",
+            "purpose":     "TEMP",
+            "model":       "tubes"
+          }
+        ]
+      }
+    ]
+  },
+
   {
     "accepts":       [ "samples.racks.stock.dna" ],
     "presenterName": "step_presenter",
