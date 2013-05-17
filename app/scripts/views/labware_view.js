@@ -51,7 +51,7 @@ define(['text!extraction_pipeline/html_partials/labware_partial.html'], function
   };
 
   LabwareView.prototype.hideRemoveButton = function () {
-    this.jquerySelector().find('.removeButton').css('display', 'none');
+    this.jquerySelector().find('.removeButton').hide();
   };
 
   LabwareView.prototype.hideBarcodeEntry = function () {
