@@ -61,8 +61,8 @@ define([
       case 'tube':        return this.presenters.createTubePresenter(owner);       break;
       case 'spin_column': return this.presenters.createSpinColumnPresenter(owner); break;
       case 'waste_tube':  return this.presenters.createWasteTubePresenter(owner);  break;
-      case 'tube_rack':        return this.presenters.createRackPresenter(owner);       break;
-      case 'gel':   return this.presenters.createGelPresenter(owner);       break;
+      case 'tube_rack':   return this.presenters.createRackPresenter(owner);       break;
+      case 'gel':         return this.presenters.createGelPresenter(owner);        break;
       default:            debugger;
     }
   };
