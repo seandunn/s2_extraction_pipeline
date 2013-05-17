@@ -38,11 +38,11 @@ define([
                 model.owner.childDone(model, 'saved', {});
               })
               .fail(function () {
-                model.owner.childDone(model, 'error', {message:"Couldn't save the kit"});
+                $('body').trigger('s2.status.error', "Couldn't save the kit'");
               })
           })
           .fail(function () {
-            model.owner.childDone(model, 'error', {message:"Kit is not valid"});
+            $('body').trigger('s2.status.error', "Kit is not valid");
           });
       }
     }

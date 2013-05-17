@@ -59,11 +59,6 @@ define([ 'config'
         return this;
       };
 
-      App.prototype.displayError = function (message) {
-        bootbox.alert(message);
-        return this;
-      };
-
       App.prototype.childDone = function (child, action, data) {
         console.log("A child of App (", child, ") said it has done the following action '" + action + "' with data :", data);
 
@@ -72,8 +67,6 @@ define([ 'config'
           if (action == "done") {
             $('html, body').animate({scrollTop:0}, 'slow');
             application.updateModel(data);
-          } else if (action == "error") {
-            application.displayError(data.message);
           } else if (action == "login") {
             application.updateModel(data);
           } else if (action == "foundNextPresenter") {

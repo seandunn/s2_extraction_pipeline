@@ -57,7 +57,7 @@ define([
       setupInputs(model).then(function() {
         model.owner.childDone(model, "batchAdded");
       }).fail(function() {
-        model.owner.childDone(model, "error", {message:"Couldn't load the batch resource"});
+          $('body').trigger('s2.status.error', "Couldn't load the batch resource");
       });
     },
 

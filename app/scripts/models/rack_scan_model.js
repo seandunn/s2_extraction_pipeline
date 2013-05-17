@@ -37,7 +37,7 @@ define([
             return state.labware;
           })
           .fail(function () {
-            model.owner.childDone(model, "error", {message:"impossible to create the rack."});
+            $('body').trigger('s2.status.error', "Impossible to create the rack.");
           });
     },
 
@@ -84,7 +84,7 @@ define([
             model.owner.childDone(model, "transferDone", {});
 
           }).fail(function () {
-            model.owner.childDone(model, "error", {message:"An error occured during the transfer process!<BR/> Contact the administrator of the system."});
+            $('body').trigger('s2.status.error', "An error occured during the transfer process! Contact the administrator of the system.");
           });
     },
 
@@ -120,7 +120,7 @@ define([
           model.owner.childDone(model, "fileValid", {model: tube_rack, message: 'The file has been processed properly. Click on the \'Start\' button to validate the process.'})
         })
         .fail(function () {
-          model.owner.childDone(model, "error", {message:"Impossible to find the required resources. Contact the system administrator."})
+            $('body').trigger('s2.status.error', "Impossible to find the required resources. Contact the system administrator.")
         });
       }
     },
@@ -133,7 +133,7 @@ define([
         model.owner.childDone(model, "batchAdded");
       })
       .fail(function () {
-        model.owner.childDone(model, "error", {message:"couldn't load the batch resources!"});
+        $('body').trigger('s2.status.error', "Couldn't load the batch resources!");
       });
     },
     setUser:function (user) {

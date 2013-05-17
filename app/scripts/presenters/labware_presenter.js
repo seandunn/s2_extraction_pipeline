@@ -33,12 +33,12 @@ define(['config'
       });
     },
 
-    init:function (owner, presenterFactory) {
+    init: function (owner, presenterFactory) {
       this.owner = owner;
       this.presenterFactory = presenterFactory;
       return this;
     },
-    setupPresenter:function (setupData, jquerySelection) {
+    setupPresenter: function (setupData, jquerySelection) {
       this.setupPlaceholder(jquerySelection);
       this.labwareModel = Object.create(LabwareModel).init(this, setupData);
 
@@ -47,23 +47,23 @@ define(['config'
       return this;
     },
 
-    setupPlaceholder:function (jquerySelection) {
+    setupPlaceholder: function (jquerySelection) {
       this.jquerySelection = jquerySelection;
       return this;
     },
 
-    setupView:function () {
+    setupView: function () {
       this.view = new LabwareView(this, this.jquerySelection);
       return this;
     },
 
-    updateModel:function (newResource) {
+    updateModel: function (newResource) {
       this.labwareModel.resource = newResource;
       this.childDone(this.labwareModel, 'resourceUpdated', {});
       return this;
     },
 
-    setupSubPresenters:function () {
+    setupSubPresenters: function () {
       if (!this.resourcePresenter) {
         var type = this.labwareModel.expected_type;
       }
@@ -71,7 +71,7 @@ define(['config'
         type = this.labwareModel.resource.resourceType;
       }
       if (this.labwareModel.expected_type && type != this.labwareModel.expected_type) {
-        //TODO: Set up error message here
+        throw "type declaration mismatch! Check the type is correctly entered in the pipeline config for this page.";
       } else {
         if (this.labwareModel.displayLabware()) {
           this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
@@ -84,7 +84,7 @@ define(['config'
       return this;
     },
 
-    setupSubModel:function () {
+    setupSubModel: function () {
       //if (this.model) {
       var that = this;
 
@@ -112,7 +112,7 @@ define(['config'
       }
     },
 
-    renderView:function () {
+    renderView: function () {
       this.view.clear();
       this.setupSubModel();
 
@@ -147,22 +147,22 @@ define(['config'
     isSpecial: function() {
       return specialType(this.labwareModel.expected_type);
     },
-    isComplete:function () {
+    isComplete: function () {
       return !this.isSpecial() && this.labwareModel.resource;
     },
 
-    labwareEnabled:function (isEnabled) {
+    labwareEnabled: function (isEnabled) {
       this.view.labwareEnabled(isEnabled);
       return this;
     },
 
-    release:function () {
+    release: function () {
       if (this.view) {
         this.view.clear();
       }
     },
 
-    childDone:function (child, action, data) {
+    childDone: function (child, action, data) {
       if (child === this.view) {
         this.viewDone(child, action, data);
       } else if (child === this.labwareModel) {
@@ -200,24 +200,22 @@ define(['config'
       }
     },
 
-    barcodeFocus:function() {
+    barcodeFocus: function() {
       this.jquerySelection().find('input').focus();
     },
     hideEditable: function() {
       this.view.hideBarcodeEntry();
       this.view.hideRemoveButton();
     },
-    displayErrorMessage:function (message) {
+    displayErrorMessage: function (message) {
       var selection = this.jquerySelection().find('.alert-error');
       var text = 'Error!';
 
-      if (message) {
-        text += message;
-      }
+      text += message;
 
       var tmp = $('<h4/>', {
-        class:'alert-heading',
-        text:text
+        class: 'alert-heading',
+        text: text
       });
 
       tmp.appendTo(selection.empty());
