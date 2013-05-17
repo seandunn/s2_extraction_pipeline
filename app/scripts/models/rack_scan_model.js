@@ -8,7 +8,7 @@ define([
   var Model = Object.create(BasePageModel);
 
   $.extend(Model, {
-    init:function (owner, config) {
+    init: function (owner, config) {
       this.owner = owner;
       this.config = config;
       this.inputs = $.Deferred();
@@ -16,7 +16,7 @@ define([
       this.initialiseCaching();
       return this;
     },
-    createOutputs:function () {
+    createOutputs: function () {
       var model = this;
       var root;
       return model.owner.getS2Root()
@@ -27,9 +27,9 @@ define([
                 model.config.output[0].aliquotType,
                 model.config.output[0].purpose,
                 {
-                  number_of_rows:8,
-                  number_of_columns:12,
-                  tubes:model.preparedTransferData
+                  number_of_rows:     8,
+                  number_of_columns:  12,
+                  tubes:              model.preparedTransferData
                 });
           }).then(function (state) {
             model.cache.push(state.labware);
@@ -41,7 +41,7 @@ define([
           });
     },
 
-    fire:function () {
+    fire: function () {
       var model = this;
       function makeJSONUpdateFor(role,uuid,event) {
         var updateJson = { items: {} };
@@ -89,7 +89,7 @@ define([
     },
 
 
-    analyseFileContent:function (data) {
+    analyseFileContent: function (data) {
       var locationsSortedByBarcode = CSVParser.convertCSVDataToJSON(data.csvAsTxt);
       var model = this;
       var results = checkFileValidity(model, locationsSortedByBarcode);
@@ -124,7 +124,7 @@ define([
         });
       }
     },
-    setBatch:function (batch) {
+    setBatch: function (batch) {
       this.cache.push(batch);
       this.batch = batch;
       var model = this;
@@ -136,7 +136,7 @@ define([
         $('body').trigger('s2.status.error', "Couldn't load the batch resources!");
       });
     },
-    setUser:function (user) {
+    setUser: function (user) {
       this.user = user;
       this.owner.childDone(this, "userAdded");
     }
@@ -146,17 +146,17 @@ define([
     var inputs = [];
     return that.batch.items.then(function (items) {
       return $.when.apply(null,
-                          _.chain(items)
-                          .filter(function (item) {
-                            return item.role === that.config.input.role && item.status === 'done';
-                          })
-                          .map(function (item) {
-                            return that.cache.fetchResourcePromiseFromUUID(item.uuid)
-                            .then(function (resource) {
-                              inputs.push(resource);
-                            });
-                          })
-                          .value());
+                  _.chain(items)
+                  .filter(function (item) {
+                    return item.role === that.config.input.role && item.status === 'done';
+                  })
+                  .map(function (item) {
+                    return that.cache.fetchResourcePromiseFromUUID(item.uuid)
+                    .then(function (resource) {
+                      inputs.push(resource);
+                    });
+                  })
+                  .value());
     })
     .then(function () {
       return that.inputs.resolve(inputs);
@@ -199,7 +199,7 @@ define([
         "</ul>";
     }
 
-    return {action:action, status:status, data:{message:message}};
+    return {action: action, status: status, data: {message: message}};
   }
 
   function prepareTransferDataPromise(model, locationsSortedByBarcode) {

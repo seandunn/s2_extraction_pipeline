@@ -7,7 +7,7 @@ define([
   var Presenter = Object.create(Base);
 
   _.extend(Presenter, {
-    register:function (callback) {
+    register: function (callback) {
       callback('step_presenter', function () {
         var instance = Object.create(Presenter);
         Presenter.init.apply(instance, arguments);
@@ -15,23 +15,23 @@ define([
       });
     },
 
-    init:function (owner, factory, config) {
+    init: function (owner, factory, config) {
       this.owner = owner;
       this.config = config;
       this.factory = factory;
 
       this.config.buttons = this.config.buttons || [
-        {action:"print", title:"Print labels"  },
-        {action:"start", title:"Start process" },
-        {action:"end", title:"End process"   },
-        {action:"next", title:"Next"          }
+        {action: "print", title: "Print labels"  },
+        {action: "start", title: "Start process" },
+        {action: "end", title: "End process"   },
+        {action: "next", title: "Next"          }
       ];
 
       var presenter = this;
       return this;
     },
 
-    setupPresenter:function (model, selector) {
+    setupPresenter: function (model, selector) {
       var presenter = this;
       this.selector = selector;
       this.batch    = model.batch;
@@ -42,12 +42,13 @@ define([
       this.setupSubPresenters();
       return this;
     },
-    setupSubPresenters:function () {
+
+    setupSubPresenters: function () {
       var presenter = this;
       presenter.presenters = _.chain(presenter.config.presenters).map(function (config, index) {
         var subPresenter = presenter.factory.create(config.presenterName, presenter, config);
         subPresenter.setupPresenter({
-          batch:presenter.batch
+          batch: presenter.batch
         }, (function (i) {
           return function () {
             return presenter.selector().find('#step' + i);
@@ -61,30 +62,33 @@ define([
       presenter.view.selectPrinter(presenter.activePresenter.config.defaultPrinter);
       presenter.activePresenter.focus();
     },
-    setupSubModel:function () {
+
+    setupSubModel: function () {
       return this;
     },
 
-    setupView:function () {
+    setupView: function () {
       this.view = new View(this, this.selector);
       this.view.setPrinterList(this.printerList());
       return this;
     },
-    release:function () {
+
+    release: function () {
       this.view.clear();
       return this;
     },
-    renderView:function () {
+
+    renderView: function () {
 
       this.view.renderView({
-        user:this.user,
-        processTitle:this.config.processTitle,
-        buttons:this.config.buttons
+        user:         this.user,
+        processTitle: this.config.processTitle,
+        buttons:      this.config.buttons
       });
       return this;
     },
 
-    childDone:function (child, action, data) {
+    childDone: function (child, action, data) {
       var presenter = this;
       var btnDetailsList;
 
@@ -96,7 +100,7 @@ define([
         var index = _.indexOf(this.presenters, child);
         if (index !== -1) {
           var activeSubPresenter = presenter.presenters[index + 1] || {
-            previousDone:function () {
+            previousDone: function () {
               presenter.owner.childDone.apply(presenter.owner, arguments);
             }
           };
@@ -120,7 +124,7 @@ define([
       }
     },
 
-    changeButtonsVisibility:function (action, data) {
+    changeButtonsVisibility: function (action, data) {
       var btnDetailsList;
       var presenter = this;
       btnDetailsList = data.buttons || this.config.buttons;

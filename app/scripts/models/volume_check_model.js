@@ -16,6 +16,7 @@ define([
       this.initialiseCaching();
       return this;
     },
+
     analyseFileContent: function (data) {
       var locationVolumeData = CSVParser.volumeCsvToArray(data.csvAsTxt);
 

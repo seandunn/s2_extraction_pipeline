@@ -27,6 +27,5 @@ require(['extraction_pipeline/app',
     var theApp = new App(new PresenterFactory());
 
     theApp.setupPresenter();
-
 });
 

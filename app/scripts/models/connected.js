@@ -84,7 +84,7 @@ define([
       }
     },
 
-    getRowModel:function (rowNum, input) {
+    getRowModel: function (rowNum, input) {
       var that = this, previous = this.previous && this.ready;
       return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {
         var details = nameToDetails[1];
@@ -224,7 +224,7 @@ define([
           that.owner.childDone(that, 'failedOperation', {});
         });
       });
-    },
+    }
   });
 
   return Model;

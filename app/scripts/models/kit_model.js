@@ -6,20 +6,20 @@ define([
   var Model = Object.create(BasePageModel);
 
   $.extend(Model, {
-    init:function (owner, config) {
+    init: function (owner, config) {
       this.owner = owner;
       this.config = config;
 
       this.kitSaved = false;
-      this.kit = { valid:false };
+      this.kit = { valid: false };
       return this;
     },
 
-    validateKitTubes:function (kitType) {
+    validateKitTubes: function (kitType) {
       return (this.config.kitType == kitType);
     },
 
-    fire:function () {
+    fire: function () {
       var model = this;
       var root;
 
@@ -32,7 +32,7 @@ define([
             return root.kits.findByEan13Barcode(model.kit.barcode);
           })
           .then(function (kit) {
-            model.batch.update({kit:model.kit.barcode})
+            model.batch.update({kit: model.kit.barcode})
               .then(function () {
                 model.kitSaved = true;
                 model.owner.childDone(model, 'saved', {});
