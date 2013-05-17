@@ -7,25 +7,13 @@ define([
     this.owner    = owner;
     this.selector = selector;
     this.template = _.template(template);
-    return this;
   };
 
   _.extend(View.prototype, {
     renderView: function(model) {
-      this.selector().append(this.template({}));
+      this.selector().html(this.template());
     },
 
-    setPrintButtonEnabled: function(isEnabled) {
-
-    },
-
-    toggleHeaderEnabled: function() {
-
-    },
-
-    clear: function() {
-      this.selector().empty();
-    }
   });
 
   return View;

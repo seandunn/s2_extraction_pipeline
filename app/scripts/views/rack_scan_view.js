@@ -95,7 +95,7 @@ define([
     toggleHeaderEnabled: function(isEnabled) {
     },
     clear: function() {
-      this.selector().empty();
+      this.selector().empty().off();
     },
     message: function(type, message) {
       this.selector().find('.validationText').show().removeClass('alert-error alert-info alert-success').addClass('alert-' + type).html(message);

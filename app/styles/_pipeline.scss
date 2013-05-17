@@ -152,20 +152,20 @@ ul {
   }
 }
 #alertContainer{
+  height: 60px;
+
   .alert{
     margin-bottom: 0px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding: 4px 0;
   }
   .fade {
-    opacity: 0;
-    -webkit-transition: opacity 0.3s linear;
     transition: opacity 0.3s linear;
   }
   .fade.in {
     opacity: 1;
   }
 }
+
 [class*="row"] {
   .title  {
     display: none;
