@@ -7,10 +7,10 @@
 <div id="step1" class="step-row"></div>
 <div id="step2" class="step-row"></div>
 
-<div id="buttonRack" style="float:right">
+<div id="buttonRack" class="form-inline">
   <% if (_.contains(_.pluck(templateData.buttons, 'action'), 'print')) { %>
-  Select printer:
-  <select class="printerSelect">
+  <label for="printer-select">Current Printer:</label>
+  <select class="printer-select" name="printer-select">
     <% _.each (templateData.printerList, function (printer) { %>
     <option value="<%- printer.name %>"><%- printer.friendlyName %></option>
     <% }); %>

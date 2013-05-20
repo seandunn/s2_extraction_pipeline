@@ -38,32 +38,36 @@ define([
       else
         getButtonSelectionByAction(this.selector(),action).hide();
     },
-    enableButton:function(action){
-      this.setButtonEnabled(action, true);
-    },
-    disableButton:function(action){
-      this.setButtonEnabled(action, false);
-    },
+
     setButtonEnabled: function(action,isEnabled) {
-      getButtonSelectionByAction(this.selector(),action)[isEnabled ? 'removeAttr' : 'attr']('disabled', 'disabled');
+      if (isEnabled) {
+        getButtonSelectionByAction(this.selector(), action).
+          removeAttr('disabled').
+          focus();
+      } else {
+        getButtonSelectionByAction(this.selector(), action).
+          attr('disabled', 'disabled');
+      }
     },
+
     setPrintButtonEnabled: function(isEnabled) {
       this.setButtonEnabled('Print',isEnabled);
+      this.selector().find('.printer-select').removeAttr('disabled');
     },
-    toggleHeaderEnabled: function() {
 
-    },
+    toggleHeaderEnabled: function() { },
+
     selectedPrinter: function() {
-      return this.selector().find('.printerSelect').val();
+      return this.selector().find('.printer-select').val();
     },
     setPrinterList: function(printers) {
       this.printerList = printers;
     },
     selectPrinter: function(printer) {
-      this.selector().find('.printerSelect').val(printer);
+      this.selector().find('.printer-select').val(printer);
     },
     clear: function() {
-      this.selector().empty();
+      this.selector().empty().off();
     }
   });
 

@@ -1,8 +1,8 @@
 define([
       'extraction_pipeline/presenters/base_presenter',
        'extraction_pipeline/models/connected',
-       'extraction_pipeline/views/connected_view'
-], function(BasePresenter, Model, View) {
+       'text!extraction_pipeline/html_partials/connected_partial.html'
+], function(BasePresenter, Model, Template) {
   'use strict';
 
   var Presenter = Object.create(BasePresenter);
@@ -20,13 +20,13 @@ define([
       this.model            = Object.create(Model).init(this, initData);
       this.rowPresenters    = [];
       this.presenterFactory = presenterFactory;
+      this.template         = _.template(Template);
       return this;
     },
 
     setupPresenter:function (input_model, jquerySelection) {
       this.jquerySelection = jquerySelection;
       this.model.setBatch(input_model.batch);
-      this.setupView();
       this.renderView();
       this.setupSubPresenters();
       return this;
@@ -50,10 +50,7 @@ define([
         presenter.focus();
       }
     },
-    setupView:function () {
-      this.currentView = new View(this, this.jquerySelection);
-      return this;
-    },
+
     release:function () {
       this.currentView.clear();
       return this;
@@ -70,7 +67,8 @@ define([
         this.focus();
       }
 
-      this.currentView.renderView(dataForView);
+      this.jquerySelection().html(this.template());
+
       return this;
     },
 
@@ -126,7 +124,6 @@ define([
 
         this.model.ready = true;
         this.setupSubPresenters(true);
-        this.currentView.toggleHeaderEnabled(false);
         this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "barcodePrintSuccess") {
@@ -189,7 +186,6 @@ define([
     print: function(child, action, data) {
       if (this.readyToCreateOutputs()) {
         this.model.createOutputs(data);
-        this.currentView.setPrintButtonEnabled(false);
       }
     },
     next:  function(child, action, data){

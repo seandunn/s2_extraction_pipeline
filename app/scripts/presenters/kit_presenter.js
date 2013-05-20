@@ -37,13 +37,12 @@ define([
       presenter.barcodePresenter.init({ type: 'Kit' });
 
       presenter.selector().find('.barcode').append(presenter.barcodePresenter.renderView());
+      presenter.selector().find('.barcode input').focus();
 
       return presenter;
     },
 
-    focus: function() {
-      // this.barcodePresenter.focus();
-    },
+    focus: function() { },
 
     release: function() {
       this.view.clear();
@@ -61,7 +60,7 @@ define([
         this.model.fire();
       } else if (action === 'saved') {
         this.view.message('info', 'Kit details saved');
-        this.view.disableInputBox();
+        this.view.selector().find(".barcodeInput").attr('disabled', true);
         this.owner.childDone(this, 'done', data);
     } else if (action === 'error') {
         this.view.message('error', data.message);
