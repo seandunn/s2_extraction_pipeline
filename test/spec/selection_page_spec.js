@@ -190,7 +190,7 @@ define([
           var $removeBtn = fakeContent().find('ol li').first();
 
           expect($removeBtn.find('.resource').length).toEqual(1);
-          $removeBtn.trigger('click');
+          $removeBtn.find('.removeButton').trigger('click');
 
           var $removeBtnPostClick = fakeContent().find('ol li').first();
           expect($removeBtnPostClick.find('.resource svg').length).toEqual(0);

@@ -43,10 +43,10 @@ define(['text!extraction_pipeline/html_partials/labware_partial.html'], function
     parent.empty().append(labwarePartialHtml);
 
     var removeButton = parent.find('.removeButton');
-    var that = this;
+    var view = this;
 
     removeButton.on("click", function (e) {
-      that.owner.childDone(that, "labwareRemoved");
+      view.owner.childDone(view, "labwareRemoved");
     });
   };
 

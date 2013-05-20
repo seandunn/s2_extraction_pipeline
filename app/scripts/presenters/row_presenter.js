@@ -145,6 +145,12 @@ define([
         this.setLabwareVisibility();
       } else if (action === 'removeLabware') {
         var eventPrefix = child.labwareModel.input ? 'input' : 'output';
+        child.release();
+        delete child.resource;
+        delete child.resourcePresenter;
+        delete child.barcodeInputPresenter;
+        child.setupPresenter(this.rowModel.labwares['labware' + (this.presenters.value().indexOf(child) + 1)], child.jquerySelection);
+        child.renderView();
         this.owner.childDone(this, eventPrefix+'Removed', data);
       } else if (action === "barcodeScanned") {
         var eventPrefix = child.labwareModel.input ? 'input' : 'output';
