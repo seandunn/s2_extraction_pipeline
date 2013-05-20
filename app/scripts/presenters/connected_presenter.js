@@ -187,7 +187,7 @@ define([
     next:  function(child, action, data){
       var presenter = this;
 
-      this.model.behaviours.home[action](
+      this.model.behaviours.done[action](
         function(){ presenter.owner.childDone(presenter, 'done') },
         function(){ eventHandler.call(presenter, child, action, data); }
       )

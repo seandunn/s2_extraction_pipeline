@@ -1,10 +1,10 @@
 define([], function() {
   // Here are all of the events that behaviours can receive.
   var events = [
-    'row', 'page',              // Big scale events
-    'start', 'end', 'next',     // button events
-    'transfer',                 // result events
-    'print'                     // print events
+    'row', 'page',                  // Big scale events
+    'start', 'end', 'next', 'home', // button events
+    'transfer',                     // result events
+    'print'                         // print events
   ];
 
   // There is a standard basic behaviour that is completely negative.  It is built
