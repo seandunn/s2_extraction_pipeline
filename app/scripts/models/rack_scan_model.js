@@ -8,7 +8,7 @@ define([
   var Model = Object.create(BasePageModel);
 
   $.extend(Model, {
-    init:function (owner, config) {
+    init: function (owner, config) {
       this.owner = owner;
       this.config = config;
       this.inputs = $.Deferred();
@@ -16,7 +16,7 @@ define([
       this.initialiseCaching();
       return this;
     },
-    createOutputs:function () {
+    createOutputs: function () {
       var model = this;
       var root;
       return model.owner.getS2Root()
@@ -27,9 +27,9 @@ define([
                 model.config.output[0].aliquotType,
                 model.config.output[0].purpose,
                 {
-                  number_of_rows:8,
-                  number_of_columns:12,
-                  tubes:model.preparedTransferData
+                  number_of_rows:     8,
+                  number_of_columns:  12,
+                  tubes:              model.preparedTransferData
                 });
           }).then(function (state) {
             model.cache.push(state.labware);
@@ -37,11 +37,11 @@ define([
             return state.labware;
           })
           .fail(function () {
-            model.owner.childDone(model, "error", {message:"impossible to create the rack."});
+            $('body').trigger('s2.status.error', "Impossible to create the rack.");
           });
     },
 
-    fire:function () {
+    fire: function () {
       var model = this;
       function makeJSONUpdateFor(role,uuid,event) {
         var updateJson = { items: {} };
@@ -84,12 +84,12 @@ define([
             model.owner.childDone(model, "transferDone", {});
 
           }).fail(function () {
-            model.owner.childDone(model, "error", {message:"An error occured during the transfer process!<BR/> Contact the administrator of the system."});
+            $('body').trigger('s2.status.error', "An error occured during the transfer process! Contact the administrator of the system.");
           });
     },
 
 
-    analyseFileContent:function (data) {
+    analyseFileContent: function (data) {
       var locationsSortedByBarcode = CSVParser.convertCSVDataToJSON(data.csvAsTxt);
       var model = this;
       var results = checkFileValidity(model, locationsSortedByBarcode);
@@ -120,11 +120,11 @@ define([
           model.owner.childDone(model, "fileValid", {model: tube_rack, message: 'The file has been processed properly. Click on the \'Start\' button to validate the process.'})
         })
         .fail(function () {
-          model.owner.childDone(model, "error", {message:"Impossible to find the required resources. Contact the system administrator."})
+            $('body').trigger('s2.status.error', "Impossible to find the required resources. Contact the system administrator.")
         });
       }
     },
-    setBatch:function (batch) {
+    setBatch: function (batch) {
       this.cache.push(batch);
       this.batch = batch;
       var model = this;
@@ -133,10 +133,10 @@ define([
         model.owner.childDone(model, "batchAdded");
       })
       .fail(function () {
-        model.owner.childDone(model, "error", {message:"couldn't load the batch resources!"});
+        $('body').trigger('s2.status.error', "Couldn't load the batch resources!");
       });
     },
-    setUser:function (user) {
+    setUser: function (user) {
       this.user = user;
       this.owner.childDone(this, "userAdded");
     }
@@ -146,17 +146,17 @@ define([
     var inputs = [];
     return that.batch.items.then(function (items) {
       return $.when.apply(null,
-                          _.chain(items)
-                          .filter(function (item) {
-                            return item.role === that.config.input.role && item.status === 'done';
-                          })
-                          .map(function (item) {
-                            return that.cache.fetchResourcePromiseFromUUID(item.uuid)
-                            .then(function (resource) {
-                              inputs.push(resource);
-                            });
-                          })
-                          .value());
+                  _.chain(items)
+                  .filter(function (item) {
+                    return item.role === that.config.input.role && item.status === 'done';
+                  })
+                  .map(function (item) {
+                    return that.cache.fetchResourcePromiseFromUUID(item.uuid)
+                    .then(function (resource) {
+                      inputs.push(resource);
+                    });
+                  })
+                  .value());
     })
     .then(function () {
       return that.inputs.resolve(inputs);
@@ -199,7 +199,7 @@ define([
         "</ul>";
     }
 
-    return {action:action, status:status, data:{message:message}};
+    return {action: action, status: status, data: {message: message}};
   }
 
   function prepareTransferDataPromise(model, locationsSortedByBarcode) {

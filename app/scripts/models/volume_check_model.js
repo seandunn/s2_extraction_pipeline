@@ -16,6 +16,7 @@ define([
       this.initialiseCaching();
       return this;
     },
+
     analyseFileContent: function (data) {
       var locationVolumeData = CSVParser.volumeCsvToArray(data.csvAsTxt);
 
@@ -66,7 +67,7 @@ define([
             model.owner.childDone(model, "volumesSaved", {});
           })
           .fail(function () {
-            model.owner.childDone(model, "error", {message: "Saving of volumes has failed."})
+            $('body').trigger('s2.status.error', "Saving of volumes has failed.")
           });
 
     },
@@ -104,7 +105,7 @@ define([
             model.owner.childDone(model, "batchAdded");
           })
           .fail(function () {
-            model.owner.childDone(model, "error", {message: "couldn't load the batch resources!"});
+            $('body').trigger('s2.status.error', "couldn't load the batch resources!");
           });
     },
     setUser: function (userUUID) {

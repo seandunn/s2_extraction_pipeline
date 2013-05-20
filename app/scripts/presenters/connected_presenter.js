@@ -139,7 +139,7 @@ define([
 
       } else if (action === "barcodePrintFailure") {
 
-        this.owner.childDone(this, "error", {"message":"Barcode labels could not be printed"});
+        $('body').trigger('s2.status.error', 'Barcode labels could not be printed');
         this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "startOperation") {

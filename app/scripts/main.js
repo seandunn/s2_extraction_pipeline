@@ -23,14 +23,9 @@ require.config({
 require(['extraction_pipeline/app',
   'extraction_pipeline/presenters/presenter_factory'
 ], function (App, PresenterFactory) {
-    // HACK!  Fixes issue where two model dialogs cause Chrome to crash:
-    //    https://github.com/twitter/bootstrap/issues/4781#issuecomment-10911587
-    var oldFocus = jQuery().modal.Constructor.prototype.enforceFocus;
-    jQuery().modal.Constructor.prototype.enforceFocus = function(){};
 
     var theApp = new App(new PresenterFactory());
 
     theApp.setupPresenter();
-
 });
 
