@@ -5,32 +5,6 @@ define([
 ], function (BasePageModel, Operations, CSVParser) {
   'use strict';
 
-  function deferredHelper(callback) {
-    var deferred = $.Deferred();
-    return callback({
-      resolve:       deferred.resolve,
-      reject:        function (message) {
-        return function (r) {
-          deferred.reject(message);
-        }
-      },
-      promise:       deferred.promise,
-      state:         deferred.state,
-      specialReject: function (message) {
-        return function (r) {
-          logFailure(message, r)();
-          deferred.reject(message);
-        }
-      }
-
-    });
-  }
-
-  function reject(deferred, error) {
-    console.warn("Error : ", error.message);
-    deferred.reject(error);
-  }
-
   var VolumeControlModel = Object.create(BasePageModel);
 
   $.extend(VolumeControlModel, {
@@ -55,7 +29,7 @@ define([
 
       getInputResources(thisModel)
           .fail(function (error) {
-            reject(deferred, {message: error.message, previous_error: error});
+            deferred.reject( {message: error.message, previous_error: error});
           })
           .then(function (inputs) {
             thisModel.inputs.resolve(inputs);
@@ -72,7 +46,7 @@ define([
           .fail(function (error) {
             // TODO: the error reported here is not an error message yet, but the failed promise itself.
             // therefore, we do not cannot encapsulate it yet.
-            reject(deferred, {message: "Could not find the tube with barcode " + barcode, previous_error: null});
+            deferred.reject( {message: "Could not find the tube with barcode " + barcode, previous_error: null});
           })
           .then(function (rsc) {
             thisModel.controlSource = rsc;
@@ -133,7 +107,7 @@ define([
       var thisModel = this;
       thisModel.createControlTube()
           .fail(function (error) {
-            reject(deferred, {message: error.message, previousError: error});
+            deferred.reject( {message: error.message, previousError: error});
           }).then(function (controlTube) {
             thisModel.controlTube = controlTube;
             thisModel.cache.push(controlTube);
@@ -141,20 +115,20 @@ define([
             tubesLocation.tubes[thisModel.volumeControlPosition] = controlTube.uuid;
             return thisModel.inputs
                 .fail(function () {
-                  reject(deferred, {message: "Couldn't get the input resources!!!"});
+                  deferred.reject( {message: "Couldn't get the input resources!!!"});
                 })
                 .then(function (inputs) {
                   return inputs[0].update(tubesLocation);
                 })
           })
           .fail(function () {
-            reject(deferred, {message: "Couldn't add the new control tube."});
+            deferred.reject( {message: "Couldn't add the new control tube."});
           })
           .then(function(){
             return thisModel.updateRoles();
           })
           .fail(function (error) {
-            reject(deferred, {message: error.message, previous_error: error});
+            deferred.reject( {message: error.message, previous_error: error});
           })
           .then(function () {
             deferred.resolve(thisModel);
@@ -204,7 +178,7 @@ define([
 
       thisModel.inputs
           .fail(function (error) {
-            reject(deferred, {message: "Couldn't get the input items!!"});
+            deferred.reject( {message: "Couldn't get the input items!!"});
           })
           .then(function (inputs) {
             var rack = inputs[0];
@@ -219,7 +193,7 @@ define([
                   return order.update(makeJSONUpdateFor(thisModel.config.output[0].role, rack.uuid, "complete"))
                 })
                 .fail(function (error) {
-                  reject(deferred, {message: "Couldn't update the rack role"});
+                  deferred.reject( {message: "Couldn't update the rack role"});
                 })
                 .then(function () {
                   deferred.resolve(thisModel);
@@ -266,7 +240,7 @@ define([
       var nbOfTubesInRack = arrayOfRackLocations.length;
 
       if (nbOfTubesInRack !== expectedNbOfTubes) {
-        reject(deferred, {message: "The number of tube is not correct. The current batch" +
+        deferred.reject( {message: "The number of tube is not correct. The current batch" +
                                        " contains " + expectedNbOfTubes + " tubes, while the " +
                                        "current volume file contains " + nbOfTubesInRack + " tubes!"});
       }
@@ -298,7 +272,7 @@ define([
         .fail(function (error) {
           // TODO: the error reported here is not an error message yet, but the failed promise itself.
           // therefore, we do not cannot encapsulate it yet.
-          reject(deferred, {message: "Could not get the input resources ", previous_error: null});
+          deferred.reject( {message: "Could not get the input resources ", previous_error: null});
         })
         .then(function () {
           return deferred.resolve(inputs);
