@@ -22,7 +22,7 @@ define([
 
       _.each(model.buttons, function(buttonDetails) {
         parent.find('.'+buttonDetails.action+'Button').on('click', function() {
-          view.owner.childDone(view, buttonDetails.action, view.selectedPrinter());
+          view.owner.childDone(view, buttonDetails.action, view.selector().find('.printer-select').val());
         });
       });
     },
@@ -57,18 +57,6 @@ define([
 
     toggleHeaderEnabled: function() { },
 
-    selectedPrinter: function() {
-      return this.selector().find('.printer-select').val();
-    },
-    setPrinterList: function(printers) {
-      this.printerList = printers;
-    },
-    selectPrinter: function(printer) {
-      this.selector().find('.printer-select').val(printer);
-    },
-    clear: function() {
-      this.selector().empty().off();
-    }
   });
 
   function getButtonSelectionByAction(selector,action){

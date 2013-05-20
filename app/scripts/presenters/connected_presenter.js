@@ -33,10 +33,6 @@ define([
     },
     setupSubPresenters: function(reset) {
       this.model.setupInputPresenters(reset);
-      this.setupSubModel();
-      return this;
-    },
-    setupSubModel:function () {
       return this;
     },
 
@@ -191,7 +187,7 @@ define([
     next:  function(child, action, data){
       var presenter = this;
 
-      this.model.behaviours.home[action](
+      this.model.behaviours.done[action](
         function(){ presenter.owner.childDone(presenter, 'done') },
         function(){ eventHandler.call(presenter, child, action, data); }
       )
