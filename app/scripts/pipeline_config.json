@@ -101,14 +101,14 @@
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "spin_columns",
-        "title":      "Binding Spin Column"
+        "title":      "Spin Column"
       },
       {
         "role":       "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap",
         "aliquotType":"RNA+P",
         "purpose":    "stock",
         "model":      "tubes",
-        "title": "By-product tube"
+        "title":      "Collection Tube"
       }
       ]
     }
@@ -117,7 +117,7 @@
 
   {
     "accepts": [ "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap" ],
-    "processTitle":  "Manual DNA and RNA Byproduct Tube",
+    "processTitle":  "Manual DNA and RNA Collection Tube Transfer",
     "presenterName": "step_presenter",
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -136,14 +136,17 @@
       "defaultPrinter":"Tube Printer",
       "input":         {
         "role": "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap",
-        "model":"tubes"
+        "model":"tubes",
+        "title": "Collection Tube"
       },
+
       "output":        [
         {
         "role":       "samples.extraction.manual.dna_and_rna.binding_input_tube_rnap",
         "aliquotType":"RNA+P",
         "purpose":    "stock",
-        "model":      "tubes"
+        "model":      "tubes",
+        "title":      "Eppendorf RNA+P Tube"
       }
       ]
     }
@@ -184,7 +187,8 @@
         "model":      "spin_columns"
       }, {
         "model": "waste_tube",
-        "tracked": false
+        "tracked": false,
+        "title":  "Collection Tube"
       }
       ]
     }
@@ -193,7 +197,7 @@
 
   {
     "accepts": [ "samples.extraction.manual.spin_column_dna" ],
-    "processTitle":  "Manual Extraction, Spin Column DNA",
+    "processTitle":  "Manual Extraction Spin Column DNA Transfer",
     "presenterName": "step_presenter",
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -261,7 +265,8 @@
         "model":      "spin_columns"
       }, {
         "model": "waste_tube",
-        "tracked": false
+        "tracked": false,
+        "title":  "Collection Tube"
       }
       ]
     }
@@ -270,7 +275,7 @@
 
   {
     "accepts": [ "samples.extraction.manual.spin_column_rna" ],
-    "processTitle":  "Manual Extraction, Spin Column RNA",
+    "processTitle":  "Manual Extraction Spin Column RNA Transfer",
     "presenterName": "step_presenter",
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -444,7 +449,7 @@
 
   {
     "accepts": [ "samples.extraction.qiacube.dna_and_rna.byproduct_tube_rnap" ],
-    "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
+    "processTitle":  "Automated DNA and RNA Extraction (QIAcube) Rotor Aptapter Transfer",
     "presenterName": "step_presenter",
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -462,15 +467,17 @@
       },
       "defaultPrinter":"Tube Printer",
       "input":         {
-        "role": "samples.extraction.qiacube.dna_and_rna.byproduct_tube_rnap",
-        "model":"tubes"
+        "role":  "samples.extraction.qiacube.dna_and_rna.byproduct_tube_rnap",
+        "model": "tubes",
+        "title": "Rotor Adapter"
       },
       "output":        [
         {
-        "role":       "samples.extraction.qiacube.dna_and_rna.binding_input_tube_rnap",
-        "aliquotType":"RNA+P",
-        "purpose":    "stock",
-        "model":      "tubes"
+        "role":        "samples.extraction.qiacube.dna_and_rna.binding_input_tube_rnap",
+        "aliquotType": "RNA+P",
+        "purpose":     "stock",
+        "model":       "tubes",
+        "title":       "Eppendorf RNA+P Tube"
       }
       ]
     }
