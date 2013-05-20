@@ -33,10 +33,6 @@ define([
     },
     setupSubPresenters: function(reset) {
       this.model.setupInputPresenters(reset);
-      this.setupSubModel();
-      return this;
-    },
-    setupSubModel:function () {
       return this;
     },
 
