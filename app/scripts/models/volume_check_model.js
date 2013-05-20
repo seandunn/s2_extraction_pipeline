@@ -1,14 +1,14 @@
 define([
   'extraction_pipeline/models/base_page_model'
   , 'mapper/operations'
-  , 'extraction_pipeline/csv_parser'
+  , 'extraction_pipeline/lib/csv_parser'
 ], function (BasePageModel, Operations, CSVParser) {
   'use strict';
 
   var Model = Object.create(BasePageModel);
 
   $.extend(Model, {
-    init: function (owner, config) {
+    init:               function (owner, config) {
       this.owner = owner;
       this.config = config;
       this.inputs = $.Deferred();
@@ -18,26 +18,37 @@ define([
     },
 
     analyseFileContent: function (data) {
+      var deferred = $.Deferred();
+      var thisModel = this;
       var locationVolumeData = CSVParser.volumeCsvToArray(data.csvAsTxt);
 
-      var results = checkFileValidity(this, locationVolumeData);
-
-      if (results.action) {
-        this.owner.childDone(this, results.action, results.data);
-      }
-
-      if (results.status == 'valid') {
-        var rackData = {};
-        rackData.resourceType = 'tube_rack';
-        rackData.tubes = {};
-
-        _.each(locationVolumeData.array, function (volumeItem) {
-          rackData.tubes[volumeItem[0]] = {volume: volumeItem[1]};
-        });
-
-        this.rack_data = rackData;
-        this.owner.childDone(this, 'fileValid', {model: rackData, message: 'The file has been processed properly. Click on the \'Save\' button to store the volumes.'});
-      }
+      checkFileIntegrity(thisModel, locationVolumeData)
+          .then(function (results) {
+            if (results.action) {
+              thisModel.owner.childDone(thisModel, results.action, results.data);
+            }
+            if (results.status == 'valid') {
+              checkFileVolumes(thisModel, locationVolumeData)
+                  .then(function (resultsVolumeCheck) {
+                    if (resultsVolumeCheck.status === "valid" || resultsVolumeCheck.status === "undetermined") {
+                      var rackData = {};
+                      rackData.resourceType = 'tube_rack';
+                      rackData.tubes = {};
+                      _.each(locationVolumeData.array, function (volumeItem) {
+                        rackData.tubes[volumeItem[0]] = {volume: volumeItem[1]};
+                      });
+                      thisModel.rack_data = rackData;
+                      thisModel.owner.childDone(thisModel, 'fileValid', {model: rackData, message: resultsVolumeCheck.message + ' Click on the \'Save\' button to store the volumes.'});
+                    } else {
+                      thisModel.owner.childDone(thisModel, 'error', {message: resultsVolumeCheck.message});
+                    }
+                    deferred.resolve(thisModel);
+                  });
+            } else {
+              thisModel.owner.childDone(thisModel, 'error', {message: results.message});
+            }
+          });
+      return deferred.promise();
     },
 
     saveVolumes: function () {
@@ -74,6 +85,7 @@ define([
 
     updateRoles: function () {
       var model = this;
+
       function makeJSONUpdateFor(role, uuid, event) {
         var updateJson = { items: {} };
         updateJson.items[role] = {};
@@ -82,6 +94,7 @@ define([
         };
         return updateJson;
       }
+
       return model.inputs
           .then(function (inputs) {
             var rack = inputs[0];
@@ -108,6 +121,7 @@ define([
             $('body').trigger('s2.status.error', "couldn't load the batch resources!");
           });
     },
+
     setUser: function (userUUID) {
       this.user = userUUID;
       this.owner.childDone(this, "userAdded");
@@ -135,30 +149,90 @@ define([
         }).fail(that.inputs.reject);
   }
 
-  function checkFileValidity(model, locationVolumeData) {
-
-    var status = "valid";
-    var action, message, expectedNbOfTubes;
-
-    var arrayOfRackLocations = _.map(locationVolumeData.array, function (volItem) {
-      return volItem[0];
-    });
+  function checkFileVolumes(model, locationVolumeData) {
+    var deferred = $.Deferred();
 
     model.inputs.then(function (inputs) {
-      expectedNbOfTubes = _.keys(inputs[0].tubes).length;
+      var tubePositions = _.keys(inputs[0].tubes);
+      var lastPosition = getLastPositions(tubePositions);
+
+      // we need to check if the last tube is volume control or not...
+      if ("H12" !== lastPosition || !inputs[0].tubes[lastPosition].labels) {
+        // last tube is for volume checking...
+        var volumeControl = _.chain(locationVolumeData["array"])
+            .filter(function (tuple) {
+              return tuple[0] === lastPosition
+            })
+            .first()
+            .value()[1];
+        var expectedVolume = inputs[0].tubes[lastPosition].aliquots[0].quantity;
+
+        // TODO: fix the values used for the volume checking...
+        var tolerance = 0.05;
+        var volumeError = (volumeControl - expectedVolume) / expectedVolume;
+        if (Math.abs(volumeError) <= tolerance) {
+          deferred.resolve({status: "valid", message: "The volume control is nomimal (with " + Math.round(volumeError * 100) + "% variation)."});
+        } else {
+          deferred.resolve({status: "invalid", message: "The volume control is NOT nominal (by " + Math.round(volumeError * 100) + "%)."});
+        }
+      } else {
+        deferred.resolve({status: "undetermined", message: "There is no tube for volume control."});
+      }
+      return deferred.promise();
     });
 
-    var nbOfTubesInRack = arrayOfRackLocations.length;
+    return deferred.promise();
+  }
 
-    if (nbOfTubesInRack !== expectedNbOfTubes) {
-      status = "error";
-      action = "error";
-      message = "The number of tube is not correct. The current batch" +
-          " contains " + expectedNbOfTubes + " tubes, while the " +
-          "current volume file contains " + nbOfTubesInRack + " tubes!";
-    }
+  function checkFileIntegrity(model, locationVolumeData) {
+    var deferred = $.Deferred();
+    model.inputs.then(function (inputs) {
+      var expectedNbOfTubes;
+      var tubePositions = _.keys(inputs[0].tubes);
+      expectedNbOfTubes = tubePositions.length;
 
-    return {action: action, status: status, data: {message: message}};
+      var arrayOfRackLocations = _.map(locationVolumeData.array, function (volItem) {
+        return volItem[0];
+      });
+      var nbOfTubesInRack = arrayOfRackLocations.length;
+      if (nbOfTubesInRack !== expectedNbOfTubes) {
+        deferred.resolve({
+          action: "error",
+          status: "error",
+          data:   {message: "The number of tube is not correct. The current batch" +
+                                " contains " + expectedNbOfTubes + " tubes, while the " +
+                                "current volume file contains " + nbOfTubesInRack + " tubes!"}
+        });
+      }
+      if (inputs[0].labels && inputs[0].labels.barcode.value !== locationVolumeData.rack_barcode) {
+        deferred.resolve({
+          action: "error",
+          status: "error",
+          data:   {message: "This file is not matching the current tube rack. The current batch" +
+                                " refers the rack barcoded " +  inputs[0].labels.barcode.value + ", while the " +
+                                "current volume file refers to " + locationVolumeData.rack_barcode + " !"}
+        });
+      }
+      deferred.resolve({status: "valid"});
+    });
+
+    return deferred.promise();
+  }
+
+  function getLastPositions(positions) {
+    var tuple = _.chain(positions)
+        .map(function (position) {
+          // convert A1 -> A01
+          var matches = /([a-zA-Z])(\d+)/.exec(position);
+          return  [ matches[1] + ("00" + matches[2]).slice(-2), matches[1], parseInt(matches[2]) ];
+        })
+        .sortBy(function (trio) {
+          return trio[0];
+        })
+        .last()
+        .value();
+    // reconvert A01 -> A1
+    return tuple[1] + tuple[2];
   }
 
   return Model;

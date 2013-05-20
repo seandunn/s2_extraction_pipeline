@@ -1,7 +1,7 @@
 define([
   'extraction_pipeline/models/base_page_model'
   , 'mapper/operations'
-  , 'extraction_pipeline/csv_parser'
+  , 'extraction_pipeline/lib/csv_parser'
 ], function (BasePageModel, Operations, CSVParser) {
   'use strict';
 

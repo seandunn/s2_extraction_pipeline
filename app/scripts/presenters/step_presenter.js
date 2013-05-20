@@ -1,7 +1,8 @@
 define([
   'extraction_pipeline/presenters/base_presenter',
   'extraction_pipeline/views/step_view'
-], function (Base, View) {
+  , 'extraction_pipeline/lib/pubsub'
+], function (Base, View, PubSub) {
   'use strict';
 
   var Presenter = Object.create(Base);
@@ -32,7 +33,7 @@ define([
     },
 
     setupPresenter: function (model, selector) {
-      var presenter = this;
+      var thisPresenter = this;
       this.selector = selector;
       this.batch    = model.batch;
       this.user     = model.user;
@@ -40,6 +41,32 @@ define([
       this.setupView();
       this.renderView();
       this.setupSubPresenters();
+
+      PubSub.subscribe("s2.step_presenter.enable_buttons", enableButtonsEventHandler);
+      PubSub.subscribe("s2.step_presenter.disable_buttons", disableButtonsEventHandler);
+      PubSub.subscribe("s2.step_presenter.show_buttons", showButtonsEventHandler);
+      PubSub.subscribe("s2.step_presenter.hide_buttons", hideButtonsEventHandler);
+
+      function enableButtonsEventHandler(event, source, eventData) {
+        thisPresenter.changeButtonsState(eventData, true);
+      }
+      function disableButtonsEventHandler(event, source, eventData) {
+        thisPresenter.changeButtonsState(eventData, false);
+      }
+      function showButtonsEventHandler(event, source, eventData) {
+        thisPresenter.changeButtonsVisibility(eventData, true);
+      }
+      function hideButtonsEventHandler(event, source, eventData) {
+        thisPresenter.changeButtonsVisibility(eventData, false);
+      }
+
+      PubSub.subscribe("s2.step_presenter.next_process", nextProcessEventHandler);
+      function nextProcessEventHandler(event, source, eventData) {
+        // hack: reusing a bit of code defined in childDone
+        thisPresenter.childDone(source,'done',eventData);
+      }
+
+
       return this;
     },
 
@@ -79,7 +106,6 @@ define([
     },
 
     renderView: function () {
-
       this.view.renderView({
         user:         this.user,
         processTitle: this.config.processTitle,
@@ -95,6 +121,7 @@ define([
       if (child === this.view) {
         var handler = this.activePresenter[action];
         handler && handler.apply(this.activePresenter, arguments);
+        PubSub.publish("s2.step_presenter."+action+"_clicked", this);
       }
       else if (action === 'done') {
         var index = _.indexOf(this.presenters, child);
@@ -111,13 +138,10 @@ define([
           presenter.activePresenter.focus();
         }
       } else if (action === 'enableBtn' || action === 'disableBtn') {
-        btnDetailsList = data.buttons || this.config.buttons;
-        _.each(btnDetailsList, function (btnDetails) {
-          presenter.view.setButtonEnabled(btnDetails.action, action === 'enableBtn');
-        })
+        presenter.changeButtonsState(data, action === 'enableBtn');
       }
       else if (action === 'showBtn' || action === 'hideBtn') {
-        presenter.changeButtonsVisibility(action, data);
+        presenter.changeButtonsVisibility(data, action === 'showBtn');
       }
       else {
         this.owner.childDone(child, action, data);
@@ -126,12 +150,21 @@ define([
 
     changeButtonsVisibility: function (action, data) {
       var btnDetailsList;
-      var presenter = this;
+      var thisPresenter = this;
       btnDetailsList = data.buttons || this.config.buttons;
       _.each(btnDetailsList, function (btnDetails) {
-        presenter.view.setButtonVisible(btnDetails.action, action === 'showBtn');
+        thisPresenter.view.setButtonVisible(btnDetails.action, visible);
+      })
+    },
+
+    changeButtonsState:function(eventData, enable){
+      var thisPresenter = this;
+      var btnDetailsList = eventData.buttons || this.config.buttons;
+      _.each(btnDetailsList, function (btnDetails) {
+        thisPresenter.view.setButtonEnabled(btnDetails.action, enable);
       })
     }
+
   });
 
   return Presenter;

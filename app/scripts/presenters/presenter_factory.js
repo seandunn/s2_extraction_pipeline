@@ -18,8 +18,9 @@ define([
   'extraction_pipeline/presenters/kit_presenter',
   'extraction_pipeline/presenters/rack_scan_presenter',
   'extraction_pipeline/presenters/selection_page_presenter',
-  'extraction_pipeline/default/default_presenter'
-], function(TubePresenter, SpinColumnPresenter, WasteTubePresenter, RackPresenter, GelPresenter) {
+  'extraction_pipeline/default/default_presenter',
+  'extraction_pipeline/presenters/volume_control_presenter'
+], function(TubePresenter, SpinColumnPresenter, WasteTubePresenter, RackPresenter) {
   'use strict';
 
   var PresenterFactory = function () {

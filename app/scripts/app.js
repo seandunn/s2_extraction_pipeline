@@ -14,6 +14,7 @@ define([ 'config'
 
         // ToDo #content exists at this point we should pass it directly not a function
         this.jquerySelection = function () { return $('#content'); };
+        this.addEventHandlers();
         return this;
       };
 

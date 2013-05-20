@@ -55,7 +55,7 @@ define(['text!extraction_pipeline/html_partials/labware_partial.html'], function
   };
 
   LabwareView.prototype.hideBarcodeEntry = function () {
-    this.jquerySelector().find('.barcodeScanner').css('display', 'none');
+    this.jquerySelector().find('.barcodeInput').css('display', 'none');
   };
 
   LabwareView.prototype.labwareEnabled = function(isEnabled) {

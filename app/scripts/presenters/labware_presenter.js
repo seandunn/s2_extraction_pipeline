@@ -1,8 +1,8 @@
 define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/views/labware_view'
-], function (config, BasePresenter, LabwareView) {
-  'use strict';
+  , 'extraction_pipeline/lib/pubsub'
+], function (config, BasePresenter, LabwareView, PubSub) {
 
   var defaultTitles = {
     tube: 'Tube',
@@ -85,9 +85,7 @@ define(['config'
     },
 
     setupSubModel: function () {
-      //if (this.model) {
       var that = this;
-
       var data = {};
       if (this.labwareModel.resource) {
         // TODO: change the labware behaviour to get rid of the extra wrapping...
@@ -96,15 +94,12 @@ define(['config'
         // we wrap the resource...
         data[this.labwareModel.resource.resourceType] = this.labwareModel.resource;
       }
-
       var resourceSelector = function () {
         return that.jquerySelection().find("div.resource")
       };
-
       if (this.resourcePresenter) {
         this.resourcePresenter.setupPresenter(data, resourceSelector);
       }
-
       if (this.barcodeInputPresenter) {
         this.barcodeInputPresenter.init(data, function () {
           return that.jquerySelection().find("div.barcodeScanner")
@@ -123,16 +118,18 @@ define(['config'
       }
 
       if (this.barcodeInputPresenter) {
-
         var labwareCallback = function(event, template, presenter){
           presenter.owner.childDone(presenter, 'barcodeScanned', {
             modelName: presenter.labwareModel.expected_type.pluralize(),
             BC:        event.currentTarget.value
           });
+          PubSub.publish("s2.labware.barcode_scanned", presenter, {
+            modelName: presenter.labwareModel.expected_type.pluralize(),
+            BC:        event.currentTarget.value
+          });
         };
-
         this.jquerySelection().append(
-          this.bindReturnKey(this.barcodeInputPresenter.renderView(), labwareCallback)
+          this.bindReturnKey(this.barcodeInputPresenter.renderView(), labwareCallback, barcodeErrorCallback('Barcode must be a 13 digit number.'))
         );
       }
 
@@ -147,6 +144,7 @@ define(['config'
     isSpecial: function() {
       return specialType(this.labwareModel.expected_type);
     },
+
     isComplete: function () {
       return !this.isSpecial() && this.labwareModel.resource;
     },
@@ -174,6 +172,9 @@ define(['config'
     viewDone: function(child, action, data) {
       if (action == "labwareRemoved") {
         this.owner.childDone(this, "removeLabware", { resource: this.labwareModel.resource });
+        PubSub.publish("s2.labware.removed", this, {
+          resource:  this.labwareModel.resource
+        });
         this.release();
         delete this.resource;
         delete this.resourcePresenter;
@@ -203,21 +204,20 @@ define(['config'
     barcodeFocus: function() {
       this.jquerySelection().find('input').focus();
     },
+
     hideEditable: function() {
       this.view.hideBarcodeEntry();
       this.view.hideRemoveButton();
     },
+
     displayErrorMessage: function (message) {
       var selection = this.jquerySelection().find('.alert-error');
       var text = 'Error!';
-
       text += message;
-
       var tmp = $('<h4/>', {
         class: 'alert-heading',
         text: text
       });
-
       tmp.appendTo(selection.empty());
       selection.css('display', 'block');
     }
@@ -229,4 +229,20 @@ define(['config'
   function specialType(type) {
     return _.contains(['waste_tube', 'qia_cube', 'centrifuge'], type);
   }
+
+  function barcodeErrorCallback(errorText){
+    var errorHtml = function(errorText){
+      return $("<h4/>", {class: "alert-heading", text: errorText});
+    };
+    return function(event, template, presenter){
+      template.
+          find('.alert-error').
+          html(errorHtml(errorText)).
+          removeClass('hide');
+      template.
+          find('input').
+          removeAttr('disabled');
+    };
+  }
+
 });
