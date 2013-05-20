@@ -131,7 +131,7 @@ define([ 'extraction_pipeline/presenters/base_presenter'
               presenter.renderView();
             })
             .fail(function() {
-              this.displayBarcodeError("Barcode not found");
+              presenter.displayBarcodeError("Barcode not found");
             });
 
         } else if (action === "removeLabware") {

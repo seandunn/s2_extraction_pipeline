@@ -32,12 +32,14 @@ define([
 
     addTube:function (newTube) {
       if (this.tubes.length > this.capacity - 1) {
+        $('body').trigger('s2.status.error', "Only " + this.capacity + " orders can be selected");
         throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
       }
       var listOfIdenticalTubes = _.filter(this.tubes, function (tube) {
         return tube.uuid === newTube.uuid
       });
       if (listOfIdenticalTubes.length > 0) {
+        $('body').trigger('s2.status.error', 'Error: You cannot add the same tube twice.');
         throw {"type":"SelectionPageException", "message":"Can add a tube only once." };
       }
       this.tubes.push(newTube);
