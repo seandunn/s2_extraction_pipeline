@@ -86,7 +86,9 @@ define([
       }).value();
       presenter.activePresenter = presenter.presenters[0];
       presenter.activePresenter.initialPresenter();
-      presenter.view.selectPrinter(presenter.activePresenter.config.defaultPrinter);
+
+      this.selector().find('.printer-select').val(presenter.activePresenter.config.defaultPrinter);
+
       presenter.activePresenter.focus();
     },
 
@@ -96,12 +98,13 @@ define([
 
     setupView: function () {
       this.view = new View(this, this.selector);
-      this.view.setPrinterList(this.printerList());
+      this.view.printerList = this.printerList();
+
       return this;
     },
 
     release: function () {
-      this.view.clear();
+      this.selector().empty().off();
       return this;
     },
 
@@ -134,7 +137,7 @@ define([
           activeSubPresenter.previousDone(child, action, data);
           presenter.activePresenter = activeSubPresenter;
           presenter.activePresenter.initialPresenter();
-          presenter.view.selectPrinter(presenter.activePresenter.config.defaultPrinter);
+          this.selector().find('.printer-select').val(presenter.activePresenter.config.defaultPrinter);
           presenter.activePresenter.focus();
         }
       } else if (action === 'enableBtn' || action === 'disableBtn') {
