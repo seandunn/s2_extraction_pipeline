@@ -178,21 +178,46 @@ define([
 
         return _.chain(presenters).reduce(function(memo, presenter) {
           presenter.handleResources(function(source) {
-            memo.push(_.chain(arguments).drop(1).map(function(destination, index) {
+            var operation = _.chain(arguments).drop(1).map(function(destination, index) {
               return {
                 input:        { resource: source,      role: that.config.input.role,         order: sourceToOrder[source.uuid] },
                 output:       { resource: destination, role: that.config.output[index].role, batch: that.batch.uuid },
                 fraction:     1.0,
                 aliquot_type: that.config.output[index].aliquotType
               };
-            }).value());
+            }).value();
+
+            // This adds the transfer map for the plate -> plate transfer i.e A1->A1, B2->B2 etc
+            operation[0].transfer_map = _.chain(source.tubes || source.windows || source.wells)
+              .keys()
+              .reduce(function(memo, loc){ memo[loc] = loc; return memo },{})
+              .value();
+            memo.push(operation);
           });
+
           return memo;
         }, []).flatten().value();
       }).then(function(transferDetails) {
         // STEP 4: Setup the operation
+
+        // Determines the type of transfer to undertake based on the input or destination type. We assume all transfers
+        // in the current operation are of the same type. As tube->plates isn't possible, we can assume
+        // plate->plate transfer if the output is a plate.
+        var transfer;
+        if (transferDetails[0].output.resource.tubes
+          || transferDetails[0].output.resource.wells
+          || transferDetails[0].output.resource.windows) {
+            transfer = s2root.actions.transfer_plates_to_plates;
+        } else if (transferDetails[0].output.resource.tubes
+          || transferDetails[0].output.resource.wells
+          || transferDetails[0].output.resource.windows){
+            transfer = s2root.actions.transfer_wells_to_tubes;
+        } else {
+            transfer =   s2root.actions.transfer_tubes_to_tubes;
+        }
+
         return Operations.betweenLabware(
-          s2root.actions.transfer_tubes_to_tubes,
+          transfer,
           _.map(transferDetails, function(details) {
             return function(operations, state) {
               operations.push(details);
