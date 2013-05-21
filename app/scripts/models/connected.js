@@ -94,7 +94,8 @@ define([
           expected_type:   details.model.singularize(),
           display_remove:  previous,
           display_barcode: previous,
-          title:           details.title
+          title:           details.title,
+          validation:      details.validation
         }
         return rowModel;
       }, {
@@ -107,7 +108,8 @@ define([
           expected_type:   that.config.input.model.singularize(),
           display_remove:  previous,
           display_barcode: previous,
-          title:           that.config.input.title
+          title:           that.config.input.title,
+          validation:      that.config.input.validation
         }
       }).value();
     },
