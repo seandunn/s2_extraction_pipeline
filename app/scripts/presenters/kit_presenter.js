@@ -1,6 +1,5 @@
 define([
   'extraction_pipeline/presenters/base_presenter',
-//  'extraction_pipeline/views/kit_view',
   'text!extraction_pipeline/html_partials/kit_partial.html',
   'extraction_pipeline/models/kit_model',
   'extraction_pipeline/lib/pubsub',

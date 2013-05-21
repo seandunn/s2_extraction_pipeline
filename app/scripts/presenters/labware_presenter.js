@@ -2,7 +2,8 @@ define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/views/labware_view'
   , 'extraction_pipeline/lib/pubsub'
-], function (config, BasePresenter, LabwareView, PubSub) {
+  , 'extraction_pipeline/lib/barcode_checker'
+], function (config, BasePresenter, LabwareView, PubSub, BarcodeChecker) {
 
   var defaultTitles = {
     tube: 'Tube',
@@ -129,7 +130,10 @@ define(['config'
           });
         };
         this.jquerySelection().append(
-          this.bindReturnKey(this.barcodeInputPresenter.renderView(), labwareCallback, barcodeErrorCallback('Barcode must be a 13 digit number.'))
+          this.bindReturnKey(this.barcodeInputPresenter.renderView(),
+              labwareCallback,
+              barcodeErrorCallback('The barcode is not valid.'),
+              validationOnReturnKeyCallback(this, this.labwareModel.validation))
         );
       }
 
@@ -244,5 +248,31 @@ define(['config'
           removeAttr('disabled');
     };
   }
+
+  function validationOnReturnKeyCallback (presenter, type) {
+    var validationCallBack ;
+    switch(type){
+      case "2D_tube":
+        validationCallBack = BarcodeChecker.is2DTubeBarcodeValid;
+        break;
+      case "1D_tube":
+      default:
+        validationCallBack = BarcodeChecker.isBarcodeValid;
+    }
+
+    return function (element, callback, errorCallback) {
+      // validation of the barcode only on return key
+      return function (event) {
+        if (event.which !== 13) return;
+
+        if (validationCallBack(event.currentTarget.value)) {
+          callback(event, element, presenter);
+        } else {
+          errorCallback(event, element, presenter);
+        }
+      };
+    }
+  }
+
 
 });

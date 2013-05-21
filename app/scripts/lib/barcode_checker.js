@@ -1,4 +1,4 @@
-define(['../config'], function (config) {
+define(['config'], function (config) {
   'use strict';
 
   var BarcodeChecker = Object.create(null);
@@ -8,7 +8,7 @@ define(['../config'], function (config) {
         isBarcodeValid:           function (barcode) {
           return /^\d{13}$/.exec(barcode) !== null;
         },
-        isRackedTubeBarcodeValid: function (barcode) {
+        is2DTubeBarcodeValid: function (barcode) {
           return /FR\d/.exec(barcode) !== null;
         },
         isKitBarcodeValid: function (barcode) {
