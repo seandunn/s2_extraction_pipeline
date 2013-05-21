@@ -728,7 +728,7 @@
       { "action": "print", "title": "Start transfers" },
       { "action": "next",  "title": "Done" }
     ],
-    "processTitle":   "Post DNA Extraction Racking - 1D-to-2D Tube Transfers",
+    "processTitle":   "Post DNA Extraction Racking - 2D Tube Transfer",
     "presenters": [
       {
         "presenterName": "connected_presenter",
@@ -809,7 +809,7 @@
       { "action": "print", "title": "Start transfers" },
       { "action": "next",  "title": "Done" }
     ],
-    "processTitle":   "Post RNA Extraction Racking - 1D-to-2D Tube Transfers",
+    "processTitle":   "Post RNA Extraction Racking - 2D Tube Transfer",
     "presenters": [
       {
         "presenterName": "connected_presenter",
