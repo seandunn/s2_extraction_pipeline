@@ -524,7 +524,7 @@
         "aliquotType":"RNA",
         "purpose":    "stock",
         "model":      "tubes",
-        "title":      "Eppendorf RNA Tube"
+        "title":      "Eppendorf Extracted RNA Tube"
       }, {
         "model": "waste_tube",
         "tracked": false
@@ -560,14 +560,16 @@
       "defaultPrinter":"Tube Printer",
       "input":         {
         "role": "samples.extraction.qiacube.rna_only.input_tube_rnap.batched",
-        "model":"tubes"
+        "model":"tubes",
+        "title": "Eppendorf Input Tube"
       },
       "output":        [
         {
         "role":       "samples.extraction.extracted_tube_rna",
         "aliquotType":"RNA",
         "purpose":    "stock",
-        "model":      "tubes"
+        "model":      "tubes",
+        "title":      "Eppendorf Extracted RNA Tube"
       }, {
         "model": "waste_tube",
         "tracked": false
@@ -620,14 +622,16 @@
       "defaultPrinter":"Tube Printer",
       "input":         {
         "role": "samples.extraction.qiacube.dna_only.input_tube_dnap.batched",
-        "model":"tubes"
+        "model":"tubes",
+        "title": "Eppendorf Input Tube"
       },
       "output":        [
         {
         "role":       "samples.extraction.extracted_tube_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
-        "model":      "tubes"
+        "model":      "tubes",
+        "title":      "Eppendorf Extracted DNA Tube"
       }, {
         "model": "waste_tube",
         "tracked": false
@@ -742,12 +746,14 @@
         "defaultPrinter": "Tube Printer",
         "input": {
           "role":  "samples.extraction.racking.tube_to_be_retubed_dna",
-          "model": "tubes"
+          "model": "tubes",
+          "title": "Eppendorf Extracted DNA Tube"
         },
         "output": [
           {
             "role": "samples.extraction.racking.tube_to_be_racked_dna",
-            "model": "tubes"
+            "model": "tubes",
+            "title": "2D Extracted DNA Tube"
           }
         ]
       }
@@ -767,14 +773,16 @@
         "model": "RackScanModel",
         "input": {
           "role":  "samples.extraction.racking.tube_to_be_racked_dna",
-          "model": "tubes"
+          "model": "tubes",
+          "title": "2D Extracted DNA Tube"
         },
         "output": [
           {
             "role": "samples.racks.stock.dna",
             "aliquotType": "DNA",
             "purpose": "stock",
-            "model": "tube_racks"
+            "model": "tube_racks",
+            "title": "Tube Rack"
           }
         ]
       }
@@ -818,12 +826,14 @@
         "defaultPrinter": "Tube Printer",
         "input": {
           "role":  "samples.extraction.racking.tube_to_be_retubed_rna",
-          "model": "tubes"
+          "model": "tubes",
+          "title": "Eppendorf Extracted RNA Tube"
         },
         "output": [
           {
             "role": "samples.extraction.racking.tube_to_be_racked_rna",
-            "model": "tubes"
+            "model": "tubes",
+            "title": "2D Extracted RNA Tube"
           }
         ]
       }
@@ -843,14 +853,16 @@
         "model": "RackScanModel",
         "input": {
           "role":  "samples.extraction.racking.tube_to_be_racked_rna",
-          "model": "tubes"
+          "model": "tubes",
+          "title": "2D Extracted RNA Tube"
         },
         "output": [
           {
             "role": "samples.racks.stock.rna",
             "aliquotType": "RNA",
             "purpose": "stock",
-            "model": "tube_racks"
+            "model": "tube_racks",
+            "title": "Tube Rack"
           }
         ]
       }
