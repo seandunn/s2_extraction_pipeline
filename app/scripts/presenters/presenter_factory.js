@@ -21,7 +21,7 @@ define([
   'extraction_pipeline/presenters/selection_page_presenter',
   'extraction_pipeline/default/default_presenter',
   'extraction_pipeline/presenters/volume_control_presenter'
-], function(TubePresenter, SpinColumnPresenter, WasteTubePresenter, RackPresenter) {
+], function(TubePresenter, SpinColumnPresenter, WasteTubePresenter, RackPresenter, GelPresenter, PlatePresenter) {
   'use strict';
 
   var PresenterFactory = function () {
@@ -45,7 +45,7 @@ define([
     createWasteTubePresenter:  function(owner) { return new WasteTubePresenter(owner, this); },
     createGelPresenter:        function(owner) { return new GelPresenter(owner, this); },
     createRackPresenter:       function(owner) { return new RackPresenter(owner, this); },
-    createPlatePresenter:       function(owner) { return new PlatePresenter(owner, this); }
+    createPlatePresenter:      function(owner) { return new PlatePresenter(owner, this); }
   }).value();
 
   // Function can take variable number of parameters, passing them onto the constructor function
