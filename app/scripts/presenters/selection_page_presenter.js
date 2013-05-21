@@ -20,12 +20,14 @@ define([ 'extraction_pipeline/presenters/base_presenter'
       return this;
     },
     setupPresenter: function (setupData, jquerySelection) {
+      var presenter = this;
       this.jquerySelection = jquerySelection;
 
-      this.model.setup(setupData);
+      this.model.setup(setupData).then(function(){
+        presenter.setupSubPresenters();
+        presenter.renderView();
+      });
 
-      this.setupSubPresenters();
-      this.renderView();
       return this;
     },
 
