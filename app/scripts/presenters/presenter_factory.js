@@ -4,6 +4,7 @@ define([
   'labware/presenters/waste_tube_presenter',
   'labware/presenters/rack_presenter',
   'labware/presenters/gel_presenter',
+  'labware/presenters/plate_presenter',
 
   // Add new presenters after this point for automatic registration
 
@@ -35,7 +36,7 @@ define([
     return this;
   };
 
-  PresenterFactory.prototype.presenters = _.chain(arguments).drop(5).reduce(function(presenters, presenter) {
+  PresenterFactory.prototype.presenters = _.chain(arguments).drop(6).reduce(function(presenters, presenter) {
     presenter.register(function(name, method) { presenters[name] = method; });
     return presenters;
   }, {
@@ -43,7 +44,8 @@ define([
     createTubePresenter:       function(owner) { return new TubePresenter(owner, this); },
     createWasteTubePresenter:  function(owner) { return new WasteTubePresenter(owner, this); },
     createGelPresenter:        function(owner) { return new GelPresenter(owner, this); },
-    createRackPresenter:       function(owner) { return new RackPresenter(owner, this); }
+    createRackPresenter:       function(owner) { return new RackPresenter(owner, this); },
+    createPlatePresenter:       function(owner) { return new PlatePresenter(owner, this); }
   }).value();
 
   // Function can take variable number of parameters, passing them onto the constructor function
@@ -64,6 +66,7 @@ define([
       case 'waste_tube':  return this.presenters.createWasteTubePresenter(owner);  break;
       case 'tube_rack':   return this.presenters.createRackPresenter(owner);       break;
       case 'gel':         return this.presenters.createGelPresenter(owner);        break;
+      case 'plate':       return this.presenters.createPlatePresenter(owner);      break;
       default:            debugger;
     }
   };
