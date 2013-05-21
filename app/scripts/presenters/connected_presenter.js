@@ -90,19 +90,21 @@ define([
         presenter.model.inputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
           presenter.model.inputs.pull(resource);
         }).done(function() {
-            presenter.focus();
-          });
+          presenter.focus();
+        });
       } else if (action === 'outputBarcodeScanned') {
         var originator = data.origin, presenter = this;
         presenter.model.outputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
           presenter.model.outputs.pull(resource);
         }).done(function() {
-            presenter.focus();
-          });
+          presenter.focus();
+        });
       } else if (action === 'inputRemoved') {
         this.model.inputs.push(data.resource);
+        presenter.owner.childDone(presenter, "disableBtn", {buttons:[{action:"start"}]});
       } else if (action === 'outputRemoved') {
         this.model.outputs.push(data.resource);
+        presenter.owner.childDone(presenter, "disableBtn", {buttons:[{action:"start"}]});
       } else if (action === 'completed') {
         this.rowDone(child, action, data);
       }
@@ -111,6 +113,10 @@ define([
       if (action === 'completed') {
         var model = this.model;
         model.operate('row', [child]);
+
+        if (this.checkPageComplete()) {
+          this.owner.childDone(this, "enableBtn", {buttons:[{action:"start"}]});
+        }
       }
     },
 
@@ -126,9 +132,6 @@ define([
 
         $('body').trigger('s2.status.message', 'Barcode labels printed');
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
-        if (this.checkPageComplete()) {
-          this.owner.childDone(this, "enableBtn", {buttons:[{action:"start"}]});
-        }
 
       } else if (action === "barcodePrintFailure") {
 

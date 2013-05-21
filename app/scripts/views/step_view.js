@@ -11,7 +11,7 @@ define([
   _.extend(View.prototype, {
     renderView: function(model) {
 
-      var parent = this.selector().empty().append(this.template({
+      var parent = this.selector().empty().off().append(this.template({
         user:         model.user,
         processTitle: model.processTitle,
         buttons: model.buttons,

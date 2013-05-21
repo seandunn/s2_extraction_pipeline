@@ -21,8 +21,8 @@ define([
       this.user = setupData.user;
 
       if (setupData.batch) {
-        this.batch = batch;
-        this.cache.push(batch);
+        this.batch = setupData.batch;
+        this.cache.push(setupData.batch);
         setupInputs(this);
       } else if (setupData.labware) {
         this.cache.push(setupData.labware);

@@ -47,7 +47,7 @@ define([
         presenter.labwarePresenter = presenter.presenterFactory.create('labware_presenter', this);
       }
       presenter.labwarePresenter.setupPresenter({
-        "expected_type":    "rack",
+        "expected_type":    "tube_rack",
         "display_labware":  true,
         "display_remove":   false,
         "display_barcode":  false

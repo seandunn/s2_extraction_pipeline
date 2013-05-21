@@ -132,6 +132,9 @@ define([
           var activeSubPresenter = presenter.presenters[index + 1] || {
             previousDone: function () {
               presenter.owner.childDone.apply(presenter.owner, arguments);
+            },
+            initialPresenter: function() {
+              // Ignore this!
             }
           };
           activeSubPresenter.previousDone(child, action, data);
