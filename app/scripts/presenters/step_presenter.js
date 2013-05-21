@@ -20,15 +20,12 @@ define([
       this.owner = owner;
       this.config = config;
       this.factory = factory;
-
       this.config.buttons = this.config.buttons || [
         {action: "print", title: "Print labels"  },
         {action: "start", title: "Start process" },
         {action: "end", title: "End process"   },
         {action: "next", title: "Next"          }
       ];
-
-      var presenter = this;
       return this;
     },
 
@@ -65,7 +62,6 @@ define([
         // hack: reusing a bit of code defined in childDone
         thisPresenter.childDone(source,'done',eventData);
       }
-
 
       return this;
     },

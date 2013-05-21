@@ -17,10 +17,10 @@ define(['mapper_test/test_config'
 
   var today = new Date;
   var todayFormatted = [
-    ("00" + today.getDate()).slice(-2),        // for padding with zeros : 5 -> 05
+    today.getFullYear(),
     ("00" + (today.getMonth() + 1)).slice(-2), // for padding with zeros : 5 -> 05
-    today.getFullYear()]
-    .join('-');
+    ("00" + today.getDate()).slice(-2)         // for padding with zeros : 5 -> 05
+  ].join('-');
   // because the date is hardcoded in the mapper (using today's date), we
   // have to make sure the test data can be adjusted to the same date
   json = json.replace(/_DATE_OF_TEST_/g, todayFormatted);

@@ -1,4 +1,6 @@
-define(['config'], function (config) {
+define(['config'
+, 'extraction_pipeline/lib/barcode_checker'
+], function (config, BarcodeChecker) {
   'use strict';
 
   var BasePresenter = Object.create(null);
@@ -12,18 +14,22 @@ define(['config'], function (config) {
       return this;
     },
 
-    bindReturnKey: function (element, callback, errorCallback) {
-      var presenter = this
+    bindReturnKey: function (element, successCallback, errorCallback, validationCallback) {
+      var thisPresenter = this;
 
-      return element.on("keypress", "input", function(event) {
-        if (event.which !== 13) return;
-
-        if (/^\d{13}$/.exec(event.currentTarget.value) !== null) {
-          callback(event, element, presenter);
-        } else {
-          errorCallback(event, element, presenter);
+      // by default, we check that the input is 13 digits long.
+      var validation = validationCallback || function (element, callback, errorCallback) {
+        return function (event) {
+          if (event.which !== 13) return;
+          if (BarcodeChecker.isBarcodeValid(event.currentTarget.value)) {
+            callback(event, element, thisPresenter);
+          } else {
+            errorCallback(event, element, thisPresenter);
+          }
         }
-      });
+      };
+
+      return element.on("keypress", "input", validation(element, successCallback, errorCallback) );
     },
 
     printerList:function() {

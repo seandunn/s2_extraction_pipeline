@@ -1100,7 +1100,7 @@
       "request":{
         "user":"username",
         "items":{
-          "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":{
+          "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":{
             "66e0f490-8d8b-0130-b650-282066132de2":{
               "event":"start",
               "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
@@ -1177,7 +1177,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"in_progress",
@@ -1286,7 +1286,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"in_progress",
@@ -1337,7 +1337,7 @@
               "event":"unuse"
             }
           },
-          "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":{
+          "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":{
             "66e0f490-8d8b-0130-b650-282066132de2":{
               "event":"complete"
             },
@@ -1412,7 +1412,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -1521,7 +1521,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -1679,7 +1679,7 @@
                   }
                 }
               ],
-              "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+              "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
                 {
                   "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
@@ -1823,7 +1823,7 @@
           "model":"kit",
           "criteria":{
             "label":{
-              "position":"front barcode",
+              "position":"barcode",
               "type":"ean13-barcode",
               "value":"1234567891011"
             },
@@ -2842,7 +2842,7 @@
                   }
                 }
               ],
-              "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+              "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
                 {
                   "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
@@ -2965,7 +2965,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -3247,7 +3247,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -3324,7 +3324,7 @@
       "request":    {
         "user": "username",
         "items":{
-          "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":{
+          "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":{
             "66e0f490-8d8b-0130-b650-282066132de2":{
               "event":"unuse"
             }
@@ -3406,7 +3406,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -3607,7 +3607,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -3802,7 +3802,7 @@
                   }
                 }
               ],
-              "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+              "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
                 {
                   "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
@@ -3930,7 +3930,7 @@
                   }
                 }
               ],
-              "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+              "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
                 {
                   "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
@@ -4053,7 +4053,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -4273,7 +4273,7 @@
       "request":    {
         "user": "username",
         "items":{
-          "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":{
+          "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":{
             "66e299e0-8d8b-0130-b650-282066132de2":{
               "event":"unuse"
             }
@@ -4355,7 +4355,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.binding_input_tube_nap":[
+            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
