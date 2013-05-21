@@ -4,21 +4,23 @@ header, #content {
 
 ol.labware {
   font-weight: bold;
-  font-size: 24px;
+  font-size: 20px;
   list-style-position: inside;
   margin-left: 0px;
   li {
     padding: 0px 10px 5px 0px;
-    .title  {
-      display: none;
-    }
+    .title  { display: none; }
   }
+
+  li .resource {
+    vertical-align: middle;
+    display: inline-block;
+  }
+
   li:nth-child(odd) {
     background-color: #f9f9f9;
   }
-  li:before, li:after {
-    content: none;
-  }
+  li:before, li:after { content: none; }
 }
 
 svg text {

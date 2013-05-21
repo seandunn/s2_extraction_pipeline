@@ -23,10 +23,11 @@ define([
       if (setupData.batch) {
         this.batch = setupData.batch;
         this.cache.push(setupData.batch);
-        setupInputs(this);
+        return setupInputs(this);
       } else if (setupData.labware) {
         this.cache.push(setupData.labware);
         this.tubes.push(setupData.labware);
+        return $.Deferred().resolve().promise();
       } else throw "This model should not be created without either a batch or scanned labware";
     },
 
