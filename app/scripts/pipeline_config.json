@@ -429,20 +429,23 @@
       "defaultPrinter":"Tube Printer",
       "input":         {
         "role": "samples.extraction.qiacube.dna_and_rna.input_tube_nap.batched",
-        "model":"tubes"
+        "model":"tubes",
+        "title": "Eppendorf Input Tube"
       },
       "output":        [
         {
         "role":       "samples.extraction.qiacube.dna_and_rna.byproduct_tube_rnap",
         "aliquotType":"RNA+P",
         "purpose":    "stock",
-        "model":      "tubes"
+        "model":      "tubes",
+        "title":      "Rotor Adapter"
       },
       {
         "role":       "samples.extraction.extracted_tube_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
-        "model":      "tubes"
+        "model":      "tubes",
+        "title":      "Eppendorf DNA Tube"
       }
       ]
     }
@@ -512,14 +515,16 @@
       "defaultPrinter":"Tube Printer",
       "input":         {
         "role": "samples.extraction.qiacube.dna_and_rna.input_tube_rnap.batched",
-        "model":"tubes"
+        "model":"tubes",
+        "title": "Eppendorf RNA+P Tube"
       },
       "output":        [
         {
         "role":       "samples.extraction.extracted_tube_rna",
         "aliquotType":"RNA",
         "purpose":    "stock",
-        "model":      "tubes"
+        "model":      "tubes",
+        "title":      "Eppendorf RNA Tube"
       }, {
         "model": "waste_tube",
         "tracked": false
