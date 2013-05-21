@@ -124,6 +124,7 @@ define([
         });
       }
     },
+
     setBatch: function (batch) {
       this.cache.push(batch);
       this.batch = batch;
@@ -136,6 +137,7 @@ define([
         $('body').trigger('s2.status.error', "Couldn't load the batch resources!");
       });
     },
+
     setUser: function (user) {
       this.user = user;
       this.owner.childDone(this, "userAdded");
