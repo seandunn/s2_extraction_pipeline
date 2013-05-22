@@ -36,17 +36,18 @@
    "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed.batched",
    "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed.batched",
 
-   "samples.extraction.extracted_tube_dna",
-   "samples.extraction.racking.tube_to_be_retubed_dna",
-   "samples.extraction.racking.tube_to_be_racked_dna",
-   "samples.extraction.extracted_tube_rna",
-   "samples.extraction.racking.tube_to_be_retubed_rna",
-   "samples.extraction.racking.tube_to_be_racked_rna",
+    "samples.rack.stock.dna",
+    "samples.rack.stock.rna",
+    "samples.rack.stock.dna.volume_checked",
+    "samples.rack.stock.rna.volume_checked",
 
-    "samples.racks.stock.dna",
-    "samples.racks.stock.rna",
-    "samples.racks.stock.dna.volume_checked",
-    "samples.racks.stock.rna.volume_checked"
+   "samples.extraction.eppendorf_tube.dna",
+   "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched",
+   "samples.extraction.racking.tube_to_be_racked_dna",
+   "samples.extraction.eppendorf_tube.rna",
+   "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched",
+   "samples.extraction.racking.tube_to_be_racked_rna"
+
   ],
 
   "workflows":[
@@ -81,7 +82,7 @@
       {
       "presenterName": "kit_presenter",
       "kitType":       "DNA/RNA",
-      "defaultPrinter":"Tube printer"
+      "defaultPrinter":"e367bc"
     }, {
       "presenterName": "connected_presenter",
       "behaviours": {
@@ -91,7 +92,7 @@
         "done": "next",
         "outputs": "print"
       },
-      "defaultPrinter":"Tube printer",
+      "defaultPrinter":"e367bc",
       "input":         {
         "role": "samples.extraction.manual.dna_and_rna.input_tube_nap.batched",
         "model":"tubes",
@@ -219,14 +220,16 @@
       "defaultPrinter":"Tube Printer",
       "input":         {
         "role": "samples.extraction.manual.spin_column_dna",
-        "model":"spin_columns"
+        "model":"spin_columns",
+        "title": "DNA Spin Column"
       },
       "output":        [
         {
-        "role":       "samples.extraction.extracted_tube_dna",
+        "role":       "samples.extraction.eppendorf_tube.dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
-        "model":      "tubes"
+        "model":      "tubes",
+        "title":      "Eppendorf DNA Tube"
       }
       ]
     }
@@ -297,14 +300,16 @@
       "defaultPrinter":"Tube Printer",
       "input":         {
         "role": "samples.extraction.manual.spin_column_rna",
-        "model":"spin_columns"
+        "model":"spin_columns",
+        "title": "RNA Spin Column"
       },
       "output":        [
         {
-        "role":       "samples.extraction.extracted_tube_rna",
+        "role":       "samples.extraction.eppendorf_tube.rna",
         "aliquotType":"RNA",
         "purpose":    "stock",
-        "model":      "tubes"
+        "model":      "tubes",
+        "title":      "Eppendorf RNA Tube"
       }
       ]
     }
@@ -441,7 +446,7 @@
         "title":      "Rotor Adapter"
       },
       {
-        "role":       "samples.extraction.extracted_tube_dna",
+        "role":       "samples.extraction.eppendorf_tube.dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "tubes",
@@ -520,7 +525,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.extracted_tube_rna",
+        "role":       "samples.extraction.eppendorf_tube.rna",
         "aliquotType":"RNA",
         "purpose":    "stock",
         "model":      "tubes",
@@ -565,7 +570,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.extracted_tube_rna",
+        "role":       "samples.extraction.eppendorf_tube.rna",
         "aliquotType":"RNA",
         "purpose":    "stock",
         "model":      "tubes",
@@ -627,7 +632,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.extracted_tube_dna",
+        "role":       "samples.extraction.eppendorf_tube.dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "tubes",
@@ -709,20 +714,21 @@
   },
 
   {
-    "accepts": [ "samples.extraction.extracted_tube_dna" ],
+    "accepts": [ "samples.extraction.eppendorf_tube.dna" ],
     "presenterName": "selection_page_presenter",
     "processTitle":  "Post DNA Extraction Racking",
+    "capacity": 95,
     "input": {
-      "role":  "samples.extraction.extracted_tube_dna",
+      "role":  "samples.extraction.eppendorf_tube.dna",
       "model": "tubes"
     },
     "output": [
       {
-        "role": "samples.extraction.racking.tube_to_be_retubed_dna"
+        "role": "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched"
       }
     ]
   }, {
-    "accepts": [ "samples.extraction.racking.tube_to_be_retubed_dna" ],
+    "accepts": [ "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched" ],
     "presenterName": "step_presenter",
     "buttons": [
       { "action": "print", "title": "Start transfers" },
@@ -745,7 +751,7 @@
         },
         "defaultPrinter": "Tube Printer",
         "input": {
-          "role":       "samples.extraction.racking.tube_to_be_retubed_dna",
+          "role":       "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched",
           "model":      "tubes",
           "title":      "Eppendorf Extracted DNA Tube",
           "validation": "1D_tube"
@@ -780,7 +786,7 @@
         },
         "output": [
           {
-            "role": "samples.racks.stock.dna",
+            "role": "samples.rack.stock.dna",
             "aliquotType": "DNA",
             "purpose": "stock",
             "model": "tube_racks",
@@ -792,20 +798,21 @@
   },
 
   {
-    "accepts": [ "samples.extraction.extracted_tube_rna" ],
+    "accepts": [ "samples.extraction.eppendorf_tube.rna" ],
     "presenterName": "selection_page_presenter",
     "processTitle":  "Post RNA Extraction Racking",
+    "capacity": 95,
     "input": {
-      "role":  "samples.extraction.extracted_tube_rna",
+      "role":  "samples.extraction.eppendorf_tube.rna",
       "model": "tubes"
     },
     "output": [
       {
-        "role": "samples.extraction.racking.tube_to_be_retubed_rna"
+        "role": "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched"
       }
     ]
   }, {
-    "accepts": [ "samples.extraction.racking.tube_to_be_retubed_rna" ],
+    "accepts": [ "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched" ],
     "presenterName": "step_presenter",
     "buttons": [
       { "action": "print", "title": "Start transfers" },
@@ -827,7 +834,7 @@
         },
         "defaultPrinter": "Tube Printer",
         "input": {
-          "role":  "samples.extraction.racking.tube_to_be_retubed_rna",
+          "role":  "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched",
           "model": "tubes",
           "title": "Eppendorf Extracted RNA Tube",
           "validation": "1D_tube"
@@ -863,7 +870,7 @@
         },
         "output": [
           {
-            "role": "samples.racks.stock.rna",
+            "role": "samples.rack.stock.rna",
             "aliquotType": "RNA",
             "purpose": "stock",
             "model": "tube_racks",
@@ -978,7 +985,7 @@
   },
 
   {
-    "accepts":       [ "TEMP_input_role_for_volume_control" ],
+    "accepts":       [ "samples.rack.stock.dna" ],
     "presenterName": "step_presenter",
     "buttons":       [
       {
@@ -996,12 +1003,12 @@
         "presenterName":  "volume_control_presenter",
         "defaultPrinter": "Tube Printer",
         "input":          {
-          "role":  "TEMP_input_role_for_volume_control",
+          "role":  "samples.rack.stock.dna",
           "model": "tube_racks"
         },
         "output":         [
           {
-            "role":        "TEMP_output_role_for_volume_rack",
+            "role":        "samples.rack.stock.dna.volume_control_added",
             "aliquotType": "DNA",
             "purpose":     "stock",
             "model":       "tube_racks"
@@ -1018,7 +1025,7 @@
   },
 
   {
-    "accepts":       [ "samples.racks.stock.dna" ],
+    "accepts":       [ "samples.rack.stock.dna.volume_control_added" ],
     "presenterName": "step_presenter",
     "buttons":       [
       {
@@ -1030,19 +1037,19 @@
         "title":  "Done"
       }
     ],
-    "processTitle":  "Post DNA Extraction Racking - Volume checking",
+    "processTitle":  "DNA Volume checking",
     "presenters":    [
       {
         "presenterName":  "rack_scan_presenter",
         "defaultPrinter": "Tube Printer",
         "model":          "VolumeCheckModel",
         "input":          {
-          "role":  "samples.racks.stock.dna",
+          "role":  "samples.rack.stock.dna.volume_control_added",
           "model": "tube_racks"
         },
         "output":         [
           {
-            "role":        "samples.racks.stock.dna.volume_checked",
+            "role":        "samples.rack.stock.dna.volume_checked",
             "aliquotType": "DNA",
             "purpose":     "stock",
             "model":       "tube_racks"
@@ -1053,7 +1060,7 @@
   },
 
   {
-    "accepts":       [ "samples.racks.stock.rna" ],
+    "accepts":       [ "samples.rack.stock.rna" ],
     "presenterName": "step_presenter",
     "buttons":       [
       {
@@ -1065,25 +1072,96 @@
         "title":  "Done"
       }
     ],
-    "processTitle":  "Post DNA Extraction Racking - Volume checking",
+    "processTitle":  "RNA Volume checking",
     "presenters":    [
       {
         "presenterName":  "rack_scan_presenter",
-        "defaultPrinter": "Tube Printer",
+        "defaultPrinter": "d304bc",
         "model":          "VolumeCheckModel",
         "input":          {
-          "role":  "samples.racks.stock.rna",
+          "role":  "samples.rack.stock.rna",
           "model": "tube_racks"
         },
         "output":         [
           {
-            "role":        "samples.racks.stock.rna.volume_checked",
+            "role":        "samples.rack.stock.rna.volume_checked",
             "aliquotType": "RNA",
             "purpose":     "stock",
             "model":       "tube_racks"
           }
         ]
       }
+    ]
+  },
+
+  {
+    "accepts":       [ "samples.rack.stock.rna.volume_checked" ],
+    "presenterName": "step_presenter",
+    "buttons":       [
+      { "action": "print", "title": "Print Plate Labels" },
+      { "action": "next",  "title": "Done" }
+    ],
+    "processTitle":  "DNA Working Dilution",
+    "presenters":    [
+      {
+      "presenterName": "connected_presenter",
+      "behaviours": {
+        "start": "row",
+        "operate": "row",
+        "complete": "row",
+        "done": "next",
+        "outputs": "print"
+      },
+      "defaultPrinter":"d304bc",
+      "input":         {
+        "role": "samples.rack.stock.rna.volume_checked",
+        "model":"tube_racks",
+        "title": "Volume Checked DNA Rack"
+      },
+      "output":        [
+        {
+        "role":       "samples.plates.working_dilution.rna",
+        "aliquotType":"RNA",
+        "purpose":    "Working_dilution",
+        "model":      "plates",
+        "title":      "RNA Working Dilution"
+      }
+      ]}
+    ]
+  },
+{
+    "accepts":       [ "samples.rack.stock.dna.volume_checked" ],
+    "presenterName": "step_presenter",
+    "buttons":       [
+      { "action": "print", "title": "Print Plate Labels" },
+      { "action": "next",  "title": "Done" }
+    ],
+    "processTitle":  "DNA Working Dilution",
+    "presenters":    [
+      {
+      "presenterName": "connected_presenter",
+      "behaviours": {
+        "start": "row",
+        "operate": "row",
+        "complete": "row",
+        "done": "next",
+        "outputs": "print"
+      },
+      "defaultPrinter":"d304bc",
+      "input":         {
+        "role": "samples.rack.stock.dna.volume_checked",
+        "model":"tube_racks",
+        "title": "Volume Checked DNA Rack"
+      },
+      "output":        [
+        {
+        "role":       "samples.plates.working_dilution.dna",
+        "aliquotType":"DNA",
+        "purpose":    "Working_dilution",
+        "model":      "plates",
+        "title":      "DNA Working Dilution"
+      }
+      ]}
     ]
   }
 
