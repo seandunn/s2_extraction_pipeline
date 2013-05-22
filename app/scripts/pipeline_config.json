@@ -43,10 +43,11 @@
 
    "samples.extraction.eppendorf_tube.dna",
    "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched",
-   "samples.extraction.racking.tube_to_be_racked_dna",
+   "samples.extraction.fluidx_tube.dna.to_be_racked",
+
    "samples.extraction.eppendorf_tube.rna",
    "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched",
-   "samples.extraction.racking.tube_to_be_racked_rna"
+   "samples.extraction.fluidx_tube.rna.to_be_racked"
 
   ],
 
@@ -727,7 +728,9 @@
         "role": "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched"
       }
     ]
-  }, {
+  },
+
+  {
     "accepts": [ "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched" ],
     "presenterName": "step_presenter",
     "buttons": [
@@ -758,7 +761,7 @@
         },
         "output": [
           {
-            "role":       "samples.extraction.racking.tube_to_be_racked_dna",
+            "role":       "samples.extraction.fluidx_tube.dna.to_be_racked",
             "model":      "tubes",
             "title":      "2D Extracted DNA Tube",
             "validation": "2D_tube"
@@ -766,8 +769,10 @@
         ]
       }
     ]
-  }, {
-    "accepts": [ "samples.extraction.racking.tube_to_be_racked_dna" ],
+  },
+
+  {
+    "accepts": [ "samples.extraction.fluidx_tube.dna.to_be_racked" ],
     "presenterName": "step_presenter",
     "buttons": [
       { "action": "print", "title": "Accept rack layout" },
@@ -780,7 +785,7 @@
         "defaultPrinter": "Tube Printer",
         "model": "RackScanModel",
         "input": {
-          "role":  "samples.extraction.racking.tube_to_be_racked_dna",
+          "role":  "samples.extraction.fluidx_tube.dna.to_be_racked",
           "model": "tubes",
           "title": "2D Extracted DNA Tube"
         },
@@ -811,7 +816,9 @@
         "role": "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched"
       }
     ]
-  }, {
+  },
+
+  {
     "accepts": [ "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched" ],
     "presenterName": "step_presenter",
     "buttons": [
@@ -841,7 +848,7 @@
         },
         "output": [
           {
-            "role": "samples.extraction.racking.tube_to_be_racked_rna",
+            "role": "samples.extraction.fluidx_tube.rna.to_be_racked",
             "model": "tubes",
             "title": "2D Extracted RNA Tube",
             "validation": "2D_tube"
@@ -849,8 +856,10 @@
         ]
       }
     ]
-  }, {
-    "accepts": [ "samples.extraction.racking.tube_to_be_racked_rna" ],
+  },
+
+  {
+    "accepts": [ "samples.extraction.fluidx_tube.rna.to_be_racked" ],
     "presenterName": "step_presenter",
     "buttons": [
       { "action": "print", "title": "Accept rack layout" },
@@ -863,7 +872,7 @@
         "defaultPrinter": "Tube Printer",
         "model": "RackScanModel",
         "input": {
-          "role":  "samples.extraction.racking.tube_to_be_racked_rna",
+          "role":  "samples.extraction.fluidx_tube.rna.to_be_racked",
           "model": "tubes",
           "title": "2D Extracted RNA Tube",
           "validation": "2D_tube"
