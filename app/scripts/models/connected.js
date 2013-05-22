@@ -190,10 +190,11 @@ define([
             }).value();
 
             // This adds the transfer map for the plate -> plate transfer i.e A1->A1, B2->B2 etc
-            operation[0].transfer_map = _.chain(source.tubes || source.windows || source.wells)
+            operation[0].transfer_map = _.chain(source.tubes || source.windows || source.wells || {})
               .keys()
               .reduce(function(memo, loc){ memo[loc] = loc; return memo },{})
               .value();
+
             memo.push(operation);
           });
 

@@ -90,7 +90,8 @@ define([
         var updateJson = { items: {} };
         updateJson.items[role] = {};
         updateJson.items[role][uuid] = {
-          event: event
+          event: event,
+          batch_uuid: model.batch.uuid
         };
         return updateJson;
       }

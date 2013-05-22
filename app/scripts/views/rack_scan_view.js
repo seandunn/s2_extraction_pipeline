@@ -84,7 +84,7 @@ define([
       container.find('.dropzone').unbind('click');
       $(document).unbind('drop');
       $(document).unbind('dragover');
-      this.message('success','The transfert was successful. Click on the \'Next\' button to carry on.');
+      this.message('success','Transfer successful.');
     },
     validateFile:function(message){
       this.message('success',message);
