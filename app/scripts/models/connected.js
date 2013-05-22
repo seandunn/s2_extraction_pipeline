@@ -208,9 +208,9 @@ define([
           || transferDetails[0].output.resource.wells
           || transferDetails[0].output.resource.windows) {
             transfer = s2root.actions.transfer_plates_to_plates;
-        } else if (transferDetails[0].output.resource.tubes
-          || transferDetails[0].output.resource.wells
-          || transferDetails[0].output.resource.windows){
+        } else if (transferDetails[0].input.resource.tubes
+          || transferDetails[0].input.resource.wells
+          || transferDetails[0].input.resource.windows){
             transfer = s2root.actions.transfer_wells_to_tubes;
         } else {
             transfer =   s2root.actions.transfer_tubes_to_tubes;
