@@ -3,13 +3,11 @@ header, #content {
 }
 
 ol.labware {
-  font-weight: bold;
-  font-size: 20px;
+  font-size: 24px;
   list-style-position: inside;
   margin-left: 0px;
   li {
     padding: 0px 10px 5px 0px;
-    .title  { display: none; }
   }
 
   li .resource {
@@ -182,12 +180,9 @@ ul {
     opacity: 1;
   }
 }
-
-[class*="row"] {
-  .title  {
-    display: none;
-  }
-}
 div.row0 .title {
-  display: block !important;
+  display: block;
+}
+#buttonRack {
+  float: right;
 }
