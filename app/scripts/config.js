@@ -13,6 +13,9 @@ define([], function(mapperConfig) {
     printers: [{
       name: 'e367bc',
       type: 2
+    }, {
+      name: 'd304bc',
+      type: 1
     }],
     printerTypes: {
         1 : '96 Well Plate Printer',
