@@ -4,6 +4,9 @@ define([], function(mapperConfig) {
     // Configure the API to S2
     apiUrl: 'http://psd-dev.internal.sanger.ac.uk:8000/',
 
+    // Don't change the release branch value as it's picked up by the deployment script
+    release: 'development_branch',
+
     ajax: function(options) {
       return $.ajax(options).then(function(result) { return {responseText:result}; });
     },

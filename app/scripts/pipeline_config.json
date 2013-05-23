@@ -782,7 +782,7 @@
     "presenters": [
       {
         "presenterName": "rack_scan_presenter",
-        "defaultPrinter": "Tube Printer",
+        "defaultPrinter": "d304bc",
         "model": "RackScanModel",
         "input": {
           "role":  "samples.extraction.fluidx_tube.dna.to_be_racked",
@@ -869,7 +869,7 @@
     "presenters": [
       {
         "presenterName": "rack_scan_presenter",
-        "defaultPrinter": "Tube Printer",
+        "defaultPrinter": "d304bc",
         "model": "RackScanModel",
         "input": {
           "role":  "samples.extraction.fluidx_tube.rna.to_be_racked",
@@ -1084,7 +1084,7 @@
     "processTitle":  "RNA Volume checking",
     "presenters":    [
       {
-        "presenterName":  "rack_scan_presenter",
+        "defaultPrinter": "Tube Printer",
         "defaultPrinter": "d304bc",
         "model":          "VolumeCheckModel",
         "input":          {

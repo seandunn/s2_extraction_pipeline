@@ -12,6 +12,8 @@ define([ 'config'
         this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
         _.templateSettings.variable = 'templateData';
 
+        $('#server-url').text(config.apiUrl);
+        $('#release').text(config.release);
         // ToDo #content exists at this point we should pass it directly not a function
         this.jquerySelection = function () { return $('#content'); };
         this.addEventHandlers();
