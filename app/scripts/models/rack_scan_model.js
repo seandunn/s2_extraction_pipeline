@@ -19,26 +19,27 @@ define([
     createOutputs: function () {
       var model = this;
       var root;
-      return model.owner.getS2Root()
-          .then(function (result) {
-            root = result;
-            return Operations.registerLabware(
-                root[model.config.output[0].model],
-                model.config.output[0].aliquotType,
-                model.config.output[0].purpose,
-                {
-                  number_of_rows:     8,
-                  number_of_columns:  12,
-                  tubes:              model.preparedTransferData
-                });
-          }).then(function (state) {
-            model.cache.push(state.labware);
-            model.owner.childDone(model, 'outputsReady', {});
-            return state.labware;
-          })
-          .fail(function () {
-            $('body').trigger('s2.status.error', "Impossible to create the rack.");
+      return model.owner.getS2Root().then(function(result) {
+        root = result;
+        return Operations.registerLabware(
+          root[model.config.output[0].model],
+          model.config.output[0].aliquotType,
+          model.config.output[0].purpose,
+          {
+            number_of_rows:     8,
+            number_of_columns:  12,
+            tubes:              model.preparedTransferData
           });
+      }).then(function (state) {
+        model.cache.push(state.labware);
+        model.owner.childDone(model, 'outputsReady', {});
+        return state.labware;
+      }).then(function(rack){
+        model.printBarcodes([rack], model.config.defaultPrinter);
+        return rack;
+      }).fail(function () {
+        $('body').trigger('s2.status.error', "Impossible to create the rack.");
+      });
     },
 
     fire: function () {
@@ -53,40 +54,40 @@ define([
         return updateJson;
       }
       model.createOutputs()
-          .then(function (rack) {
-            return model.batch.orders     // promises not chained to make 'rack' part of the scope
-                .then(function (orders) { // of the following methods
-                  return $.when
-                      .apply(null, _.chain(orders)
-                      .map(function (order) {
-                        return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "start"))
-                            .then(function (order) {
-                              return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "complete"))
-                            })
-                      })
-                  );
-                });
+      .then(function (rack) {
+        return model.batch.orders     // promises not chained to make 'rack' part of the scope
+        .then(function (orders) { // of the following methods
+          return $.when
+          .apply(null, _.chain(orders)
+                 .map(function (order) {
+                   return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "start"))
+                   .then(function (order) {
+                     return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "complete"))
+                   })
+                 })
+                );
+        });
 
-          })
-          .then(model.inputs)
-          .then(function(inputs){
-            return $.when
-                .apply(null, _.chain(inputs)
-                .map(function (input) {
-                    return input.order.then(function(order){
-                          return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "start"))
-                        }).then(function(order){
-                          return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "complete"))
-                        });
-                  })
-            );
-          })
-          .then(function () {
-            model.owner.childDone(model, "transferDone", {});
+      })
+      .then(model.inputs)
+      .then(function(inputs){
+        return $.when
+        .apply(null, _.chain(inputs)
+               .map(function (input) {
+                 return input.order.then(function(order){
+                   return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "start"))
+                 }).then(function(order){
+                   return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "complete"))
+                 });
+               })
+              );
+      })
+      .then(function () {
+        model.owner.childDone(model, "transferDone", {});
 
-          }).fail(function () {
-            $('body').trigger('s2.status.error', "An error occured during the transfer process! Contact the administrator of the system.");
-          });
+      }).fail(function () {
+        $('body').trigger('s2.status.error', "An error occured during the transfer process! Contact the administrator of the system.");
+      });
     },
 
 
@@ -121,7 +122,7 @@ define([
           model.owner.childDone(model, "fileValid", {model: tube_rack, message: 'The file has been processed properly. Click on the \'Start\' button to validate the process.'})
         })
         .fail(function () {
-            $('body').trigger('s2.status.error', "Impossible to find the required resources. Contact the system administrator.")
+          $('body').trigger('s2.status.error', "Impossible to find the required resources. Contact the system administrator.")
         });
       }
     },
@@ -149,17 +150,17 @@ define([
     var inputs = [];
     return that.batch.items.then(function (items) {
       return $.when.apply(null,
-                  _.chain(items)
-                  .filter(function (item) {
-                    return item.role === that.config.input.role && item.status === 'done';
-                  })
-                  .map(function (item) {
-                    return that.cache.fetchResourcePromiseFromUUID(item.uuid)
-                    .then(function (resource) {
-                      inputs.push(resource);
-                    });
-                  })
-                  .value());
+                          _.chain(items)
+                          .filter(function (item) {
+                            return item.role === that.config.input.role && item.status === 'done';
+                          })
+                          .map(function (item) {
+                            return that.cache.fetchResourcePromiseFromUUID(item.uuid)
+                            .then(function (resource) {
+                              inputs.push(resource);
+                            });
+                          })
+                          .value());
     })
     .then(function () {
       return that.inputs.resolve(inputs);
