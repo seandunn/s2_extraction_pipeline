@@ -1,0 +1,47 @@
+<div class="component">
+
+
+    <div class="twoColumns">
+        <div class="columnLeft">
+
+            <form onsubmit="return false;">
+                <div>
+                    <label for="xls-templates">Select a template:</label>
+                    <select class="xls-templates" id="xls-templates">
+                        <% _.each (templateData.excelTemplates, function (template) { %>
+                        <option value="<%- template.filename %>"><%- template.name %></option>
+                        <% }); %>
+                    </select>
+                    <label for="number-of-sample">Enter some random number:</label>
+                    <input id="number-of-sample" type="text" value="1">
+                </div>
+                <button id="generateBC">Generate DB Entries</button>
+                <button id="downloadManifest">Download Manifest</button>
+                <button id="printBC">Print Barcodes</button>
+            </form>
+        </div>
+        <div class="columnRight">
+            hello
+        </div>
+    </div>
+    <div class="validationText alert" style="display:none"></div>
+
+
+    <!--<input type="file" style="display:none" accept="text/csv" class="hiddenFileInput">-->
+    <!--<div class="twoColumns">-->
+    <!--<div class="columnLeft">-->
+    <!--<h4>Select a file to load...</h4>-->
+    <!--<div class="" style="">File to be loaded : <span class="filenameSpan">No file yet.</span></div>-->
+    <!--<div class="dropzone">-->
+    <!--<div class="dropzoneBox">Drop the file here, or click.</div>-->
+    <!--<div class="labware"></div>-->
+    <!--</div>-->
+    <!--<h5>The blue disc indicates the position of the control tube. Please respect this prescription.</h5>-->
+    <!--</div>-->
+    <!--<div class="columnRight control">-->
+    <!--<h4>Scan the source for the volume control tube</h4>-->
+    <!--<div class="labware extraVTab"></div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="validationText alert" style="display:none">Transfer completed.</div>-->
+</div>
