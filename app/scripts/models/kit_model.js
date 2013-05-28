@@ -48,6 +48,9 @@ define([
             deferred.reject({message: "Kit was not found on the server"});
           })
           .then(function (kit) {
+            if (!thisModel.validateKitTubes(kit.aliquotType)){
+              return deferred.reject({message: "The kit type is not correct. "+this.config.aliquotType+" was expected."});
+            }
             return thisModel.batch.update({kit: kitBarcode})
           })
           .fail(function () {
