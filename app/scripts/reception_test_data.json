@@ -1,0 +1,332 @@
+{
+  "default": {
+    "calls": [
+      {
+        "description": "Create 3 samples",
+        "method":      "post",
+        "url":         "/actions/bulk_create_sample",
+        "request":     {
+          "bulk_create_sample": {
+            "user":        "username",
+            "quantity":    3,
+            "sample_type": "RNA"
+          }
+        },
+        "response":    {
+          "bulk_create_sample": {
+            "actions":     {
+            },
+            "user":        "user",
+            "application": "application",
+            "result":      {
+              "samples": [
+                {
+                  "actions":          {
+                    "read":   "http://example.org/11111111-2222-3333-4444-555555555555",
+                    "create": "http://example.org/11111111-2222-3333-4444-555555555555",
+                    "update": "http://example.org/11111111-2222-3333-4444-555555555555",
+                    "delete": "http://example.org/11111111-2222-3333-4444-555555555555"
+                  },
+                  "uuid":             "11111111-2222-3333-4444-555555555555",
+                  "sanger_sample_id": "S2-cd9b200ec5634288ad5b4f56eab2a84f",
+                  "sample_type":      "RNA"
+                },
+                {
+                  "actions":          {
+                    "read":   "http://example.org/11111111-2222-3333-4444-666666666666",
+                    "create": "http://example.org/11111111-2222-3333-4444-666666666666",
+                    "update": "http://example.org/11111111-2222-3333-4444-666666666666",
+                    "delete": "http://example.org/11111111-2222-3333-4444-666666666666"
+                  },
+                  "uuid":             "11111111-2222-3333-4444-666666666666",
+                  "sanger_sample_id": "S2-745819ae3dfe401caa68a87a90c95a4c",
+                  "sample_type":      "RNA"
+                },
+                {
+                  "actions":          {
+                    "read":   "http://example.org/11111111-2222-3333-4444-777777777777",
+                    "create": "http://example.org/11111111-2222-3333-4444-777777777777",
+                    "update": "http://example.org/11111111-2222-3333-4444-777777777777",
+                    "delete": "http://example.org/11111111-2222-3333-4444-777777777777"
+                  },
+                  "uuid":             "11111111-2222-3333-4444-777777777777",
+                  "sanger_sample_id": "S2-97322cddad764d5f98b5255e3d329c66",
+                  "sample_type":      "RNA"
+                }
+              ]
+            },
+            "quantity":    3
+          }
+        }
+      },
+      {
+        "description": "Create 3 tubes from samples",
+        "method":      "post",
+        "url":         "/actions/bulk_create_tube",
+        "request":     {
+          "bulk_create_tube": {
+            "user":    "username",
+            "samples": [
+              {
+                "uuid":        "11111111-2222-3333-4444-555555555555",
+                "sample_type": "RNA"
+              },
+              {
+                "uuid":        "11111111-2222-3333-4444-666666666666",
+                "sample_type": "RNA"
+              },
+              {
+                "uuid":        "11111111-2222-3333-4444-777777777777",
+                "sample_type": "RNA"
+              }
+            ]
+          }
+        },
+        "response":    {
+          "bulk_create_tube": {
+            "actions":     {
+            },
+            "user":        "user",
+            "application": "application",
+            "result":      {
+              "tubes": [
+                {
+                  "actions":    {
+                    "read":   "http://localhost:9292/tube1_uuid",
+                    "create": "http://localhost:9292/tube1_uuid",
+                    "update": "http://localhost:9292/tube1_uuid",
+                    "delete": "http://localhost:9292/tube1_uuid"
+                  },
+                  "uuid":       "tube1_uuid",
+                  "type":       null,
+                  "max_volume": null,
+                  "aliquots":   [
+                    {
+                      "uuid":             "11111111-2222-3333-4444-555555555555",
+                      "sanger_sample_id": "S2-cd9b200ec5634288ad5b4f56eab2a84f",
+                      "sample_type":      "RNA"
+                    }
+                  ]
+                },
+                {
+                  "actions":    {
+                    "read":   "http://localhost:9292/tube2_uuid",
+                    "create": "http://localhost:9292/tube2_uuid",
+                    "update": "http://localhost:9292/tube2_uuid",
+                    "delete": "http://localhost:9292/tube2_uuid"
+                  },
+                  "uuid":       "tube2_uuid",
+                  "type":       null,
+                  "max_volume": null,
+                  "aliquots":   [
+                    {
+                      "actions":          {
+                        "read":   "http://example.org/11111111-2222-3333-4444-666666666666",
+                        "create": "http://example.org/11111111-2222-3333-4444-666666666666",
+                        "update": "http://example.org/11111111-2222-3333-4444-666666666666",
+                        "delete": "http://example.org/11111111-2222-3333-4444-666666666666"
+                      },
+                      "uuid":             "11111111-2222-3333-4444-666666666666",
+                      "sanger_sample_id": "S2-745819ae3dfe401caa68a87a90c95a4c",
+                      "sample_type":      "RNA"
+                    }
+                  ]
+                },
+                {
+                  "actions":    {
+                    "read":   "http://localhost:9292/tube3_uuid",
+                    "create": "http://localhost:9292/tube3_uuid",
+                    "update": "http://localhost:9292/tube3_uuid",
+                    "delete": "http://localhost:9292/tube3_uuid"
+                  },
+                  "uuid":       "tube3_uuid",
+                  "type":       null,
+                  "max_volume": null,
+                  "aliquots":   [
+                    {
+                      "actions":          {
+                        "read":   "http://example.org/11111111-2222-3333-4444-777777777777",
+                        "create": "http://example.org/11111111-2222-3333-4444-777777777777",
+                        "update": "http://example.org/11111111-2222-3333-4444-777777777777",
+                        "delete": "http://example.org/11111111-2222-3333-4444-777777777777"
+                      },
+                      "uuid":             "11111111-2222-3333-4444-777777777777",
+                      "sanger_sample_id": "S2-97322cddad764d5f98b5255e3d329c66",
+                      "sample_type":      "RNA"
+                    }
+                  ]
+                }
+              ]
+            },
+            "quantity":    3
+          }
+        }
+      },
+      {
+        "description": "Create 3 labels from tubes",
+        "method":      "post",
+        "url":         "/actions/bulk_create_barcode",
+        "request":     {
+          "bulk_create_barcode": {
+            "user":     "username",
+            "quantity": 3,
+            "labware":  "tube",
+            "role":     "stock",
+            "contents": "RNA"
+          }
+        },
+        "response":    {
+          "bulk_create_barcode": {
+            "actions":     {
+            },
+            "user":        "user",
+            "application": "application",
+            "result":      {
+              "barcodes": [
+                {
+                  "actions": {
+                    "read":   "http://example.org/barcode1_uuid",
+                    "update": "http://example.org/barcode1_uuid",
+                    "delete": "http://example.org/barcode1_uuid",
+                    "create": "http://example.org/barcode1_uuid"
+                  },
+                  "uuid":    "barcode1_uuid",
+                  "ean13":   "1234567890001",
+                  "sanger":  {
+                    "prefix": "JD",
+                    "number": "1",
+                    "suffix": "U"
+                  }
+                },
+                {
+                  "actions": {
+                    "read":   "http://example.org/barcode2_uuid",
+                    "update": "http://example.org/barcode2_uuid",
+                    "delete": "http://example.org/barcode2_uuid",
+                    "create": "http://example.org/barcode2_uuid"
+                  },
+                  "uuid":    "barcode2_uuid",
+                  "ean13":   "1234567890002",
+                  "sanger":  {
+                    "prefix": "JD",
+                    "number": "2",
+                    "suffix": "U"
+                  }
+                },
+                {
+                  "actions": {
+                    "read":   "http://example.org/barcode3_uuid",
+                    "update": "http://example.org/barcode3_uuid",
+                    "delete": "http://example.org/barcode3_uuid",
+                    "create": "http://example.org/barcode3_uuid"
+                  },
+                  "uuid":    "barcode3_uuid",
+                  "ean13":   "1234567890003",
+                  "sanger":  {
+                    "prefix": "JD",
+                    "number": "3",
+                    "suffix": "U"
+                  }
+                }
+              ]
+            },
+            "quantity":    3
+          }
+        }
+      },
+      {
+        "description": "Associate 3 labels to 3 tubes",
+        "method":      "post",
+        "url":         "/actions/bulk_create_labellable",
+        "request":     {
+          "bulk_create_labellable": {
+            "user":   "username",
+            "type":   "resource",
+            "labels": {
+              "barcode": {
+                "type": "ean13-barcode"
+              }
+            },
+            "bulk":   [
+              {
+                "name":  "tube1_uuid",
+                "value": "1234567890003"
+              },
+              {
+                "name":  "tube2_uuid",
+                "value": "1234567890002"
+              },
+              {
+                "name":  "tube3_uuid",
+                "value": "1234567890001"
+              }
+            ]
+          }
+        },
+        "response":    {
+          "bulk_create_labellable": {
+            "actions":     {
+            },
+            "user":        "user",
+            "application": "application",
+            "result":      {
+              "labellables": [
+                {
+                  "actions": {
+                    "read":   "http://localhost:9292/labellable1_uuid",
+                    "create": "http://localhost:9292/labellable1_uuid",
+                    "update": "http://localhost:9292/labellable1_uuid",
+                    "delete": "http://localhost:9292/labellable1_uuid"
+                  },
+                  "uuid":    "labellable1_uuid",
+                  "name":    "tube1_uuid",
+                  "type":    "resource",
+                  "labels":  {
+                    "barcode":      {
+                      "value": "1234567890001",
+                      "type":  "ean13-barcode"
+                    }
+                  }
+                },
+                {
+                  "actions": {
+                    "read":   "http://localhost:9292/labellable2_uuid",
+                    "create": "http://localhost:9292/labellable2_uuid",
+                    "update": "http://localhost:9292/labellable2_uuid",
+                    "delete": "http://localhost:9292/labellable2_uuid"
+                  },
+                  "uuid":    "labellable2_uuid",
+                  "name":    "tube2_uuid",
+                  "type":    "resource",
+                  "labels":  {
+                    "barcode":      {
+                      "value": "1234567890002",
+                      "type":  "ean13-barcode"
+                    }
+                  }
+                },
+                {
+                  "actions": {
+                    "read":   "http://localhost:9292/labellable3_uuid",
+                    "create": "http://localhost:9292/labellable3_uuid",
+                    "update": "http://localhost:9292/labellable3_uuid",
+                    "delete": "http://localhost:9292/labellable3_uuid"
+                  },
+                  "uuid":    "labellable3_uuid",
+                  "name":    "tube3_uuid",
+                  "type":    "resource",
+                  "labels":  {
+                    "barcode":      {
+                      "value": "1234567890003",
+                      "type":  "ean13-barcode"
+                    }
+                  }
+                }
+              ]
+            },
+            "quantity":    3
+          }
+        }
+      }
+    ]
+  }}
