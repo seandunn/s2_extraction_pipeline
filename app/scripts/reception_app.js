@@ -14,14 +14,23 @@ define([ 'config'
 
       var configuration = {
         excelTemplates: {
-          cgap_lysed_manifest_template:  {
-            name:     "CGAP - lysed"
+          cgap_lysed_manifest_RNA_template:  {
+            name:     "CGAP - RNA - lysed"
+          },
+          cgap_lysed_manifest_DNA_template:  {
+            name:     "CGAP - DNA - lysed"
           }
         },
         printerList:config.printers,
         models: {
-          cgap_lysed_manifest_template:  {
+          cgap_lysed_manifest_RNA_template:  {
             model:    "tube",
+            sample_type:"RNA",
+            URI: "cgap_lysed_manifest_template.xls"
+          },
+          cgap_lysed_manifest_DNA_template:  {
+            model:    "tube",
+            sample_type:"DNA",
             URI: "cgap_lysed_manifest_template.xls"
           }
         }
