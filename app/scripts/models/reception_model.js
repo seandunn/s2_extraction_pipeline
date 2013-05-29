@@ -29,13 +29,19 @@ define([
           })
           .then(function(templateBlob){
             thisModel.currentTemplate = templateBlob;
-            return thisModel.getBarcodes(template, nbOfSample);
+            return thisModel.getLabellables(template, nbOfSample);
           })
           .fail(function(error){
-            return deferred.reject({message:" Couldn't produce barcode data file "+error.message, previous_error:error});
+            return deferred.reject({message: " Couldn't produce the samples. " + error.message, previous_error: error});
           })
-          .then(function(manifestCsv){
-            thisModel.manifestCsv = manifestCsv;
+          .then(function (labellables) {
+            return thisModel.generateCSV(labellables);
+          })
+          .fail(function (error) {
+            return deferred.reject({message: " Couldn't produce barcode data file. " + error.message, previous_error: error});
+          })
+          .then(function (manifestCsvAsTxt) {
+            thisModel.manifestCsv = manifestCsvAsTxt;
             // now we are ready...
             return thisModel.sendManifestRequest(thisModel.currentTemplate, thisModel.manifestCsv);
           })
@@ -64,32 +70,108 @@ define([
       return deferred.promise();
     },
 
-
-    getBarcodes:function(template,nbOfSample){
+    getLabellables: function (template, nbOfSample) {
       var deferred = $.Deferred();
-      var labwareModel = this.config[template].model;
+      var thisModel = this;
+      var root;
+      var labwareModel = thisModel.config[template].model;
+      var sampleType = thisModel.config[template].sample_type;
 
-      deferred.resolve();
+      thisModel.owner.getS2Root()
+          .then(function (result) {
+            root = result;
+            // creation of the samples
+            return root.bulk_create_sample.create({
+              "quantity":  nbOfSample,
+              sample_type: sampleType
+            });
+          })
+          .fail(function () {
+            return deferred.reject({message: "Couldn't create the empty samples on S2."});
+          })
+          .then(function (bulkCreationSampleObject) {
+            // might be useful to instantiate the samples at some point....
+            // For now, we just use them as bare objects
+            thisModel.samples = bulkCreationSampleObject.result.samples;
+            var sample_uuids = _.map(thisModel.samples, function (sample) {
+              return {"uuid": sample.uuid, "sample_type": sample.sample_type};
+            });
+            // creation of the piece of labware
+            return root["bulk_create_" + labwareModel].create({"samples": sample_uuids});
+          })
+          .fail(function () {
+            return deferred.reject({message: "Couldn't register the associated piece of labware."});
+          })
+          .then(function (bulkCreationLabwareObject) {
+            thisModel.outputs = _.map(bulkCreationLabwareObject.result.tubes, function (rawTubes) {
+              return root.tubes.instantiate({rawJson:{tube:rawTubes}});
+            });
+            // creation of the barcodes
+            return root.bulk_create_barcode.create({
+              "quantity": nbOfSample,
+              "labware":  labwareModel,
+              "role":     "stock",
+              "contents": sampleType
+            });
+          })
+          .fail(function () {
+            return deferred.reject({message: "Couldn't create the barcodes."});
+          })
+          .then(function (bulkCreationLabelObject) {
+            thisModel.labels = bulkCreationLabelObject.result.barcodes;
+            var label_values = _.map(thisModel.labels, function (label) {
+              return label.ean13;
+            });
+            var bulkData = _.map(thisModel.outputs, function (labware) {
+              // NOTE: in theory, one can associate a labware to any barcode.
+              // However, in the test data, because the tests nmight a bit too strict
+              // this order can become relevant... Be careful when running tests.
+              return {"name": labware.uuid, value:label_values.pop()};
+            });
+            // link barcodes to labware
+            return root.bulk_create_labellable.create({
+              type:   "resource",
+              labels: {
+                barcode: {
+                  "type": "ean13-barcode"}
+              },
+              bulk:   bulkData
+            });
+          })
+          .fail(function () {
+            return deferred.reject({message: "Couldn't associate the barcodes to the tubes."});
+          })
+          .then(function (bulkCreationLabellableObject) {
+            thisModel.labellables = bulkCreationLabellableObject.result.labellables;
+            deferred.resolve(thisModel.labellables);
+          });
       return deferred.promise();
     },
 
-    createOutputs: function(printer) {
+    generateCSV: function(labellables){
+      var data = _.map(labellables,function(labellable){
+        return [labellable.labels.barcode.value, labellable.uuid ].join(',');
+      });
+      data.unshift("Tube Barcode , Sanger Sample ID");
+      return data.join("\n");
+    },
+
+    printBarcodes: function (printer) {
       var deferred = $.Deferred();
       var thisModel = this;
 //      this.behaviours.outputs.print(function() {
 //        var root;
 
-        thisModel.owner.getS2Root()
-            .then(function (result) {
-              return result;
-            })
-            .fail(function(error){
-              return deferred.reject({message:"Couldn't get the Root!"});
-            })
-            .then(function(root) {
+      thisModel.owner.getS2Root()
+          .then(function (root) {
+            return root;
+          })
+          .fail(function (error) {
+            return deferred.reject({message: "Couldn't get the Root!"});
+          })
+          .then(function (root) {
 
-
-              thisModel.printBarcodes(collection, printerName);
+//            BasePageModel.printBarcodes(collection, printerName);
 //              thisModel.inputs.then(function(inputs) {
 //                var labware = [];
 //                var promises = _.chain(inputs).map(function(input) {
@@ -121,19 +203,17 @@ define([
 //                      that.owner.childDone(that, 'failed', {});
 //                    });
 //              });
-            });
+          });
 
       return deferred.promise();
     },
-
-
 
     sendManifestRequest: function (templateBlob,manifestCsv) {
       var deferred = $.Deferred();
       try {
         var xhr = new XMLHttpRequest;
         xhr.open("POST", 'http://localhost:8080/upload', false);
-      xhr.setRequestHeader('Content-Type', 'multipart/form-data ; boundary=AaB03x');
+        xhr.setRequestHeader('Content-Type', 'multipart/form-data ; boundary=AaB03x');
         xhr.onerror = function (oEvent) {
           console.warn('statusText : ', oEvent.target.statusText);
           console.warn('responseType : ', oEvent.target.responseType);
@@ -165,8 +245,6 @@ define([
         form.append("barcodes",manifestCsv);
 
         xhr.send(form);
-
-
 
       }
       catch (err) {
