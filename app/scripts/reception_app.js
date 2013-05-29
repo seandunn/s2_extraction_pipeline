@@ -11,7 +11,30 @@ define([ 'config'
   $.extend(App, {
     init:             function () {
       _.templateSettings.variable = 'templateData';
-      var receptionPresenter = Object.create(ReceptionPresenter).init();
+
+      var configuration = {
+        excelTemplates: {
+          cgap_lysed_manifest_template:  {
+            name:     "CGAP - lysed"
+          },
+          hello: {
+            name:     "hello"
+          }
+        },
+        printerList:config.printers,
+        models: {
+          cgap_lysed_manifest_template:  {
+            model:    "tube",
+            URI: "cgap_lysed_manifest_template.xls"
+          },
+          hello: {
+            model:    "tube",
+            URI: "hello.txt"
+          }
+        }
+      };
+
+      var receptionPresenter = Object.create(ReceptionPresenter).init(this, configuration);
       $("#content").append(receptionPresenter.view);
       this.addEventHandlers();
     },

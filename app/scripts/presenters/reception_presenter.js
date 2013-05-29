@@ -12,17 +12,15 @@ define(['config'
     init: function (owner, config) {
       this.owner = owner;
       this.config = config;
-      this.model = Object.create(Model).init(this, config);
-      this.view = this.createHtml();
+      this.model = Object.create(Model).init(this, config.models);
+      this.view = this.createHtml({excelTemplates:config.excelTemplates,printerList:config.printerList});
       return this;
     },
 
-    createHtml:function(){
-      var html = $(_.template(receptionPartialHtml)({
-            excelTemplates: [{name:"hello",filename:"hello.txt"},{name:"truc",filename:"truc.xlsx"}]
-      }));
+    createHtml:function(templateData){
+      var html = $(_.template(receptionPartialHtml)(templateData));
 
-      var selectXsl = html.find("select");
+      var selectXsl = html.find("#xls-templates");
       selectXsl.val("truc");
       var thisPresenter = this;
       selectXsl.change(onChangeXslTemplateEventHandler(thisPresenter));
@@ -31,24 +29,177 @@ define(['config'
       html.find("#generateBC").click(onGenerateBCEventHandler(thisPresenter));
       function onGenerateBCEventHandler(presenter){ return function(){ presenter.onGenerateBC(); } }
 
+      html.find("#downloadManifest").click(onDownloadManifestEventHandler(thisPresenter));
+      function onDownloadManifestEventHandler(presenter){ return function(){ presenter.onDownloadManifest(); } }
 
+      this.enableDropzone(html);
+
+      html.find("#downloadManifest").attr("disabled","disabled");
+      html.find("#printBC").attr("disabled","disabled");
+      html.find("#registrationBtn").attr("disabled","disabled");
       return html;
+    },
+
+    enableDropzone: function (container) {
+      var thisPresenter = this;
+      container.find('.dropzoneBox').show();
+
+      var dropzone = container.find('.dropzone');
+
+      // add listeners to the hiddenFileInput
+      dropzone.bind('click', handleClickOnDropZone); // forward the click to the hiddenFileInput
+      $(document).bind('drop', handleDropFileOnDropZone);
+      $(document).bind('dragover', handleDragFileOverDropZone);
+      var fileNameSpan = container.find('.filenameSpan');
+
+      var hiddenFileInput = container.find('.hiddenFileInput');
+      hiddenFileInput.bind("change", handleInputFileChanged);
+
+      function handleInputFile(fileHandle) {
+        // what to do when a file has been selected
+        var reader = new FileReader();
+        reader.onload = (function (fileEvent) {
+          return function (e) {
+            fileNameSpan.text(fileHandle.name);
+          }
+        })(fileHandle);
+        reader.onloadend = function (event) {
+          if (event.target.readyState === FileReader.DONE) {
+            thisPresenter.responderCallback(event.target.result);
+          }
+        };
+        reader.readAsText(fileHandle, "UTF-8");
+      }
+
+      function handleInputFileChanged(event) {
+        // what to do when the file selected by the hidden input changed
+        event.stopPropagation();
+        event.preventDefault();
+        handleInputFile(event.originalEvent.target.files[0]);
+      }
+
+      function handleClickOnDropZone(event) {
+        // what to do when one clicks on the drop zone
+        event.stopPropagation();
+        event.preventDefault();
+        if (hiddenFileInput) {
+          hiddenFileInput.click();
+        }
+      }
+
+      function handleDropFileOnDropZone(event) {
+        // what to do when one drops a file
+        event.stopPropagation();
+        event.preventDefault();
+        handleInputFile(event.originalEvent.dataTransfer.files[0]);
+      }
+
+      function handleDragFileOverDropZone(event) {
+        // what to do when one hovers over the dropzone
+        event.stopPropagation();
+        event.preventDefault();
+        if (event.target === dropzone[0]) {
+          dropzone.addClass('hover');
+        } else {
+          dropzone.removeClass('hover');
+        }
+      }
+
+    },
+
+    responderCallback: function (fileContent) {
+      var thisPresenter = this;
+      thisPresenter.model
+          .then(function (model) {
+            thisPresenter.message();
+//            return model.setRackContent(fileContent);
+          })
+          .fail(function (error) {
+//            thisPresenter.rackPresenter.resourcePresenter.resetWeels();
+            thisPresenter.message('error', error.message);
+          })
+          .then(function (model) {
+            thisPresenter.disableManifestCreation();
+            thisPresenter.enableRegistrationBtn();
+//            thisPresenter.rackPresenter.updateModel(model.rack_data);
+//            var volumeControlPosition = model.findVolumeControlPosition();
+//            thisPresenter.rackPresenter.resourcePresenter.fillWell(volumeControlPosition, "blue");
+//            if (model.isReady) {
+//              PubSub.publish("s2.step_presenter.enable_buttons", thisPresenter, {buttons: [
+//                {action: "end"}
+//              ]});
+//            }
+          })
+    },
+
+    enableRegistrationBtn:function(){
+      this.view.find("#registrationBtn").removeAttr("disabled");
+    },
+
+    enableDownloadManifest:function(){
+      this.view.find("#downloadManifest").removeAttr("disabled");
+    },
+
+    enablePrintBC:function(){
+      this.view.find("#printBC").removeAttr("disabled");
+    },
+
+    disableGenerateBC:function(){
+      this.view.find("#generateBC").attr("disabled","disabled");
+    },
+
+    disableDropzone: function (html) {
+      html.find('.dropzoneBox').hide();
+      html.find('.dropzone').unbind('click');
+      $(document).unbind('drop');
+      $(document).unbind('dragover');
+    },
+
+    disableRegistration:function(){
+      this.view.find(".columnRight *").attr("disabled","disabled");
+      this.disableDropzone(this.view);
+    },
+
+    disableManifestCreation:function(){
+      this.view.find(".columnLeft *").attr("disabled","disabled");
     },
 
     onChangeXslTemplate:function(){
       console.warn("hello");
     },
 
-    onGenerateBC:function(){
+    onDownloadManifest: function () {
+      var thisPresenter = this;
+      this.model
+          .then(function (model) {
+            // ... model.getManifest();
+          })
+          .fail(function (error) {
+            return thisPresenter.message('error', "Couldn't download the manifest! "+ error.message);
+          });
+    },
+
+    onGenerateBC: function () {
+      var thisPresenter = this;
       var nbOfSample = parseInt(this.view.find('#number-of-sample').val());
-      if (isNaN(nbOfSample)){
-        this.message('error','what??');
+      if (isNaN(nbOfSample)) {
+        this.message('error', 'what??');
       } else {
-        this.message('success','what??');
         var template = this.view.find('#xls-templates').val();
-        this.model.then(function(model){
-          model.generateSamples(template,nbOfSample);
-        })
+        this.model
+            .then(function (model) {
+              return model.generateSamples(template, nbOfSample);
+            })
+            .fail(function (error) {
+              return thisPresenter.message('error', 'what?? : '+error.message);
+            })
+            .then(function (model) {
+              thisPresenter.disableRegistration();
+              thisPresenter.disableGenerateBC();
+              thisPresenter.enableDownloadManifest();
+              thisPresenter.enablePrintBC();
+              return thisPresenter.message('success','Yoouhoo!');
+            })
       }
     },
 
@@ -65,7 +216,7 @@ define(['config'
             .addClass('alert-' + type)
             .html(message);
       }
-    },
+    }
   });
 
 

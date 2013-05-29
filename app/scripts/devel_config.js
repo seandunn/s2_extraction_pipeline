@@ -7,6 +7,14 @@ define(['mapper_test/test_config'
     exceptionHandling: function(callback) {
       callback();
     },
+    printServiceUrl: 'http://rubbish',
+    printers: [{
+      name: 'e367bc',
+      type: 2
+    }, {
+      name: 'd304bc',
+      type: 1
+    }],
     printerTypes: {
       1 : '96 Well Plate Printer',
       2 : '1D Tube Printer',

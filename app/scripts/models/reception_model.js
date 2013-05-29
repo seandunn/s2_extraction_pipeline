@@ -9,10 +9,11 @@ define([
 
   $.extend(ReceptionModel, {
 
-    init: function (owner) {
+    init: function (owner, config) {
       this.owner = owner;
       this.inputs = $.Deferred();
       this.output = [];
+      this.config = config;
       this.isReady = false;
 
       // this.initialiseCaching(); // not used
@@ -24,24 +25,33 @@ define([
       var thisModel = this;
       thisModel.getXLSTemplate(template)
           .fail(function(error){
-            deferred({message:"Couldn't load the specified template: "+template, previous_error:error});
+            return deferred.reject({message:"Couldn't load the specified template: "+template, previous_error:error});
           })
           .then(function(templateBlob){
-            // do some stuff here
-
-            return thisModel.sendManifestRequest(templateBlob,{});
+            thisModel.currentTemplate = templateBlob;
+            return thisModel.getBarcodes(template, nbOfSample);
+          })
+          .fail(function(error){
+            return deferred.reject({message:" Couldn't produce barcode data file "+error.message, previous_error:error});
+          })
+          .then(function(manifestCsv){
+            thisModel.manifestCsv = manifestCsv;
+            // now we are ready...
+            return thisModel.sendManifestRequest(thisModel.currentTemplate, thisModel.manifestCsv);
+          })
+          .fail(function(error){
+            return deferred.reject({message:" >> "+error.message, previous_error:error});
+          })
+          .then(function(){
+            return deferred.resolve();
           });
-
-
-
-
       return deferred.promise();
     },
 
     getXLSTemplate: function (template, nbOfSample) {
       var deferred = $.Deferred();
       var oReq = new XMLHttpRequest();
-      oReq.open("GET", '/xls_templates/' + template, true);
+      oReq.open("GET", '/xls_templates/' + this.config[template].URI, true);
       oReq.responseType = "blob";
       oReq.onload = function(oEvent) {
         var blob = oReq.response;
@@ -51,37 +61,121 @@ define([
         deferred.reject({message:"error"});
       };
       oReq.send();
-      console.log(template, nbOfSample);
       return deferred.promise();
     },
 
 
-    sendManifestRequest: function (blob,manifestData) {
+    getBarcodes:function(template,nbOfSample){
       var deferred = $.Deferred();
+      var labwareModel = this.config[template].model;
 
-      var xhr = new XMLHttpRequest;
-      xhr.open("POST", 'http://localhost:8080/upload', false);
+      deferred.resolve();
+      return deferred.promise();
+    },
 
-      xhr.onerror = function(oEvent){
-        debugger
-      };
-      xhr.onload = function(oEvent){
-        debugger
-      };
-      xhr.send(blob);
+    createOutputs: function(printer) {
+      var deferred = $.Deferred();
+      var thisModel = this;
+//      this.behaviours.outputs.print(function() {
+//        var root;
 
-//      var oReq = new XMLHttpRequest();
-//      oReq.open("GET", '/xls_templates/' + template, true);
-//      oReq.responseType = "blob";
-//      oReq.onload = function(oEvent) {
-//        var blob = oReq.response;
-//        deferred.resolve(blob);
-//      };
-//      oReq.onerror = function(oEvent) {
-//        deferred.reject({message:"error"});
-//      };
-//      oReq.send();
-//      console.log(template, nbOfSample);
+        thisModel.owner.getS2Root()
+            .then(function (result) {
+              return result;
+            })
+            .fail(function(error){
+              return deferred.reject({message:"Couldn't get the Root!"});
+            })
+            .then(function(root) {
+
+
+              thisModel.printBarcodes(collection, printerName);
+//              thisModel.inputs.then(function(inputs) {
+//                var labware = [];
+//                var promises = _.chain(inputs).map(function(input) {
+//                  return _.chain(that.config.output).pairs().filter(function(outputNameAndDetails) {
+//                    var details = outputNameAndDetails[1];
+//                    return details.tracked === undefined ? true : details.tracked;
+//                  }).map(function(outputNameAndDetails) {
+//                        var details = outputNameAndDetails[1];
+//                        return Operations.registerLabware(
+//                            root[details.model],
+//                            details.aliquotType,
+//                            details.purpose
+//                        ).then(function(state) {
+//                              that.cache.push(state.labware);
+//                              labware.push(state.labware);
+//                              return state.labware;
+//                            }).fail(function() {
+//                              that.owner.childDone(that, "failed", {});
+//                            });
+//                      }).value();
+//                }).flatten().value();
+
+//                $.when.apply(null, promises).then(function() {
+//                  that.outputs.resolve(labware).then(function(outputs) {
+//                    that.printBarcodes(outputs, printer);
+//                  });
+//                  that.owner.childDone(that, 'outputsReady', {});
+//                }).fail(function() {
+//                      that.owner.childDone(that, 'failed', {});
+//                    });
+//              });
+            });
+
+      return deferred.promise();
+    },
+
+
+
+    sendManifestRequest: function (templateBlob,manifestCsv) {
+      var deferred = $.Deferred();
+      try {
+        var xhr = new XMLHttpRequest;
+        xhr.open("POST", 'http://localhost:8080/upload', false);
+      xhr.setRequestHeader('Content-Type', 'multipart/form-data ; boundary=AaB03x');
+        xhr.onerror = function (oEvent) {
+          console.warn('statusText : ', oEvent.target.statusText);
+          console.warn('responseType : ', oEvent.target.responseType);
+          console.warn('responseText : ', oEvent.target.responseText);
+          deferred.reject({message: 'Something went wrong...' + oEvent.target.responseText});
+        };
+        xhr.onload = function (oEvent) {
+          // TODO: this part is simulating the reception of a file from the server...
+          // Change this when the proper return value will be known...
+          function tmpFunctionForFileDownload (callback) {
+            var oReq = new XMLHttpRequest();
+            oReq.open("GET", '/xls_templates/manifest.xlsx', true);
+            oReq.responseType = "blob";
+            oReq.onload = function(oEvent) {
+              var blob = oReq.response;
+              callback(blob);
+            };
+            oReq.onerror = function(oEvent) {
+            };
+            oReq.send();
+          }
+          tmpFunctionForFileDownload(function(blob){
+            deferred.resolve(blob);
+          });
+          // end of TODO
+        };
+        var form = new FormData();
+        form.append("template",templateBlob);
+        form.append("barcodes",manifestCsv);
+
+        xhr.send(form);
+
+
+
+      }
+      catch (err) {
+        var message = " msg:" + err.message;
+        message += "\n" + err.code;
+        message += "\n" + err.name;
+        message += "\n" + err.stack;
+        deferred.reject({message: message});
+      }
       return deferred.promise();
     }
 
