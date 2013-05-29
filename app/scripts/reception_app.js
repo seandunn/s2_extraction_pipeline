@@ -16,9 +16,6 @@ define([ 'config'
         excelTemplates: {
           cgap_lysed_manifest_template:  {
             name:     "CGAP - lysed"
-          },
-          hello: {
-            name:     "hello"
           }
         },
         printerList:config.printers,
@@ -26,10 +23,6 @@ define([ 'config'
           cgap_lysed_manifest_template:  {
             model:    "tube",
             URI: "cgap_lysed_manifest_template.xls"
-          },
-          hello: {
-            model:    "tube",
-            URI: "hello.txt"
           }
         }
       };
