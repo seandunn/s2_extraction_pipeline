@@ -32,14 +32,15 @@
         <div class="columnLeft">
             <button id="generateBC">Generate DB Entries</button>
             <button id="downloadManifest">Download Manifest</button>
-            <button id="printBC">Print Barcodes</button>
-            <label for="printer-select">Current Printer:</label>
-            <select class="printer-select" name="printer-select">
-                <% _.each (templateData.printerList, function (printer) { %>
-                <option value="<%- printer.name %>"><%- printer.name %></option>
-                <% }); %>
-            </select>
-
+            <div class="printer-div">
+                <button id="printBC">Print Barcodes</button>
+                <label for="printer-select">Current Printer:</label>
+                <select class="printerSelect" id="printer-select">
+                    <% _.each (templateData.printerList, function (printer) { %>
+                    <option value="<%- printer.name %>"><%- printer.name %></option>
+                    <% }); %>
+                </select>
+            </div>
         </div>
         <div class="columnRight">
             <div>

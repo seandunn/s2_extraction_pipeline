@@ -242,23 +242,45 @@
           "bulk_create_labellable": {
             "user":   "username",
             "type":   "resource",
-            "labels": {
-              "barcode": {
-                "type": "ean13-barcode"
-              }
-            },
-            "bulk":   [
+            "names": [
               {
-                "name":  "tube1_uuid",
-                "value": "1234567890003"
+                "name":   "tube1_uuid",
+                "labels": {
+                  "barcode": {
+                    "type":  "ean13-barcode",
+                    "value": "1234567890003"
+                  },
+                  "sanger label":  {
+                    "type": "sanger-barcode",
+                    "value": "JD3U"
+                  }
+                }
               },
               {
-                "name":  "tube2_uuid",
-                "value": "1234567890002"
+                "name":   "tube2_uuid",
+                "labels": {
+                  "barcode": {
+                    "type":  "ean13-barcode",
+                    "value": "1234567890002"
+                  },
+                  "sanger label":  {
+                    "type": "sanger-barcode",
+                    "value": "JD2U"
+                  }
+                }
               },
               {
-                "name":  "tube3_uuid",
-                "value": "1234567890001"
+                "name":   "tube3_uuid",
+                "labels": {
+                  "barcode": {
+                    "type":  "ean13-barcode",
+                    "value": "1234567890001"
+                  },
+                  "sanger label":  {
+                    "type": "sanger-barcode",
+                    "value": "JD1U"
+                  }
+                }
               }
             ]
           }
@@ -282,9 +304,13 @@
                   "name":    "tube1_uuid",
                   "type":    "resource",
                   "labels":  {
-                    "barcode":      {
-                      "value": "1234567890001",
-                      "type":  "ean13-barcode"
+                    "barcode": {
+                      "type":  "ean13-barcode",
+                      "value": "1234567890003"
+                    },
+                    "sanger label":  {
+                      "type": "sanger-barcode",
+                      "value": "JD3U"
                     }
                   }
                 },
@@ -299,9 +325,13 @@
                   "name":    "tube2_uuid",
                   "type":    "resource",
                   "labels":  {
-                    "barcode":      {
-                      "value": "1234567890002",
-                      "type":  "ean13-barcode"
+                    "barcode": {
+                      "type":  "ean13-barcode",
+                      "value": "1234567890002"
+                    },
+                    "sanger label":  {
+                      "type": "sanger-barcode",
+                      "value": "JD2U"
                     }
                   }
                 },
@@ -316,9 +346,13 @@
                   "name":    "tube3_uuid",
                   "type":    "resource",
                   "labels":  {
-                    "barcode":      {
-                      "value": "1234567890003",
-                      "type":  "ean13-barcode"
+                    "barcode": {
+                      "type":  "ean13-barcode",
+                      "value": "1234567890001"
+                    },
+                    "sanger label":  {
+                      "type": "sanger-barcode",
+                      "value": "JD1U"
                     }
                   }
                 }

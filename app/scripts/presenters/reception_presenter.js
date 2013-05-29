@@ -32,11 +32,14 @@ define(['config'
       html.find("#downloadManifest").click(onDownloadManifestEventHandler(thisPresenter));
       function onDownloadManifestEventHandler(presenter){ return function(){ presenter.onDownloadManifest(); } }
 
+      html.find("#printBC").click(onPrintBarcodeEventHandler(thisPresenter));
+      function onPrintBarcodeEventHandler(presenter){ return function(){ presenter.onPrintBarcode(); } }
+
       this.enableDropzone(html);
 
-      html.find("#downloadManifest").attr("disabled","disabled");
-      html.find("#printBC").attr("disabled","disabled");
-      html.find("#registrationBtn").attr("disabled","disabled");
+      html.find("#downloadManifest").hide();
+      html.find("#registrationBtn").hide();
+      html.find(".printer-div").hide();
       return html;
     },
 
@@ -133,19 +136,20 @@ define(['config'
     },
 
     enableRegistrationBtn:function(){
-      this.view.find("#registrationBtn").removeAttr("disabled");
+      this.view.find("#registrationBtn").show();
     },
 
     enableDownloadManifest:function(){
-      this.view.find("#downloadManifest").removeAttr("disabled");
+      this.view.find("#downloadManifest").show();
     },
 
     enablePrintBC:function(){
-      this.view.find("#printBC").removeAttr("disabled");
+      this.view.find(".printer-div").show();
     },
 
     disableGenerateBC:function(){
-      this.view.find("#generateBC").attr("disabled","disabled");
+      this.view.find(".columnLeft form *").attr("disabled","disabled");
+      this.view.find("#generateBC").hide();
     },
 
     disableDropzone: function (html) {
@@ -162,10 +166,25 @@ define(['config'
 
     disableManifestCreation:function(){
       this.view.find(".columnLeft *").attr("disabled","disabled");
+      this.disableGenerateBC();
     },
 
     onChangeXslTemplate:function(){
       console.warn("hello");
+    },
+
+    onPrintBarcode: function () {
+      var thisPresenter = this;
+      this.model
+          .then(function (model) {
+            return model.printBarcodes(thisPresenter.view.find('#printer-select').val());
+          })
+          .fail(function (error) {
+            return thisPresenter.message('error', "Couldn't print the barcodes!");
+          })
+          .then(function () {
+            return thisPresenter.message('success', "The barcodes have been sent to printer.");
+          });
     },
 
     onDownloadManifest: function () {
@@ -182,8 +201,8 @@ define(['config'
     onGenerateBC: function () {
       var thisPresenter = this;
       var nbOfSample = parseInt(this.view.find('#number-of-sample').val());
-      if (isNaN(nbOfSample)) {
-        this.message('error', 'what??');
+      if (isNaN(nbOfSample) || nbOfSample <= 0) {
+        this.message('error', 'The number of sample is not valid.');
       } else {
         var template = this.view.find('#xls-templates').val();
         this.model
@@ -191,14 +210,14 @@ define(['config'
               return model.generateSamples(template, nbOfSample);
             })
             .fail(function (error) {
-              return thisPresenter.message('error', 'what?? : '+error.message);
+              return thisPresenter.message('error', 'Something wrong happend : '+error.message);
             })
             .then(function (model) {
               thisPresenter.disableRegistration();
               thisPresenter.disableGenerateBC();
               thisPresenter.enableDownloadManifest();
               thisPresenter.enablePrintBC();
-              return thisPresenter.message('success','Yoouhoo!');
+              return thisPresenter.message('success','Samples generated. The manifest is ready for download, and the barcodes ready for printing.');
             })
       }
     },

@@ -76,7 +76,6 @@ define([
       var root;
       var labwareModel = thisModel.config[template].model;
       var sampleType = thisModel.config[template].sample_type;
-
       thisModel.owner.getS2Root()
           .then(function (result) {
             root = result;
@@ -103,8 +102,8 @@ define([
             return deferred.reject({message: "Couldn't register the associated piece of labware."});
           })
           .then(function (bulkCreationLabwareObject) {
-            thisModel.outputs = _.map(bulkCreationLabwareObject.result.tubes, function (rawTubes) {
-              return root.tubes.instantiate({rawJson:{tube:rawTubes}});
+            thisModel.outputs = _.map(bulkCreationLabwareObject.result.tubes, function (rawTube) {
+              return root.tubes.instantiate({rawJson:{tube:rawTube}});
             });
             // creation of the barcodes
             return root.bulk_create_barcode.create({
@@ -117,33 +116,40 @@ define([
           .fail(function () {
             return deferred.reject({message: "Couldn't create the barcodes."});
           })
-          .then(function (bulkCreationLabelObject) {
-            thisModel.labels = bulkCreationLabelObject.result.barcodes;
-            var label_values = _.map(thisModel.labels, function (label) {
-              return label.ean13;
+          .then(function (bulkCreationBarcodeObject) {
+            thisModel.barcodes = bulkCreationBarcodeObject.result.barcodes;
+            var labels = _.map(thisModel.barcodes, function (label) {
+              return {
+                barcode:        {
+                  type:  "ean13-barcode",
+                  value: label.ean13
+                },
+                "sanger label": {
+                  type:  "sanger-barcode",
+                  value: label.sanger.prefix + label.sanger.number + label.sanger.suffix
+                }
+              };
             });
             var bulkData = _.map(thisModel.outputs, function (labware) {
               // NOTE: in theory, one can associate a labware to any barcode.
               // However, in the test data, because the tests nmight a bit too strict
               // this order can become relevant... Be careful when running tests.
-              return {"name": labware.uuid, value:label_values.pop()};
+              return {"name": labware.uuid, labels:labels.pop()};
             });
             // link barcodes to labware
             return root.bulk_create_labellable.create({
               type:   "resource",
-              labels: {
-                barcode: {
-                  "type": "ean13-barcode"}
-              },
-              bulk:   bulkData
+              names:   bulkData
             });
           })
           .fail(function () {
             return deferred.reject({message: "Couldn't associate the barcodes to the tubes."});
           })
           .then(function (bulkCreationLabellableObject) {
-            thisModel.labellables = bulkCreationLabellableObject.result.labellables;
-            deferred.resolve(thisModel.labellables);
+            _.each(thisModel.outputs, function (output) {
+              output.labels = bulkCreationLabellableObject.result.labellables.pop().labels;
+            });
+            deferred.resolve(thisModel.outputs);
           });
       return deferred.promise();
     },
@@ -156,55 +162,16 @@ define([
       return data.join("\n");
     },
 
-    printBarcodes: function (printer) {
+    printBarcodes: function (printerName) {
       var deferred = $.Deferred();
       var thisModel = this;
-//      this.behaviours.outputs.print(function() {
-//        var root;
-
-      thisModel.owner.getS2Root()
-          .then(function (root) {
-            return root;
+      BasePageModel.printBarcodes(thisModel.outputs, printerName)
+          .fail(function(){
+            return deferred.reject({message: "Couldn't print the barcodes."});
           })
-          .fail(function (error) {
-            return deferred.reject({message: "Couldn't get the Root!"});
-          })
-          .then(function (root) {
-
-//            BasePageModel.printBarcodes(collection, printerName);
-//              thisModel.inputs.then(function(inputs) {
-//                var labware = [];
-//                var promises = _.chain(inputs).map(function(input) {
-//                  return _.chain(that.config.output).pairs().filter(function(outputNameAndDetails) {
-//                    var details = outputNameAndDetails[1];
-//                    return details.tracked === undefined ? true : details.tracked;
-//                  }).map(function(outputNameAndDetails) {
-//                        var details = outputNameAndDetails[1];
-//                        return Operations.registerLabware(
-//                            root[details.model],
-//                            details.aliquotType,
-//                            details.purpose
-//                        ).then(function(state) {
-//                              that.cache.push(state.labware);
-//                              labware.push(state.labware);
-//                              return state.labware;
-//                            }).fail(function() {
-//                              that.owner.childDone(that, "failed", {});
-//                            });
-//                      }).value();
-//                }).flatten().value();
-
-//                $.when.apply(null, promises).then(function() {
-//                  that.outputs.resolve(labware).then(function(outputs) {
-//                    that.printBarcodes(outputs, printer);
-//                  });
-//                  that.owner.childDone(that, 'outputsReady', {});
-//                }).fail(function() {
-//                      that.owner.childDone(that, 'failed', {});
-//                    });
-//              });
+          .then(function(){
+            return deferred.resolve(thisModel);
           });
-
       return deferred.promise();
     },
 
@@ -256,193 +223,6 @@ define([
       }
       return deferred.promise();
     }
-
-
-
-
-//    setupModel: function (setupData) {
-//      this.cache.push(setupData.batch);
-//      this.user = setupData.user;
-//      this.batch = setupData.batch;
-//      var thisModel = this;
-//      var deferred = $.Deferred();
-//
-//      getInputResources(thisModel)
-//          .fail(function (error) {
-//            deferred.reject( {message: error.message, previous_error: error});
-//          })
-//          .then(function (inputs) {
-//            thisModel.inputs.resolve(inputs);
-//            return deferred.resolve(thisModel);
-//          });
-//      return deferred.promise();
-//    },
-
-//    setControlSourceFromBarcode: function (barcode) {
-//      var deferred = $.Deferred();
-//      var thisModel = this;
-//      this.cache
-//          .fetchResourcePromiseFromBarcode(barcode)
-//          .fail(function (error) {
-//            // TODO: the error reported here is not an error message yet, but the failed promise itself.
-//            // therefore, we do not cannot encapsulate it yet.
-//            deferred.reject( {message: "Could not find the tube with barcode " + barcode, previous_error: null});
-//          })
-//          .then(function (rsc) {
-//            thisModel.controlSource = rsc;
-//            if (thisModel.rack_data) {
-//              thisModel.isReady = true;
-//            }
-//            return deferred.resolve(thisModel);
-//          });
-//      return deferred.promise();
-//    },
-
-//    removeControlSource: function () {
-//      delete this.controlSource;
-//      this.isReady = false;
-//      return $.Deferred().resolve(this).promise();
-//    },
-
-//    setRackContent: function (dataAsTxt) {
-//      var thisModel = this;
-//      var deferred = $.Deferred();
-//      var locationVolumeData = CSVParser.volumeCsvToArray(dataAsTxt);
-//
-//      checkFileValidity(thisModel, locationVolumeData)
-//          .fail(function (error) {
-//            deferred.reject({message: error.message, previous_error: error});
-//          })
-//          .then(function (model) {
-//            var rackData = {};
-//            rackData.resourceType = thisModel.config.input.model.singularize();
-//            rackData.tubes = {};
-//
-//            _.each(locationVolumeData.array, function (volumeItem) {
-//              rackData.tubes[volumeItem[0]] = {volume: volumeItem[1]};
-//            });
-//
-//            thisModel.rack_data = rackData;
-//            if (thisModel.controlSource) {
-//              thisModel.isReady = true;
-//            }
-//
-//            deferred.resolve(thisModel);
-//          });
-//
-//      return deferred.promise();
-//    },
-
-//    findVolumeControlPosition: function () {
-//      var keys = _.keys(this.rack_data.tubes);
-//      if (keys.length < 96) {
-//        return this.volumeControlPosition = getNextToLastPosition(getLastPositions(keys));
-//      } else {
-//        return null;
-//      }
-//    },
-//
-//    addVolumeControlToRack: function () {
-//      var deferred = $.Deferred();
-//      var thisModel = this;
-//      thisModel.createControlTube()
-//          .fail(function (error) {
-//            deferred.reject( {message: error.message, previousError: error});
-//          }).then(function (controlTube) {
-//            thisModel.controlTube = controlTube;
-//            thisModel.cache.push(controlTube);
-//            var tubesLocation = {tubes: {}};
-//            tubesLocation.tubes[thisModel.volumeControlPosition] = controlTube.uuid;
-//            return thisModel.inputs
-//                .fail(function () {
-//                  deferred.reject( {message: "Couldn't get the input resources!!!"});
-//                })
-//                .then(function (inputs) {
-//                  return inputs[0].update(tubesLocation);
-//                })
-//          })
-//          .fail(function () {
-//            deferred.reject( {message: "Couldn't add the new control tube."});
-//          })
-//          .then(function(){
-//            return thisModel.updateRoles();
-//          })
-//          .fail(function (error) {
-//            deferred.reject( {message: error.message, previous_error: error});
-//          })
-//          .then(function () {
-//            deferred.resolve(thisModel);
-//          });
-//
-//      return deferred.promise();
-//    },
-//
-//    createControlTube: function () {
-//      var deferred = $.Deferred();
-//      var thisModel = this;
-//      thisModel.owner.getS2Root()
-//          .then(function (root) {
-//            var attributes = {
-//              "aliquots": [
-//                {
-//                  "sample_uuid": thisModel.controlSource.uuid,
-//                  "type":        "NA",
-//                  "quantity":    5
-//                }
-//              ]
-//            };
-//            return root[thisModel.config.output[1].model].create(attributes);
-//          })
-//          .fail(function () {
-//            deferred.reject({message: "Couldn't register the new control tube."});
-//          })
-//          .then(function (controlTube) {
-//            deferred.resolve(controlTube);
-//          });
-//      return deferred.promise();
-//    },
-//
-//    updateRoles: function () {
-//      var deferred = $.Deferred();
-//
-//      var thisModel = this;
-//
-//      function makeJSONUpdateFor(role, uuid, event) {
-//        var updateJson = { items: {} };
-//        updateJson.items[role] = {};
-//        updateJson.items[role][uuid] = {
-//          event: event
-//        };
-//        return updateJson;
-//      }
-//
-//      thisModel.inputs
-//          .fail(function (error) {
-//            deferred.reject( {message: "Couldn't get the input items!!"});
-//          })
-//          .then(function (inputs) {
-//            var rack = inputs[0];
-//            return inputs[0].order()
-//                .then(function (order) {
-//                  return order.update(makeJSONUpdateFor(thisModel.config.input.role, rack.uuid, "unuse"))
-//                })
-//                .then(function (order) {
-//                  return order.update(makeJSONUpdateFor(thisModel.config.output[0].role, rack.uuid, "start"))
-//                })
-//                .then(function (order) {
-//                  return order.update(makeJSONUpdateFor(thisModel.config.output[0].role, rack.uuid, "complete"))
-//                })
-//                .fail(function (error) {
-//                  deferred.reject( {message: "Couldn't update the rack role"});
-//                })
-//                .then(function () {
-//                  deferred.resolve(thisModel);
-//                });
-//          });
-//
-//      return deferred.promise();
-//    }
-
   });
 
   function getLastPositions(positions) {
