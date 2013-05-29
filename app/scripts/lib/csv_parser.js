@@ -2,64 +2,52 @@ define([], function () {
   'use strict';
   return {
     rackingCsvToArray:function (data) {
-      var DELIMITER = ',';
-
-      var lines = data.split(/\r\n|\r|\n/g);
-
-      var re = new RegExp(
-          "\\s*(\\w)(\\d\\d)\\s*\\" + DELIMITER
-              +
-              "\\s*(FR\\d+).*", "i");  // TODO: add the 'FR' prefix to the regex
-
-      var array = [];
+      var csvArray = $.csv.toArrays(data);
       var matches = undefined;
 
-      _.each(lines, function (line) {
-        matches = re.exec(line);
-        if(matches){
+      var reForPosition = new RegExp( "\\s*(\\w)(\\d\\d)\\s*" , "i");
+
+      return _.map(csvArray, function (row) {
+        matches = reForPosition.exec(row[0]);
+        if (matches) {
           var locationLetter = matches[1];
           var locationNumber = parseInt(matches[2]);
-          var barcode = matches[3];
-          array.push([locationLetter+locationNumber, barcode]);
+          return [(locationLetter + locationNumber).trim(), row[1].trim()];
         }
       });
-
-      return array;
     },
 
     volumeCsvToArray:function (data) {
-      var DELIMITER = ',';
-
-      var lines = data.split(/\r\n|\r|\n/g);
-
-      var re = new RegExp(
-          "\\s*(\\d+)\\s*" // the barcode
-              + DELIMITER +
-              "\\s*(\\w)(\\d\\d)\\s*\\" // the location
-              + DELIMITER +
-              "\\s*([\\d\\.\\,]+).*" // the volume
-          , "i");  // TODO: add the 'FR' prefix to the regex
-
-      var array = [];
+     var csvArray = $.csv.toArrays(data);
       var matches = undefined;
       var rack_barcode ;
+      var reBarcode = new RegExp("\\s*(\\w)(\\d\\d)\\s*", "i")
 
-      _.chain(lines).drop(0).each(function (line) {
-        matches = re.exec(line);
-        if(matches){
-          rack_barcode = rack_barcode || matches[1];
-          if (rack_barcode != matches[1]) {
-            throw new Error('...');
+      rack_barcode = csvArray[1][0].replace(/ /g,'');
+      var array = _.chain(csvArray)
+        .drop()
+        .map(function (row) {
+          matches = reBarcode.exec(row[1]);
+          if (matches) {
+            var locationLetter = matches[1];
+            var locationNumber = parseInt(matches[2]);
+            return [(locationLetter + locationNumber).trim(),
+                    parseFloat(row[2].trim())];
           }
-          var locationLetter = matches[2];
-          var locationNumber = parseInt(matches[3]);
-          var volume = parseFloat(matches[4]);
-          array.push([locationLetter+locationNumber, volume]);
-        }
-      });
-
+        })
+        .value();
       return {rack_barcode:rack_barcode,array:array};
     },
+
+    manifestCsvToArray:function(data) {
+      var csvArray = $.csv.toArrays(data);
+      return _.map(csvArray, function(row){
+        return _.map(row, function(element){
+          return element.trim();
+        });
+      });
+    },
+
     locationArrayToLocalisedBarcodes:function (array) {
       var output = {};
       _.each(array, function (row) {

@@ -128,8 +128,39 @@ define([
           expect(array[2][0]).toEqual("C1");
           expect(array[2][1]).toEqual(23.3150);
         });
-
       });
-    })
+    });
+
+    describe("A ManifestCSV parser", function(){
+      var csvData, csvDataWithWhitespace;
+      beforeEach(function(){
+        csvData = ",,,,,,,CGAP Lysed Material Manifest,,,,,,,,,,,,,\n"
+          +"Tube Barcode,HMDMC,SANGER SAMPLE ID,SUPPLIER SAMPLE NAME,Lysed?,COHORT,VOLUME (ul),GENDER,DATE OF SAMPLE COLLECTION (MM/YY or YYYY only),IS SAMPLE A CONTROL?,IS RE-SUBMITTED SAMPLE?,STORAGE CONDITIONS,MOTHER (optional),FATHER (optional),SIBLING (optional),GC CONTENT,PUBLIC NAME,TAXON ID,COMMON NAME,SAMPLE TYPE,SAMPLE ACCESSION NUMBER (optional)\n"
+          +"880000000000011,,TEST_SANGER_ID1,TEST_SAMPLE_1,Yes,,1.0,Male,,No,No,,,,,,,9606,Homo Sapien,Tissue Non-Tumour,";
+
+        csvDataWithWhitespace = ", , , , , , ,CGAP Lysed Material Manifest , , , , , , , , , , , , , \n"
+          +"Tube Barcode, HMDMC, SANGER SAMPLE ID, SUPPLIER SAMPLE NAME,Lysed?,COHORT,VOLUME (ul),GENDER,DATE OF SAMPLE COLLECTION (MM/YY or YYYY only),IS SAMPLE A CONTROL?,IS RE-SUBMITTED SAMPLE?,STORAGE CONDITIONS,MOTHER (optional),FATHER (optional),SIBLING (optional),GC CONTENT,PUBLIC NAME,TAXON ID,COMMON NAME,SAMPLE TYPE,SAMPLE ACCESSION NUMBER (optional)\n"
+          +"880000000000011  , , TEST_SANGER_ID1, TEST_SAMPLE_1,Yes,,1.0,Male,,No,No,,,,,,,9606,Homo Sapien,Tissue Non-Tumour,";
+      });
+
+      it("can parse a manifest CSV into an array", function(){
+        var csvArray = csvParser.manifestCsvToArray(csvData);
+        expect(csvArray[0][0]).toEqual("");
+        expect(csvArray[2][0]).toEqual("880000000000011")
+      });
+
+      it("will give the same array if same data is given but where the outer whitespace differs", function(){
+        var csvArray = csvParser.manifestCsvToArray(csvData);
+        var csvArrayFromDataWithWhitespace = csvParser.manifestCsvToArray(csvDataWithWhitespace);
+        expect(csvArray).toEqual(csvArrayFromDataWithWhitespace);
+      });
+
+      it("does not remove whitespace between characters in individual data elements", function(){
+        var csvArray = csvParser.manifestCsvToArray(csvData);
+        expect(csvArray[1][0]).toEqual("Tube Barcode");
+        expect(csvArray[1][2]).toEqual("SANGER SAMPLE ID");
+      });
+
+    });
   });
 });
