@@ -40,7 +40,7 @@ define([
         return item.returnPrintDetails();
       });
 
-      return printer.print(printItems)
+      return printer.print(printItems, {user:this.user})
           .done(function() {
             that.owner.childDone(that, 'barcodePrintSuccess', {});
           })
