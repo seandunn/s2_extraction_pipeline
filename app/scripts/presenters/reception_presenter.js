@@ -227,7 +227,7 @@ define(['config'
       var thisPresenter = this;
       this.model
         .then(function(model){
-          model.updateSamples();
+          return model.updateSamples();
         })
         .fail(function (error) {
           return thisPresenter.message('error', 'Something wrong happened : '+error.message);

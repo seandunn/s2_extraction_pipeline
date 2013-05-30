@@ -258,7 +258,8 @@ define([
           return deferred.reject({message: "Couldn't get the root!"});
         })
         .then(function(root){
-          return root.bulk_update_sample.create(thisModel.samplesFromManifest);
+//        return root.bulk_update_sample.create(thisModel.samplesFromManifest);
+          return deferred.reject({message: "Update call on S2 not implemented yet."});
         })
         .fail(function () {
           return deferred.reject({message: "Couldn't update the samples on S2."});
