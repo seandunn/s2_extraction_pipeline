@@ -185,7 +185,7 @@ define([
           console.warn('statusText : ', oEvent.target.statusText);
           console.warn('responseType : ', oEvent.target.responseType);
           console.warn('responseText : ', oEvent.target.responseText);
-          deferred.reject({message: 'Something went wrong...' + oEvent.target.responseText});
+          deferred.reject({message: "Unable to send the manifest... Is the server up and running ? "  + oEvent.target.responseText});
         };
         xhr.onload = function (oEvent) {
           // TODO: this part is simulating the reception of a file from the server...
