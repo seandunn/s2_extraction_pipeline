@@ -7,7 +7,7 @@ define(['mapper_test/test_config'
     exceptionHandling: function(callback) {
       callback();
     },
-    printServiceUrl: 'http://rubbish',
+    printServiceUrl: 'http://no_real_address',
     printers: [{
       name: 'e367bc',
       type: 2
