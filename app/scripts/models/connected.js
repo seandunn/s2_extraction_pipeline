@@ -140,7 +140,7 @@ define([
                   details.purpose
                 ).then(function(state) {
                   that.cache.push(state.labware);
-                  output[details.role] = state.labware;
+                  output[details.title] = state.labware;
                   return state.labware;
                 }).fail(function() {
                   that.owner.childDone(that, "failed", {});
@@ -161,10 +161,16 @@ define([
                 var label = _.chain(output).pairs().map(function(nameAndLabware) {
                   var labware = nameAndLabware[1];
                   var label   = labware.returnPrintDetails();
+
+                  // Ensure that we have some way of determining what's what!
+                  var details = label[labware.resourceType];
+                  details['label_text'] = details['label_text'] || {};
+                  details.label_text.role = nameAndLabware[0];
+
                   return {
                     template: label.template,
                     key:      labware.resourceType,
-                    details:  label[labware.resourceType]
+                    details:  details
                   };
                 }).reduce(function(memo, label) {
                   memo.template.push(label.template);
