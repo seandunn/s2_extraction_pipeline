@@ -123,9 +123,13 @@ define([
           root = result;
         }).then(function() {
           that.inputs.then(function(inputs) {
-            var labware = [];
+            var labels = [];
             var promises = _.chain(inputs).map(function(input) {
-              return _.chain(that.config.output).pairs().filter(function(outputNameAndDetails) {
+              // For each input we have to create a number of outputs.  These outputs are effectively
+              // tied together in some fashion and should be printed next to each other.  Hence, here
+              // we build output structures, which we will then print.
+              var output = { };
+              var promises = _.chain(that.config.output).pairs().filter(function(outputNameAndDetails) {
                 var details = outputNameAndDetails[1];
                 return details.tracked === undefined ? true : details.tracked;
               }).map(function(outputNameAndDetails) {
@@ -136,16 +140,58 @@ define([
                   details.purpose
                 ).then(function(state) {
                   that.cache.push(state.labware);
-                  labware.push(state.labware);
+                  output[details.role] = state.labware;
                   return state.labware;
                 }).fail(function() {
                   that.owner.childDone(that, "failed", {});
                 });
               }).value();
-            }).flatten().value();
 
-            $.when.apply(null, promises).then(function() {
-              that.outputs.resolve(labware).then(function(outputs) {
+              // We are only done once all of the outputs have been created and stuck into the output
+              // structure.  At that point we can turn the output into an object that will behave like
+              // it can be printed.  We'll assume that the template name can be made by joining the
+              // template names for each label together (i.e. 2 'tube' labels mean 'tube_and_tube', or
+              // a 'tube' and 'spin_column' means 'tube_and_spin_column').  So, whilst one "label" might
+              // be sent to the printer, it might physically print a couple of labels.
+              //
+              // WARNING: Whilst this works for N alike things (N tubes for instance), or tuples (1 tube
+              // and 1 spin column), it doesn't work multiple tuples, unless the template knows something
+              // we don't.
+              return $.when.apply(null, promises).done(function() {
+                var label = _.chain(output).pairs().map(function(nameAndLabware) {
+                  var labware = nameAndLabware[1];
+                  var label   = labware.returnPrintDetails();
+                  return {
+                    template: label.template,
+                    key:      labware.resourceType,
+                    details:  label[labware.resourceType]
+                  };
+                }).reduce(function(memo, label) {
+                  memo.template.push(label.template);
+
+                  var key = label.key;
+                  if (memo[label.key] instanceof Array) {
+                    memo[label.key].push(label.details);
+                  } else if (memo[label.key]) {
+                    memo[label.key] = [memo[label.key],label.details];
+                  } else {
+                    memo[label.key] = label.details;
+                  }
+                  return memo;
+                }, {template:[]}).value();
+
+                label.template = label.template.join("_and_");
+                labels.push({
+                  returnPrintDetails: function() {
+                    return label;
+                  }
+                });
+              });
+            }).value();
+
+            // Now we can print out special labels!
+            $.when.apply(null, promises).then(function(placeholder) {
+              that.outputs.resolve(labels).then(function(outputs) {
                 that.printBarcodes(outputs, printer);
               });
               that.owner.childDone(that, 'outputsReady', {});
