@@ -41,6 +41,13 @@ define(['config'
       function onRegistrationButtonClickEventHandler(presenter){return function(){ presenter.onRegistrationButtonClick(); }}
 
       html.find(".printer-div").hide();
+
+      html.find("#number-of-sample").bind("keypress",function(event){
+        if (event.which !== 13) return;
+          onGenerateBCEventHandler(thisPresenter)();
+        }
+      );
+
       return html;
     },
 
@@ -204,7 +211,7 @@ define(['config'
               return model.generateSamples(template, nbOfSample);
             })
             .fail(function (error) {
-              return thisPresenter.message('error', 'Something wrong happend : '+error.message);
+              return thisPresenter.message('error', 'Something wrong happened : '+error.message);
             })
             .then(function (model) {
               thisPresenter.disableRegistration();
@@ -223,7 +230,7 @@ define(['config'
           model.updateSamples();
         })
         .fail(function (error) {
-          return thisPresenter.message('error', 'Something wrong happend : '+error.message);
+          return thisPresenter.message('error', 'Something wrong happened : '+error.message);
         })
         .then(function (model) {
           thisPresenter.disableRegistration();
