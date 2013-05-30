@@ -177,6 +177,7 @@ define([
 
     sendManifestRequest: function (templateBlob,manifestCsv) {
       var deferred = $.Deferred();
+      var thisModel = this;
       try {
         var xhr = new XMLHttpRequest;
         xhr.open("POST", 'http://localhost:8080/upload', false);
@@ -203,7 +204,8 @@ define([
             oReq.send();
           }
           tmpFunctionForFileDownload(function(blob){
-            deferred.resolve(blob);
+            thisModel.manifestBlob = blob;
+            deferred.resolve(thisModel);
           });
           // end of TODO
         };
