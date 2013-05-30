@@ -2,12 +2,13 @@ define([], function () {
   'use strict';
 
   return {
-    combineHeadersToData: function (columnNames, data) {
+    combineHeadersToData: function (columnNames, data, decorator) {
+      decorator = decorator || "";
       var combinedArray = [];
       _.each(data, function (row) {
         var combinedObject = {};
         _.each(columnNames, function (columnName, columnIndex) {
-          combinedObject[columnName] = row[columnIndex];
+          combinedObject[decorator+columnName] = row[columnIndex];
         });
         combinedArray.push(combinedObject);
       });
@@ -28,6 +29,22 @@ define([], function () {
           }
         });
         return returnValue;
+      }
+    },
+
+    containsDecorator:function(data, decorator){
+      // here, we want to return a boolean, not an undefined if not found
+      return findDecorator(data, decorator) !== undefined;
+
+      function findDecorator(data, decorator){
+        return _.find(data, function(value){
+          if($.isPlainObject(value)){
+            return findDecorator(value, decorator);
+          }
+          else {
+            return value.indexOf(decorator) !== -1;
+          }
+        });
       }
     }
   };
