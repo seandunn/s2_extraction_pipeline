@@ -47,6 +47,48 @@ define(['extraction_pipeline/lib/array_to_json'], function (ArrayToJSON) {
       });
     });
 
+    describe("When the combined header-data and template with fixed data are combined", function () {
+      it("produces the expected array of objects with the fixed data", function () {
+        var data = [
+          {
+            "_WILL_BE_REPLACED_COHORT":                                          "",
+            "_WILL_BE_REPLACED_COMMON NAME":                                    "Homo Sapien",
+            "_WILL_BE_REPLACED_DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)": "",
+            "_WILL_BE_REPLACED_FATHER (optional)":                              "",
+            "_WILL_BE_REPLACED_GC CONTENT":                                     "",
+            "_WILL_BE_REPLACED_GENDER":                                         "Male",
+            "_WILL_BE_REPLACED_HMDMC":                                          "",
+            "_WILL_BE_REPLACED_IS RE-SUBMITTED SAMPLE?":                        "No",
+            "_WILL_BE_REPLACED_IS SAMPLE A CONTROL?":                           "No",
+            "_WILL_BE_REPLACED_Lysed?":                                         "Yes",
+            "_WILL_BE_REPLACED_MOTHER (optional)":                              "",
+            "_WILL_BE_REPLACED_PUBLIC NAME":                                    "",
+            "_WILL_BE_REPLACED_SAMPLE ACCESSION NUMBER (optional)":             "",
+            "_WILL_BE_REPLACED_SAMPLE TYPE":                                    "Tissue Non-Tumour",
+            "_WILL_BE_REPLACED_SANGER SAMPLE ID":                               "TEST_SANGER_ID1",
+            "_WILL_BE_REPLACED_SIBLING (optional)":                             "",
+            "_WILL_BE_REPLACED_STORAGE CONDITIONS":                             "",
+            "_WILL_BE_REPLACED_SUPPLIER SAMPLE NAME":                           "TEST_SAMPLE_1",
+            "_WILL_BE_REPLACED_TAXON ID":                                       "9606",
+            "_WILL_BE_REPLACED_Tube Barcode":                                   "880000000000011",
+            "_WILL_BE_REPLACED_VOLUME (ul)":                                    "1.0"
+          }
+        ];
+        var template = {
+          "tube_barcode":"_WILL_BE_REPLACED_Tube Barcode",
+          "stuff":35
+        };
+        var combinedData = ArrayToJSON.arrayToJSON(data, template);
+        var expectedData = [
+          {tube_barcode: "880000000000011", stuff: 35}
+        ];
+        expect(combinedData).toEqual(expectedData);
+      });
+    });
+
+
+
+
     describe("The check for whether an object contains a decorator string", function(){
       it("Doesn't return a false positive", function(){
         var goodData = [{ "Tube_Barcode":"1234567890123", "Sample_Type":"DNA" }];

@@ -2,7 +2,8 @@ define([
   'extraction_pipeline/models/base_page_model'
   , 'mapper/operations'
   , 'extraction_pipeline/lib/csv_parser'
-], function (BasePageModel, Operations, CSVParser) {
+  , 'extraction_pipeline/lib/array_to_json'
+], function (BasePageModel, Operations, CSVParser, ArrayToJSON) {
   'use strict';
 
   var ReceptionModel = Object.create(BasePageModel);
@@ -12,11 +13,7 @@ define([
     init: function (owner, config) {
       this.owner = owner;
       this.inputs = $.Deferred();
-      this.output = [];
       this.config = config;
-      this.isReady = false;
-
-      // this.initialiseCaching(); // not used
       return $.Deferred().resolve(this).promise();
     },
 
@@ -212,9 +209,7 @@ define([
         var form = new FormData();
         form.append("template",templateBlob);
         form.append("barcodes",manifestCsv);
-
         xhr.send(form);
-
       }
       catch (err) {
         var message = " msg:" + err.message;
@@ -224,84 +219,39 @@ define([
         deferred.reject({message: message});
       }
       return deferred.promise();
+    },
+
+    setFileContent:function(fileContent){
+      var deferred = $.Deferred();
+      var dataAsArray = CSVParser.manifestCsvToArray(fileContent);
+      var columnHeaders = dataAsArray[11];
+      var templateName = dataAsArray[2][0]; // A3
+      var combinedData = ArrayToJSON.combineHeadersToData(columnHeaders, _.drop(dataAsArray, 12), "_WILL_BE_REPLACED_");
+      if (!this.config[templateName]){
+        deferred.reject({message: "Couldn't find the corresponding template!"});
+      }
+      else if (columnHeaders.length <=1 && columnHeaders[0]){
+        deferred.reject({message: "The file contains no header !"});
+      }
+      else if (combinedData.length <= 0){
+        deferred.reject({message: "The file contains no data !"});
+      }
+      else
+      {
+        var samples = ArrayToJSON.arrayToJSON(combinedData, this.config[templateName].json_template);
+        if(ArrayToJSON.containsDecorator(samples, "_WILL_BE_REPLACED_")) {
+          debugger;
+          deferred.reject({message: "Data not compatible with the template!"});
+        }
+        else {
+          this.samplesFromManifest = samples;
+          deferred.resolve(this);
+        }
+      }
+      return deferred.promise();
     }
   });
-
-  function getLastPositions(positions) {
-    return _.chain(positions)
-        .map(function (position) {
-          // convert A1 -> A01
-          var matches = /([a-zA-Z])(\d+)/.exec(position);
-          return  [ matches[1] + ("00" + matches[2]).slice(-2), matches[1], parseInt(matches[2]) ];
-        })
-        .sortBy(function (trio) {
-          return trio[0];
-        })
-        .last()
-        .value();
-  }
-
-  function getNextToLastPosition(lastElement) {
-    var nextElement;
-    if (lastElement[2] < 12) {
-      nextElement = lastElement[1] + (lastElement[2] + 1)
-    } else {
-      nextElement = String.fromCharCode((lastElement[1].charCodeAt(0) + 1)) + "1";
-    }
-    return nextElement;
-  }
-
-  function checkFileValidity(model, locationVolumeData) {
-    var deferred = $.Deferred();
-
-    model.inputs.then(function (inputs) {
-      var arrayOfRackLocations = _.map(locationVolumeData.array, function (volItem) {
-        return volItem[0];
-      });
-      var expectedNbOfTubes = _.keys(inputs[0].tubes).length;
-      var nbOfTubesInRack = arrayOfRackLocations.length;
-
-      if (nbOfTubesInRack !== expectedNbOfTubes) {
-        deferred.reject({message: "The number of tube is not correct. The current batch" +
-                                      " contains " + expectedNbOfTubes + " tubes, while the " +
-                                      "current volume file contains " + nbOfTubesInRack + " tubes!"});
-      }
-      deferred.resolve(model);
-    });
-    return deferred.promise();
-  }
-
-  function getInputResources(model, filteringFunc) {
-    var inputs = [];
-    var deferred = $.Deferred();
-    filteringFunc = filteringFunc || function (item) {
-      return item.role === model.config.input.role && item.status === 'done';
-    };
-    model.batch.items
-        .then(function (items) {
-          return $.when.apply(null,
-              _.chain(items)
-                // filter the item which are not relevant
-                  .filter(filteringFunc)
-                  .map(function (item) {
-                    return model.cache.fetchResourcePromiseFromUUID(item.uuid)
-                        .then(function (resource) {
-                          inputs.push(resource);
-                        });
-                  })
-                  .value());
-        })
-        .fail(function (error) {
-          // TODO: the error reported here is not an error message yet, but the failed promise itself.
-          // therefore, we do not cannot encapsulate it yet.
-          deferred.reject({message: "Could not get the input resources ", previous_error: null});
-        })
-        .then(function () {
-          return deferred.resolve(inputs);
-        });
-    return deferred.promise();
-  }
-
+  
   return ReceptionModel;
 });
 

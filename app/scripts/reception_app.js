@@ -3,7 +3,8 @@ define([ 'config'
   , 'extraction_pipeline/presenters/reception_presenter'
   , 'extraction_pipeline/extra_components/busy_box'
   , 'extraction_pipeline/alerts'
-], function (config, S2Root, ReceptionPresenter, BusyBox, alerts) {
+  , 'text!xls_templates/cgap_lysed_manifest_template.json'
+], function (config, S2Root, ReceptionPresenter, BusyBox, alerts, cgapLysedTemplateJSON) {
   'use strict';
 
   var App = Object.create({});
@@ -15,23 +16,25 @@ define([ 'config'
       var configuration = {
         excelTemplates: {
           cgap_lysed_manifest_RNA_template:  {
-            name:     "CGAP - RNA - lysed"
+            name: "CGAP - RNA - lysed"
           },
           cgap_lysed_manifest_DNA_template:  {
-            name:     "CGAP - DNA - lysed"
+            name: "CGAP - DNA - lysed"
           }
         },
         printerList:config.printers,
         models: {
           cgap_lysed_manifest_RNA_template:  {
-            model:    "tube",
-            sample_type:"RNA",
-            URI: "cgap_lysed_manifest_template.xls"
+            model:         "tube",
+            URI:           "cgap_lysed_manifest_template.xls",
+            sample_type:   "RNA",
+            json_template: JSON.parse(cgapLysedTemplateJSON)
           },
           cgap_lysed_manifest_DNA_template:  {
-            model:    "tube",
-            sample_type:"DNA",
-            URI: "cgap_lysed_manifest_template.xls"
+            model:         "tube",
+            sample_type:   "DNA",
+            URI:           "cgap_lysed_manifest_template.xls",
+            json_template: JSON.parse(cgapLysedTemplateJSON)
           }
         }
       };

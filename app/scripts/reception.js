@@ -17,7 +17,8 @@ require.config(
         mapper_test:         'components/S2Mapper/test',
         mapper_testjson:     'components/S2Mapper/test/json',
         extraction_pipeline: 'scripts',
-        config:              'scripts/devel_reception_config'
+        config:              'scripts/devel_reception_config',
+        xls_templates:       'xls_templates'
       }
     }
 );

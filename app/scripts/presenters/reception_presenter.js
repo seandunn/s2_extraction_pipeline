@@ -115,23 +115,15 @@ define(['config'
       thisPresenter.model
           .then(function (model) {
             thisPresenter.message();
-//            return model.setRackContent(fileContent);
+            return model.setFileContent(fileContent);
           })
           .fail(function (error) {
-//            thisPresenter.rackPresenter.resourcePresenter.resetWeels();
             thisPresenter.message('error', error.message);
           })
           .then(function (model) {
             thisPresenter.disableManifestCreation();
             thisPresenter.enableRegistrationBtn();
-//            thisPresenter.rackPresenter.updateModel(model.rack_data);
-//            var volumeControlPosition = model.findVolumeControlPosition();
-//            thisPresenter.rackPresenter.resourcePresenter.fillWell(volumeControlPosition, "blue");
-//            if (model.isReady) {
-//              PubSub.publish("s2.step_presenter.enable_buttons", thisPresenter, {buttons: [
-//                {action: "end"}
-//              ]});
-//            }
+            thisPresenter.message('success', 'File loaded successfully.');
           })
     },
 
