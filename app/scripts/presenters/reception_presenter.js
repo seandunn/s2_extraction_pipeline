@@ -29,7 +29,7 @@ define(['config'
       html.find("#generateBC").click(onGenerateBCEventHandler(thisPresenter));
       function onGenerateBCEventHandler(presenter){ return function(){ presenter.onGenerateBC(); } }
 
-      html.find("#downloadManifest").click(onDownloadManifestEventHandler(thisPresenter));
+      html.find("#downloadManifest").hide().click(onDownloadManifestEventHandler(thisPresenter));
       function onDownloadManifestEventHandler(presenter){ return function(){ presenter.onDownloadManifest(); } }
 
       html.find("#printBC").click(onPrintBarcodeEventHandler(thisPresenter));
@@ -37,8 +37,9 @@ define(['config'
 
       this.enableDropzone(html);
 
-      html.find("#downloadManifest").hide();
-      html.find("#registrationBtn").hide();
+      html.find("#registrationBtn").hide().click(onRegistrationButtonClickEventHandler(thisPresenter));
+      function onRegistrationButtonClickEventHandler(presenter){return function(){ presenter.onRegistrationButtonClick(); }}
+
       html.find(".printer-div").hide();
       return html;
     },
@@ -213,6 +214,21 @@ define(['config'
               return thisPresenter.message('success','Samples generated. The manifest is ready for download, and the barcodes ready for printing.');
             })
       }
+    },
+
+    onRegistrationButtonClick:function () {
+      var thisPresenter = this;
+      this.model
+        .then(function(model){
+          model.updateSamples();
+        })
+        .fail(function (error) {
+          return thisPresenter.message('error', 'Something wrong happend : '+error.message);
+        })
+        .then(function (model) {
+          thisPresenter.disableRegistration();
+          return thisPresenter.message('success','Samples updated.');
+        })
     },
 
     message: function (type, message) {

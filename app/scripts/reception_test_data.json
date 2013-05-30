@@ -9,7 +9,7 @@
           "bulk_create_sample": {
             "user":        "username",
             "quantity":    3,
-            "sample_type": "RNA"
+            "sample_type": "NAP"
           }
         },
         "response":    {
@@ -29,7 +29,7 @@
                   },
                   "uuid":             "11111111-2222-3333-4444-555555555555",
                   "sanger_sample_id": "S2-cd9b200ec5634288ad5b4f56eab2a84f",
-                  "sample_type":      "RNA"
+                  "sample_type":      "NAP"
                 },
                 {
                   "actions":          {
@@ -40,7 +40,7 @@
                   },
                   "uuid":             "11111111-2222-3333-4444-666666666666",
                   "sanger_sample_id": "S2-745819ae3dfe401caa68a87a90c95a4c",
-                  "sample_type":      "RNA"
+                  "sample_type":      "NAP"
                 },
                 {
                   "actions":          {
@@ -51,7 +51,7 @@
                   },
                   "uuid":             "11111111-2222-3333-4444-777777777777",
                   "sanger_sample_id": "S2-97322cddad764d5f98b5255e3d329c66",
-                  "sample_type":      "RNA"
+                  "sample_type":      "NAP"
                 }
               ]
             },
@@ -69,15 +69,15 @@
             "samples": [
               {
                 "uuid":        "11111111-2222-3333-4444-555555555555",
-                "sample_type": "RNA"
+                "sample_type": "NAP"
               },
               {
                 "uuid":        "11111111-2222-3333-4444-666666666666",
-                "sample_type": "RNA"
+                "sample_type": "NAP"
               },
               {
                 "uuid":        "11111111-2222-3333-4444-777777777777",
-                "sample_type": "RNA"
+                "sample_type": "NAP"
               }
             ]
           }
@@ -104,7 +104,7 @@
                     {
                       "uuid":             "11111111-2222-3333-4444-555555555555",
                       "sanger_sample_id": "S2-cd9b200ec5634288ad5b4f56eab2a84f",
-                      "sample_type":      "RNA"
+                      "sample_type":      "NAP"
                     }
                   ]
                 },
@@ -128,7 +128,7 @@
                       },
                       "uuid":             "11111111-2222-3333-4444-666666666666",
                       "sanger_sample_id": "S2-745819ae3dfe401caa68a87a90c95a4c",
-                      "sample_type":      "RNA"
+                      "sample_type":      "NAP"
                     }
                   ]
                 },
@@ -152,7 +152,7 @@
                       },
                       "uuid":             "11111111-2222-3333-4444-777777777777",
                       "sanger_sample_id": "S2-97322cddad764d5f98b5255e3d329c66",
-                      "sample_type":      "RNA"
+                      "sample_type":      "NAP"
                     }
                   ]
                 }
@@ -172,7 +172,7 @@
             "quantity": 3,
             "labware":  "tube",
             "role":     "stock",
-            "contents": "RNA"
+            "contents": "NAP"
           }
         },
         "response":    {

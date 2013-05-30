@@ -190,7 +190,7 @@ define([
           // Change this when the proper return value will be known...
           function tmpFunctionForFileDownload (callback) {
             var oReq = new XMLHttpRequest();
-            oReq.open("GET", '/xls_templates/manifest.xlsx', true);
+            oReq.open("GET", '/xls_templates/manifest.xls', true);
             oReq.responseType = "blob";
             oReq.onload = function(oEvent) {
               var blob = oReq.response;
@@ -208,7 +208,7 @@ define([
         };
         var form = new FormData();
         form.append("template",templateBlob);
-        form.append("barcodes",manifestCsv);
+        form.append("manifest-details",manifestCsv);
         xhr.send(form);
       }
       catch (err) {
@@ -240,7 +240,6 @@ define([
       {
         var samples = ArrayToJSON.arrayToJSON(combinedData, this.config[templateName].json_template);
         if(ArrayToJSON.containsDecorator(samples, "_WILL_BE_REPLACED_")) {
-          debugger;
           deferred.reject({message: "Data not compatible with the template!"});
         }
         else {
@@ -248,6 +247,26 @@ define([
           deferred.resolve(this);
         }
       }
+      return deferred.promise();
+    },
+
+    updateSamples:function(){
+      var deferred = $.Deferred();
+      var thisModel = this;
+      thisModel.owner.getS2Root()
+        .fail(function () {
+          return deferred.reject({message: "Couldn't get the root!"});
+        })
+        .then(function(root){
+          return root.bulk_update_sample.create(thisModel.samplesFromManifest);
+        })
+        .fail(function () {
+          return deferred.reject({message: "Couldn't update the samples on S2."});
+        })
+        .then(function(){
+          return deferred.resolve(thisModel);
+        });
+
       return deferred.promise();
     }
   });
