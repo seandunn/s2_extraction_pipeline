@@ -240,18 +240,18 @@
         "url":         "/actions/bulk_create_labellable",
         "request":     {
           "bulk_create_labellable": {
-            "user":   "username",
-            "type":   "resource",
+            "user":  "username",
+            "type":  "resource",
             "names": [
               {
                 "name":   "tube1_uuid",
                 "labels": {
-                  "barcode": {
+                  "barcode":      {
                     "type":  "ean13-barcode",
                     "value": "1234567890003"
                   },
-                  "sanger label":  {
-                    "type": "sanger-barcode",
+                  "sanger label": {
+                    "type":  "sanger-barcode",
                     "value": "JD3U"
                   }
                 }
@@ -259,12 +259,12 @@
               {
                 "name":   "tube2_uuid",
                 "labels": {
-                  "barcode": {
+                  "barcode":      {
                     "type":  "ean13-barcode",
                     "value": "1234567890002"
                   },
-                  "sanger label":  {
-                    "type": "sanger-barcode",
+                  "sanger label": {
+                    "type":  "sanger-barcode",
                     "value": "JD2U"
                   }
                 }
@@ -272,12 +272,12 @@
               {
                 "name":   "tube3_uuid",
                 "labels": {
-                  "barcode": {
+                  "barcode":      {
                     "type":  "ean13-barcode",
                     "value": "1234567890001"
                   },
-                  "sanger label":  {
-                    "type": "sanger-barcode",
+                  "sanger label": {
+                    "type":  "sanger-barcode",
                     "value": "JD1U"
                   }
                 }
@@ -304,12 +304,12 @@
                   "name":    "tube1_uuid",
                   "type":    "resource",
                   "labels":  {
-                    "barcode": {
+                    "barcode":      {
                       "type":  "ean13-barcode",
                       "value": "1234567890003"
                     },
-                    "sanger label":  {
-                      "type": "sanger-barcode",
+                    "sanger label": {
+                      "type":  "sanger-barcode",
                       "value": "JD3U"
                     }
                   }
@@ -325,12 +325,12 @@
                   "name":    "tube2_uuid",
                   "type":    "resource",
                   "labels":  {
-                    "barcode": {
+                    "barcode":      {
                       "type":  "ean13-barcode",
                       "value": "1234567890002"
                     },
-                    "sanger label":  {
-                      "type": "sanger-barcode",
+                    "sanger label": {
+                      "type":  "sanger-barcode",
                       "value": "JD2U"
                     }
                   }
@@ -346,12 +346,12 @@
                   "name":    "tube3_uuid",
                   "type":    "resource",
                   "labels":  {
-                    "barcode": {
+                    "barcode":      {
                       "type":  "ean13-barcode",
                       "value": "1234567890001"
                     },
-                    "sanger label":  {
-                      "type": "sanger-barcode",
+                    "sanger label": {
+                      "type":  "sanger-barcode",
                       "value": "JD1U"
                     }
                   }
@@ -359,6 +359,73 @@
               ]
             },
             "quantity":    3
+          }
+        }
+      },
+      {
+        "description": "Find the printer by name",
+        "method":      "post",
+        "url":         "/lims-support/searches",
+        "request":     {
+          "search": {
+            "user":        "username",
+            "description": "Locating printer e367bc",
+            "model":       "label_printer",
+            "criteria":    {
+              "name": "e367bc"
+            }
+          }
+        },
+        "response":    {
+          "search": {
+            "actions": {
+              "read":  "http://localhost:9292/lims-support-result-url",
+              "first": "http://localhost:9292/lims-support-result-url/page=1",
+              "last":  "http://localhost:9292/lims-support-result-url/page=-1"
+            },
+            "uuid":    "laboratorysearches-result-url"
+          }
+        }
+      },
+      {
+        "description": "Get first page",
+        "method":      "get",
+        "url":         "/lims-support-result-url/page=1",
+        "request":     null,
+        "response":    {
+          "actions":        {
+            "read":  "http://localhost:9292/orders/page=1",
+            "first": "http://localhost:9292/orders/page=1",
+            "last":  "http://localhost:9292/orders/page=-1"
+          },
+          "size":           1,
+          "label_printers": [
+            {
+              "actions": {
+                "create": "http://localhost:9292/actions/print_labels",
+                "read":   "http://localhost:9292/printer_uuid",
+                "update": "http://localhost:9292/printer_uuid",
+                "delete": "http://localhost:9292/printer_uuid"
+              },
+              "uuid":    "printer_uuid"
+            }
+          ]
+        }
+      },
+      {
+        "description": "Retrieve the printer",
+        "method":      "get",
+        "url":         "/printer_uuid",
+        "request":     null,
+        "response":    {
+          "label_printer": {
+            "actions": {
+              "create": "http://localhost:9292/actions/print_labels",
+              "read":   "http://localhost:9292/printer_uuid",
+              "update": "http://localhost:9292/printer_uuid",
+              "delete": "http://localhost:9292/printer_uuid"
+            },
+            "uuid":    "printer_uuid"
           }
         }
       }
