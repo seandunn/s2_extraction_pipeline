@@ -23,8 +23,6 @@ define(['config'
       var selectXsl = html.find("#xls-templates");
       selectXsl.val("truc");
       var thisPresenter = this;
-      selectXsl.change(onChangeXslTemplateEventHandler(thisPresenter));
-      function onChangeXslTemplateEventHandler(presenter){ return function(){ presenter.onChangeXslTemplate(); } }
 
       html.find("#generateBC").click(onGenerateBCEventHandler(thisPresenter));
       function onGenerateBCEventHandler(presenter){ return function(){ presenter.onGenerateBC(); } }
@@ -123,14 +121,17 @@ define(['config'
       thisPresenter.model
           .then(function (model) {
             thisPresenter.message();
+            thisPresenter.view.trigger("s2.busybox.start_process");
             return model.setFileContent(fileContent);
           })
           .fail(function (error) {
+            thisPresenter.view.trigger("s2.busybox.end_process");
             thisPresenter.message('error', error.message);
           })
           .then(function (model) {
             thisPresenter.disableManifestCreation();
             thisPresenter.enableRegistrationBtn();
+            thisPresenter.view.trigger("s2.busybox.end_process");
             thisPresenter.message('success', 'File loaded successfully.');
           })
     },
@@ -169,20 +170,19 @@ define(['config'
       this.disableGenerateBC();
     },
 
-    onChangeXslTemplate:function(){
-      console.warn("hello");
-    },
-
     onPrintBarcode: function () {
       var thisPresenter = this;
       this.model
           .then(function (model) {
+            thisPresenter.view.trigger("s2.busybox.start_process");
             return model.printBarcodes(thisPresenter.view.find('#printer-select').val());
           })
           .fail(function (error) {
+            thisPresenter.view.trigger("s2.busybox.end_process");
             return thisPresenter.message('error', "Couldn't print the barcodes!");
           })
           .then(function () {
+            thisPresenter.view.trigger("s2.busybox.end_process");
             return thisPresenter.message('success', "The barcodes have been sent to printer.");
           });
     },
@@ -208,9 +208,11 @@ define(['config'
         var template = this.view.find('#xls-templates').val();
         this.model
             .then(function (model) {
+              thisPresenter.view.trigger("s2.busybox.start_process");
               return model.generateSamples(template, nbOfSample);
             })
             .fail(function (error) {
+              thisPresenter.view.trigger("s2.busybox.end_process");
               return thisPresenter.message('error', 'Something wrong happened : '+error.message);
             })
             .then(function (model) {
@@ -218,6 +220,7 @@ define(['config'
               thisPresenter.disableGenerateBC();
               thisPresenter.enableDownloadManifest();
               thisPresenter.enablePrintBC();
+              thisPresenter.view.trigger("s2.busybox.end_process");
               return thisPresenter.message('success','Samples generated. The manifest is ready for download, and the barcodes ready for printing.');
             })
       }
@@ -227,13 +230,16 @@ define(['config'
       var thisPresenter = this;
       this.model
         .then(function(model){
+          thisPresenter.view.trigger("s2.busybox.start_process");
           return model.updateSamples();
         })
         .fail(function (error) {
+          thisPresenter.view.trigger("s2.busybox.end_process");
           return thisPresenter.message('error', 'Something wrong happened : '+error.message);
         })
         .then(function (model) {
           thisPresenter.disableRegistration();
+          thisPresenter.view.trigger("s2.busybox.end_process");
           return thisPresenter.message('success','Samples updated.');
         })
     },

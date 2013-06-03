@@ -74,6 +74,9 @@ define([
       var labwareModel = thisModel.config[template].model;
       var sampleType = thisModel.config[template].sample_type;
       thisModel.owner.getS2Root()
+          .fail(function () {
+            return deferred.reject({message: "Couldn't get the root! Is the server accessible?"});
+          })
           .then(function (result) {
             root = result;
             // creation of the samples
@@ -183,7 +186,7 @@ define([
           console.warn('statusText : ', oEvent.target.statusText);
           console.warn('responseType : ', oEvent.target.responseType);
           console.warn('responseText : ', oEvent.target.responseText);
-          deferred.reject({message: "Unable to send the manifest... Is the server up and running ? "  + oEvent.target.responseText});
+          deferred.reject({message: "Unable to send the manifest... Is the XLS merger server up and running ? "  + oEvent.target.responseText});
         };
         xhr.onload = function (oEvent) {
           // TODO: this part is simulating the reception of a file from the server...
@@ -255,7 +258,7 @@ define([
       var thisModel = this;
       thisModel.owner.getS2Root()
         .fail(function () {
-          return deferred.reject({message: "Couldn't get the root!"});
+            return deferred.reject({message: "Couldn't get the root! Is the server accessible?"});
         })
         .then(function(root){
 //        return root.bulk_update_sample.create(thisModel.samplesFromManifest);

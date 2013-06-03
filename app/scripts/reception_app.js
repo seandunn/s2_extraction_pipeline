@@ -13,6 +13,9 @@ define([ 'config'
     init:             function () {
       _.templateSettings.variable = 'templateData';
 
+      $('#server-url').text(config.apiUrl);
+      $('#release').text(config.release);
+
       var configuration = {
         excelTemplates: {
           cgap_lysed_manifest_template:  {

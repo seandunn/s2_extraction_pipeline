@@ -1,4 +1,4 @@
-define([], function(mapperConfig) {
+define([], function() {
   'use strict';
   return {
     // Configure the API to S2

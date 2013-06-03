@@ -27,7 +27,6 @@ require(
     ['extraction_pipeline/reception_app'],
     function (ReceptionApp) {
       var theApp = Object.create(ReceptionApp).init();
-      //theApp.setupPresenter();
     }
 );
 
