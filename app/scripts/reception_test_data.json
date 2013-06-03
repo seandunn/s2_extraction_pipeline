@@ -4,16 +4,16 @@
       {
         "description": "Create 3 samples",
         "method":      "post",
-        "url":         "/actions/bulk_create_sample",
+        "url":         "/actions/bulk_create_samples",
         "request":     {
-          "bulk_create_sample": {
+          "bulk_create_samples": {
             "user":        "username",
             "quantity":    3,
             "sample_type": "NAP"
           }
         },
         "response":    {
-          "bulk_create_sample": {
+          "bulk_create_samples": {
             "actions":     {
             },
             "user":        "user",

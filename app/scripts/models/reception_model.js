@@ -80,7 +80,7 @@ define([
           .then(function (result) {
             root = result;
             // creation of the samples
-            return root.bulk_create_sample.create({
+            return root.bulk_create_samples.create({
               "quantity":  nbOfSample,
               sample_type: sampleType
             });
