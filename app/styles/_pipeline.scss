@@ -67,6 +67,7 @@ ul {
   }
   .columnRight {
     float:right;
+    width: 50%;
     .extraVTab {
       margin-top: 8em;
     }
@@ -127,7 +128,11 @@ ul {
 .printerSelect {
   margin-right: 20px;
 }
-
+.printer-div{
+  label {
+    display: inline;
+  }
+}
 .busyClass {
   margin-left: auto;
   margin-right: auto;

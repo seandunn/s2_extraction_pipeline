@@ -42,10 +42,16 @@ define([
 
       return printer.print(printItems, {user:this.user})
           .done(function() {
-            that.owner.childDone(that, 'barcodePrintSuccess', {});
+            //TODO: remove guard code when childDone has been removed
+            if(that.owner && that.owner.childDone){
+              that.owner.childDone(that, 'barcodePrintSuccess', {});
+            }
           })
           .fail(function() {
-            that.owner.childDone(that, 'barcodePrintFailure', {});
+            //TODO: remove guard code when childDone has been removed
+            if(that.owner && that.owner.childDone){
+              that.owner.childDone(that, 'barcodePrintFailure', {});
+            }
           });
     }
   });
