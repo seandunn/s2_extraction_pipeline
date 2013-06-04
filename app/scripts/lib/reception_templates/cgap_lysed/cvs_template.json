@@ -1,3 +1,5 @@
 {
-  "tube_barcode":"_WILL_BE_REPLACED_Tube Barcode"
+  "tube_barcode":{
+    "columnName":"Tube Barcode"
+  }
 }

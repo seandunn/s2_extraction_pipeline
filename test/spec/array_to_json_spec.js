@@ -48,7 +48,7 @@ define(['extraction_pipeline/lib/array_to_json'], function (ArrayToJSON) {
               "columnName": "name2"}
           }
         };
-        var combinedData = ArrayToJSON.arrayToJSON(data, template);
+        var combinedData = ArrayToJSON.applyTemplateToDataSet(data, template);
         var expectedData = [
           {key1: 1, stuff: {key2: 2}},
           {key1: 3, stuff: {key2: 4}}
@@ -86,11 +86,22 @@ define(['extraction_pipeline/lib/array_to_json'], function (ArrayToJSON) {
         ];
         var template = {
           "tube_barcode":{"columnName":"Tube Barcode"},
-          "stuff":35
+          "public_name":{"columnName":"PUBLIC name"},
+          "details":{
+            "gender":{
+              "columnName":"gender"
+            }
+          }
         };
-        var combinedData = ArrayToJSON.arrayToJSON(data, template);
+        var combinedData = ArrayToJSON.applyTemplateToDataSet(data, template);
         var expectedData = [
-          {tube_barcode: "880000000000011", stuff: 35}
+          {
+            tube_barcode: "880000000000011",
+            public_name: "",
+            details:{
+                    "gender":"Male"
+            }
+          }
         ];
         expect(combinedData).toEqual(expectedData);
       });

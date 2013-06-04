@@ -242,7 +242,7 @@ define([
       }
       else
       {
-        var samples = ArrayToJSON.arrayToJSON(combinedData, ReceptionTemplate[templateName].json_template);
+        var samples = ArrayToJSON.applyTemplateToDataSet(combinedData, ReceptionTemplate[templateName].json_template);
         if(ArrayToJSON.containsDecorator(samples, "_WILL_BE_REPLACED_")) {
           deferred.reject({message: "Data not compatible with the template!"});
         }
