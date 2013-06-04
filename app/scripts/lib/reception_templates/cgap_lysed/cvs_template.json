@@ -1,5 +1,6 @@
 {
-  "tube_barcode":{
-    "columnName":"Tube Barcode"
+  "tube_barcode": {
+    "columnName": "Tube Barcode",
+    "type":       "string"
   }
 }

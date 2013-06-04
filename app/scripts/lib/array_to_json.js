@@ -7,9 +7,18 @@ define([], function () {
 
   function extractorGenerator (cellDescriptor){
     return function(rowData){
-      // rowData === { "column1" : value1, etc. } ;
       // Use of toUpperCase() to make camparison that is not case sensitive
-      return rowData[cellDescriptor["columnName"].toUpperCase()];
+      var value = rowData[cellDescriptor["columnName"].toUpperCase()] || cellDescriptor["default"];
+      switch (cellDescriptor.type) {
+        case "int":
+          return parseInt(value);
+        case "float":
+          return parseFloat(value);
+        case "boolean":
+          return value === 'true';
+        default:
+          return value;
+      }
     }
   }
 
@@ -35,7 +44,7 @@ define([], function () {
     },
 
     applyTemplateToDataSet: function (dataSet, template) {
-      // Done to make camparison that is not case sensitive
+      // Done to make comparison that is not case sensitive
       var capitalisedDataSet = _.map(dataSet, function(data) {
         return _.reduce(data,function(memo, value, key){
           memo[key.toUpperCase()] = value;

@@ -81,12 +81,13 @@ define(['extraction_pipeline/lib/array_to_json'], function (ArrayToJSON) {
             "SUPPLIER SAMPLE NAME":                           "TEST_SAMPLE_1",
             "TAXON ID":                                       "9606",
             "Tube Barcode":                                   "880000000000011",
-            "VOLUME (ul)":                                    "1.0"
+            "VOLUME (ul)":                                    "1.2"
           }
         ];
         var template = {
-          "tube_barcode":{"columnName":"Tube Barcode"},
-          "public_name":{"columnName":"PUBLIC name"},
+          "tube_barcode":{"columnName":"Tube Barcode", "type":"string"},
+          "public_name":{"columnName":"PUBLIC name", "type":"string", default:""},
+          "volume":{"columnName":"Volume (ul)", "type":"float"},
           "details":{
             "gender":{
               "columnName":"gender"
@@ -98,6 +99,7 @@ define(['extraction_pipeline/lib/array_to_json'], function (ArrayToJSON) {
           {
             tube_barcode: "880000000000011",
             public_name: "",
+            volume:1.2,
             details:{
                     "gender":"Male"
             }
