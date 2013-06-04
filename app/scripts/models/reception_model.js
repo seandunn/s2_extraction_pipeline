@@ -3,7 +3,8 @@ define([
   , 'mapper/operations'
   , 'extraction_pipeline/lib/csv_parser'
   , 'extraction_pipeline/lib/array_to_json'
-], function (BasePageModel, Operations, CSVParser, ArrayToJSON) {
+  , 'extraction_pipeline/lib/reception_templates'
+], function (BasePageModel, Operations, CSVParser, ArrayToJSON, ReceptionTemplate) {
   'use strict';
 
   var ReceptionModel = Object.create(BasePageModel);
@@ -54,7 +55,7 @@ define([
     getXLSTemplate: function (template, nbOfSample) {
       var deferred = $.Deferred();
       var oReq = new XMLHttpRequest();
-      oReq.open("GET", '/xls_templates/' + this.config[template].URI, true);
+      oReq.open("GET", ReceptionTemplate[template].manifest_path, true);
       oReq.responseType = "blob";
       oReq.onload = function(oEvent) {
         var blob = oReq.response;
@@ -71,8 +72,8 @@ define([
       var deferred = $.Deferred();
       var thisModel = this;
       var root;
-      var labwareModel = thisModel.config[template].model;
-      var sampleType = thisModel.config[template].sample_type;
+      var labwareModel = ReceptionTemplate[template].model;
+      var sampleType = ReceptionTemplate[template].sample_type;
       thisModel.owner.getS2Root()
           .fail(function () {
             return deferred.reject({message: "Couldn't get the root! Is the server accessible?"});
@@ -81,7 +82,7 @@ define([
             root = result;
             // creation of the samples
             return root.bulk_create_samples.create({
-              "quantity":  nbOfSample,
+              quantity:    nbOfSample,
               sample_type: sampleType
             });
           })
@@ -193,7 +194,7 @@ define([
           // Change this when the proper return value will be known...
           function tmpFunctionForFileDownload (callback) {
             var oReq = new XMLHttpRequest();
-            oReq.open("GET", '/xls_templates/manifest.xls', true);
+            oReq.open("GET", ReceptionTemplate['cgap_lysed'].manifest_path, true);
             oReq.responseType = "blob";
             oReq.onload = function(oEvent) {
               var blob = oReq.response;
@@ -230,7 +231,7 @@ define([
       var columnHeaders = dataAsArray[11];
       var templateName = dataAsArray[2][0]; // A3
       var combinedData = ArrayToJSON.combineHeadersToData(columnHeaders, _.drop(dataAsArray, 12), "_WILL_BE_REPLACED_");
-      if (!this.config[templateName]){
+      if (!ReceptionTemplate[templateName]){
         deferred.reject({message: "Couldn't find the corresponding template!"});
       }
       else if (columnHeaders.length <=1 && columnHeaders[0]){
@@ -241,7 +242,7 @@ define([
       }
       else
       {
-        var samples = ArrayToJSON.arrayToJSON(combinedData, this.config[templateName].json_template);
+        var samples = ArrayToJSON.arrayToJSON(combinedData, ReceptionTemplate[templateName].json_template);
         if(ArrayToJSON.containsDecorator(samples, "_WILL_BE_REPLACED_")) {
           deferred.reject({message: "Data not compatible with the template!"});
         }

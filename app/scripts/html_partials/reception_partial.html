@@ -7,8 +7,8 @@
                     <h4>Create a new manifest</h4>
                     <label for="xls-templates">Select a template:</label>
                     <select class="xls-templates" id="xls-templates">
-                        <% _.each (templateData.excelTemplates, function (template,key) { %>
-                        <option value="<%- key %>"><%- template.name %></option>
+                        <% _.each (templateData.templates, function (template) { %>
+                        <option value="<%- template.template_name %>"><%- template.friendly_name %></option>
                         <% }); %>
                     </select>
                     <label for="number-of-sample">Enter the number of samples:</label>

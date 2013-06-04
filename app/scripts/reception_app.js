@@ -2,9 +2,7 @@ define([ 'config'
   , 'mapper/s2_root'
   , 'extraction_pipeline/presenters/reception_presenter'
   , 'extraction_pipeline/extra_components/busy_box'
-  , 'extraction_pipeline/alerts'
-  , 'text!xls_templates/cgap_lysed_manifest_template.json'
-], function (config, S2Root, ReceptionPresenter, BusyBox, alerts, cgapLysedTemplateJSON) {
+], function (config, S2Root, ReceptionPresenter, BusyBox) {
   'use strict';
 
   var App = Object.create({});
@@ -16,22 +14,7 @@ define([ 'config'
       $('#server-url').text(config.apiUrl);
       $('#release').text(config.release);
 
-      var configuration = {
-        excelTemplates: {
-          cgap_lysed_manifest_template:  {
-            name: "CGAP - lysed"
-          }
-        },
-        printerList:config.printers,
-        models: {
-          cgap_lysed_manifest_template:  {
-            model:         "tube",
-            sample_type:   "NAP",
-            URI:           "cgap_lysed_manifest_template.xls",
-            json_template: JSON.parse(cgapLysedTemplateJSON)
-          }
-        }
-      };
+      var configuration = { printerList: config.printers };
 
       var receptionPresenter = Object.create(ReceptionPresenter).init(this, configuration);
       $("#content").append(receptionPresenter.view);

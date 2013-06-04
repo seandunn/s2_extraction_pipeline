@@ -3,7 +3,8 @@ define(['config'
   , 'text!extraction_pipeline/html_partials/reception_partial.html'
   , 'extraction_pipeline/models/reception_model'
   , 'extraction_pipeline/lib/pubsub'
-], function (config, BasePresenter, receptionPartialHtml, Model, PubSub) {
+  , 'extraction_pipeline/lib/reception_templates'
+], function (config, BasePresenter, receptionPartialHtml, Model, PubSub, ReceptionTemplates) {
   'use strict';
 
   var ReceptionPresenter = Object.create(BasePresenter);
@@ -12,8 +13,8 @@ define(['config'
     init: function (owner, config) {
       this.owner = owner;
       this.config = config;
-      this.model = Object.create(Model).init(this, config.models);
-      this.view = this.createHtml({excelTemplates:config.excelTemplates,printerList:config.printerList});
+      this.model = Object.create(Model).init(this, config);
+      this.view = this.createHtml({templates:ReceptionTemplates.templateList, printerList:config.printerList});
       return this;
     },
 
