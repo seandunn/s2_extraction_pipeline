@@ -2,9 +2,9 @@ define([
   'extraction_pipeline/models/base_page_model'
   , 'mapper/operations'
   , 'extraction_pipeline/lib/csv_parser'
-  , 'extraction_pipeline/lib/array_to_json'
+  , 'extraction_pipeline/lib/json_templater'
   , 'extraction_pipeline/lib/reception_templates'
-], function (BasePageModel, Operations, CSVParser, ArrayToJSON, ReceptionTemplate) {
+], function (BasePageModel, Operations, CSVParser, JsonTemplater, ReceptionTemplate) {
   'use strict';
 
   var ReceptionModel = Object.create(BasePageModel);
@@ -230,7 +230,7 @@ define([
       var dataAsArray = CSVParser.manifestCsvToArray(fileContent);
       var columnHeaders = dataAsArray[11];
       var templateName = dataAsArray[2][0]; // A3
-      var combinedData = ArrayToJSON.combineHeadersToData(columnHeaders, _.drop(dataAsArray, 12), "_WILL_BE_REPLACED_");
+      var combinedData = JsonTemplater.combineHeadersToData(columnHeaders, _.drop(dataAsArray, 12), "_WILL_BE_REPLACED_");
       if (!ReceptionTemplate[templateName]){
         deferred.reject({message: "Couldn't find the corresponding template!"});
       }
@@ -242,8 +242,8 @@ define([
       }
       else
       {
-        var samples = ArrayToJSON.applyTemplateToDataSet(combinedData, ReceptionTemplate[templateName].json_template);
-        if(ArrayToJSON.containsDecorator(samples, "_WILL_BE_REPLACED_")) {
+        var samples = JsonTemplater.applyTemplateToDataSet(combinedData, ReceptionTemplate[templateName].json_template);
+        if(JsonTemplater.containsDecorator(samples, "_WILL_BE_REPLACED_")) {
           deferred.reject({message: "Data not compatible with the template!"});
         }
         else {
