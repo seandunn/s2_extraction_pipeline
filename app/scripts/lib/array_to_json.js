@@ -30,25 +30,6 @@ define([], function () {
         });
         return returnValue;
       }
-    },
-
-    containsDecorator:function(data, decorator){
-      // here, we want to return a boolean, not an undefined if not found
-      return findDecorator(data, decorator) !== undefined;
-      function findDecorator(data, decorator){
-        return _.find(data, function(value){
-          if($.isPlainObject(value)){
-            return findDecorator(value, decorator);
-          }
-          else {
-            if(!isString(value)) return false;
-            return value.indexOf(decorator) !== -1;
-          }
-          function isString(o) {
-            return typeof o == "string" || (typeof o == "object" && o.constructor === String);
-          }
-        });
-      }
     }
   };
 });

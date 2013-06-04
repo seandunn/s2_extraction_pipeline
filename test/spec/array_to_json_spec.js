@@ -37,7 +37,17 @@ define(['extraction_pipeline/lib/array_to_json'], function (ArrayToJSON) {
           {name1: 1, name2: 2},
           {name1: 3, name2: 4}
         ];
-        var template = {key1: "name1", stuff: {key2: "name2"}};
+        var template = {
+          key1:  {
+            "columnName": "name1",
+            "type":       "integer",
+            "optional":   true
+          },
+          stuff: {
+            key2: {
+              "columnName": "name2"}
+          }
+        };
         var combinedData = ArrayToJSON.arrayToJSON(data, template);
         var expectedData = [
           {key1: 1, stuff: {key2: 2}},
@@ -51,31 +61,31 @@ define(['extraction_pipeline/lib/array_to_json'], function (ArrayToJSON) {
       it("produces the expected array of objects with the fixed data", function () {
         var data = [
           {
-            "_WILL_BE_REPLACED_COHORT":                                          "",
-            "_WILL_BE_REPLACED_COMMON NAME":                                    "Homo Sapien",
-            "_WILL_BE_REPLACED_DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)": "",
-            "_WILL_BE_REPLACED_FATHER (optional)":                              "",
-            "_WILL_BE_REPLACED_GC CONTENT":                                     "",
-            "_WILL_BE_REPLACED_GENDER":                                         "Male",
-            "_WILL_BE_REPLACED_HMDMC":                                          "",
-            "_WILL_BE_REPLACED_IS RE-SUBMITTED SAMPLE?":                        "No",
-            "_WILL_BE_REPLACED_IS SAMPLE A CONTROL?":                           "No",
-            "_WILL_BE_REPLACED_Lysed?":                                         "Yes",
-            "_WILL_BE_REPLACED_MOTHER (optional)":                              "",
-            "_WILL_BE_REPLACED_PUBLIC NAME":                                    "",
-            "_WILL_BE_REPLACED_SAMPLE ACCESSION NUMBER (optional)":             "",
-            "_WILL_BE_REPLACED_SAMPLE TYPE":                                    "Tissue Non-Tumour",
-            "_WILL_BE_REPLACED_SANGER SAMPLE ID":                               "TEST_SANGER_ID1",
-            "_WILL_BE_REPLACED_SIBLING (optional)":                             "",
-            "_WILL_BE_REPLACED_STORAGE CONDITIONS":                             "",
-            "_WILL_BE_REPLACED_SUPPLIER SAMPLE NAME":                           "TEST_SAMPLE_1",
-            "_WILL_BE_REPLACED_TAXON ID":                                       "9606",
-            "_WILL_BE_REPLACED_Tube Barcode":                                   "880000000000011",
-            "_WILL_BE_REPLACED_VOLUME (ul)":                                    "1.0"
+            "COHORT":                                          "",
+            "COMMON NAME":                                    "Homo Sapien",
+            "DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)": "",
+            "FATHER (optional)":                              "",
+            "GC CONTENT":                                     "",
+            "GENDER":                                         "Male",
+            "HMDMC":                                          "",
+            "IS RE-SUBMITTED SAMPLE?":                        "No",
+            "IS SAMPLE A CONTROL?":                           "No",
+            "Lysed?":                                         "Yes",
+            "MOTHER (optional)":                              "",
+            "PUBLIC NAME":                                    "",
+            "SAMPLE ACCESSION NUMBER (optional)":             "",
+            "SAMPLE TYPE":                                    "Tissue Non-Tumour",
+            "SANGER SAMPLE ID":                               "TEST_SANGER_ID1",
+            "SIBLING (optional)":                             "",
+            "STORAGE CONDITIONS":                             "",
+            "SUPPLIER SAMPLE NAME":                           "TEST_SAMPLE_1",
+            "TAXON ID":                                       "9606",
+            "Tube Barcode":                                   "880000000000011",
+            "VOLUME (ul)":                                    "1.0"
           }
         ];
         var template = {
-          "tube_barcode":"_WILL_BE_REPLACED_Tube Barcode",
+          "tube_barcode":{"columnName":"Tube Barcode"},
           "stuff":35
         };
         var combinedData = ArrayToJSON.arrayToJSON(data, template);
@@ -83,26 +93,6 @@ define(['extraction_pipeline/lib/array_to_json'], function (ArrayToJSON) {
           {tube_barcode: "880000000000011", stuff: 35}
         ];
         expect(combinedData).toEqual(expectedData);
-      });
-    });
-
-
-
-
-    describe("The check for whether an object contains a decorator string", function(){
-      it("Doesn't return a false positive", function(){
-        var goodData = [{ "Tube_Barcode":"1234567890123", "Sample_Type":"DNA" }];
-        expect(ArrayToJSON.containsDecorator(goodData, "_DECORATOR_")).toEqual(false);
-      });
-
-      it("Finds a decorator string in a flat object", function(){
-        var badData = [{ "Tube_Barcode":"_DECORATOR_1234567890123", "Sample_Type":"DNA" }];
-        expect(ArrayToJSON.containsDecorator(badData, "_DECORATOR_")).toEqual(true);
-      });
-
-      it("Finds a decorator string in a nested object", function(){
-        var nestedBadData = [{ "Tube_Barcode":"1234567890123", stuff:{"Sample_Type":"_DECORATOR_DNA" }}];
-        expect(ArrayToJSON.containsDecorator(nestedBadData, "_DECORATOR_")).toEqual(true);
       });
     });
   });
