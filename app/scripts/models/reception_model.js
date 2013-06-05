@@ -190,11 +190,14 @@ define([
         var xhr = new XMLHttpRequest;
         xhr.open("POST", 'http://psd2g.internal.sanger.ac.uk:8100/manifest-merge-service/', false);
         xhr.responseType = "blob";
+
         xhr.onerror = function (oEvent) {
-          console.warn('statusText : ', oEvent.target.statusText);
-          console.warn('responseType : ', oEvent.target.responseType);
-          console.warn('responseText : ', oEvent.target.responseText);
-          deferred.reject({message: "Unable to send the manifest... Is the XLS merger server up and running ? "  + oEvent.target.responseText});
+          console.warn('statusText: ', oEvent.target.statusText);
+          console.warn('responseType: ', oEvent.target.responseType);
+          console.warn('responseText: ', oEvent.target.responseText);
+          deferred.reject({
+            message: "Unable to send the manifest... Is the XLS merger server up and running? "
+          });
         };
 
         xhr.onload = function (oEvent) {
