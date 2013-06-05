@@ -33,13 +33,13 @@ define([
             return deferred.reject({message: " Couldn't produce the samples. " + error.message, previous_error: error});
           })
           .then(function (labellables) {
-            return thisModel.generateCSV(labellables);
+            return thisModel.generateCSVBlob(labellables);
           })
           .fail(function (error) {
             return deferred.reject({message: " Couldn't produce barcode data file. " + error.message, previous_error: error});
           })
-          .then(function (manifestCsvAsTxt) {
-            thisModel.manifestCsv = manifestCsvAsTxt;
+          .then(function (manifestCsvBlob) {
+            thisModel.manifestCsv = manifestCsvBlob;
             // now we are ready...
             return thisModel.sendManifestRequest(thisModel.currentTemplate, thisModel.manifestCsv);
           })
@@ -161,12 +161,13 @@ define([
       return deferred.promise();
     },
 
-    generateCSV: function(labellables){
+    generateCSVBlob: function(labellables){
       var data = _.map(labellables,function(labellable){
         return [labellable.labels.barcode.value, labellable.uuid ].join(',');
       });
       data.unshift("Tube Barcode , Sanger Sample ID");
-      return data.join("\n");
+      var txt = data.join("\n");
+      return new Blob([txt], { "type" : "text\/csv" })
     },
 
     printBarcodes: function (printerName) {
@@ -182,12 +183,12 @@ define([
       return deferred.promise();
     },
 
-    sendManifestRequest: function (templateBlob,manifestCsv) {
+    sendManifestRequest: function (templateBlob,manifestBlob) {
       var deferred = $.Deferred();
       var thisModel = this;
       try {
         var xhr = new XMLHttpRequest;
-        xhr.open("POST", 'http://localhost:8080/upload', false);
+        xhr.open("POST", 'http://psd2g.internal.sanger.ac.uk:8100/manifest-merge-service/', false);
         xhr.setRequestHeader('Content-Type', 'multipart/form-data ; boundary=AaB03x');
         xhr.onerror = function (oEvent) {
           console.warn('statusText : ', oEvent.target.statusText);
@@ -218,7 +219,7 @@ define([
         };
         var form = new FormData();
         form.append("template",templateBlob);
-        form.append("manifest-details",manifestCsv);
+        form.append("manifest-details",manifestBlob);
         xhr.send(form);
       }
       catch (err) {
