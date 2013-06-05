@@ -165,7 +165,7 @@ define([
       var data = _.map(labellables,function(labellable){
         return [labellable.labels.barcode.value, labellable.uuid ].join(',');
       });
-      data.unshift("Tube Barcode , Sanger Sample ID");
+      data.unshift("Tube Barcode,Sanger Sample ID");
       var txt = data.join("\n");
       return new Blob([txt], { "type" : "text\/csv" })
     },
@@ -189,39 +189,25 @@ define([
       try {
         var xhr = new XMLHttpRequest;
         xhr.open("POST", 'http://psd2g.internal.sanger.ac.uk:8100/manifest-merge-service/', false);
+        xhr.responseType = "blob";
         xhr.onerror = function (oEvent) {
           console.warn('statusText : ', oEvent.target.statusText);
           console.warn('responseType : ', oEvent.target.responseType);
           console.warn('responseText : ', oEvent.target.responseText);
           deferred.reject({message: "Unable to send the manifest... Is the XLS merger server up and running ? "  + oEvent.target.responseText});
         };
+
         xhr.onload = function (oEvent) {
-          // TODO: this part is simulating the reception of a file from the server...
-          // Change this when the proper return value will be known...
-          function tmpFunctionForFileDownload (callback) {
-            var oReq = new XMLHttpRequest();
-            oReq.open("GET", ReceptionTemplate['cgap_lysed'].manifest_path, true);
-            oReq.responseType = "blob";
-            oReq.onload = function(oEvent) {
-              var blob = oReq.response;
-              callback(blob);
-            };
-            oReq.onerror = function(oEvent) {
-            };
-            oReq.send();
-          }
-          tmpFunctionForFileDownload(function(blob){
-            thisModel.manifestBlob = blob;
-            deferred.resolve(thisModel);
-          });
-          // end of TODO
+          thisModel.manifestBlob = this.response;
+          deferred.resolve(thisModel);
         };
+
         var form = new FormData();
         form.append("template",templateBlob);
         form.append("manifest-details",manifestBlob);
+
         xhr.send(form);
-      }
-      catch (err) {
+      } catch (err) {
         var message = " msg:" + err.message;
         message += "\n" + err.code;
         message += "\n" + err.name;
