@@ -6,7 +6,7 @@ define([
   var Templates = {
     cgap_lysed: {
       friendly_name: "CGAP - lysed",
-      model:         "tubes",
+      model:         "tube",
       sample_type:   "RNA",
       aliquot_type:  "NA",
       json_template: JSON.parse(CGAPLysed)

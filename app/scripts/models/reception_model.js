@@ -104,7 +104,7 @@ define([
               };
             });
             // creation of the piece of labware
-            return root["bulk_create_" + labwareModel].create({"tubes": tubes});
+            return root["bulk_create_" + labwareModel.pluralize()].create({"tubes": tubes});
           })
           .fail(function () {
             return deferred.reject({message: "Couldn't register the associated piece of labware."});
@@ -115,7 +115,7 @@ define([
             });
             // creation of the barcodes
             return root.bulk_create_barcodes.create({
-              "quantity": nbOfSample,
+              "number_of_barcodes": nbOfSample,
               "labware":  labwareModel,
               "role":     "stock",
               "contents": sampleType
@@ -130,11 +130,11 @@ define([
               return {
                 barcode:        {
                   type:  "ean13-barcode",
-                  value: label.ean13
+                  value: label.barcode.ean13
                 },
                 "sanger label": {
                   type:  "sanger-barcode",
-                  value: label.sanger.prefix + label.sanger.number + label.sanger.suffix
+                  value: label.barcode.sanger.prefix + label.barcode.sanger.number + label.barcode.sanger.suffix
                 }
               };
             });
@@ -142,12 +142,11 @@ define([
               // NOTE: in theory, one can associate a labware to any barcode.
               // However, in the test data, because the tests nmight a bit too strict
               // this order can become relevant... Be careful when running tests.
-              return {"name": labware.uuid, labels:labels.pop()};
+              return {"name": labware.uuid, "type": "resource", labels:labels.pop()};
             });
             // link barcodes to labware
-            return root.bulk_create_labellable.create({
-              type:   "resource",
-              names:   bulkData
+            return root.bulk_create_labellables.create({
+              labellables:   bulkData
             });
           })
           .fail(function () {
@@ -284,4 +283,3 @@ define([
   
   return ReceptionModel;
 });
-
