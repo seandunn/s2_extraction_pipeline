@@ -1,6 +1,32 @@
 {
-  "tube_barcode": {
-    "columnName": "Tube Barcode",
+  "sanger_sample_id":          {
+    "columnName": "SANGER SAMPLE ID",
     "type":       "string"
+  },
+  "gender":                    {
+    "columnName": "GENDER",
+    "type":       "string"
+  },
+  "sample_type":               {
+    "columnName": "SAMPLE TYPE",
+    "type":       "string"
+  },
+  "volume":                    {
+    "columnName": "VOLUME (ul)",
+    "type":       "float"
+  },
+  "date_of_sample_collection": {
+    "columnName": "DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)",
+    "type":       "string"
+  },
+  "is_sample_a_control":       {
+    "columnName": "IS SAMPLE A CONTROL?",
+    "type":       "boolean"
+  },
+  "cellular_material":         {
+    "lysed": {
+      "columnName": "LYSED",
+      "type":       "boolean"
+    }
   }
 }

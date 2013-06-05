@@ -230,7 +230,7 @@ define([
       var dataAsArray = CSVParser.manifestCsvToArray(fileContent);
       var columnHeaders = dataAsArray[11];
       var templateName = dataAsArray[2][0]; // A3
-      var combinedData = JsonTemplater.combineHeadersToData(columnHeaders, _.drop(dataAsArray, 12), "_WILL_BE_REPLACED_");
+      var combinedData = JsonTemplater.combineHeadersToData(columnHeaders, _.drop(dataAsArray, 12));
       if (!ReceptionTemplate[templateName]){
         deferred.reject({message: "Couldn't find the corresponding template!"});
       }
@@ -243,13 +243,13 @@ define([
       else
       {
         var samples = JsonTemplater.applyTemplateToDataSet(combinedData, ReceptionTemplate[templateName].json_template);
-        if(JsonTemplater.containsDecorator(samples, "_WILL_BE_REPLACED_")) {
-          deferred.reject({message: "Data not compatible with the template!"});
-        }
-        else {
-          this.samplesFromManifest = samples;
-          deferred.resolve(this);
-        }
+        samples = _.reduce(samples,function(memo,sampleUpdate){
+          memo[sampleUpdate.sanger_sample_id] = sampleUpdate;
+          delete memo[sampleUpdate.sanger_sample_id].sanger_sample_id;
+          return memo
+        },{});
+        this.samplesFromManifest = {"by":"sanger_sample_id","updates":samples};
+        deferred.resolve(this);
       }
       return deferred.promise();
     },
@@ -262,8 +262,7 @@ define([
             return deferred.reject({message: "Couldn't get the root! Is the server accessible?"});
         })
         .then(function(root){
-//        return root.bulk_update_sample.create(thisModel.samplesFromManifest);
-          return deferred.reject({message: "Update call on S2 not implemented yet."});
+           return root.bulk_update_samples.create(thisModel.samplesFromManifest);
         })
         .fail(function () {
           return deferred.reject({message: "Couldn't update the samples on S2."});
