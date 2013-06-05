@@ -146,7 +146,7 @@ define([
       it("can parse a manifest CSV into an array", function(){
         var csvArray = csvParser.manifestCsvToArray(csvData);
         expect(csvArray[0][0]).toEqual("");
-        expect(csvArray[2][0]).toEqual("880000000000011")
+        expect(csvArray[2][0]).toEqual("880000000000011");
       });
 
       it("will give the same array if same data is given but where the outer whitespace differs", function(){
@@ -161,6 +161,28 @@ define([
         expect(csvArray[1][2]).toEqual("SANGER SAMPLE ID");
       });
 
+    });
+
+    describe("A ManifestCSV parser also", function(){
+      var csvDataWithSpacesAtEnd, csvDataWithSpacesInMiddle;
+      beforeEach(function(){
+        csvDataWithSpacesAtEnd = ",,,,,,,CGAP Lysed Material Manifest,,,,,,,,,,,,,\n"
+          +"Tube Barcode,HMDMC,SANGER SAMPLE ID,SUPPLIER SAMPLE NAME,Lysed?,COHORT,VOLUME (ul),GENDER,DATE OF SAMPLE COLLECTION (MM/YY or YYYY only),IS SAMPLE A CONTROL?,IS RE-SUBMITTED SAMPLE?,STORAGE CONDITIONS,MOTHER (optional),FATHER (optional),SIBLING (optional),GC CONTENT,PUBLIC NAME,TAXON ID,COMMON NAME,SAMPLE TYPE,SAMPLE ACCESSION NUMBER (optional)\n"
+          +"880000000000011,,TEST_SANGER_ID1,TEST_SAMPLE_1,Yes,,1.0,Male,,No,No,,,,,,,9606,Homo Sapien,Tissue Non-Tumour,\n\n\n\n";
+
+        csvDataWithSpacesInMiddle = "a\na\n\na\n\na\n";
+      });
+
+      it("ignores newlines at the end of a csv file", function(){
+        var csvArray = csvParser.manifestCsvToArray(csvDataWithSpacesAtEnd);
+        expect(csvArray.length).toEqual(3);
+      });
+
+      it("does not ignore newlines in the middle of a csv file", function(){
+        var csvArray = csvParser.manifestCsvToArray(csvDataWithSpacesInMiddle);
+        console.log(csvArray);
+        expect(csvArray.length).toEqual(5);
+      });
     });
   });
 });

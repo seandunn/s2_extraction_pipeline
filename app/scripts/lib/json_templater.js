@@ -15,7 +15,7 @@ define([], function () {
         case "float":
           return parseFloat(value);
         case "boolean":
-          return value === 'true';
+          return ( value === 'Yes' ) || ( value === 'True' );
         default:
           return value;
       }
@@ -24,8 +24,14 @@ define([], function () {
 
   function createExtractorMap (data){
     return _.reduce(data, function(memo, value, key){
-      memo[key] = isCellDescriptor(value) ? extractorGenerator(value) : createExtractorMap(value);
-      return memo;
+      if (isCellDescriptor(value)){
+        memo[key] = extractorGenerator(value);
+      } else if ($.isPlainObject(value)) {
+        memo[key] = createExtractorMap(value);
+      } else {
+        memo[key] = function(rowData) {return value};
+      }
+            return memo;
     },{});
   }
 

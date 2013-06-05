@@ -39,8 +39,8 @@ define([], function () {
       return {rack_barcode:rack_barcode,array:array};
     },
 
-    manifestCsvToArray:function(data) {
-      var csvArray = $.csv.toArrays(data);
+    manifestCsvToArray:function(dataAsText) {
+      var csvArray = $.csv.toArrays(dataAsText.replace(/\n+$/g,''));
       return _.map(csvArray, function(row){
         return _.map(row, function(element){
           return element.trim();
