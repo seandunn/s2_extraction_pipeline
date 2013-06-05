@@ -1,5 +1,5 @@
 define([
-  'text!reception_templates/cgap_lysed/cvs_template.json'
+  'text!reception_templates/cgap_lysed/csv_template.json'
 ], function (CGAPLysed) {
   'use strict';
 
