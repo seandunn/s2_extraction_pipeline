@@ -82,7 +82,8 @@ define([
             root = result;
             // creation of the samples
             return root.bulk_create_samples.create({
-              quantity:    nbOfSample,
+              state:     "draft",
+              quantity:  nbOfSample,
               sample_type: sampleType
             });
           })
@@ -93,11 +94,17 @@ define([
             // might be useful to instantiate the samples at some point....
             // For now, we just use them as bare objects
             thisModel.samples = bulkCreationSampleObject.result.samples;
-            var sample_uuids = _.map(thisModel.samples, function (sample) {
-              return {"uuid": sample.uuid, "sample_type": sample.sample_type};
+            var tubes = _.map(thisModel.samples, function (sample) {
+              return {
+                aliquots:[{
+                  "sample_uuid": sample.uuid,
+                  "type": ReceptionTemplate[template].aliquot_type
+                }
+                ]
+              };
             });
             // creation of the piece of labware
-            return root["bulk_create_" + labwareModel].create({"samples": sample_uuids});
+            return root["bulk_create_" + labwareModel].create({"tubes": tubes});
           })
           .fail(function () {
             return deferred.reject({message: "Couldn't register the associated piece of labware."});
@@ -107,7 +114,7 @@ define([
               return root.tubes.instantiate({rawJson:{tube:rawTube}});
             });
             // creation of the barcodes
-            return root.bulk_create_barcode.create({
+            return root.bulk_create_barcodes.create({
               "quantity": nbOfSample,
               "labware":  labwareModel,
               "role":     "stock",
