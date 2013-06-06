@@ -223,9 +223,13 @@ define([
     setFileContent:function(fileContent){
       var deferred = $.Deferred();
       var dataAsArray = CSVParser.manifestCsvToArray(fileContent);
-      var columnHeaders = dataAsArray[11];
-      var templateName = dataAsArray[2][0]; // A3
-      var combinedData = JsonTemplater.combineHeadersToData(columnHeaders, _.drop(dataAsArray, 12));
+      var templateName = dataAsArray[2][0]; // always A3 !!
+      var columnHeaders = dataAsArray[ReceptionTemplate[templateName].header_line_number];
+      var dataAsArray = _.chain(dataAsArray)
+        .drop(ReceptionTemplate[templateName].header_line_number+1)
+        .filter(function(row){return row[0]})
+        .value();
+      var combinedData = JsonTemplater.combineHeadersToData(columnHeaders, dataAsArray);
       if (!ReceptionTemplate[templateName]){
         deferred.reject({message: "Couldn't find the corresponding template!"});
       }

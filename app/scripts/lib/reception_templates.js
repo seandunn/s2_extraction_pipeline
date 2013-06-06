@@ -9,7 +9,8 @@ define([
       model:         "tube",
       sample_type:   "RNA",
       aliquot_type:  "NA",
-      json_template: JSON.parse(CGAPLysed)
+      json_template: JSON.parse(CGAPLysed),
+      header_line_number: 8
     }
   };
 
