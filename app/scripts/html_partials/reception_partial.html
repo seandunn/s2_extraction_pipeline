@@ -15,10 +15,10 @@
                     <input id="number-of-sample" type="text" value="1">
                 </div>
             </form>
-            <button id="generateBC">Generate DB Entries</button>
-            <button id="downloadManifest">Download Manifest</button>
+            <button id="generateBC" class="btn">Generate DB Entries</button>
+            <button id="downloadManifest" class="btn">Download Manifest</button>
             <div class="printer-div">
-                <button id="printBC">Print Barcodes</button>
+                <button id="printBC" class="btn">Print Barcodes</button>
                 <label for="printer-select">Current Printer:</label>
                 <select class="printerSelect" id="printer-select">
                     <% _.each (templateData.printerList, function (printer) { %>
@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div>
-                <button id="registrationBtn">Registration</button>
+                <button id="registrationBtn" class="btn">Registration</button>
             </div>
         </div>
     </div>

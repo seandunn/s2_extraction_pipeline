@@ -33,13 +33,13 @@ define([
             return deferred.reject({message: " Couldn't produce the samples. " + error.message, previous_error: error});
           })
           .then(function (labellables) {
-            return thisModel.generateCSV(labellables);
+            return thisModel.generateCSVBlob(labellables);
           })
           .fail(function (error) {
             return deferred.reject({message: " Couldn't produce barcode data file. " + error.message, previous_error: error});
           })
-          .then(function (manifestCsvAsTxt) {
-            thisModel.manifestCsv = manifestCsvAsTxt;
+          .then(function (manifestCsvBlob) {
+            thisModel.manifestCsv = manifestCsvBlob;
             // now we are ready...
             return thisModel.sendManifestRequest(thisModel.currentTemplate, thisModel.manifestCsv);
           })
@@ -82,7 +82,8 @@ define([
             root = result;
             // creation of the samples
             return root.bulk_create_samples.create({
-              quantity:    nbOfSample,
+              state:     "draft",
+              quantity:  nbOfSample,
               sample_type: sampleType
             });
           })
@@ -93,11 +94,17 @@ define([
             // might be useful to instantiate the samples at some point....
             // For now, we just use them as bare objects
             thisModel.samples = bulkCreationSampleObject.result.samples;
-            var sample_uuids = _.map(thisModel.samples, function (sample) {
-              return {"uuid": sample.uuid, "sample_type": sample.sample_type};
+            var tubes = _.map(thisModel.samples, function (sample) {
+              return {
+                aliquots:[{
+                  "sample_uuid": sample.uuid,
+                  "type": ReceptionTemplate[template].aliquot_type
+                }
+                ]
+              };
             });
             // creation of the piece of labware
-            return root["bulk_create_" + labwareModel].create({"samples": sample_uuids});
+            return root["bulk_create_" + labwareModel.pluralize()].create({"tubes": tubes});
           })
           .fail(function () {
             return deferred.reject({message: "Couldn't register the associated piece of labware."});
@@ -107,8 +114,8 @@ define([
               return root.tubes.instantiate({rawJson:{tube:rawTube}});
             });
             // creation of the barcodes
-            return root.bulk_create_barcode.create({
-              "quantity": nbOfSample,
+            return root.bulk_create_barcodes.create({
+              "number_of_barcodes": nbOfSample,
               "labware":  labwareModel,
               "role":     "stock",
               "contents": sampleType
@@ -123,11 +130,11 @@ define([
               return {
                 barcode:        {
                   type:  "ean13-barcode",
-                  value: label.ean13
+                  value: label.barcode.ean13
                 },
                 "sanger label": {
                   type:  "sanger-barcode",
-                  value: label.sanger.prefix + label.sanger.number + label.sanger.suffix
+                  value: label.barcode.sanger.prefix + label.barcode.sanger.number + label.barcode.sanger.suffix
                 }
               };
             });
@@ -135,12 +142,11 @@ define([
               // NOTE: in theory, one can associate a labware to any barcode.
               // However, in the test data, because the tests nmight a bit too strict
               // this order can become relevant... Be careful when running tests.
-              return {"name": labware.uuid, labels:labels.pop()};
+              return {"name": labware.uuid, "type": "resource", labels:labels.pop()};
             });
             // link barcodes to labware
-            return root.bulk_create_labellable.create({
-              type:   "resource",
-              names:   bulkData
+            return root.bulk_create_labellables.create({
+              labellables:   bulkData
             });
           })
           .fail(function () {
@@ -155,12 +161,13 @@ define([
       return deferred.promise();
     },
 
-    generateCSV: function(labellables){
+    generateCSVBlob: function(labellables){
       var data = _.map(labellables,function(labellable){
         return [labellable.labels.barcode.value, labellable.uuid ].join(',');
       });
-      data.unshift("Tube Barcode , Sanger Sample ID");
-      return data.join("\n");
+      data.unshift("Tube Barcode,Sanger Sample ID");
+      var txt = data.join("\n");
+      return new Blob([txt], { "type" : "text\/csv" })
     },
 
     printBarcodes: function (printerName) {
@@ -176,46 +183,34 @@ define([
       return deferred.promise();
     },
 
-    sendManifestRequest: function (templateBlob,manifestCsv) {
+    sendManifestRequest: function (templateBlob,manifestBlob) {
       var deferred = $.Deferred();
       var thisModel = this;
       try {
         var xhr = new XMLHttpRequest;
-        xhr.open("POST", 'http://localhost:8080/upload', false);
-        xhr.setRequestHeader('Content-Type', 'multipart/form-data ; boundary=AaB03x');
+        xhr.open("POST", 'http://psd2g.internal.sanger.ac.uk:8100/manifest-merge-service/');
+        xhr.responseType = "blob";
+
         xhr.onerror = function (oEvent) {
-          console.warn('statusText : ', oEvent.target.statusText);
-          console.warn('responseType : ', oEvent.target.responseType);
-          console.warn('responseText : ', oEvent.target.responseText);
-          deferred.reject({message: "Unable to send the manifest... Is the XLS merger server up and running ? "  + oEvent.target.responseText});
-        };
-        xhr.onload = function (oEvent) {
-          // TODO: this part is simulating the reception of a file from the server...
-          // Change this when the proper return value will be known...
-          function tmpFunctionForFileDownload (callback) {
-            var oReq = new XMLHttpRequest();
-            oReq.open("GET", ReceptionTemplate['cgap_lysed'].manifest_path, true);
-            oReq.responseType = "blob";
-            oReq.onload = function(oEvent) {
-              var blob = oReq.response;
-              callback(blob);
-            };
-            oReq.onerror = function(oEvent) {
-            };
-            oReq.send();
-          }
-          tmpFunctionForFileDownload(function(blob){
-            thisModel.manifestBlob = blob;
-            deferred.resolve(thisModel);
+          console.warn('statusText: ', oEvent.target.statusText);
+          console.warn('responseType: ', oEvent.target.responseType);
+          console.warn('responseText: ', oEvent.target.responseText);
+          deferred.reject({
+            message: "Unable to send the manifest... Is the XLS merger server up and running? "
           });
-          // end of TODO
         };
+
+        xhr.onload = function (oEvent) {
+          thisModel.manifestBlob = this.response;
+          deferred.resolve(thisModel);
+        };
+
         var form = new FormData();
         form.append("template",templateBlob);
-        form.append("manifest-details",manifestCsv);
+        form.append("manifest-details",manifestBlob);
+
         xhr.send(form);
-      }
-      catch (err) {
+      } catch (err) {
         var message = " msg:" + err.message;
         message += "\n" + err.code;
         message += "\n" + err.name;
@@ -277,4 +272,3 @@ define([
   
   return ReceptionModel;
 });
-
