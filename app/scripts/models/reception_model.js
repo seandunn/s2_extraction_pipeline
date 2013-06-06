@@ -188,7 +188,7 @@ define([
       var thisModel = this;
       try {
         var xhr = new XMLHttpRequest;
-        xhr.open("POST", 'http://psd2g.internal.sanger.ac.uk:8100/manifest-merge-service/', false);
+        xhr.open("POST", 'http://psd2g.internal.sanger.ac.uk:8100/manifest-merge-service/');
         xhr.responseType = "blob";
 
         xhr.onerror = function (oEvent) {
