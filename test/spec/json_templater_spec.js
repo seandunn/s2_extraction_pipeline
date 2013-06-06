@@ -98,14 +98,13 @@ define(['extraction_pipeline/lib/json_templater'], function (ArrayToJSON) {
         var expectedData = [
           {
             tube_barcode: "880000000000011",
-            public_name: "",
             volume:1.2,
             details:{
                     "gender":"Male"
             }
           }
         ];
-        expect(combinedData).toEqual(expectedData);
+        expect(JSON.parse(JSON.stringify(combinedData))).toEqual(expectedData);
       });
     });
   });

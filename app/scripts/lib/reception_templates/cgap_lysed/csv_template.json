@@ -65,10 +65,6 @@
     "columnName": "STORAGE CONDITIONS",
     "type":       "string"
   },
-  "taxon_id":                  {
-    "columnName": "TAXON ID",
-    "type":       "int"
-  },
   "sample_type":               {
     "columnName": "SAMPLE TYPE",
     "type":       "string"
