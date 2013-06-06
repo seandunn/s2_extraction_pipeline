@@ -162,8 +162,13 @@ define([
     },
 
     generateCSVBlob: function(labellables){
-      var data = _.map(labellables,function(labellable){
-        return [labellable.labels.barcode.value, labellable.uuid ].join(',');
+      var thisModel = this;
+      var data = _.map(thisModel.outputs,function(labware){
+        var sampleUUID = labware.aliquots[0].sample.uuid;
+        var sanger_sample_id = _.find(thisModel.samples,function (sample) {
+          return d3_geo_resample.uuid === sampleUUID;
+        }).sanger_sample_id;
+        return [labellable.labels.barcode.value, sanger_sample_id ].join(',');
       });
       data.unshift("Tube Barcode,Sanger Sample ID");
       var txt = data.join("\n");
