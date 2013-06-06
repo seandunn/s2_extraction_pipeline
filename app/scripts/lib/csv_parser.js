@@ -40,7 +40,7 @@ define([], function () {
     },
 
     manifestCsvToArray:function(dataAsText) {
-      var csvArray = $.csv.toArrays(dataAsText.replace(/\n+$/g,''));
+      var csvArray = $.csv.toArrays(dataAsText.replace(/(\r\n)|(\n)|(\r)/g,'\n').replace(/[\r\n]+$/g,''));
       return _.map(csvArray, function(row){
         return _.map(row, function(element){
           return element.trim();
