@@ -9,13 +9,15 @@ define([], function () {
     return function(rowData){
       // Use of toUpperCase() to make camparison that is not case sensitive
       var value = rowData[cellDescriptor["columnName"].toUpperCase()] || cellDescriptor["default"];
+      if (!value) return; // if there's no value, no need to check the type and try to parse.
       switch (cellDescriptor.type) {
         case "int":
-          return parseInt(value);
+          var value = parseInt(value, 10);
+          return isNaN(value) ? undefined : value;
         case "float":
           return parseFloat(value);
         case "boolean":
-          return ( value === 'Yes' ) || ( value === 'True' );
+          return ( value.toUpperCase() === 'YES' ) || ( value.toUpperCase() === 'TRUE' );
         default:
           return value;
       }
