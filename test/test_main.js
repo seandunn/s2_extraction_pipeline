@@ -20,7 +20,8 @@ require.config({
     config:             'test_config',
     spec:               'spec/',
     lib:                'lib/',
-    pipeline_testjson:  'json/'
+    pipeline_testjson:  'json/',
+    reception_templates: 'scripts/lib/reception_templates'
   }
 });
  
@@ -36,6 +37,7 @@ require(['domReady!'
    ,'spec/workflow_engine_spec'
 //   ,'spec/kit_presenter_spec'
 //   ,'spec/scan_barcode_presenter_spec'
+  , 'spec/reception_app_spec'
 ],
   function () {
     // use app here
