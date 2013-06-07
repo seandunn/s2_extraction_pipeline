@@ -1,22 +1,22 @@
 define([ 'config'
   , 'mapper/s2_root'
-  , 'extraction_pipeline/presenters/reception_presenter'
   , 'extraction_pipeline/extra_components/busy_box'
-], function (config, S2Root, ReceptionPresenter, BusyBox) {
+], function (config, S2Root, BusyBox) {
   'use strict';
 
   var App = Object.create({});
 
   $.extend(App, {
-    init:             function () {
+    init:             function (presenterFactory) {
+      this.presenterFactory = presenterFactory;
+
       _.templateSettings.variable = 'templateData';
 
       $('#server-url').text(config.apiUrl);
       $('#release').text(config.release);
 
       var configuration = { printerList: config.printers };
-
-      var receptionPresenter = Object.create(ReceptionPresenter).init(this, configuration);
+      var receptionPresenter = this.presenterFactory.create('reception_presenter', this, configuration);
       $("#content").append(receptionPresenter.view);
       this.addEventHandlers();
     },

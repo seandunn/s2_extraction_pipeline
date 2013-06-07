@@ -16,7 +16,8 @@ require.config({
     mapper_test:          'components/S2Mapper/test',
     mapper_testjson:      'components/S2Mapper/test/json',
     extraction_pipeline:  'scripts',
-    config:               'scripts/config'
+    config:               'scripts/config',
+    reception_templates: 'scripts/lib/reception_templates'
   }
 });
 

@@ -24,9 +24,12 @@ require.config(
 );
 
 require(
-    ['extraction_pipeline/reception_app'],
-    function (ReceptionApp) {
-      var theApp = Object.create(ReceptionApp).init();
+    [
+      'extraction_pipeline/reception_app',
+      'extraction_pipeline/presenters/presenter_factory'
+    ],
+    function (ReceptionApp, PresenterFactory) {
+      var theApp = Object.create(ReceptionApp).init(new PresenterFactory());
     }
 );
 

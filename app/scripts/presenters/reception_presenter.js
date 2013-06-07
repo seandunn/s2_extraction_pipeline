@@ -10,7 +10,15 @@ define(['config'
   var ReceptionPresenter = Object.create(BasePresenter);
 
   $.extend(ReceptionPresenter, {
-    init: function (owner, config) {
+    register: function (callback) {
+      callback('reception_presenter', function() {
+        var instance = Object.create(ReceptionPresenter);
+        ReceptionPresenter.init.apply(instance, arguments);
+        return instance;
+      });
+    },
+
+    init: function (owner, factory, config) {
       this.owner = owner;
       this.config = config;
       this.model = Object.create(Model).init(this, config);
