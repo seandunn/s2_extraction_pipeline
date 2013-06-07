@@ -4,9 +4,11 @@ define([
   , 'text!pipeline_testjson/reception_app_test_data.json'
   , 'mapper_test/resource_test_helper'
   , 'presenters/reception_presenter'
+  , 'text!mapper_testjson/unit/root.json'
   , 'mapper/s2_root'
+  , 'text!pipeline_testcsv/manifest_csv_test_data.csv'
 ]
-  , function (config, FakeUser, appTestData, TestHelper, ReceptionPresenter, S2Root) {
+  , function (config, FakeUser, appTestData, TestHelper, ReceptionPresenter, rootTestData, S2Root, manifestCSVData) {
     'use strict';
 
 
@@ -17,6 +19,7 @@ define([
         beforeEach(function () {
 
           config.loadTestData(appTestData);
+          config.cummulativeLoadingTestDataInFirstStage(rootTestData);
           var app;
           fakeDOM = $('<div><div id="content"/></div>');
           fakeContent = function () {
@@ -52,7 +55,60 @@ define([
 
         });
 
-        describe("and the user attempts to enter 1 sample", function () {
+        describe("and a manifest csv is loaded and registered", function () {
+          var expectedData;
+          it("makes the correct call", function () {
+            //trigger the file input directly with a string, can't do this from view
+            runs(function () {
+              // TODO: the expected data will need updating here
+              expectedData = [
+                [
+                  [
+                    {
+                      type:     'GET',
+                      url:      '/',
+                      dataType: 'json',
+                      data:     null
+                    }
+                  ],
+                  [
+                    {
+                      type:     'POST',
+                      url:      '/actions/bulk_update_sample',
+                      dataType: 'json',
+                      headers:  { "Content-Type": 'application/json' },
+                      data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"volume":2,"cellular_material":{"lysed":true}},"S2-cb4ee4768f334c38960ac89ec2074eb1":{"volume":2,"cellular_material":{"lysed":true}}}}}'
+                    }
+                  ]
+                ]
+              ];
+
+              spyOn(config, "ajax").andCallThrough();
+              presenter.responderCallback(manifestCSVData)
+                .then(function () {
+                  FakeUser.waitsForIt(fakeDOM, "#registrationBtn", results.expected);
+                })
+                .fail(results.unexpected);
+            });
+
+            waitsFor(results.hasFinished);
+
+            runs(function () {
+              results.resetFinishedFlag();
+              fakeContent()
+                .find('#registrationBtn')
+                .trigger('click');
+            });
+
+            waits(500);
+
+            runs(function () {
+              expect(config.ajax).toHaveBeenCalledWith(_.flatten(expectedData));
+            });
+          });
+        });
+
+        xdescribe("and the user attempts to enter 1 sample", function () {
           beforeEach(function () {
             runs(function () {
               fakeContent()
@@ -63,36 +119,40 @@ define([
               results.resetFinishedFlag();
               FakeUser.waitsForIt(fakeDOM,
                 "#downloadManifest",
-                results.expected(),
-                results.unexpected()
-              )
+                results.expected
+              );
             });
             waitsFor(results.hasFinished);
           });
 
-          it("shows an error message to the user", function(){
-            runs(function(){
+          it("shows an error message to the user", function () {
+            runs(function () {
               expect(fakeContent().find(".validationText.alert.alert-error").length).toEqual(1);
             });
           });
         });
 
         describe("and there is input request for 3 tubes", function () {
-          beforeEach(function () {
+          it("makes an appropriate ajax call", function(){
             runs(function () {
+              spyOn(config, 'ajax').andCallThrough();
               fakeContent()
                 .find('#number-of-sample')
-                .val(2)
+                .val(3)
                 .trigger(FakeUser.aPressReturnEvent());
 
               results.resetFinishedFlag();
-              FakeUser.waitsForIt(fakeDOM,
-                "#downloadManifest",
-                results.expected(),
-                results.unexpected()
-              )
+//              FakeUser.waitsForIt(fakeDOM,
+//                "#downloadManifest",
+//                results.expected
+//              );
             });
-            waitsFor(results.hasFinished);
+            waits(500);
+
+            runs(function(){
+              expect(config.ajax).toHaveBeenCalled();
+              expect(config.ajax).toHaveBeenCalledWith('derp');
+            });
           });
         });
       });

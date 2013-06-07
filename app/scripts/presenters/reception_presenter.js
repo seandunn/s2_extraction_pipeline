@@ -78,21 +78,21 @@ define(['config'
         backArrow.show();
       }
       currentElement.animate(
-          {opacity: 0, left:"-100%" },
-          500,
-          function () {
-            currentElement
-                .hide()
-                .css('opacity', 0)
-                .css('zIndex', -1000);
-          });
+        {opacity: 0, left:"-100%" },
+        500,
+        function () {
+          currentElement
+            .hide()
+            .css('opacity', 0)
+            .css('zIndex', -1000);
+        });
       nextElement
-          .show()
-          .css('opacity', 0)
-          .css('zIndex', 1000)
-          .animate(
-          {opacity: 1, left:0},
-          500
+        .show()
+        .css('opacity', 0)
+        .css('zIndex', 1000)
+        .animate(
+        {opacity: 1, left:0},
+        500
       );
     }
   }
@@ -103,21 +103,21 @@ define(['config'
         backArrow.hide();
       }
       currentElement.animate(
-          {opacity: 0.0, left:"100%" },
-          500,
-          function () {
-            currentElement
-                .hide()
-                .css('opacity', 0)
-                .css('zIndex', -1000);
-          });
+        {opacity: 0.0, left:"100%" },
+        500,
+        function () {
+          currentElement
+            .hide()
+            .css('opacity', 0)
+            .css('zIndex', -1000);
+        });
       previousElement
-          .show()
-          .css('opacity', 0)
-          .css('zIndex', 1000)
-          .animate(
-          {opacity: 1, left:0},
-          500
+        .show()
+        .css('opacity', 0)
+        .css('zIndex', 1000)
+        .animate(
+        {opacity: 1, left:0},
+        500
       );
     }
   }

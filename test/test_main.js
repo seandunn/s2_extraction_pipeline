@@ -21,6 +21,7 @@ require.config({
     spec:               'spec/',
     lib:                'lib/',
     pipeline_testjson:  'json/',
+    pipeline_testcsv:   'csv/',
     reception_templates: 'scripts/lib/reception_templates'
   }
 });
