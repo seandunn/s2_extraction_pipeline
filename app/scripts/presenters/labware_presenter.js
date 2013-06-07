@@ -179,12 +179,6 @@ define(['config'
         PubSub.publish("s2.labware.removed", this, {
           resource:  this.labwareModel.resource
         });
-        this.release();
-        delete this.resource;
-        delete this.resourcePresenter;
-        delete this.barcodeInputPresenter;
-        this.setupPresenter(this.labwareModel, this.jquerySelection);
-        this.renderView();
       }
     },
 
