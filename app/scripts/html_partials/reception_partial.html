@@ -1,44 +1,4 @@
-<div class="component">
-    <input type="file" style="display:none" accept="text/csv" class="hiddenFileInput">
-    <div class="twoColumns">
-        <div class="columnLeft">
-            <form onsubmit="return false;">
-                <div>
-                    <h4>Create a new manifest</h4>
-                    <label for="xls-templates">Select a template:</label>
-                    <select class="xls-templates" id="xls-templates">
-                        <% _.each (templateData.templates, function (template) { %>
-                        <option value="<%- template.template_name %>"><%- template.friendly_name %></option>
-                        <% }); %>
-                    </select>
-                    <label for="number-of-sample">Enter the number of samples:</label>
-                    <input id="number-of-sample" type="text" value="1">
-                </div>
-            </form>
-            <button id="generateBC" class="btn">Generate DB Entries</button>
-            <button id="downloadManifest" class="btn">Download Manifest</button>
-            <div class="printer-div">
-                <button id="printBC" class="btn">Print Barcodes</button>
-                <label for="printer-select">Current Printer:</label>
-                <select class="printerSelect" id="printer-select">
-                    <% _.each (templateData.printerList, function (printer) { %>
-                    <option value="<%- printer.name %>"><%- printer.name %></option>
-                    <% }); %>
-                </select>
-            </div>
-        </div>
-        <div class="columnRight">
-            <div>
-                <h4>Load a manifest</h4>
-                <div>File to be loaded : <span class="filenameSpan">No file yet.</span></div>
-                <div class="dropzone">
-                    <div class="dropzoneBox">Drop the file here, or click.</div>
-                </div>
-            </div>
-            <div>
-                <button id="registrationBtn" class="btn">Registration</button>
-            </div>
-        </div>
-    </div>
-    <div class="validationText alert" style="display:none"></div>
+<div class="reception-component">
+    <div class="manifest-maker"></div>
+    <div class="manifest-reader"></div>
 </div>
