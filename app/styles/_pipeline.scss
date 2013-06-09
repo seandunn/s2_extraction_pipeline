@@ -2,6 +2,14 @@ header, #content {
   @extend .container;
 }
 
+body, html {
+  height:100%;
+}
+
+#content {
+  height: 100%;
+}
+
 ol.labware {
   font-size: 24px;
   list-style-position: inside;
