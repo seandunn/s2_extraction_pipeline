@@ -1,0 +1,25 @@
+<div>
+    <form id="reception-form-id">
+        <table >
+            <thead >
+            <tr>
+                <% _.each (templateData.data[0], function (item, item_name) { %>
+                <th  style="margin: 3px;border: 1px solid grey">
+                    <%- item_name %>
+                </th>
+                <% }); %>
+            </tr>
+            </thead>
+            <% _.each (templateData.data, function (dataSet) { %>
+            <tr>
+                <% _.each (dataSet, function (item, item_name) { %>
+                <td> <%= item %> </td>
+                <% }); %>
+            </tr>
+            <% }); %>
+        </table>
+        <input type="submit" value="cool">
+    </form>
+</div>
+
+

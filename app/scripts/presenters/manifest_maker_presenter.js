@@ -23,26 +23,29 @@ define(['config'
       this.config = config;
       this.model = Object.create(Model).init(this, config);
       this.view = this.createHtml({templates:ReceptionTemplates.templateList, printerList:config.printerList});
+      this.subscribeToPubSubEvents();
       return this;
     },
 
     createHtml:function(templateData){
+      var thisPresenter = this;
       var html = $(_.template(componentPartialHtml)(templateData));
 
-      var selectXsl = html.find("#xls-templates");
-      selectXsl.val("truc");
-      var thisPresenter = this;
+      this.generateBCBtnSelection = html.find("#generateBC");
+      this.downloadManifestBtnSelection = html.find("#downloadManifest");
+      this.printBCBtnSelection = html.find("#printBC");
+      this.printBoxSelection = html.find(".printer-div");
 
-      html.find("#generateBC").click(onGenerateBCEventHandler(thisPresenter));
+      this.generateBCBtnSelection.click(onGenerateBCEventHandler(thisPresenter));
       function onGenerateBCEventHandler(presenter){ return function(){ presenter.onGenerateBC(); } }
 
-      html.find("#downloadManifest").hide().click(onDownloadManifestEventHandler(thisPresenter));
+      this.downloadManifestBtnSelection.hide().click(onDownloadManifestEventHandler(thisPresenter));
       function onDownloadManifestEventHandler(presenter){ return function(){ presenter.onDownloadManifest(); } }
 
-      html.find("#printBC").click(onPrintBarcodeEventHandler(thisPresenter));
+      this.printBCBtnSelection.click(onPrintBarcodeEventHandler(thisPresenter));
       function onPrintBarcodeEventHandler(presenter){ return function(){ presenter.onPrintBarcode(); } }
 
-      html.find(".printer-div").hide();
+      this.printBoxSelection.hide();
 
       html.find("#number-of-sample").bind("keypress",function(event){
             if (event.which !== 13) return;
@@ -53,22 +56,30 @@ define(['config'
       return html;
     },
 
-    enableDownloadManifest:function(){
-      this.view.find("#downloadManifest").show();
+    subscribeToPubSubEvents:function(){
+      var thisPresenter = this;
+      PubSub.subscribe("s2.reception.reset_view", resetViewEventHandler);
+      function resetViewEventHandler(event, source, eventData) {
+        thisPresenter.reset();
+      }
     },
 
-    enablePrintBC:function(){
-      this.view.find(".printer-div").show();
+    reset:function(){
+      this.model.then(function(model){
+        model.reset();
+      });
+      this.downloadManifestBtnSelection.hide();
+      this.printBoxSelection.hide();
+      this.enableSampleGeneration();
+      this.message();
     },
 
-    disableGenerateBC:function(){
-      this.view.find(".columnLeft form *").attr("disabled","disabled");
-      this.view.find("#generateBC").hide();
+    enableSampleGeneration:function(){
+      this.view.find("form *").removeAttr("disabled");
     },
 
-    disableManifestCreation:function(){
-      this.view.find(".columnLeft *").attr("disabled","disabled");
-      this.disableGenerateBC();
+    disableSampleGeneration:function(){
+      this.view.find("form *").attr("disabled","disabled");
     },
 
     onPrintBarcode: function () {
@@ -117,9 +128,9 @@ define(['config'
               return thisPresenter.message('error', 'Something wrong happened : '+error.message);
             })
             .then(function (model) {
-              thisPresenter.disableGenerateBC();
-              thisPresenter.enableDownloadManifest();
-              thisPresenter.enablePrintBC();
+              thisPresenter.disableSampleGeneration();
+              thisPresenter.downloadManifestBtnSelection.show();
+              thisPresenter.printBoxSelection.show();
               thisPresenter.view.trigger("s2.busybox.end_process");
               return thisPresenter.message('success','Samples generated. The manifest is ready for download, and the barcodes ready for printing.');
             })

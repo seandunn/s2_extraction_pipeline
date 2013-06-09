@@ -1,10 +1,11 @@
 define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'text!extraction_pipeline/html_partials/manifest_reader_partial.html'
+  , 'text!extraction_pipeline/html_partials/sample_row_partial.html'
   , 'extraction_pipeline/models/manifest_reader_model'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/reception_templates'
-], function (config, BasePresenter, componentPartialHtml, Model, PubSub, ReceptionTemplates) {
+], function (config, BasePresenter, componentPartialHtml, sampleRowPartial, Model, PubSub, ReceptionTemplates) {
   'use strict';
 
   var Presenter = Object.create(BasePresenter);
@@ -23,39 +24,60 @@ define(['config'
       this.config = config;
       this.model = Object.create(Model).init(this, config);
       this.view = this.createHtml({templates:ReceptionTemplates.templateList, printerList:config.printerList});
+      this.subscribeToPubSubEvents();
       return this;
     },
 
     createHtml:function(templateData){
       var html = $(_.template(componentPartialHtml)(templateData));
-
-      this.enableDropzone(html);
-
-      html.find("#registrationBtn").hide().click(onRegistrationButtonClickEventHandler(this));
-      function onRegistrationButtonClickEventHandler(presenter){return function(){ presenter.onRegistrationButtonClick(); }}
-
+      // saves the selection for performances
+      this.dropzoneSelection = html.find('.dropzone');
+      this.dropzoneBoxSelection = html.find('.dropzoneBox');
+      this.registerBtnSelection = html.find('#registrationBtn');
+      this.fileNameSpanSelection = html.find('.filenameSpan');
+      this.hiddenFileInputSelection = html.find('.hiddenFileInput');
+      this.orderMakerSelection = html.find(".orderMaker");
+      this.enableDropzone();
+      this.registerBtnSelection.hide().click(onRegistrationButtonClickEventHandler(this));
+      function onRegistrationButtonClickEventHandler(presenter){return function(){ presenter.onRegisterButtonClick(); }}
       return html;
     },
 
-    enableDropzone: function (container) {
+    subscribeToPubSubEvents:function(){
       var thisPresenter = this;
-      var dropzone = container.find('.dropzoneBox');
+      PubSub.subscribe("s2.reception.reset_view", resetViewEventHandler);
+      function resetViewEventHandler(event, source, eventData) {
+        thisPresenter.reset();
+      }
+    },
 
+    reset:function(){
+      this.model.then(function(model){
+        model.reset();
+      });
+      this.dropzoneBoxSelection.show();
+      this.registerBtnSelection.hide();
+      this.fileNameSpanSelection.empty();
+      this.removeSamplesView();
+      this.message();
+    },
+
+    // dropzone
+
+    enableDropzone: function () {
+      var thisPresenter = this;
       // add listeners to the hiddenFileInput
-      dropzone.bind('click', handleClickOnDropZone); // forward the click to the hiddenFileInput
-      dropzone.bind('drop', handleDropFileOnDropZone);
-      dropzone.bind('dragover', handleDragFileOverDropZone);
-      var fileNameSpan = container.find('.filenameSpan');
-
-      var hiddenFileInput = container.find('.hiddenFileInput');
-      hiddenFileInput.bind("change", handleInputFileChanged);
-
+      thisPresenter.dropzoneSelection.bind('click', handleClickOnDropZone); // forward the click to the hiddenFileInput
+      thisPresenter.dropzoneSelection.bind('drop', handleDropFileOnDropZone);
+      thisPresenter.dropzoneSelection.bind('dragover', handleDragFileOverDropZone);
+      thisPresenter.hiddenFileInputSelection.bind("change", handleInputFileChanged);
+      //
       function handleInputFile(fileHandle) {
         // what to do when a file has been selected
         var reader = new FileReader();
         reader.onload = (function (fileEvent) {
           return function (e) {
-            fileNameSpan.text(fileHandle.name);
+            thisPresenter.fileNameSpanSelection.text(fileHandle.name);
           }
         })(fileHandle);
         reader.onloadend = function (event) {
@@ -65,41 +87,40 @@ define(['config'
         };
         reader.readAsText(fileHandle, "UTF-8");
       }
-
+      //
       function handleInputFileChanged(event) {
         // what to do when the file selected by the hidden input changed
         event.stopPropagation();
         event.preventDefault();
         handleInputFile(event.originalEvent.target.files[0]);
       }
-
+      //
       function handleClickOnDropZone(event) {
         // what to do when one clicks on the drop zone
         event.stopPropagation();
         event.preventDefault();
-        if (hiddenFileInput) {
-          hiddenFileInput.click();
+        if (thisPresenter.hiddenFileInputSelection) {
+          thisPresenter.hiddenFileInputSelection.click();
         }
       }
-
+      //
       function handleDropFileOnDropZone(event) {
         // what to do when one drops a file
         event.stopPropagation();
         event.preventDefault();
         handleInputFile(event.originalEvent.dataTransfer.files[0]);
       }
-
+      //
       function handleDragFileOverDropZone(event) {
         // what to do when one hovers over the dropzone
         event.stopPropagation();
         event.preventDefault();
-        if (event.target === dropzone[0]) {
-          dropzone.addClass('hover');
+        if (event.target === thisPresenter.dropzoneSelection[0]) {
+          thisPresenter.dropzoneSelection.addClass('hover');
         } else {
-          dropzone.removeClass('hover');
+          thisPresenter.dropzoneSelection.removeClass('hover');
         }
       }
-
     },
 
     responderCallback: function (fileContent) {
@@ -115,29 +136,48 @@ define(['config'
             thisPresenter.message('error', error.message);
           })
           .then(function (model) {
-            thisPresenter.enableRegistrationBtn();
+            thisPresenter.registerBtnSelection.show();
+            thisPresenter.createSamplesView(model);
             thisPresenter.view.trigger("s2.busybox.end_process");
             thisPresenter.message('success', 'File loaded successfully.');
           })
     },
 
-    enableRegistrationBtn:function(){
-      this.view.find("#registrationBtn").show();
+    // Samples View
+
+    createSamplesView:function(model){
+      _.map(model.samplesForDisplay, function(sample){
+        _.each(sample, function(value,key){
+          if ($.isPlainObject(value)){
+            console.log(value);
+            switch(value.type){
+              case "select":
+                sample[key] = "<select>"+_.map(value.choices,function(choice){return "<option>"+choice+"</option>";}).join() + "</select>";
+                return;
+              case "checkbox":
+                sample[key] = "<input type='checkbox' "+ (value.value ? "checked='checked'" : "") + ">";
+                return;
+            }
+          }
+        });
+        return sample;
+      });
+      var html = _.template(sampleRowPartial)({data:model.samplesForDisplay});
+      this.orderMakerSelection.append(html);
+      this.orderMakerSelection.find("form").on("submit",function(form){
+        console.log(form);
+        return false;
+      });
+      this.orderMakerSelection.show();
     },
 
-    disableDropzone: function (html) {
-      html.find('.dropzoneBox').hide();
-      html.find('.dropzone').unbind('click');
-      $(document).unbind('drop');
-      $(document).unbind('dragover');
+    removeSamplesView:function(){
+      this.orderMakerSelection.empty();
     },
 
-    disableRegistration:function(){
-      this.view.find(".columnRight *").attr("disabled","disabled");
-      this.disableDropzone(this.view);
-    },
+    // register btn
 
-    onRegistrationButtonClick:function () {
+    onRegisterButtonClick:function () {
       var thisPresenter = this;
       this.model
           .then(function(model){
@@ -149,11 +189,14 @@ define(['config'
             return thisPresenter.message('error', 'Something wrong happened : '+error.message);
           })
           .then(function (model) {
-            thisPresenter.disableRegistration();
+            thisPresenter.registerBtnSelection.hide();
+            thisPresenter.dropzoneBoxSelection.hide();
             thisPresenter.view.trigger("s2.busybox.end_process");
             return thisPresenter.message('success','Samples updated.');
           })
     },
+
+    // message box
 
     message: function (type, message) {
       if (!type) {

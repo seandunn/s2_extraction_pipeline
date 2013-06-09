@@ -11,13 +11,21 @@ define([], function () {
       var value = rowData[cellDescriptor["columnName"].toUpperCase()] || cellDescriptor["default"];
       if (!value) return; // if there's no value, no need to check the type and try to parse.
       switch (cellDescriptor.type) {
+        // used to return plain values
         case "int":
-          var value = parseInt(value, 10);
+          value = parseInt(value, 10);
           return isNaN(value) ? undefined : value;
         case "float":
           return parseFloat(value);
         case "boolean":
           return ( value.toUpperCase() === 'YES' ) || ( value.toUpperCase() === 'TRUE' );
+
+        // used to generate html nodes
+        case "select":
+          return { value:value, choices:cellDescriptor["choices"], type:cellDescriptor.type };
+        case "checkbox":
+          return { value:( value.toUpperCase() === 'YES' ) || ( value.toUpperCase() === 'TRUE' ), type:cellDescriptor.type };
+
         default:
           return value;
       }

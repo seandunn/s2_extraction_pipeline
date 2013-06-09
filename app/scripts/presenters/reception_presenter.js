@@ -2,8 +2,7 @@ define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'text!extraction_pipeline/html_partials/reception_partial.html'
   , 'extraction_pipeline/lib/pubsub'
-  , 'extraction_pipeline/lib/reception_templates'
-], function (config, BasePresenter, receptionPartialHtml, PubSub, ReceptionTemplates) {
+], function (config, BasePresenter, receptionPartialHtml, PubSub) {
   'use strict';
 
   var ReceptionPresenter = Object.create(BasePresenter);
@@ -20,47 +19,55 @@ define(['config'
     init: function (owner, factory, config) {
       this.factory = factory;
       this.owner = owner;
+
+      this.manifestMakerComponent = {};
+      this.manifestReaderComponent = {};
+      this.homeComponent = {};
+
       this.view = this.createHtml();
 
-      this.manifestMakerPresenter = this.factory.create('manifest_maker_presenter', this, config);
-      this.manifestMakerSelection.append(this.manifestMakerPresenter.view);
-      this.manifestReaderPresenter = this.factory.create('manifest_reader_presenter', this, config);
-      this.manifestReaderSelection.append(this.manifestReaderPresenter.view);
+      $.extend(this.manifestMakerComponent,{presenter:this.factory.create('manifest_maker_presenter', this, config)});
+      this.manifestMakerComponent.selection.append(this.manifestMakerComponent.presenter.view);
+      $.extend(this.manifestReaderComponent,{presenter:this.factory.create('manifest_reader_presenter', this, config)});
+      this.manifestReaderComponent.selection.append(this.manifestReaderComponent.presenter.view);
 
-      this.manifestReaderBtnSelection.trigger('click');
+      this.currentComponent = this.homeComponent;
+
       return this;
     },
 
     createHtml: function () {
       var html = $(_.template(receptionPartialHtml)());
 
-      this.backButtonSelection = html.find("#backButton");
-      this.homeSelection = html.find("#choice");
-      this.manifestReaderSelection = html.find(".manifest-maker");
-      this.manifestMakerSelection = html.find(".manifest-reader");
-      this.manifestReaderBtnSelection = html.find("#read-manifest-btn");
+      this.backButtonSelection = html.find("#back-button");
       this.manifestMakerBtnSelection = html.find("#create-manifest-btn");
+      this.manifestReaderBtnSelection = html.find("#read-manifest-btn");
+
+      $.extend(this.manifestMakerComponent,{selection: html.find(".manifest-maker")});
+      $.extend(this.manifestReaderComponent,{selection: html.find(".manifest-reader")});
+      $.extend(this.homeComponent,{selection: html.find("#choice")});
 
       this.backButtonSelection.click(this.goBack());
-      this.manifestReaderBtnSelection.click(this.goForward(this.manifestReaderSelection));
-      this.manifestMakerBtnSelection.click(this.goForward(this.manifestMakerSelection,1));
-      this.currentSelection = this.homeSelection;
+      this.manifestReaderBtnSelection.click(this.goForward(this.manifestReaderComponent));
+      this.manifestMakerBtnSelection.click(this.goForward(this.manifestMakerComponent));
+
       return html;
     },
 
     goBack:function(){
       var thisPresenter = this;
       return function(){
-        swipeBackFunc(thisPresenter.currentSelection,thisPresenter.homeSelection,thisPresenter.backButtonSelection,0)();
-        thisPresenter.currentSelection = thisPresenter.homeSelection;
+        swipeBackFunc(thisPresenter.currentComponent.selection,thisPresenter.homeComponent.selection,thisPresenter.backButtonSelection,0)();
+        PubSub.publish("s2.reception.reset_view", thisPresenter, {});
+        thisPresenter.currentComponent = thisPresenter.homeComponent;
       }
     },
 
-    goForward:function(nextSelection){
+    goForward:function(nextComponent){
       var thisPresenter = this;
       return function(){
-        swipeNextFunc(thisPresenter.currentSelection,nextSelection,thisPresenter.backButtonSelection,1)();
-        thisPresenter.currentSelection = nextSelection;
+        swipeNextFunc(thisPresenter.currentComponent.selection,nextComponent.selection,thisPresenter.backButtonSelection,1)();
+        thisPresenter.currentComponent = nextComponent;
       }
     }
   });

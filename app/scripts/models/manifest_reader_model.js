@@ -13,9 +13,14 @@ define([
 
     init: function (owner, config) {
       this.owner = owner;
-      this.inputs = $.Deferred();
       this.config = config;
       return $.Deferred().resolve(this).promise();
+    },
+
+    reset:function(){
+      delete this.json_template_display;
+      delete this.samplesForDisplay;
+      delete this.samplesFromManifest;
     },
 
     setFileContent:function(fileContent){
@@ -23,11 +28,11 @@ define([
       var dataAsArray = CSVParser.manifestCsvToArray(fileContent);
       var templateName = dataAsArray[2][0]; // always A3 !!
       var columnHeaders = dataAsArray[ReceptionTemplate[templateName].header_line_number];
-      var dataAsArray = _.chain(dataAsArray)
-        .drop(ReceptionTemplate[templateName].header_line_number+1)
-        .filter(function(row){return row[0]})
-        .value();
-      var combinedData = JsonTemplater.combineHeadersToData(columnHeaders, dataAsArray);
+      var sampleAsArray = _.chain(dataAsArray)
+          .drop(ReceptionTemplate[templateName].header_line_number+1)
+          .filter(function(row){return row[0]})
+          .value();
+      var combinedData = JsonTemplater.combineHeadersToData(columnHeaders, sampleAsArray);
       if (!ReceptionTemplate[templateName]){
         deferred.reject({message: "Couldn't find the corresponding template!"});
       }
@@ -39,7 +44,9 @@ define([
       }
       else
       {
+        this.json_template_display = ReceptionTemplate[templateName].json_template_display;
         var samples = JsonTemplater.applyTemplateToDataSet(combinedData, ReceptionTemplate[templateName].json_template);
+        this.samplesForDisplay = JsonTemplater.applyTemplateToDataSet(combinedData, this.json_template_display);
         samples = _.reduce(samples,function(memo,sampleUpdate){
           memo[sampleUpdate.sanger_sample_id] = sampleUpdate;
           delete memo[sampleUpdate.sanger_sample_id].sanger_sample_id;

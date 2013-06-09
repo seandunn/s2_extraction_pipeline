@@ -18,16 +18,24 @@ define([
       return $.Deferred().resolve(this).promise();
     },
 
-    generateSamples: function (template, nbOfSample) {
+    reset:function(){
+      delete this.currentTemplateBlob;
+      delete this.manifestCsvBlob;
+      delete this.samples;
+      delete this.labwareOutputs;
+      delete this.barcodes;
+    },
+
+    generateSamples: function (templateName, nbOfSample) {
       var deferred = $.Deferred();
       var thisModel = this;
-      thisModel.getXLSTemplate(template)
+      thisModel.getXLSTemplate(templateName)
           .fail(function(error){
-            return deferred.reject({message:"Couldn't load the specified template: "+template, previous_error:error});
+            return deferred.reject({message:"Couldn't load the specified template: "+templateName, previous_error:error});
           })
           .then(function(templateBlob){
-            thisModel.currentTemplate = templateBlob;
-            return thisModel.getLabellables(template, nbOfSample);
+            thisModel.currentTemplateBlob = templateBlob;
+            return thisModel.getLabellables(templateName, nbOfSample);
           })
           .fail(function(error){
             return deferred.reject({message: " Couldn't produce the samples. " + error.message, previous_error: error});
@@ -39,9 +47,9 @@ define([
             return deferred.reject({message: " Couldn't produce barcode data file. " + error.message, previous_error: error});
           })
           .then(function (manifestCsvBlob) {
-            thisModel.manifestCsv = manifestCsvBlob;
+            thisModel.manifestCsvBlob = manifestCsvBlob;
             // now we are ready...
-            return thisModel.sendManifestRequest(thisModel.currentTemplate, thisModel.manifestCsv);
+            return thisModel.sendManifestRequest(thisModel.currentTemplateBlob, thisModel.manifestCsvBlob);
           })
           .fail(function(error){
             return deferred.reject({message:" >> "+error.message, previous_error:error});
@@ -52,10 +60,10 @@ define([
       return deferred.promise();
     },
 
-    getXLSTemplate: function (template, nbOfSample) {
+    getXLSTemplate: function (templateName, nbOfSample) {
       var deferred = $.Deferred();
       var oReq = new XMLHttpRequest();
-      oReq.open("GET", ReceptionTemplate[template].manifest_path, true);
+      oReq.open("GET", ReceptionTemplate[templateName].manifest_path, true);
       oReq.responseType = "blob";
       oReq.onload = function(oEvent) {
         var blob = oReq.response;
@@ -68,12 +76,12 @@ define([
       return deferred.promise();
     },
 
-    getLabellables: function (template, nbOfSample) {
+    getLabellables: function (templateName, nbOfSample) {
       var deferred = $.Deferred();
       var thisModel = this;
       var root;
-      var labwareModel = ReceptionTemplate[template].model;
-      var sampleType = ReceptionTemplate[template].sample_type;
+      var labwareModel = ReceptionTemplate[templateName].model;
+      var sampleType = ReceptionTemplate[templateName].sample_type;
       thisModel.owner.getS2Root()
           .fail(function () {
             return deferred.reject({message: "Couldn't get the root! Is the server accessible?"});
@@ -98,7 +106,7 @@ define([
               return {
                 aliquots:[{
                   "sample_uuid": sample.uuid,
-                  "type": ReceptionTemplate[template].aliquot_type
+                  "type": ReceptionTemplate[templateName].aliquot_type
                 }
                 ]
               };
@@ -110,7 +118,7 @@ define([
             return deferred.reject({message: "Couldn't register the associated piece of labware."});
           })
           .then(function (bulkCreationLabwareObject) {
-            thisModel.outputs = _.map(bulkCreationLabwareObject.result.tubes, function (rawTube) {
+            thisModel.labwareOutputs = _.map(bulkCreationLabwareObject.result.tubes, function (rawTube) {
               return root.tubes.instantiate({rawJson:{tube:rawTube}});
             });
             // creation of the barcodes
@@ -138,7 +146,7 @@ define([
                 }
               };
             });
-            var bulkData = _.map(thisModel.outputs, function (labware) {
+            var bulkData = _.map(thisModel.labwareOutputs, function (labware) {
               // NOTE: in theory, one can associate a labware to any barcode.
               // However, in the test data, because the tests nmight a bit too strict
               // this order can become relevant... Be careful when running tests.
@@ -153,17 +161,17 @@ define([
             return deferred.reject({message: "Couldn't associate the barcodes to the tubes."});
           })
           .then(function (bulkCreationLabellableObject) {
-            _.each(thisModel.outputs, function (output) {
+            _.each(thisModel.labwareOutputs, function (output) {
               output.labels = bulkCreationLabellableObject.result.labellables.pop().labels;
             });
-            deferred.resolve(thisModel.outputs);
+            deferred.resolve(thisModel.labwareOutputs);
           });
       return deferred.promise();
     },
 
     generateCSVBlob: function(){
       var thisModel = this;
-      var data = _.map(thisModel.outputs,function(labware){
+      var data = _.map(thisModel.labwareOutputs,function(labware){
         var sampleUUID = labware.aliquots[0].sample.uuid;
         var sanger_sample_id = _.find(thisModel.samples,function (sample) {
           return sample.uuid === sampleUUID;
@@ -178,7 +186,7 @@ define([
     printBarcodes: function (printerName) {
       var deferred = $.Deferred();
       var thisModel = this;
-      BasePageModel.printBarcodes(thisModel.outputs, printerName)
+      BasePageModel.printBarcodes(thisModel.labwareOutputs, printerName)
           .fail(function(){
             return deferred.reject({message: "Couldn't print the barcodes."});
           })

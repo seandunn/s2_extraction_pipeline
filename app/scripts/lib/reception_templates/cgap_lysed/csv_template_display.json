@@ -1,0 +1,21 @@
+{
+  "_":          {
+    "columnName": "_SELECTED",
+    "type":       "checkbox",
+    "default":    "No"
+  },
+  "sanger_sample_id": {
+    "columnName": "SANGER SAMPLE ID",
+    "type":       "string"
+  },
+  "sample_type":      {
+    "columnName": "SAMPLE TYPE",
+    "type":       "string"
+  },
+  "process":          {
+    "columnName": "_PROCESS",
+    "type":       "select",
+    "choices":    ["123","456"],
+    "default":    "123"
+  }
+}
