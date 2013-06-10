@@ -1,5 +1,20 @@
 define([], function() {
   'use strict';
+
+  var printerTypes = {
+    1: '96 Well Plate Printer',
+    2: 'Tube Printer',
+    3: 'Rack Printer'
+  };
+
+  function printer(name,type){
+    return {
+      name: name,
+      type: type,
+      friendlyName: name + ' ' + printerTypes[type],
+    };
+  }
+
   return {
     // Configure the API to S2
     apiUrl: 'http://psd2g.internal.sanger.ac.uk:8000/',
@@ -13,22 +28,16 @@ define([], function() {
 
     // Configure the print service
     printServiceUrl: 'http://psd2g.internal.sanger.ac.uk:8000/printers/legacy/soap',
-    printers: [{
-      name: 'e367bc',
-      type: 2
-    }, {
-      name: 'd304bc',
-      type: 1
-    }],
-    printerTypes: {
-        1 : '96 Well Plate Printer',
-        2 : 'Tube Printer',
-        3 : 'Rack Printer'
-    },
+    printers: [
+      printer('e367bc', 2),
+      printer('d304bc', 1)
+    ],
+
     messageTimeout: 5000,
     // Handler for exceptions (does absolutely nothing, but could try..catch!)
     exceptionHandling: function(callback) {
       callback();
     }
   };
+
 });

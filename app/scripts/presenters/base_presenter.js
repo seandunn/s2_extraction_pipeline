@@ -1,6 +1,6 @@
 define(['config'
 , 'extraction_pipeline/lib/barcode_checker'
-], function (config, BarcodeChecker) {
+], function (appConfig, BarcodeChecker) {
   'use strict';
 
   var BasePresenter = Object.create(null);
@@ -32,14 +32,10 @@ define(['config'
       return element.on("keypress", "input", validation(element, successCallback, errorCallback) );
     },
 
-    printerList:function() {
-
-      var printerNames = [];
-      _.each(config.printers, function(printer) {
-        printer.friendlyName = printer.name + ' ' + config.printerTypes[printer.type];
+    printerList: function(workflowConfig) {
+      return appConfig.printers.filter(function(printer){
+        return printer.type === workflowConfig.printerType;
       });
-
-      return config.printers;
     }
   });
 
