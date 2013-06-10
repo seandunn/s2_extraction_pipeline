@@ -22,10 +22,13 @@ define([], function () {
 
         // used to generate html nodes
         case "select":
-          return { value:value, choices:cellDescriptor["choices"], type:cellDescriptor.type, class:cellDescriptor.class };
+        case "span":
+            return $.extend({}, cellDescriptor, {value:value} );
         case "checkbox":
-          return { value:( value.toUpperCase() === 'YES' ) || ( value.toUpperCase() === 'TRUE' ), type:cellDescriptor.type, class:cellDescriptor.class };
-
+          return $.extend({},
+              cellDescriptor,
+              { value: ( value.toUpperCase() === 'YES' ) || ( value.toUpperCase() === 'TRUE' ) }
+          );
         default:
           return value;
       }

@@ -3,13 +3,13 @@ define([
   'use strict';
 
   var Studies = {
-    study_A: {
-      friendly_name: "Study A",
-      sanger_sample_id_core: "study_a_s2"
+    QC1Hip: {
+      friendly_name: "QC1Hip",
+      sanger_sample_id_core: "QC1Hip"
     },
-    study_B: {
-      friendly_name: "StudyB",
-      sanger_sample_id_core: "study_b_s2"
+    QC2Hip: {
+      friendly_name: "QC2Hip",
+      sanger_sample_id_core: "QC2Hip"
     }
   };
 

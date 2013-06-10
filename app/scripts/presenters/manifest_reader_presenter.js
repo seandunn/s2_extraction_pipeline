@@ -200,27 +200,74 @@ define(['config'
 
     // Samples View
 
+
+
+
     createSamplesView: function (model) {
-      _.map(model.samplesForDisplay, function (sample) {
-        _.each(sample, function (value, key) {
-          if ($.isPlainObject(value)) {
-            switch (value.type) {
-              case "select":
-                sample[key] = "<select>"
-                    + _.map(value.choices,function (choice) {
-                  return "<option value='" + choice + "' " + (value.value.toUpperCase() === choice.toUpperCase() ? "selected" : "") + " >" + choice + "</option>";
-                }).join()
-                    + "</select>";
-                return;
-              case "checkbox":
-                sample[key] = "<input type='checkbox' " + (value.value ? " checked='checked' " : "") + (value.class ? " class=" + value.class : "") + ">";
-                return;
-            }
+
+      var headers = _.map(model.samplesForDisplay[0], function (column) {
+          var columnKey = Object.keys(column)[0];
+          var content = column[columnKey];
+          var columnName, cellContent;
+          if ($.isPlainObject(content)) {
+            return content.friendlyName || columnKey;
+          } else {
+            return columnKey;
           }
         });
-        return sample;
-      });
-      this.orderMakerSelection.append(_.template(sampleRowPartial)({data: model.samplesForDisplay}));
+
+      function createSelectTag(cell){
+        var currentValue = cell.value || cell.default;
+        var select = $("<select />");
+        select.addClass(cell.class);
+        select.attr("data-name_of_column",cell.columnName);
+        _.each(cell.options, function (option) {
+          $("<option></option>", {value: option, text: option}).appendTo(select);
+        });
+        select.find('option').filter(function() {
+          return $.trim($(this).text()).toUpperCase() === $.trim(currentValue).toUpperCase();
+        }).attr('selected', 'selected');
+        return select.wrap('<div/>').parent().html();
+      }
+
+      function createCheckBoxTag(cell){
+        var currentValue = cell.value || cell.default;
+        var checkbox = $("<input type='checkbox' />");
+        checkbox.addClass(cell.class);
+        checkbox.attr("data-name_of_column",cell.columnName);
+        if (currentValue) { checkbox.attr('checked', 'checked'); }
+        return checkbox.wrap('<div/>').parent().html();
+      }
+
+      function createSpanTag(cell){
+        var currentValue = cell.value || cell.default;
+        var span = $("<span />");
+        span.addClass(cell.class);
+        span.attr("data-name_of_column",cell.columnName);
+        span.text(currentValue);
+        return span.wrap('<div/>').parent().html();
+      }
+
+
+      var sampleData =
+          _.map(model.samplesForDisplay, function (sample) {
+            return _.map(sample, function (column) {
+              var columnKey = Object.keys(column)[0];
+              var content = column[columnKey];
+              if ($.isPlainObject(content)) {
+                switch (content.type) {
+                  case "select":
+                    return createSelectTag(content);
+                  case "checkbox":
+                    return createCheckBoxTag(content);
+                  default:
+                    return createSpanTag(content);
+                }
+              }
+              return content;
+            });
+          });
+      this.orderMakerSelection.append(_.template(sampleRowPartial)({headers:headers, data: sampleData}));
       this.orderMakerSelection.find("td .selectedForRegistration").on("click", function (event) {
         disableRow($(event.target).closest('tr'));
       });
@@ -246,7 +293,33 @@ define(['config'
       this.model
           .then(function (model) {
             thisPresenter.view.trigger("s2.busybox.start_process");
-            return model.updateSamples();
+            var rows = thisPresenter.orderMakerSelection.find("tbody tr"); //.selectedRow
+
+            var dataFromGUI = rows.map(function(){
+              var sample = {};
+              $(this).find('td').each(function(){
+                var data = $(this).find(":first").data();
+                if (data) {
+                  if ($(this).find("input:checkbox:first").length > 0) {
+                    sample[data.name_of_column] = $(this).find("input:checkbox:first").is(":checked");
+                  } else if ($(this).find("select:first").length > 0) {
+                    sample[data.name_of_column] = $(this).find("select:first").val();
+                  }
+                } else {
+
+                }
+              });
+              return sample;
+            });
+
+//            var dataFromGUI =
+//                _.each(rows, function (row) {
+//                  _.each(model.json_template_display, function (item) {
+////                    console.log(item);
+//                  })
+//                });
+//            var dataFromGUI = {};
+            return model.updateSamples(dataFromGUI);
           })
           .fail(function (error) {
             thisPresenter.view.trigger("s2.busybox.end_process");

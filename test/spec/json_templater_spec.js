@@ -57,6 +57,42 @@ define(['extraction_pipeline/lib/json_templater'], function (ArrayToJSON) {
       });
     });
 
+    describe("When the combined header-data and array-template are combined", function () {
+      it("produces the expected array of objects", function () {
+        var data = [
+          {name1: 1, name2: 2},
+          {name1: 3, name2: 4}
+        ];
+        var template = [
+          {
+            key1: {
+              "columnName": "name1",
+              "type":       "integer",
+              "optional":   true
+            }
+          },
+          {
+            stuff: {
+              key2: {
+                "columnName": "name2"}
+            }
+          }
+        ];
+        var combinedData = ArrayToJSON.applyTemplateToDataSet(data, template);
+        var expectedData = [
+          [
+            {key1: 1},
+            {stuff: {key2: 2}}
+          ],
+          [
+            {key1: 3},
+            {stuff: {key2: 4}}
+          ]
+        ];
+        expect(combinedData).toEqual(expectedData);
+      });
+    });
+
     describe("When the combined header-data and template with fixed data are combined", function () {
       it("produces the expected array of objects with the fixed data", function () {
         var data = [

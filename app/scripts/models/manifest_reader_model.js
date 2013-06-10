@@ -21,6 +21,8 @@ define([
       delete this.json_template_display;
       delete this.samplesForDisplay;
       delete this.samplesFromManifest;
+      delete this.combinedData;
+      delete this.templateName;
     },
 
     setFileContent:function(fileContent){
@@ -45,14 +47,10 @@ define([
       else
       {
         this.json_template_display = ReceptionTemplate[templateName].json_template_display;
-        var samples = JsonTemplater.applyTemplateToDataSet(combinedData, ReceptionTemplate[templateName].json_template);
         this.samplesForDisplay = JsonTemplater.applyTemplateToDataSet(combinedData, this.json_template_display);
-        samples = _.reduce(samples,function(memo,sampleUpdate){
-          memo[sampleUpdate.sanger_sample_id] = sampleUpdate;
-          delete memo[sampleUpdate.sanger_sample_id].sanger_sample_id;
-          return memo
-        },{});
-        this.samplesFromManifest = {"by":"sanger_sample_id","updates":samples};
+        // we only save the details once we're certain that the data are correct!
+        this.combinedData = combinedData;
+        this.templateName = templateName;
         deferred.resolve(this);
       }
       return deferred.promise();
@@ -66,7 +64,16 @@ define([
             return deferred.reject({message: "Couldn't get the root! Is the server accessible?"});
         })
         .then(function(root){
-           return root.bulk_update_samples.create(thisModel.samplesFromManifest);
+            // dictionarised using the sanger_sample_id
+            var samples = JsonTemplater.applyTemplateToDataSet(thisModel.combinedData, ReceptionTemplate[thisModel.templateName].json_template);
+            samples = _.reduce(samples,function(memo,sampleUpdate){
+              memo[sampleUpdate.sanger_sample_id] = sampleUpdate;
+              delete memo[sampleUpdate.sanger_sample_id].sanger_sample_id;
+              return memo
+            },{});
+            thisModel.samplesFromManifest = {"by":"sanger_sample_id","updates":samples};
+
+            return root.bulk_update_samples.create(thisModel.samplesFromManifest);
         })
         .fail(function () {
           return deferred.reject({message: "Couldn't update the samples on S2."});
