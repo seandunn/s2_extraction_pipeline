@@ -8,6 +8,12 @@
                 <option value="<%- template.template_name %>"><%- template.friendly_name %></option>
                 <% }); %>
             </select>
+            <label for="studies">Select a study:</label>
+            <select class="studies" id="studies">
+                <% _.each (templateData.studies, function (study) { %>
+                <option value="<%- study.study_name %>"><%- study.friendly_name %></option>
+                <% }); %>
+            </select>
             <label for="number-of-sample">Enter the number of samples:</label>
             <input id="number-of-sample" type="text" value="1">
         </div>

@@ -4,7 +4,8 @@ define(['config'
   , 'extraction_pipeline/models/manifest_maker_model'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/reception_templates'
-], function (config, BasePresenter, componentPartialHtml, Model, PubSub, ReceptionTemplates) {
+  , 'extraction_pipeline/lib/reception_studies'
+], function (config, BasePresenter, componentPartialHtml, Model, PubSub, ReceptionTemplates, ReceptionStudies) {
   'use strict';
 
   var Presenter = Object.create(BasePresenter);
@@ -22,7 +23,7 @@ define(['config'
       this.owner = owner;
       this.config = config;
       this.model = Object.create(Model).init(this, config);
-      this.view = this.createHtml({templates:ReceptionTemplates.templateList, printerList:config.printerList});
+      this.view = this.createHtml({templates:ReceptionTemplates.templateList,studies:ReceptionStudies.studyList, printerList:config.printerList});
       this.subscribeToPubSubEvents();
       return this;
     },
@@ -118,10 +119,11 @@ define(['config'
         this.message('error', 'The number of sample is not valid.');
       } else {
         var template = this.view.find('#xls-templates').val();
+        var study = this.view.find('#studies').val();
         this.model
             .then(function (model) {
               thisPresenter.view.trigger("s2.busybox.start_process");
-              return model.generateSamples(template, nbOfSample);
+              return model.generateSamples(template, study, nbOfSample);
             })
             .fail(function (error) {
               thisPresenter.view.trigger("s2.busybox.end_process");

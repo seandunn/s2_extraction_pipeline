@@ -4,7 +4,8 @@ define([
   , 'extraction_pipeline/lib/csv_parser'
   , 'extraction_pipeline/lib/json_templater'
   , 'extraction_pipeline/lib/reception_templates'
-], function (BasePageModel, Operations, CSVParser, JsonTemplater, ReceptionTemplate) {
+  , 'extraction_pipeline/lib/reception_studies'
+], function (BasePageModel, Operations, CSVParser, JsonTemplater, ReceptionTemplates, ReceptionStudies) {
   'use strict';
 
   var ReceptionModel = Object.create(BasePageModel);
@@ -26,7 +27,7 @@ define([
       delete this.barcodes;
     },
 
-    generateSamples: function (templateName, nbOfSample) {
+    generateSamples: function (templateName, study, nbOfSample) {
       var deferred = $.Deferred();
       var thisModel = this;
       thisModel.getXLSTemplate(templateName)
@@ -35,7 +36,7 @@ define([
           })
           .then(function(templateBlob){
             thisModel.currentTemplateBlob = templateBlob;
-            return thisModel.getLabellables(templateName, nbOfSample);
+            return thisModel.getLabellables(templateName, study, nbOfSample);
           })
           .fail(function(error){
             return deferred.reject({message: " Couldn't produce the samples. " + error.message, previous_error: error});
@@ -63,7 +64,7 @@ define([
     getXLSTemplate: function (templateName, nbOfSample) {
       var deferred = $.Deferred();
       var oReq = new XMLHttpRequest();
-      oReq.open("GET", ReceptionTemplate[templateName].manifest_path, true);
+      oReq.open("GET", ReceptionTemplates[templateName].manifest_path, true);
       oReq.responseType = "blob";
       oReq.onload = function(oEvent) {
         var blob = oReq.response;
@@ -76,12 +77,13 @@ define([
       return deferred.promise();
     },
 
-    getLabellables: function (templateName, nbOfSample) {
+    getLabellables: function (templateName, studyName, nbOfSample) {
       var deferred = $.Deferred();
       var thisModel = this;
       var root;
-      var labwareModel = ReceptionTemplate[templateName].model;
-      var sampleType = ReceptionTemplate[templateName].sample_type;
+      var labwareModel = ReceptionTemplates[templateName].model;
+      var sampleType = ReceptionTemplates[templateName].sample_type;
+      var sangerSampleIdCore = ReceptionStudies[studyName].sanger_sample_id_core;
       thisModel.owner.getS2Root()
           .fail(function () {
             return deferred.reject({message: "Couldn't get the root! Is the server accessible?"});
@@ -92,7 +94,8 @@ define([
             return root.bulk_create_samples.create({
               state:     "draft",
               quantity:  nbOfSample,
-              sample_type: sampleType
+              sample_type: sampleType,
+              sanger_sample_id_core:sangerSampleIdCore
             });
           })
           .fail(function () {
@@ -106,7 +109,7 @@ define([
               return {
                 aliquots:[{
                   "sample_uuid": sample.uuid,
-                  "type": ReceptionTemplate[templateName].aliquot_type
+                  "type": ReceptionTemplates[templateName].aliquot_type
                 }
                 ]
               };
