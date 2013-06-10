@@ -35,22 +35,23 @@ define([], function () {
 
 
   workflowEngine.prototype.setNextPresenterFromName = function (presenterFactory, workflowConfig) {
-    var presenter = presenterFactory.create((workflowConfig || {}).presenterName, this.application, workflowConfig);
-    this.application.childDone(this, "foundNextPresenter", presenter);
+    return presenterFactory.create(
+      (workflowConfig || {}).presenterName,
+      this.application, workflowConfig
+    );
   };
 
-  workflowEngine.prototype.askForNextPresenter = function (presenterFactory, model) {
+  workflowEngine.prototype.nextPresenter = function (presenterFactory, model) {
     var that = this;
     var itemsPromise;
 
     if (!model.user) {
-      return this.setNextPresenterFromName(presenterFactory);
+      return $.Deferred().resolve(this.setNextPresenterFromName(presenterFactory)).promise();
     }
 
     if (!model.batch && model.labware) {
-      itemsPromise = model.labware.order()
-      .then(function(order) {
-        return order.items.filter(function(item){ 
+      itemsPromise = model.labware.order().then(function(order) {
+        return order.items.filter(function(item){
           return item.uuid === model.labware.uuid;
         });
       });
@@ -58,10 +59,10 @@ define([], function () {
       itemsPromise = model.batch.items;
     }
 
-    itemsPromise.then(function(items){
+    return itemsPromise.then(function(items){
       return that.getMatchingRoleDataFromItems(items);
     }).then(function(workflowConfig){
-      that.setNextPresenterFromName(presenterFactory, workflowConfig);
+      return that.setNextPresenterFromName(presenterFactory, workflowConfig);
     })
 
   };

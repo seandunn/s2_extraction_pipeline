@@ -4,12 +4,12 @@ define([ 'config'
   , 'text!scripts/pipeline_config.json'
   , 'extraction_pipeline/extra_components/busy_box'
   , 'extraction_pipeline/alerts'
-], function (config, workflowEngine, S2Root, workflowConfiguration, BusyBox, alerts) {
+], function (config, WorkflowEngine, S2Root, workflowConfiguration, BusyBox, alerts) {
       'use strict';
 
       var App = function (thePresenterFactory) {
         this.presenterFactory = thePresenterFactory;
-        this.workflow = new workflowEngine(this, $.parseJSON(workflowConfiguration));
+        this.workflowEngine = new WorkflowEngine(this, $.parseJSON(workflowConfiguration));
         _.templateSettings.variable = 'templateData';
 
         $('#server-url').text(config.apiUrl);
@@ -43,6 +43,7 @@ define([ 'config'
       };
 
       App.prototype.updateModel = function (model) {
+        var application = this;
         this.model = $.extend(this.model, model);
 
         if (this.currentPagePresenter) {
@@ -50,7 +51,10 @@ define([ 'config'
           delete this.currentPagePresenter;
         }
 
-        this.workflow.askForNextPresenter(this.presenterFactory, this.model);
+        this.workflowEngine.nextPresenter(this.presenterFactory, this.model).
+          then(function(presenter){
+            application.setupNextPresenter(presenter);
+        });
 
         return this;
       };
