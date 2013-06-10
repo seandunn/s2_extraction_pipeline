@@ -34,19 +34,12 @@ define([], function () {
   };
 
 
-  workflowEngine.prototype.setNextPresenterFromName = function (presenterFactory, workflowConfig) {
-    return presenterFactory.create(
-      (workflowConfig || {}).presenterName,
-      this.application, workflowConfig
-    );
-  };
-
-  workflowEngine.prototype.nextPresenter = function (presenterFactory, model) {
+  workflowEngine.prototype.nextWorkflow = function(model) {
     var that = this;
     var itemsPromise;
 
     if (!model.user) {
-      return $.Deferred().resolve(this.setNextPresenterFromName(presenterFactory)).promise();
+      return $.Deferred().resolve().promise();
     }
 
     if (!model.batch && model.labware) {
@@ -61,10 +54,7 @@ define([], function () {
 
     return itemsPromise.then(function(items){
       return that.getMatchingRoleDataFromItems(items);
-    }).then(function(workflowConfig){
-      return that.setNextPresenterFromName(presenterFactory, workflowConfig);
-    })
-
+    });
   };
 
   return workflowEngine;

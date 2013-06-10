@@ -51,8 +51,10 @@ define([ 'config'
       delete this.currentPagePresenter;
     }
 
-    this.workflowEngine.nextPresenter(this.presenterFactory, this.model).
-      then(function(nextPresenter){
+    this.workflowEngine.nextWorkflow(this.model).
+      then(function(workflowConfig){
+      return application.presenterFactory.create(workflowConfig && workflowConfig.presenterName, application, workflowConfig);
+    }).then(function(nextPresenter){
       application.currentPagePresenter = nextPresenter;
       application.currentPagePresenter.setupPresenter(application.model, application.jquerySelection);
       delete application.model.labware;
