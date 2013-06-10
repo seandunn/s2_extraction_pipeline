@@ -32,13 +32,13 @@ define(['config'
       var thisPresenter = this;
       var html = $(_.template(componentPartialHtml)(templateData));
 
-      this.generateBCBtnSelection = html.find("#generateBC");
+      this.generateManifestBtnSelection = html.find("#generateManifest");
       this.downloadManifestBtnSelection = html.find("#downloadManifest");
       this.printBCBtnSelection = html.find("#printBC");
       this.printBoxSelection = html.find(".printer-div");
 
-      this.generateBCBtnSelection.click(onGenerateBCEventHandler(thisPresenter));
-      function onGenerateBCEventHandler(presenter){ return function(){ presenter.onGenerateBC(); } }
+      this.generateManifestBtnSelection.click(onGenerateManifestEventHandler(thisPresenter));
+      function onGenerateManifestEventHandler(presenter){ return function(){ presenter.onGenerateManifest(); } }
 
       this.downloadManifestBtnSelection.hide().click(onDownloadManifestEventHandler(thisPresenter));
       function onDownloadManifestEventHandler(presenter){ return function(){ presenter.onDownloadManifest(); } }
@@ -50,7 +50,7 @@ define(['config'
 
       html.find("#number-of-sample").bind("keypress",function(event){
             if (event.which !== 13) return;
-            onGenerateBCEventHandler(thisPresenter)();
+            onGenerateManifestEventHandler(thisPresenter)();
           }
       );
 
@@ -69,6 +69,7 @@ define(['config'
       this.model.then(function(model){
         model.reset();
       });
+      this.generateManifestBtnSelection.show();
       this.downloadManifestBtnSelection.hide();
       this.printBoxSelection.hide();
       this.enableSampleGeneration();
@@ -81,6 +82,7 @@ define(['config'
 
     disableSampleGeneration:function(){
       this.view.find("form *").attr("disabled","disabled");
+      this.generateManifestBtnSelection.hide();
     },
 
     onPrintBarcode: function () {
@@ -112,7 +114,7 @@ define(['config'
           });
     },
 
-    onGenerateBC: function () {
+    onGenerateManifest: function () {
       var thisPresenter = this;
       var nbOfSample = parseInt(this.view.find('#number-of-sample').val());
       if (isNaN(nbOfSample) || nbOfSample <= 0) {
