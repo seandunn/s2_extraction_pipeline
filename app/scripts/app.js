@@ -3,12 +3,11 @@ define([ 'config'
   , 'mapper/s2_root'
   , 'extraction_pipeline/extra_components/busy_box'
   , 'extraction_pipeline/alerts'
-], function (config, WorkflowEngine, S2Root, BusyBox, alerts) {
+], function (config, nextWorkflow, S2Root, BusyBox, alerts) {
   'use strict';
 
   var App = function (thePresenterFactory) {
     this.presenterFactory = thePresenterFactory;
-    this.workflowEngine = new WorkflowEngine();
     _.templateSettings.variable = 'templateData';
 
     $('#server-url').text(config.apiUrl);
@@ -50,7 +49,7 @@ define([ 'config'
       delete this.currentPagePresenter;
     }
 
-    this.workflowEngine.nextWorkflow(this.model).
+    nextWorkflow(this.model).
       then(function(workflowConfig){
       return application.presenterFactory.create(workflowConfig && workflowConfig.presenterName, application, workflowConfig);
     }).then(function(nextPresenter){

@@ -19,9 +19,7 @@ define([ 'text!scripts/pipeline_config.json' ], function (pipelineJSON) {
     };
   }
 
-  var workflowEngine = function() { };
-
-  workflowEngine.prototype.getMatchingRoleDataFromItems = function (items) {
+  var getMatchingRoleDataFromItems = function (items) {
     var activeRole     = _.chain(pipelineConfig.role_priority).find(itemMatcherForBatchItems(items)).value();
     var foundWorkflows = pipelineConfig.workflows.filter(byRole(activeRole));
 
@@ -31,13 +29,10 @@ define([ 'text!scripts/pipeline_config.json' ], function (pipelineJSON) {
   };
 
 
-  workflowEngine.prototype.nextWorkflow = function(model) {
-    var that = this;
+  var nextWorkflow = function(model) {
     var itemsPromise;
 
-    if (!model.user) {
-      return $.Deferred().resolve().promise();
-    }
+    if (!model.user) return $.Deferred().resolve().promise();
 
     if (!model.batch && model.labware) {
       itemsPromise = model.labware.order().then(function(order) {
@@ -49,11 +44,9 @@ define([ 'text!scripts/pipeline_config.json' ], function (pipelineJSON) {
       itemsPromise = model.batch.items;
     }
 
-    return itemsPromise.then(function(items){
-      return that.getMatchingRoleDataFromItems(items);
-    });
+    return itemsPromise.then(getMatchingRoleDataFromItems);
   };
 
-  return workflowEngine;
+  return nextWorkflow;
 });
 
