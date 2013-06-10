@@ -1,11 +1,16 @@
 {
-  "_":          {
+  "_":                {
     "columnName": "_SELECTED",
     "type":       "checkbox",
+    "class":      "selectedForRegistration",
     "default":    "No"
   },
   "sanger_sample_id": {
     "columnName": "SANGER SAMPLE ID",
+    "type":       "string"
+  },
+  "barcode":          {
+    "columnName": "Tube Barcode",
     "type":       "string"
   },
   "sample_type":      {
@@ -15,7 +20,7 @@
   "process":          {
     "columnName": "_PROCESS",
     "type":       "select",
-    "choices":    ["123","456"],
-    "default":    "123"
+    "choices":    ["process A", "process B", "process C"],
+    "default":    "process A"
   }
 }

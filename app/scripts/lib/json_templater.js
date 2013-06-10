@@ -22,9 +22,9 @@ define([], function () {
 
         // used to generate html nodes
         case "select":
-          return { value:value, choices:cellDescriptor["choices"], type:cellDescriptor.type };
+          return { value:value, choices:cellDescriptor["choices"], type:cellDescriptor.type, class:cellDescriptor.class };
         case "checkbox":
-          return { value:( value.toUpperCase() === 'YES' ) || ( value.toUpperCase() === 'TRUE' ), type:cellDescriptor.type };
+          return { value:( value.toUpperCase() === 'YES' ) || ( value.toUpperCase() === 'TRUE' ), type:cellDescriptor.type, class:cellDescriptor.class };
 
         default:
           return value;
