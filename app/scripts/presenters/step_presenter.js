@@ -1,7 +1,7 @@
 define([
   'extraction_pipeline/presenters/base_presenter',
-  'extraction_pipeline/views/step_view'
-  , 'extraction_pipeline/lib/pubsub'
+  'extraction_pipeline/views/step_view',
+  'extraction_pipeline/lib/pubsub'
 ], function (Base, View, PubSub) {
   'use strict';
 
@@ -18,14 +18,18 @@ define([
 
     init: function (owner, factory, config) {
       this.owner = owner;
-      this.config = config;
       this.factory = factory;
+
+      this.config = config;
       this.config.buttons = this.config.buttons || [
         {action: "print", title: "Print labels"  },
         {action: "start", title: "Start process" },
-        {action: "end", title: "End process"   },
-        {action: "next", title: "Next"          }
+        {action: "end",   title: "End process"   },
+        {action: "next",  title: "Next"          }
       ];
+
+      this.config.printerList = this.printerList(config);
+
       return this;
     },
 
@@ -33,10 +37,10 @@ define([
       var thisPresenter = this;
       this.selector = selector;
       this.batch    = model.batch;
-      this.user     = model.user;
+      this.config.user = model.user;
 
-      this.setupView();
-      this.renderView();
+      this.view = new View(this, this.selector);
+      this.view.renderView(this.config);
       this.setupSubPresenters();
 
       PubSub.subscribe("s2.step_presenter.enable_buttons", enableButtonsEventHandler);
@@ -88,28 +92,8 @@ define([
       presenter.activePresenter.focus();
     },
 
-    setupSubModel: function () {
-      return this;
-    },
-
-    setupView: function () {
-      this.view = new View(this, this.selector);
-      this.view.printerList = this.printerList();
-
-      return this;
-    },
-
     release: function () {
       this.selector().empty().off();
-      return this;
-    },
-
-    renderView: function () {
-      this.view.renderView({
-        user:         this.user,
-        processTitle: this.config.processTitle,
-        buttons:      this.config.buttons
-      });
       return this;
     },
 
