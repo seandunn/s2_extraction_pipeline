@@ -14,14 +14,10 @@ define([
       var instance = this;
 
       this.owner = owner;
-      this.user = undefined;
-      this.batch = undefined;
       this.previous = false;
       this.ready    = false;
 
       this.config  = config;                                    // Configuration of our connections
-      this.batch   = undefined;                                 // There is no batch, yet
-      this.user    = undefined;                                 // There is no user, yet
       this.started = false;                                     // Has the process started
 
       // Configure the behaviours based on the configuration
@@ -124,6 +120,7 @@ define([
         }).then(function() {
           that.inputs.then(function(inputs) {
             var labels = [];
+            var outputsCreated = [];
             var promises = _.chain(inputs).map(function(input) {
               // For each input we have to create a number of outputs.  These outputs are effectively
               // tied together in some fashion and should be printed next to each other.  Hence, here
@@ -140,6 +137,7 @@ define([
                   details.purpose
                 ).then(function(state) {
                   that.cache.push(state.labware);
+                  outputsCreated.push(state.labware);
                   output[details.title] = state.labware;
                   return state.labware;
                 }).fail(function() {
@@ -197,8 +195,8 @@ define([
 
             // Now we can print out special labels!
             $.when.apply(null, promises).then(function(placeholder) {
-              that.outputs.resolve(labels).then(function(outputs) {
-                that.printBarcodes(outputs, printer);
+              that.outputs.resolve(outputsCreated).then(function(outputs) {
+                that.printBarcodes(labels, printer);
               });
               that.owner.childDone(that, 'outputsReady', {});
             }).fail(function() {

@@ -22,8 +22,8 @@ define([], function() {
     }],
     printerTypes: {
         1 : '96 Well Plate Printer',
-        2 : '1D Tube Printer',
-        3 : 'Tube Rack Printer'
+        2 : 'Tube Printer',
+        3 : 'Rack Printer'
     },
     messageTimeout: 5000,
     // Handler for exceptions (does absolutely nothing, but could try..catch!)
