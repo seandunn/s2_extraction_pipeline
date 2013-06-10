@@ -1,4 +1,6 @@
-define([], function () {
+define([ 'text!scripts/pipeline_config.json' ], function (pipelineJSON) {
+
+  var pipelineConfig = JSON.parse(pipelineJSON);
 
   // Returns a function that finds the first "ready" item in the batch that matches the given rule.
   function itemMatcherForBatchItems(items) {
@@ -17,19 +19,15 @@ define([], function () {
     };
   }
 
-  var workflowEngine = function (config) {
-    this.defaultPresenter = config.defaultPresenter;
-    this.role_priority    = config.role_priority;
-    this.workflows        = config.workflows;
-  };
+  var workflowEngine = function() { };
 
   workflowEngine.prototype.getMatchingRoleDataFromItems = function (items) {
-    var activeRole     = _.chain(this.role_priority).find(itemMatcherForBatchItems(items)).value();
-    var foundWorkflows = this.workflows.filter(byRole(activeRole));
+    var activeRole     = _.chain(pipelineConfig.role_priority).find(itemMatcherForBatchItems(items)).value();
+    var foundWorkflows = pipelineConfig.workflows.filter(byRole(activeRole));
 
     if (foundWorkflows.length > 1) throw "More than 1 workflow active.";
 
-    return foundWorkflows[0] || { presenterName: this.defaultPresenter };
+    return foundWorkflows[0] || { presenterName: pipelineConfig.defaultPresenter };
   };
 
 

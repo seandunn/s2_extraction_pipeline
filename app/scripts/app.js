@@ -1,15 +1,14 @@
 define([ 'config'
   , 'extraction_pipeline/workflow_engine'
   , 'mapper/s2_root'
-  , 'text!scripts/pipeline_config.json'
   , 'extraction_pipeline/extra_components/busy_box'
   , 'extraction_pipeline/alerts'
-], function (config, WorkflowEngine, S2Root, workflowConfiguration, BusyBox, alerts) {
+], function (config, WorkflowEngine, S2Root, BusyBox, alerts) {
   'use strict';
 
   var App = function (thePresenterFactory) {
     this.presenterFactory = thePresenterFactory;
-    this.workflowEngine = new WorkflowEngine($.parseJSON(workflowConfiguration));
+    this.workflowEngine = new WorkflowEngine();
     _.templateSettings.variable = 'templateData';
 
     $('#server-url').text(config.apiUrl);
