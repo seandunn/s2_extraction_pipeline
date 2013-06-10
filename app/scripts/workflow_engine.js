@@ -17,8 +17,7 @@ define([], function () {
     };
   }
 
-  var workflowEngine = function (application, config) {
-    this.application      = application;
+  var workflowEngine = function (config) {
     this.defaultPresenter = config.defaultPresenter;
     this.role_priority    = config.role_priority;
     this.workflows        = config.workflows;

@@ -9,7 +9,7 @@ define([ 'config'
 
   var App = function (thePresenterFactory) {
     this.presenterFactory = thePresenterFactory;
-    this.workflowEngine = new WorkflowEngine(this, $.parseJSON(workflowConfiguration));
+    this.workflowEngine = new WorkflowEngine($.parseJSON(workflowConfiguration));
     _.templateSettings.variable = 'templateData';
 
     $('#server-url').text(config.apiUrl);
