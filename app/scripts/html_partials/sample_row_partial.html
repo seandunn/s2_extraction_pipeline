@@ -1,27 +1,24 @@
 <div>
-    <form id="reception-form-id">
-        <table>
-            <thead>
-            <tr>
-                <% _.each (templateData.headers, function (item) { %>
-                <th style="margin: 3px;border: 1px solid grey">
-                    <%- item %>
-                </th>
-                <% }); %>
-            </tr>
-            </thead>
-            <tbody>
-            <% _.each (templateData.data, function (dataSet) { %>
-            <tr>
-                <% _.each (dataSet, function (item, item_name) { %>
-                <td> <%= item %></td>
-                <% }); %>
-            </tr>
+    <table>
+        <thead>
+        <tr>
+            <% _.each (templateData.headers, function (item) { %>
+            <th style="margin: 3px;border: 1px solid grey">
+                <%- item %>
+            </th>
             <% }); %>
-            </tbody>
-        </table>
-        <input type="submit" value="cool">
-    </form>
+        </tr>
+        </thead>
+        <tbody>
+        <% _.each (templateData.data, function (dataSet) { %>
+        <tr>
+            <% _.each (dataSet, function (item, item_name) { %>
+            <td> <%= item %></td>
+            <% }); %>
+        </tr>
+        <% }); %>
+        </tbody>
+    </table>
 </div>
 
 

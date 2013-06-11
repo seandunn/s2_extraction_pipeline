@@ -42,11 +42,13 @@ define(['config'
       this.barcodeReaderSelection = html.find("#barcodeReader");
 
       var scanBarcodePresenter = this.factory.create('scan_barcode_presenter', this).init({type: "labware"});
-//      this.barcodeReaderSelection.append(scanBarcodePresenter.renderView());
 
-      var errorCallback = barcodeErrorCallback('Barcode must be a 13 digit number.');
-
-      this.barcodeReaderSelection.append(this.bindReturnKey(scanBarcodePresenter.renderView(), labwareCallback, errorCallback, validation));
+      this.barcodeReaderSelection.append(
+          this.bindReturnKey(scanBarcodePresenter.renderView(),
+              labwareCallback,
+              barcodeErrorCallback('Barcode must be a 13 digit number.'),
+              validation)
+      );
       this.barcodeReaderSelection.hide();
 
       this.enableDropzone();
@@ -295,9 +297,9 @@ define(['config'
       this.model
           .then(function (model) {
             thisPresenter.view.trigger("s2.busybox.start_process");
-            var rows = thisPresenter.orderMakerSelection.find("tbody tr"); //.selectedRow
+            var rows = thisPresenter.orderMakerSelection.find("tbody tr.selectedRow");
 
-            var dataFromGUI = rows.map(function(){
+            var dataFromGUI = $.makeArray(rows.map(function(){
               var sample = {};
               $(this).find('td').each(function(){
                 var data = $(this).find(":first").data();
@@ -306,21 +308,14 @@ define(['config'
                     sample[data.name_of_column] = $(this).find("input:checkbox:first").is(":checked");
                   } else if ($(this).find("select:first").length > 0) {
                     sample[data.name_of_column] = $(this).find("select:first").val();
+                  } else {
+                    sample[data.name_of_column] = $(this).find("span:first").text();
                   }
-                } else {
-
                 }
               });
               return sample;
-            });
+            }));
 
-//            var dataFromGUI =
-//                _.each(rows, function (row) {
-//                  _.each(model.json_template_display, function (item) {
-////                    console.log(item);
-//                  })
-//                });
-//            var dataFromGUI = {};
             return model.updateSamples(dataFromGUI);
           })
           .fail(function (error) {

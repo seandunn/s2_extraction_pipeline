@@ -68,5 +68,9 @@
   "ebi_accession_number":      {
     "columnName": "SAMPLE ACCESSION NUMBER (optional)",
     "type":       "string"
+  },
+  "process":{
+    "columnName": "_PROCESS",
+    "type":       "string"
   }
 }
