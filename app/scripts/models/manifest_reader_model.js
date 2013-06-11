@@ -101,6 +101,7 @@ define([
                   // dictionarised using the sanger_sample_id
                   memo[sampleUpdate.sanger_sample_id] = sampleUpdate;
                   memo[sampleUpdate.sanger_sample_id]["state"]= "published";
+                  delete memo[sampleUpdate.sanger_sample_id].process; // TODO: remove this line when S2 will be able to handle the process parameter
                   delete memo[sampleUpdate.sanger_sample_id].sanger_sample_id;
                   return memo
                 }, {})
