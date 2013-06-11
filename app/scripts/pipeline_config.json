@@ -797,6 +797,8 @@
     "presenters": [
       {
         "presenterName": "rack_scan_presenter",
+        "defaultPrinter": "d304bc",
+        "printerType": 1,
         "model": "RackScanModel",
         "input": {
           "role":  "samples.extraction.fluidx_tube.dna.to_be_racked",
@@ -886,6 +888,8 @@
     "presenters": [
       {
         "presenterName": "rack_scan_presenter",
+        "defaultPrinter": "d304bc",
+        "printerType": 1,
         "model": "RackScanModel",
         "input": {
           "role":  "samples.extraction.fluidx_tube.rna.to_be_racked",
@@ -1071,6 +1075,8 @@
     "presenters":    [
       {
         "presenterName":  "rack_scan_presenter",
+        "defaultPrinter": "d304bc",
+        "printerType": 1,
         "model":          "VolumeCheckModel",
         "input":          {
           "role":  "samples.rack.stock.dna.volume_control_added",
