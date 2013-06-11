@@ -78,16 +78,17 @@ define(['config'
       function labwareCallback(event, template, presenter) {
         template.find('.alert-error').addClass('hide');
         thisPresenter.labwareScannedHandler(event.currentTarget.value);
+        thisPresenter.barcodeReaderSelection.find('input').val(''); // clear the input
       }
 
       function validation(element, callback, errorCallback) {
         return function (event) {
           if (event.which !== 13) return;
-          //if (BarcodeChecker.isBarcodeValid(event.currentTarget.value)) {
-          callback(event, element, thisPresenter);
-//          } else {
-//            errorCallback(event, element, thisPresenter);
-//          }
+          if (event.currentTarget.value.length === 13) {
+            callback(event, element, thisPresenter);
+          } else {
+            errorCallback(event, element, thisPresenter);
+          }
         }
       }
     },
@@ -200,9 +201,6 @@ define(['config'
 
     // Samples View
 
-
-
-
     createSamplesView: function (model) {
 
       var headers = _.map(model.samplesForDisplay[0], function (column) {
@@ -248,7 +246,6 @@ define(['config'
         return span.wrap('<div/>').parent().html();
       }
 
-
       var sampleData =
           _.map(model.samplesForDisplay, function (sample) {
             return _.map(sample, function (column) {
@@ -268,9 +265,14 @@ define(['config'
             });
           });
       this.orderMakerSelection.append(_.template(sampleRowPartial)({headers:headers, data: sampleData}));
-      this.orderMakerSelection.find("td .selectedForRegistration").on("click", function (event) {
-        disableRow($(event.target).closest('tr'));
-      });
+      this.orderMakerSelection
+          .find("td input")
+          .filter(function(){
+            return $(this).data('name_of_column')==='_SELECTED';
+          })
+          .on("click", function (event) {
+            disableRow($(event.target).closest('tr'));
+          });
       disableRow(this.orderMakerSelection.find("tr"));
       this.orderMakerSelection.show();
     },
@@ -280,7 +282,7 @@ define(['config'
     },
 
     labwareScannedHandler: function (barcode) {
-      var tr = this.orderMakerSelection.find('table td').filter(function () {
+      var tr = this.orderMakerSelection.find('table td span').filter(function () {
         return $.trim($(this).text()).toUpperCase() === barcode.toUpperCase();
       }).closest("tr");
       enableRow(tr);
