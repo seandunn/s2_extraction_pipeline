@@ -74,6 +74,10 @@ define(['config'
           template.
               find('input').
               removeAttr('disabled');
+
+          template
+            .find('input')
+            .val(''); // clear the input
         };
       }
 
