@@ -652,51 +652,6 @@
       }
     },
     {
-      "description":"Create a new batch",
-      "method":"post",
-      "url":"/batches",
-      "request":{
-        "batch":{
-          "user":"username"
-        }
-      },
-      "response":{
-        "batch":{
-          "actions":{
-            "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
-            "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
-            "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
-            "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
-          },
-          "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
-          "process":null,
-          "kit":"1234567891011"
-        }
-      },
-      "next_stage":4
-    }
-  ]
-}, "4":{
-  "calls":[
-    {
-      "description":"Create a new batch",
-      "method":"get",
-      "url":        "/695ff060-8d8b-0130-b64f-282066132de2",
-      "response":{
-        "batch":{
-          "actions":{
-            "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
-            "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
-            "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
-            "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
-          },
-          "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
-          "process":null,
-          "kit":"1234567891011"
-        }
-      }
-    },
-    {
       "description":"Find the order by tube uuid",
       "method":"post",
       "url":"/lims-laboratory/searches",
@@ -715,37 +670,37 @@
       "response":{
         "search":{
           "actions":{
-            "read": "http://localhost:9292/69649440-8d8b-0130-b64f-282066132de2",
-            "first":"http://localhost:9292/69649440-8d8b-0130-b64f-282066132de2/page=1",
-            "last": "http://localhost:9292/69649440-8d8b-0130-b64f-282066132de2/page=-1"
+            "read": "http://localhost:9292/69509b60-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69509b60-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69509b60-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "69649440-8d8b-0130-b64f-282066132de2"
+          "uuid":   "69509b60-8d8b-0130-b64f-282066132de2"
         }
       },
-      "next_stage":5
+      "next_stage":"3a"
     }
   ]
-}, "5":{
+}, "3a":{
   "calls":[
     {
       "description":"Find the order by tube uuid",
       "method":"get",
-      "url":        "/69649440-8d8b-0130-b64f-282066132de2",
+      "url":        "/69509b60-8d8b-0130-b64f-282066132de2",
       "response":{
         "search":{
           "actions":{
-            "read": "http://localhost:9292/69649440-8d8b-0130-b64f-282066132de2",
-            "first":"http://localhost:9292/69649440-8d8b-0130-b64f-282066132de2/page=1",
-            "last": "http://localhost:9292/69649440-8d8b-0130-b64f-282066132de2/page=-1"
+            "read": "http://localhost:9292/69509b60-8d8b-0130-b64f-282066132de2",
+            "first":"http://localhost:9292/69509b60-8d8b-0130-b64f-282066132de2/page=1",
+            "last": "http://localhost:9292/69509b60-8d8b-0130-b64f-282066132de2/page=-1"
           },
-          "uuid":   "69649440-8d8b-0130-b64f-282066132de2"
+          "uuid":   "69509b60-8d8b-0130-b64f-282066132de2"
         }
       }
     },
     {
       "description":"Get the search results (order)",
       "method":"get",
-      "url":        "/69649440-8d8b-0130-b64f-282066132de2/page=1",
+      "url":        "/69509b60-8d8b-0130-b64f-282066132de2/page=1",
       "response":{
         "actions":{
           "read":"http://localhost:9292/orders/page=1",
@@ -793,7 +748,7 @@
                   "batch":null
                 },
                 {
-                  "uuid":"66e299e0-8d8b-0130-b650-282066132de2",
+                  "uuid":  "66e299e0-8d8b-0130-b650-282066132de2",
                   "status":"done",
                   "batch":null
                 }
@@ -801,6 +756,51 @@
             }
           }
         ]
+      }
+    },
+    {
+      "description":"Create a new batch",
+      "method":"post",
+      "url":"/batches",
+      "request":{
+        "batch":{
+          "user":"username"
+        }
+      },
+      "response":{
+        "batch":{
+          "actions":{
+            "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+          },
+          "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+          "process":null,
+          "kit":"1234567891011"
+        }
+      },
+      "next_stage":4
+    }
+  ]
+}, "4":{
+  "calls":[
+    {
+      "description":"Create a new batch",
+      "method":"get",
+      "url":        "/695ff060-8d8b-0130-b64f-282066132de2",
+      "response":{
+        "batch":{
+          "actions":{
+            "read":  "http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+            "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+            "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+            "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+          },
+          "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
+          "process":null,
+          "kit":"1234567891011"
+        }
       }
     },
     {
