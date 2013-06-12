@@ -116,14 +116,15 @@ define(['config'
 
     onGenerateManifest: function () {
       var thisPresenter = this;
-      var nbOfSample = parseInt(this.view.find('#number-of-sample').val());
-      if (isNaN(nbOfSample) || nbOfSample <= 0) {
+      var numberValid = /^[1-9]\d*$/.exec(this.view.find('#number-of-sample').val()) !== null;
+      if (!numberValid) {
         this.message('error', 'The number of sample is not valid.');
       } else {
         var template = this.view.find('#xls-templates').val();
         var study = this.view.find('#studies').val();
         this.model
             .then(function (model) {
+              var nbOfSample = parseInt(thisPresenter.view.find('#number-of-sample').val());
               thisPresenter.view.trigger("s2.busybox.start_process");
               return model.generateSamples(template, study, nbOfSample);
             })
