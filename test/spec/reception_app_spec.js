@@ -85,7 +85,7 @@ define([
 
             it("displays an error message to the user", function () {
               runs(function () {
-                expect(fakeContent().find(".validationText.alert.alert-error").length).toBeGreaterThan(0);
+                expect(fakeContent().find("div.validationText.alert.alert-error").length).toBeGreaterThan(0);
               });
             });
           });
@@ -111,7 +111,7 @@ define([
 
             it("displays a barcode error message to the user", function () {
               runs(function () {
-                expect(fakeContent().find("h4.alert-heading").length).toBeGreaterThan(0);
+                expect(fakeContent().find("div.validationText.alert.alert-error").length).toBeGreaterThan(0);
               });
             });
           });
