@@ -4,7 +4,8 @@ define([
   , 'extraction_pipeline/lib/csv_parser'
   , 'extraction_pipeline/lib/json_templater'
   , 'extraction_pipeline/lib/reception_templates'
-], function (BasePageModel, Operations, CSVParser, JsonTemplater, ReceptionTemplate) {
+  , 'extraction_pipeline/lib/reception_studies'
+], function (BasePageModel, Operations, CSVParser, JsonTemplater, ReceptionTemplates, ReceptionStudies) {
   'use strict';
 
   var ReceptionModel = Object.create(BasePageModel);
@@ -18,16 +19,24 @@ define([
       return $.Deferred().resolve(this).promise();
     },
 
-    generateSamples: function (template, nbOfSample) {
+    reset:function(){
+      delete this.currentTemplateBlob;
+      delete this.manifestCsvBlob;
+      delete this.samples;
+      delete this.labwareOutputs;
+      delete this.barcodes;
+    },
+
+    generateSamples: function (templateName, study, nbOfSample) {
       var deferred = $.Deferred();
       var thisModel = this;
-      thisModel.getXLSTemplate(template)
+      thisModel.getXLSTemplate(templateName)
           .fail(function(error){
-            return deferred.reject({message:"Couldn't load the specified template: "+template, previous_error:error});
+            return deferred.reject({message:"Couldn't load the specified template: "+templateName, previous_error:error});
           })
           .then(function(templateBlob){
-            thisModel.currentTemplate = templateBlob;
-            return thisModel.getLabellables(template, nbOfSample);
+            thisModel.currentTemplateBlob = templateBlob;
+            return thisModel.getLabellables(templateName, study, nbOfSample);
           })
           .fail(function(error){
             return deferred.reject({message: " Couldn't produce the samples. " + error.message, previous_error: error});
@@ -39,9 +48,9 @@ define([
             return deferred.reject({message: " Couldn't produce barcode data file. " + error.message, previous_error: error});
           })
           .then(function (manifestCsvBlob) {
-            thisModel.manifestCsv = manifestCsvBlob;
+            thisModel.manifestCsvBlob = manifestCsvBlob;
             // now we are ready...
-            return thisModel.sendManifestRequest(thisModel.currentTemplate, thisModel.manifestCsv);
+            return thisModel.sendManifestRequest(thisModel.currentTemplateBlob, thisModel.manifestCsvBlob);
           })
           .fail(function(error){
             return deferred.reject({message:" >> "+error.message, previous_error:error});
@@ -52,10 +61,10 @@ define([
       return deferred.promise();
     },
 
-    getXLSTemplate: function (template, nbOfSample) {
+    getXLSTemplate: function (templateName, nbOfSample) {
       var deferred = $.Deferred();
       var oReq = new XMLHttpRequest();
-      oReq.open("GET", ReceptionTemplate[template].manifest_path, true);
+      oReq.open("GET", ReceptionTemplates[templateName].manifest_path, true);
       oReq.responseType = "blob";
       oReq.onload = function(oEvent) {
         var blob = oReq.response;
@@ -68,12 +77,13 @@ define([
       return deferred.promise();
     },
 
-    getLabellables: function (template, nbOfSample) {
+    getLabellables: function (templateName, studyName, nbOfSample) {
       var deferred = $.Deferred();
       var thisModel = this;
       var root;
-      var labwareModel = ReceptionTemplate[template].model;
-      var sampleType = ReceptionTemplate[template].sample_type;
+      var labwareModel = ReceptionTemplates[templateName].model;
+      var sampleType = ReceptionTemplates[templateName].sample_type;
+      var sangerSampleIdCore = ReceptionStudies[studyName].sanger_sample_id_core;
       thisModel.owner.getS2Root()
           .fail(function () {
             return deferred.reject({message: "Couldn't get the root! Is the server accessible?"});
@@ -84,7 +94,8 @@ define([
             return root.bulk_create_samples.create({
               state:     "draft",
               quantity:  nbOfSample,
-              sample_type: sampleType
+              sample_type: sampleType,
+              sanger_sample_id_core:sangerSampleIdCore
             });
           })
           .fail(function () {
@@ -98,7 +109,7 @@ define([
               return {
                 aliquots:[{
                   "sample_uuid": sample.uuid,
-                  "type": ReceptionTemplate[template].aliquot_type
+                  "type": ReceptionTemplates[templateName].aliquot_type
                 }
                 ]
               };
@@ -110,7 +121,7 @@ define([
             return deferred.reject({message: "Couldn't register the associated piece of labware."});
           })
           .then(function (bulkCreationLabwareObject) {
-            thisModel.outputs = _.map(bulkCreationLabwareObject.result.tubes, function (rawTube) {
+            thisModel.labwareOutputs = _.map(bulkCreationLabwareObject.result.tubes, function (rawTube) {
               return root.tubes.instantiate({rawJson:{tube:rawTube}});
             });
             // creation of the barcodes
@@ -138,7 +149,7 @@ define([
                 }
               };
             });
-            var bulkData = _.map(thisModel.outputs, function (labware) {
+            var bulkData = _.map(thisModel.labwareOutputs, function (labware) {
               // NOTE: in theory, one can associate a labware to any barcode.
               // However, in the test data, because the tests nmight a bit too strict
               // this order can become relevant... Be careful when running tests.
@@ -153,17 +164,17 @@ define([
             return deferred.reject({message: "Couldn't associate the barcodes to the tubes."});
           })
           .then(function (bulkCreationLabellableObject) {
-            _.each(thisModel.outputs, function (output) {
+            _.each(thisModel.labwareOutputs, function (output) {
               output.labels = bulkCreationLabellableObject.result.labellables.pop().labels;
             });
-            deferred.resolve(thisModel.outputs);
+            deferred.resolve(thisModel.labwareOutputs);
           });
       return deferred.promise();
     },
 
     generateCSVBlob: function(){
       var thisModel = this;
-      var data = _.map(thisModel.outputs,function(labware){
+      var data = _.map(thisModel.labwareOutputs,function(labware){
         var sampleUUID = labware.aliquots[0].sample.uuid;
         var sanger_sample_id = _.find(thisModel.samples,function (sample) {
           return sample.uuid === sampleUUID;
@@ -178,7 +189,7 @@ define([
     printBarcodes: function (printerName) {
       var deferred = $.Deferred();
       var thisModel = this;
-      BasePageModel.printBarcodes(thisModel.outputs, printerName)
+      BasePageModel.printBarcodes(thisModel.labwareOutputs, printerName)
           .fail(function(){
             return deferred.reject({message: "Couldn't print the barcodes."});
           })
@@ -195,16 +206,11 @@ define([
         var xhr = new XMLHttpRequest;
         xhr.open("POST", 'http://psd2g.internal.sanger.ac.uk:8100/manifest-merge-service/');
         xhr.responseType = "blob";
-
         xhr.onerror = function (oEvent) {
-          console.warn('statusText: ', oEvent.target.statusText);
-          console.warn('responseType: ', oEvent.target.responseType);
-          console.warn('responseText: ', oEvent.target.responseText);
           deferred.reject({
             message: "Unable to send the manifest... Is the XLS merger server up and running? "
           });
         };
-
         xhr.onload = function (oEvent) {
           thisModel.manifestBlob = this.response;
           deferred.resolve(thisModel);
@@ -223,61 +229,8 @@ define([
         deferred.reject({message: message});
       }
       return deferred.promise();
-    },
-
-    setFileContent:function(fileContent){
-      var deferred = $.Deferred();
-      var dataAsArray = CSVParser.manifestCsvToArray(fileContent);
-      var templateName = dataAsArray[2][0]; // always A3 !!
-      var columnHeaders = dataAsArray[ReceptionTemplate[templateName].header_line_number];
-      var dataAsArray = _.chain(dataAsArray)
-        .drop(ReceptionTemplate[templateName].header_line_number+1)
-        .filter(function(row){return row[0]})
-        .value();
-      var combinedData = JsonTemplater.combineHeadersToData(columnHeaders, dataAsArray);
-      if (!ReceptionTemplate[templateName]){
-        deferred.reject({message: "Couldn't find the corresponding template!"});
-      }
-      else if (columnHeaders.length <=1 && columnHeaders[0]){
-        deferred.reject({message: "The file contains no header !"});
-      }
-      else if (combinedData.length <= 0){
-        deferred.reject({message: "The file contains no data !"});
-      }
-      else
-      {
-        var samples = JsonTemplater.applyTemplateToDataSet(combinedData, ReceptionTemplate[templateName].json_template);
-        samples = _.reduce(samples,function(memo,sampleUpdate){
-          memo[sampleUpdate.sanger_sample_id] = sampleUpdate;
-          delete memo[sampleUpdate.sanger_sample_id].sanger_sample_id;
-          return memo
-        },{});
-        this.samplesFromManifest = {"by":"sanger_sample_id","updates":samples};
-        deferred.resolve(this);
-      }
-      return deferred.promise();
-    },
-
-    updateSamples:function(){
-      var deferred = $.Deferred();
-      var thisModel = this;
-      thisModel.owner.getS2Root()
-        .fail(function () {
-            return deferred.reject({message: "Couldn't get the root! Is the server accessible?"});
-        })
-        .then(function(root){
-           return root.bulk_update_samples.create(thisModel.samplesFromManifest);
-        })
-        .fail(function () {
-          return deferred.reject({message: "Couldn't update the samples on S2."});
-        })
-        .then(function(){
-          return deferred.resolve(thisModel);
-        });
-
-      return deferred.promise();
     }
   });
-  
+
   return ReceptionModel;
 });

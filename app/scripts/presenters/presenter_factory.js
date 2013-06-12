@@ -20,7 +20,10 @@ define([
   'extraction_pipeline/presenters/rack_scan_presenter',
   'extraction_pipeline/presenters/selection_page_presenter',
   'extraction_pipeline/default/default_presenter',
-  'extraction_pipeline/presenters/volume_control_presenter'
+  'extraction_pipeline/presenters/volume_control_presenter',
+  'extraction_pipeline/presenters/reception_presenter',
+  'extraction_pipeline/presenters/manifest_maker_presenter',
+  'extraction_pipeline/presenters/manifest_reader_presenter'
 ], function(TubePresenter, SpinColumnPresenter, WasteTubePresenter, RackPresenter, GelPresenter, PlatePresenter) {
   'use strict';
 
@@ -49,6 +52,7 @@ define([
   }).value();
 
   // Function can take variable number of parameters, passing them onto the constructor function
+  // for the named presenter.  It is here to ensure that the first two arguments are always the
   // for the named presenter.  It is here to ensure that the first two arguments are always the
   // owner and the factory with which the presenter was registered.
   PresenterFactory.prototype.create = function(name, owner) {

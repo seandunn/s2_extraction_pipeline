@@ -1,5 +1,17 @@
+body,html {
+  height: 100%;
+}
+
 header, #content {
   @extend .container;
+}
+
+body, html {
+  height:100%;
+}
+
+#content {
+  height: 100%;
 }
 
 ol.labware {
@@ -190,4 +202,25 @@ div.row0 .title {
 }
 #buttonRack {
   float: right;
+}
+
+table {
+  tr.selectedRow {
+    background: #90ee90;
+  }
+  tr.disabledRow {
+    background: #d3d3d3;
+    color:#778899;
+    font-style: italic;
+  }
+  td{
+    padding: 1em;
+  }
+  th{
+    padding: 1em;
+    background: #778899;
+    font-style: normal;
+    color:#000000;
+    font-size: 1.0em;
+  }
 }

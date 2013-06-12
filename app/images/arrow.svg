@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg548"
+   sodipodi:version="0.32"
+   width="400pt"
+   height="400pt"
+   sodipodi:docname="arrow.svg"
+   version="1.1"
+   inkscape:version="0.48.2 r9819">
+  <metadata
+     id="metadata3678" />
+  <defs
+     id="defs550">
+    <linearGradient
+       id="linearGradient650">
+      <stop
+         style="stop-color:#000;stop-opacity:1;"
+         offset="0"
+         id="stop651" />
+      <stop
+         style="stop-color:#fff;stop-opacity:1;"
+         offset="1"
+         id="stop652" />
+    </linearGradient>
+    <linearGradient
+       xlink:href="#linearGradient650"
+       id="linearGradient653"
+       x1="1.00000548"
+       y1="0.53125000"
+       x2="1.16666901"
+       y2="0.53906250"
+       gradientUnits="objectBoundingBox"
+       spreadMethod="repeat" />
+    <linearGradient
+       xlink:href="#linearGradient650"
+       id="linearGradient654"
+       x1="1.22222710"
+       y1="0.46093750"
+       x2="1.16666818"
+       y2="0.46093750"
+       gradientUnits="objectBoundingBox"
+       spreadMethod="repeat" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     showgrid="true"
+     inkscape:zoom="0.472"
+     inkscape:cx="250"
+     inkscape:cy="250"
+     inkscape:window-width="483"
+     inkscape:window-height="454"
+     inkscape:window-x="4"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg548" />
+  <g
+     id="g696"
+     transform="matrix(-1,0,0,-1,497.62678,490.50603)">
+    <path
+       sodipodi:type="arc"
+       style="fill:#808080;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path694"
+       d="m 459.65204,252.76892 c 0,87.16839 -74.56019,157.83234 -166.53485,157.83234 -91.97466,0 -166.53485,-70.66395 -166.53485,-157.83234 0,-87.16839 74.56019,-157.832336 166.53485,-157.832336 91.97466,0 166.53485,70.663946 166.53485,157.832336 z"
+       sodipodi:cx="293.11719"
+       sodipodi:cy="252.76892"
+       sodipodi:rx="166.53485"
+       sodipodi:ry="157.83234"
+       transform="matrix(1,0,0,1.077694,-44.3038,-27.15454)" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       d="m 142.405,178.006 159.81,0 0,-35.601 70.412,87.025 -69.621,87.026 -1.582,-32.437 -158.227,-0.791 -0.792,-105.222 z"
+       id="path695"
+       sodipodi:nodetypes="cccccccc"
+       transform="translate(-1.582279,15.03162)"
+       inkscape:connector-curvature="0" />
+  </g>
+  <metadata
+     id="metadata3680">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Clipart by Nicu Buculei - arrow08_4</dc:title>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Nicu Buculei</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://web.resource.org/cc/PublicDomain" />
+        <dc:format>image/svg+xml</dc:format>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Reproduction" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Distribution" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

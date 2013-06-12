@@ -65,12 +65,12 @@
     "columnName": "STORAGE CONDITIONS",
     "type":       "string"
   },
-  "sample_type":               {
-    "columnName": "SAMPLE TYPE",
-    "type":       "string"
-  },
   "ebi_accession_number":      {
     "columnName": "SAMPLE ACCESSION NUMBER (optional)",
+    "type":       "string"
+  },
+  "process":{
+    "columnName": "_PROCESS",
     "type":       "string"
   }
 }
