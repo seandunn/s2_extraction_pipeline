@@ -64,6 +64,82 @@ define([
             waitsFor(results.hasFinished);
           });
 
+          it("makes the correct call when 'register' is clicked with one update selected", function () {
+            var expectedData;
+            runs(function () {
+              expectedData = {
+                type:     'POST',
+                url:      '/actions/bulk_update_sample',
+                dataType: 'json',
+                headers:  { 'Content-Type': 'application/json' },
+                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"volume":2,"cellular_material":{"lysed":true},"state":"published"}}}}'
+              };
+
+              results.resetFinishedFlag();
+              fakeContent()
+                .find('.barcodeInput')
+                .val("2881460250710")
+                .trigger(FakeUser.aPressReturnEvent());
+
+              waits(100);
+
+              spyOn(config, "ajax").andCallThrough();
+
+              results.resetFinishedFlag();
+              fakeContent()
+                .find('#registrationBtn')
+                .trigger('click');
+            });
+
+            waits(500);
+
+            runs(function () {
+              expect(config.ajax).toHaveBeenCalledWith(expectedData);
+            });
+          });
+
+          it("makes the correct call when 'register' is clicked with two updates selected", function () {
+            var expectedData;
+            runs(function () {
+              expectedData = {
+                type:     'POST',
+                url:      '/actions/bulk_update_sample',
+                dataType: 'json',
+                headers:  { 'Content-Type': 'application/json' },
+                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"volume":2,"cellular_material":{"lysed":true},"state":"published"},"S2-cb4ee4768f334c38960ac89ec2074eb1":{"volume":2,"cellular_material":{"lysed":true},"state":"published"}}}}'
+              };
+
+              results.resetFinishedFlag();
+              fakeContent()
+                .find('.barcodeInput')
+                .val("2881460250710")
+                .trigger(FakeUser.aPressReturnEvent());
+
+              waits(100);
+
+              results.resetFinishedFlag();
+              fakeContent()
+                .find('.barcodeInput')
+                .val("2886789170794")
+                .trigger(FakeUser.aPressReturnEvent());
+
+              waits(100);
+
+              spyOn(config, "ajax").andCallThrough();
+
+              results.resetFinishedFlag();
+              fakeContent()
+                .find('#registrationBtn')
+                .trigger('click');
+            });
+
+            waits(500);
+
+            runs(function () {
+              expect(config.ajax).toHaveBeenCalledWith(expectedData);
+            });
+          });
+
           describe("and a barcode which cannot be found is entered", function () {
             beforeEach(function () {
               runs(function () {
@@ -169,82 +245,6 @@ define([
               runs(function () {
                 expect(fakeContent().find('tbody tr.disabledRow').length).toEqual(2);
               });
-            });
-          });
-
-          it("makes the correct call when 'register' is clicked with one update selected", function () {
-            var expectedData;
-            runs(function () {
-              expectedData = {
-                type:     'POST',
-                url:      '/actions/bulk_update_sample',
-                dataType: 'json',
-                headers:  { 'Content-Type': 'application/json' },
-                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"volume":2,"cellular_material":{"lysed":true},"state":"published"}}}}'
-              };
-
-              results.resetFinishedFlag();
-              fakeContent()
-                .find('.barcodeInput')
-                .val("2881460250710")
-                .trigger(FakeUser.aPressReturnEvent());
-
-              waits(100);
-
-              spyOn(config, "ajax").andCallThrough();
-
-              results.resetFinishedFlag();
-              fakeContent()
-                .find('#registrationBtn')
-                .trigger('click');
-            });
-
-            waits(500);
-
-            runs(function () {
-              expect(config.ajax).toHaveBeenCalledWith(expectedData);
-            });
-          });
-
-          it("makes the correct call when 'register' is clicked with two updates selected", function () {
-            var expectedData;
-            runs(function () {
-              expectedData = {
-                type:     'POST',
-                url:      '/actions/bulk_update_sample',
-                dataType: 'json',
-                headers:  { 'Content-Type': 'application/json' },
-                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"volume":2,"cellular_material":{"lysed":true},"state":"published"},"S2-cb4ee4768f334c38960ac89ec2074eb1":{"volume":2,"cellular_material":{"lysed":true},"state":"published"}}}}'
-              };
-
-              results.resetFinishedFlag();
-              fakeContent()
-                .find('.barcodeInput')
-                .val("2881460250710")
-                .trigger(FakeUser.aPressReturnEvent());
-
-              waits(100);
-
-              results.resetFinishedFlag();
-              fakeContent()
-                .find('.barcodeInput')
-                .val("2886789170794")
-                .trigger(FakeUser.aPressReturnEvent());
-
-              waits(100);
-
-              spyOn(config, "ajax").andCallThrough();
-
-              results.resetFinishedFlag();
-              fakeContent()
-                .find('#registrationBtn')
-                .trigger('click');
-            });
-
-            waits(500);
-
-            runs(function () {
-              expect(config.ajax).toHaveBeenCalledWith(expectedData);
             });
           });
         });
