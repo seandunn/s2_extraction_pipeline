@@ -17,11 +17,13 @@ define(['config'
     bindReturnKey: function (element, successCallback, errorCallback, validationCallback) {
       var thisPresenter = this;
 
-      // by default, we check that the input is 13 digits long.
       var validation = validationCallback || function (element, callback, errorCallback) {
         return function (event) {
           if (event.which !== 13) return;
-          if (BarcodeChecker.isBarcodeValid(event.currentTarget.value)) {
+
+          if (_.some(BarcodeChecker, function (validationCallback) {
+            return validationCallback(event.currentTarget.value);
+          })) {
             callback(event, element, thisPresenter);
           } else {
             errorCallback(event, element, thisPresenter);
