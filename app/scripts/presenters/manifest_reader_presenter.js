@@ -180,6 +180,7 @@ define(['config'
     },
 
     responderCallback: function (fileContent) {
+      var deferred = $.Deferred();
       var thisPresenter = this;
       thisPresenter.model
           .then(function (model) {
@@ -190,6 +191,7 @@ define(['config'
           .fail(function (error) {
             thisPresenter.view.trigger("s2.busybox.end_process");
             thisPresenter.message('error', error.message);
+            deferred.reject();
           })
           .then(function (model) {
             thisPresenter.registerBtnSelection.show();
@@ -198,7 +200,9 @@ define(['config'
 //            thisPresenter.barcodeReaderSelection.find('.barcodeInput').focus(); // does not work!!??
             thisPresenter.view.trigger("s2.busybox.end_process");
             thisPresenter.message('success', 'File loaded successfully.');
-          })
+            deferred.resolve(thisPresenter);
+          });
+      return deferred.promise();
     },
 
     // Samples View

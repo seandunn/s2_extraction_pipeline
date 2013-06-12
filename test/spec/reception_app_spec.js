@@ -13,7 +13,7 @@ define([
 
 
     TestHelper(function (results) {
-      describe("Reception presenter", function () {
+      describe("The Reception App", function () {
 
         var presenter, fakeDOM, fakeContent;
         beforeEach(function () {
@@ -43,8 +43,8 @@ define([
           expect(fakeContent().find('#read-manifest-btn').length).toEqual(1);
         });
 
-        describe("and a manifest csv is loaded", function () {
-          beforeEach(function(){
+        describe("where a manifest csv is loaded", function () {
+          beforeEach(function () {
             runs(function () {
               results.resetFinishedFlag();
               fakeContent()
@@ -52,7 +52,7 @@ define([
                 .trigger('click');
 
               //wait for jquery animation
-              waits(500);
+              waits(200);
 
               //simulate file input
               presenter.manifestReaderComponent.presenter.responderCallback(manifestCSVData)
@@ -64,12 +64,64 @@ define([
             waitsFor(results.hasFinished);
           });
 
-          describe("and a valid barcode is entered", function(){
-            beforeEach(function(){
+          describe("and a barcode which cannot be found is entered", function () {
+            beforeEach(function () {
+              runs(function () {
+                fakeContent()
+                  .find("input.barcodeInput")
+                  .val("1234567890123")
+                  .trigger(FakeUser.aPressReturnEvent());
+              });
+              waitsFor(function () {
+                return fakeContent().find("input.barcodeInput").val() == "";
+              });
+            });
+
+            it("clears the input box", function () {
+              runs(function () {
+                expect(fakeContent().find("input.barcodeInput").val()).toEqual("");
+              });
+            });
+
+            it("displays an error message to the user", function () {
+              runs(function () {
+                expect(fakeContent().find(".validationText.alert.alert-error").length).toBeGreaterThan(0);
+              });
+            });
+          });
+
+          describe("and a barcode of less than 13 characters is entered", function () {
+            beforeEach(function () {
+              runs(function () {
+                fakeContent()
+                  .find("input.barcodeInput")
+                  .val("12345")
+                  .trigger(FakeUser.aPressReturnEvent());
+              });
+              waitsFor(function () {
+                return fakeContent().find("input.barcodeInput").val() == "";
+              });
+            });
+
+            it("clears the input box", function () {
+              runs(function () {
+                expect(fakeContent().find("input.barcodeInput").val()).toEqual("");
+              });
+            });
+
+            it("displays a barcode error message to the user", function () {
+              runs(function () {
+                expect(fakeContent().find("h4.alert-heading").length).toBeGreaterThan(0);
+              });
+            });
+          });
+
+          describe("and a valid barcode is entered", function () {
+            beforeEach(function () {
               runs(function () {
                 results.resetFinishedFlag();
                 fakeContent()
-                  .find('.barcodeInput')
+                  .find('input.barcodeInput')
                   .val("2881460250710")
                   .trigger(FakeUser.aPressReturnEvent());
 
@@ -93,41 +145,34 @@ define([
               });
             });
 
-            it("the checkbox is enabled on the highlighed row", function(){
-              runs(function(){
+            it("the checkbox is enabled on the highlighed row", function () {
+              runs(function () {
                 expect(fakeContent().find('tbody tr.selectedRow td:first input').attr("checked")).toEqual("checked");
               });
             });
 
-            it("the other checkbox is disabled", function(){
-              runs(function(){
+            it("the other checkbox is disabled", function () {
+              runs(function () {
                 expect(fakeContent().find('tbody tr.disabledRow td:first input').attr("disabled")).toEqual("disabled");
               });
             });
 
-            it("after the checkbox is un-checked, the row it belongs to is disabled", function(){
-              runs(function(){
+            it("after the checkbox is un-checked, the row it belongs to is disabled", function () {
+              runs(function () {
                 results.resetFinishedFlag();
                 fakeContent()
                   .find('tbody tr.selectedRow td:first input')
                   .trigger('click');
-
-//                FakeUser.waitsForIt(
-//                  "tbody tr:first .disabledRow",
-//                  results.expected
-//                );
               });
-//              waitsFor(results.hasFinished);
-
               waits(500);
 
-              runs(function(){
+              runs(function () {
                 expect(fakeContent().find('tbody tr.disabledRow').length).toEqual(2);
               });
             });
           });
 
-          it("makes the correct call when 'register' is clicked", function () {
+          it("makes the correct call when 'register' is clicked with one update selected", function () {
             var expectedData;
             runs(function () {
               expectedData = {
@@ -135,8 +180,58 @@ define([
                 url:      '/actions/bulk_update_sample',
                 dataType: 'json',
                 headers:  { 'Content-Type': 'application/json' },
-                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"volume":2,"cellular_material":{"lysed":true}},"S2-cb4ee4768f334c38960ac89ec2074eb1":{"volume":2,"cellular_material":{"lysed":true}}}}}'
+                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"volume":2,"cellular_material":{"lysed":true},"state":"published"}}}}'
               };
+
+              results.resetFinishedFlag();
+              fakeContent()
+                .find('.barcodeInput')
+                .val("2881460250710")
+                .trigger(FakeUser.aPressReturnEvent());
+
+              waits(100);
+
+              spyOn(config, "ajax").andCallThrough();
+
+              results.resetFinishedFlag();
+              fakeContent()
+                .find('#registrationBtn')
+                .trigger('click');
+            });
+
+            waits(500);
+
+            runs(function () {
+              expect(config.ajax).toHaveBeenCalledWith(expectedData);
+            });
+          });
+
+          it("makes the correct call when 'register' is clicked with two updates selected", function () {
+            var expectedData;
+            runs(function () {
+              expectedData = {
+                type:     'POST',
+                url:      '/actions/bulk_update_sample',
+                dataType: 'json',
+                headers:  { 'Content-Type': 'application/json' },
+                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"volume":2,"cellular_material":{"lysed":true},"state":"published"},"S2-cb4ee4768f334c38960ac89ec2074eb1":{"volume":2,"cellular_material":{"lysed":true},"state":"published"}}}}'
+              };
+
+              results.resetFinishedFlag();
+              fakeContent()
+                .find('.barcodeInput')
+                .val("2881460250710")
+                .trigger(FakeUser.aPressReturnEvent());
+
+              waits(100);
+
+              results.resetFinishedFlag();
+              fakeContent()
+                .find('.barcodeInput')
+                .val("2886789170794")
+                .trigger(FakeUser.aPressReturnEvent());
+
+              waits(100);
 
               spyOn(config, "ajax").andCallThrough();
 
@@ -154,58 +249,71 @@ define([
           });
         });
 
-        xdescribe("and the user attempts to enter 1 sample", function () {
+        describe("on the 'Create a manifest' page", function () {
           beforeEach(function () {
             runs(function () {
               fakeContent()
-                .find('#number-of-sample')
-                .val(1)
-                .trigger(FakeUser.aPressReturnEvent());
+                .find("#create-manifest-btn")
+                .trigger("click");
 
-              results.resetFinishedFlag();
-              FakeUser.waitsForIt(fakeDOM,
-                "#downloadManifest",
-                results.expected
-              );
-            });
-            waitsFor(results.hasFinished);
-          });
-
-          it("shows an error message to the user", function () {
-            runs(function () {
-              expect(fakeContent().find(".validationText.alert.alert-error").length).toEqual(1);
+              //wait for animation
+              waits(200);
             });
           });
-        });
 
-        describe("and there is input request for 3 tubes", function () {
-          it("makes an appropriate ajax call", function () {
-            var expectedData;
+          it("shows an error if a string is entered for the number of tubes", function () {
             runs(function () {
-              spyOn(config, 'ajax').andCallThrough();
-              expectedData = {
-                type:     'POST',
-                url:      '/actions/bulk_create_sample',
-                dataType: 'json',
-                headers:  { 'Content-Type': 'application/json' },
-                data:     '{"bulk_create_sample":{"user":"username","state":"draft","quantity":3,"sample_type":"RNA","sanger_sample_id_core":"QC1Hip"}}'
-              };
-
               fakeContent()
                 .find('#number-of-sample')
-                .val(3)
+                .val("Computer, give me three tubes please")
                 .trigger(FakeUser.aPressReturnEvent());
 
-              results.resetFinishedFlag();
-//              FakeUser.waitsForIt(fakeDOM,
-//                "#downloadManifest",
-//                results.expected
-//              );
+              waitsFor(function () {
+                return fakeContent().find(".validationText.alert.alert-error").length > 0;
+              });
+              expect(fakeContent().find(".validationText.alert.alert-error").length).toBeGreaterThan(0);
             });
-            waits(500);
+          });
 
+          it("shows an error when given a string that starts with a number", function () {
             runs(function () {
-              expect(config.ajax).toHaveBeenCalledWith(expectedData);
+              fakeContent()
+                .find('#number-of-sample')
+                .val("3 tubes please, computer!")
+                .trigger(FakeUser.aPressReturnEvent());
+
+              waitsFor(function () {
+                return fakeContent().find(".validationText.alert.alert-error").length > 0;
+              });
+              expect(fakeContent().find(".validationText.alert.alert-error").length).toBeGreaterThan(0);
+            });
+          });
+
+          describe("and there is a request to create a manifest with 3 tubes", function () {
+            it("makes an appropriate ajax call", function () {
+              var expectedData;
+              runs(function () {
+                spyOn(config, 'ajax').andCallThrough();
+                expectedData = {
+                  type:     'POST',
+                  url:      '/actions/bulk_create_sample',
+                  dataType: 'json',
+                  headers:  { 'Content-Type': 'application/json' },
+                  data:     '{"bulk_create_sample":{"user":"username","state":"draft","quantity":3,"sample_type":"RNA","sanger_sample_id_core":"QC1Hip"}}'
+                };
+
+                fakeContent()
+                  .find('#number-of-sample')
+                  .val(3)
+                  .trigger(FakeUser.aPressReturnEvent());
+
+                results.resetFinishedFlag();
+              });
+              waits(500);
+
+              runs(function () {
+                expect(config.ajax).toHaveBeenCalledWith(expectedData);
+              });
             });
           });
         });
