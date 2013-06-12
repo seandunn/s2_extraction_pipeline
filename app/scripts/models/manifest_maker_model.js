@@ -141,11 +141,11 @@ define([
               return {
                 barcode:        {
                   type:  "ean13-barcode",
-                  value: label.barcode.ean13
+                  value: label.ean13
                 },
                 "sanger label": {
                   type:  "sanger-barcode",
-                  value: label.barcode.sanger.prefix + label.barcode.sanger.number + label.barcode.sanger.suffix
+                  value: label.sanger.prefix + label.sanger.number + label.sanger.suffix
                 }
               };
             });
