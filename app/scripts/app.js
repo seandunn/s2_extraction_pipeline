@@ -7,15 +7,27 @@ define([ 'config'
   'use strict';
 
   var App = function (thePresenterFactory) {
-    this.presenterFactory = thePresenterFactory;
+    var app = this;
+    app.presenterFactory = thePresenterFactory;
     _.templateSettings.variable = 'templateData';
 
     $('#server-url').text(config.apiUrl);
     $('#release').text(config.release);
-    // ToDo #content exists at this point we should pass it directly not a function
-    this.jquerySelection = function () { return $('#content'); };
-    this.addEventHandlers();
-    return this;
+
+    if ($('#content.sample-extraction').length > 0) {
+      // ToDo #content exists at this point we should pass it directly not a function
+      app.jquerySelection = function () { return $('#content'); };
+      app.addEventHandlers();
+      app.setupPresenter();
+    } else if ($('#content.sample-reception').length > 0) {
+      var configuration = { printerList: config.printers };
+      var receptionPresenter = app.presenterFactory.create('reception_presenter', app, configuration);
+      $("#content").append(receptionPresenter.view);
+      app.addEventHandlers();
+    } else {
+      console.log('#content control class missing from web page.')
+    };
+
   };
 
   App.prototype.addEventHandlers = function(){
