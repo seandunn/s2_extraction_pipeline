@@ -41,7 +41,6 @@ define([
 
       this.view = new View(this, this.selector);
       this.view.renderView(this.config);
-      this.setupSubPresenters();
 
       PubSub.subscribe("s2.step_presenter.enable_buttons", enableButtonsEventHandler);
       PubSub.subscribe("s2.step_presenter.disable_buttons", disableButtonsEventHandler);
@@ -66,6 +65,8 @@ define([
         // hack: reusing a bit of code defined in childDone
         thisPresenter.childDone(source,'done',eventData);
       }
+
+      this.setupSubPresenters();
 
       return this;
     },

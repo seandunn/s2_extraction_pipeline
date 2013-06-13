@@ -76,6 +76,7 @@ define([
             return model.setupModel(setupData);
           })
           .then(function(model){
+          if(!model.batch.kit){
             presenter.selector().html(_.template(kitPartialHtml)({}));
             presenter.barcodePresenter = presenter.presenterFactory.create('scan_barcode_presenter', presenter);
             presenter.barcodePresenter.init({ type: 'Kit' });
@@ -83,11 +84,20 @@ define([
                 .find('.barcode')
                 .append(presenter.bindReturnKey( presenter.barcodePresenter.renderView(), kitScannedCallback(presenter), kitScannedErrorCallback(presenter)('Barcode must be a 13 digit number.'), validationOnReturnKeyCallback(presenter) ));
             presenter.selector().find('.barcode input').focus();
+          }
           });
       return presenter;
     },
 
-    focus: function() { },
+    focus: function () {
+      var presenter = this;
+      presenter.model
+        .then(function (model) {
+          if (model.batch.kit) {
+            PubSub.publish("s2.step_presenter.next_process", presenter, {batch: model.batch});
+          }
+        });
+    },
 
     release: function() {
       this.view.clear();
