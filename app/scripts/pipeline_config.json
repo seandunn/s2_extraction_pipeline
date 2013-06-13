@@ -75,7 +75,7 @@
     "accepts": [ "samples.extraction.manual.dna_and_rna.input_tube_nap.batched" ],
     "processTitle":  "Manual DNA and RNA Binding",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print spin column & labels" },
@@ -123,7 +123,7 @@
     "accepts": [ "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap" ],
     "processTitle":  "Manual DNA and RNA Collection Tube Transfer",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -162,7 +162,7 @@
     "accepts": [ "samples.extraction.manual.dna_and_rna.input_tube_rnap.batched" ],
     "processTitle":  "Manual DNA and RNA Binding, Input tube RNA+P",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print spin column labels" },
@@ -205,7 +205,7 @@
     "accepts": [ "samples.extraction.manual.spin_column_dna" ],
     "processTitle":  "Manual Extraction Spin Column DNA Transfer",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -244,7 +244,7 @@
     "accepts": [ "samples.extraction.manual.rna_only.input_tube_rnap.batched" ],
     "processTitle":  "Manual RNA Only Binding, Input tube RNA+P",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print spin column labels" },
@@ -287,7 +287,7 @@
     "accepts": [ "samples.extraction.manual.spin_column_rna" ],
     "processTitle":  "Manual Extraction Spin Column RNA Transfer",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -343,7 +343,7 @@
     "accepts": [ "samples.extraction.manual.dna_only.input_tube_dnap.batched" ],
     "processTitle":  "Manual DNA Only Binding",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print spin column labels" },
@@ -419,7 +419,7 @@
     "accepts": [ "samples.extraction.qiacube.dna_and_rna.input_tube_nap.batched" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -469,7 +469,7 @@
     "accepts": [ "samples.extraction.qiacube.dna_and_rna.byproduct_tube_rnap" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube) Rotor Aptapter Transfer",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -507,7 +507,7 @@
     "accepts": [ "samples.extraction.qiacube.dna_and_rna.input_tube_rnap.batched" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -553,7 +553,7 @@
     "accepts": [ "samples.extraction.qiacube.rna_only.input_tube_rnap.batched" ],
     "processTitle":  "Automated RNA Only Extraction (QIAcube)",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -616,7 +616,7 @@
     "accepts": [ "samples.extraction.qiacube.dna_only.input_tube_dnap.batched" ],
     "processTitle":  "Automated DNA Only Extraction (QIAcube)",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -694,7 +694,7 @@
     "accepts": [ "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed.batched" ],
     "processTitle":  "DNA and RNA Re-Tubing",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -745,7 +745,7 @@
   {
     "accepts": [ "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched" ],
     "presenterName": "step_presenter",
-    "defaultPrinter": "e367bc",
+    "defaultPrinter": "g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Start transfers" },
@@ -837,7 +837,7 @@
   {
     "accepts": [ "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched" ],
     "presenterName": "step_presenter",
-    "defaultPrinter": "e367bc",
+    "defaultPrinter": "g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Start transfers" },
@@ -930,7 +930,7 @@
     "accepts": [ "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed.batched" ],
     "processTitle":  "Retubing for DNA only Extraction",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -983,7 +983,7 @@
     "accepts": [ "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed.batched" ],
     "processTitle":  "Retubing for RNA only Extraction",
     "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "defaultPrinter":"g216bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -1018,7 +1018,7 @@
   {
     "accepts":       [ "samples.rack.stock.dna" ],
     "presenterName": "step_presenter",
-    "defaultPrinter": "e367bc",
+    "defaultPrinter": "g216bc",
     "printerType": 2,
     "buttons":       [
       {
@@ -1059,7 +1059,7 @@
   {
     "accepts":       [ "samples.rack.stock.dna.volume_control_added" ],
     "presenterName": "step_presenter",
-    "defaultPrinter": "e367bc",
+    "defaultPrinter": "g216bc",
     "printerType": 2,
     "buttons":       [
       {
