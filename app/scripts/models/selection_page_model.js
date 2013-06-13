@@ -31,28 +31,62 @@ define([
       } else throw "This model should not be created without either a batch or scanned labware";
     },
 
-    addTube:function (newTube) {
-      if (this.tubes.length > this.capacity - 1) {
-        $('body').trigger('s2.status.error', "Only " + this.capacity + " orders can be selected");
-        throw {"type":"SelectionPageException", "message":"Only " + this.capacity + " orders can be selected" };
-      }
-      var listOfIdenticalTubes = _.filter(this.tubes, function (tube) {
-        return tube.uuid === newTube.uuid
-      });
-      if (listOfIdenticalTubes.length > 0) {
-        $('body').trigger('s2.status.error', 'Error: You cannot add the same tube twice.');
-        throw {"type":"SelectionPageException", "message":"Can add a tube only once." };
-      }
-      this.tubes.push(newTube);
-      return this;
+    addTube: function (newTube) {
+      var deferred = $.Deferred();
+      var thisModel = this;
+
+      $.Deferred().resolve()
+          .then(function () {
+            if (thisModel.tubes.length > thisModel.capacity - 1) {
+              deferred.reject({message: "Only " + thisModel.capacity + " orders can be selected", previous_error: null});
+            } else if (thisModel.config.output[0].aliquotType !== newTube.aliquots[0].type) {
+              var msg = "You can only add '"
+                  + thisModel.config.output[0].aliquotType
+                  + "' tubes into this batch. The scanned barcode corresponds to a '"
+                  + newTube.aliquots[0].type
+                  + "' tube.";
+              deferred.reject({message: msg, previous_error: null});
+            } else if (_.some(thisModel.tubes, function (tube) {
+              return tube.uuid === newTube.uuid;
+            })) {
+              deferred.reject({message: 'You cannot add the same tube twice.', previous_error: null});
+            }
+          }).then(function () {
+            return newTube.order();
+          })
+          .fail(function () {
+            return deferred.reject({message: "Couldn't send the search for the order", previous_error: null});
+          })
+          .then(function (order) {
+            var newTubeHasCorrectRole = _.chain(order.items.filter(function (item) {
+              return (item.uuid === newTube.uuid) && (thisModel.config.input.role === item.role) && ( "done" === item.status);
+            })).some().value();
+            if (!newTubeHasCorrectRole) {
+              return deferred.reject({message:"This tube cannot be added to the current batch, because it does not have the correct role."});
+            }
+            thisModel.tubes.push(newTube);
+            return deferred.resolve(thisModel);
+          });
+      return deferred.promise();
     },
 
-    addTubeFromBarcode:function (barcode) {
-      var that = this;
-      return this.cache.fetchResourcePromiseFromBarcode(barcode)
-      .then(function (rsc) {
-        that.addTube(rsc);
-      });
+    addTubeFromBarcode: function (barcode) {
+      var thisModel = this;
+      var deferred = $.Deferred();
+      this.cache.fetchResourcePromiseFromBarcode(barcode)
+          .fail(function () {
+            deferred.reject({message: "Couldn't find the resource related to this barcode", previous_error: null});
+          })
+          .then(function (rsc) {
+            return thisModel.addTube(rsc);
+          })
+          .fail(function(error){
+            deferred.reject(error);
+          })
+          .then(function(){
+            deferred.resolve(thisModel);
+          });
+      return deferred.promise();
     },
 
     removeTubeByUuid:function (uuid) {

@@ -41,13 +41,16 @@ define([], function () {
   };
 
   return {
-    waitsForIt: function (context, element, func) {
+    waitsForIt: function (context, element, successCallback, errorCallback) {
       var actionDone = $.Deferred();
       $(context)
-      .fakeUser(element,function () {
-        func();
-        setTimeout(actionDone.resolve, 100);
-      }, actionDone.reject);
+          .fakeUser(element, function () {
+            successCallback();
+            setTimeout(actionDone.resolve, 100);
+          }, function () {
+            errorCallback();
+            actionDone.reject();
+          });
       return actionDone;
     },
 

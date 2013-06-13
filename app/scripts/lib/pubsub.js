@@ -22,6 +22,10 @@ define([
       if (topics[topic]){
         topics[topic].remove(callback);
       }
+    },
+
+    removeAll:function(topic){
+      delete topics[topic];
     }
 
   };

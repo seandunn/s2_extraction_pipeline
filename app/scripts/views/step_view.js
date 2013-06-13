@@ -20,12 +20,15 @@ define([
         });
       });
     },
+
     showButton:function(action){
       this.setButtonVisible(action, true);
     },
+
     hideButton:function(action){
       this.setButtonVisible(action, false);
     },
+
     setButtonVisible:function(action, visible){
       if (visible)
         getButtonSelectionByAction(this.selector(),action).show();
@@ -45,12 +48,14 @@ define([
     },
 
     setPrintButtonEnabled: function(isEnabled) {
-      this.setButtonEnabled('Print',isEnabled);
-      this.selector().find('.printer-select').removeAttr('disabled');
-    },
-
-    toggleHeaderEnabled: function() { },
-
+      this.setButtonEnabled('print',isEnabled);
+      if(isEnabled) {
+        this.selector().find('.printer-select').removeAttr('disabled');
+      }
+      else {
+        this.selector().find('.printer-select').attr('disabled', 'disabled');
+      }
+    }
   });
 
   function getButtonSelectionByAction(selector,action){

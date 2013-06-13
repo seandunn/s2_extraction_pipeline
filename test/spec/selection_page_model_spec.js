@@ -89,32 +89,5 @@ define([
           expect(m.tubes[0].uuid).toEqual("tube1_UUID");
       });
     });
-
-    describe("Selection page model", function () {
-
-      var m;
-
-      beforeEach(function(){
-        m = Object.create(Model).init(fakeOwner, initData);
-        m.owner.childDone = function(){};
-        spyOn(fakeOwner, "childDone");
-      });
-
-      it("can add a tube only once", function () {
-        getAResource(fakeOwner, "tube1_UUID").then(function (tube) {
-          expect(tube.uuid).toEqual("tube1_UUID");
-          expect(function () {
-            m.addTube(tube)
-          }).not.toThrow();
-          expect(function () {
-            m.addTube(tube)
-          }).toThrow();
-        }).fail(function () {
-              throw "oops"
-            });
-      });
-
-    });
-
   });
 });

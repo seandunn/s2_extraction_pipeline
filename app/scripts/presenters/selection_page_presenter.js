@@ -1,7 +1,8 @@
 define([ 'extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/models/selection_page_model'
   , 'text!extraction_pipeline/html_partials/selection_page_partial.html'
-], function(BasePresenter, Model, selectionPagePartialHtml) {
+  , 'extraction_pipeline/lib/pubsub'
+], function(BasePresenter, Model, selectionPagePartialHtml, PubSub) {
   'use strict';
 
   var PagePresenter = Object.create(BasePresenter);
@@ -22,12 +23,10 @@ define([ 'extraction_pipeline/presenters/base_presenter'
     setupPresenter: function (setupData, jquerySelection) {
       var presenter = this;
       this.jquerySelection = jquerySelection;
-
       this.model.setup(setupData).then(function(){
         presenter.setupSubPresenters();
         presenter.renderView();
       });
-
       return this;
     },
 
@@ -55,6 +54,7 @@ define([ 'extraction_pipeline/presenters/base_presenter'
       this.presenters[this.model.tubes.length].barcodeFocus();
       return this;
     },
+
     setupSubPresenters:function () {
       var presenter = this;
       this.presenters = [];
@@ -107,12 +107,6 @@ define([ 'extraction_pipeline/presenters/base_presenter'
       }).value();
     },
 
-    displayBarcodeError:function (message) {
-      //numTubes is the index number of the barcode input view in the array of presenters
-      var numTubes = this.model.tubes.length;
-      this.presenters[numTubes].displayErrorMessage(message);
-    },
-
     release:function () {
       this.jquerySelection().empty().off();
       return this;
@@ -120,7 +114,6 @@ define([ 'extraction_pipeline/presenters/base_presenter'
 
     childDone:function (child, action, data) {
       var presenter = this;
-
       if (child === this.model) {
         if (action === "batchSaved") {
           this.owner.childDone(this, "done", this.model);
@@ -132,10 +125,9 @@ define([ 'extraction_pipeline/presenters/base_presenter'
               presenter.setupSubPresenters();
               presenter.renderView();
             })
-            .fail(function() {
-              presenter.displayBarcodeError("Barcode not found");
+            .fail(function(error) {
+              PubSub.publish('s2.status.error', presenter, error);
             });
-
         } else if (action === "removeLabware") {
           this.model.removeTubeByUuid(data.resource.uuid);
           this.setupSubPresenters();
