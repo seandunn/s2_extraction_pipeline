@@ -99,9 +99,11 @@ define([
 
     childDone: function (child, action, data) {
       var presenter = this;
-      var btnDetailsList;
 
       if (child === this.view) {
+        if(action === "print"){
+          this.view.setPrintButtonEnabled(false);
+        }
         var handler = this.activePresenter[action];
         handler && handler.apply(this.activePresenter, arguments);
         PubSub.publish("s2.step_presenter."+action+"_clicked", this);
