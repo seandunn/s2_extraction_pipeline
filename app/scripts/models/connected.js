@@ -3,8 +3,9 @@ define([
   'mapper/operations',
   'extraction_pipeline/connected/behaviours',
   'extraction_pipeline/connected/missing_handlers',
-  'extraction_pipeline/connected/caching'
-], function(Base, Operations, Behaviour, Missing, Cache) {
+  'extraction_pipeline/connected/caching',
+  'extraction_pipeline/lib/pubsub'
+], function(Base, Operations, Behaviour, Missing, Cache, PubSub) {
   'use strict';
 
   var Model = Object.create(Base);
@@ -48,13 +49,13 @@ define([
     setBatch: function(batch) {
       this.cache.push(batch);
       this.batch = batch;
-
-      var model = this;
-      setupInputs(model).then(function() {
-        model.owner.childDone(model, "batchAdded");
-      }).fail(function() {
-          $('body').trigger('s2.status.error', "Couldn't load the batch resource");
-      });
+      var thisModel = this;
+      setupInputs(thisModel)
+          .fail(function () {
+            PubSub.publish('s2.status.error', thisModel, {message: "Couldn't load the batch resource"});
+          }).then(function () {
+            thisModel.owner.childDone(thisModel, "batchAdded");
+          });
     },
 
     setUser: function(user) {

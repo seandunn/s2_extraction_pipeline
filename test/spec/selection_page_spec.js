@@ -6,10 +6,12 @@ define([
   , 'models/selection_page_model'
   , 'presenters/selection_page_presenter'
   , 'presenters/presenter_factory'
+  , 'extraction_pipeline/lib/pubsub'
   , 'text!mapper_testjson/unit/root.json'
-  , 'text!extraction_pipeline/dna_and_ran_manual_test_data.json'
   , 'text!pipeline_testjson/selection_page_data.json'
-], function (config, FakeUser, TestHelper, S2Root, SelectionPageModel, SelectionPagePresenter, PresenterFactory, rootTestData, testData, selectionPageData) {
+], function (config, FakeUser, TestHelper, S2Root, SelectionPageModel,
+             SelectionPagePresenter, PresenterFactory, PubSub,
+             rootTestData, selectionPageData) {
   'use strict';
 
 
@@ -101,6 +103,8 @@ define([
           });
 
           waitsFor(results.hasFinished);
+
+          PubSub.removeAll('s2.status.error');
         });
 
         it('displays a tube', function () {
@@ -125,52 +129,90 @@ define([
           expect(fakeContent()).not.toEqual($initialFakeDOM);
         });
 
-        it("displays an error if the tube isn't found", function () {
+        it("sends an error message if the tube isn't found", function () {
           runs(function () {
+            results.reset();
+
+            PubSub.subscribe('s2.status.error', function (event, source, eventData) {
+              results.assignTo('eventData')(eventData);
+              results.expected();
+            });
 
             fakeContent()
-              .find('ol li:nth-child(2) input.barcodeInput')
-              .val(1234567890123)
-              .trigger(FakeUser.aPressReturnEvent());
+                .find('ol li:nth-child(2) input.barcodeInput')
+                .val(1234567890123)
+                .trigger(FakeUser.aPressReturnEvent());
+          });
 
-            runs(function () {
-              results.resetFinishedFlag();
+          waitsFor(results.hasFinished);
 
-              FakeUser.waitsForIt($fakeDOM,"ol li:nth-child(2) .alert-error .alert-heading",
-                results.expected,
-                results.unexpected
-              );
+          runs(function () {
+            expect(results.get('eventData').message).toEqual("Couldn't find the resource related to this barcode");
+          });
+        });
+
+        it("sends an error message if the tube has already been entered", function () {
+          runs(function () {
+            results.reset();
+
+            PubSub.subscribe('s2.status.error', function (event, source, eventData) {
+              results.assignTo('eventData')(eventData);
+              results.expected();
             });
+
+            fakeContent()
+                .find('ol li:nth-child(2) input.barcodeInput')
+                .val(1220017279667)
+                .trigger(FakeUser.aPressReturnEvent());
 
             waitsFor(results.hasFinished);
 
             runs(function () {
-              expect(fakeContent().find("ol li:nth-child(2) .alert-error .alert-heading").get(0).innerHTML).toEqual('Error!Barcode not found');
+              expect(results.get('eventData').message).toEqual("You cannot add the same tube twice.");
             });
           });
         });
 
-        it("displays an error if the tube has already been entered", function () {
+        it("sends an error message if the tube has the wrong aliquot", function () {
           runs(function () {
+            results.reset();
+
+            PubSub.subscribe('s2.status.error', function (event, source, eventData) {
+              results.assignTo('eventData')(eventData);
+              results.expected();
+            });
 
             fakeContent()
-              .find('ol li:nth-child(2) input.barcodeInput')
-              .val(1220017279667)
-              .trigger(FakeUser.aPressReturnEvent());
-
-            runs(function () {
-              results.resetFinishedFlag();
-
-              FakeUser.waitsForIt($fakeDOM, "ol li:nth-child(2) .alert-error .alert-heading",
-                results.expected,
-                results.unexpected
-              );
-            });
+                .find('ol li:nth-child(2) input.barcodeInput')
+                .val(1220017279670)
+                .trigger(FakeUser.aPressReturnEvent());
 
             waitsFor(results.hasFinished);
 
             runs(function () {
-              expect(fakeContent().find("ol li:nth-child(2) .alert-error .alert-heading").get(0).innerHTML).toEqual('Error!Barcode not found');
+              expect(results.get('eventData').message).toEqual("You can only add 'NA+P' tubes into this batch. The scanned barcode corresponds to a 'DNA+P' tube.");
+            });
+          });
+        });
+
+        it("sends an error message if the tube has the wrong role", function () {
+          runs(function () {
+            results.reset();
+
+            PubSub.subscribe('s2.status.error', function (event, source, eventData) {
+              results.assignTo('eventData')(eventData);
+              results.expected();
+            });
+
+            fakeContent()
+                .find('ol li:nth-child(2) input.barcodeInput')
+                .val(1220017279671)
+                .trigger(FakeUser.aPressReturnEvent());
+
+            waitsFor(results.hasFinished);
+
+            runs(function () {
+              expect(results.get('eventData').message).toEqual("This tube cannot be added to the current batch, because it does not have the correct role.");
             });
           });
         });
@@ -199,7 +241,6 @@ define([
         it('has only one input on the page', function () {
           expect(fakeContent().find('input.barcodeInput').length).toEqual(1);
         });
-
 
         it('has information listed about the tube in a text tag', function () {
           var $text = fakeContent().find('ol li:first-child text#Text');

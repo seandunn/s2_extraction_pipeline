@@ -39,7 +39,7 @@ define([
           return deferred.reject({message: "The scanned kit is not the one previously used."});
         }
       } else {
-      thisModel.owner.getS2Root()
+        thisModel.owner.getS2Root()
           .then(function (result) {
             root = result;
             return root.kits.findByEan13Barcode(kitBarcode);
@@ -59,39 +59,10 @@ define([
           .then(function () {
             thisModel.kitSaved = true;
             thisModel.kit.barcode = kitBarcode;
-            //thisModel.owner.childDone(thisModel, 'saved', {});
             deferred.resolve(thisModel);
           });
       }
       return deferred.promise();
-    },
-
-    fire: function () {
-      var model = this;
-      var root;
-
-      if (model.kit.barcode) {
-        this.owner.getS2Root()
-          .then(function (result) {
-            root = result;
-          })
-          .then(function () {
-            return root.kits.findByEan13Barcode(model.kit.barcode);
-          })
-          .then(function (kit) {
-            model.batch.update({kit: model.kit.barcode})
-              .then(function () {
-                model.kitSaved = true;
-                model.owner.childDone(model, 'saved', {});
-              })
-              .fail(function () {
-                $('body').trigger('s2.status.error', "Couldn't save the kit'");
-              })
-          })
-          .fail(function () {
-            $('body').trigger('s2.status.error', "Kit is not valid");
-          });
-      }
     }
   });
 

@@ -1,8 +1,9 @@
 define([
       'extraction_pipeline/presenters/base_presenter',
        'extraction_pipeline/models/connected',
-       'text!extraction_pipeline/html_partials/connected_partial.html'
-], function(BasePresenter, Model, Template) {
+       'text!extraction_pipeline/html_partials/connected_partial.html',
+       'extraction_pipeline/lib/pubsub'
+], function(BasePresenter, Model, Template, PubSub) {
   'use strict';
 
   var Presenter = Object.create(BasePresenter);
@@ -130,24 +131,24 @@ define([
 
       } else if (action === "barcodePrintSuccess") {
 
-        $('body').trigger('s2.status.message', 'Barcode labels printed');
+        PubSub.publish('s2.status.message', this, {message: 'Barcode labels printed'});
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "barcodePrintFailure") {
 
-        $('body').trigger('s2.status.error', 'Barcode labels could not be printed');
+        PubSub.publish('s2.status.error', this, {message: 'Barcode labels could not be printed'});
         this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "startOperation") {
 
         this.model.started = true;
-        $('body').trigger('s2.status.message', 'Transfer started');
+        PubSub.publish('s2.status.message', this, {message: 'Transfer started'});
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
         this.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
 
       } else if (action === "completeOperation") {
 
-        $('body').trigger('s2.status.message', 'Transfer completed');
+        PubSub.publish('s2.status.message', this, {message: 'Transfer completed'});
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
         if (this.checkPageComplete()) {
           this.owner.childDone(this, "enableBtn", {buttons:[{action:"next"}]});
