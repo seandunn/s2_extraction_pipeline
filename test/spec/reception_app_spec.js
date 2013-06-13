@@ -7,8 +7,12 @@ define([
   , 'text!mapper_testjson/unit/root.json'
   , 'mapper/s2_root'
   , 'text!pipeline_testcsv/manifest_csv_test_data.csv'
-  , 'presenters/presenter_factory']
-  , function (config, FakeUser, appTestData, TestHelper, ReceptionPresenter, rootTestData, S2Root, manifestCSVData, PresenterFactory) {
+  , 'presenters/presenter_factory'
+  , 'extraction_pipeline/lib/reception_templates'
+  , 'text!pipeline_testjson/csv_template_test_data.json'
+  , 'text!pipeline_testjson/csv_template_display_test_data.json'
+]
+  , function (config, FakeUser, appTestData, TestHelper, ReceptionPresenter, rootTestData, S2Root, manifestCSVData, PresenterFactory, ReceptionTemplates, CSVTemplateTestData, CSVTemplateDisplayTestData) {
     'use strict';
 
 
@@ -32,10 +36,29 @@ define([
               return this.rootPromise;
             }
           };
+
+          // Injecting test template.
+          ReceptionTemplates.templateList.push({ template_name: "test_template", friendly_name: "test_template" });
+          ReceptionTemplates["test_template"] = {
+            friendly_name: "test_template",
+            model:         "tube",
+            sample_type:   "RNA",
+            aliquot_type:  "NA",
+            json_template: JSON.parse(CSVTemplateTestData),
+            json_template_display: JSON.parse(CSVTemplateDisplayTestData),
+            header_line_number: 8,
+            manifest_path:"../test/json/manifest_test_data.xls"
+          };
+
           var pf = new PresenterFactory();
           var presenterConfig = {};
           presenter = pf.create('reception_presenter', app, presenterConfig);
           fakeContent().append(presenter.view);
+        });
+
+        afterEach(function(){
+          delete ReceptionTemplates["test_template"];
+          ReceptionTemplates.templateList.pop();
         });
 
         it('gives the user the option to create or load a manifest', function () {
