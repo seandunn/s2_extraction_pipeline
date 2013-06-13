@@ -36,11 +36,6 @@
    "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed.batched",
    "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed.batched",
 
-    "samples.rack.stock.dna",
-    "samples.rack.stock.rna",
-    "samples.rack.stock.dna.volume_checked",
-    "samples.rack.stock.rna.volume_checked",
-
    "samples.extraction.eppendorf_tube.dna",
    "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched",
    "samples.extraction.fluidx_tube.dna.to_be_racked",
