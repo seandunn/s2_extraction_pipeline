@@ -66,14 +66,10 @@ define(['config'
           return $("<h4/>", {class: "alert-heading", text: errorText});
         };
         return function (event, template, presenter) {
-          template.
-              find('.alert-error').
-              html(errorHtml(errorText)).
-              removeClass('hide');
-
-          template.
-              find('input').
-              removeAttr('disabled');
+          thisPresenter.message('error', errorText);
+          template
+            .find('input')
+            .val(''); // clear the input
         };
       }
 
@@ -291,7 +287,11 @@ define(['config'
       var tr = this.orderMakerSelection.find('table td span').filter(function () {
         return $.trim($(this).text()).toUpperCase() === barcode.toUpperCase();
       }).closest("tr");
-      enableRow(tr);
+      if(tr.length === 0){
+        this.message('error', "Barcode not found");
+      } else {
+        enableRow(tr);
+      }
     },
 
     // register btn

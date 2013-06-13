@@ -64,114 +64,6 @@ define([
             waitsFor(results.hasFinished);
           });
 
-          describe("and a barcode which cannot be found is entered", function () {
-            beforeEach(function () {
-              runs(function () {
-                fakeContent()
-                  .find("input.barcodeInput")
-                  .val("1234567890123")
-                  .trigger(FakeUser.aPressReturnEvent());
-              });
-              waitsFor(function () {
-                return fakeContent().find("input.barcodeInput").val() == "";
-              });
-            });
-
-            it("clears the input box", function () {
-              runs(function () {
-                expect(fakeContent().find("input.barcodeInput").val()).toEqual("");
-              });
-            });
-
-            it("displays an error message to the user", function () {
-              runs(function () {
-                expect(fakeContent().find(".validationText.alert.alert-error").length).toBeGreaterThan(0);
-              });
-            });
-          });
-
-          describe("and a barcode of less than 13 characters is entered", function () {
-            beforeEach(function () {
-              runs(function () {
-                fakeContent()
-                  .find("input.barcodeInput")
-                  .val("12345")
-                  .trigger(FakeUser.aPressReturnEvent());
-              });
-              waitsFor(function () {
-                return fakeContent().find("input.barcodeInput").val() == "";
-              });
-            });
-
-            it("clears the input box", function () {
-              runs(function () {
-                expect(fakeContent().find("input.barcodeInput").val()).toEqual("");
-              });
-            });
-
-            it("displays a barcode error message to the user", function () {
-              runs(function () {
-                expect(fakeContent().find("h4.alert-heading").length).toBeGreaterThan(0);
-              });
-            });
-          });
-
-          describe("and a valid barcode is entered", function () {
-            beforeEach(function () {
-              runs(function () {
-                results.resetFinishedFlag();
-                fakeContent()
-                  .find('input.barcodeInput')
-                  .val("2881460250710")
-                  .trigger(FakeUser.aPressReturnEvent());
-
-                FakeUser.waitsForIt(fakeContent(),
-                  "tbody tr.selectedRow",
-                  results.expected
-                );
-              });
-              waitsFor(results.hasFinished);
-            });
-
-            it("highlights the row", function () {
-              runs(function () {
-                expect(fakeContent().find('tbody tr.selectedRow').length).toEqual(1);
-              });
-            });
-
-            it("removes the barcode from the input", function () {
-              runs(function () {
-                expect(fakeContent().find('.barcodeInput').val()).toEqual('')
-              });
-            });
-
-            it("the checkbox is enabled on the highlighed row", function () {
-              runs(function () {
-                expect(fakeContent().find('tbody tr.selectedRow td:first input').attr("checked")).toEqual("checked");
-              });
-            });
-
-            it("the other checkbox is disabled", function () {
-              runs(function () {
-                expect(fakeContent().find('tbody tr.disabledRow td:first input').attr("disabled")).toEqual("disabled");
-              });
-            });
-
-            it("after the checkbox is un-checked, the row it belongs to is disabled", function () {
-              runs(function () {
-                results.resetFinishedFlag();
-                fakeContent()
-                  .find('tbody tr.selectedRow td:first input')
-                  .trigger('click');
-              });
-              waits(500);
-
-              runs(function () {
-                expect(fakeContent().find('tbody tr.disabledRow').length).toEqual(2);
-              });
-            });
-          });
-
           it("makes the correct call when 'register' is clicked with one update selected", function () {
             var expectedData;
             runs(function () {
@@ -245,6 +137,114 @@ define([
 
             runs(function () {
               expect(config.ajax).toHaveBeenCalledWith(expectedData);
+            });
+          });
+
+          describe("and a barcode which cannot be found is entered", function () {
+            beforeEach(function () {
+              runs(function () {
+                fakeContent()
+                  .find("input.barcodeInput")
+                  .val("1234567890123")
+                  .trigger(FakeUser.aPressReturnEvent());
+              });
+              waitsFor(function () {
+                return fakeContent().find("input.barcodeInput").val() == "";
+              });
+            });
+
+            it("clears the input box", function () {
+              runs(function () {
+                expect(fakeContent().find("input.barcodeInput").val()).toEqual("");
+              });
+            });
+
+            it("displays an error message to the user", function () {
+              runs(function () {
+                expect(fakeContent().find("div.validationText.alert.alert-error").length).toBeGreaterThan(0);
+              });
+            });
+          });
+
+          describe("and a barcode of less than 13 characters is entered", function () {
+            beforeEach(function () {
+              runs(function () {
+                fakeContent()
+                  .find("input.barcodeInput")
+                  .val("12345")
+                  .trigger(FakeUser.aPressReturnEvent());
+              });
+              waitsFor(function () {
+                return fakeContent().find("input.barcodeInput").val() == "";
+              });
+            });
+
+            it("clears the input box", function () {
+              runs(function () {
+                expect(fakeContent().find("input.barcodeInput").val()).toEqual("");
+              });
+            });
+
+            it("displays a barcode error message to the user", function () {
+              runs(function () {
+                expect(fakeContent().find("div.validationText.alert.alert-error").length).toBeGreaterThan(0);
+              });
+            });
+          });
+
+          describe("and a valid barcode is entered", function () {
+            beforeEach(function () {
+              runs(function () {
+                results.resetFinishedFlag();
+                fakeContent()
+                  .find('input.barcodeInput')
+                  .val("2881460250710")
+                  .trigger(FakeUser.aPressReturnEvent());
+
+                FakeUser.waitsForIt(fakeContent(),
+                  "tbody tr.selectedRow",
+                  results.expected
+                );
+              });
+              waitsFor(results.hasFinished);
+            });
+
+            it("highlights the row", function () {
+              runs(function () {
+                expect(fakeContent().find('tbody tr.selectedRow').length).toEqual(1);
+              });
+            });
+
+            it("removes the barcode from the input", function () {
+              runs(function () {
+                expect(fakeContent().find('.barcodeInput').val()).toEqual('')
+              });
+            });
+
+            it("the checkbox is enabled on the highlighed row", function () {
+              runs(function () {
+                expect(fakeContent().find('tbody tr.selectedRow td:first input').attr("checked")).toEqual("checked");
+              });
+            });
+
+            it("the other checkbox is disabled", function () {
+              runs(function () {
+                expect(fakeContent().find('tbody tr.disabledRow td:first input').attr("disabled")).toEqual("disabled");
+              });
+            });
+
+            it("after the checkbox is un-checked, the row it belongs to is disabled", function () {
+              runs(function () {
+                results.resetFinishedFlag();
+                fakeContent()
+                  .find('tbody tr.selectedRow td:first input')
+                  .trigger('click');
+              });
+              waits(500);
+
+              runs(function () {
+                expect(fakeContent().find('tbody tr.disabledRow').length).toEqual(2);
+              });
             });
           });
         });
