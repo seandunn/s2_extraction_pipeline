@@ -89,7 +89,15 @@ define([
       return presenter;
     },
 
-    focus: function() { },
+    focus: function () {
+      var presenter = this;
+      presenter.model
+        .then(function (model) {
+          if (model.batch.kit) {
+            PubSub.publish("s2.step_presenter.next_process", presenter, {batch: model.batch});
+          }
+        });
+    },
 
     release: function() {
       this.view.clear();
