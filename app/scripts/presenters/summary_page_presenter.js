@@ -1,7 +1,8 @@
 define(['extraction_pipeline/presenters/base_presenter'
   , 'extraction_pipeline/models/summary_page_model'
   , 'text!extraction_pipeline/html_partials/summary_page_partial.html'
-], function (BasePresenter, Model, summaryPagePartialHtml) {
+  , 'extraction_pipeline/lib/pubsub'
+], function (BasePresenter, Model, summaryPagePartialHtml, PubSub) {
 
   var SummaryPagePresenter = Object.create(BasePresenter);
 
@@ -36,14 +37,39 @@ define(['extraction_pipeline/presenters/base_presenter'
 
     renderView: function () {
       var thisPresenter = this;
-      thisPresenter.jquerySelection().html(_.template(summaryPagePartialHtml)({}));
+      var template = _.template(summaryPagePartialHtml)
+
+      var templateData = {};
+      templateData.config = thisPresenter.config;
 
       thisPresenter.model
         .then(function (model) {
-          // TODO: use the model to get summary info about the batch
+          return model.ordersByUUID;
+        })
+        .fail(function(error){
+          thisPresenter.message('error', 'Labware not found for this batch');
+//          PubSub.publish('s2.summary_page.')
+        })
+        .then(function(orders){
+          templateData.orders = orders;
+          thisPresenter.jquerySelection().html(template(templateData));
         });
 
       return this;
+    },
+    message: function (type, message) {
+      if (!type) {
+        this.jquerySelection()
+          .find('.validationText')
+          .hide();
+      } else {
+        this.jquerySelection()
+          .find('.validationText')
+          .show()
+          .removeClass('alert-error alert-info alert-success')
+          .addClass('alert-' + type)
+          .html(message);
+      }
     }
   });
 

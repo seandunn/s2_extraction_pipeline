@@ -1,1 +1,25 @@
-<div class="summary">Spent batch</div>
+<header class="alert">
+  <h3 id="process-title" class="pull-left"><%- templateData.config.processTitle %></h3>
+</header>
+<div>
+  <h4>Batch Information</h4>
+</div>
+<ul>
+  <table border="1">
+    <tr>
+      <th>Type</th>
+      <th>Role</th>
+      <th>Status</th>
+      <th>Barcode</th>
+    </tr>
+    <% _.each (templateData.orders, function (order) { %>
+    <tr>
+      <td><%- input.resourceType %></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <% }); %>
+  </table>
+</ul>
+<div class="validationText alert" style="display:none"></div>
