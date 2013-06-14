@@ -23,7 +23,8 @@ define([
   'extraction_pipeline/presenters/volume_control_presenter',
   'extraction_pipeline/presenters/reception_presenter',
   'extraction_pipeline/presenters/manifest_maker_presenter',
-  'extraction_pipeline/presenters/manifest_reader_presenter'
+  'extraction_pipeline/presenters/manifest_reader_presenter',
+  'extraction_pipeline/presenters/summary_page_presenter'
 ], function(TubePresenter, SpinColumnPresenter, WasteTubePresenter, RackPresenter, GelPresenter, PlatePresenter) {
   'use strict';
 

@@ -47,8 +47,10 @@
 
    "samples.extraction.eppendorf_tube.rna",
    "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched",
-   "samples.extraction.fluidx_tube.rna.to_be_racked"
+   "samples.extraction.fluidx_tube.rna.to_be_racked",
 
+    "samples.DNA.ready",
+    "samples.RNA.ready"
   ],
 
   "workflows":[
@@ -738,7 +740,7 @@
     "output": [
       {
         "role": "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched",
-        "aliquotType":"DNA"
+        "aliquotType": "DNA"
       }
     ]
   },
@@ -831,8 +833,8 @@
     },
     "output": [
       {
-        "role": "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched",
-        "aliquotType":"RNA"
+        "role":        "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched",
+        "aliquotType": "RNA"
       }
     ]
   },
@@ -868,11 +870,11 @@
         },
         "output": [
           {
-            "role": "samples.extraction.fluidx_tube.rna.to_be_racked",
-            "aliquotType":"RNA",
-            "model": "tubes",
-            "title": "2D Extracted RNA Tube",
-            "validation": "2D_tube"
+            "role":        "samples.extraction.fluidx_tube.rna.to_be_racked",
+            "aliquotType": "RNA",
+            "model":       "tubes",
+            "title":       "2D Extracted RNA Tube",
+            "validation":  "2D_tube"
           }
         ]
       }
@@ -1169,7 +1171,8 @@
       ]}
     ]
   },
-{
+
+    {
     "accepts":       [ "samples.rack.stock.dna.volume_checked" ],
     "presenterName": "step_presenter",
     "defaultPrinter":"d304bc",
@@ -1204,10 +1207,28 @@
       }
       ]}
     ]
-  }
+    },
 
+    {
+      "accepts":        [ "samples.DNA.ready" ],
+      "presenterName":  "summary_page_presenter",
+      "defaultPrinter": "d304bc",
+      "printerType":    1,
+      "processTitle":   "DNA Ready"
+    },
+
+    {
+      "accepts":        [ "samples.RNA.ready" ],
+      "presenterName":  "summary_page_presenter",
+      "defaultPrinter": "d304bc",
+      "printerType":    1,
+      "processTitle":   "RNA Ready"
+    }
   ],
 
-  "defaultPresenter":"default_presenter"
+  "spentBatch": {
+    "presenterName": "summary_page_presenter",
+    "processTitle":  "Spent batch"
+  }
 }
 
