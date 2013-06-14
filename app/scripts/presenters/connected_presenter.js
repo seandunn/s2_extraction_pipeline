@@ -27,7 +27,16 @@ define([
 
     setupPresenter:function (input_model, jquerySelection) {
       this.jquerySelection = jquerySelection;
-      this.model.setBatch(input_model.batch);
+      // send busy message
+      var thisPresenter = this;
+      thisPresenter.jquerySelection().trigger("s2.busybox.start_process");
+      this.model.setBatch(input_model.batch)
+          .then(function(){
+            thisPresenter.jquerySelection().trigger("s2.busybox.end_process");
+          }).fail(function(error){
+            PubSub.publish('s2.status.error', thisPresenter, error);
+            thisPresenter.jquerySelection().trigger("s2.busybox.end_process");
+          });
       this.renderView();
       this.setupSubPresenters();
       return this;
