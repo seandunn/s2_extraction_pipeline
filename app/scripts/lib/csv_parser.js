@@ -49,13 +49,14 @@ define([], function () {
     },
 
     locationArrayToLocalisedBarcodes:function (array) {
-      var output = {};
-      _.each(array, function (row) {
+      return _.reduce(array, function (memo, row) {
         var location = row[0];
         var barcode = row[1];
-        output[barcode] = location;
-      });
-      return output;
+        if (barcode.toUpperCase() !== "NO READ"){
+          memo[barcode] = location;
+        }
+        return memo;
+      },{});
     },
     convertCSVDataToJSON:function (data) {
       return this.locationArrayToLocalisedBarcodes(this.rackingCsvToArray(data));
