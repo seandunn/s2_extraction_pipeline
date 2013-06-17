@@ -14,16 +14,6 @@ define([
       json_template_display: JSON.parse(CGAPLysedDisplay),
       header_line_number: 8,
       sample_types : ["DNA Human", "DNA Pathogen", "RNA", "Blood", "Saliva", "Tissue Non-Tumour", "Tissue Tumour", "Pathogen", "Cell Pellet"]
-    },
-    cgap_lysed2: {
-      friendly_name: "CGAP - lysed",
-      model:         "tube",
-      sample_type:   "RNA",
-      aliquot_type:  "NA",
-      json_template: JSON.parse(CGAPLysed),
-      json_template_display: JSON.parse(CGAPLysedDisplay),
-      header_line_number: 8,
-      sample_types : ["DNA Human", "Cell Pellet"]
     }
   };
 

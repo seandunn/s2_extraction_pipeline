@@ -132,11 +132,12 @@ define(['config'
       } else {
         var template = this.view.find('#xls-templates').val();
         var study = this.view.find('#studies').val();
+        var sampleType = this.view.find('#samplePrefixes').val();
         var nbOfSample = parseInt(this.view.find('#number-of-sample').val());
         this.model
             .then(function (model) {
               thisPresenter.view.trigger("s2.busybox.start_process");
-              return model.generateSamples(template, study, nbOfSample);
+              return model.generateSamples(template, study, sampleType, nbOfSample);
             })
             .fail(function (error) {
               thisPresenter.view.trigger("s2.busybox.end_process");
