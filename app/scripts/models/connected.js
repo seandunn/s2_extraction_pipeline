@@ -49,13 +49,15 @@ define([
     setBatch: function(batch) {
       this.cache.push(batch);
       this.batch = batch;
+      var deferred = $.Deferred();
       var thisModel = this;
       setupInputs(thisModel)
           .fail(function () {
-            PubSub.publish('s2.status.error', thisModel, {message: "Couldn't load the batch resource"});
+            deferred.reject({message: "Couldn't load the batch resource"});
           }).then(function () {
-            thisModel.owner.childDone(thisModel, "batchAdded");
+            deferred.resolve(thisModel);
           });
+      return deferred.promise();
     },
 
     setUser: function(user) {
