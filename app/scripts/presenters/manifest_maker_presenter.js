@@ -23,7 +23,13 @@ define(['config'
       this.owner = owner;
       this.config = config;
       this.model = Object.create(Model).init(this, config);
-      this.view = this.createHtml({templates:ReceptionTemplates.templateList,studies:ReceptionStudies.studyList, printerList:config.printerList});
+      this.view = this.createHtml({
+        templates:ReceptionTemplates.templateList,
+        studies:ReceptionStudies.studyList,
+        printerList:config.printerList
+      });
+      // it only works if the templates in the select menu are not re-ordered!!
+      this.updateSamplePrefixMenu(ReceptionTemplates.templateList[0].template_name);
       this.subscribeToPubSubEvents();
       return this;
     },
@@ -35,6 +41,7 @@ define(['config'
       this.generateManifestBtnSelection = html.find("#generateManifest");
       this.downloadManifestBtnSelection = html.find("#downloadManifest");
       this.printBCBtnSelection = html.find("#printBC");
+      this.templateSelectSelection = html.find("#xls-templates");
       this.printBoxSelection = html.find(".printer-div");
 
       this.generateManifestBtnSelection.click(onGenerateManifestEventHandler(thisPresenter));
@@ -47,6 +54,9 @@ define(['config'
       function onPrintBarcodeEventHandler(presenter){ return function(){ presenter.onPrintBarcode(); } }
 
       this.printBoxSelection.hide();
+
+      this.templateSelectSelection.change(onChangeTemplateEventHandler(thisPresenter));
+      function onChangeTemplateEventHandler(presenter){ return function(event){ presenter.onChangeTemplate(event); } }
 
       html.find("#number-of-sample").bind("keypress",function(event){
             if (event.which !== 13) return;
@@ -139,6 +149,28 @@ define(['config'
               thisPresenter.view.trigger("s2.busybox.end_process");
               return thisPresenter.message('success','Samples generated. The manifest is ready for download, and the barcodes ready for printing.');
             })
+      }
+    },
+
+    onChangeTemplate:function(event){
+      this.updateSamplePrefixMenu($(event.target).val());
+    },
+
+    updateSamplePrefixMenu: function (selectedTemplateName) {
+      var samplePrefixesSelection = this.view.find("#samplePrefixes").empty();
+      var template = findTemplateByName(ReceptionTemplates.templateList, selectedTemplateName);
+      refreshSelectionOptionsOnView(samplePrefixesSelection, template.sample_types);
+
+      function findTemplateByName(templates, templateName){
+        return _.find(templates, function (template) {
+          return template.template_name === templateName;
+        });
+      }
+
+      function refreshSelectionOptionsOnView(selection, values){
+        _.each(values, function(value){
+          selection.append('<option value="'+value+'">'+ value + '</option>');
+        });
       }
     },
 
