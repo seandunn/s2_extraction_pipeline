@@ -190,7 +190,7 @@ define([
             waitsFor(results.hasFinished);
 
             runs(function () {
-              expect(results.get('eventData').message).toEqual("You can only add 'NA+P' tubes into this batch. The scanned barcode corresponds to a 'DNA+P' tube.");
+              expect(results.get('eventData').message).toEqual("You can only add 'NA+P' inputs into this batch. The scanned barcode corresponds to a 'DNA+P' input.");
             });
           });
         });
