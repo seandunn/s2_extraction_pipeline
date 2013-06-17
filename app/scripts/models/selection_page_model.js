@@ -9,62 +9,76 @@ define([
   $.extend(SelectionPageModel, {
     init:function (owner, workflowConfig) {
       this.owner = owner;
-      this.tubes = [];
+      this.inputs = $.Deferred();
       this.capacity = workflowConfig.capacity || 12;
       this.config = workflowConfig;
 
       this.initialiseCaching();
-      return this;
+      return $.Deferred().resolve(this).promise();
     },
 
     setup: function(setupData){
       this.user = setupData.user;
-
+      var deferred = $.Deferred();
+      var thisModel = this;
       if (setupData.batch) {
         this.batch = setupData.batch;
         this.cache.push(setupData.batch);
-        return setupInputs(this);
+        setupInputs(this)
+            .then(function () {
+              deferred.resolve(thisModel);
+            }).fail(function () {
+              deferred.reject({message: "Couldn't retrieve the labware!"});
+            });
       } else if (setupData.labware) {
         this.cache.push(setupData.labware);
-        this.tubes.push(setupData.labware);
-        return $.Deferred().resolve().promise();
+        this.inputs = $.Deferred().resolve([setupData.labware]).promise();
+        deferred.resolve(thisModel);
       } else throw "This model should not be created without either a batch or scanned labware";
+
+      return deferred.promise();
     },
 
-    addTube: function (newTube) {
+    addTube: function (newInput) {
       var deferred = $.Deferred();
       var thisModel = this;
-
-      $.Deferred().resolve()
-          .then(function () {
-            if (thisModel.tubes.length > thisModel.capacity - 1) {
+      var inputs;
+      thisModel.inputs
+          .then(function (result) {
+            inputs = result;
+            if (inputs.length > thisModel.capacity - 1) {
+              // check if not full
               return deferred.reject({message: "Only " + thisModel.capacity + " orders can be selected", previous_error: null});
-            } else if (thisModel.config.output[0].aliquotType !== newTube.aliquots[0].type) {
+            } else if (thisModel.config.output[0].aliquotType !== newInput.aliquots[0].type) {
+              // check if correct type
               var msg = "You can only add '"
                   + thisModel.config.output[0].aliquotType
-                  + "' tubes into this batch. The scanned barcode corresponds to a '"
-                  + newTube.aliquots[0].type
-                  + "' tube.";
+                  + "' inputs into this batch. The scanned barcode corresponds to a '"
+                  + newInput.aliquots[0].type
+                  + "' input.";
               return deferred.reject({message: msg, previous_error: null});
-            } else if (_.some(thisModel.tubes, function (tube) {
-              return tube.uuid === newTube.uuid;
+            } else if (_.some(inputs, function (input) {
+              return input.uuid === newInput.uuid;
             })) {
+              // check if not already there
               return deferred.reject({message: 'You cannot add the same tube twice.', previous_error: null});
             }
-          }).then(function () {
-            return newTube.order();
+            // check if correct role
+            return newInput.order();
           })
           .fail(function () {
             return deferred.reject({message: "Couldn't send the search for the order", previous_error: null});
           })
           .then(function (order) {
             var newTubeHasCorrectRole = _.chain(order.items.filter(function (item) {
-              return (item.uuid === newTube.uuid) && (thisModel.config.input.role === item.role) && ( "done" === item.status);
+              return (item.uuid === newInput.uuid) && (thisModel.config.input.role === item.role) && ( "done" === item.status);
             })).some().value();
             if (!newTubeHasCorrectRole) {
-              return deferred.reject({message:"This tube cannot be added to the current batch, because it does not have the correct role."});
+              return deferred.reject({message: "This tube cannot be added to the current batch, because it does not have the correct role."});
             }
-            thisModel.tubes.push(newTube);
+            // it is only now that we can add the tube....
+            inputs.push(newInput);
+            thisModel.inputs = $.Deferred().resolve(inputs).promise();
             return deferred.resolve(thisModel);
           });
       return deferred.promise();
@@ -90,70 +104,93 @@ define([
     },
 
     removeTubeByUuid:function (uuid) {
-      this.tubes = _.filter(this.tubes, function (tube) {
+      var thisModel = this;
+      return this.inputs.then(function(inputs){
+        thisModel.inputs = $.Deferred(); // a new Deferred;
+        inputs = _.filter(this.inputs, function (tube) {
         return tube.uuid !== uuid;
+      });
       });
     },
 
     makeBatch:function () {
-      var that = this;
+      var thisModel = this;
+      var deferred = $.Deferred();
       var batchBySideEffect;
       var addingRoles = {updates:[]};
       var changingRoles = {updates:[]};
-
-      return this.owner.getS2Root().then(function (root) {
-        return root.batches.new({resources:that.tubes}).save();
-      }).then(function (savedBatch) {
-        batchBySideEffect = savedBatch;
-        return savedBatch.getItemsGroupedByOrders();
-      }).then(function (itemsByOrders) {
-        _.each(itemsByOrders, function (orderKey) {
-          _.each(orderKey.items, function (item) {
-            addingRoles.updates.push({
-              input: {
-                order:orderKey.order
-              },
-              output:{
-                resource:item,
-                role:    that.config.output[0].role,
-                batch:   batchBySideEffect.uuid
-              }});
-
-              changingRoles.updates.push({
-                input: {
-                  order:   orderKey.order,
-                  resource:item,
-                  role:    that.config.input.role
-                },
-                output:{
-                  resource:item,
-                  role:    that.config.output[0].role
-                }});
+      var root;
+      this.owner.getS2Root()
+          .then(function (result) {
+            root = result;
+            return thisModel.inputs;
+          })
+          .then(function (inputs) {
+            return root.batches.new({resources: inputs}).save();
+          })
+          .then(function (savedBatch) {
+            batchBySideEffect = savedBatch;
+            return savedBatch.getItemsGroupedByOrders();
+          })
+          .then(function (itemsByOrders) {
+            _.each(itemsByOrders, function (orderKey) {
+              _.each(orderKey.items, function (item) {
+                addingRoles.updates.push({
+                  input:  {
+                    order: orderKey.order
+                  },
+                  output: {
+                    resource: item,
+                    role:     thisModel.config.output[0].role,
+                    batch:    batchBySideEffect.uuid
+                  }});
+                changingRoles.updates.push({
+                  input:  {
+                    order:    orderKey.order,
+                    resource: item,
+                    role:     thisModel.config.input.role
+                  },
+                  output: {
+                    resource: item,
+                    role:     thisModel.config.output[0].role
+                  }});
+              });
+            });
+            return Operations.stateManagement().start(addingRoles);
+          }).then(function () {
+            return Operations.stateManagement().complete(changingRoles);
+          }).then(function () {
+            thisModel.batch = batchBySideEffect; // updating the batch in the model, once all the requests succeeded.
+            deferred.resolve(thisModel);
+          }).fail(function () {
+            deferred.reject({message: "Couldn't make a batch!"});
           });
-        });
-
-        return Operations.stateManagement().start(addingRoles);
-      }).then(function() {
-        return Operations.stateManagement().complete(changingRoles);
-      }).then(function() {
-        return that.batch = batchBySideEffect; // updating the batch in the model, once all the requests succeeded.
-      }).fail(function () {
-        throw "Could not make a batch";
-      });
+      return deferred.promise();
     }
   });
 
+
   function setupInputs(that) {
-    return that.batch.items.then(function(items) {
-      return $.when.apply(null, _.chain(items).filter(function(item) {
-        return item.role === that.config.input.role && item.status === 'done';
-      }).map(function(item) {
-        return that.cache.fetchResourcePromiseFromUUID(item.uuid).then(function(resource) {
-          that.addTube(resource);
-        });
-      }).value());
-    });
+    var inputs = [];
+    return that.batch.items.then(function (items) {
+      return $.when.apply(null,
+          _.chain(items)
+              .filter(function (item) {
+                return item.role === that.config.input.role && item.status === 'done';
+              })
+              .map(function (item) {
+                return that.cache.fetchResourcePromiseFromUUID(item.uuid)
+                    .then(function (resource) {
+                      inputs.push(resource);
+                    });
+              })
+              .value());
+    })
+        .then(function () {
+          return that.inputs.resolve(inputs);
+        }).fail(that.inputs.reject);
   }
+
 
   return SelectionPageModel;
 });
