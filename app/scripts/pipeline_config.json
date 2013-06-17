@@ -765,7 +765,7 @@
           "outputs":  "never"
         },
         "cache": {
-          "outputs": "singular(create)"
+          "outputs": "singular(createifnotfound)"
         },
         "input": {
           "role":       "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched",

@@ -51,6 +51,41 @@ define([
       };
     },
 
+    // create a new labware but checks first if the barcode is free
+    createifnotfound: function () {
+      return function (modelName, barcode) {
+        return this.owner.getS2Root().then(function (root) {
+          var labwareModel = root[modelName];
+          return Deferred.sequentially(function (state) {
+            var deferred = $.Deferred();
+            labwareModel.findByEan13Barcode(barcode)
+              .fail(function () {
+                deferred.resolve();
+              })
+              .then(function () {
+                deferred.reject();
+              });
+            return deferred.promise()
+          }, function (state) {
+            return labwareModel.create({});
+          }, function (state, labware) {
+            state.labware = labware;
+            return labware.labelWith({
+              'barcode': { 'type': 'ean13-barcode', 'value': barcode }
+            });
+          }, function (state) {
+            return root.find(state.labware.uuid);
+          }, function (state, labware_with_labels) {
+            state.labware = labware_with_labels;
+          });
+        }).then(function (state) {
+            return state.labware;
+          }, function () {
+            return 'Unable to register labware with barcode "' + barcode + '"';
+          });
+      };
+    },
+
     // Composite behaviour: find it, if it can't be found create it.
     composite: function(start) {
       var rest  = _.chain(arguments).drop(1);
