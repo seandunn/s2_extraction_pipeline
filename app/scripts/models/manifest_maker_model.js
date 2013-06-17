@@ -27,7 +27,7 @@ define([
       delete this.barcodes;
     },
 
-    generateSamples: function (templateName, study, nbOfSample) {
+    generateSamples: function (templateName, study, sampleType, nbOfSample) {
       var deferred = $.Deferred();
       var thisModel = this;
       thisModel.getXLSTemplate(templateName)
@@ -36,7 +36,7 @@ define([
           })
           .then(function(templateBlob){
             thisModel.currentTemplateBlob = templateBlob;
-            return thisModel.getLabellables(templateName, study, nbOfSample);
+            return thisModel.getLabellables(templateName, study, sampleType, nbOfSample);
           })
           .fail(function(error){
             return deferred.reject({message: " Couldn't produce the samples. " + error.message, previous_error: error});
@@ -77,12 +77,12 @@ define([
       return deferred.promise();
     },
 
-    getLabellables: function (templateName, studyName, nbOfSample) {
+    getLabellables: function (templateName, studyName, samplePrefix, nbOfSample) {
       var deferred = $.Deferred();
       var thisModel = this;
       var root;
       var labwareModel = ReceptionTemplates[templateName].model;
-      var sampleType = ReceptionTemplates[templateName].sample_type;
+      var sampleType = samplePrefix;
       var sangerSampleIdCore = ReceptionStudies[studyName].sanger_sample_id_core;
       thisModel.owner.getS2Root()
           .fail(function () {
