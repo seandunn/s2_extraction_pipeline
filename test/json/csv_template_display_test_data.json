@@ -1,0 +1,36 @@
+[
+  {
+    "_": {
+      "columnName":   "_SELECTED",
+      "friendlyName": "to be updated",
+      "type":         "checkbox",
+      "default":      "No"
+    }
+  },
+  {
+    "sanger_sample_id": {
+      "columnName": "SANGER SAMPLE ID",
+      "type":       "span"
+    }
+  },
+  {
+    "barcode": {
+      "columnName": "Tube Barcode",
+      "type":       "span"
+    }
+  },
+  {
+    "sample_type": {
+      "columnName": "SAMPLE TYPE",
+      "type":       "span"
+    }
+  },
+  {
+    "process": {
+      "columnName": "_PROCESS",
+      "type":       "select",
+      "options":    ["DNA & RNA Manual", "DNA & RNA QIAcube"],
+      "default":    "DNA & RNA QIAcube"
+    }
+  }
+]

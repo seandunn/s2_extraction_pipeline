@@ -1,6 +1,7 @@
 define([
-  'text!reception_templates/cgap_lysed/csv_template.json'
-], function (CGAPLysed) {
+  'text!reception_templates/cgap_lysed/csv_template.json',
+  'text!reception_templates/cgap_lysed/csv_template_display.json'
+], function (CGAPLysed,CGAPLysedDisplay) {
   'use strict';
 
   var Templates = {
@@ -10,6 +11,7 @@ define([
       sample_type:   "RNA",
       aliquot_type:  "NA",
       json_template: JSON.parse(CGAPLysed),
+      json_template_display: JSON.parse(CGAPLysedDisplay),
       header_line_number: 8
     }
   };

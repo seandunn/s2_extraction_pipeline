@@ -69,14 +69,6 @@
     "columnName": "SAMPLE ACCESSION NUMBER (optional)",
     "type":       "string"
   },
-  "taxon_id": {
-    "columnName": "TAXON ID",
-    "type": "int"
-  },
-  "scientific_name": {
-    "columnName": "COMMON NAME",
-    "type": "string"
-  },
   "process":{
     "columnName": "_PROCESS",
     "type":       "string"

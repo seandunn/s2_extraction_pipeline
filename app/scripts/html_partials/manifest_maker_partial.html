@@ -1,0 +1,33 @@
+<div class="component">
+    <form onsubmit="return false;">
+        <div>
+            <h4>Create a new manifest</h4>
+            <label for="xls-templates">Select a template:</label>
+            <select class="xls-templates" id="xls-templates">
+                <% _.each (templateData.templates, function (template) { %>
+                <option value="<%- template.template_name %>"><%- template.friendly_name %></option>
+                <% }); %>
+            </select>
+            <label for="studies">Select a study:</label>
+            <select class="studies" id="studies">
+                <% _.each (templateData.studies, function (study) { %>
+                <option value="<%- study.study_name %>"><%- study.friendly_name %></option>
+                <% }); %>
+            </select>
+            <label for="number-of-sample">Enter the number of samples:</label>
+            <input id="number-of-sample" type="text" value="1">
+        </div>
+    </form>
+    <button id="generateManifest" class="btn">Generate Manifest</button>
+    <button id="downloadManifest" class="btn">Download Manifest</button>
+    <div class="printer-div">
+        <button id="printBC" class="btn">Print Barcodes</button>
+        <label for="printer-select">Current Printer:</label>
+        <select class="printerSelect" id="printer-select">
+            <% _.each (templateData.printerList, function (printer) { %>
+            <option value="<%- printer.name %>"><%- printer.name %></option>
+            <% }); %>
+        </select>
+    </div>
+    <div class="validationText alert" style="display:none"></div>
+</div>

@@ -1,4 +1,6 @@
-define([], function () {
+define([ 'text!scripts/pipeline_config.json' ], function (pipelineJSON) {
+
+  var pipelineConfig = JSON.parse(pipelineJSON);
 
   // Returns a function that finds the first "ready" item in the batch that matches the given rule.
   function itemMatcherForBatchItems(items) {
@@ -17,40 +19,24 @@ define([], function () {
     };
   }
 
-  var workflowEngine = function (application, config) {
-    this.application      = application;
-    this.defaultPresenter = config.defaultPresenter;
-    this.role_priority    = config.role_priority;
-    this.workflows        = config.workflows;
-  };
-
-  workflowEngine.prototype.getMatchingRoleDataFromItems = function (items) {
-    var activeRole     = _.chain(this.role_priority).find(itemMatcherForBatchItems(items)).value();
-    var foundWorkflows = this.workflows.filter(byRole(activeRole));
+  var getMatchingRoleDataFromItems = function (items) {
+    var activeRole     = _.chain(pipelineConfig.role_priority).find(itemMatcherForBatchItems(items)).value();
+    var foundWorkflows = pipelineConfig.workflows.filter(byRole(activeRole));
 
     if (foundWorkflows.length > 1) throw "More than 1 workflow active.";
 
-    return foundWorkflows[0] || { presenterName: this.defaultPresenter };
+    return foundWorkflows[0] || { presenterName: pipelineConfig.defaultPresenter };
   };
 
 
-  workflowEngine.prototype.setNextPresenterFromName = function (presenterFactory, workflowConfig) {
-    var presenter = presenterFactory.create((workflowConfig || {}).presenterName, this.application, workflowConfig);
-    this.application.childDone(this, "foundNextPresenter", presenter);
-  };
-
-  workflowEngine.prototype.askForNextPresenter = function (presenterFactory, model) {
-    var that = this;
+  var nextWorkflow = function(model) {
     var itemsPromise;
 
-    if (!model.user) {
-      return this.setNextPresenterFromName(presenterFactory);
-    }
+    if (!model.user) return $.Deferred().resolve().promise();
 
     if (!model.batch && model.labware) {
-      itemsPromise = model.labware.order()
-      .then(function(order) {
-        return order.items.filter(function(item){ 
+      itemsPromise = model.labware.order().then(function(order) {
+        return order.items.filter(function(item){
           return item.uuid === model.labware.uuid;
         });
       });
@@ -58,14 +44,9 @@ define([], function () {
       itemsPromise = model.batch.items;
     }
 
-    itemsPromise.then(function(items){
-      return that.getMatchingRoleDataFromItems(items);
-    }).then(function(workflowConfig){
-      that.setNextPresenterFromName(presenterFactory, workflowConfig);
-    })
-
+    return itemsPromise.then(getMatchingRoleDataFromItems);
   };
 
-  return workflowEngine;
+  return nextWorkflow;
 });
 

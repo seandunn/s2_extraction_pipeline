@@ -24,21 +24,17 @@ define([
 
   function kitScannedCallback(presenter) {
     return function (event, template, presenter) {
-      template.find('.alert-error').addClass('hide');
-      template.find("input").attr('disabled', true);
       presenter.model
           .then(function(model){
             return model.setKitFromBarcode(event.currentTarget.value)
           })
           .fail(function (error) {
-            presenter.message('error', error.message);
+            PubSub.publish('s2.status.error', presenter, error);
             template.find(".barcodeInput").attr('disabled', false);
-
           })
           .then(function(model){
-            presenter.message('info', 'Kit details validated/saved');
+            PubSub.publish('s2.status.message', presenter, {message:'Kit details validated/saved'});
             template.find(".barcodeInput").attr('disabled', true);
-//            presenter.owner.childDone(this, 'done', data);
             PubSub.publish("s2.step_presenter.next_process", presenter, {batch: model.batch});
           })
       ;
@@ -47,17 +43,8 @@ define([
 
   function kitScannedErrorCallback(presenter) {
     return function (errorText) {
-      var errorHtml = function (errorText) {
-        return $("<h4/>", {class: "alert-heading", text: errorText});
-      };
       return function (event, template, presenter) {
-        template.
-            find('.alert-error').
-            html(errorHtml(errorText)).
-            removeClass('hide');
-        template.
-            find('input').
-            removeAttr('disabled');
+        PubSub.publish('s2.status.error', presenter, {message:errorText});
       };
     };
   }
@@ -83,45 +70,34 @@ define([
 
     setupPresenter: function(setupData, selector) {
       var presenter = this;
-
-      presenter.selector    = selector;
+      presenter.selector = selector;
       presenter.model
           .then(function (model) {
             return model.setupModel(setupData);
           })
           .then(function(model){
-//            presenter.view = new View(presenter, presenter.selector);
-
-//            presenter.view.renderView(presenter.model);
+          if(!model.batch.kit){
             presenter.selector().html(_.template(kitPartialHtml)({}));
-
             presenter.barcodePresenter = presenter.presenterFactory.create('scan_barcode_presenter', presenter);
             presenter.barcodePresenter.init({ type: 'Kit' });
             presenter.selector()
                 .find('.barcode')
                 .append(presenter.bindReturnKey( presenter.barcodePresenter.renderView(), kitScannedCallback(presenter), kitScannedErrorCallback(presenter)('Barcode must be a 13 digit number.'), validationOnReturnKeyCallback(presenter) ));
             presenter.selector().find('.barcode input').focus();
+          }
           });
       return presenter;
     },
 
-    message: function (type, message) {
-      if (!type) {
-        this.selector()
-            .find('.validationText')
-            .hide();
-      } else {
-        this.selector()
-            .find('.validationText')
-            .show()
-            .removeClass('alert-error alert-info alert-success')
-            .addClass('alert-' + type)
-            .html(message);
-      }
+    focus: function () {
+      var presenter = this;
+      presenter.model
+        .then(function (model) {
+          if (model.batch.kit) {
+            PubSub.publish("s2.step_presenter.next_process", presenter, {batch: model.batch});
+          }
+        });
     },
-
-
-    focus: function() { },
 
     release: function() {
       this.view.clear();
@@ -134,16 +110,6 @@ define([
     },
 
     childDone: function(child, action, data) {
-//      if (action === 'barcodeScanned') {
-//        //this.model.kit.barcode = data;
-//        //this.model.fire();
-//      } else if (action === 'saved') {
-//        this.view.message('info', 'Kit details saved');
-//        this.view.selector().find(".barcodeInput").attr('disabled', true);
-//        this.owner.childDone(this, 'done', data);
-//    } else if (action === 'error') {
-//        this.view.message('error', data.message);
-//      }
     }
 
   });
