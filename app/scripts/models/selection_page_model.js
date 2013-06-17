@@ -38,18 +38,18 @@ define([
       $.Deferred().resolve()
           .then(function () {
             if (thisModel.tubes.length > thisModel.capacity - 1) {
-              deferred.reject({message: "Only " + thisModel.capacity + " orders can be selected", previous_error: null});
+              return deferred.reject({message: "Only " + thisModel.capacity + " orders can be selected", previous_error: null});
             } else if (thisModel.config.output[0].aliquotType !== newTube.aliquots[0].type) {
               var msg = "You can only add '"
                   + thisModel.config.output[0].aliquotType
                   + "' tubes into this batch. The scanned barcode corresponds to a '"
                   + newTube.aliquots[0].type
                   + "' tube.";
-              deferred.reject({message: msg, previous_error: null});
+              return deferred.reject({message: msg, previous_error: null});
             } else if (_.some(thisModel.tubes, function (tube) {
               return tube.uuid === newTube.uuid;
             })) {
-              deferred.reject({message: 'You cannot add the same tube twice.', previous_error: null});
+              return deferred.reject({message: 'You cannot add the same tube twice.', previous_error: null});
             }
           }).then(function () {
             return newTube.order();

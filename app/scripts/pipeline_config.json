@@ -732,7 +732,8 @@
     },
     "output": [
       {
-        "role": "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched"
+        "role": "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched",
+        "aliquotType":"DNA"
       }
     ]
   },
@@ -770,6 +771,7 @@
         "output": [
           {
             "role":       "samples.extraction.fluidx_tube.dna.to_be_racked",
+            "aliquotType":"DNA",
             "model":      "tubes",
             "title":      "2D Extracted DNA Tube",
             "validation": "2D_tube"
@@ -824,7 +826,8 @@
     },
     "output": [
       {
-        "role": "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched"
+        "role": "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched",
+        "aliquotType":"RNA"
       }
     ]
   },
@@ -861,6 +864,7 @@
         "output": [
           {
             "role": "samples.extraction.fluidx_tube.rna.to_be_racked",
+            "aliquotType":"RNA",
             "model": "tubes",
             "title": "2D Extracted RNA Tube",
             "validation": "2D_tube"
