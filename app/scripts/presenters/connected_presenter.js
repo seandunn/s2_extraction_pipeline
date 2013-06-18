@@ -26,18 +26,32 @@ define([
     },
 
     setupPresenter:function (input_model, jquerySelection) {
+      var connectedPresenter = this;
       this.jquerySelection = jquerySelection;
       // send busy message
       var thisPresenter = this;
       thisPresenter.jquerySelection().trigger("s2.busybox.start_process");
-      this.model.setBatch(input_model.batch)
-          .then(function(){
-            thisPresenter.jquerySelection().trigger("s2.busybox.end_process");
-          }).fail(function(error){
-            PubSub.publish('s2.status.error', thisPresenter, error);
-            thisPresenter.jquerySelection().trigger("s2.busybox.end_process");
-          });
-      this.renderView();
+
+      this.model.setBatch(input_model.batch).then(function(connected){
+
+        connected.batch.items.then(function(items){
+          var wip = _.chain(items).filter(function(item){
+            return item.status === 'in_progress'
+          }).value();
+
+          if (wip.length > 0){
+            connectedPresenter.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
+            connectedPresenter.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
+          }
+        }).then(function(){
+          thisPresenter.jquerySelection().trigger("s2.busybox.end_process");
+        });
+
+      }).fail(function(error){
+        PubSub.publish('s2.status.error', thisPresenter, error);
+        thisPresenter.jquerySelection().trigger("s2.busybox.end_process");
+      });
+
       this.jquerySelection().html(this.template());
       this.focus();
       this.setupSubPresenters();
