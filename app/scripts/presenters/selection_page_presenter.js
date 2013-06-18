@@ -153,9 +153,14 @@ define([ 'extraction_pipeline/presenters/base_presenter'
                 presenter.renderView();
               });
         } else if (action === "removeLabware") {
-          this.model.removeTubeByUuid(data.resource.uuid);
-          this.setupSubPresenters();
-          this.renderView();
+          this.model
+              .then(function (model) {
+                return model.removeTubeByUuid(data.resource.uuid);
+              })
+              .then(function () {
+                presenter.setupSubPresenters();
+                presenter.renderView();
+              })
         }
       }
     }

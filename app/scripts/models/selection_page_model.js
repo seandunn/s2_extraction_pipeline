@@ -105,12 +105,13 @@ define([
 
     removeTubeByUuid:function (uuid) {
       var thisModel = this;
-      return this.inputs.then(function(inputs){
-        thisModel.inputs = $.Deferred(); // a new Deferred;
-        inputs = _.filter(this.inputs, function (tube) {
-        return tube.uuid !== uuid;
-      });
-      });
+      return this.inputs
+          .then(function (currentInputs) {
+            var newInputs = _.filter(currentInputs, function (labware) {
+              return labware.uuid !== uuid;
+            });
+            return thisModel.inputs = $.Deferred().resolve(newInputs).promise();
+          });
     },
 
     makeBatch:function () {
@@ -169,10 +170,10 @@ define([
     }
   });
 
-
   function setupInputs(that) {
     var inputs = [];
-    return that.batch.items.then(function (items) {
+    return that.batch.items
+        .then(function (items) {
       return $.when.apply(null,
           _.chain(items)
               .filter(function (item) {
@@ -185,12 +186,12 @@ define([
                     });
               })
               .value());
-    })
+        })
         .then(function () {
           return that.inputs.resolve(inputs);
-        }).fail(that.inputs.reject);
+        })
+        .fail(that.inputs.reject);
   }
-
 
   return SelectionPageModel;
 });

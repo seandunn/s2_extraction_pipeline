@@ -322,7 +322,7 @@ define([
                   url:      '/actions/bulk_create_sample',
                   dataType: 'json',
                   headers:  { 'Content-Type': 'application/json' },
-                  data:     '{"bulk_create_sample":{"user":"username","state":"draft","quantity":3,"sample_type":"RNA","sanger_sample_id_core":"QC1Hip"}}'
+                  data:     '{"bulk_create_sample":{"user":"username","state":"draft","quantity":3,"sample_type":"DNA Human","sanger_sample_id_core":"QC1Hip"}}'
                 };
 
                 fakeContent()
