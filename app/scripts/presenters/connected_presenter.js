@@ -62,14 +62,8 @@ define([
       return this;
     },
     renderView:function () {
-      var dataForView = null;
 
       if (this.model && this.model.config) {
-        dataForView = {
-          batch:this.model.batch && this.model.batch.uuid,
-          user:this.model.user,
-          processTitle:this.model.config.processTitle
-        }
         this.focus();
       }
 
