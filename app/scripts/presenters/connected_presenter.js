@@ -141,6 +141,7 @@ define([
       } else if (action === "barcodePrintSuccess") {
 
         PubSub.publish('s2.status.message', this, {message: 'Barcode labels printed'});
+        PubSub.publish('s2.step_presenter.printing_done', this, {});
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "barcodePrintFailure") {
@@ -194,6 +195,7 @@ define([
 
     print: function(child, action, data) {
       if (this.readyToCreateOutputs()) {
+        PubSub.publish('s2.step_presenter.printing_started', this, {});
         this.model.createOutputs(data);
       }
     },
