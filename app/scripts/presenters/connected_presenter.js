@@ -38,9 +38,12 @@ define([
             thisPresenter.jquerySelection().trigger("s2.busybox.end_process");
           });
       this.renderView();
+      this.jquerySelection().html(this.template());
+      this.focus();
       this.setupSubPresenters();
       return this;
     },
+
     setupSubPresenters: function(reset) {
       this.model.setupInputPresenters(reset);
       return this;
@@ -59,16 +62,6 @@ define([
 
     release:function () {
       this.currentView.clear();
-      return this;
-    },
-    renderView:function () {
-
-      if (this.model && this.model.config) {
-        this.focus();
-      }
-
-      this.jquerySelection().html(this.template());
-
       return this;
     },
 
