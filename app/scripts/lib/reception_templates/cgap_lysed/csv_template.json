@@ -27,6 +27,11 @@
     "lysed": {
       "columnName": "Lysed?",
       "type":       "boolean"
+    },
+
+    "extraction_process":{
+      "columnName": "_PROCESS",
+      "type":       "string"
     }
   },
   "mother":                    {
@@ -76,9 +81,5 @@
   "scientific_name": {
     "columnName": "COMMON NAME",
     "type": "string"
-  },
-  "cellular_material.extraction_process":{
-    "columnName": "_PROCESS",
-    "type":       "string"
   }
 }
