@@ -9,7 +9,7 @@ define([
       friendly_name: "CGAP - lysed",
       model:         "tube",
       sample_type:   "RNA",
-      aliquot_type:  "NA",
+      aliquot_type:  "NA+P",
       json_template: JSON.parse(CGAPLysed),
       json_template_display: JSON.parse(CGAPLysedDisplay),
       header_line_number: 8,
