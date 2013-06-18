@@ -77,7 +77,7 @@
     "columnName": "COMMON NAME",
     "type": "string"
   },
-  "process":{
+  "cellular_material.extraction_process":{
     "columnName": "_PROCESS",
     "type":       "string"
   }
