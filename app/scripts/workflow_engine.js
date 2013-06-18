@@ -34,6 +34,11 @@ define([ 'text!scripts/pipeline_config.json' ], function (pipelineJSON) {
 
     var foundWorkflows = pipelineConfig.workflows.filter(byRole(activeRole));
 
+    // no presenter to deal with this role -> summary page
+    if(foundWorkflows.length < 1){
+      foundWorkflows.push(pipelineConfig.unknownRole);
+    }
+
     if (foundWorkflows.length > 1) throw "More than 1 workflow active.";
 
     return foundWorkflows[0];

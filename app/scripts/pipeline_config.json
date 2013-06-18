@@ -47,10 +47,7 @@
 
    "samples.extraction.eppendorf_tube.rna",
    "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched",
-   "samples.extraction.fluidx_tube.rna.to_be_racked",
-
-    "samples.DNA.ready",
-    "samples.RNA.ready"
+   "samples.extraction.fluidx_tube.rna.to_be_racked"
   ],
 
   "workflows":[
@@ -1207,28 +1204,16 @@
       }
       ]}
     ]
-    },
-
-    {
-      "accepts":        [ "samples.DNA.ready" ],
-      "presenterName":  "summary_page_presenter",
-      "defaultPrinter": "d304bc",
-      "printerType":    1,
-      "processTitle":   "DNA Ready"
-    },
-
-    {
-      "accepts":        [ "samples.RNA.ready" ],
-      "presenterName":  "summary_page_presenter",
-      "defaultPrinter": "d304bc",
-      "printerType":    1,
-      "processTitle":   "RNA Ready"
     }
   ],
 
   "spentBatch": {
     "presenterName": "summary_page_presenter",
     "processTitle":  "Spent batch"
+  },
+  "unknownRole": {
+    "presenterName": "summary_page_presenter",
+    "processTitle":  "Unknown Role ???"
   }
 }
 

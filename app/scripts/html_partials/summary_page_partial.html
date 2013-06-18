@@ -4,22 +4,30 @@
 <div>
   <h4>Batch Information</h4>
 </div>
-<ul>
-  <table border="1">
+<table border="1">
+  <thead>
     <tr>
-      <th>Type</th>
+      <th>Order UUID</th>
       <th>Role</th>
       <th>Status</th>
-      <th>Barcode</th>
+      <th>Type</th>
+      <th>Labware Barcode</th>
+      <th>Sanger Barcode</th>
+      <th>Batch UUID</th>
     </tr>
-    <% _.each (templateData.orders, function (order) { %>
-    <tr>
-      <td><%- input.resourceType %></td>
-      <td></td>
-      <td></td>
-      <td></td>
+  </thead>
+  <tbody>
+    <% _.each (templateData.items, function (item) { %>
+    <tr class="<%- item.display_format %>">
+      <td><%- item.order_uuid %></td>
+      <td><%- item.role %></td>
+      <td><%- item.status %></td>
+      <td><%- item.type %></td>
+      <td><%- item.barcode %></td>
+      <td><%- item.sanger_barcode %></td>
+      <td><%- item.batch_uuid %></td>
     </tr>
     <% }); %>
-  </table>
-</ul>
+  </tbody>
+</table>
 <div class="validationText alert" style="display:none"></div>

@@ -37,27 +37,27 @@ define(['extraction_pipeline/presenters/base_presenter'
 
     renderView: function () {
       var thisPresenter = this;
-      var template = _.template(summaryPagePartialHtml)
+      var template = _.template(summaryPagePartialHtml);
 
       var templateData = {};
       templateData.config = thisPresenter.config;
-
+      var model;
       thisPresenter.model
-        .then(function (model) {
-          return model.ordersByUUID;
+        .then(function (result) {
+          model = result;
+          return model.labwares;
         })
-        .fail(function(error){
+        .fail(function (error) {
           thisPresenter.message('error', 'Labware not found for this batch');
-//          PubSub.publish('s2.summary_page.')
         })
-        .then(function(orders){
-          templateData.orders = orders;
+        .then(function (labwares) {
+          templateData.items = transformOrdersAndLabwareToHtmlTemplateData(model.ordersByUUID, labwares, model.batch.uuid);
           thisPresenter.jquerySelection().html(template(templateData));
         });
 
       return this;
     },
-    message: function (type, message) {
+    message:    function (type, message) {
       if (!type) {
         this.jquerySelection()
           .find('.validationText')
@@ -72,6 +72,61 @@ define(['extraction_pipeline/presenters/base_presenter'
       }
     }
   });
+
+  function transformOrdersAndLabwareToHtmlTemplateData(orders, labwares, modelBatchUUID) {
+    var templateData = [];
+    _.each(orders, function (order) {
+      _.each(order.items, function (itemsByRole) {
+        _.each(itemsByRole, function (item) {
+          var batch_uuid = item.batch ? item.batch.uuid : "Not found";
+          templateData.push({
+            order_uuid:     order.uuid,
+            role:           item.role,
+            status:         item.status,
+            type:           getLabwareTypeFromUUID(item.uuid, labwares),
+            barcode:        getLabwareBarcodeFromUUID(item.uuid, labwares),
+            sanger_barcode: getSangerBarcodeFromUUID(item.uuid, labwares),
+            batch_uuid:     batch_uuid,
+            display_format: (modelBatchUUID === batch_uuid) ? "enabledRow": "disabledRow"
+          });
+        });
+      });
+    });
+    return templateData;
+  }
+
+  function getLabwareBarcodeFromUUID(labwareUUID, labwares) {
+    var labware = getLabwareFromUUID(labwareUUID, labwares);
+    if (labware) {
+      return (labware.labels.barcode && labware.labels.barcode.value) || "Not found";
+    } else {
+      return  "Labware not found";
+    }
+  }
+
+  function getSangerBarcodeFromUUID(labwareUUID, labwares) {
+    var labware = getLabwareFromUUID(labwareUUID, labwares);
+    if (labware) {
+      return  (labware.labels.sangerBarcode && labware.labels.sangerBarcode.value) || "Not Found";
+    } else {
+      return "Labware not found";
+    }
+  }
+
+  function getLabwareTypeFromUUID(labwareUUID, labwares) {
+    var labware = getLabwareFromUUID(labwareUUID, labwares);
+    if (labware) {
+      return labware.resourceType || "Type not found";
+    } else {
+      return "Labware not found";
+    }
+  }
+
+  function getLabwareFromUUID(labwareUUID, labwares) {
+    return _.find(labwares, function (labware) {
+      return labware.uuid === labwareUUID;
+    });
+  }
 
   return SummaryPagePresenter;
 });
