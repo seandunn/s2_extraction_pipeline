@@ -329,4 +329,33 @@ define([
       }).fail(that.inputs.reject);
     });
   }
+
+  function setupOutputs(that) {
+    return that.batch.items.then(function(items) {
+      var deferred = $.Deferred();
+      var preLoadedOutputs = [];
+      $.when.apply(null, _.chain(items)
+          .filter(function (item) {
+            return item.status === 'in_progress';
+          })
+          .filter(function (item) {
+            return _.reduce(that.config.output,function(memo, output){
+              return memo || (item.role === output.role);
+            },false);
+          })
+          .map(function (item) {
+            return that.cache.fetchResourcePromiseFromUUID(item.uuid).then(function (resource) {
+              preLoadedOutputs.push(resource);
+            });
+          }).value())
+          .then(function () {
+            return deferred.resolve(preLoadedOutputs);
+          })
+          .fail(function(){
+            deferred.reject({message:"..."});
+          });
+      return deferred.promise();
+    });
+  }
+
 });
