@@ -1,4 +1,4 @@
-body,html {
+body, html {
   height: 100%;
 }
 
@@ -7,7 +7,7 @@ header, #content {
 }
 
 body, html {
-  height:100%;
+  height: 100%;
 }
 
 #content {
@@ -76,18 +76,17 @@ ul {
 .twoColumns {
   overflow: auto;
   .columnLeft {
-    float:left;
+    float: left;
     width: 50%;
   }
   .columnRight {
-    float:right;
+    float: right;
     width: 50%;
     .extraVTab {
       margin-top: 8em;
     }
   }
 }
-
 
 .dropzoneBox {
   background: #f5f5f5;
@@ -156,11 +155,11 @@ ul {
 .busyClass {
   margin-left: auto;
   margin-right: auto;
-  position:relative;
+  position: relative;
   .busyBox {
     padding: 0px 0px 10px 0px;
     width: 300px;
-    height:80px;
+    height: 80px;
     text-align: center;
     position: absolute;
     background: #eee;
@@ -173,13 +172,13 @@ ul {
   .busyText {
     padding-top: 35px;
     padding-left: 20px;
-    float:left;
+    float: left;
     font-weight: lighter;
     font-size: 24px;
-    color:#333;
+    color: #333;
   }
   .busySpin {
-    float:right;
+    float: right;
     padding-top: 90px;
     padding-right: 90px;
   }
@@ -195,7 +194,7 @@ ul {
 #alertContainer {
   height: 60px;
 
-  .alert{
+  .alert {
     margin-bottom: 0px;
     padding: 4px 0;
   }
@@ -220,19 +219,19 @@ table {
     background: #90ee90;
   }
   tr.disabledRow {
-    background: rgb(196,196,196);
-    color:rgb(247,247,247);
+    background: rgb(196, 196, 196);
+    color: rgb(247, 247, 247);
     font-style: italic;
   }
-  td{
+  td {
     padding: 0.7em;
   }
-  th{
+  th {
     padding: 0.7em;
     background: rgb(247, 239, 187);
     opacity: 0.9;
     font-style: normal;
-    color:#000000;
+    color: #000000;
     font-size: 1.0em;
   }
 }
@@ -317,7 +316,7 @@ div.component {
 }
 
 div.template-selection-box {
-//  border: 1px dashed #444444;
+  //  border: 1px dashed #444444;
   border-radius: 8px;
   display: block;
   padding: 10px;
@@ -325,7 +324,7 @@ div.template-selection-box {
 }
 
 div.number-of-samples-box {
-  display:inline-block;
+  display: inline-block;
   margin-top: 100px;
 }
 
