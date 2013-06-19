@@ -1,4 +1,4 @@
-body,html {
+body, html {
   height: 100%;
 }
 
@@ -7,7 +7,7 @@ header, #content {
 }
 
 body, html {
-  height:100%;
+  height: 100%;
 }
 
 #content {
@@ -30,7 +30,9 @@ ol.labware {
   li:nth-child(odd) {
     background-color: #f9f9f9;
   }
-  li:before, li:after { content: none; }
+  li:before, li:after {
+    content: none;
+  }
 }
 
 svg text {
@@ -74,18 +76,17 @@ ul {
 .twoColumns {
   overflow: auto;
   .columnLeft {
-    float:left;
+    float: left;
     width: 50%;
   }
   .columnRight {
-    float:right;
+    float: right;
     width: 50%;
     .extraVTab {
       margin-top: 8em;
     }
   }
 }
-
 
 .dropzoneBox {
   background: #f5f5f5;
@@ -99,6 +100,7 @@ ul {
   margin-left: auto;
   margin-right: auto;
 }
+
 .dropzoneBox.hover {
   background: #e0e0e0;
 }
@@ -123,6 +125,7 @@ ul {
     padding-top: 60%;
   }
 }
+
 .rowDisabled {
   position: absolute;
   top: 0px;
@@ -134,25 +137,29 @@ ul {
   z-index: 3;
   display: none;
 }
+
 .labware1, .labware2 {
   min-width: 17em;
 }
+
 .printerSelect {
   margin-right: 20px;
 }
-.printer-div{
+
+.printer-div {
   label {
     display: inline;
   }
 }
+
 .busyClass {
   margin-left: auto;
   margin-right: auto;
-  position:relative;
+  position: relative;
   .busyBox {
     padding: 0px 0px 10px 0px;
     width: 300px;
-    height:80px;
+    height: 80px;
     text-align: center;
     position: absolute;
     background: #eee;
@@ -165,13 +172,13 @@ ul {
   .busyText {
     padding-top: 35px;
     padding-left: 20px;
-    float:left;
+    float: left;
     font-weight: lighter;
     font-size: 24px;
-    color:#333;
+    color: #333;
   }
   .busySpin {
-    float:right;
+    float: right;
     padding-top: 90px;
     padding-right: 90px;
   }
@@ -183,10 +190,11 @@ ul {
     opacity: 0.6;
   }
 }
-#alertContainer{
+
+#alertContainer {
   height: 60px;
 
-  .alert{
+  .alert {
     margin-bottom: 0px;
     padding: 4px 0;
   }
@@ -197,9 +205,11 @@ ul {
     opacity: 1;
   }
 }
+
 div.row0 .title {
   display: block;
 }
+
 #buttonRack {
   float: right;
 }
@@ -209,18 +219,115 @@ table {
     background: #90ee90;
   }
   tr.disabledRow {
-    background: #d3d3d3;
-    color:#778899;
+    background: rgb(196, 196, 196);
+    color: rgb(247, 247, 247);
     font-style: italic;
   }
-  td{
-    padding: 1em;
+  td {
+    padding: 0.7em;
   }
-  th{
-    padding: 1em;
-    background: #778899;
+  th {
+    padding: 0.7em;
+    background: rgb(247, 239, 187);
+    opacity: 0.9;
     font-style: normal;
-    color:#000000;
+    color: #000000;
     font-size: 1.0em;
   }
+}
+
+div.reception-component {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+div.manifest {
+  clear: both;
+  position: absolute;
+  left: 100%;
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+div.manifest-btn {
+  border: 6px solid #808080;
+  border-radius: 16px;
+  width: 20em;
+  height: 100px;
+  margin: auto;
+  clear: both;
+  position: relative;
+  display: table;
+}
+
+div.manifest-btn-text-box {
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 1.3em;
+}
+
+div.choice-box {
+  position: relative;
+  height: 300px;
+  float: left;
+  overflow: hidden;
+  width: 47%;
+  left: 2%;
+  display: table;
+}
+
+#choice {
+  clear: both;
+  float: left;
+  width: 100%;
+  position: absolute;
+  overflow: auto;
+}
+
+div.choices {
+  clear: both;
+  float: left;
+  width: 100%;
+  position: relative;
+  right: 0;
+}
+
+div.position-aid-box {
+  float: left;
+  height: 50%;
+  margin-bottom: -50px;
+}
+
+div.header-box {
+  height: 6em;
+}
+
+#arrow-image {
+  width: 4em;
+}
+
+div.component {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+div.template-selection-box {
+  //  border: 1px dashed #444444;
+  border-radius: 8px;
+  display: block;
+  padding: 10px;
+  margin: 8px 8px 8px 0px;
+}
+
+div.number-of-samples-box {
+  display: inline-block;
+  margin-top: 100px;
+}
+
+#generateManifest {
+  display: block;
 }

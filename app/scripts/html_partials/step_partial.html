@@ -3,7 +3,7 @@
 
   <h3 class="pull-right">User Barcode: <%- templateData.user %></h3>
 </header>
-
+<div class="component">
 <div id="step1" class="step-row"></div>
 <div id="step2" class="step-row"></div>
 
@@ -19,4 +19,5 @@
   <% _.each (templateData.buttons, function (buttonsDetails) { %>
   <button class="btn <%- buttonsDetails.action %>Button" disabled="disabled"><%- buttonsDetails.title %></button>
   <% }); %>
+</div>
 </div>

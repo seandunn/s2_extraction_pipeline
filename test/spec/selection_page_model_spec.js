@@ -65,16 +65,40 @@ define([
   };
 
     describe("Selection page model", function () {
-      var m;
+      var tube, model, modelPromise, inputs;
       beforeEach(function(){
-        m = Object.create(Model).init(fakeOwner, initData);
+        modelPromise = Object.create(Model).init(fakeOwner, initData);
+
+        runs(function(){
+
+          results.resetFinishedFlag();
+          getAResource(fakeOwner, "tube1_UUID")
+              .then(results.assignTo('tube1'))
+              .then(results.expected)
+              .fail(results.unexpected);
+        });
+
+        waitsFor(results.hasFinished);
 
         runs(function(){
           results.resetFinishedFlag();
-          getAResource(fakeOwner, "tube1_UUID")
-            .then(results.assignTo('tube1'))
-            .then(results.expected)
-            .fail(results.unexpected);
+          tube = results.get('tube1');
+          modelPromise
+              .then(results.assignTo('model'))
+              .then(results.expected)
+              .fail(results.unexpected);
+        });
+
+        waitsFor(results.hasFinished);
+
+        runs(function(){
+          results.resetFinishedFlag();
+          model = results.get('model');
+          model.setup({labware:tube});
+          model.inputs
+              .then(results.assignTo('inputs'))
+              .then(results.expected)
+              .fail(results.unexpected);
         });
 
         waitsFor(results.hasFinished);
@@ -82,11 +106,11 @@ define([
       });
 
       it("can add a labware, and then contains one tube", function () {
-          var tube =results.get('tube1');
           expect(tube.uuid).toEqual("tube1_UUID");
-          m.setup({labware:tube});
-          expect(m.tubes.length).toEqual(1);
-          expect(m.tubes[0].uuid).toEqual("tube1_UUID");
+          inputs = results.get('inputs');
+
+        expect(inputs.length).toEqual(1);
+          expect(inputs[0].uuid).toEqual("tube1_UUID");
       });
     });
   });

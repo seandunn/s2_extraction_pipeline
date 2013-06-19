@@ -776,8 +776,7 @@
             "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
           },
           "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
-          "process":null,
-          "kit":"1234567891011"
+          "process":null
         }
       },
       "next_stage":4
@@ -798,8 +797,7 @@
             "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
           },
           "uuid":   "695ff060-8d8b-0130-b64f-282066132de2",
-          "process":null,
-          "kit":"1234567891011"
+          "process":null
         }
       }
     },
@@ -865,8 +863,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               },
               {
@@ -880,8 +877,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               }
             ]
@@ -942,8 +938,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               },
               {
@@ -957,8 +952,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               }
             ]
@@ -1068,8 +1062,7 @@
                       "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                     },
                     "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                    "process":null,
-                    "kit":"1234567891011"
+                    "process":null
                   }
                 },
                 {
@@ -1083,8 +1076,7 @@
                       "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                     },
                     "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                    "process":null,
-                    "kit":"1234567891011"
+                    "process":null
                   }
                 }
               ]
@@ -1157,8 +1149,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               },
               {
@@ -1172,8 +1163,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               }
             ],
@@ -1189,8 +1179,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               },
               {
@@ -1204,8 +1193,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               }
             ]
@@ -1266,8 +1254,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               },
               {
@@ -1281,8 +1268,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               }
             ],
@@ -1298,8 +1284,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               },
               {
@@ -1313,8 +1298,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               }
             ]
@@ -1392,8 +1376,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               },
               {
@@ -1407,8 +1390,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               }
             ],
@@ -1424,8 +1406,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               },
               {
@@ -1439,8 +1420,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               }
             ]
@@ -1501,8 +1481,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               },
               {
@@ -1516,8 +1495,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               }
             ],
@@ -1533,8 +1511,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               },
               {
@@ -1548,8 +1525,7 @@
                     "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                   },
                   "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                  "process":null,
-                  "kit":"1234567891011"
+                  "process":null
                 }
               }
             ]
@@ -1659,8 +1635,7 @@
                       "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                     },
                     "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                    "process":null,
-                    "kit":"1234567891011"
+                    "process":null
                   }
                 },
                 {
@@ -1674,8 +1649,7 @@
                       "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                     },
                     "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                    "process":null,
-                    "kit":"1234567891011"
+                    "process":null
                   }
                 }
               ],
@@ -1691,8 +1665,7 @@
                       "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                     },
                     "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                    "process":null,
-                    "kit":"1234567891011"
+                    "process":null
                   }
                 },
                 {
@@ -1706,8 +1679,7 @@
                       "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
                     },
                     "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-                    "process":null,
-                    "kit":"1234567891011"
+                    "process":null
                   }
                 }
               ]
