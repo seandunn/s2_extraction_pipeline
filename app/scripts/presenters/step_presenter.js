@@ -66,6 +66,16 @@ define([
         thisPresenter.childDone(source,'done',eventData);
       }
 
+      PubSub.subscribe("s2.step_presenter.printing_finished", printingFinishedEventHandler);
+      PubSub.subscribe("s2.step_presenter.printing_started", printingStartedEventHandler);
+      function printingFinishedEventHandler(event, source, eventData) {
+        thisPresenter.selector().find('.component').trigger("s2.busybox.end_process");
+
+      }
+      function printingStartedEventHandler(event, source, eventData) {
+        thisPresenter.selector().find('.component').trigger("s2.busybox.start_process");
+      }
+
       this.setupSubPresenters();
 
       return this;

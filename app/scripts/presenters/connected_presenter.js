@@ -136,16 +136,19 @@ define([
 
         this.model.ready = true;
         this.setupSubPresenters(true);
+        PubSub.publish('s2.step_presenter.printing_finished', this);
         this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "barcodePrintSuccess") {
 
         PubSub.publish('s2.status.message', this, {message: 'Barcode labels printed'});
+        PubSub.publish('s2.step_presenter.printing_finished', this);
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "barcodePrintFailure") {
 
         PubSub.publish('s2.status.error', this, {message: 'Barcode labels could not be printed'});
+        PubSub.publish('s2.step_presenter.printing_finished', this);
         this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "startOperation") {
@@ -194,6 +197,7 @@ define([
 
     print: function(child, action, data) {
       if (this.readyToCreateOutputs()) {
+        PubSub.publish('s2.step_presenter.printing_started', this);
         this.model.createOutputs(data);
       }
     },
