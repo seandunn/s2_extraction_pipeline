@@ -219,16 +219,17 @@ table {
     background: #90ee90;
   }
   tr.disabledRow {
-    background: #d3d3d3;
-    color: #778899;
+    background: rgb(196, 196, 196);
+    color: rgb(247, 247, 247);
     font-style: italic;
   }
   td {
-    padding: 1em;
+    padding: 0.7em;
   }
   th {
-    padding: 1em;
-    background: #778899;
+    padding: 0.7em;
+    background: rgb(247, 239, 187);
+    opacity: 0.9;
     font-style: normal;
     color: #000000;
     font-size: 1.0em;
@@ -315,7 +316,7 @@ div.component {
 }
 
 div.template-selection-box {
-//  border: 1px dashed #444444;
+  //  border: 1px dashed #444444;
   border-radius: 8px;
   display: block;
   padding: 10px;
@@ -323,7 +324,7 @@ div.template-selection-box {
 }
 
 div.number-of-samples-box {
-  display:inline-block;
+  display: inline-block;
   margin-top: 100px;
 }
 
