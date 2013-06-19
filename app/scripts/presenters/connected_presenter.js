@@ -53,7 +53,6 @@ define([
       });
 
       this.jquerySelection().html(this.template());
-      this.focus();
       this.setupSubPresenters();
       return this;
     },
