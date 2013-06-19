@@ -1168,7 +1168,6 @@
       ]}
     ]
   },
-
     {
     "accepts":       [ "samples.rack.stock.dna.volume_checked" ],
     "presenterName": "step_presenter",
@@ -1209,11 +1208,13 @@
 
   "spentBatch": {
     "presenterName": "summary_page_presenter",
-    "processTitle":  "Spent batch"
+    "processTitle":  "Spent Batch",
+    "spentBatch":    true
   },
   "unknownRole": {
     "presenterName": "summary_page_presenter",
-    "processTitle":  "Unknown Role ???"
+    "processTitle":  "Summary Page",
+    "spentBatch":    false
   }
 }
 

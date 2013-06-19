@@ -28,7 +28,6 @@ define([
         .then(function (inputs) {
           thisModel.labwares.resolve(inputs);
         })
-
         .fail(function (error) {
           deferred.reject({message: "Couldn't find the orders!!", previous_error: error});
         })
@@ -43,6 +42,7 @@ define([
     var inputs = [];
     var deferred = $.Deferred();
     filteringFunc = filteringFunc || function (item) {
+      // TODO: need to agree on a filtering criteria
       return true;
     };
     model.batch.orders
@@ -54,7 +54,6 @@ define([
           })
           .flatten()
           .value();
-
         return $.when.apply(null,
           _.chain(items)
             // filter the item which are not relevant
