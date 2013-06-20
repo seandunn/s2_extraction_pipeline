@@ -5,7 +5,8 @@ define(['config'
   , 'extraction_pipeline/models/manifest_reader_model'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/reception_templates'
-], function (config, BasePresenter, componentPartialHtml, sampleRowPartial, Model, PubSub, ReceptionTemplates) {
+  , 'extraction_pipeline/lib/util'
+], function (config, BasePresenter, componentPartialHtml, sampleRowPartial, Model, PubSub, ReceptionTemplates, Util) {
   'use strict';
 
   var Presenter = Object.create(BasePresenter);
@@ -75,18 +76,14 @@ define(['config'
 
       function labwareCallback(event, template, presenter) {
         template.find('.alert-error').addClass('hide');
-        thisPresenter.labwareScannedHandler(event.currentTarget.value);
+        thisPresenter.labwareScannedHandler(Util.pad(event.currentTarget.value));
         thisPresenter.barcodeReaderSelection.find('input').val(''); // clear the input
       }
 
       function validation(element, callback, errorCallback) {
         return function (event) {
           if (event.which !== 13) return;
-          if (event.currentTarget.value.length === 13) {
-            callback(event, element, thisPresenter);
-          } else {
-            errorCallback(event, element, thisPresenter);
-          }
+          callback(event, element, thisPresenter);
         }
       }
     },

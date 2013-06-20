@@ -3,8 +3,9 @@ define([
   'text!extraction_pipeline/html_partials/kit_partial.html',
   'extraction_pipeline/models/kit_model',
   'extraction_pipeline/lib/pubsub',
-  'extraction_pipeline/lib/barcode_checker'
-], function(Base, kitPartialHtml, Model, PubSub, BarcodeChecker) {
+  'extraction_pipeline/lib/barcode_checker',
+  'extraction_pipeline/lib/util'
+], function(Base, kitPartialHtml, Model, PubSub, BarcodeChecker, Util) {
   'use strict';
 
 
@@ -13,7 +14,7 @@ define([
       // validation of the barcode on return key
       return function (event) {
         if (event.which !== 13) return;
-        if (BarcodeChecker.isKitBarcodeValid(event.currentTarget.value)) {
+        if (BarcodeChecker.isKitBarcodeValid(Util.pad(event.currentTarget.value))) {
           callback(event, element, presenter);
         } else {
           errorCallback(event, element, presenter);
@@ -26,7 +27,7 @@ define([
     return function (event, template, presenter) {
       presenter.model
           .then(function(model){
-            return model.setKitFromBarcode(event.currentTarget.value)
+            return model.setKitFromBarcode(Util.pad(event.currentTarget.value));
           })
           .fail(function (error) {
             PubSub.publish('s2.status.error', presenter, error);

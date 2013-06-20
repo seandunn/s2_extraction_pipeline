@@ -3,7 +3,8 @@ define(['config'
   , 'extraction_pipeline/views/labware_view'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/barcode_checker'
-], function (config, BasePresenter, LabwareView, PubSub, BarcodeChecker) {
+  , 'extraction_pipeline/lib/util'
+], function (config, BasePresenter, LabwareView, PubSub, BarcodeChecker, Util) {
 
   var defaultTitles = {
     tube: 'Tube',
@@ -122,11 +123,11 @@ define(['config'
         var labwareCallback = function(event, template, presenter){
           presenter.owner.childDone(presenter, 'barcodeScanned', {
             modelName: presenter.labwareModel.expected_type.pluralize(),
-            BC:        event.currentTarget.value
+            BC:        Util.pad(event.currentTarget.value)
           });
           PubSub.publish("s2.labware.barcode_scanned", presenter, {
             modelName: presenter.labwareModel.expected_type.pluralize(),
-            BC:        event.currentTarget.value
+            BC:        Util.pad(event.currentTarget.value)
           });
         };
         this.jquerySelection().append(
@@ -259,7 +260,7 @@ define(['config'
       return function (event) {
         if (event.which !== 13) return;
 
-        if (validationCallBack(event.currentTarget.value)) {
+        if (validationCallBack(Util.pad(event.currentTarget.value))) {
           callback(event, element, presenter);
         } else {
           errorCallback(event, element, presenter);
