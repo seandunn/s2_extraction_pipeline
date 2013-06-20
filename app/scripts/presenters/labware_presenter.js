@@ -40,6 +40,7 @@ define(['config'
       this.presenterFactory = presenterFactory;
       return this;
     },
+
     setupPresenter: function (setupData, jquerySelection) {
       this.setupPlaceholder(jquerySelection);
       this.labwareModel = Object.create(LabwareModel).init(this, setupData);
