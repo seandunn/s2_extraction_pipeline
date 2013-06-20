@@ -83,7 +83,11 @@ define(['config'
       function validation(element, callback, errorCallback) {
         return function (event) {
           if (event.which !== 13) return;
-          callback(event, element, thisPresenter);
+          if (event.currentTarget.value.length === 13) {
+            callback(event, element, thisPresenter);
+          } else {
+            errorCallback(event, element, thisPresenter);
+          }
         }
       }
     },
