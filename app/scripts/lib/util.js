@@ -4,7 +4,7 @@ define([], function () {
 
   $.extend(Util, {
     pad: function (barcode, validLength, pad) {
-      // performs this check in case a 2D tube is scanned: we don't want padding on 2D tube barcodes
+      // we don't want padding on non-numeric tube barcodes
       if (isNaN(parseInt(barcode))) {
         return barcode;
       }
