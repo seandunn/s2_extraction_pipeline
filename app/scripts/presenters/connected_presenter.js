@@ -179,6 +179,7 @@ define([
         if (lastIndex+1 < this.presenters.length){
           // we unlock it
           this.presenters[lastIndex+1].unlockRow();
+          this.model.lastActiveRow = lastIndex;
         }
       }
     },
