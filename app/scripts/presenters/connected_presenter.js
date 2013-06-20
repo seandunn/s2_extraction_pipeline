@@ -113,8 +113,7 @@ define([
 
     rowDone: function(child, action, data) {
       if (action === 'completed') {
-        var model = this.model;
-        model.operate('row', [child]);
+        this.model.operate('row', [child]);
         if (this.checkPageComplete()) {
           this.owner.childDone(this, "enableBtn", {buttons:[{action:"start"}]});
         }
@@ -163,11 +162,24 @@ define([
         });
 
       } else if (action === "successfulOperation") {
-
+        // locks the rowPresenters which have successfully completed their operations
         _.each(data, function(presenter){
           presenter.lockRow();
         });
 
+        // find the index of the last rowPresenter which has successfully completed its operations
+        var lastIndex = -1;
+        _.each(this.rowPresenters,function(rowPresenter, index){
+          if (_.contains(data,rowPresenter)){
+            lastIndex = lastIndex < index ? index : lastIndex;
+          }
+        });
+
+        // if there is at least one presenter after...
+        if (lastIndex+1 < this.presenters.length){
+          // we unlock it
+          this.presenters[lastIndex+1].unlockRow();
+        }
       }
     },
 

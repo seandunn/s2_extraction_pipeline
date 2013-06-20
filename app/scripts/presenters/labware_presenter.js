@@ -211,6 +211,11 @@ define(['config'
       this.view.hideRemoveButton();
     },
 
+    showEditable: function() {
+      this.view.showBarcodeEntry();
+      this.view.showRemoveButton();
+    },
+
     displayErrorMessage: function (message) {
       PubSub.publish('s2.status.error', this, {message: message});
     }
