@@ -2,8 +2,9 @@ define([
   'extraction_pipeline/presenters/base_presenter',
   'extraction_pipeline/views/rack_scan_view',
   'extraction_pipeline/models/rack_scan_model',
-  'extraction_pipeline/models/volume_check_model'
-], function (Base, View, RackScanModel, VolumeCheckModel) {
+  'extraction_pipeline/models/volume_check_model',
+  'extraction_pipeline/lib/pubsub'
+], function (Base, View, RackScanModel, VolumeCheckModel, PubSub) {
 
   var models = {
     RackScanModel: RackScanModel,
@@ -108,8 +109,15 @@ define([
     },
 
     viewDone: function (child, action, data) {
+      var thisPresenter = this;
       if (action === 'fileRead') {
-        this.model.analyseFileContent(data);
+        this.model.analyseFileContent(data)
+          .fail(function () {
+            PubSub.publish('s2.status.error', thisPresenter, {message:"Impossible to find the required resources. Contact the system administrator."});
+          })
+          .then(function(tube_rack){
+          thisPresenter.childDone(thisPresenter.model, "fileValid", {model: tube_rack, message: 'The file has been processed properly. Click on the \'Start\' button to validate the process.'})
+        });
       } else if (action === 'transferAuthorised') {
         this.model.fire();
       }
