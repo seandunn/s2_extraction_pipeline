@@ -2,11 +2,12 @@ define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'text!extraction_pipeline/html_partials/default_page_partial.html'
   , 'extraction_pipeline/default/default_model'
-], function (config, BasePresenter, defaultPagePartialHtml, Model) {
+  , 'extraction_pipeline/lib/util'
+], function (config, BasePresenter, defaultPagePartialHtml, Model, Util) {
   'use strict';
 
   var userCallback = function(event, template, presenter){
-    presenter.model.user = event.currentTarget.value;
+    presenter.model.user = Util.pad(event.currentTarget.value);
 
     template.find('.alert-error').addClass('hide');
     template.find("input").attr('disabled', true);
@@ -48,7 +49,7 @@ define(['config'
     };
 
     presenter.model
-    .setLabwareFromBarcode(event.currentTarget.value)
+    .setLabwareFromBarcode(Util.pad(event.currentTarget.value))
     .then(login, login);  // Hack!  Login whether or not we find a batch...
     // Should be moved to SelectionPresenter.
   };

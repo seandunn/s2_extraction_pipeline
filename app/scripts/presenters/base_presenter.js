@@ -1,6 +1,7 @@
 define(['config'
 , 'extraction_pipeline/lib/barcode_checker'
-], function (appConfig, BarcodeChecker) {
+, 'extraction_pipeline/lib/util'
+], function (appConfig, BarcodeChecker, Util) {
   'use strict';
 
   var BasePresenter = Object.create(null);
@@ -22,7 +23,7 @@ define(['config'
           if (event.which !== 13) return;
 
           if (_.some(BarcodeChecker, function (validationCallback) {
-            return validationCallback(event.currentTarget.value);
+            return validationCallback(Util.pad(event.currentTarget.value));
           })) {
             callback(event, element, thisPresenter);
           } else {
