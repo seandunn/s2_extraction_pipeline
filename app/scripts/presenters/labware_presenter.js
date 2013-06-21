@@ -4,7 +4,8 @@ define(['config'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/barcode_checker'
   , 'extraction_pipeline/lib/util'
-], function (config, BasePresenter, LabwareView, PubSub, BarcodeChecker, Util) {
+  , 'extraction_pipeline/lib/pubsub'
+], function (config, BasePresenter, LabwareView, PubSub, BarcodeChecker, Util, PubSub) {
 
   var defaultTitles = {
     tube: 'Tube',
@@ -211,15 +212,7 @@ define(['config'
     },
 
     displayErrorMessage: function (message) {
-      var selection = this.jquerySelection().find('.alert-error');
-      var text = 'Error!';
-      text += message;
-      var tmp = $('<h4/>', {
-        class: 'alert-heading',
-        text: text
-      });
-      tmp.appendTo(selection.empty());
-      selection.show();
+      PubSub.publish('s2.status.error', this, {message: message});
     }
 
   });
@@ -231,17 +224,8 @@ define(['config'
   }
 
   function barcodeErrorCallback(errorText){
-    var errorHtml = function(errorText){
-      return $("<h4/>", {class: "alert-heading", text: errorText});
-    };
     return function(event, template, presenter){
-      template.
-          find('.alert-error').
-          html(errorHtml(errorText)).
-          removeClass('hide');
-      template.
-          find('input').
-          removeAttr('disabled');
+      PubSub.publish('s2.status.error', presenter, {message: errorText});
     };
   }
 

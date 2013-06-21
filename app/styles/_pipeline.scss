@@ -193,10 +193,11 @@ ul {
 
 #alertContainer {
   height: 60px;
-
+  font-size:14px;
   .alert {
+    margin-top: 5px;
     margin-bottom: 0px;
-    padding: 4px 0;
+    padding: 4px;
   }
   .fade {
     transition: opacity 0.3s linear;
