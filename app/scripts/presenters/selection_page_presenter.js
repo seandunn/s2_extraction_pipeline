@@ -38,16 +38,20 @@ define([ 'extraction_pipeline/presenters/base_presenter'
     makeBatchHandler: function() {
       var presenter = this;
       return function(e){
-        presenter.model
-            .then(function (model) {
-              return model.makeBatch()
-            })
-            .fail(function(error){
-              PubSub.publish('s2.status.error', presenter, error);
-            })
-            .then(function (model) {
-                presenter.owner.childDone(presenter, "done", {batch:model.batch});
-            });
+        if(!presenter.batchCreated){
+          presenter.batchCreated = true;
+          presenter.jquerySelection().find("button.btn").attr("disabled", "disabled");
+          presenter.model
+              .then(function (model) {
+                return model.makeBatch()
+              })
+              .fail(function(error){
+                PubSub.publish('s2.status.error', presenter, error);
+              })
+              .then(function (model) {
+                  presenter.owner.childDone(presenter, "done", {batch:model.batch});
+              });
+        }
       }
     },
 
