@@ -193,19 +193,10 @@ define([
           return deferred.reject({message:message});
         }
 
-        extraBarcodes = _.difference(arrayOfExpectedBarcodes, arrayOfBarcodesInRack);
-        if (extraBarcodes.length !== 0) {
-          message = "The number of tube is correct BUT not all the barcodes are matching. " +
-            "The tubes with the following barcodes are missing:<ul>" +
-            _.reduce(extraBarcodes, function (memo, barcode) {
-              return memo + "<li>" + barcode + "</li>"
-            }, "") +
-            "</ul>";
-          return deferred.reject({message:message});
-        }
+        extraBarcodes = _.difference(arrayOfBarcodesInRack, arrayOfExpectedBarcodes);
 
         if (extraBarcodes.length > 0) {
-          return foo(model,inputTubes);
+          return validateExtraTubesContent(model,inputTubes);
         }
       })
       .fail(function(error){
@@ -217,36 +208,29 @@ define([
 
     return deferred.promise();
 
-
-
-
-
-  function foo (model,inputTubes){
-    var searchDeferred = $.Deferred();
-    model.owner.getS2Root()
-      .then(function(root){
-        return root.tubes.findByEan13Barcode(extraBarcodes);
-      })
-      .fail(function(){
-        return searchDeferred.reject({message:"Couldn't search for the extra-tubes!"});
-      })
-      .then(function(extraTubes){
-        if(extraTubes.length !== extraBarcodes.length){
-          return searchDeferred.reject({message:"The extra tubes were not found!"});
-        }
-        if (_.some(extraTubes, function (extraTube) {
-          return extraTube.resourceType !== inputTubes[0].resourceType;
-        })) {
-          return searchDeferred.reject({message:"The extra tubes are not of the same type as the other tubes!"});
-        }
-      }).then(function(){
-        return searchDeferred.resolve();
-      });
-    return searchDeferred.promise();
-  }
-
-
-
+    function validateExtraTubesContent(model, inputTubes) {
+      var searchDeferred = $.Deferred();
+      model.owner.getS2Root()
+        .then(function (root) {
+          return root.tubes.findByEan13Barcode(extraBarcodes, true);
+        })
+        .fail(function () {
+          return searchDeferred.reject({message: "Couldn't search for the extra-tubes!"});
+        })
+        .then(function (extraTubes) {
+          if (extraTubes.length !== extraBarcodes.length) {
+            return searchDeferred.reject({message: "The extra tubes were not found!"});
+          }
+          if (_.some(extraTubes, function (extraTube) {
+            return extraTube.resourceType !== inputTubes[0].resourceType;
+          })) {
+            return searchDeferred.reject({message: "The extra tubes are not of the same type as the other tubes!"});
+          }
+        }).then(function () {
+          return searchDeferred.resolve();
+        });
+      return searchDeferred.promise();
+    }
   }
 
   function prepareTransferDataPromise(model, locationsSortedByBarcode) {
