@@ -36,45 +36,37 @@ define([
           }).fail(function(error){
             PubSub.publish('s2.status.error', thisPresenter, error);
             thisPresenter.jquerySelection().trigger("s2.busybox.end_process");
+          }).then(function(){
+            thisPresenter.jquerySelection().html(thisPresenter.template());
+            thisPresenter.setupSubPresenters();
           });
-      this.renderView();
-      this.setupSubPresenters();
       return this;
     },
+
     setupSubPresenters: function(reset) {
-      this.model.setupInputPresenters(reset);
+      var thisPresenter = this;
+      this.model.setupInputPresenters(reset)
+          .then(function(){
+            var presenter = _.find(thisPresenter.rowPresenters, function (presenter) {
+              return !presenter.isRowComplete();
+            });
+            // There will not be an incomplete row returned if the entire page is complete. Therefore nothing to focus on.
+            if (presenter) {
+              presenter.focus();
+            }
+            if(thisPresenter.model.started){
+              thisPresenter.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
+              thisPresenter.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
+            }
+          });
       return this;
     },
 
     focus: function() {
-      var presenter = _.find(this.rowPresenters, function (presenter) {
-        return !presenter.isRowComplete();
-      });
-
-      // There will not be an incomplete row returned if the entire page is complete. Therefore nothing to focus on.
-      if (presenter) {
-        presenter.focus();
-      }
     },
 
     release:function () {
       this.currentView.clear();
-      return this;
-    },
-    renderView:function () {
-      var dataForView = null;
-
-      if (this.model && this.model.config) {
-        dataForView = {
-          batch:this.model.batch && this.model.batch.uuid,
-          user:this.model.user,
-          processTitle:this.model.config.processTitle
-        }
-        this.focus();
-      }
-
-      this.jquerySelection().html(this.template());
-
       return this;
     },
 
@@ -95,15 +87,14 @@ define([
     },
 
     unknownDone:function (child, action, data) {
+      var originator = data.origin, presenter = this;
       if (action === 'inputBarcodeScanned') {
-        var originator = data.origin, presenter = this;
         presenter.model.inputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
           presenter.model.inputs.pull(resource);
         }).done(function() {
           presenter.focus();
         });
       } else if (action === 'outputBarcodeScanned') {
-        var originator = data.origin, presenter = this;
         presenter.model.outputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
           presenter.model.outputs.pull(resource);
         }).done(function() {
@@ -119,11 +110,11 @@ define([
         this.rowDone(child, action, data);
       }
     },
+
     rowDone: function(child, action, data) {
       if (action === 'completed') {
         var model = this.model;
         model.operate('row', [child]);
-
         if (this.checkPageComplete()) {
           this.owner.childDone(this, "enableBtn", {buttons:[{action:"start"}]});
         }
@@ -183,14 +174,15 @@ define([
     readyToCreateOutputs: function() {
       return !this.model.started;
     },
+
     currentViewDone: function(child, action, data) {
     },
 
     initialPresenter: function() {
       this.model.previous = true;
       this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
-
     },
+
     previousDone: function(child, action, data) {
       this.model.previous = true;
     },
@@ -201,6 +193,7 @@ define([
         this.model.createOutputs(data);
       }
     },
+
     next:  function(child, action, data){
       var presenter = this;
 
@@ -209,7 +202,9 @@ define([
         function(){ eventHandler.call(presenter, child, action, data); }
       )
     },
+
     start: eventHandler,
+
     end:   eventHandler
   });
   return Presenter;
