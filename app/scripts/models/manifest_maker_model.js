@@ -41,8 +41,8 @@ define([
           .fail(function(error){
             return deferred.reject({message: " Couldn't produce the samples. " + error.message, previous_error: error});
           })
-          .then(function (labellables) {
-            return thisModel.generateCSVBlob(labellables);
+          .then(function () {
+            return thisModel.generateCSVBlob(sampleType);
           })
           .fail(function (error) {
             return deferred.reject({message: " Couldn't produce barcode data file. " + error.message, previous_error: error});
@@ -77,12 +77,11 @@ define([
       return deferred.promise();
     },
 
-    getLabellables: function (templateName, studyName, samplePrefix, nbOfSample) {
+    getLabellables: function (templateName, studyName, sampleType, nbOfSample) {
       var deferred = $.Deferred();
       var thisModel = this;
       var root;
       var labwareModel = ReceptionTemplates[templateName].model;
-      var sampleType = samplePrefix;
       var sangerSampleIdCore = ReceptionStudies[studyName].sanger_sample_id_core;
       thisModel.owner.getS2Root()
           .fail(function () {
@@ -172,16 +171,16 @@ define([
       return deferred.promise();
     },
 
-    generateCSVBlob: function(){
+    generateCSVBlob: function(sampleType){
       var thisModel = this;
       var data = _.map(thisModel.labwareOutputs,function(labware){
         var sampleUUID = labware.aliquots[0].sample.uuid;
         var sanger_sample_id = _.find(thisModel.samples,function (sample) {
           return sample.uuid === sampleUUID;
         }).sanger_sample_id;
-        return [labware.labels.barcode.value, sanger_sample_id ].join(',');
+        return [labware.labels.barcode.value, sanger_sample_id, sampleType ].join(',');
       });
-      data.unshift("Tube Barcode,Sanger Sample ID");
+      data.unshift("Tube Barcode,Sanger Sample ID,SAMPLE TYPE");
       var txt = data.join("\n");
       return new Blob([txt], { "type" : "text\/csv" })
     },
