@@ -33,7 +33,9 @@ define([
         var cache = _.extend(Cache.init(), {
           getByBarcode: function(requester, modelName, barcode) {
             return this.get(
-              function(r)   { return r.labels.barcode.value === barcode;       }, // Find by barcode
+              function(r)   { // Find by barcode && resourceType
+                return (r.labels.barcode.value === barcode) && (r.resourceType.pluralize() === modelName);
+              },
               function(p,f) { return missingHandler(modelName, barcode, p, f); }  // Use the missing handler!
             ).done(_.bind(requester.updateModel, requester)).fail(_.bind(requester.displayErrorMessage, requester));
           }
