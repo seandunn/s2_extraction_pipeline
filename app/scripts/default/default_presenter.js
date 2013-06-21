@@ -3,55 +3,47 @@ define(['config'
   , 'text!extraction_pipeline/html_partials/default_page_partial.html'
   , 'extraction_pipeline/default/default_model'
   , 'extraction_pipeline/lib/util'
-], function (config, BasePresenter, defaultPagePartialHtml, Model, Util) {
+  , 'extraction_pipeline/lib/pubsub'
+], function (config, BasePresenter, defaultPagePartialHtml, Model, Util, PubSub) {
   'use strict';
 
   var userCallback = function(event, template, presenter){
-    presenter.model.user = Util.pad(event.currentTarget.value);
-
-    template.find('.alert-error').addClass('hide');
-    template.find("input").attr('disabled', true);
-
-    presenter.jquerySelectionForLabware().
-      find("input").
-      removeAttr('disabled').
-      focus();
+    var barcode = Util.pad(event.currentTarget.value);
+    presenter.model.setUserFromBarcode(barcode)
+        .fail(function (error) {
+          PubSub.publish('s2.status.error', presenter, error);
+        })
+        .then(function(){
+          template.find("input").val(barcode);
+          template.find("input").attr('disabled', true);
+          presenter.jquerySelectionForLabware().
+              find("input").
+              removeAttr('disabled').
+              focus();
+        });
   };
 
-
   var barcodeErrorCallback = function(errorText){
-    var errorHtml = function(errorText){
-      return $("<h4/>", {class: "alert-heading", text: errorText});
-    };
-
     return function(event, template, presenter){
-      template.
-        find('.alert-error').
-        html(errorHtml(errorText)).
-        removeClass('hide');
-
-      template.
-        find('input').
-        removeAttr('disabled');
+      PubSub.publish('s2.status.error', this, {message: errorText});
     };
   };
 
   var labwareCallback = function(event, template, presenter){
     template.find("input").attr('disabled', true);
     template.find('.alert-error').addClass('hide');
-
-    var login = function(model){
-      if (model.labware){
+    presenter.model.setLabwareFromBarcode(Util.pad(event.currentTarget.value))
+        .fail(function (error) {
+          PubSub.publish('s2.status.error', presenter, error);
+        })
+        .then(login);
+    function login(model){
+      if (model.isValid()){
         presenter.owner.childDone(presenter, "login", model);
       } else {
         barcodeErrorCallback("Labware not found on system.")(undefined, template);
       }
-    };
-
-    presenter.model
-    .setLabwareFromBarcode(Util.pad(event.currentTarget.value))
-    .then(login, login);  // Hack!  Login whether or not we find a batch...
-    // Should be moved to SelectionPresenter.
+    }
   };
 
   var DefaultPresenter = Object.create(BasePresenter);

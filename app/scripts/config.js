@@ -37,6 +37,13 @@ define([], function() {
     // Handler for exceptions (does absolutely nothing, but could try..catch!)
     exceptionHandling: function(callback) {
       callback();
+    },
+
+    UserData: {
+      "0000000000001": "Hopper",
+      "0000000000002": "Hockney",
+      "0000000000003": "Hodgkins",
+      "0000000000004": "Hofer"
     }
   };
 
