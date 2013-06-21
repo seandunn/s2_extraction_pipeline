@@ -44,10 +44,12 @@
    "samples.extraction.eppendorf_tube.dna",
    "samples.extraction.eppendorf_tube.dna.to_be_retubed.batched",
    "samples.extraction.fluidx_tube.dna.to_be_racked",
+   "samples.extraction.fluidx_tube.dna.to_be_racked.batched",
 
    "samples.extraction.eppendorf_tube.rna",
    "samples.extraction.eppendorf_tube.rna.to_be_retubed.batched",
-   "samples.extraction.fluidx_tube.rna.to_be_racked"
+   "samples.extraction.fluidx_tube.rna.to_be_racked",
+   "samples.extraction.fluidx_tube.rna.to_be_racked.batched"
   ],
 
   "workflows":[
@@ -784,7 +786,8 @@
             "aliquotType":"DNA",
             "model":      "tubes",
             "title":      "2D Extracted DNA Tube",
-            "validation": "2D_tube"
+            "validation": "2D_tube",
+            "not_batched": true
           }
         ]
       }
@@ -793,6 +796,23 @@
 
   {
     "accepts": [ "samples.extraction.fluidx_tube.dna.to_be_racked" ],
+    "presenterName":  "selection_page_presenter",
+    "capacity": 95,
+    "processTitle":   "Retubing for DNA only Extraction",
+    "input":        {
+      "role":   "samples.extraction.fluidx_tube.dna.to_be_racked",
+      "model":  "tubes"
+    },
+    "output":  [
+      {
+        "role":         "samples.extraction.fluidx_tube.dna.to_be_racked.batched",
+        "aliquotType":  "DNA"
+      }
+    ]
+  },
+
+  {
+    "accepts": [ "samples.extraction.fluidx_tube.dna.to_be_racked.batched" ],
     "presenterName": "step_presenter",
     "defaultPrinter": "d304bc",
     "printerType": 1,
@@ -808,7 +828,7 @@
         "printerType": 1,
         "model": "RackScanModel",
         "input": {
-          "role":  "samples.extraction.fluidx_tube.dna.to_be_racked",
+          "role":  "samples.extraction.fluidx_tube.dna.to_be_racked.batched",
           "model": "tubes",
           "title": "2D Extracted DNA Tube"
         },
@@ -877,7 +897,8 @@
             "aliquotType": "RNA",
             "model":       "tubes",
             "title":       "2D Extracted RNA Tube",
-            "validation":  "2D_tube"
+            "validation":  "2D_tube",
+            "not_batched": true
           }
         ]
       }
@@ -886,6 +907,22 @@
 
   {
     "accepts": [ "samples.extraction.fluidx_tube.rna.to_be_racked" ],
+    "presenterName":  "selection_page_presenter",
+    "processTitle":   "Retubing for DNA only Extraction",
+    "capacity": 95,
+    "input":        {
+      "role":   "samples.extraction.fluidx_tube.rna.to_be_racked",
+      "model":  "tubes"
+    },
+    "output":  [
+      {
+        "role":         "samples.extraction.fluidx_tube.rna.to_be_racked.batched",
+        "aliquotType":  "RNA"
+      }
+    ]
+  },
+  {
+    "accepts": [ "samples.extraction.fluidx_tube.rna.to_be_racked.batched" ],
     "presenterName": "step_presenter",
     "defaultPrinter": "d304bc",
     "printerType": 1,
@@ -901,7 +938,7 @@
         "printerType": 1,
         "model": "RackScanModel",
         "input": {
-          "role":  "samples.extraction.fluidx_tube.rna.to_be_racked",
+          "role":  "samples.extraction.fluidx_tube.rna.to_be_racked.batched",
           "model": "tubes",
           "title": "2D Extracted RNA Tube",
           "validation": "2D_tube"
