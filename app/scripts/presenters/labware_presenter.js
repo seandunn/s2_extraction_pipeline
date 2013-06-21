@@ -3,7 +3,9 @@ define(['config'
   , 'extraction_pipeline/views/labware_view'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/barcode_checker'
-], function (config, BasePresenter, LabwareView, PubSub, BarcodeChecker) {
+  , 'extraction_pipeline/lib/util'
+  , 'extraction_pipeline/lib/pubsub'
+], function (config, BasePresenter, LabwareView, PubSub, BarcodeChecker, Util, PubSub) {
 
   var defaultTitles = {
     tube: 'Tube',
@@ -39,6 +41,7 @@ define(['config'
       this.presenterFactory = presenterFactory;
       return this;
     },
+
     setupPresenter: function (setupData, jquerySelection) {
       this.setupPlaceholder(jquerySelection);
       this.labwareModel = Object.create(LabwareModel).init(this, setupData);
@@ -122,11 +125,11 @@ define(['config'
         var labwareCallback = function(event, template, presenter){
           presenter.owner.childDone(presenter, 'barcodeScanned', {
             modelName: presenter.labwareModel.expected_type.pluralize(),
-            BC:        event.currentTarget.value
+            BC:        Util.pad(event.currentTarget.value)
           });
           PubSub.publish("s2.labware.barcode_scanned", presenter, {
             modelName: presenter.labwareModel.expected_type.pluralize(),
-            BC:        event.currentTarget.value
+            BC:        Util.pad(event.currentTarget.value)
           });
         };
         this.jquerySelection().append(
@@ -209,15 +212,7 @@ define(['config'
     },
 
     displayErrorMessage: function (message) {
-      var selection = this.jquerySelection().find('.alert-error');
-      var text = 'Error!';
-      text += message;
-      var tmp = $('<h4/>', {
-        class: 'alert-heading',
-        text: text
-      });
-      tmp.appendTo(selection.empty());
-      selection.show();
+      PubSub.publish('s2.status.error', this, {message: message});
     }
 
   });
@@ -229,17 +224,8 @@ define(['config'
   }
 
   function barcodeErrorCallback(errorText){
-    var errorHtml = function(errorText){
-      return $("<h4/>", {class: "alert-heading", text: errorText});
-    };
     return function(event, template, presenter){
-      template.
-          find('.alert-error').
-          html(errorHtml(errorText)).
-          removeClass('hide');
-      template.
-          find('input').
-          removeAttr('disabled');
+      PubSub.publish('s2.status.error', presenter, {message: errorText});
     };
   }
 
@@ -259,7 +245,7 @@ define(['config'
       return function (event) {
         if (event.which !== 13) return;
 
-        if (validationCallBack(event.currentTarget.value)) {
+        if (validationCallBack(Util.pad(event.currentTarget.value))) {
           callback(event, element, presenter);
         } else {
           errorCallback(event, element, presenter);

@@ -18,6 +18,12 @@ define(['extraction_pipeline/presenters/base_presenter'
       this.config = config;
       this.presenterFactory = factory;
       this.model = Object.create(Model).init(this, config);
+
+      // page is refreshed after 5 seconds
+      window.setTimeout(function () {
+        location.reload(true);
+      }, 5000);
+
       return this;
     },
 
@@ -27,7 +33,7 @@ define(['extraction_pipeline/presenters/base_presenter'
 
       thisPresenter.model
         .then(function (model) {
-          return model.setupModel(setupData);
+          //return model.setupModel(setupData);
         })
         .then(function () {
           thisPresenter.renderView();
@@ -40,18 +46,27 @@ define(['extraction_pipeline/presenters/base_presenter'
       var template = _.template(summaryPagePartialHtml);
 
       var templateData = {};
+      if (thisPresenter.config.spentBatch){
+        templateData.information = "The current batch is spent. This page will reload in 5 seconds. Once reloaded, scan your current labware to continue the process.";
+      }
+      else {
+        templateData.information = "No role has been found for this process. This page will reload in 5 seconds.";
+      }
       templateData.config = thisPresenter.config;
-      var model;
+//      var model;
+
+      // This is not leftover code. This has been commented out
+      // to disable a summary table that may be used later.
       thisPresenter.model
-        .then(function (result) {
-          model = result;
-          return model.labwares;
-        })
-        .fail(function (error) {
-          thisPresenter.message('error', 'Labware not found for this batch');
-        })
+//        .then(function (result) {
+//          model = result;
+//          return model.labwares;
+//        })
+//        .fail(function (error) {
+//          thisPresenter.message('error', 'Labware not found for this batch');
+//        })
         .then(function (labwares) {
-          templateData.items = transformOrdersAndLabwareToHtmlTemplateData(model.ordersByUUID, labwares, model.batch.uuid);
+//          templateData.items = transformOrdersAndLabwareToHtmlTemplateData(model.ordersByUUID, labwares, model.batch.uuid);
           thisPresenter.jquerySelection().html(template(templateData));
         });
 

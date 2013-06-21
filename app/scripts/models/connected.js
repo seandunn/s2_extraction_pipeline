@@ -33,7 +33,9 @@ define([
         var cache = _.extend(Cache.init(), {
           getByBarcode: function(requester, modelName, barcode) {
             return this.get(
-              function(r)   { return r.labels.barcode.value === barcode;       }, // Find by barcode
+              function(r)   { // Find by barcode && resourceType
+                return (r.labels.barcode.value === barcode) && (r.resourceType.pluralize() === modelName);
+              },
               function(p,f) { return missingHandler(modelName, barcode, p, f); }  // Use the missing handler!
             ).done(_.bind(requester.updateModel, requester)).fail(_.bind(requester.displayErrorMessage, requester));
           }
@@ -54,7 +56,20 @@ define([
       setupInputs(thisModel)
           .fail(function () {
             deferred.reject({message: "Couldn't load the batch resource"});
-          }).then(function () {
+          })
+          .then(function () {
+            return setupOutputs(thisModel);
+          })
+          .fail(function () {
+            deferred.reject({message: "Couldn't load the batch resource (Impossible to read outputs)"});
+          })
+          .then(function (reLoadedOutputs) {
+            if (reLoadedOutputs.length > 0) {
+              thisModel.reLoadedOutputs = reLoadedOutputs;
+              thisModel.started = true;
+            }
+          })
+          .then(function () {
             deferred.resolve(thisModel);
           });
       return deferred.promise();
@@ -67,15 +82,18 @@ define([
 
     setupInputPresenters: function(reset) {
       var that = this;
-      this.inputs.then(function(inputs) {
-        that.owner.rowPresenters = _.chain(inputs).map(function(input, index) {
-          var input        = reset ? undefined : input;
-          var rowPresenter = that.owner.presenterFactory.create('row_presenter', that.owner);
-          rowPresenter.setupPresenter(that.getRowModel(index, input), selectorFunction(that.owner, index));
-          return rowPresenter;
-        }).value();
-      });
-
+      return this.owner.getS2Root()
+            .then(function(root){
+              // Becareful! inputs is not a promise!
+              return that.inputs.then(function(inputs) {
+              that.owner.rowPresenters = _.chain(inputs).map(function (input, index) {
+                var input = reset ? undefined : input;
+                var rowPresenter = that.owner.presenterFactory.create('row_presenter', that.owner);
+                rowPresenter.setupPresenter(that.getRowModel(root,index, input), selectorFunction(that.owner, index));
+                return rowPresenter;
+              }).value();
+            });
+          });
       function selectorFunction(presenter, row) {
         return function() {
           return presenter.jquerySelection().find('.row' + row);
@@ -83,19 +101,37 @@ define([
       }
     },
 
-    getRowModel: function (rowNum, input) {
+    getRowModel: function (root,rowNum, input) {
       var that = this, previous = this.previous && this.ready;
+      var hasResourceForThisRow = false;
+      if (that.started){
+        hasResourceForThisRow = (that.reLoadedOutputs.length > 0);
+      }
       return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {
         var details = nameToDetails[1];
         var name    = 'labware' + (index+2);  // index=0, labware1=input, therefore labware2 first output
+        var resource;
+
+        if (hasResourceForThisRow){
+          if (details.tracked === false) {
+            // we can't reload an untracked resource, therefore, we create an empty one.
+            if (details.model.pluralize() !== "waste_tubes") {
+              resource = root[details.model.pluralize()].instantiate();
+            }
+          } else {
+            resource = popAMatchingOutput(that,input,details.model.singularize());
+          }
+        }
+
         rowModel[name] = {
           input:           false,
+          resource:        resource,
           expected_type:   details.model.singularize(),
           display_remove:  previous,
           display_barcode: previous,
           title:           details.title,
           validation:      details.validation
-        }
+        };
         return rowModel;
       }, {
         rowNum: rowNum,
@@ -111,6 +147,21 @@ define([
           validation:      that.config.input.validation
         }
       }).value();
+
+      // this function SHOULD pop the output resource
+      // 1. corresponding to an input resource
+      // 2. and of the correct type
+      // HOWEVER, the point number 1 is not fulfilled yet.
+      // there is no way to know which input correspond to which output after the transfer has been completed.
+      // it might be possible to do so if one can search for 'transfers' on S2.
+      // For now, it does not matter, as we don't really care, the transfer being already achieved at this stage...
+      function popAMatchingOutput(model, inputLabware, outputResourceType){
+        var correspondingOutput = _.find(model.reLoadedOutputs, function(labware){
+          return labware.resourceType === outputResourceType;
+        });
+        model.reLoadedOutputs = _.without(model.reLoadedOutputs,correspondingOutput);
+        return correspondingOutput;
+      }
     },
 
     createOutputs: function(printer) {
@@ -234,9 +285,13 @@ define([
         return _.chain(presenters).reduce(function(memo, presenter) {
           presenter.handleResources(function(source) {
             var operation = _.chain(arguments).drop(1).map(function(destination, index) {
+              // if not_batch === true -> undefined
+              // if not_batch === false -> that.batch.uuid
+              // if not_batch === undefined -> that.batch.uuid
+              var batchUUID = (!that.config.output[index].not_batched) ? that.batch.uuid : undefined;
               return {
                 input:        { resource: source,      role: that.config.input.role,         order: sourceToOrder[source.uuid] },
-                output:       { resource: destination, role: that.config.output[index].role, batch: that.batch.uuid },
+                output:       { resource: destination, role: that.config.output[index].role, batch: batchUUID },
                 fraction:     1.0,
                 aliquot_type: that.config.output[index].aliquotType
               };
@@ -325,4 +380,35 @@ define([
       }).fail(that.inputs.reject);
     });
   }
+
+  // configure the reLoadedOutputs
+  function setupOutputs(that) {
+    return that.batch.items.then(function(items) {
+      var deferred = $.Deferred();
+      var reLoadedOutputs = [];
+      $.when.apply(null, _.chain(items)
+          .filter(function (item) {
+            return item.status === 'in_progress';
+          })
+          .filter(function (item) {
+            return _.reduce(that.config.output,function(memo, output){
+              return memo || (item.role === output.role);
+            },false);
+          })
+          .map(function (item) {
+            return that.cache.fetchResourcePromiseFromUUID(item.uuid).then(function (resource) {
+              reLoadedOutputs.push(resource);
+            });
+          }).value())
+          .then(function () {
+            return deferred.resolve(reLoadedOutputs);
+          })
+          .fail(function(){
+            deferred.reject({message:"Couldn't load the output resources!"});
+          });
+      return deferred.promise();
+    });
+  }
+
+
 });
