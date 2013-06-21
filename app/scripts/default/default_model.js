@@ -1,6 +1,7 @@
 define([
        'extraction_pipeline/models/base_page_model'
-], function (BasePageModel) {
+     , 'text!extraction_pipeline/user_data.json'
+], function (BasePageModel, userData) {
   'use strict';
 
   var DefaultPageModel = Object.create(BasePageModel);
@@ -8,30 +9,55 @@ define([
   $.extend(DefaultPageModel, {
     init:function (owner) {
       this.owner = owner;
+      this.UserData = JSON.parse(userData);
       this.initialiseCaching();
       return this;
     },
 
     setLabwareFromBarcode: function (barcode) {
       var defaultModel = this;
-      return this.cache.fetchResourcePromiseFromBarcode(barcode).then(function (labware) {
-        return defaultModel.labware = labware;
-      }).then(function(labware){
-        return labware.order();
-      }).then(function(order){
-          return order.batchFor(function (item) { return item.uuid === defaultModel.labware.uuid; });
-      }).then(function (batch) {
-          defaultModel.batch = batch;
-          return defaultModel;
-      }, function () {
-        console.log("batch not found");
-        return defaultModel;
-      });
+      var deferred = $.Deferred();
+      this.cache.fetchResourcePromiseFromBarcode(barcode)
+          .fail(function(){
+            return deferred.reject({message:"Couldn't find any labware with a '"+barcode+"' barcode!"});
+          })
+          .then(function (labware) {
+            defaultModel.labware = labware;
+            return labware.order();
+          })
+          .then(function (order) {
+            return order.batchFor(function (item) {
+              return item.uuid === defaultModel.labware.uuid;
+            });
+          })
+          .then(function (batch) {
+            defaultModel.batch = batch;
+            return deferred.resolve(defaultModel);
+          })
+          .fail(function () {
+            // we resolve the promise because we already have a labware
+            // we simply didn't find a batch associated.
+            return deferred.resolve(defaultModel);
+          });
+      return deferred.promise();
+    },
+
+    setUserFromBarcode: function (barcode) {
+      var defaultModel = this;
+      var deferred = $.Deferred();
+      if (this.UserData[barcode]){
+        this.user = this.UserData[barcode];
+        this.owner.getS2Root(this.user);
+        deferred.resolve(this);
+      } else {
+        deferred.reject({message:"User barcode not recognised."});
+      }
+      return deferred.promise();
     },
 
     isValid: function(){
       return this.user && this.labware;
-    },
+    }
 
   });
 

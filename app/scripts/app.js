@@ -34,12 +34,11 @@ define([ 'config'
     BusyBox.init();
   };
 
-  App.prototype.getS2Root = function() {
-    if (this.rootPromise === undefined) {
+  App.prototype.getS2Root = function(user) {
+    if ( user || (this.rootPromise === undefined) ) {
       // User should be passed in here not hard-coded
-      this.rootPromise = S2Root.load({user:"username"});
+      this.rootPromise = S2Root.load({user:user});
     }
-
     return this.rootPromise;
   };
 
