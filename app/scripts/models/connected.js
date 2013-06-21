@@ -234,9 +234,13 @@ define([
         return _.chain(presenters).reduce(function(memo, presenter) {
           presenter.handleResources(function(source) {
             var operation = _.chain(arguments).drop(1).map(function(destination, index) {
+              // if not_batch === true -> undefined
+              // if not_batch === false -> that.batch.uuid
+              // if not_batch === undefined -> that.batch.uuid
+              var batchUUID = (!that.config.output[index].not_batched) ? that.batch.uuid : undefined;
               return {
                 input:        { resource: source,      role: that.config.input.role,         order: sourceToOrder[source.uuid] },
-                output:       { resource: destination, role: that.config.output[index].role, batch: that.batch.uuid },
+                output:       { resource: destination, role: that.config.output[index].role, batch: batchUUID },
                 fraction:     1.0,
                 aliquot_type: that.config.output[index].aliquotType
               };
