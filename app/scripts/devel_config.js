@@ -1,6 +1,7 @@
 define(['mapper_test/test_config'
   , 'text!mapper_testjson/unit/root.json'
-  , 'text!extraction_pipeline/dna_and_ran_manual_test_data.json'], function (mapperConfig, root, json) {
+  , 'text!extraction_pipeline/dna_and_ran_manual_test_data.json'
+], function (mapperConfig, root, json) {
   'use strict';
   var config = $.extend(mapperConfig, {
     // Handler for exceptions (does absolutely nothing, but could try..catch!)
@@ -27,6 +28,11 @@ define(['mapper_test/test_config'
 
   config.loadTestData(json);
   config.cummulativeLoadingTestDataInFirstStage(root);
+  config.UserData = {
+    "0000000000001":"Hopper",
+    "0000000000002":"Hockney",
+    "0000000000003":"Hodgkins",
+    "0000000000004":"Hofer"
+  };
   return config;
-
 });

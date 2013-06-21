@@ -1,7 +1,7 @@
 define([
-       'extraction_pipeline/models/base_page_model'
-     , 'text!extraction_pipeline/user_data.json'
-], function (BasePageModel, userData) {
+    'config'
+  , 'extraction_pipeline/models/base_page_model'
+], function (config, BasePageModel) {
   'use strict';
 
   var DefaultPageModel = Object.create(BasePageModel);
@@ -9,7 +9,6 @@ define([
   $.extend(DefaultPageModel, {
     init:function (owner) {
       this.owner = owner;
-      this.UserData = JSON.parse(userData);
       this.initialiseCaching();
       return this;
     },
@@ -45,8 +44,8 @@ define([
     setUserFromBarcode: function (barcode) {
       var defaultModel = this;
       var deferred = $.Deferred();
-      if (this.UserData[barcode]){
-        this.user = this.UserData[barcode];
+      if (config.UserData[barcode]){
+        this.user = config.UserData[barcode];
         this.owner.getS2Root(this.user);
         deferred.resolve(this);
       } else {
