@@ -94,7 +94,6 @@ define([
     analyseFileContent: function (data) {
       var locationsSortedByBarcode = CSVParser.convertCSVDataToJSON(data.csvAsTxt);
       var model = this;
-//      var results = checkFileValidity(model, locationsSortedByBarcode);
       var root;
 
       return checkFileValidity(model, locationsSortedByBarcode)
@@ -174,8 +173,8 @@ define([
     var deferred = $.Deferred();
 
     model.inputs
-      .fail(function(){
-        return deferred.reject({message:"Couldn't get the inputs"});
+      .fail(function () {
+        return deferred.reject({message: "Couldn't get the inputs"});
       })
       .then(function (inputs) {
         inputTubes = inputs;
@@ -190,19 +189,19 @@ define([
           message = "The number of tube is not correct. The current batch" +
             " contains " + expectedNbOfTubes + " tubes, while the " +
             "current transfer file contains " + nbOfTubesInRack + " tubes!";
-          return deferred.reject({message:message});
+          return deferred.reject({message: message});
         }
 
         extraBarcodes = _.difference(arrayOfBarcodesInRack, arrayOfExpectedBarcodes);
 
         if (extraBarcodes.length > 0) {
-          return validateExtraTubesContent(model,inputTubes);
+          return validateExtraTubesContent(model, inputTubes);
         }
       })
-      .fail(function(error){
+      .fail(function (error) {
         deferred.reject(error);
       })
-      .then(function(){
+      .then(function () {
         deferred.resolve(model);
       });
 
