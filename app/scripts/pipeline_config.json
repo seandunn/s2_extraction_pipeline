@@ -233,7 +233,7 @@
         "purpose":    "stock",
         "model":      "tubes",
         "title":      "Eppendorf DNA Tube",
-        "not_batched": true
+        "not_batched": false
       }
       ]
     }
@@ -316,7 +316,7 @@
         "purpose":    "stock",
         "model":      "tubes",
         "title":      "Eppendorf RNA Tube",
-        "not_batched": true
+        "not_batched": false
       }
       ]
     }
@@ -460,7 +460,7 @@
         "purpose":    "stock",
         "model":      "tubes",
         "title":      "Eppendorf DNA Tube",
-        "not_batched": true
+        "not_batched": false
       }
       ]
     }
@@ -542,7 +542,7 @@
         "purpose":    "stock",
         "model":      "tubes",
         "title":      "Eppendorf Extracted RNA Tube",
-        "not_batched": true
+        "not_batched": false
       }, {
         "model": "waste_tube",
         "tracked": false
@@ -589,7 +589,7 @@
         "purpose":    "stock",
         "model":      "tubes",
         "title":      "Eppendorf Extracted RNA Tube",
-        "not_batched": true
+        "not_batched": false
       }, {
         "model": "waste_tube",
         "tracked": false
@@ -653,7 +653,7 @@
         "purpose":    "stock",
         "model":      "tubes",
         "title":      "Eppendorf Extracted DNA Tube",
-        "not_batched": true
+        "not_batched": false
       }, {
         "model": "waste_tube",
         "tracked": false
