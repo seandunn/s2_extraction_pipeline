@@ -224,7 +224,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.eppendorf_tube.dna",
+        "role":       "samples.extraction.retubing.eppendorf_tube_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "tubes",
@@ -446,7 +446,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.eppendorf_tube.dna",
+        "role":       "samples.extraction.retubing.eppendorf_tube_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "tubes",
@@ -531,7 +531,7 @@
         "title":      "Rotor Adapter"
       },
       {
-        "role":       "samples.extraction.eppendorf_tube.dna",
+        "role":       "samples.extraction.retubing.eppendorf_tube_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "tubes",
@@ -724,7 +724,7 @@
       },
       "output":        [
         {
-        "role":       "samples.extraction.eppendorf_tube.dna",
+        "role":       "samples.extraction.retubing.eppendorf_tube_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "tubes",
