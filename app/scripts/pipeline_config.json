@@ -1,40 +1,43 @@
 {
   "role_priority":[
-    "samples.extraction.manual.dna_and_rna.input_tube_nap",
-    "samples.extraction.manual.dna_and_rna.input_tube_nap.batched",
-    "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap",
+    "samples.extraction.manual_dna_and_rna.input_tube_nap",
+    "samples.extraction.manual_dna_and_rna.input_tube_nap.batched",
+    "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap",
 
-    "samples.extraction.manual.spin_column_dna",
+    "samples.extraction.manual_dna_and_rna.spin_column_dna",
 
-    "samples.extraction.manual.dna_and_rna.input_tube_rnap.batched",
+    "samples.extraction.manual_dna_and_rna.input_tube_rnap.batched",
 
-    "samples.extraction.manual.dna_only.input_tube_dnap",
-    "samples.extraction.manual.dna_only.input_tube_dnap.batched",
+    "samples.extraction.manual_dna_only.input_tube_dnap",
+    "samples.extraction.manual_dna_only.input_tube_dnap.batched",
 
-    "samples.extraction.manual.rna_only.input_tube_rnap",
-    "samples.extraction.manual.rna_only.input_tube_rnap.batched",
+    "samples.extraction.manual_dna_only.spin_column_dna",
 
-    "samples.extraction.manual.spin_column_rna",
+    "samples.extraction.manual_rna_only.input_tube_rnap",
+    "samples.extraction.manual_rna_only.input_tube_rnap.batched",
+
+    "samples.extraction.manual_dna_and_rna.spin_column_rna",
+    "samples.extraction.manual_rna_only.spin_column_rna",
 
 
-    "samples.extraction.qiacube.dna_and_rna.input_tube_nap",
-    "samples.extraction.qiacube.dna_and_rna.input_tube_nap.batched",
-    "samples.extraction.qiacube.dna_and_rna.byproduct_tube_rnap",
-    "samples.extraction.qiacube.dna_and_rna.input_tube_rnap.batched",
+    "samples.extraction.qiacube_dna_and_rna.input_tube_nap",
+    "samples.extraction.qiacube_dna_and_rna.input_tube_nap.batched",
+    "samples.extraction.qiacube_dna_and_rna.byproduct_tube_rnap",
+    "samples.extraction.qiacube_dna_and_rna.input_tube_rnap.batched",
 
-    "samples.extraction.qiacube.dna_only.input_tube_dnap",
-    "samples.extraction.qiacube.dna_only.input_tube_dnap.batched",
+    "samples.extraction.qiacube_dna_only.input_tube_dnap",
+    "samples.extraction.qiacube_dna_only.input_tube_dnap.batched",
 
-    "samples.extraction.qiacube.rna_only.input_tube_rnap",
-    "samples.extraction.qiacube.rna_only.input_tube_rnap.batched",
+    "samples.extraction.qiacube_rna_only.input_tube_rnap",
+    "samples.extraction.qiacube_rna_only.input_tube_rnap.batched",
 
-   "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed",
-   "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed",
-   "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed",
+   "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed",
+   "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed",
+   "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed",
 
-   "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed.batched",
-   "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed.batched",
-   "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed.batched",
+   "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed.batched",
+   "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed.batched",
+   "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched",
 
    "samples.extraction.retubing.eppendorf_tube_dna",
    "samples.extraction.racking.fluidx_tube_dna",
@@ -46,17 +49,17 @@
   "workflows":[
 
     {
-    "accepts": [ "samples.extraction.manual.dna_and_rna.input_tube_nap" ],
+    "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_nap" ],
     "presenterName":"selection_page_presenter",
     "processTitle": "Manual DNA and RNA Extraction",
     "input":        {
-      "role":"samples.extraction.manual.dna_and_rna.input_tube_nap",
+      "role":"samples.extraction.manual_dna_and_rna.input_tube_nap",
       "model":"tubes",
       "title": "Input tube"
     },
     "output":       [
       {
-      "role":       "samples.extraction.manual.dna_and_rna.input_tube_nap.batched",
+      "role":       "samples.extraction.manual_dna_and_rna.input_tube_nap.batched",
       "aliquotType":"NA+P",
       "title": "Batched Input tube"
     }
@@ -64,7 +67,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.manual.dna_and_rna.input_tube_nap.batched" ],
+    "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_nap.batched" ],
     "processTitle":  "Manual DNA and RNA Binding",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -87,20 +90,20 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.extraction.manual.dna_and_rna.input_tube_nap.batched",
+        "role": "samples.extraction.manual_dna_and_rna.input_tube_nap.batched",
         "model":"tubes",
         "title": "Input tube"
       },
       "output":        [
         {
-        "role":       "samples.extraction.manual.spin_column_dna",
+        "role":       "samples.extraction.manual_dna_and_rna.spin_column_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "spin_columns",
         "title":      "Spin Column"
       },
       {
-        "role":       "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap",
+        "role":       "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap",
         "aliquotType":"RNA+P",
         "purpose":    "stock",
         "model":      "tubes",
@@ -112,7 +115,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap" ],
+    "accepts": [ "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap" ],
     "processTitle":  "Manual DNA and RNA Collection Tube Transfer",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -132,14 +135,14 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap",
+        "role": "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap",
         "model":"tubes",
         "title": "Collection Tube"
       },
 
       "output":        [
         {
-        "role":       "samples.extraction.manual.dna_and_rna.input_tube_rnap.batched",
+        "role":       "samples.extraction.manual_dna_and_rna.input_tube_rnap.batched",
         "aliquotType":"RNA+P",
         "purpose":    "stock",
         "model":      "tubes",
@@ -151,7 +154,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.manual.dna_and_rna.input_tube_rnap.batched" ],
+    "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_rnap.batched" ],
     "processTitle":  "Manual DNA and RNA Binding, Input tube RNA+P",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -174,12 +177,12 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.extraction.manual.dna_and_rna.input_tube_rnap.batched",
+        "role": "samples.extraction.manual_dna_and_rna.input_tube_rnap.batched",
         "model":"tubes"
       },
       "output":        [
         {
-        "role":       "samples.extraction.manual.spin_column_rna",
+        "role":       "samples.extraction.manual_dna_and_rna.spin_column_rna",
         "aliquotType":"RNA",
         "purpose":    "stock",
         "model":      "spin_columns"
@@ -194,7 +197,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.manual.spin_column_dna" ],
+    "accepts": [ "samples.extraction.manual_dna_and_rna.spin_column_dna" ],
     "processTitle":  "Manual Extraction Spin Column DNA Transfer",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -215,7 +218,7 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.extraction.manual.spin_column_dna",
+        "role": "samples.extraction.manual_dna_and_rna.spin_column_dna",
         "model":"spin_columns",
         "title": "DNA Spin Column"
       },
@@ -234,7 +237,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.manual.rna_only.input_tube_rnap.batched" ],
+    "accepts": [ "samples.extraction.manual_rna_only.input_tube_rnap.batched" ],
     "processTitle":  "Manual RNA Only Binding, Input tube RNA+P",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -257,12 +260,12 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.extraction.manual.rna_only.input_tube_rnap.batched",
+        "role": "samples.extraction.manual_rna_only.input_tube_rnap.batched",
         "model":"tubes"
       },
       "output":        [
         {
-        "role":       "samples.extraction.manual.spin_column_rna",
+        "role":       "samples.extraction.manual_rna_only.spin_column_rna",
         "aliquotType":"RNA",
         "purpose":    "stock",
         "model":      "spin_columns"
@@ -277,7 +280,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.manual.spin_column_rna" ],
+    "accepts": [ "samples.extraction.manual_dna_and_rna.spin_column_rna" ],
     "processTitle":  "Manual Extraction Spin Column RNA Transfer",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -298,7 +301,7 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.extraction.manual.spin_column_rna",
+        "role": "samples.extraction.manual_dna_and_rna.spin_column_rna",
         "model":"spin_columns",
         "title": "RNA Spin Column"
       },
@@ -318,23 +321,63 @@
 
 
   {
-    "accepts": [ "samples.extraction.manual.dna_only.input_tube_dnap" ],
+    "accepts": [ "samples.extraction.manual_rna_only.spin_column_rna" ],
+    "processTitle":  "Manual Extraction Spin Column RNA Transfer",
+    "presenterName": "step_presenter",
+    "defaultPrinter":"e367bc",
+    "printerType": 2,
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "start", "title": "Start elution process" },
+      { "action": "end",   "title": "Elution process completed" }
+    ],
+    "presenters": [
+      {
+      "presenterName":   "connected_presenter",
+      "behaviours": {
+        "start": "start",
+        "operate": "start",
+        "complete": "end",
+        "done": "transfer",
+        "outputs": "print"
+      },
+      "input":         {
+        "role": "samples.extraction.manual_rna_only.spin_column_rna",
+        "model":"spin_columns",
+        "title": "RNA Spin Column"
+      },
+      "output":        [
+        {
+        "role":       "samples.extraction.retubing.eppendorf_tube_rna",
+        "aliquotType":"RNA",
+        "purpose":    "stock",
+        "model":      "tubes",
+        "title":      "Eppendorf RNA Tube",
+        "not_batched": false
+      }
+      ]
+    }
+    ]
+  },
+
+  {
+    "accepts": [ "samples.extraction.manual_dna_only.input_tube_dnap" ],
     "presenterName":"selection_page_presenter",
     "processTitle": "Manual DNA Only Extraction",
     "input":        {
-      "role":"samples.extraction.manual.dna_only.input_tube_dnap",
+      "role":"samples.extraction.manual_dna_only.input_tube_dnap",
       "model":"tubes"
     },
     "output":       [
       {
-      "role":       "samples.extraction.manual.dna_only.input_tube_dnap.batched",
+      "role":       "samples.extraction.manual_dna_only.input_tube_dnap.batched",
       "aliquotType":"DNA+P"
     }
     ]
   },
 
   {
-    "accepts": [ "samples.extraction.manual.dna_only.input_tube_dnap.batched" ],
+    "accepts": [ "samples.extraction.manual_dna_only.input_tube_dnap.batched" ],
     "processTitle":  "Manual DNA Only Binding",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -357,12 +400,12 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.extraction.manual.dna_only.input_tube_dnap.batched",
+        "role": "samples.extraction.manual_dna_only.input_tube_dnap.batched",
         "model":"tubes"
       },
       "output":        [
         {
-        "role":       "samples.extraction.manual.spin_column_dna",
+        "role":       "samples.extraction.manual_dna_only.spin_column_dna",
         "aliquotType":"DNA",
         "purpose":    "stock",
         "model":      "spin_columns"
@@ -373,20 +416,60 @@
       ]
     }
     ]
+
+  },
+  {
+    "accepts": [ "samples.extraction.manual_dna_only.spin_column_dna" ],
+    "processTitle":  "Manual Extraction Spin Column DNA Transfer",
+    "presenterName": "step_presenter",
+    "defaultPrinter":"e367bc",
+    "printerType": 2,
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "start", "title": "Start elution process" },
+      { "action": "end",   "title": "Elution process completed" }
+    ],
+    "presenters": [
+      {
+      "presenterName":   "connected_presenter",
+      "behaviours": {
+        "start": "start",
+        "operate": "start",
+        "complete": "end",
+        "done": "transfer",
+        "outputs": "print"
+      },
+      "input":         {
+        "role": "samples.extraction.manual_dna_only.spin_column_dna",
+        "model":"spin_columns",
+        "title": "DNA Spin Column"
+      },
+      "output":        [
+        {
+        "role":       "samples.extraction.eppendorf_tube.dna",
+        "aliquotType":"DNA",
+        "purpose":    "stock",
+        "model":      "tubes",
+        "title":      "Eppendorf DNA Tube",
+        "not_batched": false
+      }
+      ]
+    }
+    ]
   },
 
 
   {
-    "accepts": [ "samples.extraction.manual.rna_only.input_tube_rnap" ],
+    "accepts": [ "samples.extraction.manual_rna_only.input_tube_rnap" ],
     "presenterName":"selection_page_presenter",
     "processTitle": "Manual RNA Only Extraction",
     "input":        {
-      "role":"samples.extraction.manual.rna_only.input_tube_rnap",
+      "role":"samples.extraction.manual_rna_only.input_tube_rnap",
       "model":"tubes"
     },
     "output":       [
       {
-      "role":       "samples.extraction.manual.rna_only.input_tube_rnap.batched",
+      "role":       "samples.extraction.manual_rna_only.input_tube_rnap.batched",
       "aliquotType":"RNA+P"
     }
     ]
@@ -394,23 +477,23 @@
 
 
   {
-    "accepts": [ "samples.extraction.qiacube.dna_and_rna.input_tube_nap" ],
+    "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_nap" ],
     "presenterName":"selection_page_presenter",
     "processTitle": "Automated DNA and RNA Extraction (QIAcube)",
     "input":        {
-      "role":"samples.extraction.qiacube.dna_and_rna.input_tube_nap",
+      "role":"samples.extraction.qiacube_dna_and_rna.input_tube_nap",
       "model":"tubes"
     },
     "output":       [
       {
-      "role":       "samples.extraction.qiacube.dna_and_rna.input_tube_nap.batched",
+      "role":       "samples.extraction.qiacube_dna_and_rna.input_tube_nap.batched",
       "aliquotType":"NA+P"
     }
     ]
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube.dna_and_rna.input_tube_nap.batched" ],
+    "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_nap.batched" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -435,13 +518,13 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.extraction.qiacube.dna_and_rna.input_tube_nap.batched",
+        "role": "samples.extraction.qiacube_dna_and_rna.input_tube_nap.batched",
         "model":"tubes",
         "title": "Eppendorf Input Tube"
       },
       "output":        [
         {
-        "role":       "samples.extraction.qiacube.dna_and_rna.byproduct_tube_rnap",
+        "role":       "samples.extraction.qiacube_dna_and_rna.byproduct_tube_rnap",
         "aliquotType":"RNA+P",
         "purpose":    "stock",
         "model":      "tubes",
@@ -461,7 +544,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube.dna_and_rna.byproduct_tube_rnap" ],
+    "accepts": [ "samples.extraction.qiacube_dna_and_rna.byproduct_tube_rnap" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube) Rotor Aptapter Transfer",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -481,13 +564,13 @@
         "outputs": "print"
       },
       "input":         {
-        "role":  "samples.extraction.qiacube.dna_and_rna.byproduct_tube_rnap",
+        "role":  "samples.extraction.qiacube_dna_and_rna.byproduct_tube_rnap",
         "model": "tubes",
         "title": "Rotor Adapter"
       },
       "output":        [
         {
-        "role":        "samples.extraction.qiacube.dna_and_rna.input_tube_rnap.batched",
+        "role":        "samples.extraction.qiacube_dna_and_rna.input_tube_rnap.batched",
         "aliquotType": "RNA+P",
         "purpose":     "stock",
         "model":       "tubes",
@@ -499,7 +582,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube.dna_and_rna.input_tube_rnap.batched" ],
+    "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_rnap.batched" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -524,7 +607,7 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.extraction.qiacube.dna_and_rna.input_tube_rnap.batched",
+        "role": "samples.extraction.qiacube_dna_and_rna.input_tube_rnap.batched",
         "model":"tubes",
         "title": "Eppendorf RNA+P Tube"
       },
@@ -546,7 +629,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube.rna_only.input_tube_rnap.batched" ],
+    "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.batched" ],
     "processTitle":  "Automated RNA Only Extraction (QIAcube)",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -571,7 +654,7 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.extraction.qiacube.rna_only.input_tube_rnap.batched",
+        "role": "samples.extraction.qiacube_rna_only.input_tube_rnap.batched",
         "model":"tubes",
         "title": "Eppendorf Input Tube"
       },
@@ -594,23 +677,23 @@
 
 
   {
-    "accepts": [ "samples.extraction.qiacube.dna_only.input_tube_dnap" ],
+    "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap" ],
     "presenterName":"selection_page_presenter",
     "processTitle": "Automated DNA Only Extraction (QIAcube)",
     "input":        {
-      "role":"samples.extraction.qiacube.dna_only.input_tube_dnap",
+      "role":"samples.extraction.qiacube_dna_only.input_tube_dnap",
       "model":"tubes"
     },
     "output":       [
       {
-      "role":       "samples.extraction.qiacube.dna_only.input_tube_dnap.batched",
+      "role":       "samples.extraction.qiacube_dna_only.input_tube_dnap.batched",
       "aliquotType":"DNA+P"
     }
     ]
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube.dna_only.input_tube_dnap.batched" ],
+    "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.batched" ],
     "processTitle":  "Automated DNA Only Extraction (QIAcube)",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -635,7 +718,7 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.extraction.qiacube.dna_only.input_tube_dnap.batched",
+        "role": "samples.extraction.qiacube_dna_only.input_tube_dnap.batched",
         "model":"tubes",
         "title": "Eppendorf Input Tube"
       },
@@ -657,39 +740,39 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube.rna_only.input_tube_rnap" ],
+    "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap" ],
     "presenterName":  "selection_page_presenter",
     "processTitle":   "Automated RNA Only Extraction (QIAcube)",
     "input":        {
-      "role":   "samples.extraction.qiacube.rna_only.input_tube_rnap",
+      "role":   "samples.extraction.qiacube_rna_only.input_tube_rnap",
       "model":  "tubes"
     },
     "output":  [
       {
-        "role":         "samples.extraction.qiacube.rna_only.input_tube_rnap.batched",
+        "role":         "samples.extraction.qiacube_rna_only.input_tube_rnap.batched",
         "aliquotType":  "RNA+P"
       }
     ]
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed" ],
+    "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed" ],
     "presenterName":  "selection_page_presenter",
     "processTitle":   "DNA and RNA Retubing",
     "input":        {
-      "role":   "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed",
+      "role":   "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed",
       "model":  "tubes"
     },
     "output":  [
       {
-        "role":         "samples.extraction.qiacube.dna_and_rna.input_tube_nap.to_be_retubed.batched",
+        "role":         "samples.extraction.qiacube_dna_and_rna.input_tube_nap.to_be_retubed.batched",
         "aliquotType":  "NA+P"
       }
     ]
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed.batched" ],
+    "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed.batched" ],
     "processTitle":  "DNA and RNA Re-Tubing",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -709,12 +792,12 @@
           "outputs":  "print"
         },
         "input": {
-          "role":  "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.to_be_retubed.batched",
+          "role":  "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed.batched",
           "model": "tubes"
         },
         "output": [
           {
-            "role":        "samples.extraction.qiacube.dna_and_rna.input_tube_dnap.batched",
+            "role":        "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.batched",
             "aliquotType": "NA+P",
             "purpose":     "stock",
             "model":       "tubes"
@@ -881,23 +964,23 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed" ],
+    "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed" ],
     "presenterName":  "selection_page_presenter",
     "processTitle":   "Retubing for DNA only Extraction",
     "input":        {
-      "role":   "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed",
+      "role":   "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed",
       "model":  "tubes"
     },
     "output":  [
       {
-        "role":         "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed.batched",
+        "role":         "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed.batched",
         "aliquotType":  "DNA+P"
       }
     ]
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed.batched" ],
+    "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed.batched" ],
     "processTitle":  "Retubing for DNA only Extraction",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -918,12 +1001,12 @@
         "outputs":   "print"
       },
       "input":         {
-        "role":   "samples.extraction.qiacube.dna_only.input_tube_dnap.to_be_retubed.batched",
+        "role":   "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed.batched",
         "model":  "tubes"
       },
       "output":        [
         {
-        "role":         "samples.extraction.qiacube.dna_only.input_tube_dnap",
+        "role":         "samples.extraction.qiacube_dna_only.input_tube_dnap",
         "aliquotType":  "DNA+P",
         "purpose":      "stock",
         "model":        "tubes"
@@ -934,23 +1017,23 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed" ],
+    "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed" ],
     "presenterName":  "selection_page_presenter",
     "processTitle":   "Retubing for RNA only Extraction",
     "input":        {
-      "role":   "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed",
+      "role":   "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed",
       "model":  "tubes"
     },
     "output":  [
       {
-        "role":         "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed.batched",
+        "role":         "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched",
         "aliquotType":  "RNA+P"
       }
     ]
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed.batched" ],
+    "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched" ],
     "processTitle":  "Retubing for RNA only Extraction",
     "presenterName": "step_presenter",
     "defaultPrinter":"e367bc",
@@ -970,12 +1053,12 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.extraction.qiacube.rna_only.input_tube_rnap.to_be_retubed.batched",
+        "role": "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched",
         "model":"tubes"
       },
       "output":        [
         {
-        "role":       "samples.extraction.qiacube.rna_only.input_tube_rnap",
+        "role":       "samples.extraction.qiacube_rna_only.input_tube_rnap",
         "aliquotType":"RNA+P",
         "purpose":    "stock",
         "model":      "tubes"
