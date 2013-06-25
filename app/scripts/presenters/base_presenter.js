@@ -22,12 +22,14 @@ define(['config'
         return function (event) {
           if (event.which !== 13) return;
 
+          var value = event.currentTarget.value;
+
           if (_.some(BarcodeChecker, function (validationCallback) {
-            return validationCallback(Util.pad(event.currentTarget.value));
+            return validationCallback(Util.pad(value));
           })) {
-            callback(event, element, thisPresenter);
+            callback(value, element, thisPresenter);
           } else {
-            errorCallback(event, element, thisPresenter);
+            errorCallback(value, element, thisPresenter);
           }
         }
       };

@@ -122,14 +122,14 @@ define(['config'
       }
 
       if (this.barcodeInputPresenter) {
-        var labwareCallback = function(event, template, presenter){
+        var labwareCallback = function(value, template, presenter){
           presenter.owner.childDone(presenter, 'barcodeScanned', {
             modelName: presenter.labwareModel.expected_type.pluralize(),
-            BC:        Util.pad(event.currentTarget.value)
+            BC:        Util.pad(value)
           });
           PubSub.publish("s2.labware.barcode_scanned", presenter, {
             modelName: presenter.labwareModel.expected_type.pluralize(),
-            BC:        Util.pad(event.currentTarget.value)
+            BC:        Util.pad(value)
           });
         };
         this.jquerySelection().append(
@@ -229,9 +229,16 @@ define(['config'
   }
 
   function barcodeErrorCallback(errorText){
-    return function(event, template, presenter){
+    return function(value, template, presenter){
       PubSub.publish('s2.status.error', presenter, {message: errorText});
     };
+  }
+
+  function setErrorTimeout (presenter) {
+    presenter.jquerySelection().find('input').attr('disabled', 'disabled');
+    setTimeout(function () {
+      presenter.jquerySelection().find('input').removeAttr('disabled');
+    }, 500);
   }
 
   function validationOnReturnKeyCallback (presenter, type, barcodePrefixes) {
@@ -250,10 +257,14 @@ define(['config'
       return function (event) {
         if (event.which !== 13) return;
 
-        if (validationCallBack(Util.pad(event.currentTarget.value),barcodePrefixes)) {
-          callback(event, element, presenter);
+        var value = event.currentTarget.value;
+        $(event.currentTarget).val("");
+        
+        setErrorTimeout(presenter);
+        if (validationCallBack(Util.pad(value),barcodePrefixes)) {
+          callback(value, element, presenter);
         } else {
-          errorCallback(event, element, presenter);
+          errorCallback(value, element, presenter);
         }
       };
     }

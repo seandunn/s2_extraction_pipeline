@@ -14,28 +14,31 @@ define([
       // validation of the barcode on return key
       return function (event) {
         if (event.which !== 13) return;
-        if (BarcodeChecker.isKitBarcodeValid(Util.pad(event.currentTarget.value))) {
-          callback(event, element, presenter);
+
+        var value = event.currentTarget.value;
+        $(event.currentTarget).val("");
+        setErrorTimeout(presenter);
+
+        if (BarcodeChecker.isKitBarcodeValid(Util.pad(value))) {
+          callback(value, element, presenter);
         } else {
-          errorCallback(event, element, presenter);
+          errorCallback(value, element, presenter);
         }
       };
     }
   }
 
   function kitScannedCallback(presenter) {
-    return function (event, template, presenter) {
+    return function (value, template, presenter) {
       presenter.model
           .then(function(model){
-            return model.setKitFromBarcode(Util.pad(event.currentTarget.value));
+            return model.setKitFromBarcode(Util.pad(value));
           })
           .fail(function (error) {
             PubSub.publish('s2.status.error', presenter, error);
-            template.find(".barcodeInput").attr('disabled', false);
           })
           .then(function(model){
             PubSub.publish('s2.status.message', presenter, {message:'Kit details validated/saved'});
-            template.find(".barcodeInput").attr('disabled', true);
             PubSub.publish("s2.step_presenter.next_process", presenter, {batch: model.batch});
           })
       ;
@@ -44,10 +47,17 @@ define([
 
   function kitScannedErrorCallback(presenter) {
     return function (errorText) {
-      return function (event, template, presenter) {
+      return function (value, template, presenter) {
         PubSub.publish('s2.status.error', presenter, {message:errorText});
       };
     };
+  }
+
+  function setErrorTimeout(presenter){
+    presenter.selector().find('input').attr('disabled','disabled');
+    setTimeout(function () {
+      presenter.selector().find('input').removeAttr('disabled');
+    }, 500);
   }
 
   var Presenter = Object.create(Base);
