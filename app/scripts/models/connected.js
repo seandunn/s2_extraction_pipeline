@@ -127,6 +127,7 @@ define([
           input:           false,
           resource:        resource,
           expected_type:   details.model.singularize(),
+          barcodePrefixes: details.barcodePrefixes,
           display_remove:  previous,
           display_barcode: previous,
           title:           details.title,
@@ -148,6 +149,7 @@ define([
         }
       }).value();
 
+      // used to restore the state of the transfer
       // this function SHOULD pop the output resource
       // 1. corresponding to an input resource
       // 2. and of the correct type

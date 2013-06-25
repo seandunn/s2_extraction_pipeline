@@ -528,7 +528,8 @@
         "aliquotType":"RNA+P",
         "purpose":    "stock",
         "model":      "tubes",
-        "title":      "Rotor Adapter"
+        "title":      "Rotor Adapter",
+        "barcodePrefixes":    [ "27402" ]
       },
       {
         "role":       "samples.extraction.retubing.eppendorf_tube_dna",
@@ -536,6 +537,7 @@
         "purpose":    "stock",
         "model":      "tubes",
         "title":      "Eppendorf DNA Tube",
+        "barcodePrefixes":    [ "54002" ],
         "not_batched": false
       }
       ]
