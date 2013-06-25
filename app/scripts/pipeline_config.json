@@ -843,7 +843,8 @@
             "aliquotType":"DNA",
             "model":      "tubes",
             "title":      "2D Extracted DNA Tube",
-            "validation": "2D_tube"
+            "validation": "2D_tube",
+            "not_batched": true
           }
         ]
       }
@@ -919,7 +920,8 @@
             "aliquotType": "RNA",
             "model":       "tubes",
             "title":       "2D Extracted RNA Tube",
-            "validation":  "2D_tube"
+            "validation":  "2D_tube",
+            "not_batched": true
           }
         ]
       }
