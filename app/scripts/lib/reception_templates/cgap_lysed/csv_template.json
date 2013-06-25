@@ -29,6 +29,11 @@
       "type":       "boolean"
     },
 
+    "donor_id": {
+      "columnName": "Donor ID",
+      "type":       "string"
+    },
+
     "extraction_process":{
       "columnName": "_PROCESS",
       "type":       "string"
