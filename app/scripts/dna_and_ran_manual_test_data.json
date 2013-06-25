@@ -163,20 +163,20 @@
           }
         },
         "laboratorySearches":{
-            "actions":{
-              "create":"http://localhost:9292/lims-laboratory/searches",
-              "read":"http://localhost:9292/lims-laboratory/searches",
-              "first":"http://localhost:9292/lims-laboratory/searches/page=1",
-              "last":"http://localhost:9292/lims-laboratory/searches/page=-1"
-            }
+          "actions":{
+            "create":"http://localhost:9292/lims-laboratory/searches",
+            "read":"http://localhost:9292/lims-laboratory/searches",
+            "first":"http://localhost:9292/lims-laboratory/searches/page=1",
+            "last":"http://localhost:9292/lims-laboratory/searches/page=-1"
+          }
         },
         "supportSearches":{
-            "actions":{
-              "create":"http://localhost:9292/lims-support/searches",
-              "read":"http://localhost:9292/lims-support/searches",
-              "first":"http://localhost:9292/lims-support/searches/page=1",
-              "last":"http://localhost:9292/lims-support/searches/page=-1"
-            }
+          "actions":{
+            "create":"http://localhost:9292/lims-support/searches",
+            "read":"http://localhost:9292/lims-support/searches",
+            "first":"http://localhost:9292/lims-support/searches/page=1",
+            "last":"http://localhost:9292/lims-support/searches/page=-1"
+          }
         },
         "multi_criteria_filters":{
           "actions":{
@@ -342,7 +342,7 @@
       "url":"/lims-laboratory/searches",
       "request":{
         "search":{
-          "user":"username",
+          "user":"Hopper",
           "description":"search for barcoded tube",
           "model":"tube",
           "criteria":{
@@ -446,7 +446,7 @@
       "url":"/lims-laboratory/searches",
       "request":{
         "search":{
-          "user":"username",
+          "user":"Hopper",
           "description":"search for order",
           "model":"order",
           "criteria":{
@@ -530,7 +530,7 @@
               "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
             },
             "items":{
-              "samples.extraction.manual.dna_and_rna.input_tube_nap":[
+              "samples.extraction.manual_dna_and_rna.input_tube_nap":[
                 {
                   "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
@@ -553,7 +553,7 @@
       "url":"/lims-laboratory/searches",
       "request":{
         "search":{
-          "user":"username",
+          "user":"Hopper",
           "description":"search for barcoded tube",
           "model":"tube",
           "criteria":{
@@ -657,7 +657,7 @@
       "url":"/lims-laboratory/searches",
       "request":{
         "search":{
-          "user":"username",
+          "user":"Hopper",
           "description":"search for order",
           "model":"order",
           "criteria":{
@@ -741,7 +741,7 @@
               "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
             },
             "items":{
-              "samples.extraction.manual.dna_and_rna.input_tube_nap":[
+              "samples.extraction.manual_dna_and_rna.input_tube_nap":[
                 {
                   "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
@@ -764,7 +764,7 @@
       "url":"/batches",
       "request":{
         "batch":{
-          "user":"username"
+          "user":"Hopper"
         }
       },
       "response":{
@@ -806,9 +806,9 @@
       "method":"put",
       "url":"/66e60c10-8d8b-0130-b650-282066132de2",
       "request":{
-        "user":"username",
+        "user":"Hopper",
         "items":{
-          "samples.extraction.manual.dna_and_rna.input_tube_nap":{
+          "samples.extraction.manual_dna_and_rna.input_tube_nap":{
             "66e0f490-8d8b-0130-b650-282066132de2":{
               "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
             },
@@ -851,7 +851,7 @@
             "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":{
-            "samples.extraction.manual.dna_and_rna.input_tube_nap":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -926,7 +926,7 @@
             "uuid":"66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":{
-            "samples.extraction.manual.dna_and_rna.input_tube_nap":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -966,7 +966,7 @@
       "url":"/lims-laboratory/searches",
       "request":{
         "search":{
-          "user":"username",
+          "user":"Hopper",
           "description":"search order by batch",
           "model":"order",
           "criteria":{
@@ -1050,7 +1050,7 @@
               "uuid":"66ddff90-8d8b-0130-b650-282066132de2"
             },
             "items":{
-              "samples.extraction.manual.dna_and_rna.input_tube_nap":[
+              "samples.extraction.manual_dna_and_rna.input_tube_nap":[
                 {
                   "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
@@ -1090,9 +1090,9 @@
       "method":"put",
       "url":"/66e60c10-8d8b-0130-b650-282066132de2",
       "request":{
-        "user":"username",
+        "user":"Hopper",
         "items":{
-          "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":{
+          "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":{
             "66e0f490-8d8b-0130-b650-282066132de2":{
               "event":"start",
               "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
@@ -1137,7 +1137,7 @@
             "uuid":"66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":{
-            "samples.extraction.manual.dna_and_rna.input_tube_nap":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -1167,7 +1167,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"in_progress",
@@ -1242,7 +1242,7 @@
             "uuid":"66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":{
-            "samples.extraction.manual.dna_and_rna.input_tube_nap":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap":[
               {
                 "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -1272,7 +1272,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"in_progress",
@@ -1311,9 +1311,9 @@
       "method":"put",
       "url":"/66e60c10-8d8b-0130-b650-282066132de2",
       "request":{
-        "user":"username",
+        "user":"Hopper",
         "items":{
-          "samples.extraction.manual.dna_and_rna.input_tube_nap":{
+          "samples.extraction.manual_dna_and_rna.input_tube_nap":{
             "66e0f490-8d8b-0130-b650-282066132de2":{
               "event":"unuse"
             },
@@ -1321,7 +1321,7 @@
               "event":"unuse"
             }
           },
-          "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":{
+          "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":{
             "66e0f490-8d8b-0130-b650-282066132de2":{
               "event":"complete"
             },
@@ -1364,7 +1364,7 @@
             "uuid":"66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":{
-            "samples.extraction.manual.dna_and_rna.input_tube_nap":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap":[
               {
                 "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"unused",
@@ -1394,7 +1394,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -1469,7 +1469,7 @@
             "uuid":"66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":{
-            "samples.extraction.manual.dna_and_rna.input_tube_nap":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap":[
               {
                 "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"unused",
@@ -1499,7 +1499,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -1539,7 +1539,7 @@
       "url":"/lims-laboratory/searches",
       "request":{
         "search":{
-          "user":"username",
+          "user":"Hopper",
           "description":"search order by batch",
           "model":"order",
           "criteria":{
@@ -1623,7 +1623,7 @@
               "uuid":"66ddff90-8d8b-0130-b650-282066132de2"
             },
             "items":{
-              "samples.extraction.manual.dna_and_rna.input_tube_nap":[
+              "samples.extraction.manual_dna_and_rna.input_tube_nap":[
                 {
                   "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"unused",
@@ -1653,7 +1653,7 @@
                   }
                 }
               ],
-              "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+              "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
                 {
                   "uuid":"66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
@@ -1790,7 +1790,7 @@
       "url":"/lims-support/searches",
       "request":{
         "search":{
-          "user":"username",
+          "user":"Hopper",
           "description":"search for barcoded kit",
           "model":"kit",
           "criteria":{
@@ -1827,60 +1827,62 @@
   "10a":{
     "calls":[
 
-    {
-      "description":"Get first page",
-      "method":"get",
-      "url":"/supportsearches-result-url/page=1",
-      "request":null,
-      "response":{
-        "actions":{
-          "read":"http://localhost:9292/supportsearches-result-url/page=1",
-          "first":"http://localhost:9292/supportsearches-result-url/page=1",
-          "last":"http://localhost:9292/supportsearches-result-url/page=-1"
-        },
-        "size":1,
-        "kits":[
-          {
-            "kit":{
+      {
+        "description":"Get first page",
+        "method":"get",
+        "url":"/supportsearches-result-url/page=1",
+        "request":null,
+        "response":{
+          "actions":{
+            "read":"http://localhost:9292/supportsearches-result-url/page=1",
+            "first":"http://localhost:9292/supportsearches-result-url/page=1",
+            "last":"http://localhost:9292/supportsearches-result-url/page=-1"
+          },
+          "size":1,
+          "kits":[
+            {
+
               "actions":{
                 "read":"http://localhost:9292/KitUUID",
                 "create":"http://localhost:9292/KitUUID",
                 "update":"http://localhost:9292/KitUUID",
                 "delete":"http://localhost:9292/KitUUID"
               },
-              "uuid":"KitUUID"
+              "uuid":"KitUUID",
+              "aliquotType" : "DNA/RNA"
+
             }
-          }
-        ]
-      }
-    },
-
-    {
-
-      "description":"Add the kit barcode to the batch",
-      "method":"put",
-      "url":"/695ff060-8d8b-0130-b64f-282066132de2",
-      "request":{
-        "user":"username",
-        "kit":"1234567891011"
-      },
-      "response":{
-        "batch":{
-          "actions":{
-            "read":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
-            "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
-            "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
-            "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
-          },
-          "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
-          "process":null,
-          "kit":"1234567891011"
+          ]
         }
       },
-      "next_stage":11
-    }
-  ]
-},
+
+      {
+
+        "description":"Add the kit barcode to the batch",
+        "method":"put",
+        "url":"/695ff060-8d8b-0130-b64f-282066132de2",
+        "request":{
+          "user":"Hopper",
+          "kit":"1234567891011"
+        },
+        "response":{
+          "batch":{
+            "actions":{
+              "read":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+              "create":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+              "update":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2",
+              "delete":"http://localhost:9292/695ff060-8d8b-0130-b64f-282066132de2"
+            },
+            "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
+            "process":null,
+            "kit":"1234567891011",
+            "aliquotType" : "DNA/RNA"
+          }
+        },
+        "next_stage":11
+      }
+    ]
+  },
   "11":   {
     "calls":[
       {
@@ -1897,7 +1899,8 @@
             },
             "uuid":   "53f372e0-89a4-0130-1eaf-282066132de2",
             "process":null,
-            "kit":    "1234567891011"
+            "kit":    "1234567891011",
+            "aliquotType" : "DNA/RNA"
           }
         }
       },
@@ -1907,7 +1910,7 @@
         "url":        "/spin_columns",
         "request":    {
           "spin_column":{
-            "user":"username"
+            "user":"Hopper"
           }
         },
         "response":   {
@@ -1946,7 +1949,7 @@
         "url":        "/tubes",
         "request":    {
           "tube":{
-            "user":"username"
+            "user":"Hopper"
           }
         },
         "response":   {
@@ -1993,7 +1996,7 @@
       "url":        "/spin_columns",
       "request":    {
         "spin_column":{
-          "user":"username"
+          "user":"Hopper"
         }
       },
       "response":   {
@@ -2036,7 +2039,7 @@
       "url":        "/tubes",
       "request":    {
         "tube":{
-          "user":"username"
+          "user":"Hopper"
         }
       },
       "response":   {
@@ -2083,7 +2086,7 @@
       "url":        "/barcodes",
       "request":    {
         "barcode":{
-          "user":    "username",
+          "user":"Hopper",
           "labware": "spin_column",
           "role":    "stock",
           "contents":"DNA"
@@ -2123,7 +2126,7 @@
       "url":        "/barcodes",
       "request":    {
         "barcode":{
-          "user":    "username",
+          "user":"Hopper",
           "labware": "tube",
           "role":    "stock",
           "contents":"RNA+P"
@@ -2163,7 +2166,7 @@
       "url":        "/barcodes",
       "request":    {
         "barcode":{
-          "user":    "username",
+          "user":"Hopper",
           "labware": "spin_column",
           "role":    "stock",
           "contents":"DNA"
@@ -2203,7 +2206,7 @@
       "url":        "/barcodes",
       "request":    {
         "barcode":{
-          "user":    "username",
+          "user":"Hopper",
           "labware": "tube",
           "role":    "stock",
           "contents":"RNA+P"
@@ -2243,7 +2246,7 @@
       "url":        "/labellables",
       "request":    {
         "labellable":{
-          "user":  "username",
+          "user":"Hopper",
           "name":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
           "type":  "resource",
           "labels":{
@@ -2320,7 +2323,7 @@
       "url":        "/labellables",
       "request":    {
         "labellable":{
-          "user":  "username",
+          "user":"Hopper",
           "name":  "6a795c60-8d8b-0130-b64f-282066132de2",
           "type":  "resource",
           "labels":{
@@ -2397,7 +2400,7 @@
       "url":        "/labellables",
       "request":    {
         "labellable":{
-          "user":  "username",
+          "user":"Hopper",
           "name":  "6ac360e0-8d8b-0130-b64f-282066132de2",
           "type":  "resource",
           "labels":{
@@ -2474,7 +2477,7 @@
       "url":        "/labellables",
       "request":    {
         "labellable":{
-          "user":  "username",
+          "user":"Hopper",
           "name":  "6adecd50-8d8b-0130-b64f-282066132de2",
           "type":  "resource",
           "labels":{
@@ -2698,7 +2701,7 @@
       "url":        "/searches",
       "request":    {
         "search":{
-          "user":       "username",
+          "user":"Hopper",
           "description":"search order by batch",
           "model":      "order",
           "criteria":   {
@@ -2782,7 +2785,7 @@
               "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
             },
             "items":     {
-              "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+              "samples.extraction.manual_dna_and_rna.input_tube_nap":        [
                 {
                   "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"unused",
@@ -2814,7 +2817,7 @@
                   }
                 }
               ],
-              "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+              "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
                 {
                   "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
@@ -2856,15 +2859,15 @@
       "method":     "put",
       "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
       "request":    {
-        "user": "username",
+        "user":"Hopper",
         "items":{
-          "samples.extraction.manual.spin_column_dna":                {
+          "samples.extraction.manual_dna_rna.spin_column_dna":                {
             "6a5b4b00-8d8b-0130-b64f-282066132de2":{
               "event":     "start",
               "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
             }
           },
-          "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":{
+          "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap":{
             "6a795c60-8d8b-0130-b64f-282066132de2":{
               "event":     "start",
               "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
@@ -2905,7 +2908,7 @@
             "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
-            "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+            "samples.extraction.manual_dna_and_rna.input_tube_nap":        [
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"unused",
@@ -2937,7 +2940,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -2969,7 +2972,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.spin_column_dna":                   [
+            "samples.extraction.manual_dna_rna.spin_column_dna":                   [
               {
                 "uuid":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
@@ -2986,7 +2989,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   [
+            "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap":   [
               {
                 "uuid":  "6a795c60-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
@@ -3017,7 +3020,7 @@
       "url":        "/actions/transfer_tubes_to_tubes",
       "request":    {
         "transfer_tubes_to_tubes":{
-          "user":     "username",
+          "user":"Hopper",
           "transfers":[
             {
               "fraction":    1,
@@ -3037,7 +3040,7 @@
       "response":   {
         "transfer_tubes_to_tubes":{
           "actions":    {},
-          "user":       "user",
+          "user":"Hopper",
           "application":"application",
           "result":     {
             "sources":[
@@ -3187,7 +3190,7 @@
             "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
-            "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+            "samples.extraction.manual_dna_and_rna.input_tube_nap":        [
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"unused",
@@ -3219,7 +3222,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -3251,7 +3254,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.spin_column_dna":                   [
+            "samples.extraction.manual_dna_rna.spin_column_dna":                   [
               {
                 "uuid":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
@@ -3268,7 +3271,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   [
+            "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap":   [
               {
                 "uuid":  "6a795c60-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
@@ -3294,19 +3297,19 @@
       "method":     "put",
       "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
       "request":    {
-        "user": "username",
+        "user":"Hopper",
         "items":{
-          "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":{
+          "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":{
             "66e0f490-8d8b-0130-b650-282066132de2":{
               "event":"unuse"
             }
           },
-          "samples.extraction.manual.spin_column_dna":                   {
+          "samples.extraction.manual_dna_rna.spin_column_dna":                   {
             "6a5b4b00-8d8b-0130-b64f-282066132de2":{
               "event":"complete"
             }
           },
-          "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   {
+          "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap":   {
             "6a795c60-8d8b-0130-b64f-282066132de2":{
               "event":"complete"
             }
@@ -3346,7 +3349,7 @@
             "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
-            "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+            "samples.extraction.manual_dna_and_rna.input_tube_nap":        [
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"unused",
@@ -3378,7 +3381,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -3410,7 +3413,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.spin_column_dna":                   [
+            "samples.extraction.manual_dna_rna.spin_column_dna":                   [
               {
                 "uuid":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
@@ -3442,7 +3445,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   [
+            "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap":   [
               {
                 "uuid":  "6a795c60-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
@@ -3488,7 +3491,7 @@
       "url":        "/searches",
       "request":    {
         "search":{
-          "user":       "username",
+          "user":"Hopper",
           "description":"search order by batch",
           "model":      "order",
           "criteria":   {
@@ -3547,7 +3550,7 @@
             "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
-            "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+            "samples.extraction.manual_dna_and_rna.input_tube_nap":        [
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"unused",
@@ -3579,7 +3582,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -3611,7 +3614,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.spin_column_dna":                   [
+            "samples.extraction.manual_dna_rna.spin_column_dna":                   [
               {
                 "uuid":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
@@ -3643,7 +3646,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   [
+            "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap":   [
               {
                 "uuid":  "6a795c60-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
@@ -3742,7 +3745,7 @@
               "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
             },
             "items":     {
-              "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+              "samples.extraction.manual_dna_and_rna.input_tube_nap":        [
                 {
                   "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"unused",
@@ -3774,7 +3777,7 @@
                   }
                 }
               ],
-              "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+              "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
                 {
                   "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
@@ -3870,7 +3873,7 @@
               "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
             },
             "items":     {
-              "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+              "samples.extraction.manual_dna_and_rna.input_tube_nap":        [
                 {
                   "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"unused",
@@ -3902,7 +3905,7 @@
                   }
                 }
               ],
-              "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+              "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
                 {
                   "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                   "status":"done",
@@ -3944,15 +3947,15 @@
       "method":     "put",
       "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
       "request":    {
-        "user": "username",
+        "user":"Hopper",
         "items":{
-          "samples.extraction.manual.spin_column_dna":                {
+          "samples.extraction.manual_dna_rna.spin_column_dna":                {
             "6ac360e0-8d8b-0130-b64f-282066132de2":{
               "event":     "start",
               "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
             }
           },
-          "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":{
+          "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap":{
             "6adecd50-8d8b-0130-b64f-282066132de2":{
               "event":     "start",
               "batch_uuid":"695ff060-8d8b-0130-b64f-282066132de2"
@@ -3993,7 +3996,7 @@
             "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
-            "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+            "samples.extraction.manual_dna_and_rna.input_tube_nap":        [
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"unused",
@@ -4025,7 +4028,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -4057,7 +4060,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.spin_column_dna":                   [
+            "samples.extraction.manual_dna_rna.spin_column_dna":                   [
               {
                 "uuid":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
@@ -4074,7 +4077,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   [
+            "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap":   [
               {
                 "uuid":  "6a795c60-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
@@ -4105,7 +4108,7 @@
       "url":        "/actions/transfer_tubes_to_tubes",
       "request":    {
         "transfer_tubes_to_tubes":{
-          "user":     "username",
+          "user":"Hopper",
           "transfers":[
             {
               "fraction":    1,
@@ -4125,7 +4128,7 @@
       "response":   {
         "transfer_tubes_to_tubes":{
           "actions":    {},
-          "user":       "user",
+          "user":"Hopper",
           "application":"application",
           "result":     {
             "sources":[
@@ -4243,19 +4246,19 @@
       "method":     "put",
       "url":        "/66e60c10-8d8b-0130-b650-282066132de2",
       "request":    {
-        "user": "username",
+        "user":"Hopper",
         "items":{
-          "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":{
+          "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":{
             "66e299e0-8d8b-0130-b650-282066132de2":{
               "event":"unuse"
             }
           },
-          "samples.extraction.manual.spin_column_dna":                   {
+          "samples.extraction.manual_dna_rna.spin_column_dna":                   {
             "6ac360e0-8d8b-0130-b64f-282066132de2":{
               "event":"complete"
             }
           },
-          "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   {
+          "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap":   {
             "6adecd50-8d8b-0130-b64f-282066132de2":{
               "event":"complete"
             }
@@ -4295,7 +4298,7 @@
             "uuid":   "66ddff90-8d8b-0130-b650-282066132de2"
           },
           "items":     {
-            "samples.extraction.manual.dna_and_rna.input_tube_nap":        [
+            "samples.extraction.manual_dna_and_rna.input_tube_nap":        [
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"unused",
@@ -4327,7 +4330,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.input_tube_nap.batched":[
+            "samples.extraction.manual_dna_and_rna.input_tube_nap.batched":[
               {
                 "uuid":  "66e0f490-8d8b-0130-b650-282066132de2",
                 "status":"done",
@@ -4359,7 +4362,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.spin_column_dna":                   [
+            "samples.extraction.manual_dna_rna.spin_column_dna":                   [
               {
                 "uuid":  "6a5b4b00-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",
@@ -4391,7 +4394,7 @@
                 }
               }
             ],
-            "samples.extraction.manual.dna_and_rna.byproduct_tube_rnap":   [
+            "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap":   [
               {
                 "uuid":  "6a795c60-8d8b-0130-b64f-282066132de2",
                 "status":"in_progress",

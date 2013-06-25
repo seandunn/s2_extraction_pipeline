@@ -94,14 +94,15 @@ define([
     analyseFileContent: function (data) {
       var locationsSortedByBarcode = CSVParser.convertCSVDataToJSON(data.csvAsTxt);
       var model = this;
-      var results = checkFileValidity(model, locationsSortedByBarcode);
       var root;
 
-      if (results.action) {
-        model.owner.childDone(model, results.action, results.data);
-      }
-      if (results.status === "valid") {
-        prepareTransferDataPromise(model, locationsSortedByBarcode)
+      return checkFileValidity(model, locationsSortedByBarcode)
+        .fail(function (error) {
+          model.owner.childDone(model, "error", error.message);
+        })
+        .then(function () {
+          return prepareTransferDataPromise(model, locationsSortedByBarcode);
+        })
         .then(function () {
           return model.owner.getS2Root();
         })
@@ -109,22 +110,20 @@ define([
           root = result;
           return model.inputs;
         })
-        .then(function(inputs){
+        .then(function (inputs) {
           // TODO: This creation is fake! We artificially build a tube_rack like this
           // because it's not a base resource for now...
           var tube_rack = root.tube_racks.new();
           tube_rack.tubes = {};
-          _.each(model.preparedTransferData,function(uuid,location){
-            if (uuid){
-              tube_rack.tubes[location] = _.find(inputs,function(input){return input.uuid === uuid});
+          _.each(model.preparedTransferData, function (uuid, location) {
+            if (uuid) {
+              tube_rack.tubes[location] = _.find(inputs, function (input) {
+                return input.uuid === uuid
+              });
             }
           });
-          model.owner.childDone(model, "fileValid", {model: tube_rack, message: 'The file has been processed properly. Click on the \'Start\' button to validate the process.'})
-        })
-        .fail(function () {
-          $('body').trigger('s2.status.error', "Impossible to find the required resources. Contact the system administrator.")
+          return tube_rack;
         });
-      }
     },
 
     setBatch: function (batch) {
@@ -170,40 +169,67 @@ define([
   function checkFileValidity(model, locationsSortedByBarcode) {
 
     var status = "valid";
-    var action, message, expectedNbOfTubes, arrayOfExpectedBarcodes;
+    var action, message, expectedNbOfTubes, arrayOfExpectedBarcodes, inputTubes, extraBarcodes;
+    var deferred = $.Deferred();
 
     model.inputs
-    .then(function (inputs) {
-      expectedNbOfTubes = inputs.length;
-      arrayOfExpectedBarcodes = _.map(inputs, function (resource, key) {
-        return resource.labels.barcode.value
+      .fail(function () {
+        return deferred.reject({message: "Couldn't get the inputs"});
+      })
+      .then(function (inputs) {
+        inputTubes = inputs;
+        expectedNbOfTubes = inputs.length;
+        arrayOfExpectedBarcodes = _.map(inputs, function (resource, key) {
+          return resource.labels.barcode.value
+        });
+        var arrayOfBarcodesInRack = _.keys(locationsSortedByBarcode);
+        var nbOfTubesInRack = arrayOfBarcodesInRack.length;
+
+        if (nbOfTubesInRack < expectedNbOfTubes) {
+          message = "The number of tube is not correct. The current batch" +
+            " contains " + expectedNbOfTubes + " tubes, while the " +
+            "current transfer file contains " + nbOfTubesInRack + " tubes!";
+          return deferred.reject({message: message});
+        }
+
+        extraBarcodes = _.difference(arrayOfBarcodesInRack, arrayOfExpectedBarcodes);
+
+        if (extraBarcodes.length > 0) {
+          return validateExtraTubesContent(model, inputTubes);
+        }
+      })
+      .fail(function (error) {
+        deferred.reject(error);
+      })
+      .then(function () {
+        deferred.resolve(model);
       });
-    });
 
-    var arrayOfBarcodesInRack = _.keys(locationsSortedByBarcode);
-    var nbOfTubesInRack = arrayOfBarcodesInRack.length;
+    return deferred.promise();
 
-    if (nbOfTubesInRack !== expectedNbOfTubes) {
-      status = "error";
-      action = "error";
-      message = "The number of tube is not correct. The current batch" +
-        " contains " + expectedNbOfTubes + " tubes, while the " +
-        "current transfer file contains " + nbOfTubesInRack + " tubes!";
+    function validateExtraTubesContent(model, inputTubes) {
+      var searchDeferred = $.Deferred();
+      model.owner.getS2Root()
+        .then(function (root) {
+          return root.tubes.findByEan13Barcode(extraBarcodes, true);
+        })
+        .fail(function () {
+          return searchDeferred.reject({message: "Couldn't search for the extra-tubes!"});
+        })
+        .then(function (extraTubes) {
+          if (extraTubes.length !== extraBarcodes.length) {
+            return searchDeferred.reject({message: "The extra tubes were not found!"});
+          }
+          if (_.some(extraTubes, function (extraTube) {
+            return extraTube.resourceType !== inputTubes[0].resourceType;
+          })) {
+            return searchDeferred.reject({message: "The extra tubes are not of the same type as the other tubes!"});
+          }
+        }).then(function () {
+          return searchDeferred.resolve();
+        });
+      return searchDeferred.promise();
     }
-
-    var missingBarcodes = _.difference(arrayOfExpectedBarcodes, arrayOfBarcodesInRack);
-    if (missingBarcodes.length !== 0) {
-      status = "error";
-      action = "error";
-      message = "The number of tube is correct BUT not all the barcodes are matching. " +
-        "The tubes with the following barcodes are missing:<ul>" +
-        _.reduce(missingBarcodes, function (memo, barcode) {
-        return memo + "<li>" + barcode + "</li>"
-      }, "") +
-        "</ul>";
-    }
-
-    return {action: action, status: status, data: {message: message}};
   }
 
   function prepareTransferDataPromise(model, locationsSortedByBarcode) {
