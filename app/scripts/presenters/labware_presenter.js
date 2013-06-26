@@ -136,7 +136,7 @@ define(['config'
           this.bindReturnKey(this.barcodeInputPresenter.renderView(),
               labwareCallback,
               barcodeErrorCallback('The barcode is not valid.'),
-              validationOnReturnKeyCallback(this, this.labwareModel.validation))
+              validationOnReturnKeyCallback(this, this.labwareModel.validation, this.labwareModel.barcodePrefixes))
         );
       }
 
@@ -229,7 +229,7 @@ define(['config'
     };
   }
 
-  function validationOnReturnKeyCallback (presenter, type) {
+  function validationOnReturnKeyCallback (presenter, type, barcodePrefixes) {
     var validationCallBack ;
     switch(type){
       case "2D_tube":
@@ -245,7 +245,7 @@ define(['config'
       return function (event) {
         if (event.which !== 13) return;
 
-        if (validationCallBack(Util.pad(event.currentTarget.value))) {
+        if (validationCallBack(Util.pad(event.currentTarget.value),barcodePrefixes)) {
           callback(event, element, presenter);
         } else {
           errorCallback(event, element, presenter);

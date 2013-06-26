@@ -3,16 +3,23 @@ define(['config'], function (config) {
 
   var BarcodeChecker = Object.create(null);
 
+  function checkPrefix(barcode, prefixes){
+    if (!prefixes || ($.isArray(prefixes) && prefixes.length === 0) ) { return true; }
+    return _.some(prefixes, function(prefix){
+      return barcode.indexOf(prefix) === 0;
+    })
+  }
+
   $.extend(BarcodeChecker,
       {
-        isBarcodeValid:           function (barcode) {
-          return /^\d{13}$/.exec(barcode) !== null;
+        isBarcodeValid:           function (barcode, barcodePrefixes) {
+          return /^\d{13}$/.exec(barcode) !== null && checkPrefix(barcode, barcodePrefixes);
         },
-        is2DTubeBarcodeValid: function (barcode) {
-          return /FR\d/.exec(barcode) !== null;
+        is2DTubeBarcodeValid: function (barcode, barcodePrefixes) {
+          return /FR\d/.exec(barcode) !== null && checkPrefix(barcode, barcodePrefixes);
         },
-        isKitBarcodeValid: function (barcode) {
-          return /^\d{13}$/.exec(barcode) !== null;
+        isKitBarcodeValid: function (barcode, barcodePrefixes) {
+          return /^\d{13}$/.exec(barcode) !== null && checkPrefix(barcode, barcodePrefixes);
         }
       }
   );
