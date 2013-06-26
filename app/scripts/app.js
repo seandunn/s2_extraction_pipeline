@@ -23,6 +23,9 @@ define([ 'config'
       var configuration = { printerList: config.printers };
       var receptionPresenter = app.presenterFactory.create('reception_presenter', app, configuration);
       $("#content").append(receptionPresenter.view);
+      alerts.setupPlaceholder(function () {
+        return $('#alertContainer');
+      });
       app.addEventHandlers();
     } else {
       console.log('#content control class missing from web page.')
@@ -40,6 +43,10 @@ define([ 'config'
       this.rootPromise = S2Root.load({user:user});
     }
     return this.rootPromise;
+  };
+
+  App.prototype.resetS2Root = function() {
+    delete this.rootPromise;
   };
 
   App.prototype.setupPresenter = function (inputModel) {
