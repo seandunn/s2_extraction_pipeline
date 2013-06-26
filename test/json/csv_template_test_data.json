@@ -27,6 +27,14 @@
     "lysed": {
       "columnName": "Lysed?",
       "type":       "boolean"
+    },
+    "donor_id": {
+      "columnName": "Donor ID",
+      "type":       "string"
+    },
+    "extraction_process":{
+      "columnName": "_PROCESS",
+      "type":       "string"
     }
   },
   "mother":                    {
@@ -67,10 +75,6 @@
   },
   "ebi_accession_number":      {
     "columnName": "SAMPLE ACCESSION NUMBER (optional)",
-    "type":       "string"
-  },
-  "process":{
-    "columnName": "_PROCESS",
     "type":       "string"
   }
 }
