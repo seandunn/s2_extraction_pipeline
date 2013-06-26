@@ -13,7 +13,7 @@ define([
       json_template: JSON.parse(CGAPLysed),
       json_template_display: JSON.parse(CGAPLysedDisplay),
       header_line_number: 8,
-      sample_types : ["DNA Human", "DNA Pathogen", "RNA", "Blood", "Saliva", "Tissue Non-Tumour", "Tissue Tumour", "Pathogen", "Cell Pellet"]
+      sample_types : ["Cell Pellet", "DNA Human", "DNA Pathogen", "RNA", "Blood", "Saliva", "Tissue Non-Tumour", "Tissue Tumour", "Pathogen"]
     }
   };
 
