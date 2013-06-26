@@ -95,7 +95,7 @@ define([
                 url:      '/actions/bulk_update_sample',
                 dataType: 'json',
                 headers:  { 'Content-Type': 'application/json' },
-                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"cellular_material":{"extraction_process":"DNA & RNA Manual","lysed":true},"volume":2,"state":"published"}}}}'
+                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"cellular_material":{"extraction_process":"DNA & RNA Manual","lysed":true,"donor_id":"JB121"},"volume":2,"state":"published"}}}}'
               };
 
               results.resetFinishedFlag();
@@ -129,7 +129,7 @@ define([
                 url:      '/actions/bulk_update_sample',
                 dataType: 'json',
                 headers:  { 'Content-Type': 'application/json' },
-                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"cellular_material":{"extraction_process":"DNA & RNA Manual","lysed":true},"volume":2,"state":"published"},"S2-cb4ee4768f334c38960ac89ec2074eb1":{"cellular_material":{"extraction_process":"DNA & RNA Manual","lysed":true},"volume":2,"state":"published"}}}}'
+                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"cellular_material":{"extraction_process":"DNA & RNA Manual","lysed":true,"donor_id":"JB121"},"volume":2,"state":"published"},"S2-cb4ee4768f334c38960ac89ec2074eb1":{"cellular_material":{"extraction_process":"DNA & RNA Manual","lysed":true,"donor_id":"SD232"},"volume":2,"state":"published"}}}}'
               };
 
               results.resetFinishedFlag();
