@@ -47,12 +47,19 @@ define([
       var thisPresenter = this;
       this.model.setupInputPresenters(reset)
           .then(function(){
-            var presenter = _.find(thisPresenter.rowPresenters, function (presenter) {
+            var currentPresenter = _.find(thisPresenter.rowPresenters, function (presenter) {
               return !presenter.isRowComplete();
             });
             // There will not be an incomplete row returned if the entire page is complete. Therefore nothing to focus on.
-            if (presenter) {
-              presenter.focus();
+            if (currentPresenter) {
+              currentPresenter.focus();
+              // we lock the other rows...
+              _.chain(thisPresenter.rowPresenters).reject(function(rowPresenter){
+                return rowPresenter === currentPresenter;
+              }).each(function(presenter){
+                presenter.lockRow();
+              });
+              currentPresenter.unlockRow();
             }
             if(thisPresenter.model.started){
               thisPresenter.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
@@ -129,6 +136,7 @@ define([
         PubSub.publish('s2.step_presenter.printing_finished', this);
         this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
 
+
       } else if (action === "barcodePrintSuccess") {
 
         PubSub.publish('s2.status.message', this, {message: 'Barcode labels printed'});
@@ -174,12 +182,10 @@ define([
             lastIndex = lastIndex < index ? index : lastIndex;
           }
         });
-
         // if there is at least one presenter after...
-        if (lastIndex+1 < this.presenters.length){
+        if (lastIndex+1 < this.rowPresenters.length){
           // we unlock it
-          this.presenters[lastIndex+1].unlockRow();
-          this.model.lastActiveRow = lastIndex;
+          this.rowPresenters[lastIndex+1].unlockRow();
         }
       }
     },
