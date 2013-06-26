@@ -4,7 +4,8 @@ define([
   , 'extraction_pipeline/lib/csv_parser'
   , 'extraction_pipeline/lib/json_templater'
   , 'extraction_pipeline/lib/reception_templates'
-], function (BasePageModel, Operations, CSVParser, JsonTemplater, ReceptionTemplate) {
+  , 'extraction_pipeline/lib/util'
+], function (BasePageModel, Operations, CSVParser, JsonTemplater, ReceptionTemplate, Util) {
   'use strict';
 
   var ReceptionModel = Object.create(BasePageModel);
@@ -95,7 +96,7 @@ define([
                 .zip(samplesFromGUI)
                 .map(function (pair) {
                   // merges the GUI and File data
-                  return $.extend(pair[0], pair[1]);
+                  return Util.deepMerge(pair[0], pair[1])
                 })
                 .reduce(function (memo, sampleUpdate) {
                   // dictionarised using the sanger_sample_id
