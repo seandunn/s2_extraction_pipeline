@@ -79,7 +79,7 @@
     "presenters": [
       {
       "presenterName": "kit_presenter",
-      "kitType":       "DNA/RNA"
+      "kitType":       "DNA & RNA"
     }, {
       "presenterName": "connected_presenter",
       "behaviours": {
@@ -166,7 +166,7 @@
     "presenters": [
       {
       "presenterName": "kit_presenter",
-      "kitType":       "DNA/RNA"
+      "kitType":       "DNA & RNA"
     }, {
       "presenterName":   "connected_presenter",
       "behaviours": {
@@ -507,7 +507,7 @@
     "presenters": [
       {
       "presenterName": "kit_presenter",
-      "kitType":       "DNA/RNA"
+      "kitType":       "DNA & RNA"
     }, {
       "presenterName":   "connected_presenter",
       "behaviours": {
@@ -598,7 +598,7 @@
     "presenters": [
       {
       "presenterName": "kit_presenter",
-      "kitType":       "DNA/RNA"
+      "kitType":       "DNA & RNA"
     }, {
       "presenterName":   "connected_presenter",
       "behaviours": {
