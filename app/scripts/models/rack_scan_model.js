@@ -152,7 +152,7 @@ define([
             return searchDeferred.reject({message: "The tubes were not all found!"});
           }
           if (_.some(inputTubes, function (tube) {
-            return inputTubes.resourceType !== inputTubes[0].resourceType;
+            return tube.resourceType !== inputTubes[0].resourceType;
           })) {
             return searchDeferred.reject({message: "The tubes are not all of the same type"});
           }
