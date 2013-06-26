@@ -19,7 +19,7 @@ define(['config'], function (config) {
           return /FR\d/.exec(barcode) !== null && checkPrefix(barcode, barcodePrefixes);
         },
         isKitBarcodeValid: function (barcode, barcodePrefixes) {
-          return /^\d{13}$/.exec(barcode) !== null && checkPrefix(barcode, barcodePrefixes);
+          return /^\d{22}$/.exec(barcode) !== null && checkPrefix(barcode, barcodePrefixes);
         }
       }
   );
