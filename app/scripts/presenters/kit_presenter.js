@@ -83,7 +83,7 @@ define([
             presenter.barcodePresenter.init({ type: 'Kit' });
             presenter.selector()
                 .find('.barcode')
-                .append(presenter.bindReturnKey( presenter.barcodePresenter.renderView(), kitScannedCallback(presenter), kitScannedErrorCallback(presenter)('Barcode must be a 13 digit number.'), validationOnReturnKeyCallback(presenter) ));
+                .append(presenter.bindReturnKey( presenter.barcodePresenter.renderView(), kitScannedCallback(presenter), kitScannedErrorCallback(presenter)('Barcode must be a 22 digit number.'), validationOnReturnKeyCallback(presenter) ));
             presenter.selector().find('.barcode input').focus();
           }
           });
