@@ -96,7 +96,17 @@ define([
     },
 
     print: function(child,action, data){
-      this.model.fire();
+      var thisPresenter = this;
+      this.model.fire()
+          .fail(function(error){
+            PubSub.publish('s2.status.error', thisPresenter, error);
+          })
+          .then(function(){
+            thisPresenter.view.disableDropZone();
+            thisPresenter.owner.childDone(this, "disableBtn", {buttons: [{action: "print"}]});
+            thisPresenter.owner.childDone(this, "enableBtn", {buttons: [{action: "next"}]});
+            PubSub.publish('s2.status.message', thisPresenter, "Rack registered.");
+          })
     },
 
     end: function(child,action, data){
@@ -132,9 +142,6 @@ define([
         //this.view.in(data);
         this.view.error(data);
       } else if (action === 'transferDone') {
-        this.view.disableDropZone();
-        this.owner.childDone(this, "disableBtn", {buttons: [{action: "print"}]});
-        this.owner.childDone(this, "enableBtn", {buttons: [{action: "next"}]});
       } else if (action === 'volumesSaved') {
         this.view.disableDropZone();
         this.owner.childDone(this, "disableBtn", {buttons: [{action: "end"}]});

@@ -44,7 +44,9 @@ define([
     },
 
     fire: function () {
+      var deferred = $.Deferred();
       var model = this;
+      var rack, inputs, ordersSortedByUUID = {};
       function makeJSONUpdateFor(role,uuid,event) {
         var updateJson = { items: {} };
         updateJson.items[role] = {};
@@ -55,40 +57,65 @@ define([
         return updateJson;
       }
       model.createOutputs()
-      .then(function (rack) {
-        return model.batch.orders     // promises not chained to make 'rack' part of the scope
-        .then(function (orders) { // of the following methods
-          return $.when
-          .apply(null, _.chain(orders)
-                 .map(function (order) {
-                   return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "start"))
-                   .then(function (order) {
-                     return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "complete"))
-                   })
-                 })
-                );
-        });
-
-      })
-      .then(model.inputs)
-      .then(function(inputs){
-        return $.when
-        .apply(null, _.chain(inputs)
-               .map(function (input) {
-                 return input.order.then(function(order){
-                   return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "start"))
-                 }).then(function(order){
-                   return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "complete"))
-                 });
-               })
-              );
-      })
-      .then(function () {
-        model.owner.childDone(model, "transferDone", {});
-
-      }).fail(function () {
-        $('body').trigger('s2.status.error', "An error occured during the transfer process! Contact the administrator of the system.");
-      });
+          .then(function (result) {
+            rack = result;
+            return model.inputs;
+          })
+          .fail(function () {
+            deferred.reject({message:"Couldn't load the input tubes! Contact the administrator of the system."});
+          })
+          .then(function (result) {
+            inputs = result;
+            return $.when
+                .apply(null, _.chain(inputs)
+                .map(function (input) {
+                  return input.order
+                      .fail(function () {
+                        deferred.reject({message:"Couldn't load the orders! Contact the administrator of the system."});
+                      })
+                      .then(function (order) {
+                        ordersSortedByUUID[order.uuid] = order; // we save then at the same time that we use them...
+                        return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "start"))
+                      })
+                      .fail(function () {
+                        deferred.reject({message:"Couldn't start the role on one of the input tubes! Contact the administrator of the system."});
+                      })
+                      .then(function (order) {
+                        return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "complete"))
+                      })
+                      .fail(function () {
+                        deferred.reject({message: "Couldn't complete the role on one of the input tubes! Contact the administrator of the system."});
+                      });
+                })
+            );
+          })
+          .fail(function () {
+            deferred.reject({message:"Couldn't update the roles on the input tubes! Contact the administrator of the system."});
+          })
+          .then(function () { // of the following methods
+            return $.when
+                .apply(null, _.chain(ordersSortedByUUID)
+                .map(function (order) {
+                  return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "start"))
+                      .fail(function () {
+                        deferred.reject({message: "Couldn't start the role on the output rack! Contact the administrator of the system."});
+                      })
+                      .then(function (order) {
+                        return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "complete"))
+                      })
+                      .fail(function () {
+                        deferred.reject({message: "Couldn't complete the role on the output rack! Contact the administrator of the system."});
+                      });
+                })
+            );
+          })
+          .fail(function () {
+            deferred.reject({message:"An error occured during the transfer process! Contact the administrator of the system."});
+          })
+          .then(function () {
+            deferred.resolve(model);
+          });
+      return deferred.promise();
     },
 
 
