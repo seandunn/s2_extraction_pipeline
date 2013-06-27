@@ -84,6 +84,11 @@
     "type": "int"
   },
   "scientific_name": {
+    "columnName": "SCIENTIFIC NAME",
+    "type": "string"
+  },
+
+  "common_name": {
     "columnName": "COMMON NAME",
     "type": "string"
   }
