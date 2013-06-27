@@ -39,6 +39,7 @@ require(['domReady!'
 //   ,'spec/kit_presenter_spec'
 //   ,'spec/scan_barcode_presenter_spec'
   , 'spec/reception_app_spec'
+  , 'spec/util_spec'
 ],
   function () {
     // use app here

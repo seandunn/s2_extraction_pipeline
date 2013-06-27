@@ -54,6 +54,12 @@ define([
           var presenterConfig = {};
           presenter = pf.create('reception_presenter', app, presenterConfig);
           fakeContent().append(presenter.view);
+          fakeContent()
+            .find("#userValidation input")
+            .val("1")
+            .trigger(FakeUser.aPressReturnEvent());
+
+          waits(100);
         });
 
         afterEach(function(){
@@ -69,13 +75,14 @@ define([
         describe("where a manifest csv is loaded", function () {
           beforeEach(function () {
             runs(function () {
+
               results.resetFinishedFlag();
               fakeContent()
                 .find("#read-manifest-btn")
                 .trigger('click');
 
               //wait for jquery animation
-              waits(200);
+              waits(500);
 
               //simulate file input
               presenter.manifestReaderComponent.presenter.responderCallback(manifestCSVData)
@@ -95,12 +102,12 @@ define([
                 url:      '/actions/bulk_update_sample',
                 dataType: 'json',
                 headers:  { 'Content-Type': 'application/json' },
-                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"volume":2,"cellular_material":{"lysed":true},"state":"published"}}}}'
+                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"cellular_material":{"extraction_process":"DNA & RNA Manual","lysed":true,"donor_id":"JB121"},"volume":2,"state":"published"}}}}'
               };
 
               results.resetFinishedFlag();
               fakeContent()
-                .find('.barcodeInput')
+                .find('#barcodeReader .barcodeInput')
                 .val("2881460250710")
                 .trigger(FakeUser.aPressReturnEvent());
 
@@ -129,12 +136,12 @@ define([
                 url:      '/actions/bulk_update_sample',
                 dataType: 'json',
                 headers:  { 'Content-Type': 'application/json' },
-                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"volume":2,"cellular_material":{"lysed":true},"state":"published"},"S2-cb4ee4768f334c38960ac89ec2074eb1":{"volume":2,"cellular_material":{"lysed":true},"state":"published"}}}}'
+                data:     '{"bulk_update_sample":{"user":"username","by":"sanger_sample_id","updates":{"S2-13a8da96d0e34db1ac7d7c40159a2095":{"cellular_material":{"extraction_process":"DNA & RNA Manual","lysed":true,"donor_id":"JB121"},"volume":2,"state":"published"},"S2-cb4ee4768f334c38960ac89ec2074eb1":{"cellular_material":{"extraction_process":"DNA & RNA Manual","lysed":true,"donor_id":"SD232"},"volume":2,"state":"published"}}}}'
               };
 
               results.resetFinishedFlag();
               fakeContent()
-                .find('.barcodeInput')
+                .find('#barcodeReader .barcodeInput')
                 .val("2881460250710")
                 .trigger(FakeUser.aPressReturnEvent());
 
@@ -142,7 +149,7 @@ define([
 
               results.resetFinishedFlag();
               fakeContent()
-                .find('.barcodeInput')
+                .find('#barcodeReader .barcodeInput')
                 .val("2886789170794")
                 .trigger(FakeUser.aPressReturnEvent());
 
@@ -167,18 +174,18 @@ define([
             beforeEach(function () {
               runs(function () {
                 fakeContent()
-                  .find("input.barcodeInput")
+                  .find("#barcodeReader input.barcodeInput")
                   .val("1234567890123")
                   .trigger(FakeUser.aPressReturnEvent());
               });
               waitsFor(function () {
-                return fakeContent().find("input.barcodeInput").val() == "";
+                return fakeContent().find("#barcodeReader input.barcodeInput").val() == "";
               });
             });
 
             it("clears the input box", function () {
               runs(function () {
-                expect(fakeContent().find("input.barcodeInput").val()).toEqual("");
+                expect(fakeContent().find("#barcodeReader input.barcodeInput").val()).toEqual("");
               });
             });
 
@@ -193,18 +200,18 @@ define([
             beforeEach(function () {
               runs(function () {
                 fakeContent()
-                  .find("input.barcodeInput")
+                  .find("#barcodeReader input.barcodeInput")
                   .val("12345")
                   .trigger(FakeUser.aPressReturnEvent());
               });
               waitsFor(function () {
-                return fakeContent().find("input.barcodeInput").val() == "";
+                return fakeContent().find("#barcodeReader input.barcodeInput").val() == "";
               });
             });
 
             it("clears the input box", function () {
               runs(function () {
-                expect(fakeContent().find("input.barcodeInput").val()).toEqual("");
+                expect(fakeContent().find("#barcodeReader input.barcodeInput").val()).toEqual("");
               });
             });
 
@@ -220,7 +227,7 @@ define([
               runs(function () {
                 results.resetFinishedFlag();
                 fakeContent()
-                  .find('input.barcodeInput')
+                  .find('#barcodeReader input.barcodeInput')
                   .val("2881460250710")
                   .trigger(FakeUser.aPressReturnEvent());
 
@@ -240,7 +247,7 @@ define([
 
             it("removes the barcode from the input", function () {
               runs(function () {
-                expect(fakeContent().find('.barcodeInput').val()).toEqual('')
+                expect(fakeContent().find('#barcodeReader .barcodeInput').val()).toEqual('')
               });
             });
 
@@ -322,8 +329,13 @@ define([
                   url:      '/actions/bulk_create_sample',
                   dataType: 'json',
                   headers:  { 'Content-Type': 'application/json' },
-                  data:     '{"bulk_create_sample":{"user":"username","state":"draft","quantity":3,"sample_type":"DNA Human","sanger_sample_id_core":"QC1Hip"}}'
+                  data:     '{"bulk_create_sample":{"user":"username","state":"draft","quantity":3,"sample_type":"Cell Pellet","sanger_sample_id_core":"QC1Hip"}}'
                 };
+
+                // choose cell pellet from the list
+                fakeContent()
+                  .find(".samplePrefixes")
+                  .val("Cell Pellet");
 
                 fakeContent()
                   .find('#number-of-sample')

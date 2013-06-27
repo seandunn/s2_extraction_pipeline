@@ -60,8 +60,8 @@ define(['extraction_pipeline/lib/json_templater'], function (ArrayToJSON) {
     describe("When the combined header-data and array-template are combined", function () {
       it("produces the expected array of objects", function () {
         var data = [
-          {name1: 1, name2: 2},
-          {name1: 3, name2: 4}
+          {name1: 1, name2: 2, name3: "test7", "name4?":"fAlSe"},
+          {name1: 3, name2: 4, name3: "test9", "name4?":"TrUe"}
         ];
         var template = [
           {
@@ -73,8 +73,18 @@ define(['extraction_pipeline/lib/json_templater'], function (ArrayToJSON) {
           },
           {
             stuff: {
+              key4: {
+                "columnName": "name4?",
+                "type":"boolean"
+              },
+              nochanged : "name5",
               key2: {
-                "columnName": "name2"}
+                "columnName": "name2"
+              },
+              key3: {
+                "columnName": "name3",
+                "type": "string"
+              }
             }
           }
         ];
@@ -82,11 +92,11 @@ define(['extraction_pipeline/lib/json_templater'], function (ArrayToJSON) {
         var expectedData = [
           [
             {key1: 1},
-            {stuff: {key2: 2}}
+            {stuff: {nochanged:"name5", key2: 2, key3 : "test7", "key4":false}}
           ],
           [
             {key1: 3},
-            {stuff: {key2: 4}}
+            {stuff: {nochanged:"name5", key2: 4, key3 : "test9", "key4":true}}
           ]
         ];
         expect(combinedData).toEqual(expectedData);

@@ -107,6 +107,7 @@ define(['config'
       this.dropzoneBoxSelection.show();
       this.registerBtnSelection.hide();
       this.fileNameSpanSelection.empty();
+      this.hiddenFileInputSelection.removeAttr('disabled');
       this.removeSamplesView();
       this.message();
     },
@@ -194,6 +195,7 @@ define(['config'
             thisPresenter.registerBtnSelection.show();
             thisPresenter.createSamplesView(model);
             thisPresenter.barcodeReaderSelection.show();
+            thisPresenter.hiddenFileInputSelection.attr('disabled', 'disabled');
 //            thisPresenter.barcodeReaderSelection.find('.barcodeInput').focus(); // does not work!!??
             thisPresenter.view.trigger("s2.busybox.end_process");
             thisPresenter.message('success', 'File loaded successfully.');

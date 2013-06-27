@@ -79,7 +79,7 @@
     "presenters": [
       {
       "presenterName": "kit_presenter",
-      "kitType":       "DNA/RNA"
+      "kitType":       "DNA & RNA"
     }, {
       "presenterName": "connected_presenter",
       "behaviours": {
@@ -166,7 +166,7 @@
     "presenters": [
       {
       "presenterName": "kit_presenter",
-      "kitType":       "DNA/RNA"
+      "kitType":       "DNA & RNA"
     }, {
       "presenterName":   "connected_presenter",
       "behaviours": {
@@ -507,7 +507,7 @@
     "presenters": [
       {
       "presenterName": "kit_presenter",
-      "kitType":       "DNA/RNA"
+      "kitType":       "DNA & RNA"
     }, {
       "presenterName":   "connected_presenter",
       "behaviours": {
@@ -528,7 +528,8 @@
         "aliquotType":"RNA+P",
         "purpose":    "stock",
         "model":      "tubes",
-        "title":      "Rotor Adapter"
+        "title":      "Rotor Adapter",
+        "barcodePrefixes":    [ "540" ]
       },
       {
         "role":       "samples.extraction.retubing.eppendorf_tube_dna",
@@ -536,6 +537,7 @@
         "purpose":    "stock",
         "model":      "tubes",
         "title":      "Eppendorf DNA Tube",
+        "barcodePrefixes":    [ "274" ],
         "not_batched": false
       }
       ]
@@ -596,7 +598,7 @@
     "presenters": [
       {
       "presenterName": "kit_presenter",
-      "kitType":       "DNA/RNA"
+      "kitType":       "DNA & RNA"
     }, {
       "presenterName":   "connected_presenter",
       "behaviours": {

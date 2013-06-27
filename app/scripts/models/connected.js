@@ -4,8 +4,8 @@ define([
   'extraction_pipeline/connected/behaviours',
   'extraction_pipeline/connected/missing_handlers',
   'extraction_pipeline/connected/caching',
-  'extraction_pipeline/lib/pubsub'
-], function(Base, Operations, Behaviour, Missing, Cache, PubSub) {
+  'extraction_pipeline/lib/barcode_checker'
+], function(Base, Operations, Behaviour, Missing, Cache, BarcodeChecker ) {
   'use strict';
 
   var Model = Object.create(Base);
@@ -119,7 +119,7 @@ define([
               resource = root[details.model.pluralize()].instantiate();
             }
           } else {
-            resource = popAMatchingOutput(that,input,details.model.singularize());
+            resource = popAMatchingOutput(that,input,details.model.singularize(), details.barcodePrefixes);
           }
         }
 
@@ -127,6 +127,7 @@ define([
           input:           false,
           resource:        resource,
           expected_type:   details.model.singularize(),
+          barcodePrefixes: details.barcodePrefixes,
           display_remove:  previous,
           display_barcode: previous,
           title:           details.title,
@@ -148,6 +149,7 @@ define([
         }
       }).value();
 
+      // used to restore the state of the transfer
       // this function SHOULD pop the output resource
       // 1. corresponding to an input resource
       // 2. and of the correct type
@@ -155,10 +157,17 @@ define([
       // there is no way to know which input correspond to which output after the transfer has been completed.
       // it might be possible to do so if one can search for 'transfers' on S2.
       // For now, it does not matter, as we don't really care, the transfer being already achieved at this stage...
-      function popAMatchingOutput(model, inputLabware, outputResourceType){
+      function popAMatchingOutput(model, inputLabware, outputResourceType, barcodePrefixes){
         var correspondingOutput = _.find(model.reLoadedOutputs, function(labware){
-          return labware.resourceType === outputResourceType;
+          return labware.resourceType === outputResourceType && checkPrefix(labware.labels.barcode.value, barcodePrefixes);
         });
+
+        function checkPrefix(barcode, prefixes){
+          if (!prefixes || ($.isArray(prefixes) && prefixes.length === 0) ) { return true; }
+          return _.some(prefixes, function(prefix){
+            return barcode.indexOf(prefix) === 0;
+          });
+        }
         model.reLoadedOutputs = _.without(model.reLoadedOutputs,correspondingOutput);
         return correspondingOutput;
       }

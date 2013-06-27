@@ -1,8 +1,10 @@
 define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'text!extraction_pipeline/html_partials/reception_partial.html'
+  , 'extraction_pipeline/models/reception_model'
+  , 'extraction_pipeline/lib/util'
   , 'extraction_pipeline/lib/pubsub'
-], function (config, BasePresenter, receptionPartialHtml, PubSub) {
+], function (config, BasePresenter, receptionPartialHtml, Model, Util,  PubSub) {
   'use strict';
 
   var ReceptionPresenter = Object.create(BasePresenter);
@@ -19,6 +21,8 @@ define(['config'
     init: function (owner, factory, config) {
       this.factory = factory;
       this.owner = owner;
+
+      this.model = Object.create(Model).init(this);
 
       this.manifestMakerComponent = {};
       this.manifestReaderComponent = {};
@@ -39,25 +43,64 @@ define(['config'
     createHtml: function () {
       var html = $(_.template(receptionPartialHtml)());
 
+      var userBCSubPresenter = this.factory.create('scan_barcode_presenter', this).init({type:"user"});
+
       this.backButtonSelection = html.find("#back-button");
       this.manifestMakerBtnSelection = html.find("#create-manifest-btn");
       this.manifestReaderBtnSelection = html.find("#read-manifest-btn");
+      this.userReaderSelection = html.find("#userReader");
+      this.userValidationSelection = html.find("#userValidation");
+      this.componentChoiceSelection = html.find('#choice');
 
       $.extend(this.manifestMakerComponent,{selection: html.find(".manifest-maker")});
       $.extend(this.manifestReaderComponent,{selection: html.find(".manifest-reader")});
-      $.extend(this.homeComponent,{selection: html.find("#choice")});
+      $.extend(this.homeComponent,{selection: html.find("#homePage")});
 
       this.backButtonSelection.click(this.goBack());
       this.manifestReaderBtnSelection.click(this.goForward(this.manifestReaderComponent));
       this.manifestMakerBtnSelection.click(this.goForward(this.manifestMakerComponent));
 
+      this.userReaderSelection.append(
+        this.bindReturnKey(userBCSubPresenter.renderView(),
+          userCallback,
+          barcodeErrorCallback("User barcode is not valid."))
+      );
+
+      function userCallback(event, template, presenter){
+        var barcode = Util.pad(event.currentTarget.value);
+        presenter.model.setUserFromBarcode(barcode)
+          .fail(function (error) {
+            PubSub.publish('s2.status.error', presenter, error);
+          })
+          .then(function(){
+            template.find("input").val(barcode);
+            template.find("input").attr('disabled', true);
+            presenter.userValidationSelection.hide();
+            presenter.componentChoiceSelection.show();
+          });
+      }
+
+      function barcodeErrorCallback(errorText){
+        return function(event, template, presenter){
+          PubSub.publish('s2.status.error', this, {message: errorText});
+        };
+      }
       return html;
     },
 
     goBack:function(){
       var thisPresenter = this;
       return function(){
-        swipeBackFunc(thisPresenter.currentComponent.selection,thisPresenter.homeComponent.selection,thisPresenter.backButtonSelection,0)();
+        swipeBackFunc(thisPresenter.currentComponent.selection,
+          thisPresenter.homeComponent.selection,
+          thisPresenter.backButtonSelection,
+          0,
+          function(){
+            thisPresenter.componentChoiceSelection.hide();
+            thisPresenter.userValidationSelection.show();
+            thisPresenter.userValidationSelection.find('input').val("").removeAttr('disabled');
+            thisPresenter.owner.resetS2Root();
+          })();
         PubSub.publish("s2.reception.reset_view", thisPresenter, {});
         thisPresenter.currentComponent = thisPresenter.homeComponent;
       }
@@ -97,8 +140,9 @@ define(['config'
     }
   }
 
-  function swipeBackFunc(currentElement, previousElement, backArrow, toDepth) {
+  function swipeBackFunc(currentElement, previousElement, backArrow, toDepth, callBack) {
     return function () {
+      callBack();
       if (toDepth === 0){
         backArrow.hide();
       }

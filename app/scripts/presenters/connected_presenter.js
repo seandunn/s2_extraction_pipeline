@@ -47,12 +47,19 @@ define([
       var thisPresenter = this;
       this.model.setupInputPresenters(reset)
           .then(function(){
-            var presenter = _.find(thisPresenter.rowPresenters, function (presenter) {
+            var currentPresenter = _.find(thisPresenter.rowPresenters, function (presenter) {
               return !presenter.isRowComplete();
             });
             // There will not be an incomplete row returned if the entire page is complete. Therefore nothing to focus on.
-            if (presenter) {
-              presenter.focus();
+            if (currentPresenter) {
+              currentPresenter.focus();
+              // we lock the other rows...
+              _.chain(thisPresenter.rowPresenters).reject(function(rowPresenter){
+                return rowPresenter === currentPresenter;
+              }).each(function(presenter){
+                presenter.lockRow();
+              });
+              currentPresenter.unlockRow();
             }
             if(thisPresenter.model.started){
               thisPresenter.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
@@ -113,8 +120,7 @@ define([
 
     rowDone: function(child, action, data) {
       if (action === 'completed') {
-        var model = this.model;
-        model.operate('row', [child]);
+        this.model.operate('row', [child]);
         if (this.checkPageComplete()) {
           this.owner.childDone(this, "enableBtn", {buttons:[{action:"start"}]});
         }
@@ -129,6 +135,7 @@ define([
         this.setupSubPresenters(true);
         PubSub.publish('s2.step_presenter.printing_finished', this);
         this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
+
 
       } else if (action === "barcodePrintSuccess") {
 
@@ -163,11 +170,23 @@ define([
         });
 
       } else if (action === "successfulOperation") {
-
+        // locks the rowPresenters which have successfully completed their operations
         _.each(data, function(presenter){
           presenter.lockRow();
         });
 
+        // find the index of the last rowPresenter which has successfully completed its operations
+        var lastIndex = -1;
+        _.each(this.rowPresenters,function(rowPresenter, index){
+          if (_.contains(data,rowPresenter)){
+            lastIndex = lastIndex < index ? index : lastIndex;
+          }
+        });
+        // if there is at least one presenter after...
+        if (lastIndex+1 < this.rowPresenters.length){
+          // we unlock it
+          this.rowPresenters[lastIndex+1].unlockRow();
+        }
       }
     },
 

@@ -19,11 +19,11 @@ define([], function () {
           return parseFloat(value);
         case "boolean":
           return ( value.toUpperCase() === 'YES' ) || ( value.toUpperCase() === 'TRUE' );
-
         // used to generate html nodes
         case "select":
+          return $.extend({}, cellDescriptor, {value:value} );
         case "span":
-            return $.extend({}, cellDescriptor, {value:value} );
+          return $.extend({}, cellDescriptor, {value:value} );
         case "checkbox":
           return $.extend({},
               cellDescriptor,
