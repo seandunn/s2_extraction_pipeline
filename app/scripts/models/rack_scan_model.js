@@ -51,8 +51,7 @@ define([
         var updateJson = { items: {} };
         updateJson.items[role] = {};
         updateJson.items[role][uuid] = {
-          event: event,
-          batch_uuid: model.batch.uuid
+          event: event
         };
         return updateJson;
       }
@@ -66,36 +65,24 @@ define([
           })
           .then(function (result) {
             inputs = result;
-            return $.when
-                .apply(null, _.chain(inputs)
-                .map(function (input) {
-                  return input.order
+
+            return $.when.apply(null,
+                _.map(inputs, function (input) {
+                  return input.order()
                       .fail(function () {
-                        deferred.reject({message:"Couldn't load the orders! Contact the administrator of the system."});
+                        deferred.reject({message: "Couldn't load one of the orders! Contact the administrator of the system."});
                       })
                       .then(function (order) {
-                        ordersSortedByUUID[order.uuid] = order; // we save then at the same time that we use them...
-                        return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "start"))
-                      })
-                      .fail(function () {
-                        deferred.reject({message:"Couldn't start the role on one of the input tubes! Contact the administrator of the system."});
-                      })
-                      .then(function (order) {
-                        return order.update(makeJSONUpdateFor(model.config.output[1].role, input.uuid, "complete"))
-                      })
-                      .fail(function () {
-                        deferred.reject({message: "Couldn't complete the role on one of the input tubes! Contact the administrator of the system."});
+                        ordersSortedByUUID[order.uuid] = order; // we save orders
                       });
-                })
-            );
+                }));
           })
           .fail(function () {
-            deferred.reject({message:"Couldn't update the roles on the input tubes! Contact the administrator of the system."});
+            deferred.reject({message:"Couldn't load the orders! Contact the administrator of the system."});
           })
-          .then(function () { // of the following methods
-            return $.when
-                .apply(null, _.chain(ordersSortedByUUID)
-                .map(function (order) {
+          .then(function () {
+            return $.when.apply(null,
+                _.map(ordersSortedByUUID, function (order) {
                   return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "start"))
                       .fail(function () {
                         deferred.reject({message: "Couldn't start the role on the output rack! Contact the administrator of the system."});
@@ -106,8 +93,7 @@ define([
                       .fail(function () {
                         deferred.reject({message: "Couldn't complete the role on the output rack! Contact the administrator of the system."});
                       });
-                })
-            );
+                }));
           })
           .fail(function () {
             deferred.reject({message:"An error occured during the transfer process! Contact the administrator of the system."});
