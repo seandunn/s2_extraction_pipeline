@@ -159,7 +159,7 @@ define([
       // For now, it does not matter, as we don't really care, the transfer being already achieved at this stage...
       function popAMatchingOutput(model, inputLabware, outputResourceType, barcodePrefixes){
         var correspondingOutput = _.find(model.reLoadedOutputs, function(labware){
-          return labware.resourceType === outputResourceType && checkPrefix(labware.labels.barcode.value);
+          return labware.resourceType === outputResourceType && checkPrefix(labware.labels.barcode.value, barcodePrefixes);
         });
 
         function checkPrefix(barcode, prefixes){
