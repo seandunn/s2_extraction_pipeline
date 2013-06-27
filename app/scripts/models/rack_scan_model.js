@@ -16,6 +16,7 @@ define([
       this.initialiseCaching();
       return this;
     },
+
     createOutputs: function () {
       var model = this;
       var root;
@@ -96,11 +97,12 @@ define([
       var model = this;
       var root;
 
-      return checkFileValidity(model, locationsSortedByBarcode)
+      return getTubesOnRack(model, locationsSortedByBarcode)
         .fail(function (error) {
           model.owner.childDone(model, "error", error.message);
         })
-        .then(function () {
+        .then(function (inputTubes) {
+          model.inputs = $.Deferred().resolve(inputTubes).promise();
           return prepareTransferDataPromise(model, locationsSortedByBarcode);
         })
         .then(function () {
@@ -126,110 +128,37 @@ define([
         });
     },
 
-    setBatch: function (batch) {
-      this.cache.push(batch);
-      this.batch = batch;
-      var model = this;
-      setupInputs(model)
-      .then(function () {
-        model.owner.childDone(model, "batchAdded");
-      })
-      .fail(function () {
-        $('body').trigger('s2.status.error', "Couldn't load the batch resources!");
-      });
-    },
-
     setUser: function (user) {
       this.user = user;
       this.owner.childDone(this, "userAdded");
     }
   });
 
-  function setupInputs(that) {
-    var inputs = [];
-    return that.batch.items.then(function (items) {
-      return $.when.apply(null,
-                          _.chain(items)
-                          .filter(function (item) {
-                            return item.role === that.config.input.role && item.status === 'done';
-                          })
-                          .map(function (item) {
-                            return that.cache.fetchResourcePromiseFromUUID(item.uuid)
-                            .then(function (resource) {
-                              inputs.push(resource);
-                            });
-                          })
-                          .value());
-    })
-    .then(function () {
-      return that.inputs.resolve(inputs);
-    }).fail(that.inputs.reject);
-  }
-
-  function checkFileValidity(model, locationsSortedByBarcode) {
-
-    var status = "valid";
-    var action, message, expectedNbOfTubes, arrayOfExpectedBarcodes, inputTubes, extraBarcodes;
-    var deferred = $.Deferred();
-
-    model.inputs
+  function getTubesOnRack(model, locationsSortedByBarcode) {
+    var inputBarcodes = _.keys(locationsSortedByBarcode);
+    var searchDeferred = $.Deferred();
+    model.owner.getS2Root()
+      .then(function (root) {
+          return root.tubes.findByEan13Barcode(inputBarcodes, true);
+      })
       .fail(function () {
-        return deferred.reject({message: "Couldn't get the inputs"});
+          return searchDeferred.reject({message: "Couldn't search for the tubes in the rack!"});
       })
-      .then(function (inputs) {
-        inputTubes = inputs;
-        expectedNbOfTubes = inputs.length;
-        arrayOfExpectedBarcodes = _.map(inputs, function (resource, key) {
-          return resource.labels.barcode.value
-        });
-        var arrayOfBarcodesInRack = _.keys(locationsSortedByBarcode);
-        var nbOfTubesInRack = arrayOfBarcodesInRack.length;
-
-        if (nbOfTubesInRack < expectedNbOfTubes) {
-          message = "The number of tube is not correct. The current batch" +
-            " contains " + expectedNbOfTubes + " tubes, while the " +
-            "current transfer file contains " + nbOfTubesInRack + " tubes!";
-          return deferred.reject({message: message});
-        }
-
-        extraBarcodes = _.difference(arrayOfBarcodesInRack, arrayOfExpectedBarcodes);
-
-        if (extraBarcodes.length > 0) {
-          return validateExtraTubesContent(model, inputTubes);
-        }
-      })
-      .fail(function (error) {
-        deferred.reject(error);
-      })
-      .then(function () {
-        deferred.resolve(model);
-      });
-
-    return deferred.promise();
-
-    function validateExtraTubesContent(model, inputTubes) {
-      var searchDeferred = $.Deferred();
-      model.owner.getS2Root()
-        .then(function (root) {
-          return root.tubes.findByEan13Barcode(extraBarcodes, true);
-        })
-        .fail(function () {
-          return searchDeferred.reject({message: "Couldn't search for the extra-tubes!"});
-        })
-        .then(function (extraTubes) {
-          if (extraTubes.length !== extraBarcodes.length) {
-            return searchDeferred.reject({message: "The extra tubes were not found!"});
+      .then(function (inputTubes) {
+          if (inputTubes.length === 0) {
+            return searchDeferred.reject({message: "There are no tubes in this rack!"});
           }
-          if (_.some(extraTubes, function (extraTube) {
-            return extraTube.resourceType !== inputTubes[0].resourceType;
+          if (inputTubes.length !== inputBarcodes.length) {
+            return searchDeferred.reject({message: "The tubes were not all found!"});
+          }
+          if (_.some(inputTubes, function (tube) {
+            return tube.resourceType !== inputTubes[0].resourceType;
           })) {
-            return searchDeferred.reject({message: "The extra tubes are not of the same type as the other tubes!"});
+            return searchDeferred.reject({message: "The tubes are not all of the same type"});
           }
-        }).then(function () {
-          return searchDeferred.resolve();
-        });
-      return searchDeferred.promise();
-    }
+          return searchDeferred.resolve(inputTubes);
+      });
+    return searchDeferred.promise();
   }
 
   function prepareTransferDataPromise(model, locationsSortedByBarcode) {
