@@ -42,7 +42,7 @@ define([
         thisModel.owner.getS2Root()
           .then(function (result) {
             root = result;
-            return root.kits.findByEan13Barcode(kitBarcode);
+            return root.kits.findByCode128Barcode(kitBarcode);
           })
           .fail(function () {
             deferred.reject({message: "Kit was not found on the server"});

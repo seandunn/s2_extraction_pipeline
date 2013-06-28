@@ -1849,7 +1849,7 @@
                 "delete":"http://localhost:9292/KitUUID"
               },
               "uuid":"KitUUID",
-              "aliquotType" : "DNA/RNA"
+              "aliquotType" : "DNA & RNA"
 
             }
           ]
@@ -1876,7 +1876,7 @@
             "uuid":"695ff060-8d8b-0130-b64f-282066132de2",
             "process":null,
             "kit":"1234567891011",
-            "aliquotType" : "DNA/RNA"
+            "aliquotType" : "DNA & RNA"
           }
         },
         "next_stage":11
@@ -1900,7 +1900,7 @@
             "uuid":   "53f372e0-89a4-0130-1eaf-282066132de2",
             "process":null,
             "kit":    "1234567891011",
-            "aliquotType" : "DNA/RNA"
+            "aliquotType" : "DNA & RNA"
           }
         }
       },

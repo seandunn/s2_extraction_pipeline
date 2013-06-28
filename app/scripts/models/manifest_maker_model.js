@@ -163,11 +163,18 @@ define([
             return deferred.reject({message: "Couldn't associate the barcodes to the tubes."});
           })
           .then(function (bulkCreationLabellableObject) {
-            _.each(thisModel.labwareOutputs, function (output) {
-              output.labels = bulkCreationLabellableObject.result.labellables.pop().labels;
+            _.chain(thisModel.labwareOutputs).
+              zip(bulkCreationLabellableObject.result.labellables).
+              each(function(manifestRow){
+                var labwareOutput = manifestRow[0];
+                var labellable    = manifestRow[1];
+
+                labwareOutput.labels = labellable.labels;
             });
+
             deferred.resolve(thisModel.labwareOutputs);
           });
+
       return deferred.promise();
     },
 
