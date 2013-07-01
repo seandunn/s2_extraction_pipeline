@@ -23,6 +23,7 @@ define(['config'
           if (event.which !== 13) return;
 
           var value = event.currentTarget.value;
+          $(event.currentTarget).val("");
 
           if (_.some(BarcodeChecker, function (validationCallback) {
             return validationCallback(Util.pad(value));
