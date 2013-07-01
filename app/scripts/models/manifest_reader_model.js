@@ -37,24 +37,32 @@ define([
             return row[0]
           })
           .value();
+
       var combinedData = JsonTemplater.combineHeadersToData(columnHeaders, sampleAsArray);
-      if (!ReceptionTemplate[templateName]) {
-        deferred.reject({message: "Couldn't find the corresponding template!"});
-      }
-      else if (columnHeaders.length <= 1 && columnHeaders[0]) {
-        deferred.reject({message: "The file contains no header !"});
-      }
-      else if (combinedData.length <= 0) {
-        deferred.reject({message: "The file contains no data !"});
-      }
-      else {
-        this.json_template_display = ReceptionTemplate[templateName].json_template_display;
-        this.samplesForDisplay = JsonTemplater.applyTemplateToDataSet(combinedData, this.json_template_display);
-        // we only save the details once we're certain that the data are correct!
-        this.combinedData = combinedData;
-        this.templateName = templateName;
-        deferred.resolve(this);
-      }
+
+      sanityCheck(this, combinedData)
+          .fail(function(error){
+            deferred.reject(error);
+          })
+          .then(function(){
+            if (!ReceptionTemplate[templateName]) {
+              deferred.reject({message: "Couldn't find the corresponding template!"});
+            }
+            else if (columnHeaders.length <= 1 && columnHeaders[0]) {
+              deferred.reject({message: "The file contains no header !"});
+            }
+            else if (combinedData.length <= 0) {
+              deferred.reject({message: "The file contains no data !"});
+            }
+            else {
+              this.json_template_display = ReceptionTemplate[templateName].json_template_display;
+              this.samplesForDisplay = JsonTemplater.applyTemplateToDataSet(combinedData, this.json_template_display);
+              // we only save the details once we're certain that the data are correct!
+              this.combinedData = combinedData;
+              this.templateName = templateName;
+              deferred.resolve(this);
+            }
+          });
       return deferred.promise();
     },
 
@@ -119,6 +127,51 @@ define([
       return deferred.promise();
     }
   });
+
+  function sanityCheck(model, combinedData) {
+
+    var searchDeferred = $.Deferred();
+    var root;
+    var sangerSampleIDByTubeBarcode;
+    var inputBarcodes = _.pluck(combinedData,'Tube Barcode');
+    var tubes;
+    model.owner.getS2Root()
+        .then(function (result) {
+          root = result;
+          return root.tubes.findByEan13Barcode(inputBarcodes, true);
+        })
+        .fail(function () {
+          return searchDeferred.reject({message: "Couldn't search for the tubes in the rack!"});
+        })
+        .then(function (inputTubes) {
+          tubes = inputTubes;
+
+          if (tubes.length === 0) {
+            return searchDeferred.reject({message: "No tube corresponding to the given barcodes could be found!"});
+          }
+          if (tubes.length !== inputBarcodes.length) {
+            return searchDeferred.reject({message: "Not all the tubes corresponding to the given barcodes could be found!"});
+          }
+          sangerSampleIDByTubeBarcode = {};
+          return $.when.apply(null,_.map(tubes,function(tube){
+            var uuid = tube.aliquots[0].sample.uuid;
+            return root.samples.find(uuid).then(function(sample){sangerSampleIDByTubeBarcode[tube.labels.barcode.value] = sample.sanger_sample_id;});
+          }));
+        })
+        .fail(function () {
+          return searchDeferred.reject({message: "Couldn't find the samples using their sanger_sample_id!"});
+        })
+        .then(function () {
+          _.each(combinedData, function(row){
+            var sangerSampleIDInS2 = sangerSampleIDByTubeBarcode[ row["Tube Barcode"] ];
+            if (row['SANGER SAMPLE ID'] !== sangerSampleIDInS2) {
+              searchDeferred.reject({message: "At least one of the sanger sample ID is not linked to the correct barcode! Please contact the administrator. (" + sangerSampleIDInS2 + " must match the barcode " + row["Tube Barcode"] + ")"});
+            }
+          });
+          return searchDeferred.resolve(tubes);
+        });
+    return searchDeferred.promise();
+  }
 
   return ReceptionModel;
 });
