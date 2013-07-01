@@ -48,7 +48,7 @@ define([], function () {
             successCallback();
             setTimeout(actionDone.resolve, 100);
           }, function () {
-            errorCallback();
+            errorCallback && errorCallback();
             actionDone.reject();
           });
       return actionDone;

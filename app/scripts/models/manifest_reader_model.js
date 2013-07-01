@@ -27,6 +27,7 @@ define([
     },
 
     setFileContent: function (fileContent) {
+      var thisModel = this;
       var deferred = $.Deferred();
       var dataAsArray = CSVParser.manifestCsvToArray(fileContent);
       var templateName = dataAsArray[2][0]; // always A3 !!
@@ -40,7 +41,7 @@ define([
 
       var combinedData = JsonTemplater.combineHeadersToData(columnHeaders, sampleAsArray);
 
-      sanityCheck(this, combinedData)
+      sanityCheck(thisModel, combinedData)
           .fail(function(error){
             deferred.reject(error);
           })
@@ -55,12 +56,12 @@ define([
               deferred.reject({message: "The file contains no data !"});
             }
             else {
-              this.json_template_display = ReceptionTemplate[templateName].json_template_display;
-              this.samplesForDisplay = JsonTemplater.applyTemplateToDataSet(combinedData, this.json_template_display);
+              thisModel.json_template_display = ReceptionTemplate[templateName].json_template_display;
+              thisModel.samplesForDisplay = JsonTemplater.applyTemplateToDataSet(combinedData, thisModel.json_template_display);
               // we only save the details once we're certain that the data are correct!
-              this.combinedData = combinedData;
-              this.templateName = templateName;
-              deferred.resolve(this);
+              thisModel.combinedData = combinedData;
+              thisModel.templateName = templateName;
+              deferred.resolve(thisModel);
             }
           });
       return deferred.promise();
@@ -155,7 +156,10 @@ define([
           sangerSampleIDByTubeBarcode = {};
           return $.when.apply(null,_.map(tubes,function(tube){
             var uuid = tube.aliquots[0].sample.uuid;
-            return root.samples.find(uuid).then(function(sample){sangerSampleIDByTubeBarcode[tube.labels.barcode.value] = sample.sanger_sample_id;});
+            return root.samples.find(uuid)
+                .then(function(sample){
+                  sangerSampleIDByTubeBarcode[tube.labels.barcode.value] = sample.sanger_sample_id;
+                });
           }));
         })
         .fail(function () {
