@@ -1,4 +1,4 @@
-define([], function() {
+define(['extraction_pipeline/lib/logger'], function(Logger) {
   'use strict';
 
   var printerTypes = {
@@ -23,7 +23,15 @@ define([], function() {
     release: 'development_branch',
 
     ajax: function(options) {
-      return $.ajax(options).then(function(result) { return {responseText:result}; });
+      Logger.debug("AJAX request: ", options);
+      return $.ajax(options)
+          .then(function(result) {
+            Logger.debug("AJAX response (success) :",result);
+            return {responseText:result};
+          })
+          .fail(function(error){
+            Logger.error("AJAX response (error) :",error);
+          })
     },
 
     // Configure the print service
