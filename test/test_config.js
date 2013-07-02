@@ -6,10 +6,8 @@ define(['mapper_test/test_config'], function (mapperConfig) {
     },
 
     UserData: {
-      "0000000000001": "Hopper",
-      "0000000000002": "Hockney",
-      "0000000000003": "Hodgkins",
-      "0000000000004": "Hofer"
+      "0000000000001": "TEST_USER_1",
+      "0000000000002": "TEST_USER_2"
     }
   });
 });
