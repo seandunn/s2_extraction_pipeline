@@ -1,6 +1,165 @@
 {
   "default": {
     "calls": [
+
+      {
+        "description": "Find tubes by barcode",
+        "method":      "post",
+        "url":         "/lims-laboratory/searches",
+        "request":     {
+          "search": {
+            "user":        "username",
+            "description": "search for barcoded tube",
+            "model":       "tube",
+            "criteria":    {
+              "label": {
+                "position": "barcode",
+                "type":     "ean13-barcode",
+                "value":    [ "2881460250710", "2886789170794" ]
+              }
+            }
+          }
+        },
+        "response":    {
+          "search": {
+            "actions": {
+              "read":  "http://localhost:9292/searchForTubes",
+              "first": "http://localhost:9292/searchForTubes/page=1",
+              "last":  "http://localhost:9292/searchForTubes/page=-1"
+            },
+            "uuid":    "searchForTubes"
+          }
+        }
+      },
+      {
+        "description": "Get the tubes",
+        "method":      "get",
+        "url":         "/searchForTubes/page=1",
+        "response":    {
+          "size":  1,
+          "tubes": [
+            {
+              "actions":    {
+                "read":  "http://localhost:9292/tube1UUID",
+                "first": "http://localhost:9292/tube1UUID/page=1",
+                "last":  "http://localhost:9292/tube1UUID/page=-1"
+              },
+              "uuid":       "tube1UUID",
+              "type":       null,
+              "max_volume": null,
+              "aliquots":   [
+                {
+                  "sample":   {
+                    "actions": {
+                      "read":   "http://localhost:9292/sample_uuid_2",
+                      "create": "http://localhost:9292/sample_uuid_2",
+                      "update": "http://localhost:9292/sample_uuid_2",
+                      "delete": "http://localhost:9292/sample_uuid_2"
+                    },
+                    "uuid":    "sample_uuid_1",
+                    "name":    "sample_1"
+                  },
+                  "quantity": 1000,
+                  "type":     "NA+P",
+                  "unit":     "mole"
+                }
+              ],
+              "labels":     {
+                "actions": {
+                  "read":   "http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2",
+                  "create": "http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2",
+                  "update": "http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2",
+                  "delete": "http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2"
+                },
+                "uuid":    "66e10470-8d8b-0130-b650-282066132de2",
+                "barcode": {
+                  "value": "2881460250710",
+                  "type":  "ean13-barcode"
+                }
+              }
+            },
+            {
+              "actions":    {
+                "read":  "http://localhost:9292/tube2UUID",
+                "first": "http://localhost:9292/tube2UUID/page=1",
+                "last":  "http://localhost:9292/tube2UUID/page=-1"
+              },
+              "uuid":       "tube2UUID",
+              "type":       null,
+              "max_volume": null,
+              "aliquots":   [
+                {
+                  "sample":   {
+                    "actions": {
+                      "read":   "http://localhost:9292/sample_uuid_2",
+                      "create": "http://localhost:9292/sample_uuid_2",
+                      "update": "http://localhost:9292/sample_uuid_2",
+                      "delete": "http://localhost:9292/sample_uuid_2"
+                    },
+                    "uuid":    "sample_uuid_2",
+                    "name":    "sample_2"
+                  },
+                  "quantity": 1000,
+                  "type":     "NA+P",
+                  "unit":     "mole"
+                }
+              ],
+              "labels":     {
+                "actions": {
+                  "read":   "http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2",
+                  "create": "http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2",
+                  "update": "http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2",
+                  "delete": "http://localhost:9292/66e10470-8d8b-0130-b650-282066132de2"
+                },
+                "uuid":    "66e10470-8d8b-0130-b650-282066132de2",
+                "barcode": {
+                  "value": "2886789170794",
+                  "type":  "ean13-barcode"
+                }
+              }
+            }
+          ]
+        }
+      },
+
+      {
+        "description":"Get the sample 1",
+        "method": "get",
+        "url": "/lims-management/sample_uuid_1",
+        "response":{
+          "sample":   {
+            "actions": {
+              "read":   "http://localhost:9292/sample_uuid_1",
+              "create": "http://localhost:9292/sample_uuid_1",
+              "update": "http://localhost:9292/sample_uuid_1",
+              "delete": "http://localhost:9292/sample_uuid_1"
+            },
+            "uuid":    "sample_uuid_1",
+            "sanger_sample_id": "S2-13a8da96d0e34db1ac7d7c40159a2095",
+            "name":    "sample_1"
+          }
+        }
+      },
+     {
+        "description":"Get the sample 2",
+        "method": "get",
+        "url": "/lims-management/sample_uuid_2",
+        "response":{
+          "sample":   {
+            "actions": {
+              "read":   "http://localhost:9292/sample_uuid_2",
+              "create": "http://localhost:9292/sample_uuid_2",
+              "update": "http://localhost:9292/sample_uuid_2",
+              "delete": "http://localhost:9292/sample_uuid_2"
+            },
+            "uuid":    "sample_uuid_2",
+            "sanger_sample_id": "S2-cb4ee4768f334c38960ac89ec2074eb1",
+            "name":    "sample_2"
+          }
+        }
+      },
+
+
       {
         "description": "Create 3 samples",
         "method":      "post",
