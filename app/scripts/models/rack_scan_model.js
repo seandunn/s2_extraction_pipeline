@@ -17,7 +17,7 @@ define([
       return this;
     },
 
-    createOutputs: function () {
+    createOutputs: function(printer) {
       var model = this;
       var root;
       return model.owner.getS2Root().then(function(result) {
@@ -36,71 +36,74 @@ define([
         model.owner.childDone(model, 'outputsReady', {});
         return state.labware;
       }).then(function(rack){
-        model.printBarcodes([rack], model.config.defaultPrinter);
+        model.printBarcodes([rack], printer);
         return rack;
       }).fail(function () {
         $('body').trigger('s2.status.error', "Impossible to create the rack.");
       });
     },
 
-    fire: function () {
-      var deferred = $.Deferred();
-      var model = this;
-      var rack, inputs, ordersSortedByUUID = {};
+    fire: function(printer) {
+      var deferred           = $.Deferred(),
+          model              = this,
+          ordersSortedByUUID = {},
+          rack,
+          inputs;
+
       function makeJSONUpdateFor(role,uuid,event) {
-        var updateJson = { items: {} };
-        updateJson.items[role] = {};
-        updateJson.items[role][uuid] = {
-          event: event
-        };
+        var updateJson               = { items: {} };
+        updateJson.items[role]       = {};
+        updateJson.items[role][uuid] = { event: event };
         return updateJson;
       }
-      model.createOutputs()
-          .then(function (result) {
-            rack = result;
-            return model.inputs;
-          })
-          .fail(function () {
-            deferred.reject({message:"Couldn't load the input tubes! Contact the administrator of the system."});
-          })
-          .then(function (result) {
-            inputs = result;
 
-            return $.when.apply(null,
-                _.map(inputs, function (input) {
-                  return input.order()
-                      .fail(function () {
-                        deferred.reject({message: "Couldn't load one of the orders! Contact the administrator of the system."});
-                      })
-                      .then(function (order) {
-                        ordersSortedByUUID[order.uuid] = order; // we save orders
-                      });
-                }));
-          })
-          .fail(function () {
-            deferred.reject({message:"Couldn't load the orders! Contact the administrator of the system."});
-          })
-          .then(function () {
-            return $.when.apply(null,
-                _.map(ordersSortedByUUID, function (order) {
-                  return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "start"))
-                      .fail(function () {
-                        deferred.reject({message: "Couldn't start the role on the output rack! Contact the administrator of the system."});
-                      })
-                      .then(function (order) {
-                        return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "complete"))
-                      })
-                      .fail(function () {
-                        deferred.reject({message: "Couldn't complete the role on the output rack! Contact the administrator of the system."});
-                      });
-                }));
-          })
-          .fail(function () {
-            deferred.reject({message:"An error occured during the transfer process! Contact the administrator of the system."});
-          })
-          .then(function () {
-            deferred.resolve(model);
+      model.createOutputs(printer)
+        .then(function (result) {
+          rack = result;
+          return model.inputs;
+        }).fail(function () {
+          deferred.reject({
+            message: "Couldn't load the input tubes! Contact the administrator of the system."
           });
+        }).then(function (result) {
+          inputs = result;
+
+          return $.when.apply(null, _.map(inputs, function(input){
+            return input.order().fail(function () {
+              deferred.reject({
+                message: "Couldn't load one of the orders! Contact the administrator of the system."
+              });
+            }).then(function (order) {
+              ordersSortedByUUID[order.uuid] = order; // we save orders
+            });
+          }));
+        }).fail(function() {
+          deferred.reject({
+            message: "Couldn't load the orders. Contact the administrator of the system."
+          });
+        }).then(function() {
+          return $.when.apply(null, _.map(ordersSortedByUUID, function (order) {
+            return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "start")).
+              fail(function() {
+                deferred.reject({
+                message: "Couldn't start the role on the output rack. Contact the administrators."
+              });
+            }).then(function(order) {
+              return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "complete"))
+            }).fail(function () {
+              deferred.reject({
+                message: "Couldn't complete the role on the output rack! Contact the administrator of the system."
+              });
+            });
+          }));
+        }).fail(function() {
+          deferred.reject({
+            message:"An error occured during the transfer process! Contact the administrator of the system."
+          });
+        }).then(function () {
+          deferred.resolve(model);
+        });
+
       return deferred.promise();
     },
 

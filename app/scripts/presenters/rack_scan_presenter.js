@@ -96,17 +96,24 @@ define([
     },
 
     print: function(child,action, data){
-      var thisPresenter = this;
-      this.model.fire()
-          .fail(function(error){
-            PubSub.publish('s2.status.error', thisPresenter, error);
-          })
-          .then(function(){
-            thisPresenter.view.disableDropZone();
-            thisPresenter.owner.childDone(this, "disableBtn", {buttons: [{action: "print"}]});
-            thisPresenter.owner.childDone(this, "enableBtn", {buttons: [{action: "next"}]});
-            PubSub.publish('s2.status.message', thisPresenter, "Rack registered.");
-          })
+      var thisPresenter = this,
+          printer       = $('.printer-select').val();
+
+      this.model.fire(printer).fail(function(error){
+        PubSub.publish('s2.status.error', thisPresenter, error);
+      }).then(function(){
+        thisPresenter.view.disableDropZone();
+
+        thisPresenter.owner.childDone(this, "disableBtn", {
+          buttons: [{action: "print"}]
+        });
+
+        thisPresenter.owner.childDone(this, "enableBtn", {
+          buttons: [{action: "next"}]
+        });
+
+        PubSub.publish('s2.status.message', thisPresenter, "Rack registered.");
+      })
     },
 
     end: function(child,action, data){
