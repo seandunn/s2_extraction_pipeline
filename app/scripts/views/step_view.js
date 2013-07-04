@@ -16,7 +16,10 @@ define([
 
       _.each(model.buttons, function(buttonDetails) {
         parent.find('.'+buttonDetails.action+'Button').on('click', function() {
-          view.owner.childDone(view, buttonDetails.action, view.selector().find('.printer-select').val());
+          if (!view[buttonDetails.action+"clicked"]) {
+            view[buttonDetails.action+"clicked"] = true;
+            view.owner.childDone(view, buttonDetails.action, view.selector().find('.printer-select').val());
+          }
         });
       });
     },

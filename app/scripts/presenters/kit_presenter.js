@@ -16,10 +16,10 @@ define([
         if (event.which !== 13) return;
 
         var value = event.currentTarget.value;
-        $(event.currentTarget).val("");
-        setErrorTimeout(presenter);
+        var barcodeSelection = $(event.currentTarget);
+        setScannerTimeout(barcodeSelection);
 
-        if (BarcodeChecker.isKitBarcodeValid(Util.pad(value))) {
+        if (BarcodeChecker.isKitBarcodeValid(Util.pad(value, 22))) {
           callback(value, element, presenter);
         } else {
           errorCallback(value, element, presenter);
@@ -32,7 +32,7 @@ define([
     return function (value, template, presenter) {
       presenter.model
           .then(function(model){
-            return model.setKitFromBarcode(Util.pad(value));
+            return model.setKitFromBarcode(Util.pad(value, 22));
           })
           .fail(function (error) {
             PubSub.publish('s2.status.error', presenter, error);
@@ -53,11 +53,10 @@ define([
     };
   }
 
-  function setErrorTimeout(presenter){
-    presenter.selector().find('input').attr('disabled','disabled');
+  function setScannerTimeout(barcodeSelection){
     setTimeout(function () {
-      presenter.selector().find('input').removeAttr('disabled');
-    }, 500);
+      barcodeSelection.val('');
+    }, 250);
   }
 
   var Presenter = Object.create(Base);

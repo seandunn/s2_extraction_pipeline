@@ -4,8 +4,7 @@ define(['config'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/barcode_checker'
   , 'extraction_pipeline/lib/util'
-  , 'extraction_pipeline/lib/pubsub'
-], function (config, BasePresenter, LabwareView, PubSub, BarcodeChecker, Util, PubSub) {
+], function (config, BasePresenter, LabwareView, PubSub, BarcodeChecker, Util) {
 
   var defaultTitles = {
     tube: 'Tube',
@@ -234,11 +233,13 @@ define(['config'
     };
   }
 
-  function setErrorTimeout (presenter) {
-    presenter.jquerySelection().find('input').attr('disabled', 'disabled');
+  // sets a timeout after which the input is cleared
+  // this happens so that if many scans are made in a short time,
+  // unwanted calls won't go through
+  function setScannedTimeout (barcodeSelection) {
     setTimeout(function () {
-      presenter.jquerySelection().find('input').removeAttr('disabled');
-    }, 500);
+      barcodeSelection.val("");
+    }, 250);
   }
 
   function validationOnReturnKeyCallback (presenter, type, barcodePrefixes) {
@@ -258,9 +259,9 @@ define(['config'
         if (event.which !== 13) return;
 
         var value = event.currentTarget.value;
-        $(event.currentTarget).val("");
+        var barcodeSelection = $(event.currentTarget);
         
-        setErrorTimeout(presenter);
+        setScannedTimeout(barcodeSelection);
         if (validationCallBack(Util.pad(value),barcodePrefixes)) {
           callback(value, element, presenter);
         } else {

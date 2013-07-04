@@ -161,6 +161,7 @@ define([
       var btnDetailsList = eventData.buttons || this.config.buttons;
       _.each(btnDetailsList, function (btnDetails) {
         thisPresenter.view.setButtonEnabled(btnDetails.action, enable);
+        thisPresenter.view[btnDetails.action+"clicked"] = !enable;
       })
     }
 
