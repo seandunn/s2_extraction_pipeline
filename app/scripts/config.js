@@ -24,10 +24,15 @@ define([], function() {
 
     verboseLevel: "DEBUG", // DEBUG, WARNING, ERROR, NONE
 
+    withLoggingWindow: true,
+
     ajax: function(options) {
       return $.ajax(options)
           .then(function(result) {
             return {responseText:result};
+          })
+          .fail(function(){
+            throw "AJAX response (error)!";
           })
     },
 
