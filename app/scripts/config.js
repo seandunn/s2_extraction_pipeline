@@ -1,4 +1,4 @@
-define(['extraction_pipeline/lib/logger'], function(Logger) {
+define([], function() {
   'use strict';
 
   var printerTypes = {
@@ -22,15 +22,12 @@ define(['extraction_pipeline/lib/logger'], function(Logger) {
     // Don't change the release branch value as it's picked up by the deployment script
     release: 'development_branch',
 
+    verboseLevel: "DEBUG", // DEBUG, WARNING, ERROR, NONE
+
     ajax: function(options) {
-      Logger.debug("AJAX request: ", options);
       return $.ajax(options)
           .then(function(result) {
-            Logger.debug("AJAX response (success) :",result);
             return {responseText:result};
-          })
-          .fail(function(error){
-            Logger.error("AJAX response (error) :",error);
           })
     },
 
