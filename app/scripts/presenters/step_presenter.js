@@ -28,6 +28,11 @@ define([
         {action: "next",  title: "Next"          }
       ];
 
+      this.buttonClickedFlags = _.reduce(this.config.buttons, function (memo, button) {
+        memo[button.action] = false;
+        return memo;
+      }, {});
+
       this.config.printerList = this.printerList(config);
 
       return this;
@@ -112,12 +117,17 @@ define([
       var presenter = this;
 
       if (child === this.view) {
-        if(action === "print"){
-          this.view.setPrintButtonEnabled(false);
+        // using a flag so that additional clicks
+        // on a button will not be registered
+        // before the button is actually disabled
+        if (!presenter.buttonClickedFlags[action]){
+          presenter.buttonClickedFlags[action] = true;
+          // disable the button
+          this.view.setButtonEnabled(action, false);
+          var handler = this.activePresenter[action];
+          handler && handler.apply(this.activePresenter, arguments);
+          PubSub.publish("s2.step_presenter."+action+"_clicked", this);
         }
-        var handler = this.activePresenter[action];
-        handler && handler.apply(this.activePresenter, arguments);
-        PubSub.publish("s2.step_presenter."+action+"_clicked", this);
       }
       else if (action === 'done') {
         var index = _.indexOf(this.presenters, child);
@@ -161,7 +171,7 @@ define([
       var btnDetailsList = eventData.buttons || this.config.buttons;
       _.each(btnDetailsList, function (btnDetails) {
         thisPresenter.view.setButtonEnabled(btnDetails.action, enable);
-        thisPresenter.view[btnDetails.action+"clicked"] = !enable;
+        thisPresenter.buttonClickedFlags[btnDetails.action+"clicked"] = !enable;
       })
     }
 

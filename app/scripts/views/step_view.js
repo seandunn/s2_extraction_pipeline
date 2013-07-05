@@ -16,10 +16,7 @@ define([
 
       _.each(model.buttons, function(buttonDetails) {
         parent.find('.'+buttonDetails.action+'Button').on('click', function() {
-          if (!view[buttonDetails.action+"clicked"]) {
-            view[buttonDetails.action+"clicked"] = true;
-            view.owner.childDone(view, buttonDetails.action, view.selector().find('.printer-select').val());
-          }
+          view.owner.childDone(view, buttonDetails.action, view.selector().find('.printer-select').val());
         });
       });
     },
