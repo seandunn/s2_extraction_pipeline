@@ -36,23 +36,21 @@ define([
       });
 
       // Extract the print label details from each item in the collection
-      var printItems = _.map(collection, function(item) {
-        return item.returnPrintDetails();
-      });
+      var printItems = _.invoke(collection, 'returnPrintDetails');
 
-      return printer.print(printItems, {user:this.user})
-          .done(function() {
-            //TODO: remove guard code when childDone has been removed
-            if(that.owner && that.owner.childDone){
-              that.owner.childDone(that, 'barcodePrintSuccess', {});
-            }
-          })
-          .fail(function() {
-            //TODO: remove guard code when childDone has been removed
-            if(that.owner && that.owner.childDone){
-              that.owner.childDone(that, 'barcodePrintFailure', {});
-            }
-          });
+      return printer.print(printItems, {
+        user: this.user
+      }).done(function() {
+        //TODO: remove guard code when childDone has been removed
+        if(that.owner && that.owner.childDone){
+          that.owner.childDone(that, 'barcodePrintSuccess', {});
+        }
+      }).fail(function() {
+        //TODO: remove guard code when childDone has been removed
+        if(that.owner && that.owner.childDone){
+          that.owner.childDone(that, 'barcodePrintFailure', {});
+        }
+      });
     }
   });
 
