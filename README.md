@@ -1,14 +1,4 @@
-How to use components
+S2 Extraction Pipeline
+----------------------
 
-Selection Page
---------------
-
-This component allows the barcodes of new tubes to be scanned. It should be created with a seed model, which should contain just a user id and a batch number. The batch number should be undefined.
-
-The selection page will pass a 'done' message to it's parent if a user clicks on the 'next' button on the page.
-
-
-Presenters
-----------
-
-For information about the presenters, see the readme located in the app folder.
+**The S2 Extraction Pipeline** is a client-side javascript application that serves as a the front-end of a LIMS. For more information and some more detailed documentation, see the [wiki](https://github.com/sanger/s2_extraction_pipeline/wiki).
