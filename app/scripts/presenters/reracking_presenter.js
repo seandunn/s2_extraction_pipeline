@@ -25,7 +25,7 @@ define(['config'
       this.model = Object.create(Model).init(this, config);
       this.view = this.createHtml(
           {
-            printerList: _.filter(config.printerList, function(printer){return printer.type === 3;})
+            printerList: _.filter(config.printerList, function(printer){return printer.type === 1;})
           }
       );
       this.subscribeToPubSubEvents();
@@ -182,16 +182,19 @@ define(['config'
 
     labwareScannedHandler: function (barcode) {
       var thisPresenter = this;
-      console.log("should talk to the model right now...", barcode);
       thisPresenter.rackPresenters = [];
       thisPresenter.model
           .fail(function () {
             thisPresenter.message('error', "Impossible to load the model!");
           })
           .then(function (model) {
+            thisPresenter.view.trigger("s2.busybox.start_process");
+
             return model.addRack(barcode);
           })
           .fail(function (error) {
+            thisPresenter.view.trigger("s2.busybox.end_process");
+
             thisPresenter.message('error', error.message);
           })
           .then(function (model) {
@@ -225,6 +228,7 @@ define(['config'
               // ready to merge
               thisPresenter.startRerackingBtnSelection.show();
             }
+            thisPresenter.view.trigger("s2.busybox.end_process");
           });
     },
 
@@ -315,7 +319,6 @@ define(['config'
             thisPresenter.view.trigger("s2.busybox.end_process");
             thisPresenter.message('success', 'File loaded successfully.');
             thisPresenter.outputrackSelection.show();
-
             thisPresenter.outputRackPresenter = thisPresenter.factory.create('labware_presenter', thisPresenter);
             thisPresenter.outputRackPresenter.setupPresenter({
               "expected_type":   "tube_rack",
@@ -339,7 +342,7 @@ define(['config'
       this.model
           .then(function (model) {
             thisPresenter.view.trigger("s2.busybox.start_process");
-            return model.createOutputsAndPrint(thisPresenter.view.find('#printer-select').val());
+            return model.printRackBarcode(thisPresenter.view.find('#printer-select').val());
           })
           .fail(function (error) {
             thisPresenter.view.trigger("s2.busybox.end_process");
@@ -361,24 +364,23 @@ define(['config'
       this.accordionSelection.find("h3:nth(1)").show();
       this.accordionSelection.accordion("option", "active", 1);
       this.printRerackBtnSelection.show();
-
-//      this.model
-//          .then(function (model) {
-//            return model.rerack();
-//          })
-//          .fail(function (error) {
-//            return thisPresenter.message('error', "Couldn't rerack! "+ error.message);
-//          });
     },
 
     onReracking: function () {
       var thisPresenter = this;
       this.model
           .then(function (model) {
+            thisPresenter.view.trigger("s2.busybox.start_process");
             return model.rerack();
           })
           .fail(function (error) {
-            return thisPresenter.message('error', "Couldn't rerack! " + error.message);
+            thisPresenter.view.trigger("s2.busybox.end_process");
+            return thisPresenter.message('error', "Couldn't rerack! Please contact the administrator. " + error.message);
+          })
+          .then(function () {
+            thisPresenter.view.trigger("s2.busybox.end_process");
+            thisPresenter.rerackingBtnSelection.hide();
+            return thisPresenter.message('success', "Reracking completed.");
           });
     },
 

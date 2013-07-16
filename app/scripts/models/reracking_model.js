@@ -34,6 +34,7 @@ define([
     addRack: function (rackBarcode) {
       var deferred = $.Deferred();
       var thisModel = this;
+      var resource;
       thisModel.inputRacks = thisModel.inputRacks || [];
       if (_.find(thisModel.inputRacks, function (rack) {
         return rack.labels.barcode.value === rackBarcode;
@@ -45,9 +46,20 @@ define([
         }
         this.cache.fetchResourcePromiseFromBarcode(rackBarcode, "tube_racks")
             .fail(function () {
-              deferred.reject("Couldn't find the rack!");
+              deferred.reject({message:"Couldn't find the rack!"});
             })
-            .then(function (resource) {
+            .then(function (result) {
+              resource = result;
+              return resource.order();
+            })
+            .then(function (order) {
+              var rackHasActiveRole = _.some(order.items,function(roles){
+                return _.chain(roles)
+                    .filter(function(item){return item.status==='done'})
+                    .pluck('uuid')
+                    .contains(resource.uuid)
+                    .value();
+              });
               var contentTypesInNewRack = _.chain(resource.tubes).pluck('aliquots').flatten().pluck('type').groupBy().keys().value();
               if (contentTypesInNewRack.length > 1) {
                 // is the rack homogeneous (sanity check) ?
@@ -56,16 +68,16 @@ define([
                 deferred.reject({message: msg });
               } else if (thisModel.contentType && thisModel.contentType !== contentTypesInNewRack[0]) {
                 // is the content of the new rack the same than the rack already there ?
-                deferred.reject({message: "The content of the rack (" + contentTypesInNewRack[0] + ") is not compatible with the previous racks (" + thisModel.contentType + ")!"})
+                deferred.reject({message: "The content of the rack (" + contentTypesInNewRack[0] + ") is not compatible with the previous racks (" + thisModel.contentType + ")!"});
               } else if (thisModel.nbOfTubesToRerack + _.size(resource.tubes) >= thisModel.outputCapacity) {
                 // will there be enough space on the output rack ?
-                deferred.reject({message: "It is not possible to rerack all this racks together, as there will be more than " + thisModel.outputCapacity + " tubes on the output rack!"})
-              }
-              else {
+                deferred.reject({message: "It is not possible to rerack all this racks together, as there will be more than " + thisModel.outputCapacity + " tubes on the output rack!"});
+              } else if (!rackHasActiveRole) {
+                deferred.reject({message:"This rack is not in use anymore!!"});
+              } else {
                 thisModel.contentType = contentTypesInNewRack[0];
                 thisModel.inputRacks.push(resource);
                 thisModel.nbOfTubesToRerack += _.size(resource.tubes);
-                console.log(thisModel.nbOfTubesToRerack);
                 if (thisModel.inputRacks.length > 1) {
                   thisModel.isReady = true;
                 }
@@ -75,30 +87,6 @@ define([
       }
 
       return deferred.promise();
-
-//      function setupInputs(that) {
-//        var inputs = [];
-//        return that.batch.items
-//            .then(function (items) {
-//              return $.when.apply(null,
-//                  _.chain(items)
-//                      .filter(function (item) {
-//                        return item.role === that.config.input.role && item.status === 'done';
-//                      })
-//                      .map(function (item) {
-//                        return that.cache.fetchResourcePromiseFromUUID(item.uuid)
-//                            .then(function (resource) {
-//                              inputs.push(resource);
-//                            });
-//                      })
-//                      .value());
-//            })
-//            .then(function () {
-//              return that.inputs.resolve(inputs);
-//            })
-//            .fail(that.inputs.reject);
-//      }
-
     },
 
     setFileContent: function (csvAsTxt) {
@@ -108,7 +96,7 @@ define([
       var root;
       model.owner.getS2Root()
           .fail(function (error) {
-            deferred.reject({message: "impossible to get the roo!"});
+            deferred.reject({message: "Impossible to get the root!"});
           })
           .then(function (result) {
             root = result;
@@ -131,17 +119,20 @@ define([
       function getTubesOnRack(model, locationsSortedByBarcode) {
         var tubeUUIDs = _.chain(model.inputRacks)
             .pluck("tubes")
-            .map(function(tubeSet){
-              return _.pluck(tubeSet, "uuid") ;
+            .map(function (tubeSet) {
+              return _.pluck(tubeSet, "uuid");
             }).flatten().value();
         var inputBarcodes = _.keys(locationsSortedByBarcode);
         var searchDeferred = $.Deferred();
         model.owner.getS2Root()
+            .fail(function () {
+              deferred.reject({message: "Impossible to get the root!"});
+            })
             .then(function (root) {
-              return root.tubes.findBy2DBarcode(inputBarcodes, true);
+              return root.tubes.findByEan13Barcode(inputBarcodes, true);
             })
             .fail(function () {
-              return searchDeferred.reject({message: "Couldn't search for the tubes in the rack!"});
+              return searchDeferred.reject({message: "Couldn't find the tubes in the rack!"});
             })
             .then(function (inputTubes) {
               if (inputTubes.length === 0) {
@@ -155,8 +146,8 @@ define([
               })) {
                 return searchDeferred.reject({message: "The tubes are not all of the same type"});
               }
-              if (_.some(inputTubes, function (tube){
-                return ! _.contains(tubeUUIDs,tube.uuid);
+              if (_.some(inputTubes, function (tube) {
+                return !_.contains(tubeUUIDs, tube.uuid);
               })) {
                 return searchDeferred.reject({message: "Some tubes in the this rack were not present in the source racks!"});
               }
@@ -170,187 +161,155 @@ define([
     rerack: function () {
       var deferred = $.Deferred();
       var thisModel = this;
-//      thisModel.getXLSTemplate(templateName)
-//          .fail(function(error){
-//            return deferred.reject({message:"Couldn't load the specified template: "+templateName, previous_error:error});
-//          })
-//          .then(function(templateBlob){
-//            thisModel.currentTemplateBlob = templateBlob;
-//            return thisModel.getLabellables(templateName, study, sampleType, nbOfSample);
-//          })
-//          .fail(function(error){
-//            return deferred.reject({message: " Couldn't produce the samples. " + error.message, previous_error: error});
-//          })
-//          .then(function () {
-//            return thisModel.generateCSVBlob(sampleType);
-//          })
-//          .fail(function (error) {
-//            return deferred.reject({message: " Couldn't produce barcode data file. " + error.message, previous_error: error});
-//          })
-//          .then(function (manifestCsvBlob) {
-//            thisModel.manifestCsvBlob = manifestCsvBlob;
-//            // now we are ready...
-//            return thisModel.sendManifestRequest(thisModel.currentTemplateBlob, thisModel.manifestCsvBlob);
-//          })
-//          .fail(function(error){
-      return deferred.reject({message: " not implemented yet "});
-//          })
-//          .then(function(){
-//            return deferred.resolve();
-//          });
-      return deferred.promise();
-    },
-
-    getLabellables: function (templateName, studyName, sampleType, nbOfSample) {
-      var deferred = $.Deferred();
-//      var thisModel = this;
-//      var root;
-//      var labwareModel = ReceptionTemplates[templateName].model;
-//      var sangerSampleIdCore = ReceptionStudies[studyName].sanger_sample_id_core;
-//      thisModel.owner.getS2Root()
-//          .fail(function () {
-//            return deferred.reject({message: "Couldn't get the root! Is the server accessible?"});
-//          })
-//          .then(function (result) {
-//            root = result;
-//            // creation of the samples
-//            return root.bulk_create_samples.create({
-//              state:     "draft",
-//              quantity:  nbOfSample,
-//              sample_type: sampleType,
-//              sanger_sample_id_core:sangerSampleIdCore
-//            });
-//          })
-//          .fail(function () {
-//            return deferred.reject({message: "Couldn't create the empty samples on S2."});
-//          })
-//          .then(function (bulkCreationSampleObject) {
-//            // might be useful to instantiate the samples at some point....
-//            // For now, we just use them as bare objects
-//            thisModel.samples = bulkCreationSampleObject.result.samples;
-//            var tubes = _.map(thisModel.samples, function (sample) {
-//              return {
-//                aliquots:[{
-//                  "sample_uuid": sample.uuid,
-//                  "type": ReceptionTemplates[templateName].aliquot_type
-//                }
-//                ]
-//              };
-//            });
-//            // creation of the piece of labware
-//            return root["bulk_create_" + labwareModel.pluralize()].create({"tubes": tubes});
-//          })
-//          .fail(function () {
-//            return deferred.reject({message: "Couldn't register the associated piece of labware."});
-//          })
-//          .then(function (bulkCreationLabwareObject) {
-//            thisModel.labwareOutputs = _.map(bulkCreationLabwareObject.result.tubes, function (rawTube) {
-//              return root.tubes.instantiate({rawJson:{tube:rawTube}});
-//            });
-//            // creation of the barcodes
-//            return root.bulk_create_barcodes.create({
-//              "number_of_barcodes": nbOfSample,
-//              "labware":  labwareModel,
-//              "role":     "stock",
-//              "contents": sampleType
-//            });
-//          })
-//          .fail(function () {
-//            return deferred.reject({message: "Couldn't create the barcodes."});
-//          })
-//          .then(function (bulkCreationBarcodeObject) {
-//            thisModel.barcodes = bulkCreationBarcodeObject.result.barcodes;
-//            var labels = _.map(thisModel.barcodes, function (label) {
-//              return {
-//                barcode:        {
-//                  type:  "ean13-barcode",
-//                  value: label.ean13
-//                },
-//                "sanger label": {
-//                  type:  "sanger-barcode",
-//                  value: label.sanger.prefix + label.sanger.number + label.sanger.suffix
-//                }
-//              };
-//            });
-//            var bulkData = _.map(thisModel.labwareOutputs, function (labware) {
-//              // NOTE: in theory, one can associate a labware to any barcode.
-//              // However, in the test data, because the tests nmight a bit too strict
-//              // this order can become relevant... Be careful when running tests.
-//              return {"name": labware.uuid, "type": "resource", labels:labels.pop()};
-//            });
-//            // link barcodes to labware
-//            return root.bulk_create_labellables.create({
-//              labellables:   bulkData
-//            });
-//          })
-//          .fail(function () {
-//            return deferred.reject({message: "Couldn't associate the barcodes to the tubes."});
-//          })
-//          .then(function (bulkCreationLabellableObject) {
-//            _.each(thisModel.labwareOutputs, function (output) {
-//              var matchingLabellable = _.chain(bulkCreationLabellableObject.result.labellables).find(function (labellable) {
-//                return labellable.name === output.uuid;
-//              }).value();
-//              output.labels = matchingLabellable.labels;
-//            });
-//            deferred.resolve(thisModel.labwareOutputs);
-//          });
-
-      return deferred.promise();
-    },
-
-    createOutputsAndPrint: function (printerName) {
-      var model = this;
       var root;
-      return model.owner.getS2Root()
-          .then(function (result) {
-        root = result;
-
-        return root.barcodes.create({
-          labware:  model.outputModelType.singularize(),
-          contents: model.contentType,
-          role:     model.purpose
-        });
+      thisModel.registerNewRack()
+          .fail(function (message) {
+            return deferred.reject(message);
           })
-          .then(function(barcode){
-            model.barcodeForOuputRack = barcode;
-            debugger;
+          .then(function (newRack) {
+            thisModel.outputRack = newRack;
+            deferred.resolve(thisModel);
+            return thisModel.updateRoleOnRacks();
+          });
+
+      return deferred.promise();
+    },
+
+    registerNewRack: function () {
+      var deferred = $.Deferred();
+      var thisModel = this;
+      thisModel.owner.getS2Root()
+          .fail(function () {
+            deferred.reject({message: "Impossible to get the root!"});
+          })
+          .then(function (root) {
+            return root.tube_racks.create({
+              number_of_rows:    thisModel.nbOfRows,
+              number_of_columns: thisModel.nbOfColumns,
+              tubes:             thisModel.outputRack.tubes
+            });
+          })
+          .fail(function () {
+            return deferred.reject({message: "Couldn't register the new rack!"});
+          })
+          .then(function (rack) {
+            return thisModel.barcodeForOuputRack.label(rack);
+          })
+          .fail(function () {
+            return deferred.reject({message: "Couldn't label the new rack!"});
+          })
+          .then(function (rack) {
+            deferred.resolve(rack);
+          });
+      return deferred.promise();
+    },
+
+    updateRoleOnRacks: function () {
+      var deferred = $.Deferred();
+      var thisModel = this;
+      var root, ordersSortedByUUID = {};
+      thisModel.owner.getS2Root()
+          .fail(function () {
+            deferred.reject({message: "Impossible to get the root!"});
+          })
+          .then(function (result) {
+            root = result;
+
+            return $.when.apply(null, _.map(thisModel.inputRacks, function (inputRack) {
+              return inputRack.order()
+                  .fail(function () {
+                    deferred.reject({
+                      message: "Couldn't load one of the orders! Contact the administrator of the system."
+                    });
+                  })
+                  .then(function (order) {
+                    ordersSortedByUUID[order.uuid] = order; // we save orders
+                  });
+            }));
+          })
+          .fail(function () {
+            deferred.reject({
+              message: "Couldn't load the orders. Contact the administrator of the system."
+            });
+          })
+          .then(function () {
+            var rackUUIDs = _.pluck(thisModel.inputRacks, "uuid");
+            return $.when.apply(null, _.map(ordersSortedByUUID, function (order) {
+              var updateJsonPartOne = { items: {} };
+              var updateJsonPartTwo = { items: {} };
+              _.chain(order.items)
+                  .reduce(function (memo, items, role) {
+                    var validItem = _.filter(items, function (item) {
+                      return _.contains(rackUUIDs, item.uuid) && item.status === "done";
+                    });
+                    console.log(role, validItem);
+                    if (validItem.length > 0) {
+                      memo[role] = validItem;
+                    }
+                    return memo;
+                  }, {})
+                  .each(function (labwares, role) {
+                    updateJsonPartOne.items[role] = updateJsonPartOne.items[role] || {};
+                    updateJsonPartTwo.items[role] = updateJsonPartTwo.items[role] || {};
+                    _.each(labwares, function (labware) {
+                      updateJsonPartOne.items[role][labware.uuid] = { event: "unuse" };
+                    });
+                    updateJsonPartOne.items[role][thisModel.outputRack.uuid] = { event: "start" };
+                    updateJsonPartTwo.items[role][thisModel.outputRack.uuid] = { event: "complete" };
+                  }).value();
+              return order.update(updateJsonPartOne).
+                  fail(function () {
+                    deferred.reject({
+                      message: "Couldn't start the role on the output rack. Contact the administrators."
+                    });
+                  }).then(function (order) {
+                    return order.update(updateJsonPartTwo)
+                  }).fail(function () {
+                    deferred.reject({
+                      message: "Couldn't complete the role on the output rack! Contact the administrator of the system."
+                    });
+                  });
+            }));
+          }).fail(function () {
+            deferred.reject({
+              message: "An error occured during the transfer process! Contact the administrator of the system."
+            });
+          }).then(function () {
+            deferred.resolve(thisModel);
+          });
+      return deferred.promise();
+
+    },
+
+    printRackBarcode: function (printerName) {
+      var thisModel = this;
+      var root;
+      return thisModel.owner.getS2Root()
+          .then(function (result) {
+            root = result;
+            return root.barcodes.create({
+              labware:  thisModel.outputModelType.singularize(),
+              contents: thisModel.contentType,
+              role:     thisModel.purpose
+            });
+          })
+          .then(function (barcode) {
+            thisModel.barcodeForOuputRack = barcode;
             var dummy_rack = {
-              returnPrintDetails:function() {
+              returnPrintDetails: function () {
                 var label = {
-                  template: model.outputModelType.singularize()
+                  template: thisModel.outputModelType.singularize()
                 };
-
-                label[model.outputModelType.singularize()] = {
-                  ean13:      model.barcodeForOuputRack.ean13,
-                  sanger:     model.barcodeForOuputRack.sanger,
-                  label_text: model.purpose
+                label[thisModel.outputModelType.singularize()] = {
+                  ean13:      thisModel.barcodeForOuputRack.ean13,
+                  sanger:     thisModel.barcodeForOuputRack.sanger,
+                  label_text: thisModel.purpose
                 };
-
                 return label;
               }
             };
-            return model.printBarcodes([dummy_rack], printerName);
+            return thisModel.printBarcodes([dummy_rack], printerName);
           });
-
-//        return Operations.registerLabware(
-//            root['tube_racks'],
-//            model.contentType,
-//            model.purpose,
-//            {
-//              number_of_rows:    model.nbOfRows,
-//              number_of_columns: model.nbOfColumns
-////              tubes:             model.preparedTransferData
-//            });
-//      }).then(function (state) {
-//            model.cache.push(state.labware);
-//            model.owner.childDone(model, 'outputsReady', {});
-//            return state.labware;
-//          }).then(function (rack) {
-//            return rack;
-//          }).fail(function () {
-//            $('body').trigger('s2.status.error', "Impossible to create the rack.");
-//          });
     }
 
 
