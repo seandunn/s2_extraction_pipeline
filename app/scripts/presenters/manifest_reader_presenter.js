@@ -40,17 +40,6 @@ define(['config'
       this.fileNameSpanSelection = html.find('.filenameSpan');
       this.hiddenFileInputSelection = html.find('.hiddenFileInput');
       this.orderMakerSelection = html.find(".orderMaker");
-      this.barcodeReaderSelection = html.find("#barcodeReader");
-
-      var scanBarcodePresenter = this.factory.create('scan_barcode_presenter', this).init({type: "labware"});
-
-      this.barcodeReaderSelection.append(
-          this.bindReturnKey(scanBarcodePresenter.renderView(),
-              labwareCallback,
-              barcodeErrorCallback('Barcode must be a 13 digit number.'),
-              validation)
-      );
-      this.barcodeReaderSelection.hide();
 
       this.enableDropzone();
       this.registerBtnSelection.hide().click(onRegistrationButtonClickEventHandler(this));
@@ -61,35 +50,6 @@ define(['config'
       }
 
       return html;
-
-      function barcodeErrorCallback(errorText) {
-        var errorHtml = function (errorText) {
-          return $("<h4/>", {class: "alert-heading", text: errorText});
-        };
-        return function (event, template, presenter) {
-          thisPresenter.message('error', errorText);
-          template
-            .find('input')
-            .val(''); // clear the input
-        };
-      }
-
-      function labwareCallback(event, template, presenter) {
-        template.find('.alert-error').addClass('hide');
-        thisPresenter.labwareScannedHandler(Util.pad(event.currentTarget.value));
-        thisPresenter.barcodeReaderSelection.find('input').val(''); // clear the input
-      }
-
-      function validation(element, callback, errorCallback) {
-        return function (event) {
-          if (event.which !== 13) return;
-          if (event.currentTarget.value.length === 13) {
-            callback(event, element, thisPresenter);
-          } else {
-            errorCallback(event, element, thisPresenter);
-          }
-        }
-      }
     },
 
     subscribeToPubSubEvents: function () {
@@ -194,7 +154,6 @@ define(['config'
           .then(function (model) {
             thisPresenter.registerBtnSelection.show();
             thisPresenter.createSamplesView(model);
-            thisPresenter.barcodeReaderSelection.show();
             thisPresenter.hiddenFileInputSelection.attr('disabled', 'disabled');
 //            thisPresenter.barcodeReaderSelection.find('.barcodeInput').focus(); // does not work!!??
             thisPresenter.view.trigger("s2.busybox.end_process");
@@ -276,9 +235,9 @@ define(['config'
             return $(this).data('name_of_column')==='_SELECTED';
           })
           .on("click", function (event) {
-            disableRow($(event.target).closest('tr'));
+            toggleRowEnabled($(event.target).closest('tr'));
           });
-      disableRow(this.orderMakerSelection.find("tr"));
+      enableRow(this.orderMakerSelection.find("tr"));
       this.orderMakerSelection.show();
     },
 
@@ -286,16 +245,6 @@ define(['config'
       this.orderMakerSelection.empty();
     },
 
-    labwareScannedHandler: function (barcode) {
-      var tr = this.orderMakerSelection.find('table td span').filter(function () {
-        return $.trim($(this).text()).toUpperCase() === barcode.toUpperCase();
-      }).closest("tr");
-      if(tr.length === 0){
-        this.message('error', "Barcode not found");
-      } else {
-        enableRow(tr);
-      }
-    },
 
     // register btn
 
@@ -359,7 +308,7 @@ define(['config'
 
   function disableRow(tr) {
     tr.find("select").attr("disabled", true);
-    tr.find("input").prop('checked', false).attr("disabled", true);
+    tr.find("input").prop('checked', false);
     tr.addClass("disabledRow").removeClass("selectedRow");
   }
 
@@ -367,6 +316,16 @@ define(['config'
     tr.find("select").attr("disabled", false);
     tr.find("input").prop('checked', true).attr("disabled", false);
     tr.addClass("selectedRow").removeClass("disabledRow");
+  }
+
+  function toggleRowEnabled(tr) {
+    var currentlyDisabled = tr.find("select").attr("disabled");
+    if (currentlyDisabled) {
+      enableRow(tr);
+    }
+    else {
+      disableRow(tr);
+    }
   }
 
 });
