@@ -18,6 +18,7 @@ define([
   // Presenters that add extra behaviour, for some reason
   'extraction_pipeline/presenters/kit_presenter',
   'extraction_pipeline/presenters/rack_scan_presenter',
+  'extraction_pipeline/presenters/reracking_presenter',
   'extraction_pipeline/presenters/selection_page_presenter',
   'extraction_pipeline/default/default_presenter',
   'extraction_pipeline/presenters/volume_control_presenter',

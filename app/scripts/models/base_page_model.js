@@ -18,10 +18,10 @@ define([
             _.bind(findByUuid, model, uuid)
           );
         },
-        fetchResourcePromiseFromBarcode:function (barcode) {
+        fetchResourcePromiseFromBarcode:function (barcode, labwareModel) {
           return this.get(
             function(r) { return r.labels && r.labels.barcode.value === barcode; },
-            _.bind(findByBarcode, model, barcode)
+            _.bind(findByBarcode(labwareModel), model, barcode)
           );
         }
       });
@@ -63,7 +63,9 @@ define([
     });
   }
 
-  function findByBarcode(barcode) {
+  function findByBarcode(labwareModel) {
+    labwareModel = labwareModel || "tubes";
+   return function (barcode) {
     // a bit horrible, but it works for now.
     // because of the nature of the promise, we can NOT chain them
     // indeed, if one of the search fails (as in empty), the whole chain
@@ -80,7 +82,7 @@ define([
         .then(function (result) {
           root = result;
           var labware;
-          root.tubes.findByEan13Barcode(barcode)
+          root[labwareModel].findByEan13Barcode(barcode)
               .then(function (result) {
                 labware = result;
                 return deferred.resolve(result);
@@ -98,5 +100,6 @@ define([
         });
 
     return deferred.promise();
+   }
   }
 });

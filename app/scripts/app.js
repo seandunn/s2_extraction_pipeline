@@ -29,7 +29,7 @@ define([ 'config'
       app.addEventHandlers();
     } else {
       console.log('#content control class missing from web page.')
-    };
+    }
 
   };
 

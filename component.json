@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "dependencies": {
     "jquery": "~1.9.1",
+    "jquery-ui": "~1.9.1",
     "jquery-csv": "https://code.google.com/p/jquery-csv.git",
     "d3": "~3.0.6",
     "requirejs": "~2.1.4",

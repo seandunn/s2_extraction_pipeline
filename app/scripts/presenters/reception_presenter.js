@@ -26,6 +26,7 @@ define(['config'
 
       this.manifestMakerComponent = {};
       this.manifestReaderComponent = {};
+      this.rerackingComponent = {};
       this.homeComponent = {};
 
       this.view = this.createHtml();
@@ -34,6 +35,8 @@ define(['config'
       this.manifestMakerComponent.selection.append(this.manifestMakerComponent.presenter.view);
       $.extend(this.manifestReaderComponent,{presenter:this.factory.create('manifest_reader_presenter', this, config)});
       this.manifestReaderComponent.selection.append(this.manifestReaderComponent.presenter.view);
+      $.extend(this.rerackingComponent,{presenter:this.factory.create('reracking_presenter', this, config)});
+      this.rerackingComponent.selection.append(this.rerackingComponent.presenter.view);
 
       this.currentComponent = this.homeComponent;
 
@@ -48,17 +51,20 @@ define(['config'
       this.backButtonSelection = html.find("#back-button");
       this.manifestMakerBtnSelection = html.find("#create-manifest-btn");
       this.manifestReaderBtnSelection = html.find("#read-manifest-btn");
+      this.rerackingBtnSelection = html.find("#reracking-btn");
       this.userReaderSelection = html.find("#userReader");
       this.userValidationSelection = html.find("#userValidation");
       this.componentChoiceSelection = html.find('#choice');
 
       $.extend(this.manifestMakerComponent,{selection: html.find(".manifest-maker")});
       $.extend(this.manifestReaderComponent,{selection: html.find(".manifest-reader")});
+      $.extend(this.rerackingComponent,{selection: html.find(".reracking")});
       $.extend(this.homeComponent,{selection: html.find("#homePage")});
 
       this.backButtonSelection.click(this.goBack());
       this.manifestReaderBtnSelection.click(this.goForward(this.manifestReaderComponent));
       this.manifestMakerBtnSelection.click(this.goForward(this.manifestMakerComponent));
+      this.rerackingBtnSelection.click(this.goForward(this.rerackingComponent));
 
       this.userReaderSelection.append(
         this.bindReturnKey(userBCSubPresenter.renderView(),
