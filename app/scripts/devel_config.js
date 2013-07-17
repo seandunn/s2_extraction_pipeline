@@ -29,10 +29,8 @@ define(['mapper_test/test_config'
   config.loadTestData(json);
   config.cummulativeLoadingTestDataInFirstStage(root);
   config.UserData = {
-    "0000000000001":"Hopper",
-    "0000000000002":"Hockney",
-    "0000000000003":"Hodgkins",
-    "0000000000004":"Hofer"
+    "0000000000001":"TEST_USER_1",
+    "0000000000002":"TEST_USER_2",
   };
   return config;
 });
