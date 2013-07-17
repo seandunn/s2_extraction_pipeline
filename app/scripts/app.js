@@ -27,6 +27,14 @@ define([ 'config'
         return $('#alertContainer');
       });
       app.addEventHandlers();
+    } else if ($('#content.extraction-reracking').length > 0) {
+      var configuration = { printerList: config.printers };
+      var extractionPresenter = app.presenterFactory.create('extraction_presenter', app, configuration);
+      $("#content").append(extractionPresenter.view);
+      alerts.setupPlaceholder(function () {
+        return $('#alertContainer');
+      });
+      app.addEventHandlers();
     } else {
       console.log('#content control class missing from web page.')
     }

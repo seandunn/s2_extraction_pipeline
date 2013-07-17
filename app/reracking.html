@@ -13,12 +13,19 @@
 </head>
 <body>
 <header>
-    <img id="sanger-logo" class="pull-left" src="images/sanger-logo.png"/>
-    <h1 id="title-text" class="pull-right">S2 Reracking Module</h1>
-</header>
+    <div style="overflow: hidden">
+        <img id="sanger-logo" class="pull-left" src="images/sanger-logo.png"/>
+        <h1 id="title-text" class="pull-right">S2 Extraction Pipeline</h1>
+    </div>
+    <div class="dropdown pull-right">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Lab Activities</a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <li><a href="index.html">Extraction</a></li>
+        </ul>
+    </div></header>
 
 <div id="alertContainer" class="container"></div>
-<div id="content" class="sample-reception container clear-top"></div>
+<div id="content" class="extraction-reracking container clear-top"></div>
 
 <p class="navbar navbar-fixed-bottom">Release: <span id="release">unknown</span> - S2 Server: <span id="server-url">unknown</span></p>
 <script>window.jQuery || document.write('<script src="components/jquery/jquery.min.js"><\/script>')</script>
@@ -43,9 +50,7 @@
 <!-- endbuild -->
 
 <!-- build:js scripts/amd-app.js -->
-<script data-main="scripts/reracking" src="scripts/vendor/require.js"></script>
-<script src="evil.js"></script>
-<script>action_rerack()</script>
+<script data-main="scripts/main" src="scripts/vendor/require.js"></script>
 <!-- endbuild -->
 </body>
 </html>
