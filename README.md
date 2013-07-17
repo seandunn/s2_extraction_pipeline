@@ -1,14 +1,7 @@
-How to use components
+S2 Extraction Pipeline
+----------------------
 
-Selection Page
---------------
+**The s2_extraction_pipeline** is a client side Javascript application which serves as a front-end to S2 (a LIMS). This application guides a user along a defined laboratory process, where barcodes of various pieces of laboratory equipment are scanned and tracked.
 
-This component allows the barcodes of new tubes to be scanned. It should be created with a seed model, which should contain just a user id and a batch number. The batch number should be undefined.
+**To find out more, please check out the [s2_extraction_pipeline wiki](https://github.com/sanger/s2_extraction_pipeline/wiki).**
 
-The selection page will pass a 'done' message to it's parent if a user clicks on the 'next' button on the page.
-
-
-Presenters
-----------
-
-For information about the presenters, see the readme located in the app folder.
