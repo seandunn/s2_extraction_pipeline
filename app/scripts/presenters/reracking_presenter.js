@@ -35,7 +35,6 @@ define(['config'
     createHtml: function (templateData) {
       var thisPresenter = this;
       var html = $(_.template(componentPartialHtml)(templateData));
-
       this.outputSelection = html.find('#output');
       this.accordionSelection = html.find('#accordion');
       this.dropzoneSelection = html.find('.dropzone');
@@ -48,7 +47,6 @@ define(['config'
       this.rackListSelection = html.find('#rack-list');
       this.barcodeReaderSelection = html.find("#barcodeReader");
       var scanBarcodePresenter = this.factory.create('scan_barcode_presenter', this).init({type: "labware"});
-
       this.barcodeReaderSelection.append(
           this.bindReturnKey(scanBarcodePresenter.renderView(),
               labwareCallback,
@@ -60,64 +58,32 @@ define(['config'
       this.outputSelection.hide();
       this.startRerackingBtnSelection.hide();
       this.printRerackBtnSelection.hide();
-
       this.accordionSelection.find("h3:nth(1)").hide();
       this.accordionSelection.find("h3:nth(2)").hide();
       this.accordionSelection.accordion({
         collapsible: true,
         heightStyle: "content"
       });
-
-
-//      this.barcodeReaderSelection.hide();
-
-//      this.generateManifestBtnSelection = html.find("#generateManifest");
-//      this.downloadManifestBtnSelection = html.find("#downloadManifest");
-//      this.printBCBtnSelection = html.find("#printBC");
-//      this.templateSelectSelection = html.find("#xls-templates");
-//      this.printBoxSelection = html.find(".printer-div");
-//
       this.printRerackBtnSelection.click(onPrintRerackingEventHandler(thisPresenter));
+      this.rerackingBtnSelection.click(onRerackingEventHandler(thisPresenter));
+      this.startRerackingBtnSelection.click(onStartRerackingEventHandler(thisPresenter));
+      return html;
+
       function onPrintRerackingEventHandler(presenter) {
         return function () {
           presenter.onPrintBarcode();
         }
       }
-
-      this.rerackingBtnSelection.click(onRerackingEventHandler(thisPresenter));
       function onRerackingEventHandler(presenter) {
         return function () {
           presenter.onReracking();
         }
       }
-
-      this.startRerackingBtnSelection.click(onStartRerackingEventHandler(thisPresenter));
       function onStartRerackingEventHandler(presenter) {
         return function () {
           presenter.onStartReracking();
         }
       }
-
-//
-//      this.downloadManifestBtnSelection.hide().click(onDownloadManifestEventHandler(thisPresenter));
-//      function onDownloadManifestEventHandler(presenter){ return function(){ presenter.onDownloadManifest(); } }
-//
-//      this.printBCBtnSelection.click(onPrintBarcodeEventHandler(thisPresenter));
-//      function onPrintBarcodeEventHandler(presenter){ return function(){ presenter.onPrintBarcode(); } }
-//
-//      this.printBoxSelection.hide();
-//
-//      this.templateSelectSelection.change(onChangeTemplateEventHandler(thisPresenter));
-//      function onChangeTemplateEventHandler(presenter){ return function(event){ presenter.onChangeTemplate(event); } }
-//
-//      html.find("#number-of-sample").bind("keypress",function(event){
-//            if (event.which !== 13) return;
-//            onGenerateManifestEventHandler(thisPresenter)();
-//          }
-//      );
-//
-      return html;
-
       function barcodeErrorCallback(errorText) {
         var errorHtml = function (errorText) {
           return $("<h4/>", {class: "alert-heading", text: errorText});

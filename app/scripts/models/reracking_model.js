@@ -151,7 +151,6 @@ define([
               })) {
                 return searchDeferred.reject({message: "Some tubes in the this rack were not present in the source racks!"});
               }
-
               return searchDeferred.resolve(inputTubes);
             });
         return searchDeferred.promise();
@@ -161,7 +160,6 @@ define([
     rerack: function () {
       var deferred = $.Deferred();
       var thisModel = this;
-      var root;
       thisModel.registerNewRack()
           .fail(function (message) {
             return deferred.reject(message);
@@ -171,7 +169,6 @@ define([
             deferred.resolve(thisModel);
             return thisModel.updateRoleOnRacks();
           });
-
       return deferred.promise();
     },
 
@@ -193,6 +190,7 @@ define([
             return deferred.reject({message: "Couldn't register the new rack!"});
           })
           .then(function (rack) {
+            // we use the barcode we created....
             return thisModel.barcodeForOuputRack.label(rack);
           })
           .fail(function () {
@@ -214,7 +212,7 @@ define([
           })
           .then(function (result) {
             root = result;
-
+            // get the orders
             return $.when.apply(null, _.map(thisModel.inputRacks, function (inputRack) {
               return inputRack.order()
                   .fail(function () {
@@ -235,14 +233,16 @@ define([
           .then(function () {
             var rackUUIDs = _.pluck(thisModel.inputRacks, "uuid");
             return $.when.apply(null, _.map(ordersSortedByUUID, function (order) {
-              var updateJsonPartOne = { items: {} };
-              var updateJsonPartTwo = { items: {} };
+
+              // for each order
+              // we prepare the updates
+              var updateJsonPartOne = { items: {} }; // unuse the roles of input rack, and start the output role on output rack
+              var updateJsonPartTwo = { items: {} }; // complete the role on output rack
               _.chain(order.items)
                   .reduce(function (memo, items, role) {
                     var validItem = _.filter(items, function (item) {
                       return _.contains(rackUUIDs, item.uuid) && item.status === "done";
                     });
-                    console.log(role, validItem);
                     if (validItem.length > 0) {
                       memo[role] = validItem;
                     }
@@ -257,6 +257,7 @@ define([
                     updateJsonPartOne.items[role][thisModel.outputRack.uuid] = { event: "start" };
                     updateJsonPartTwo.items[role][thisModel.outputRack.uuid] = { event: "complete" };
                   }).value();
+              // we make the two successive updates
               return order.update(updateJsonPartOne).
                   fail(function () {
                     deferred.reject({
@@ -284,6 +285,7 @@ define([
     printRackBarcode: function (printerName) {
       var thisModel = this;
       var root;
+      // we create the barcode before we have a labware
       return thisModel.owner.getS2Root()
           .then(function (result) {
             root = result;
