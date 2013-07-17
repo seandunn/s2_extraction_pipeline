@@ -5,7 +5,6 @@ require.config({
   baseUrl:'.',
 
   paths:{
-    d3:                 'components/d3/',
     text:               'components/requirejs-text/text',
     domReady:           'components/requirejs-domready/domReady',
     labware:            'components/labware/app/scripts',
