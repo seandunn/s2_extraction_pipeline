@@ -1,19 +1,19 @@
 define(['config'
   , 'extraction_pipeline/presenters/base_presenter'
   , 'text!extraction_pipeline/html_partials/extraction_partial.html'
-  , 'extraction_pipeline/models/extraction_model'
+  , 'extraction_pipeline/models/lab_activities_model'
   , 'extraction_pipeline/lib/util'
   , 'extraction_pipeline/lib/pubsub'
 ], function (config, BasePresenter, extractionPartialHtml, Model, Util,  PubSub) {
   'use strict';
 
-  var ExtractionPresenter = Object.create(BasePresenter);
+  var LabActivitiesPresenter = Object.create(BasePresenter);
 
-  $.extend(ExtractionPresenter, {
+  $.extend(LabActivitiesPresenter, {
     register: function (callback) {
-      callback('extraction_presenter', function () {
-        var instance = Object.create(ExtractionPresenter);
-        ExtractionPresenter.init.apply(instance, arguments);
+      callback('lab_activities_presenter', function () {
+        var instance = Object.create(LabActivitiesPresenter);
+        LabActivitiesPresenter.init.apply(instance, arguments);
         return instance;
       });
     },
@@ -160,6 +160,6 @@ define(['config'
     }
   }
 
-  return ExtractionPresenter;
+  return LabActivitiesPresenter;
 });
 

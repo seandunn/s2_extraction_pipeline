@@ -4,9 +4,9 @@ define([
 ], function (config, BasePageModel) {
   'use strict';
 
-  var ExtractionModel = Object.create(BasePageModel);
+  var LabActivitiesModel = Object.create(BasePageModel);
 
-  $.extend(ExtractionModel, {
+  $.extend(LabActivitiesModel, {
     init:function (owner) {
       this.owner = owner;
       return this;
@@ -31,6 +31,6 @@ define([
 
   });
 
-  return ExtractionModel;
+  return LabActivitiesModel;
 });
 
