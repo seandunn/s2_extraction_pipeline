@@ -22,9 +22,9 @@ define([], function() {
     // Don't change the release branch value as it's picked up by the deployment script
     release: 'development_branch',
 
-    verboseLevel: "DEBUG", // DEBUG, WARNING, ERROR, NONE
+    verboseLevel: "NONE", // DEBUG, WARNING, ERROR, NONE
 
-    withLoggingWindow: true,
+    withLoggingWindow: false,
 
     ajax: function(options) {
       return $.ajax(options)
