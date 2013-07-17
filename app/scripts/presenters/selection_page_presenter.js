@@ -16,6 +16,7 @@ define([ 'extraction_pipeline/presenters/base_presenter'
 
     init: function (owner, presenterFactory, workflowConfig) {
       this.presenterFactory = presenterFactory;
+      this.notBatched = workflowConfig.output[0].not_batched;
       this.model = Object.create(Model).init(this, workflowConfig);
       this.owner = owner;
       return this;
@@ -37,20 +38,35 @@ define([ 'extraction_pipeline/presenters/base_presenter'
 
     makeBatchHandler: function() {
       var presenter = this;
-      return function(e){
-        if(!presenter.batchCreated){
-          presenter.batchCreated = true;
-          presenter.jquerySelection().find("button.btn").attr("disabled", "disabled");
+      if (presenter.notBatched) {
+        return function (e) {
           presenter.model
+            .then(function (model) {
+              return model.changeRoleWithoutChangingBatch();
+            })
+            .fail(function (error) {
+              PubSub.publish('s2.status.error', presenter, error);
+            })
+            .then(function (model) {
+              presenter.owner.childDone(presenter, "done", {batch:null,labware:null});
+            });
+        }
+      } else {
+        return function (e) {
+          if (!presenter.batchCreated) {
+            presenter.batchCreated = true;
+            presenter.jquerySelection().find("button.btn").attr("disabled", "disabled");
+            presenter.model
               .then(function (model) {
                 return model.makeBatch()
               })
-              .fail(function(error){
+              .fail(function (error) {
                 PubSub.publish('s2.status.error', presenter, error);
               })
               .then(function (model) {
-                  presenter.owner.childDone(presenter, "done", {batch:model.batch});
+                presenter.owner.childDone(presenter, "done", {batch: model.batch});
               });
+          }
         }
       }
     },
