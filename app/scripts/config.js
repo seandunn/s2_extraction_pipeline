@@ -11,7 +11,7 @@ define([], function() {
     return {
       name: name,
       type: type,
-      friendlyName: name + ' ' + printerTypes[type],
+      friendlyName: name + ' ' + printerTypes[type]
     };
   }
 
