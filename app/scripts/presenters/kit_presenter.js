@@ -15,11 +15,11 @@ define([
       return function (event) {
         if (event.which !== 13) return;
 
-        var value = event.currentTarget.value;
+        var value = Util.pad(event.currentTarget.value, 22);
         var barcodeSelection = $(event.currentTarget);
         setScannerTimeout(barcodeSelection);
 
-        if (BarcodeChecker.isKitBarcodeValid(Util.pad(value, 22))) {
+        if (BarcodeChecker.isKitBarcodeValid(value)) {
           callback(value, element, presenter);
         } else {
           errorCallback(value, element, presenter);
@@ -32,7 +32,7 @@ define([
     return function (value, template, presenter) {
       presenter.model
           .then(function(model){
-            return model.setKitFromBarcode(Util.pad(value, 22));
+            return model.setKitFromBarcode(value);
           })
           .fail(function (error) {
             PubSub.publish('s2.status.error', presenter, error);
