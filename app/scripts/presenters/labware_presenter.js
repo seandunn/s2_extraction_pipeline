@@ -4,8 +4,7 @@ define(['config'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/barcode_checker'
   , 'extraction_pipeline/lib/util'
-  , 'extraction_pipeline/lib/pubsub'
-], function (config, BasePresenter, LabwareView, PubSub, BarcodeChecker, Util, PubSub) {
+], function (config, BasePresenter, LabwareView, PubSub, BarcodeChecker, Util) {
 
   var defaultTitles = {
     tube: 'Tube',
@@ -122,14 +121,14 @@ define(['config'
       }
 
       if (this.barcodeInputPresenter) {
-        var labwareCallback = function(event, template, presenter){
+        var labwareCallback = function(value, template, presenter){
           presenter.owner.childDone(presenter, 'barcodeScanned', {
             modelName: presenter.labwareModel.expected_type.pluralize(),
-            BC:        Util.pad(event.currentTarget.value)
+            BC:        Util.pad(value)
           });
           PubSub.publish("s2.labware.barcode_scanned", presenter, {
             modelName: presenter.labwareModel.expected_type.pluralize(),
-            BC:        Util.pad(event.currentTarget.value)
+            BC:        Util.pad(value)
           });
         };
         this.jquerySelection().append(
@@ -229,9 +228,18 @@ define(['config'
   }
 
   function barcodeErrorCallback(errorText){
-    return function(event, template, presenter){
+    return function(value, template, presenter){
       PubSub.publish('s2.status.error', presenter, {message: errorText});
     };
+  }
+
+  // sets a timeout after which the input is cleared
+  // this happens so that if many scans are made in a short time,
+  // unwanted calls won't go through
+  function setScannedTimeout (barcodeSelection) {
+    setTimeout(function () {
+      barcodeSelection.val("");
+    }, 250);
   }
 
   function validationOnReturnKeyCallback (presenter, type, barcodePrefixes) {
@@ -250,10 +258,14 @@ define(['config'
       return function (event) {
         if (event.which !== 13) return;
 
-        if (validationCallBack(Util.pad(event.currentTarget.value),barcodePrefixes)) {
-          callback(event, element, presenter);
+        var value = event.currentTarget.value;
+        var barcodeSelection = $(event.currentTarget);
+        
+        setScannedTimeout(barcodeSelection);
+        if (validationCallBack(Util.pad(value),barcodePrefixes)) {
+          callback(value, element, presenter);
         } else {
-          errorCallback(event, element, presenter);
+          errorCallback(value, element, presenter);
         }
       };
     }

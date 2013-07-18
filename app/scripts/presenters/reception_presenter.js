@@ -66,8 +66,8 @@ define(['config'
           barcodeErrorCallback("User barcode is not valid."))
       );
 
-      function userCallback(event, template, presenter){
-        var barcode = Util.pad(event.currentTarget.value);
+      function userCallback(value, template, presenter){
+        var barcode = Util.pad(value);
         presenter.model.setUserFromBarcode(barcode)
           .fail(function (error) {
             PubSub.publish('s2.status.error', presenter, error);
@@ -81,7 +81,7 @@ define(['config'
       }
 
       function barcodeErrorCallback(errorText){
-        return function(event, template, presenter){
+        return function(value, template, presenter){
           PubSub.publish('s2.status.error', this, {message: errorText});
         };
       }

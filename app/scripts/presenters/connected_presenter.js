@@ -134,8 +134,6 @@ define([
         this.model.ready = true;
         this.setupSubPresenters(true);
         PubSub.publish('s2.step_presenter.printing_finished', this);
-        this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
-
 
       } else if (action === "barcodePrintSuccess") {
 

@@ -5,8 +5,7 @@ define(['config'
   , 'extraction_pipeline/models/manifest_reader_model'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/reception_templates'
-  , 'extraction_pipeline/lib/util'
-], function (config, BasePresenter, componentPartialHtml, sampleRowPartial, Model, PubSub, ReceptionTemplates, Util) {
+], function (config, BasePresenter, componentPartialHtml, sampleRowPartial, Model, PubSub, ReceptionTemplates) {
   'use strict';
 
   var Presenter = Object.create(BasePresenter);
@@ -31,7 +30,6 @@ define(['config'
     },
 
     createHtml: function (templateData) {
-      var thisPresenter = this;
       var html = $(_.template(componentPartialHtml)(templateData));
       // saves the selection for performances
       this.dropzoneSelection = html.find('.dropzone');
@@ -170,7 +168,6 @@ define(['config'
       var headers = _.map(model.samplesForDisplay[0], function (column) {
           var columnKey = Object.keys(column)[0];
           var content = column[columnKey];
-          var columnName, cellContent;
           if ($.isPlainObject(content)) {
             return content.friendlyName || columnKey;
           } else {
@@ -250,6 +247,12 @@ define(['config'
 
     onRegisterButtonClick: function () {
       var thisPresenter = this;
+
+      // prevent user from clicking multiple times
+      if (this.registerBtnClicked) return;
+      this.registerBtnClicked = true;
+      this.registerBtnSelection.attr('disabled', 'disabled');
+
       this.model
           .then(function (model) {
             thisPresenter.view.trigger("s2.busybox.start_process");
@@ -276,6 +279,8 @@ define(['config'
           })
           .fail(function (error) {
             thisPresenter.view.trigger("s2.busybox.end_process");
+            thisPresenter.registerBtnClicked = false;
+            thisPresenter.registerBtnSelection.removeAttr('disabled');
             return thisPresenter.message('error', 'Something wrong happened : ' + error.message);
           })
           .then(function (model) {
