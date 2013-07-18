@@ -133,10 +133,11 @@ define([
         var index = _.indexOf(this.presenters, child);
         if (index !== -1) {
           var activeSubPresenter = presenter.presenters[index + 1] || {
-            previousDone: function () {
+            config:           {defaultPrinter: null},
+            previousDone:     function () {
               presenter.owner.childDone.apply(presenter.owner, arguments);
             },
-            initialPresenter: function() {
+            initialPresenter: function () {
               // Ignore this!
             }
           };

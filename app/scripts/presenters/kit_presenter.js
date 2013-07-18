@@ -40,8 +40,8 @@ define([
           .then(function(model){
             PubSub.publish('s2.status.message', presenter, {message:'Kit details validated/saved'});
             PubSub.publish("s2.step_presenter.next_process", presenter, {batch: model.batch});
-          })
-      ;
+            presenter.selector().find('.barcodeInput').attr("disabled", "disabled");
+          });
     }
   }
 
