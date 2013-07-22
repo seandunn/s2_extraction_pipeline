@@ -37,7 +37,7 @@ define([
             PubSub.publish('s2.status.error', thisPresenter, error);
             thisPresenter.jquerySelection().trigger("s2.busybox.end_process");
           }).then(function(){
-            thisPresenter.jquerySelection().html(thisPresenter.template());
+            thisPresenter.jquerySelection().html(thisPresenter.template({nbRow:12}));
             thisPresenter.setupSubPresenters();
           });
       return this;
