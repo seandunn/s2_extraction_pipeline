@@ -23,6 +23,7 @@ define(['config'
       this.owner = owner;
       this.config = config;
       this.model = Object.create(Model).init(this, config);
+      this.buttonClickedFlags = {};
       this.view = this.createHtml({
         templates:ReceptionTemplates.templateList,
         studies:ReceptionStudies.studyList,
@@ -96,6 +97,10 @@ define(['config'
     },
 
     onPrintBarcode: function () {
+      this.printBCBtnSelection.attr("disabled", "disabled");
+      if (this.buttonClickedFlags.print) return;
+      this.buttonClickedFlags.print = true;
+
       var thisPresenter = this;
       this.model
           .then(function (model) {
@@ -126,6 +131,10 @@ define(['config'
 
     onGenerateManifest: function () {
       var thisPresenter = this;
+      thisPresenter.generateManifestBtnSelection.attr("disabled", "disabled");
+      if (thisPresenter.buttonClickedFlags.generate) return;
+      thisPresenter.buttonClickedFlags.generate = true;
+
       var numberValid = /^[1-9]\d*$/.exec(this.view.find('#number-of-sample').val()) !== null;
       if (!numberValid) {
         this.message('error', 'The number of sample is not valid.');
@@ -149,7 +158,7 @@ define(['config'
               thisPresenter.printBoxSelection.show();
               thisPresenter.view.trigger("s2.busybox.end_process");
               return thisPresenter.message('success','Samples generated. The manifest is ready for download, and the barcodes ready for printing.');
-            })
+            });
       }
     },
 

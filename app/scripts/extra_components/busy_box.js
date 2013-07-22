@@ -63,12 +63,15 @@ define([
             busy.find('.busyBox').css('top', (h/2 - 40) + "px");
 
 
-            busy.find('.busyBoxMask').css('width', w + "px");
-            busy.find('.busyBoxMask').css('height', (h) + "px");
-
+            busy.find('.busyBoxMask')
+                .css('width', w + "px")
+                .css('height', (h) + "px")
+                .click(function(event){
+                  event.preventDefault();
+                  event.stopPropagation();
+                });
             var detachedTarget = target.detach();
             busy.find('.innerElement').append(detachedTarget);
-
             var spinner = new Spinner(opts);
             spinner.spin(busy.find('.busySpin').get(0));
           }

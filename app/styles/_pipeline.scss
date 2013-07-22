@@ -10,10 +10,6 @@ body, html {
   height: 100%;
 }
 
-#content {
-  height: 100%;
-}
-
 ol.labware {
   font-size: 24px;
   list-style-position: inside;
@@ -331,4 +327,29 @@ div.number-of-samples-box {
 
 #generateManifest {
   display: block;
+}
+
+#logger-window{
+  display: none;
+  border:1px solid grey;
+  position: fixed;
+  height:500px;
+  left:1%;
+  width:98%;
+  bottom:15px;
+  z-index: 9000;
+  .title {
+    padding:10px;
+    font-size: 1.2em;
+    background: #808080;
+    color:#ffffff;
+    height:20px
+  }
+  pre.prettyprint {
+    background: #e3e3e3;
+    font-size: 0.8em;
+    z-index: 9001;
+    overflow:scroll;
+    height:440px;
+  }
 }

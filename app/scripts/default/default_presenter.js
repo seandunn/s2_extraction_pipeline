@@ -7,8 +7,8 @@ define(['config'
 ], function (config, BasePresenter, defaultPagePartialHtml, Model, Util, PubSub) {
   'use strict';
 
-  var userCallback = function(event, template, presenter){
-    var barcode = Util.pad(event.currentTarget.value);
+  var userCallback = function(value, template, presenter){
+    var barcode = Util.pad(value);
     presenter.model.setUserFromBarcode(barcode)
         .fail(function (error) {
           PubSub.publish('s2.status.error', presenter, error);
@@ -24,15 +24,15 @@ define(['config'
   };
 
   var barcodeErrorCallback = function(errorText){
-    return function(event, template, presenter){
+    return function(value, template, presenter){
       PubSub.publish('s2.status.error', this, {message: errorText});
     };
   };
 
-  var labwareCallback = function(event, template, presenter){
+  var labwareCallback = function(value, template, presenter){
     template.find("input").attr('disabled', true);
     template.find('.alert-error').addClass('hide');
-    presenter.model.setLabwareFromBarcode(Util.pad(event.currentTarget.value))
+    presenter.model.setLabwareFromBarcode(Util.pad(value))
         .fail(function (error) {
           PubSub.publish('s2.status.error', presenter, error);
         })

@@ -11,7 +11,7 @@ define([], function() {
     return {
       name: name,
       type: type,
-      friendlyName: name + ' ' + printerTypes[type],
+      friendlyName: name + ' ' + printerTypes[type]
     };
   }
 
@@ -22,8 +22,18 @@ define([], function() {
     // Don't change the release branch value as it's picked up by the deployment script
     release: 'development_branch',
 
+    verboseLevel: "NONE", // DEBUG, WARNING, ERROR, NONE
+
+    withLoggingWindow: false,
+
     ajax: function(options) {
-      return $.ajax(options).then(function(result) { return {responseText:result}; });
+      return $.ajax(options)
+          .then(function(result) {
+            return {responseText:result};
+          })
+          .fail(function(){
+            throw "AJAX response (error)!";
+          })
     },
 
     // Configure the print service

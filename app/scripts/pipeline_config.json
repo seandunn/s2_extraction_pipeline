@@ -1,5 +1,12 @@
 {
   "role_priority":[
+    "samples.extraction.manual_dna_and_rna.input_tube_nap.awaiting_reception",
+    "samples.extraction.manual_dna_only.input_tube_dnap.awaiting_reception",
+    "samples.extraction.manual_rna_only.input_tube_rnap.awaiting_reception",
+    "samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception",
+    "samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception",
+    "samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception",
+
     "samples.extraction.manual_dna_and_rna.input_tube_nap",
     "samples.extraction.manual_dna_and_rna.input_tube_nap.batched",
     "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap",
@@ -47,6 +54,26 @@
   ],
 
   "workflows":[
+
+    {
+      "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_nap.awaiting_reception" ],
+      "presenterName":"selection_page_presenter",
+      "processTitle": "Manual DNA and RNA Extraction - Register Samples",
+      "capacity": 96,
+      "input":        {
+        "role":"samples.extraction.manual_dna_and_rna.input_tube_nap.awaiting_reception",
+        "model":"tubes",
+        "title": "Input tube - reception"
+      },
+      "output":       [
+        {
+          "role":       "samples.extraction.manual_dna_and_rna.input_tube_nap",
+          "aliquotType":"NA+P",
+          "title": "Input tube",
+          "not_batched":true
+        }
+      ]
+    },
 
     {
     "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_nap" ],
@@ -360,7 +387,28 @@
     ]
   },
 
-  {
+    {
+      "accepts": [ "samples.extraction.manual_dna_only.input_tube_dnap.awaiting_reception" ],
+      "presenterName":"selection_page_presenter",
+      "processTitle": "Manual DNA Only Extraction - Register Samples",
+      "capacity": 96,
+      "input":        {
+        "role":"samples.extraction.manual_dna_only.input_tube_dnap.awaiting_reception",
+        "model":"tubes",
+        "title": "Input tube - Reception"
+      },
+      "output":       [
+        {
+          "role":       "samples.extraction.manual_dna_only.input_tube_dnap",
+          "aliquotType":"DNA+P",
+          "title": "Input tube",
+          "not_batched":true
+        }
+      ]
+    },
+
+
+    {
     "accepts": [ "samples.extraction.manual_dna_only.input_tube_dnap" ],
     "presenterName":"selection_page_presenter",
     "processTitle": "Manual DNA Only Extraction",
@@ -459,6 +507,28 @@
   },
 
 
+    {
+      "accepts": [ "samples.extraction.manual_rna_only.input_tube_rnap.awaiting_reception" ],
+      "presenterName":"selection_page_presenter",
+      "processTitle": "Manual RNA Only Extraction - Register Samples",
+      "capacity": 96,
+      "input":        {
+        "role":"samples.extraction.manual_rna_only.input_tube_rnap.awaiting_reception",
+        "model":"tubes",
+        "title": "Input tube - reception"
+      },
+      "output":       [
+        {
+          "role":       "samples.extraction.manual_rna_only.input_tube_rnap",
+          "aliquotType":"RNA+P",
+          "title": "Input tube",
+          "not_batched":true
+        }
+      ]
+    },
+
+
+
   {
     "accepts": [ "samples.extraction.manual_rna_only.input_tube_rnap" ],
     "presenterName":"selection_page_presenter",
@@ -470,11 +540,31 @@
     "output":       [
       {
       "role":       "samples.extraction.manual_rna_only.input_tube_rnap.batched",
-      "aliquotType":"RNA+P"
+      "aliquotType":"NA+P"
     }
     ]
   },
 
+
+    {
+      "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception" ],
+      "presenterName":"selection_page_presenter",
+      "processTitle": "Automated DNA and RNA Extraction (QIAcube) - Register Samples",
+      "capacity": 96,
+      "input":        {
+        "role":"samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception",
+        "model":"tubes",
+        "title": "Input tube - reception"
+      },
+      "output":       [
+        {
+          "role":       "samples.extraction.qiacube_dna_and_rna.input_tube_nap",
+          "aliquotType":"NA+P",
+          "title": "Input tube",
+          "not_batched":true
+        }
+      ]
+    },
 
   {
     "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_nap" ],
@@ -678,6 +768,26 @@
   },
 
 
+    {
+      "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception" ],
+      "presenterName":"selection_page_presenter",
+      "processTitle": "Automated DNA Only Extraction (QIAcube) - Register Samples",
+      "capacity": 96,
+      "input":        {
+        "role":"samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception",
+        "model":"tubes",
+        "title": "Input tube - reception"
+      },
+      "output":       [
+        {
+          "role":       "samples.extraction.qiacube_dna_only.input_tube_dnap",
+          "aliquotType":"DNA+P",
+          "title": "Input tube",
+          "not_batched":true
+        }
+      ]
+    },
+
   {
     "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap" ],
     "presenterName":"selection_page_presenter",
@@ -740,6 +850,27 @@
     }
     ]
   },
+
+
+    {
+      "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception" ],
+      "presenterName":"selection_page_presenter",
+      "processTitle": "Automated RNA Only Extraction (QIAcube) - Register Samples",
+      "capacity": 96,
+      "input":        {
+        "role":"samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception",
+        "model":"tubes",
+        "title": "Input tube - reception"
+      },
+      "output":       [
+        {
+          "role":       "samples.extraction.qiacube_rna_only.input_tube_rnap",
+          "aliquotType":"RNA+P",
+          "title": "Input tube",
+          "not_batched":true
+        }
+      ]
+    },
 
   {
     "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap" ],

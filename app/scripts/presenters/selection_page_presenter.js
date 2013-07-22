@@ -16,6 +16,7 @@ define([ 'extraction_pipeline/presenters/base_presenter'
 
     init: function (owner, presenterFactory, workflowConfig) {
       this.presenterFactory = presenterFactory;
+      this.notBatched = workflowConfig.output[0].not_batched;
       this.model = Object.create(Model).init(this, workflowConfig);
       this.owner = owner;
       return this;
@@ -37,20 +38,35 @@ define([ 'extraction_pipeline/presenters/base_presenter'
 
     makeBatchHandler: function() {
       var presenter = this;
-      return function(e){
-        if(!presenter.batchCreated){
-          presenter.batchCreated = true;
-          presenter.jquerySelection().find("button.btn").attr("disabled", "disabled");
+      if (presenter.notBatched) {
+        return function (e) {
           presenter.model
+            .then(function (model) {
+              return model.changeRoleWithoutChangingBatch();
+            })
+            .fail(function (error) {
+              PubSub.publish('s2.status.error', presenter, error);
+            })
+            .then(function (model) {
+              presenter.owner.childDone(presenter, "done", {batch:null,labware:null});
+            });
+        }
+      } else {
+        return function (e) {
+          if (!presenter.batchCreated) {
+            presenter.batchCreated = true;
+            presenter.jquerySelection().find("button.btn").attr("disabled", "disabled");
+            presenter.model
               .then(function (model) {
                 return model.makeBatch()
               })
-              .fail(function(error){
+              .fail(function (error) {
                 PubSub.publish('s2.status.error', presenter, error);
               })
               .then(function (model) {
-                  presenter.owner.childDone(presenter, "done", {batch:model.batch});
+                presenter.owner.childDone(presenter, "done", {batch: model.batch});
               });
+          }
         }
       }
     },
@@ -58,20 +74,23 @@ define([ 'extraction_pipeline/presenters/base_presenter'
     renderView:function () {
       var template = _.template(selectionPagePartialHtml);
       var thisPresenter = this;
+      var thisModel;
       return this.model
           .then(function (model) {
-            thisPresenter.jquerySelection().html(template(model));
+            thisModel = model;
+            thisPresenter.jquerySelection().html(template(thisModel));
             thisPresenter.jquerySelection().find("button.btn").on("click", thisPresenter.makeBatchHandler());
             // render subviews...
             _.each(thisPresenter.presenters, function (presenter) {
               presenter.renderView();
             });
-            return model.inputs;
+            return thisModel.inputs;
           })
           .then(function (inputs) {
             var numTubes = inputs.length;
-
-            thisPresenter.presenters[inputs.length].barcodeFocus();
+            if (numTubes < thisModel.capacity) {
+              thisPresenter.presenters[inputs.length].barcodeFocus();
+            }
           });
     },
 
@@ -107,24 +126,24 @@ define([ 'extraction_pipeline/presenters/base_presenter'
                 title: thisModel.config.input.title
               });
             });
-
-            presenterData.push({
-              expected_type:thisModel.config.input.model.singularize(),
-              display_remove:false,
-              display_barcode:true,
-              display_labware:false,
-              title: thisModel.config.input.title
-            });
-
-            // numTubes + 1 to account for the intermediate barcode scan row
-            _(thisModel.capacity - (numTubes + 1)).times(function () {
+            var nbNoneLabwareRows = thisModel.capacity - (numTubes);
+            if (nbNoneLabwareRows > 0 ) {
               presenterData.push({
+                expected_type:thisModel.config.input.model.singularize(),
                 display_remove:false,
-                display_barcode:false,
+                display_barcode:true,
                 display_labware:false,
                 title: thisModel.config.input.title
               });
-            });
+              _(nbNoneLabwareRows-1).times(function () {
+                presenterData.push({
+                  display_remove:false,
+                  display_barcode:false,
+                  display_labware:false,
+                  title: thisModel.config.input.title
+                });
+              });
+            }
 
             _.chain(presenter.presenters).zip(presenterData).each(function (pair, index) {
               var presenter = pair[0], config = pair[1];

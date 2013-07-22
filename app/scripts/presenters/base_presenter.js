@@ -18,16 +18,26 @@ define(['config'
     bindReturnKey: function (element, successCallback, errorCallback, validationCallback) {
       var thisPresenter = this;
 
+      function setScannerTimeout(barcodeSelection){
+        setTimeout(function () {
+          barcodeSelection.val('');
+        }, 250);
+      }
+
       var validation = validationCallback || function (element, callback, errorCallback) {
         return function (event) {
           if (event.which !== 13) return;
 
+          var value = event.currentTarget.value;
+          var barcodeSelection = $(event.currentTarget);
+          setScannerTimeout(barcodeSelection);
+
           if (_.some(BarcodeChecker, function (validationCallback) {
-            return validationCallback(Util.pad(event.currentTarget.value));
+            return validationCallback(Util.pad(value));
           })) {
-            callback(event, element, thisPresenter);
+            callback(value, element, thisPresenter);
           } else {
-            errorCallback(event, element, thisPresenter);
+            errorCallback(value, element, thisPresenter);
           }
         }
       };

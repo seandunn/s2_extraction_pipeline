@@ -37,7 +37,7 @@ define([
             PubSub.publish('s2.status.error', thisPresenter, error);
             thisPresenter.jquerySelection().trigger("s2.busybox.end_process");
           }).then(function(){
-            thisPresenter.jquerySelection().html(thisPresenter.template());
+            thisPresenter.jquerySelection().html(thisPresenter.template({nbRow:12}));
             thisPresenter.setupSubPresenters();
           });
       return this;
@@ -134,8 +134,6 @@ define([
         this.model.ready = true;
         this.setupSubPresenters(true);
         PubSub.publish('s2.step_presenter.printing_finished', this);
-        this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
-
 
       } else if (action === "barcodePrintSuccess") {
 
