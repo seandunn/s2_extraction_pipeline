@@ -1,5 +1,5 @@
 define([
-  'extraction_pipeline/presenters/base_presenter',
+  'extraction_pipeline/controllers/base_controller',
   'extraction_pipeline/views/rack_scan_view',
   'extraction_pipeline/models/rack_scan_model',
   'extraction_pipeline/models/volume_check_model',
@@ -11,13 +11,13 @@ define([
     VolumeCheckModel: VolumeCheckModel
   };
 
-  var Presenter = Object.create(Base);
+  var Controller = Object.create(Base);
 
-  _.extend(Presenter, {
+  _.extend(Controller, {
     register: function (callback) {
-      callback('rack_scan_presenter', function () {
-        var instance = Object.create(Presenter);
-        Presenter.init.apply(instance, arguments);
+      callback('rack_scan_controller', function () {
+        var instance = Object.create(Controller);
+        Controller.init.apply(instance, arguments);
         return instance;
       });
     },
@@ -25,34 +25,34 @@ define([
     init: function (owner, factory, config) {
       this.owner = owner;
       this.config = config;
-      this.presenterFactory = factory;
+      this.controllerFactory = factory;
       this.model = Object.create(models[this.config.model]).init(this, config);
       return this;
     },
 
-    setupPresenter: function (input_model, selector) {
+    setupController: function (input_model, selector) {
       this.selector = selector;
       this.model.setUser(input_model.user);
 
       this.setupView();
-      this.setupSubPresenters();
+      this.setupSubControllers();
       this.renderView();
       return this;
     },
 
-    setupSubPresenters: function (reset) {
-      var presenter = this;
+    setupSubControllers: function (reset) {
+      var controller = this;
 
-      if (!presenter.labwarePresenter) {
-        presenter.labwarePresenter = presenter.presenterFactory.create('labware_presenter', this);
+      if (!controller.labwareController) {
+        controller.labwareController = controller.controllerFactory.create('labware_controller', this);
       }
-      presenter.labwarePresenter.setupPresenter({
+      controller.labwareController.setupController({
         "expected_type":    "tube_rack",
         "display_labware":  true,
         "display_remove":   false,
         "display_barcode":  false
       }, function() {
-        return presenter.selector().find('.labware');
+        return controller.selector().find('.labware');
       });
       return this;
     },
@@ -79,11 +79,11 @@ define([
         batch: this.model.batch && this.model.batch.uuid,
         user: this.model.user
       });
-      this.labwarePresenter.renderView();
+      this.labwareController.renderView();
       return this;
     },
 
-    initialPresenter: function () {
+    initialController: function () {
       this.owner.childDone(this, "disableBtn", {});
     },
 
@@ -96,23 +96,23 @@ define([
     },
 
     print: function(child,action, data){
-      var thisPresenter = this,
+      var thisController = this,
           printer       = $('.printer-select').val();
 
       this.model.fire(printer).fail(function(error){
-        PubSub.publish('s2.status.error', thisPresenter, error);
+        PubSub.publish('s2.status.error', thisController, error);
       }).then(function(){
-        thisPresenter.view.disableDropZone();
+        thisController.view.disableDropZone();
 
-        thisPresenter.owner.childDone(this, "disableBtn", {
+        thisController.owner.childDone(this, "disableBtn", {
           buttons: [{action: "print"}]
         });
 
-        thisPresenter.owner.childDone(this, "enableBtn", {
+        thisController.owner.childDone(this, "enableBtn", {
           buttons: [{action: "next"}]
         });
 
-        PubSub.publish('s2.status.message', thisPresenter, "Rack registered.");
+        PubSub.publish('s2.status.message', thisController, "Rack registered.");
       })
     },
 
@@ -125,14 +125,14 @@ define([
     },
 
     viewDone: function (child, action, data) {
-      var thisPresenter = this;
+      var thisController = this;
       if (action === 'fileRead') {
         this.model.analyseFileContent(data)
           .fail(function () {
-            PubSub.publish('s2.status.error', thisPresenter, {message:"Impossible to find the required resources. Contact the system administrator."});
+            PubSub.publish('s2.status.error', thisController, {message:"Impossible to find the required resources. Contact the system administrator."});
           })
           .then(function(tube_rack){
-          thisPresenter.childDone(thisPresenter.model, "fileValid", {model: tube_rack, message: 'The file has been processed properly. Click on the \'Start\' button to validate the process.'})
+          thisController.childDone(thisController.model, "fileValid", {model: tube_rack, message: 'The file has been processed properly. Click on the \'Start\' button to validate the process.'})
         });
       } else if (action === 'transferAuthorised') {
         this.model.fire();
@@ -142,7 +142,7 @@ define([
     modelDone: function (child, action, data) {
       if (action === 'fileValid') {
         this.view.validateFile(data.message);
-        this.labwarePresenter.updateModel(data.model);
+        this.labwareController.updateModel(data.model);
         this.owner.childDone(this, "enableBtn", {buttons: [{action: "print"}]});
         this.owner.childDone(this, "enableBtn", {buttons: [{action: "end"}]});
       } else if (action === 'error') {
@@ -157,5 +157,5 @@ define([
     }
   });
 
-  return Presenter;
+  return Controller;
 });

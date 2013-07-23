@@ -1,20 +1,20 @@
 define(['config'
-  , 'extraction_pipeline/presenters/base_presenter'
+  , 'extraction_pipeline/controllers/base_controller'
   , 'text!extraction_pipeline/html_partials/manifest_maker_partial.html'
   , 'extraction_pipeline/models/manifest_maker_model'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/reception_templates'
   , 'extraction_pipeline/lib/reception_studies'
-], function (config, BasePresenter, componentPartialHtml, Model, PubSub, ReceptionTemplates, ReceptionStudies) {
+], function (config, BaseController, componentPartialHtml, Model, PubSub, ReceptionTemplates, ReceptionStudies) {
   'use strict';
 
-  var Presenter = Object.create(BasePresenter);
+  var Controller = Object.create(BaseController);
 
-  $.extend(Presenter, {
+  $.extend(Controller, {
     register: function (callback) {
-      callback('manifest_maker_presenter', function() {
-        var instance = Object.create(Presenter);
-        Presenter.init.apply(instance, arguments);
+      callback('manifest_maker_controller', function() {
+        var instance = Object.create(Controller);
+        Controller.init.apply(instance, arguments);
         return instance;
       });
     },
@@ -36,7 +36,7 @@ define(['config'
     },
 
     createHtml:function(templateData){
-      var thisPresenter = this;
+      var thisController = this;
       var html = $(_.template(componentPartialHtml)(templateData));
 
       this.generateManifestBtnSelection = html.find("#generateManifest");
@@ -45,23 +45,23 @@ define(['config'
       this.templateSelectSelection = html.find("#xls-templates");
       this.printBoxSelection = html.find(".printer-div");
 
-      this.generateManifestBtnSelection.click(onGenerateManifestEventHandler(thisPresenter));
-      function onGenerateManifestEventHandler(presenter){ return function(){ presenter.onGenerateManifest(); } }
+      this.generateManifestBtnSelection.click(onGenerateManifestEventHandler(thisController));
+      function onGenerateManifestEventHandler(controller){ return function(){ controller.onGenerateManifest(); } }
 
-      this.downloadManifestBtnSelection.hide().click(onDownloadManifestEventHandler(thisPresenter));
-      function onDownloadManifestEventHandler(presenter){ return function(){ presenter.onDownloadManifest(); } }
+      this.downloadManifestBtnSelection.hide().click(onDownloadManifestEventHandler(thisController));
+      function onDownloadManifestEventHandler(controller){ return function(){ controller.onDownloadManifest(); } }
 
-      this.printBCBtnSelection.click(onPrintBarcodeEventHandler(thisPresenter));
-      function onPrintBarcodeEventHandler(presenter){ return function(){ presenter.onPrintBarcode(); } }
+      this.printBCBtnSelection.click(onPrintBarcodeEventHandler(thisController));
+      function onPrintBarcodeEventHandler(controller){ return function(){ controller.onPrintBarcode(); } }
 
       this.printBoxSelection.hide();
 
-      this.templateSelectSelection.change(onChangeTemplateEventHandler(thisPresenter));
-      function onChangeTemplateEventHandler(presenter){ return function(event){ presenter.onChangeTemplate(event); } }
+      this.templateSelectSelection.change(onChangeTemplateEventHandler(thisController));
+      function onChangeTemplateEventHandler(controller){ return function(event){ controller.onChangeTemplate(event); } }
 
       html.find("#number-of-sample").bind("keypress",function(event){
             if (event.which !== 13) return;
-            onGenerateManifestEventHandler(thisPresenter)();
+            onGenerateManifestEventHandler(thisController)();
           }
       );
 
@@ -69,10 +69,10 @@ define(['config'
     },
 
     subscribeToPubSubEvents:function(){
-      var thisPresenter = this;
+      var thisController = this;
       PubSub.subscribe("s2.reception.reset_view", resetViewEventHandler);
       function resetViewEventHandler(event, source, eventData) {
-        thisPresenter.reset();
+        thisController.reset();
       }
     },
 
@@ -101,39 +101,39 @@ define(['config'
       if (this.buttonClickedFlags.print) return;
       this.buttonClickedFlags.print = true;
 
-      var thisPresenter = this;
+      var thisController = this;
       this.model
           .then(function (model) {
-            thisPresenter.view.trigger("s2.busybox.start_process");
-            return model.printBarcodes(thisPresenter.view.find('#printer-select').val());
+            thisController.view.trigger("s2.busybox.start_process");
+            return model.printBarcodes(thisController.view.find('#printer-select').val());
           })
           .fail(function (error) {
-            thisPresenter.view.trigger("s2.busybox.end_process");
-            return thisPresenter.message('error', "Couldn't print the barcodes!");
+            thisController.view.trigger("s2.busybox.end_process");
+            return thisController.message('error', "Couldn't print the barcodes!");
           })
           .then(function () {
-            thisPresenter.view.trigger("s2.busybox.end_process");
-            return thisPresenter.message('success', "The barcodes have been sent to printer.");
+            thisController.view.trigger("s2.busybox.end_process");
+            return thisController.message('success', "The barcodes have been sent to printer.");
           });
     },
 
     onDownloadManifest: function () {
-      var thisPresenter = this;
+      var thisController = this;
       this.model
           .then(function (model) {
             // uses the FileSaver plugin
             saveAs(model.manifestBlob, "manifest.xls");
           })
           .fail(function (error) {
-            return thisPresenter.message('error', "Couldn't download the manifest! "+ error.message);
+            return thisController.message('error', "Couldn't download the manifest! "+ error.message);
           });
     },
 
     onGenerateManifest: function () {
-      var thisPresenter = this;
-      thisPresenter.generateManifestBtnSelection.attr("disabled", "disabled");
-      if (thisPresenter.buttonClickedFlags.generate) return;
-      thisPresenter.buttonClickedFlags.generate = true;
+      var thisController = this;
+      thisController.generateManifestBtnSelection.attr("disabled", "disabled");
+      if (thisController.buttonClickedFlags.generate) return;
+      thisController.buttonClickedFlags.generate = true;
 
       var numberValid = /^[1-9]\d*$/.exec(this.view.find('#number-of-sample').val()) !== null;
       if (!numberValid) {
@@ -145,19 +145,19 @@ define(['config'
         var nbOfSample = parseInt(this.view.find('#number-of-sample').val());
         this.model
             .then(function (model) {
-              thisPresenter.view.trigger("s2.busybox.start_process");
+              thisController.view.trigger("s2.busybox.start_process");
               return model.generateSamples(template, study, sampleType, nbOfSample);
             })
             .fail(function (error) {
-              thisPresenter.view.trigger("s2.busybox.end_process");
-              return thisPresenter.message('error', 'Something wrong happened : '+error.message);
+              thisController.view.trigger("s2.busybox.end_process");
+              return thisController.message('error', 'Something wrong happened : '+error.message);
             })
             .then(function (model) {
-              thisPresenter.disableSampleGeneration();
-              thisPresenter.downloadManifestBtnSelection.show();
-              thisPresenter.printBoxSelection.show();
-              thisPresenter.view.trigger("s2.busybox.end_process");
-              return thisPresenter.message('success','Samples generated. The manifest is ready for download, and the barcodes ready for printing.');
+              thisController.disableSampleGeneration();
+              thisController.downloadManifestBtnSelection.show();
+              thisController.printBoxSelection.show();
+              thisController.view.trigger("s2.busybox.end_process");
+              return thisController.message('success','Samples generated. The manifest is ready for download, and the barcodes ready for printing.');
             });
       }
     },
@@ -200,6 +200,6 @@ define(['config'
     }
   });
 
-  return Presenter;
+  return Controller;
 });
 

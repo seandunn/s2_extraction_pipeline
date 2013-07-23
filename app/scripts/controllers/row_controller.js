@@ -1,8 +1,8 @@
 define([
   'extraction_pipeline/views/row_view'
-  , 'labware/presenters/tube_presenter'
-  , 'extraction_pipeline/presenters/base_presenter'
-], function (View, TubePresenter, BasePresenter) {
+  , 'labware/controllers/tube_controller'
+  , 'extraction_pipeline/controllers/base_controller'
+], function (View, TubeController, BaseController) {
   "use strict";
 
   /* Sample model input:
@@ -53,23 +53,23 @@ define([
     }
   });
 
-  var RowPresenter = Object.create(BasePresenter);
+  var RowController = Object.create(BaseController);
 
-  $.extend(RowPresenter, {
+  $.extend(RowController, {
     register: function(callback) {
-      callback('row_presenter', function(owner, factory) {
-        return Object.create(RowPresenter).init(owner, factory);
+      callback('row_controller', function(owner, factory) {
+        return Object.create(RowController).init(owner, factory);
       });
     },
 
-    init:function (owner, presenterFactory) {
-      this.presenterFactory = presenterFactory;
+    init:function (owner, controllerFactory) {
+      this.controllerFactory = controllerFactory;
       this.owner = owner;
       return this;
     },
 
-    setupPresenter:function (input_model, jquerySelection) {
-      var presenter = this;
+    setupController:function (input_model, jquerySelection) {
+      var controller = this;
       this.setupPlaceholder(jquerySelection);
 
       this.rowModel = Object.create(RowModel).init(this);
@@ -78,15 +78,15 @@ define([
       this.currentView = new View(this, this.jquerySelection());
 
       // NOTE: sort() call is needed here to ensure labware1,labware2,labware3... ordering
-      this.presenters = _.chain(this.rowModel.labwares).pairs().sort().map(function(nameToDetails) {
+      this.controllers = _.chain(this.rowModel.labwares).pairs().sort().map(function(nameToDetails) {
         var name = nameToDetails[0], details = nameToDetails[1];
-        var subPresenter = presenter.presenterFactory.create('labware_presenter', presenter);
-        subPresenter.setupPresenter(details, function() { return presenter.jquerySelection().find('.' + name); });
-        return subPresenter;
+        var subController = controller.controllerFactory.create('labware_controller', controller);
+        subController.setupController(details, function() { return controller.jquerySelection().find('.' + name); });
+        return subController;
       });
 
       this.currentView.renderView();
-      this.presenters.each(function(p) { p.renderView(); });
+      this.controllers.each(function(p) { p.renderView(); });
 
       if (input_model.remove_arrow) {
         this.currentView.removeArrow();
@@ -107,27 +107,27 @@ define([
     },
 
     setLabwareVisibility:function () {
-      // Each labware presenter is only enabled if it's previous is complete and it is not complete
-      this.presenters.reduce(function(memo, presenter) {
+      // Each labware controller is only enabled if it's previous is complete and it is not complete
+      this.controllers.reduce(function(memo, controller) {
         if (!memo) {
-          presenter.labwareEnabled(false);
+          controller.labwareEnabled(false);
           return false
         }
 
-        if (presenter.isSpecial()) {
-          presenter.labwareEnabled(false);
+        if (controller.isSpecial()) {
+          controller.labwareEnabled(false);
           return true;
-        } else if (presenter.isComplete()) {
-          presenter.labwareEnabled(false);
+        } else if (controller.isComplete()) {
+          controller.labwareEnabled(false);
           return true;
         } else {
-          presenter.labwareEnabled(true);
+          controller.labwareEnabled(true);
           return false;
         }
       }, this.rowModel.enabled).value();
     },
     focus: function() {
-      this.editablePresenters().find(function(p) { return !p.isComplete(); })
+      this.editableControllers().find(function(p) { return !p.isComplete(); })
           .value()
           .barcodeFocus();
     },
@@ -138,7 +138,7 @@ define([
       if (action == "tube rendered") {
         this.owner.childDone(this, "tubeFinished", data);
       } else if (action === 'resourceUpdated') {
-        if (this.isRowComplete() && (child === this.editablePresenters().last().value())) {
+        if (this.isRowComplete() && (child === this.editableControllers().last().value())) {
           this.owner.childDone(this, "completed", data);
         }
       } else if (action == "labwareRendered") {
@@ -147,9 +147,9 @@ define([
         var eventPrefix = child.labwareModel.input ? 'input' : 'output';
         child.release();
         delete child.resource;
-        delete child.resourcePresenter;
-        delete child.barcodeInputPresenter;
-        child.setupPresenter(this.rowModel.labwares['labware' + (this.presenters.value().indexOf(child) + 1)], child.jquerySelection);
+        delete child.resourceController;
+        delete child.barcodeInputController;
+        child.setupController(this.rowModel.labwares['labware' + (this.controllers.value().indexOf(child) + 1)], child.jquerySelection);
         child.renderView();
         this.owner.childDone(this, eventPrefix+'Removed', data);
       } else if (action === "barcodeScanned") {
@@ -158,31 +158,31 @@ define([
       }
     },
 
-    editablePresenters: function() {
-      return this.presenters.compact().filter(function(p) { return !p.isSpecial(); });
+    editableControllers: function() {
+      return this.controllers.compact().filter(function(p) { return !p.isSpecial(); });
     },
 
     isRowComplete: function() {
-      return this.editablePresenters().all(function(p) { return p.isComplete(); }).value();
+      return this.editableControllers().all(function(p) { return p.isComplete(); }).value();
     },
 
     lockRow: function() {
-      this.presenters.each(function(presenter) {
-        presenter.hideEditable();
+      this.controllers.each(function(controller) {
+        controller.hideEditable();
       });
     },
 
     unlockRow: function(){
-      this.presenters.each(function(presenter) {
-        presenter.showEditable();
+      this.controllers.each(function(controller) {
+        controller.showEditable();
       });
     },
 
     handleResources: function(callback) {
-      callback.apply(null, this.editablePresenters().map(function(p) { return p.labwareModel.resource; }).value());
+      callback.apply(null, this.editableControllers().map(function(p) { return p.labwareModel.resource; }).value());
     }
   });
 
-  return RowPresenter;
+  return RowController;
 
 });

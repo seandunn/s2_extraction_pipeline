@@ -1,19 +1,19 @@
 define(['config'
-  , 'extraction_pipeline/presenters/base_presenter'
+  , 'extraction_pipeline/controllers/base_controller'
   , 'text!extraction_pipeline/html_partials/extraction_partial.html'
   , 'extraction_pipeline/models/lab_activities_model'
   , 'extraction_pipeline/lib/util'
   , 'extraction_pipeline/lib/pubsub'
-], function (config, BasePresenter, extractionPartialHtml, Model, Util,  PubSub) {
+], function (config, BaseController, extractionPartialHtml, Model, Util,  PubSub) {
   'use strict';
 
-  var LabActivitiesPresenter = Object.create(BasePresenter);
+  var LabActivitiesController = Object.create(BaseController);
 
-  $.extend(LabActivitiesPresenter, {
+  $.extend(LabActivitiesController, {
     register: function (callback) {
-      callback('lab_activities_presenter', function () {
-        var instance = Object.create(LabActivitiesPresenter);
-        LabActivitiesPresenter.init.apply(instance, arguments);
+      callback('lab_activities_controller', function () {
+        var instance = Object.create(LabActivitiesController);
+        LabActivitiesController.init.apply(instance, arguments);
         return instance;
       });
     },
@@ -29,8 +29,8 @@ define(['config'
 
       this.view = this.createHtml();
 
-      $.extend(this.rerackingComponent,{presenter:this.factory.create('reracking_presenter', this, config)});
-      this.rerackingComponent.selection.append(this.rerackingComponent.presenter.view);
+      $.extend(this.rerackingComponent,{controller:this.factory.create('reracking_controller', this, config)});
+      this.rerackingComponent.selection.append(this.rerackingComponent.controller.view);
 
       this.currentComponent = this.homeComponent;
 
@@ -40,7 +40,7 @@ define(['config'
     createHtml: function () {
       var html = $(_.template(extractionPartialHtml)());
 
-      var userBCSubPresenter = this.factory.create('scan_barcode_presenter', this).init({type:"user"});
+      var userBCSubController = this.factory.create('scan_barcode_controller', this).init({type:"user"});
 
       this.backButtonSelection = html.find("#back-button");
       this.rerackingBtnSelection = html.find("#reracking-btn");
@@ -55,27 +55,27 @@ define(['config'
       this.rerackingBtnSelection.click(this.goForward(this.rerackingComponent));
 
       this.userReaderSelection.append(
-          this.bindReturnKey(userBCSubPresenter.renderView(),
+          this.bindReturnKey(userBCSubController.renderView(),
               userCallback,
               barcodeErrorCallback("User barcode is not valid."))
       );
 
-      function userCallback(value, template, presenter){
+      function userCallback(value, template, controller){
         var barcode = Util.pad(value);
-        presenter.model.setUserFromBarcode(barcode)
+        controller.model.setUserFromBarcode(barcode)
             .fail(function (error) {
-              PubSub.publish('s2.status.error', presenter, error);
+              PubSub.publish('s2.status.error', controller, error);
             })
             .then(function(){
               template.find("input").val(barcode);
               template.find("input").attr('disabled', true);
-              presenter.userValidationSelection.hide();
-              presenter.componentChoiceSelection.show();
+              controller.userValidationSelection.hide();
+              controller.componentChoiceSelection.show();
             });
       }
 
       function barcodeErrorCallback(errorText){
-        return function(value, template, presenter){
+        return function(value, template, controller){
           PubSub.publish('s2.status.error', this, {message: errorText});
         };
       }
@@ -83,28 +83,28 @@ define(['config'
     },
 
     goBack:function(){
-      var thisPresenter = this;
+      var thisController = this;
       return function(){
-        swipeBackFunc(thisPresenter.currentComponent.selection,
-            thisPresenter.homeComponent.selection,
-            thisPresenter.backButtonSelection,
+        swipeBackFunc(thisController.currentComponent.selection,
+            thisController.homeComponent.selection,
+            thisController.backButtonSelection,
             0,
             function(){
-              thisPresenter.componentChoiceSelection.hide();
-              thisPresenter.userValidationSelection.show();
-              thisPresenter.userValidationSelection.find('input').val("").removeAttr('disabled');
-              thisPresenter.owner.resetS2Root();
+              thisController.componentChoiceSelection.hide();
+              thisController.userValidationSelection.show();
+              thisController.userValidationSelection.find('input').val("").removeAttr('disabled');
+              thisController.owner.resetS2Root();
             })();
-        PubSub.publish("s2.reception.reset_view", thisPresenter, {});
-        thisPresenter.currentComponent = thisPresenter.homeComponent;
+        PubSub.publish("s2.reception.reset_view", thisController, {});
+        thisController.currentComponent = thisController.homeComponent;
       }
     },
 
     goForward:function(nextComponent){
-      var thisPresenter = this;
+      var thisController = this;
       return function(){
-        swipeNextFunc(thisPresenter.currentComponent.selection,nextComponent.selection,thisPresenter.backButtonSelection,1)();
-        thisPresenter.currentComponent = nextComponent;
+        swipeNextFunc(thisController.currentComponent.selection,nextComponent.selection,thisController.backButtonSelection,1)();
+        thisController.currentComponent = nextComponent;
       }
     }
   });
@@ -160,6 +160,6 @@ define(['config'
     }
   }
 
-  return LabActivitiesPresenter;
+  return LabActivitiesController;
 });
 
