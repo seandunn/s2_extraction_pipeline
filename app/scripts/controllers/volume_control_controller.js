@@ -3,15 +3,15 @@ define(['config'
   , 'text!extraction_pipeline/html_partials/volume_control_partial.html'
   , 'extraction_pipeline/models/volume_control_model'
   , 'extraction_pipeline/lib/pubsub'
-], function (config, BasePresenter, volumeControlPartialHtml, Model, PubSub) {
+], function (config, BaseController, volumeControlPartialHtml, Model, PubSub) {
   'use strict';
 
-  var VolumeControlPresenter = Object.create(BasePresenter);
+  var VolumeControlController = Object.create(BaseController);
 
-  $.extend(VolumeControlPresenter, {
+  $.extend(VolumeControlController, {
     register: function (callback) {
       callback('volume_control_controller', function (owner, factory, initData) {
-        return Object.create(VolumeControlPresenter).init(owner, factory, initData);
+        return Object.create(VolumeControlController).init(owner, factory, initData);
       });
     },
 
@@ -23,43 +23,43 @@ define(['config'
       return this;
     },
 
-    initialPresenter: function () {
+    initialController: function () {
     },
 
     focus: function () {
     },
 
-    setupPresenter: function (setupData, jquerySelection) {
-      var thisPresenter = this;
-      thisPresenter.jquerySelection = jquerySelection;
+    setupController: function (setupData, jquerySelection) {
+      var thisController = this;
+      thisController.jquerySelection = jquerySelection;
 
-      thisPresenter.model
+      thisController.model
           .then(function (model) {
             return model.setupModel(setupData);
           })
           .then(function () {
-            thisPresenter.jquerySelectionForRack = function () {
+            thisController.jquerySelectionForRack = function () {
               return jquerySelection().find('.dropzone .labware');
             };
-            thisPresenter.jquerySelectionForControlTube = function () {
+            thisController.jquerySelectionForControlTube = function () {
               return jquerySelection().find('.control .labware');
             };
-            thisPresenter.rackPresenter = thisPresenter.controllerFactory.create('labware_controller', thisPresenter);
-            thisPresenter.controlPresenter = thisPresenter.controllerFactory.create('labware_controller', thisPresenter);
+            thisController.rackController = thisController.controllerFactory.create('labware_controller', thisController);
+            thisController.controlController = thisController.controllerFactory.create('labware_controller', thisController);
 
-            thisPresenter.rackPresenter.setupPresenter({
+            thisController.rackController.setupController({
               "expected_type":   "rack",
               "display_labware": true,
               "display_remove":  false,
               "display_barcode": false
-            }, thisPresenter.jquerySelectionForRack);
+            }, thisController.jquerySelectionForRack);
 
-            thisPresenter.controlPresenter.setupPresenter({
+            thisController.controlController.setupController({
               "expected_type":   "tube",
               "display_labware": true,
               "display_remove":  true,
               "display_barcode": true
-            }, thisPresenter.jquerySelectionForControlTube);
+            }, thisController.jquerySelectionForControlTube);
 
             PubSub.subscribe("s2.labware.barcode_scanned", barcodeScannedEventHandler);
             PubSub.subscribe("s2.labware.removed", controlLabwareRemovedEventHandler);
@@ -67,107 +67,107 @@ define(['config'
             PubSub.subscribe("s2.step_controller.next_clicked", endProcessEventHandler);
 
             function barcodeScannedEventHandler(event, source, eventData) {
-              thisPresenter.barcodeScanned(event, source, eventData);
+              thisController.barcodeScanned(event, source, eventData);
             }
 
             function controlLabwareRemovedEventHandler(event, source, eventData) {
-              thisPresenter.controlLabwareRemoved(event, source, eventData);
+              thisController.controlLabwareRemoved(event, source, eventData);
             }
 
             function makeTransferEventHandler(event, source, eventData) {
-              thisPresenter.makeTransfer();
+              thisController.makeTransfer();
             }
 
             function endProcessEventHandler(event, source, eventData) {
-              thisPresenter.endProcess();
+              thisController.endProcess();
             }
 
-            thisPresenter.renderView();
+            thisController.renderView();
           });
 
       return this;
     },
 
     barcodeScanned: function (event, source, eventData) {
-      var thisPresenter = this;
-      thisPresenter.model
+      var thisController = this;
+      thisController.model
           .fail(failureCallback("couldn't get the model"))
           .then(function (model) {
             return model.setControlSourceFromBarcode(eventData.BC);
           })
           .fail(failureCallback("couldn't set the source control "))
           .then(function (model) {
-            thisPresenter.controlPresenter.updateModel(model.controlSource);
+            thisController.controlController.updateModel(model.controlSource);
           });
     },
 
     controlLabwareRemoved: function (event, source, eventData) {
-      var thisPresenter = this;
-      thisPresenter.model
+      var thisController = this;
+      thisController.model
           .fail(failureCallback("coudln't get the model"))
           .then(function (model) {
             model.removeControlSource();
-            return thisPresenter.controlPresenter.updateModel(model.controlSource);
+            return thisController.controlController.updateModel(model.controlSource);
           })
           .fail(failureCallback("coudln't remove the source control from the model."))
     },
 
     makeTransfer: function () {
-      var thisPresenter = this;
-      thisPresenter.disableDropzone();
+      var thisController = this;
+      thisController.disableDropzone();
 
       var container = this.jquerySelection();
       container.find('.component').trigger("s2.busybox.start_process");
 
-      thisPresenter.controlPresenter.hideEditable();
+      thisController.controlController.hideEditable();
 
-      thisPresenter.model
+      thisController.model
           .then(function (model) {
             return model.addVolumeControlToRack();
           })
           .fail(function (error) {
-            thisPresenter.message('error', error.message);
+            thisController.message('error', error.message);
             container.find('.component').trigger("s2.busybox.end_process");
-            PubSub.publish("s2.step_controller.disable_buttons", thisPresenter, {buttons: [
+            PubSub.publish("s2.step_controller.disable_buttons", thisController, {buttons: [
               {action: "end"}
             ]});
           })
           .then(function (model) {
-            thisPresenter.message('success', 'The transfert was successful. Click on the \'Done\' button to carry on.');
+            thisController.message('success', 'The transfert was successful. Click on the \'Done\' button to carry on.');
             container.find('.component').trigger("s2.busybox.end_process");
-            PubSub.publish("s2.step_controller.disable_buttons", thisPresenter, {buttons: [
+            PubSub.publish("s2.step_controller.disable_buttons", thisController, {buttons: [
               {action: "end"}
             ]});
-            PubSub.publish("s2.step_controller.enable_buttons", thisPresenter, {buttons: [
+            PubSub.publish("s2.step_controller.enable_buttons", thisController, {buttons: [
               {action: "next"}
             ]});
           })
     },
 
     endProcess: function () {
-      var thisPresenter = this;
+      var thisController = this;
       this.model.then(function (model) {
-        PubSub.publish("s2.step_controller.next_process", thisPresenter, {batch: model.batch});
+        PubSub.publish("s2.step_controller.next_process", thisController, {batch: model.batch});
       });
     },
 
     responderCallback: function (fileContent) {
-      var thisPresenter = this;
-      thisPresenter.model
+      var thisController = this;
+      thisController.model
           .then(function (model) {
-            thisPresenter.message();
+            thisController.message();
             return model.setRackContent(fileContent);
           })
           .fail(function (error) {
-            thisPresenter.rackPresenter.resourcePresenter.resetWeels();
-            thisPresenter.message('error', error.message);
+            thisController.rackController.resourceController.resetWeels();
+            thisController.message('error', error.message);
           })
           .then(function (model) {
-            thisPresenter.rackPresenter.updateModel(model.rack_data);
+            thisController.rackController.updateModel(model.rack_data);
             var volumeControlPosition = model.findVolumeControlPosition();
-            thisPresenter.rackPresenter.resourcePresenter.fillWell(volumeControlPosition, "blue");
+            thisController.rackController.resourceController.fillWell(volumeControlPosition, "blue");
             if (model.isReady) {
-              PubSub.publish("s2.step_controller.enable_buttons", thisPresenter, {buttons: [
+              PubSub.publish("s2.step_controller.enable_buttons", thisController, {buttons: [
                 {action: "end"}
               ]});
             }
@@ -183,7 +183,7 @@ define(['config'
     },
 
     enableDropzone: function () {
-      var thisPresenter = this;
+      var thisController = this;
       var container = this.jquerySelection();
       container.find('.dropzoneBox').show();
 
@@ -208,7 +208,7 @@ define(['config'
         })(fileHandle);
         reader.onloadend = function (event) {
           if (event.target.readyState === FileReader.DONE) {
-            thisPresenter.responderCallback(event.target.result);
+            thisController.responderCallback(event.target.result);
           }
         };
         reader.readAsText(fileHandle, "UTF-8");
@@ -251,26 +251,26 @@ define(['config'
     },
 
     renderView: function () {
-      var thisPresenter = this;
-      thisPresenter.jquerySelection().html(_.template(volumeControlPartialHtml)({}));
-      thisPresenter.rackPresenter.renderView();
-      thisPresenter.controlPresenter.renderView();
+      var thisController = this;
+      thisController.jquerySelection().html(_.template(volumeControlPartialHtml)({}));
+      thisController.rackController.renderView();
+      thisController.controlController.renderView();
 
 
-      thisPresenter.model
+      thisController.model
           .then(function (model) {
             return model.inputs;
           })
           .then(function (inputs) {
             var nbTubesInRack = _.keys(inputs[0].tubes).length;
             if ( 96 <= nbTubesInRack ) {
-              thisPresenter.disableDropzone();
-              thisPresenter.jquerySelectionForControlTube().hide();
-              thisPresenter.message("info","The tube rack found in batch contains "+nbTubesInRack
+              thisController.disableDropzone();
+              thisController.jquerySelectionForControlTube().hide();
+              thisController.message("info","The tube rack found in batch contains "+nbTubesInRack
                   +" tubes. It is not possible to add a volume-control tube.");
               // TODO : enable the possible to carry on to volume checking
             } else {
-              thisPresenter.enableDropzone();
+              thisController.enableDropzone();
             }
           });
 
@@ -324,6 +324,6 @@ define(['config'
     }
   }
 
-  return VolumeControlPresenter;
+  return VolumeControlController;
 });
 

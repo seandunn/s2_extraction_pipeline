@@ -5,13 +5,13 @@ define([
 ], function (Base, View, PubSub) {
   'use strict';
 
-  var Presenter = Object.create(Base);
+  var Controller = Object.create(Base);
 
-  _.extend(Presenter, {
+  _.extend(Controller, {
     register: function (callback) {
       callback('step_controller', function () {
-        var instance = Object.create(Presenter);
-        Presenter.init.apply(instance, arguments);
+        var instance = Object.create(Controller);
+        Controller.init.apply(instance, arguments);
         return instance;
       });
     },
@@ -38,8 +38,8 @@ define([
       return this;
     },
 
-    setupPresenter: function (model, selector) {
-      var thisPresenter = this;
+    setupController: function (model, selector) {
+      var thisController = this;
       this.selector = selector;
       this.batch    = model.batch;
       this.config.user = model.user;
@@ -53,44 +53,44 @@ define([
       PubSub.subscribe("s2.step_controller.hide_buttons", hideButtonsEventHandler);
 
       function enableButtonsEventHandler(event, source, eventData) {
-        thisPresenter.changeButtonsState(eventData, true);
+        thisController.changeButtonsState(eventData, true);
       }
       function disableButtonsEventHandler(event, source, eventData) {
-        thisPresenter.changeButtonsState(eventData, false);
+        thisController.changeButtonsState(eventData, false);
       }
       function showButtonsEventHandler(event, source, eventData) {
-        thisPresenter.changeButtonsVisibility(eventData, true);
+        thisController.changeButtonsVisibility(eventData, true);
       }
       function hideButtonsEventHandler(event, source, eventData) {
-        thisPresenter.changeButtonsVisibility(eventData, false);
+        thisController.changeButtonsVisibility(eventData, false);
       }
 
       PubSub.subscribe("s2.step_controller.next_process", nextProcessEventHandler);
       function nextProcessEventHandler(event, source, eventData) {
         // hack: reusing a bit of code defined in childDone
-        thisPresenter.childDone(source,'done',eventData);
+        thisController.childDone(source,'done',eventData);
       }
 
       PubSub.subscribe("s2.step_controller.printing_finished", printingFinishedEventHandler);
       PubSub.subscribe("s2.step_controller.printing_started", printingStartedEventHandler);
       function printingFinishedEventHandler(event, source, eventData) {
-        thisPresenter.selector().find('.component').trigger("s2.busybox.end_process");
+        thisController.selector().find('.component').trigger("s2.busybox.end_process");
 
       }
       function printingStartedEventHandler(event, source, eventData) {
-        thisPresenter.selector().find('.component').trigger("s2.busybox.start_process");
+        thisController.selector().find('.component').trigger("s2.busybox.start_process");
       }
 
-      this.setupSubPresenters();
+      this.setupSubControllers();
 
       return this;
     },
 
-    setupSubPresenters: function () {
+    setupSubControllers: function () {
       var controller = this;
       controller.controllers = _.chain(controller.config.controllers).map(function (config, index) {
-        var subPresenter = controller.factory.create(config.controllerName, controller, config);
-        subPresenter.setupPresenter({
+        var subController = controller.factory.create(config.controllerName, controller, config);
+        subController.setupController({
           batch: controller.batch
         }, (function (i) {
           return function () {
@@ -98,14 +98,14 @@ define([
           }
         })(index + 1));
 
-        return subPresenter;
+        return subController;
       }).value();
-      controller.activePresenter = controller.controllers[0];
-      controller.activePresenter.initialPresenter();
+      controller.activeController = controller.controllers[0];
+      controller.activeController.initialController();
 
-      this.selector().find('.printer-select').val(controller.activePresenter.config.defaultPrinter);
+      this.selector().find('.printer-select').val(controller.activeController.config.defaultPrinter);
 
-      controller.activePresenter.focus();
+      controller.activeController.focus();
     },
 
     release: function () {
@@ -124,28 +124,28 @@ define([
           controller.buttonClickedFlags[action] = true;
           // disable the button
           this.view.setButtonEnabled(action, false);
-          var handler = this.activePresenter[action];
-          handler && handler.apply(this.activePresenter, arguments);
+          var handler = this.activeController[action];
+          handler && handler.apply(this.activeController, arguments);
           PubSub.publish("s2.step_controller."+action+"_clicked", this);
         }
       }
       else if (action === 'done') {
         var index = _.indexOf(this.controllers, child);
         if (index !== -1) {
-          var activeSubPresenter = controller.controllers[index + 1] || {
+          var activeSubController = controller.controllers[index + 1] || {
             config:           {defaultPrinter: null},
             previousDone:     function () {
               controller.owner.childDone.apply(controller.owner, arguments);
             },
-            initialPresenter: function () {
+            initialController: function () {
               // Ignore this!
             }
           };
-          activeSubPresenter.previousDone(child, action, data);
-          controller.activePresenter = activeSubPresenter;
-          controller.activePresenter.initialPresenter();
-          this.selector().find('.printer-select').val(controller.activePresenter.config.defaultPrinter);
-          controller.activePresenter.focus();
+          activeSubController.previousDone(child, action, data);
+          controller.activeController = activeSubController;
+          controller.activeController.initialController();
+          this.selector().find('.printer-select').val(controller.activeController.config.defaultPrinter);
+          controller.activeController.focus();
         }
       } else if (action === 'enableBtn' || action === 'disableBtn') {
         controller.changeButtonsState(data, action === 'enableBtn');
@@ -160,23 +160,23 @@ define([
 
     changeButtonsVisibility: function (action, data) {
       var btnDetailsList;
-      var thisPresenter = this;
+      var thisController = this;
       btnDetailsList = data.buttons || this.config.buttons;
       _.each(btnDetailsList, function (btnDetails) {
-        thisPresenter.view.setButtonVisible(btnDetails.action, visible);
+        thisController.view.setButtonVisible(btnDetails.action, visible);
       })
     },
 
     changeButtonsState:function(eventData, enable){
-      var thisPresenter = this;
+      var thisController = this;
       var btnDetailsList = eventData.buttons || this.config.buttons;
       _.each(btnDetailsList, function (btnDetails) {
-        thisPresenter.view.setButtonEnabled(btnDetails.action, enable);
-        thisPresenter.buttonClickedFlags[btnDetails.action+"clicked"] = !enable;
+        thisController.view.setButtonEnabled(btnDetails.action, enable);
+        thisController.buttonClickedFlags[btnDetails.action+"clicked"] = !enable;
       })
     }
 
   });
 
-  return Presenter;
+  return Controller;
 });

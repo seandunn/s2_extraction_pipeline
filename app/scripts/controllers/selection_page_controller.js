@@ -2,15 +2,15 @@ define([ 'extraction_pipeline/controllers/base_controller'
   , 'extraction_pipeline/models/selection_page_model'
   , 'text!extraction_pipeline/html_partials/selection_page_partial.html'
   , 'extraction_pipeline/lib/pubsub'
-], function(BasePresenter, Model, selectionPagePartialHtml, PubSub) {
+], function(BaseController, Model, selectionPagePartialHtml, PubSub) {
   'use strict';
 
-  var PagePresenter = Object.create(BasePresenter);
+  var PageController = Object.create(BaseController);
 
-  $.extend(PagePresenter, {
+  $.extend(PageController, {
     register:function (callback) {
       callback('selection_page_controller', function (owner, factory, initData) {
-        return Object.create(PagePresenter).init(owner, factory, initData);
+        return Object.create(PageController).init(owner, factory, initData);
       });
     },
 
@@ -21,7 +21,7 @@ define([ 'extraction_pipeline/controllers/base_controller'
       this.owner = owner;
       return this;
     },
-    setupPresenter: function (setupData, jquerySelection) {
+    setupController: function (setupData, jquerySelection) {
       var controller = this;
       this.jquerySelection = jquerySelection;
       this.model
@@ -29,7 +29,7 @@ define([ 'extraction_pipeline/controllers/base_controller'
             return model.setup(setupData);
           })
           .then(function (model) {
-            return controller.setupSubPresenters();
+            return controller.setupSubControllers();
           }).then(function(){
             return controller.renderView();
           });
@@ -73,15 +73,15 @@ define([ 'extraction_pipeline/controllers/base_controller'
 
     renderView:function () {
       var template = _.template(selectionPagePartialHtml);
-      var thisPresenter = this;
+      var thisController = this;
       var thisModel;
       return this.model
           .then(function (model) {
             thisModel = model;
-            thisPresenter.jquerySelection().html(template(thisModel));
-            thisPresenter.jquerySelection().find("button.btn").on("click", thisPresenter.makeBatchHandler());
+            thisController.jquerySelection().html(template(thisModel));
+            thisController.jquerySelection().find("button.btn").on("click", thisController.makeBatchHandler());
             // render subviews...
-            _.each(thisPresenter.controllers, function (controller) {
+            _.each(thisController.controllers, function (controller) {
               controller.renderView();
             });
             return thisModel.inputs;
@@ -89,12 +89,12 @@ define([ 'extraction_pipeline/controllers/base_controller'
           .then(function (inputs) {
             var numTubes = inputs.length;
             if (numTubes < thisModel.capacity) {
-              thisPresenter.controllers[inputs.length].barcodeFocus();
+              thisController.controllers[inputs.length].barcodeFocus();
             }
           });
     },
 
-    setupSubPresenters:function () {
+    setupSubControllers:function () {
       var controller = this;
       var thisModel;
       this.controllers = [];
@@ -103,8 +103,8 @@ define([ 'extraction_pipeline/controllers/base_controller'
           .then(function (model) {
             thisModel = model;
             _(thisModel.capacity).times(function () {
-              var subPresenter = controller.controllerFactory.create('labware_controller', controller);
-              controller.controllers.push(subPresenter);
+              var subController = controller.controllerFactory.create('labware_controller', controller);
+              controller.controllers.push(subController);
             });
             return thisModel.inputs;
           })
@@ -147,7 +147,7 @@ define([ 'extraction_pipeline/controllers/base_controller'
 
             _.chain(controller.controllers).zip(controllerData).each(function (pair, index) {
               var controller = pair[0], config = pair[1];
-              controller.setupPresenter(config, jQueryForNthChild(index));
+              controller.setupController(config, jQueryForNthChild(index));
             }).value();
 
           })
@@ -172,7 +172,7 @@ define([ 'extraction_pipeline/controllers/base_controller'
                 PubSub.publish('s2.status.error', controller, error);
               })
               .then(function () {
-                controller.setupSubPresenters();
+                controller.setupSubControllers();
                 controller.renderView();
               });
         } else if (action === "removeLabware") {
@@ -181,7 +181,7 @@ define([ 'extraction_pipeline/controllers/base_controller'
                 return model.removeTubeByUuid(data.resource.uuid);
               })
               .then(function () {
-                controller.setupSubPresenters();
+                controller.setupSubControllers();
                 controller.renderView();
               })
         }
@@ -189,6 +189,6 @@ define([ 'extraction_pipeline/controllers/base_controller'
     }
   });
 
-  return PagePresenter;
+  return PageController;
 });
 

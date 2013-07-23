@@ -2,7 +2,7 @@ define([
   'extraction_pipeline/views/row_view'
   , 'labware/controllers/tube_controller'
   , 'extraction_pipeline/controllers/base_controller'
-], function (View, TubePresenter, BasePresenter) {
+], function (View, TubeController, BaseController) {
   "use strict";
 
   /* Sample model input:
@@ -53,12 +53,12 @@ define([
     }
   });
 
-  var RowPresenter = Object.create(BasePresenter);
+  var RowController = Object.create(BaseController);
 
-  $.extend(RowPresenter, {
+  $.extend(RowController, {
     register: function(callback) {
       callback('row_controller', function(owner, factory) {
-        return Object.create(RowPresenter).init(owner, factory);
+        return Object.create(RowController).init(owner, factory);
       });
     },
 
@@ -68,7 +68,7 @@ define([
       return this;
     },
 
-    setupPresenter:function (input_model, jquerySelection) {
+    setupController:function (input_model, jquerySelection) {
       var controller = this;
       this.setupPlaceholder(jquerySelection);
 
@@ -80,9 +80,9 @@ define([
       // NOTE: sort() call is needed here to ensure labware1,labware2,labware3... ordering
       this.controllers = _.chain(this.rowModel.labwares).pairs().sort().map(function(nameToDetails) {
         var name = nameToDetails[0], details = nameToDetails[1];
-        var subPresenter = controller.controllerFactory.create('labware_controller', controller);
-        subPresenter.setupPresenter(details, function() { return controller.jquerySelection().find('.' + name); });
-        return subPresenter;
+        var subController = controller.controllerFactory.create('labware_controller', controller);
+        subController.setupController(details, function() { return controller.jquerySelection().find('.' + name); });
+        return subController;
       });
 
       this.currentView.renderView();
@@ -127,7 +127,7 @@ define([
       }, this.rowModel.enabled).value();
     },
     focus: function() {
-      this.editablePresenters().find(function(p) { return !p.isComplete(); })
+      this.editableControllers().find(function(p) { return !p.isComplete(); })
           .value()
           .barcodeFocus();
     },
@@ -138,7 +138,7 @@ define([
       if (action == "tube rendered") {
         this.owner.childDone(this, "tubeFinished", data);
       } else if (action === 'resourceUpdated') {
-        if (this.isRowComplete() && (child === this.editablePresenters().last().value())) {
+        if (this.isRowComplete() && (child === this.editableControllers().last().value())) {
           this.owner.childDone(this, "completed", data);
         }
       } else if (action == "labwareRendered") {
@@ -147,9 +147,9 @@ define([
         var eventPrefix = child.labwareModel.input ? 'input' : 'output';
         child.release();
         delete child.resource;
-        delete child.resourcePresenter;
-        delete child.barcodeInputPresenter;
-        child.setupPresenter(this.rowModel.labwares['labware' + (this.controllers.value().indexOf(child) + 1)], child.jquerySelection);
+        delete child.resourceController;
+        delete child.barcodeInputController;
+        child.setupController(this.rowModel.labwares['labware' + (this.controllers.value().indexOf(child) + 1)], child.jquerySelection);
         child.renderView();
         this.owner.childDone(this, eventPrefix+'Removed', data);
       } else if (action === "barcodeScanned") {
@@ -158,12 +158,12 @@ define([
       }
     },
 
-    editablePresenters: function() {
+    editableControllers: function() {
       return this.controllers.compact().filter(function(p) { return !p.isSpecial(); });
     },
 
     isRowComplete: function() {
-      return this.editablePresenters().all(function(p) { return p.isComplete(); }).value();
+      return this.editableControllers().all(function(p) { return p.isComplete(); }).value();
     },
 
     lockRow: function() {
@@ -179,10 +179,10 @@ define([
     },
 
     handleResources: function(callback) {
-      callback.apply(null, this.editablePresenters().map(function(p) { return p.labwareModel.resource; }).value());
+      callback.apply(null, this.editableControllers().map(function(p) { return p.labwareModel.resource; }).value());
     }
   });
 
-  return RowPresenter;
+  return RowController;
 
 });

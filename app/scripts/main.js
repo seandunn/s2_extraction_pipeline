@@ -23,9 +23,9 @@ require.config({
 
 require(['extraction_pipeline/app',
   'extraction_pipeline/controllers/controller_factory'
-], function (App, PresenterFactory) {
+], function (App, ControllerFactory) {
 
-    var theApp = new App(new PresenterFactory());
+    var theApp = new App(new ControllerFactory());
 
 });
 

@@ -4,7 +4,7 @@ define(['config'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/barcode_checker'
   , 'extraction_pipeline/lib/util'
-], function (config, BasePresenter, LabwareView, PubSub, BarcodeChecker, Util) {
+], function (config, BaseController, LabwareView, PubSub, BarcodeChecker, Util) {
 
   var defaultTitles = {
     tube: 'Tube',
@@ -26,12 +26,12 @@ define(['config'
     }
   });
 
-  var LabwarePresenter = Object.create(BasePresenter);
+  var LabwareController = Object.create(BaseController);
 
-  $.extend(LabwarePresenter, {
+  $.extend(LabwareController, {
     register: function(callback) {
       callback('labware_controller', function(owner, factory) {
-        return Object.create(LabwarePresenter).init(owner, factory);
+        return Object.create(LabwareController).init(owner, factory);
       });
     },
 
@@ -41,12 +41,12 @@ define(['config'
       return this;
     },
 
-    setupPresenter: function (setupData, jquerySelection) {
+    setupController: function (setupData, jquerySelection) {
       this.setupPlaceholder(jquerySelection);
       this.labwareModel = Object.create(LabwareModel).init(this, setupData);
 
       this.setupView();
-      this.setupSubPresenters();
+      this.setupSubControllers();
       return this;
     },
 
@@ -66,8 +66,8 @@ define(['config'
       return this;
     },
 
-    setupSubPresenters: function () {
-      if (!this.resourcePresenter) {
+    setupSubControllers: function () {
+      if (!this.resourceController) {
         var type = this.labwareModel.expected_type;
       }
       if (this.labwareModel.resource) {
@@ -77,10 +77,10 @@ define(['config'
         throw "type declaration mismatch! Check the type is correctly entered in the pipeline config for this page.";
       } else {
         if (this.labwareModel.displayLabware()) {
-          this.resourcePresenter = this.controllerFactory.createLabwareSubPresenter(this, type);
+          this.resourceController = this.controllerFactory.createLabwareSubController(this, type);
         }
-        if (!this.barcodeInputPresenter && this.labwareModel.display_barcode && !this.isSpecial()) {
-          this.barcodeInputPresenter = this.controllerFactory.create('scan_barcode_controller', this);
+        if (!this.barcodeInputController && this.labwareModel.display_barcode && !this.isSpecial()) {
+          this.barcodeInputController = this.controllerFactory.create('scan_barcode_controller', this);
         }
         this.setupSubModel();
       }
@@ -100,11 +100,11 @@ define(['config'
       var resourceSelector = function () {
         return that.jquerySelection().find("div.resource")
       };
-      if (this.resourcePresenter) {
-        this.resourcePresenter.setupPresenter(data, resourceSelector);
+      if (this.resourceController) {
+        this.resourceController.setupController(data, resourceSelector);
       }
-      if (this.barcodeInputPresenter) {
-        this.barcodeInputPresenter.init(data, function () {
+      if (this.barcodeInputController) {
+        this.barcodeInputController.init(data, function () {
           return that.jquerySelection().find("div.barcodeScanner")
         });
       }
@@ -116,11 +116,11 @@ define(['config'
 
       this.view.renderView(this.model);
 
-      if (this.resourcePresenter) {
-        this.resourcePresenter.renderView();
+      if (this.resourceController) {
+        this.resourceController.renderView();
       }
 
-      if (this.barcodeInputPresenter) {
+      if (this.barcodeInputController) {
         var labwareCallback = function(value, template, controller){
           controller.owner.childDone(controller, 'barcodeScanned', {
             modelName: controller.labwareModel.expected_type.pluralize(),
@@ -132,7 +132,7 @@ define(['config'
           });
         };
         this.jquerySelection().append(
-          this.bindReturnKey(this.barcodeInputPresenter.renderView(),
+          this.bindReturnKey(this.barcodeInputController.renderView(),
               labwareCallback,
               barcodeErrorCallback('The barcode is not valid.'),
               validationOnReturnKeyCallback(this, this.labwareModel.validation, this.labwareModel.barcodePrefixes))
@@ -171,7 +171,7 @@ define(['config'
         this.viewDone(child, action, data);
       } else if (child === this.labwareModel) {
         this.modelDone(child, action, data);
-      } else if (child === this.barcodeInputPresenter) {
+      } else if (child === this.barcodeInputController) {
         this.barcodeInputDone(child, action, data);
       }
     },
@@ -221,7 +221,7 @@ define(['config'
 
   });
 
-  return LabwarePresenter;
+  return LabwareController;
 
   function specialType(type) {
     return _.contains(['waste_tube', 'qia_cube', 'centrifuge'], type);

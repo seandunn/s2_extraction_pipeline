@@ -4,7 +4,7 @@ define(['config'
   , 'extraction_pipeline/default/default_model'
   , 'extraction_pipeline/lib/util'
   , 'extraction_pipeline/lib/pubsub'
-], function (config, BasePresenter, defaultPagePartialHtml, Model, Util, PubSub) {
+], function (config, BaseController, defaultPagePartialHtml, Model, Util, PubSub) {
   'use strict';
 
   var userCallback = function(value, template, controller){
@@ -46,12 +46,12 @@ define(['config'
     }
   };
 
-  var DefaultPresenter = Object.create(BasePresenter);
+  var DefaultController = Object.create(BaseController);
 
-  $.extend(DefaultPresenter, {
+  $.extend(DefaultController, {
     register:function (callback) {
       callback('default', function (owner, factory, initData) {
-        return Object.create(DefaultPresenter).init(owner, factory, initData);
+        return Object.create(DefaultController).init(owner, factory, initData);
       });
     },
 
@@ -61,13 +61,13 @@ define(['config'
       return this;
     },
 
-    setupPresenter: function (setupData, jquerySelection) {
+    setupController: function (setupData, jquerySelection) {
       var that = this;
       this.setupPlaceholder(jquerySelection);
       this.model = Object.create(Model).init(this);
 
-      this.userBCSubPresenter = this.controllerFactory.create('scan_barcode_controller', this).init({type:"user"});
-      this.labwareBCSubPresenter = this.controllerFactory.create('scan_barcode_controller', this).init({type:"tube"});
+      this.userBCSubController = this.controllerFactory.create('scan_barcode_controller', this).init({type:"user"});
+      this.labwareBCSubController = this.controllerFactory.create('scan_barcode_controller', this).init({type:"tube"});
 
       this.jquerySelectionForUser = function () {
         return that.jquerySelection().find(".user_barcode");
@@ -88,8 +88,8 @@ define(['config'
       this.jquerySelection().html(_.template(defaultPagePartialHtml)({}));
       var errorCallback = barcodeErrorCallback('Barcode must be a 13 digit number.');
 
-      this.jquerySelectionForUser().append(this.bindReturnKey( this.userBCSubPresenter.renderView(), userCallback, errorCallback ));
-      this.jquerySelectionForLabware().append(this.bindReturnKey( this.labwareBCSubPresenter.renderView(), labwareCallback, errorCallback));
+      this.jquerySelectionForUser().append(this.bindReturnKey( this.userBCSubController.renderView(), userCallback, errorCallback ));
+      this.jquerySelectionForLabware().append(this.bindReturnKey( this.labwareBCSubController.renderView(), labwareCallback, errorCallback));
 
       return this;
     },
@@ -98,6 +98,6 @@ define(['config'
 
   });
 
-  return DefaultPresenter;
+  return DefaultController;
 });
 

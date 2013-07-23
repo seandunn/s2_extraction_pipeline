@@ -1,31 +1,31 @@
-Presenters
+Controllers
 ===============
 
-The S2 Extraction pipeline follows a standard Model-View-Presenter style architecture. It should be noted that:
+The S2 Extraction pipeline follows a standard Model-View-Controller style architecture. It should be noted that:
 
 - Models speak to S2 via the S2 Mapper
-- Presenters read the information from the model, and create the view (and sub presenters if it has any)
+- Controllers read the information from the model, and create the view (and sub controllers if it has any)
 
-The presenters in this component own their respective models and views.
+The controllers in this component own their respective models and views.
 
-The presenters may have different levels of responsibility, from page presenters presenting an entire page, to barcode presenters
-responsible only for a barcode scanner component on the page. By convention, page presenters are suffixed with _page_presenter to avoid any confusion,
-for example, binding_complete_page_presenter.
+The controllers may have different levels of responsibility, from page controllers presenting an entire page, to barcode controllers
+responsible only for a barcode scanner component on the page. By convention, page controllers are suffixed with _page_controller to avoid any confusion,
+for example, binding_complete_page_controller.
 
-Since presenters have differing levels of responsibility, it is important to be able to pass information up and down the hierarchy. 
+Since controllers have differing levels of responsibility, it is important to be able to pass information up and down the hierarchy. 
 This is typically done using the childDone method
 that all such classes have. Data is passed as JSON through this method. The idea of the childDone method is to simulate a callback.
 In a later refactor, all childDone methods should be changed into callbacks.
 
-Constructing and setting up a presenter
+Constructing and setting up a controller
 -----------------------------------------
 
-Constructors take on two parameters, these being an owner (which presenter is responsible for it) a presenter factory. The presenter
+Constructors take on two parameters, these being an owner (which controller is responsible for it) a controller factory. The controller
 factory is passed as a dependency injection, and is done to facilitate unit testing.
 
-In order to set up a presenter, there are two parameters needed. A presenter needs an input model (JSON) and a JQuery selection.
-The JQuery selection is the placeholder that the presenter will populate, through construction of a view and sub-presenters
-(if it has any sub-presenters). An example JQuery selection is shown below:
+In order to set up a controller, there are two parameters needed. A controller needs an input model (JSON) and a JQuery selection.
+The JQuery selection is the placeholder that the controller will populate, through construction of a view and sub-controllers
+(if it has any sub-controllers). An example JQuery selection is shown below:
 
     this.jquerySelection = function () {
       return $('#content');
@@ -35,13 +35,13 @@ The JQuery selection is the placeholder that the presenter will populate, throug
 childDone
 -----------------
 
-All presenters have a childDone method which takes on a parent/child presenter (who finishes)
+All controllers have a childDone method which takes on a parent/child controller (who finishes)
 , an action (what has been done), and data (what information is relevant in JSON).
  
 An example childDone method looks like the following:
 
 	
-	ScanBarcodePresenter.prototype.childDone = function (child, action, data) {
+	ScanBarcodeController.prototype.childDone = function (child, action, data) {
 	  if (child === this.currentView){
         if (action == "barcodeScanned") {
           this.handleBarcode(data);
@@ -57,10 +57,10 @@ An example childDone method looks like the following:
       }
     };
     
-If this is called by its view, the action barcodeScanned will be given. This gives the instruction for the presenter to 
+If this is called by its view, the action barcodeScanned will be given. This gives the instruction for the controller to 
 handle the barcode that should be contained within the data. The below function shows what happens next:
 
-    ScanBarcodePresenter.prototype.handleBarcode = function (barcode) {
+    ScanBarcodeController.prototype.handleBarcode = function (barcode) {
       this.model.addBarcode(barcode);
     }
     
@@ -78,9 +78,9 @@ will be optimised when there is a fully functional framework in place.
 
 A typical chain may be as follows:
 
-- 1) Page presenter
-- 2) Labware presenter
-- 3) Tube presenter
+- 1) Page controller
+- 2) Labware controller
+- 3) Tube controller
 
 For example, when childDone is called in 3), a typical sequence of passing information may look like the following:
 3->2->1 (but never directly to 3)). When childDone is called in 3), this information must work its way up the chain. 1) has no knowledge of 3), so

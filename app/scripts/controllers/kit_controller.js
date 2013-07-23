@@ -59,13 +59,13 @@ define([
     }, 250);
   }
 
-  var Presenter = Object.create(Base);
+  var Controller = Object.create(Base);
 
-  _.extend(Presenter, {
+  _.extend(Controller, {
     register: function(callback) {
       callback('kit_controller', function() {
-        var instance = Object.create(Presenter);
-        Presenter.init.apply(instance, arguments);
+        var instance = Object.create(Controller);
+        Controller.init.apply(instance, arguments);
         return instance;
       });
     },
@@ -78,7 +78,7 @@ define([
       return this;
     },
 
-    setupPresenter: function(setupData, selector) {
+    setupController: function(setupData, selector) {
       var controller = this;
       controller.selector = selector;
       controller.model
@@ -88,11 +88,11 @@ define([
           .then(function(model){
           if(!model.batch.kit){
             controller.selector().html(_.template(kitPartialHtml)({}));
-            controller.barcodePresenter = controller.controllerFactory.create('scan_barcode_controller', controller);
-            controller.barcodePresenter.init({ type: 'Kit' });
+            controller.barcodeController = controller.controllerFactory.create('scan_barcode_controller', controller);
+            controller.barcodeController.init({ type: 'Kit' });
             controller.selector()
                 .find('.barcode')
-                .append(controller.bindReturnKey( controller.barcodePresenter.renderView(), kitScannedCallback(controller), kitScannedErrorCallback(controller)('Barcode must be a 22 digit number.'), validationOnReturnKeyCallback(controller) ));
+                .append(controller.bindReturnKey( controller.barcodeController.renderView(), kitScannedCallback(controller), kitScannedErrorCallback(controller)('Barcode must be a 22 digit number.'), validationOnReturnKeyCallback(controller) ));
             controller.selector().find('.barcode input').focus();
           }
           });
@@ -114,7 +114,7 @@ define([
       return this;
     },
 
-    initialPresenter: function() {
+    initialController: function() {
       // Does nothing, for the moment!
       this.owner.childDone(this, 'disableBtn', this.config);
     },
@@ -124,5 +124,5 @@ define([
 
   });
 
-  return Presenter;
+  return Controller;
 });

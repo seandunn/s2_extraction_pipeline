@@ -15,7 +15,7 @@ define([
   'extraction_pipeline/controllers/labware_controller',
   'extraction_pipeline/controllers/connected_controller',
 
-  // Presenters that add extra behaviour, for some reason
+  // Controllers that add extra behaviour, for some reason
   'extraction_pipeline/controllers/kit_controller',
   'extraction_pipeline/controllers/rack_scan_controller',
   'extraction_pipeline/controllers/reracking_controller',
@@ -27,11 +27,11 @@ define([
   'extraction_pipeline/controllers/manifest_maker_controller',
   'extraction_pipeline/controllers/manifest_reader_controller',
   'extraction_pipeline/controllers/summary_page_controller'
-], function(TubePresenter, SpinColumnPresenter, WasteTubePresenter, RackPresenter, GelPresenter, PlatePresenter) {
+], function(TubeController, SpinColumnController, WasteTubeController, RackController, GelController, PlateController) {
   'use strict';
 
-  var PresenterFactory = function () {
-    /* Construct an instance of PresenterFactory
+  var ControllerFactory = function () {
+    /* Construct an instance of ControllerFactory
      *
      * This is an implementation of the AbstractFactory pattern. The
      * intention of using the pattern is to allow controllers that create
@@ -42,23 +42,23 @@ define([
     return this;
   };
 
-  PresenterFactory.prototype.controllers = _.chain(arguments).drop(6).reduce(function(controllers, controller) {
+  ControllerFactory.prototype.controllers = _.chain(arguments).drop(6).reduce(function(controllers, controller) {
     controller.register(function(name, method) { controllers[name] = method; });
     return controllers;
   }, {
-    createSpinColumnPresenter: function(owner) { return new SpinColumnPresenter(owner, this); },
-    createTubePresenter:       function(owner) { return new TubePresenter(owner, this); },
-    createWasteTubePresenter:  function(owner) { return new WasteTubePresenter(owner, this); },
-    createGelPresenter:        function(owner) { return new GelPresenter(owner, this); },
-    createRackPresenter:       function(owner) { return new RackPresenter(owner, this); },
-    createPlatePresenter:      function(owner) { return new PlatePresenter(owner, this); }
+    createSpinColumnController: function(owner) { return new SpinColumnController(owner, this); },
+    createTubeController:       function(owner) { return new TubeController(owner, this); },
+    createWasteTubeController:  function(owner) { return new WasteTubeController(owner, this); },
+    createGelController:        function(owner) { return new GelController(owner, this); },
+    createRackController:       function(owner) { return new RackController(owner, this); },
+    createPlateController:      function(owner) { return new PlateController(owner, this); }
   }).value();
 
   // Function can take variable number of parameters, passing them onto the constructor function
   // for the named controller.  It is here to ensure that the first two arguments are always the
   // for the named controller.  It is here to ensure that the first two arguments are always the
   // owner and the factory with which the controller was registered.
-  PresenterFactory.prototype.create = function(name, owner) {
+  ControllerFactory.prototype.create = function(name, owner) {
     var constructor = this.controllers[name] || this.controllers.default;
     return $.extend(
       _.partial(constructor, owner, this).apply(null, _.chain(arguments).drop(2).value()),
@@ -66,17 +66,17 @@ define([
     );
   };
 
-  PresenterFactory.prototype.createLabwareSubPresenter = function(owner, type) {
+  ControllerFactory.prototype.createLabwareSubController = function(owner, type) {
     switch (type) {
-      case 'tube':        return this.controllers.createTubePresenter(owner);       break;
-      case 'spin_column': return this.controllers.createSpinColumnPresenter(owner); break;
-      case 'waste_tube':  return this.controllers.createWasteTubePresenter(owner);  break;
-      case 'tube_rack':   return this.controllers.createRackPresenter(owner);       break;
-      case 'gel':         return this.controllers.createGelPresenter(owner);        break;
-      case 'plate':       return this.controllers.createPlatePresenter(owner);      break;
+      case 'tube':        return this.controllers.createTubeController(owner);       break;
+      case 'spin_column': return this.controllers.createSpinColumnController(owner); break;
+      case 'waste_tube':  return this.controllers.createWasteTubeController(owner);  break;
+      case 'tube_rack':   return this.controllers.createRackController(owner);       break;
+      case 'gel':         return this.controllers.createGelController(owner);        break;
+      case 'plate':       return this.controllers.createPlateController(owner);      break;
       default:            debugger;
     }
   };
 
-  return PresenterFactory;
+  return ControllerFactory;
 });

@@ -4,16 +4,16 @@ define(['config'
   , 'extraction_pipeline/models/reracking_model'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/util'
-], function (config, BasePresenter, componentPartialHtml, Model, PubSub, Util) {
+], function (config, BaseController, componentPartialHtml, Model, PubSub, Util) {
   'use strict';
 
-  var Presenter = Object.create(BasePresenter);
+  var Controller = Object.create(BaseController);
 
-  $.extend(Presenter, {
+  $.extend(Controller, {
     register: function (callback) {
       callback('reracking_controller', function () {
-        var instance = Object.create(Presenter);
-        Presenter.init.apply(instance, arguments);
+        var instance = Object.create(Controller);
+        Controller.init.apply(instance, arguments);
         return instance;
       });
     },
@@ -33,7 +33,7 @@ define(['config'
     },
 
     createHtml: function (templateData) {
-      var thisPresenter = this;
+      var thisController = this;
       var html = $(_.template(componentPartialHtml)(templateData));
       this.outputSelection = html.find('#output');
       this.accordionSelection = html.find('#accordion');
@@ -46,9 +46,9 @@ define(['config'
       this.outputrackSelection = html.find('.output-labware');
       this.rackListSelection = html.find('#rack-list');
       this.barcodeReaderSelection = html.find("#barcodeReader");
-      var scanBarcodePresenter = this.factory.create('scan_barcode_controller', this).init({type: "labware"});
+      var scanBarcodeController = this.factory.create('scan_barcode_controller', this).init({type: "labware"});
       this.barcodeReaderSelection.append(
-          this.bindReturnKey(scanBarcodePresenter.renderView(),
+          this.bindReturnKey(scanBarcodeController.renderView(),
               labwareCallback,
               barcodeErrorCallback('Barcode must be a 13 digit number.'),
               validation)
@@ -64,9 +64,9 @@ define(['config'
         collapsible: true,
         heightStyle: "content"
       });
-      this.printRerackBtnSelection.click(onPrintRerackingEventHandler(thisPresenter));
-      this.rerackingBtnSelection.click(onRerackingEventHandler(thisPresenter));
-      this.startRerackingBtnSelection.click(onStartRerackingEventHandler(thisPresenter));
+      this.printRerackBtnSelection.click(onPrintRerackingEventHandler(thisController));
+      this.rerackingBtnSelection.click(onRerackingEventHandler(thisController));
+      this.startRerackingBtnSelection.click(onStartRerackingEventHandler(thisController));
       return html;
 
       function onPrintRerackingEventHandler(controller) {
@@ -89,7 +89,7 @@ define(['config'
           return $("<h4/>", {class: "alert-heading", text: errorText});
         };
         return function (event, template, controller) {
-          thisPresenter.message('error', errorText);
+          thisController.message('error', errorText);
           template
               .find('input')
               .val(''); // clear the input
@@ -98,27 +98,27 @@ define(['config'
 
       function labwareCallback(event, template, controller) {
         template.find('.alert-error').addClass('hide');
-        thisPresenter.labwareScannedHandler(Util.pad(event.currentTarget.value));
-        thisPresenter.barcodeReaderSelection.find('input').val(''); // clear the input
+        thisController.labwareScannedHandler(Util.pad(event.currentTarget.value));
+        thisController.barcodeReaderSelection.find('input').val(''); // clear the input
       }
 
       function validation(element, callback, errorCallback) {
         return function (event) {
           if (event.which !== 13) return;
           if (event.currentTarget.value.length === 13) {
-            callback(event, element, thisPresenter);
+            callback(event, element, thisController);
           } else {
-            errorCallback(event, element, thisPresenter);
+            errorCallback(event, element, thisController);
           }
         }
       }
     },
 
     subscribeToPubSubEvents: function () {
-      var thisPresenter = this;
+      var thisController = this;
       PubSub.subscribe("s2.reception.reset_view", resetViewEventHandler);
       function resetViewEventHandler(event, source, eventData) {
-        thisPresenter.reset();
+        thisController.reset();
       }
     },
 
@@ -129,8 +129,8 @@ define(['config'
       this.accordionSelection.accordion("option","active", 0);
       this.rackListSelection.empty();
       this.startRerackingBtnSelection.hide();
-      this.rackPresenters = [];
-      delete this.outputRackPresenter;
+      this.rackControllers = [];
+      delete this.outputRackController;
       this.outputrackSelection.hide();
       this.outputSelection.hide();
       this.printRerackBtnSelection.hide();
@@ -147,64 +147,64 @@ define(['config'
     },
 
     labwareScannedHandler: function (barcode) {
-      var thisPresenter = this;
-      thisPresenter.rackPresenters = [];
-      thisPresenter.model
+      var thisController = this;
+      thisController.rackControllers = [];
+      thisController.model
           .fail(function () {
-            thisPresenter.message('error', "Impossible to load the model!");
+            thisController.message('error', "Impossible to load the model!");
           })
           .then(function (model) {
-            thisPresenter.view.trigger("s2.busybox.start_process");
+            thisController.view.trigger("s2.busybox.start_process");
 
             return model.addRack(barcode);
           })
           .fail(function (error) {
-            thisPresenter.view.trigger("s2.busybox.end_process");
+            thisController.view.trigger("s2.busybox.end_process");
 
-            thisPresenter.message('error', error.message);
+            thisController.message('error', error.message);
           })
           .then(function (model) {
             // creates the rack list from the loaded racks
-            thisPresenter.rackPresenters = [];
+            thisController.rackControllers = [];
             var rackList = _.map(model.inputRacks, function (rack, index) {
-              var rackPresenter = thisPresenter.factory.create('labware_controller', thisPresenter);
+              var rackController = thisController.factory.create('labware_controller', thisController);
               function selection(s) {
                 return function () {
-                  return thisPresenter.rackListSelection.find(s);
+                  return thisController.rackListSelection.find(s);
                 }
               }
-              thisPresenter.rackPresenters.push(rackPresenter);
-              thisPresenter.rackListSelection.find();
-              rackPresenter.setupPresenter({
+              thisController.rackControllers.push(rackController);
+              thisController.rackListSelection.find();
+              rackController.setupController({
                 "expected_type":   "tube_rack",
                 "display_labware": true,
                 "display_remove":  false,
                 "display_barcode": false
               }, selection("li:nth(" + index + ")"));
               var listItem = "<li>" + rack.labels.barcode.value + "</li>";
-              return {"item": listItem, controller: rackPresenter, rackData: rack};
+              return {"item": listItem, controller: rackController, rackData: rack};
             });
             var listItems = _.pluck(rackList, "item");
-            thisPresenter.rackListSelection.empty().append(listItems);
+            thisController.rackListSelection.empty().append(listItems);
             _.each(rackList, function (rackItem) {
               rackItem.controller.renderView();
               rackItem.controller.updateModel(rackItem.rackData);
             });
             if (model.isReady) {
               // ready to merge
-              thisPresenter.startRerackingBtnSelection.show();
+              thisController.startRerackingBtnSelection.show();
             }
-            thisPresenter.view.trigger("s2.busybox.end_process");
+            thisController.view.trigger("s2.busybox.end_process");
           });
     },
 
     enableDropzone: function () {
-      var thisPresenter = this;
+      var thisController = this;
       // add listeners to the hiddenFileInput
-      thisPresenter.dropzoneSelection.bind('click', handleClickOnDropZone); // forward the click to the hiddenFileInput
-      thisPresenter.dropzoneSelection.bind('drop', handleDropFileOnDropZone);
-      thisPresenter.dropzoneSelection.bind('dragover', handleDragFileOverDropZone);
-      thisPresenter.hiddenFileInputSelection.bind("change", handleInputFileChanged);
+      thisController.dropzoneSelection.bind('click', handleClickOnDropZone); // forward the click to the hiddenFileInput
+      thisController.dropzoneSelection.bind('drop', handleDropFileOnDropZone);
+      thisController.dropzoneSelection.bind('dragover', handleDragFileOverDropZone);
+      thisController.hiddenFileInputSelection.bind("change", handleInputFileChanged);
       //
       function handleInputFile(fileHandle) {
         // what to do when a file has been selected
@@ -215,7 +215,7 @@ define(['config'
         })(fileHandle);
         reader.onloadend = function (event) {
           if (event.target.readyState === FileReader.DONE) {
-            thisPresenter.responderCallback(event.target.result);
+            thisController.responderCallback(event.target.result);
           }
         };
         reader.readAsText(fileHandle, "UTF-8");
@@ -234,8 +234,8 @@ define(['config'
         // what to do when one clicks on the drop zone
         event.stopPropagation();
         event.preventDefault();
-        if (thisPresenter.hiddenFileInputSelection) {
-          thisPresenter.hiddenFileInputSelection.click();
+        if (thisController.hiddenFileInputSelection) {
+          thisController.hiddenFileInputSelection.click();
         }
       }
 
@@ -252,10 +252,10 @@ define(['config'
         // what to do when one hovers over the dropzone
         event.stopPropagation();
         event.preventDefault();
-        if (event.target === thisPresenter.dropzoneSelection[0]) {
-          thisPresenter.dropzoneSelection.addClass('hover');
+        if (event.target === thisController.dropzoneSelection[0]) {
+          thisController.dropzoneSelection.addClass('hover');
         } else {
-          thisPresenter.dropzoneSelection.removeClass('hover');
+          thisController.dropzoneSelection.removeClass('hover');
         }
       }
     },
@@ -269,58 +269,58 @@ define(['config'
 
     responderCallback: function (fileContent) {
       var deferred = $.Deferred();
-      var thisPresenter = this;
-      thisPresenter.model
+      var thisController = this;
+      thisController.model
           .then(function (model) {
-            thisPresenter.message();
-            thisPresenter.view.trigger("s2.busybox.start_process");
+            thisController.message();
+            thisController.view.trigger("s2.busybox.start_process");
             return model.setFileContent(fileContent);
           })
           .fail(function (error) {
-            thisPresenter.view.trigger("s2.busybox.end_process");
-            thisPresenter.message('error', error.message);
+            thisController.view.trigger("s2.busybox.end_process");
+            thisController.message('error', error.message);
             deferred.reject();
           })
           .then(function (model) {
-            thisPresenter.view.trigger("s2.busybox.end_process");
-            thisPresenter.message('success', 'File loaded successfully.');
-            thisPresenter.outputrackSelection.show();
-            thisPresenter.outputRackPresenter = thisPresenter.factory.create('labware_controller', thisPresenter);
-            thisPresenter.outputRackPresenter.setupPresenter({
+            thisController.view.trigger("s2.busybox.end_process");
+            thisController.message('success', 'File loaded successfully.');
+            thisController.outputrackSelection.show();
+            thisController.outputRackController = thisController.factory.create('labware_controller', thisController);
+            thisController.outputRackController.setupController({
               "expected_type":   "tube_rack",
               "display_labware": true,
               "display_remove":  false,
               "display_barcode": false
             }, function () {
-              return thisPresenter.outputrackSelection;
+              return thisController.outputrackSelection;
             });
-            thisPresenter.outputrackSelection.empty();
-            thisPresenter.outputRackPresenter.renderView();
-            thisPresenter.outputRackPresenter.updateModel(model.outputRack);
-            thisPresenter.disableDropZone();
-            deferred.resolve(thisPresenter);
+            thisController.outputrackSelection.empty();
+            thisController.outputRackController.renderView();
+            thisController.outputRackController.updateModel(model.outputRack);
+            thisController.disableDropZone();
+            deferred.resolve(thisController);
           });
       return deferred.promise();
     },
 
     onPrintBarcode: function () {
-      var thisPresenter = this;
+      var thisController = this;
       this.model
           .then(function (model) {
-            thisPresenter.view.trigger("s2.busybox.start_process");
-            return model.printRackBarcode(thisPresenter.view.find('#printer-select').val());
+            thisController.view.trigger("s2.busybox.start_process");
+            return model.printRackBarcode(thisController.view.find('#printer-select').val());
           })
           .fail(function (error) {
-            thisPresenter.view.trigger("s2.busybox.end_process");
-            return thisPresenter.message('error', "Couldn't print the barcodes!");
+            thisController.view.trigger("s2.busybox.end_process");
+            return thisController.message('error', "Couldn't print the barcodes!");
           })
           .then(function () {
-            thisPresenter.view.trigger("s2.busybox.end_process");
-            thisPresenter.outputSelection.show();
-            thisPresenter.startRerackingBtnSelection.hide();
-            thisPresenter.accordionSelection.find("h3:nth(2)").show();
-            thisPresenter.accordionSelection.accordion("option", "active", 2);
-            return thisPresenter.message('success', "The barcodes have been sent to printer.");
+            thisController.view.trigger("s2.busybox.end_process");
+            thisController.outputSelection.show();
+            thisController.startRerackingBtnSelection.hide();
+            thisController.accordionSelection.find("h3:nth(2)").show();
+            thisController.accordionSelection.accordion("option", "active", 2);
+            return thisController.message('success', "The barcodes have been sent to printer.");
           });
     },
 
@@ -333,20 +333,20 @@ define(['config'
     },
 
     onReracking: function () {
-      var thisPresenter = this;
+      var thisController = this;
       this.model
           .then(function (model) {
-            thisPresenter.view.trigger("s2.busybox.start_process");
+            thisController.view.trigger("s2.busybox.start_process");
             return model.rerack();
           })
           .fail(function (error) {
-            thisPresenter.view.trigger("s2.busybox.end_process");
-            return thisPresenter.message('error', "Couldn't rerack! Please contact the administrator. " + error.message);
+            thisController.view.trigger("s2.busybox.end_process");
+            return thisController.message('error', "Couldn't rerack! Please contact the administrator. " + error.message);
           })
           .then(function () {
-            thisPresenter.view.trigger("s2.busybox.end_process");
-            thisPresenter.rerackingBtnSelection.hide();
-            return thisPresenter.message('success', "Reracking completed.");
+            thisController.view.trigger("s2.busybox.end_process");
+            thisController.rerackingBtnSelection.hide();
+            return thisController.message('success', "Reracking completed.");
           });
     },
 
@@ -372,6 +372,6 @@ define(['config'
     }
   });
 
-  return Presenter;
+  return Controller;
 });
 

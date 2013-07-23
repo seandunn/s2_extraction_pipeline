@@ -80,17 +80,17 @@ define([
       this.owner.childDone(this, "userAdded");
     },
 
-    setupInputPresenters: function(reset) {
+    setupInputControllers: function(reset) {
       var that = this;
       return this.owner.getS2Root()
             .then(function(root){
               // Becareful! inputs is not a promise!
               return that.inputs.then(function(inputs) {
-              that.owner.rowPresenters = _.chain(inputs).map(function (input, index) {
+              that.owner.rowControllers = _.chain(inputs).map(function (input, index) {
                 var input = reset ? undefined : input;
-                var rowPresenter = that.owner.controllerFactory.create('row_controller', that.owner);
-                rowPresenter.setupPresenter(that.getRowModel(root,index, input), selectorFunction(that.owner, index));
-                return rowPresenter;
+                var rowController = that.owner.controllerFactory.create('row_controller', that.owner);
+                rowController.setupController(that.getRowModel(root,index, input), selectorFunction(that.owner, index));
+                return rowController;
               }).value();
             });
           });
