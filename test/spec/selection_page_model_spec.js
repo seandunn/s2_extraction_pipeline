@@ -57,7 +57,7 @@ define([
       "purpose":"stock",
       "model":"tube"
     }],
-    "presenter_name":"selection_page_presenter",
+    "controller_name":"selection_page_controller",
     "behaviours": {
       "transfer": "row_by_row",
       "complete": "page_complete"

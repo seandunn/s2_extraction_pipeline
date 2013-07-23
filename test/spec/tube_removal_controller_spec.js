@@ -1,12 +1,12 @@
-define(['presenters/tube_removal_presenter'], function(TubeRemovalPresenter) {
+define(['controllers/tube_removal_controller'], function(TubeRemovalController) {
   'use strict';
 
-  describe('TubeRemovalPresenter', function() {
-    describe('default presenter setup', function() {
+  describe('TubeRemovalController', function() {
+    describe('default controller setup', function() {
 
       var createFakeOwner = function() {
 	var fakeOwner = {
-	  childDone: function(presenter, action, data) {}
+	  childDone: function(controller, action, data) {}
 	};
 
 	spyOn(fakeOwner, 'childDone');
@@ -15,11 +15,11 @@ define(['presenters/tube_removal_presenter'], function(TubeRemovalPresenter) {
 
       it("child done delegates removeTube message to owner", function() {
 	var owner = createFakeOwner(),
-	presenter = new TubeRemovalPresenter(owner);
+	controller = new TubeRemovalController(owner);
 	
-	presenter.childDone(presenter, "removeTube", "fakeData");
+	controller.childDone(controller, "removeTube", "fakeData");
 
-	expect(owner.childDone).toHaveBeenCalledWith(presenter, "removeTube", "fakeData");
+	expect(owner.childDone).toHaveBeenCalledWith(controller, "removeTube", "fakeData");
       });
     });
   });

@@ -16,7 +16,7 @@ require.config({
     extraction_pipeline:  'scripts/',
     views:                'scripts/views',
     models:               'scripts/models',
-    presenters:           'scripts/presenters',
+    controllers:           'scripts/controllers',
     config:               'test_config',
     spec:                 'spec/',
     lib:                  'lib/',
