@@ -1,22 +1,22 @@
-define(['extraction_pipeline/presenters/base_presenter'
+define(['extraction_pipeline/controllers/base_controller'
   , 'extraction_pipeline/models/summary_page_model'
   , 'text!extraction_pipeline/html_partials/summary_page_partial.html'
   , 'extraction_pipeline/lib/pubsub'
-], function (BasePresenter, Model, summaryPagePartialHtml, PubSub) {
+], function (BaseController, Model, summaryPagePartialHtml, PubSub) {
 
-  var SummaryPagePresenter = Object.create(BasePresenter);
+  var SummaryPageController = Object.create(BaseController);
 
-  $.extend(SummaryPagePresenter, {
+  $.extend(SummaryPageController, {
     register: function (callback) {
-      callback('summary_page_presenter', function (owner, factory, initData) {
-        return Object.create(SummaryPagePresenter).init(owner, factory, initData);
+      callback('summary_page_controller', function (owner, factory, initData) {
+        return Object.create(SummaryPageController).init(owner, factory, initData);
       });
     },
 
     init: function (owner, factory, config) {
       this.owner = owner;
       this.config = config;
-      this.presenterFactory = factory;
+      this.controllerFactory = factory;
       this.model = Object.create(Model).init(this, config);
 
       // page is refreshed after 5 seconds
@@ -27,47 +27,47 @@ define(['extraction_pipeline/presenters/base_presenter'
       return this;
     },
 
-    setupPresenter: function (setupData, jquerySelection) {
-      var thisPresenter = this;
-      thisPresenter.jquerySelection = jquerySelection;
+    setupController: function (setupData, jquerySelection) {
+      var thisController = this;
+      thisController.jquerySelection = jquerySelection;
 
-      thisPresenter.model
+      thisController.model
         .then(function (model) {
           //return model.setupModel(setupData);
         })
         .then(function () {
-          thisPresenter.renderView();
+          thisController.renderView();
         });
       return this;
     },
 
     renderView: function () {
-      var thisPresenter = this;
+      var thisController = this;
       var template = _.template(summaryPagePartialHtml);
 
       var templateData = {};
-      if (thisPresenter.config.spentBatch){
+      if (thisController.config.spentBatch){
         templateData.information = "The current batch is spent. This page will reload in 5 seconds. Once reloaded, scan your current labware to continue the process.";
       }
       else {
         templateData.information = "No role has been found for this process. This page will reload in 5 seconds.";
       }
-      templateData.config = thisPresenter.config;
+      templateData.config = thisController.config;
 //      var model;
 
       // This is not leftover code. This has been commented out
       // to disable a summary table that may be used later.
-      thisPresenter.model
+      thisController.model
 //        .then(function (result) {
 //          model = result;
 //          return model.labwares;
 //        })
 //        .fail(function (error) {
-//          thisPresenter.message('error', 'Labware not found for this batch');
+//          thisController.message('error', 'Labware not found for this batch');
 //        })
         .then(function (labwares) {
 //          templateData.items = transformOrdersAndLabwareToHtmlTemplateData(model.ordersByUUID, labwares, model.batch.uuid);
-          thisPresenter.jquerySelection().html(template(templateData));
+          thisController.jquerySelection().html(template(templateData));
         });
 
       return this;
@@ -143,5 +143,5 @@ define(['extraction_pipeline/presenters/base_presenter'
     });
   }
 
-  return SummaryPagePresenter;
+  return SummaryPageController;
 });

@@ -80,23 +80,23 @@ define([
       this.owner.childDone(this, "userAdded");
     },
 
-    setupInputPresenters: function(reset) {
+    setupInputControllers: function(reset) {
       var that = this;
       return this.owner.getS2Root()
             .then(function(root){
               // Becareful! inputs is not a promise!
               return that.inputs.then(function(inputs) {
-              that.owner.rowPresenters = _.chain(inputs).map(function (input, index) {
+              that.owner.rowControllers = _.chain(inputs).map(function (input, index) {
                 var input = reset ? undefined : input;
-                var rowPresenter = that.owner.presenterFactory.create('row_presenter', that.owner);
-                rowPresenter.setupPresenter(that.getRowModel(root,index, input), selectorFunction(that.owner, index));
-                return rowPresenter;
+                var rowController = that.owner.controllerFactory.create('row_controller', that.owner);
+                rowController.setupController(that.getRowModel(root,index, input), selectorFunction(that.owner, index));
+                return rowController;
               }).value();
             });
           });
-      function selectorFunction(presenter, row) {
+      function selectorFunction(controller, row) {
         return function() {
-          return presenter.jquerySelection().find('.row' + row);
+          return controller.jquerySelection().find('.row' + row);
         };
       }
     },
@@ -273,7 +273,7 @@ define([
       });
     },
 
-    operate: function(happeningAt, presenters) {
+    operate: function(happeningAt, controllers) {
       var that = this;
       var s2root;
 
@@ -285,14 +285,14 @@ define([
         // STEP 2: Retrieve the items for the batch we're working with
         return that.batch.items;
       }).then(function(items) {
-        // STEP 3: Map the presenters to the appropriate transfers that are required
+        // STEP 3: Map the controllers to the appropriate transfers that are required
         var sourceToOrder = _.chain(items).reduce(function(memo, item) {
           memo[item.uuid] = item.order;
           return memo;
         }, {}).value();
 
-        return _.chain(presenters).reduce(function(memo, presenter) {
-          presenter.handleResources(function(source) {
+        return _.chain(controllers).reduce(function(memo, controller) {
+          controller.handleResources(function(source) {
             var operation = _.chain(arguments).drop(1).map(function(destination, index) {
               // if not_batch === true -> undefined
               // if not_batch === false -> that.batch.uuid
@@ -364,7 +364,7 @@ define([
       }).then(function(operation) {
         // STEP 6: Finally perform the operation and report the final completion
         operation.operation().then(function () {
-          that.owner.childDone(that, 'successfulOperation', presenters);
+          that.owner.childDone(that, 'successfulOperation', controllers);
         }).fail(function() {
           that.owner.childDone(that, 'failedOperation', {});
         });

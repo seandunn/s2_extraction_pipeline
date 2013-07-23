@@ -22,10 +22,10 @@ require.config({
 });
 
 require(['extraction_pipeline/app',
-  'extraction_pipeline/presenters/presenter_factory'
-], function (App, PresenterFactory) {
+  'extraction_pipeline/controllers/controller_factory'
+], function (App, ControllerFactory) {
 
-    var theApp = new App(new PresenterFactory());
+    var theApp = new App(new ControllerFactory());
 
 });
 

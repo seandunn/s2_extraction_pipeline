@@ -4,22 +4,22 @@ define([
   , 'mapper_test/resource_test_helper'
   , 'mapper/s2_root'
   , 'models/selection_page_model'
-  , 'presenters/selection_page_presenter'
-  , 'presenters/presenter_factory'
+  , 'controllers/selection_page_controller'
+  , 'controllers/controller_factory'
   , 'extraction_pipeline/lib/pubsub'
   , 'text!mapper_testjson/unit/root.json'
   , 'text!pipeline_testjson/selection_page_data.json'
 ], function (config, FakeUser, TestHelper, S2Root, SelectionPageModel,
-             SelectionPagePresenter, PresenterFactory, PubSub,
+             SelectionPageController, ControllerFactory, PubSub,
              rootTestData, selectionPageData) {
   'use strict';
 
 
   TestHelper(function (results) {
 
-    describe("Selection page presenter", function () {
+    describe("Selection page controller", function () {
 
-      var s2Root, app, presenter, fakeContent, $fakeDOM;
+      var s2Root, app, controller, fakeContent, $fakeDOM;
 
       beforeEach(function () {
         app = {
@@ -41,7 +41,7 @@ define([
           }
         };
 
-        var presenterName = "selection_page_presenter";
+        var controllerName = "selection_page_controller";
 
         $fakeDOM = $('<div><div id="content"/></div>');
 
@@ -51,7 +51,7 @@ define([
 
         var initData = {
           "accepts":       [ "samples.extraction.manual.dna_and_rna.input_tube_nap" ],
-          "presenterName": "selection_page_presenter",
+          "controllerName": "selection_page_controller",
           "processTitle":  "Manual DNA and RNA Extraction",
           "input":         {
             "role":  "samples.extraction.manual.dna_and_rna.input_tube_nap",
@@ -64,8 +64,8 @@ define([
             }
           ]
         };
-        var pf = new PresenterFactory();
-        presenter = pf.create(presenterName, app, initData);
+        var pf = new ControllerFactory();
+        controller = pf.create(controllerName, app, initData);
       });
 
       describe("which is given one tube", function () {
@@ -96,7 +96,7 @@ define([
 
           runs(function () {
             results.resetFinishedFlag();
-            presenter.setupPresenter(model, function () {
+            controller.setupController(model, function () {
               return fakeContent();
             });
             results.expected();

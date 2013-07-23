@@ -4,10 +4,10 @@ define(['config'
 ], function (appConfig, BarcodeChecker, Util) {
   'use strict';
 
-  var BasePresenter = Object.create(null);
+  var BaseController = Object.create(null);
 
-  $.extend(BasePresenter, {
-    // This should be registered with model not presenter
+  $.extend(BaseController, {
+    // This should be registered with model not controller
     getS2Root: function(user) { return this.owner.getS2Root(user); },
 
     setupPlaceholder:function (jquerySelection) {
@@ -16,7 +16,7 @@ define(['config'
     },
 
     bindReturnKey: function (element, successCallback, errorCallback, validationCallback) {
-      var thisPresenter = this;
+      var thisController = this;
 
       function setScannerTimeout(barcodeSelection){
         setTimeout(function () {
@@ -35,9 +35,9 @@ define(['config'
           if (_.some(BarcodeChecker, function (validationCallback) {
             return validationCallback(Util.pad(value));
           })) {
-            callback(value, element, thisPresenter);
+            callback(value, element, thisController);
           } else {
-            errorCallback(value, element, thisPresenter);
+            errorCallback(value, element, thisController);
           }
         }
       };
@@ -52,5 +52,5 @@ define(['config'
     }
   });
 
-  return BasePresenter;
+  return BaseController;
 });

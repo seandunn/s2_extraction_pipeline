@@ -1,20 +1,20 @@
 define(['config'
-  , 'extraction_pipeline/presenters/base_presenter'
+  , 'extraction_pipeline/controllers/base_controller'
   , 'text!extraction_pipeline/html_partials/manifest_reader_partial.html'
   , 'text!extraction_pipeline/html_partials/sample_row_partial.html'
   , 'extraction_pipeline/models/manifest_reader_model'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/reception_templates'
-], function (config, BasePresenter, componentPartialHtml, sampleRowPartial, Model, PubSub, ReceptionTemplates) {
+], function (config, BaseController, componentPartialHtml, sampleRowPartial, Model, PubSub, ReceptionTemplates) {
   'use strict';
 
-  var Presenter = Object.create(BasePresenter);
+  var Controller = Object.create(BaseController);
 
-  $.extend(Presenter, {
+  $.extend(Controller, {
     register: function (callback) {
-      callback('manifest_reader_presenter', function () {
-        var instance = Object.create(Presenter);
-        Presenter.init.apply(instance, arguments);
+      callback('manifest_reader_controller', function () {
+        var instance = Object.create(Controller);
+        Controller.init.apply(instance, arguments);
         return instance;
       });
     },
@@ -41,9 +41,9 @@ define(['config'
 
       this.enableDropzone();
       this.registerBtnSelection.hide().click(onRegistrationButtonClickEventHandler(this));
-      function onRegistrationButtonClickEventHandler(presenter) {
+      function onRegistrationButtonClickEventHandler(controller) {
         return function () {
-          presenter.onRegisterButtonClick();
+          controller.onRegisterButtonClick();
         }
       }
 
@@ -51,10 +51,10 @@ define(['config'
     },
 
     subscribeToPubSubEvents: function () {
-      var thisPresenter = this;
+      var thisController = this;
       PubSub.subscribe("s2.reception.reset_view", resetViewEventHandler);
       function resetViewEventHandler(event, source, eventData) {
-        thisPresenter.reset();
+        thisController.reset();
       }
     },
 
@@ -73,24 +73,24 @@ define(['config'
     // dropzone
 
     enableDropzone: function () {
-      var thisPresenter = this;
+      var thisController = this;
       // add listeners to the hiddenFileInput
-      thisPresenter.dropzoneSelection.bind('click', handleClickOnDropZone); // forward the click to the hiddenFileInput
-      thisPresenter.dropzoneSelection.bind('drop', handleDropFileOnDropZone);
-      thisPresenter.dropzoneSelection.bind('dragover', handleDragFileOverDropZone);
-      thisPresenter.hiddenFileInputSelection.bind("change", handleInputFileChanged);
+      thisController.dropzoneSelection.bind('click', handleClickOnDropZone); // forward the click to the hiddenFileInput
+      thisController.dropzoneSelection.bind('drop', handleDropFileOnDropZone);
+      thisController.dropzoneSelection.bind('dragover', handleDragFileOverDropZone);
+      thisController.hiddenFileInputSelection.bind("change", handleInputFileChanged);
       //
       function handleInputFile(fileHandle) {
         // what to do when a file has been selected
         var reader = new FileReader();
         reader.onload = (function (fileEvent) {
           return function (e) {
-            thisPresenter.fileNameSpanSelection.text(fileHandle.name);
+            thisController.fileNameSpanSelection.text(fileHandle.name);
           }
         })(fileHandle);
         reader.onloadend = function (event) {
           if (event.target.readyState === FileReader.DONE) {
-            thisPresenter.responderCallback(event.target.result);
+            thisController.responderCallback(event.target.result);
           }
         };
         reader.readAsText(fileHandle, "UTF-8");
@@ -109,8 +109,8 @@ define(['config'
         // what to do when one clicks on the drop zone
         event.stopPropagation();
         event.preventDefault();
-        if (thisPresenter.hiddenFileInputSelection) {
-          thisPresenter.hiddenFileInputSelection.click();
+        if (thisController.hiddenFileInputSelection) {
+          thisController.hiddenFileInputSelection.click();
         }
       }
 
@@ -127,36 +127,36 @@ define(['config'
         // what to do when one hovers over the dropzone
         event.stopPropagation();
         event.preventDefault();
-        if (event.target === thisPresenter.dropzoneSelection[0]) {
-          thisPresenter.dropzoneSelection.addClass('hover');
+        if (event.target === thisController.dropzoneSelection[0]) {
+          thisController.dropzoneSelection.addClass('hover');
         } else {
-          thisPresenter.dropzoneSelection.removeClass('hover');
+          thisController.dropzoneSelection.removeClass('hover');
         }
       }
     },
 
     responderCallback: function (fileContent) {
       var deferred = $.Deferred();
-      var thisPresenter = this;
-      thisPresenter.model
+      var thisController = this;
+      thisController.model
           .then(function (model) {
-            thisPresenter.message();
-            thisPresenter.view.trigger("s2.busybox.start_process");
+            thisController.message();
+            thisController.view.trigger("s2.busybox.start_process");
             return model.setFileContent(fileContent);
           })
           .fail(function (error) {
-            thisPresenter.view.trigger("s2.busybox.end_process");
-            thisPresenter.message('error', error.message);
+            thisController.view.trigger("s2.busybox.end_process");
+            thisController.message('error', error.message);
             deferred.reject();
           })
           .then(function (model) {
-            thisPresenter.registerBtnSelection.show();
-            thisPresenter.createSamplesView(model);
-            thisPresenter.hiddenFileInputSelection.attr('disabled', 'disabled');
-//            thisPresenter.barcodeReaderSelection.find('.barcodeInput').focus(); // does not work!!??
-            thisPresenter.view.trigger("s2.busybox.end_process");
-            thisPresenter.message('success', 'File loaded successfully.');
-            deferred.resolve(thisPresenter);
+            thisController.registerBtnSelection.show();
+            thisController.createSamplesView(model);
+            thisController.hiddenFileInputSelection.attr('disabled', 'disabled');
+//            thisController.barcodeReaderSelection.find('.barcodeInput').focus(); // does not work!!??
+            thisController.view.trigger("s2.busybox.end_process");
+            thisController.message('success', 'File loaded successfully.');
+            deferred.resolve(thisController);
           });
       return deferred.promise();
     },
@@ -246,7 +246,7 @@ define(['config'
     // register btn
 
     onRegisterButtonClick: function () {
-      var thisPresenter = this;
+      var thisController = this;
 
       // prevent user from clicking multiple times
       if (this.registerBtnClicked) return;
@@ -255,8 +255,8 @@ define(['config'
 
       this.model
           .then(function (model) {
-            thisPresenter.view.trigger("s2.busybox.start_process");
-            var rows = thisPresenter.orderMakerSelection.find("tbody tr.selectedRow");
+            thisController.view.trigger("s2.busybox.start_process");
+            var rows = thisController.orderMakerSelection.find("tbody tr.selectedRow");
 
             var dataFromGUI = $.makeArray(rows.map(function(){
               var sample = {};
@@ -278,16 +278,16 @@ define(['config'
             return model.updateSamples(dataFromGUI);
           })
           .fail(function (error) {
-            thisPresenter.view.trigger("s2.busybox.end_process");
-            thisPresenter.registerBtnClicked = false;
-            thisPresenter.registerBtnSelection.removeAttr('disabled');
-            return thisPresenter.message('error', 'Something wrong happened : ' + error.message);
+            thisController.view.trigger("s2.busybox.end_process");
+            thisController.registerBtnClicked = false;
+            thisController.registerBtnSelection.removeAttr('disabled');
+            return thisController.message('error', 'Something wrong happened : ' + error.message);
           })
           .then(function (model) {
-            thisPresenter.registerBtnSelection.hide();
-            thisPresenter.dropzoneBoxSelection.hide();
-            thisPresenter.view.trigger("s2.busybox.end_process");
-            return thisPresenter.message('success', 'Samples updated.');
+            thisController.registerBtnSelection.hide();
+            thisController.dropzoneBoxSelection.hide();
+            thisController.view.trigger("s2.busybox.end_process");
+            return thisController.message('success', 'Samples updated.');
           })
     },
 
@@ -309,7 +309,7 @@ define(['config'
     }
   });
 
-  return Presenter;
+  return Controller;
 
   function disableRow(tr) {
     tr.find("select").attr("disabled", true);

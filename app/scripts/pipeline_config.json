@@ -57,8 +57,8 @@
 
     {
       "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_nap.awaiting_reception" ],
-      "presenterName":"selection_page_presenter",
-      "processTitle": "Manual DNA and RNA Extraction - Register Samples",
+      "controllerName":"selection_page_controller",
+      "processTitle": "Manual DNA and RNA Extraction - Receive Tubes",
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.manual_dna_and_rna.input_tube_nap.awaiting_reception",
@@ -77,7 +77,7 @@
 
     {
     "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_nap" ],
-    "presenterName":"selection_page_presenter",
+    "controllerName":"selection_page_controller",
     "processTitle": "Manual DNA and RNA Extraction",
     "input":        {
       "role":"samples.extraction.manual_dna_and_rna.input_tube_nap",
@@ -96,19 +96,19 @@
   {
     "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_nap.batched" ],
     "processTitle":  "Manual DNA and RNA Binding",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print spin column & labels" },
       { "action": "next",  "title": "Done" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName": "kit_presenter",
+      "controllerName": "kit_controller",
       "kitType":       "DNA & RNA"
     }, {
-      "presenterName": "connected_presenter",
+      "controllerName": "connected_controller",
       "behaviours": {
         "start": "row",
         "operate": "row",
@@ -144,16 +144,16 @@
   {
     "accepts": [ "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap" ],
     "processTitle":  "Manual DNA and RNA Collection Tube Transfer",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
       { "action": "next",  "title": "Done" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start": "row",
         "operate": "row",
@@ -183,19 +183,19 @@
   {
     "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_rnap.batched" ],
     "processTitle":  "Manual DNA and RNA Binding, Input tube RNA+P",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print spin column labels" },
       { "action": "next",  "title": "Done" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName": "kit_presenter",
+      "controllerName": "kit_controller",
       "kitType":       "DNA & RNA"
     }, {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start": "row",
         "operate": "row",
@@ -226,17 +226,17 @@
   {
     "accepts": [ "samples.extraction.manual_dna_and_rna.spin_column_dna" ],
     "processTitle":  "Manual Extraction Spin Column DNA Transfer",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
       { "action": "start", "title": "Start elution process" },
       { "action": "end",   "title": "Elution process completed" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start": "start",
         "operate": "start",
@@ -266,19 +266,19 @@
   {
     "accepts": [ "samples.extraction.manual_rna_only.input_tube_rnap.batched" ],
     "processTitle":  "Manual RNA Only Binding, Input tube RNA+P",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print spin column labels" },
       { "action": "next",  "title": "Done" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName": "kit_presenter",
+      "controllerName": "kit_controller",
       "kitType":       "RNA"
     }, {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start": "row",
         "operate": "row",
@@ -309,17 +309,17 @@
   {
     "accepts": [ "samples.extraction.manual_dna_and_rna.spin_column_rna" ],
     "processTitle":  "Manual Extraction Spin Column RNA Transfer",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
       { "action": "start", "title": "Start elution process" },
       { "action": "end",   "title": "Elution process completed" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start": "start",
         "operate": "start",
@@ -350,17 +350,16 @@
   {
     "accepts": [ "samples.extraction.manual_rna_only.spin_column_rna" ],
     "processTitle":  "Manual Extraction Spin Column RNA Transfer",
-    "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
       { "action": "start", "title": "Start elution process" },
       { "action": "end",   "title": "Elution process completed" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start": "start",
         "operate": "start",
@@ -389,8 +388,8 @@
 
     {
       "accepts": [ "samples.extraction.manual_dna_only.input_tube_dnap.awaiting_reception" ],
-      "presenterName":"selection_page_presenter",
-      "processTitle": "Manual DNA Only Extraction - Register Samples",
+      "controllerName":"selection_page_controller",
+      "processTitle": "Manual DNA Only Extraction - Receive Tubes",
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.manual_dna_only.input_tube_dnap.awaiting_reception",
@@ -410,7 +409,7 @@
 
     {
     "accepts": [ "samples.extraction.manual_dna_only.input_tube_dnap" ],
-    "presenterName":"selection_page_presenter",
+    "controllerName":"selection_page_controller",
     "processTitle": "Manual DNA Only Extraction",
     "input":        {
       "role":"samples.extraction.manual_dna_only.input_tube_dnap",
@@ -427,19 +426,19 @@
   {
     "accepts": [ "samples.extraction.manual_dna_only.input_tube_dnap.batched" ],
     "processTitle":  "Manual DNA Only Binding",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print spin column labels" },
       { "action": "next",  "title": "Done" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName": "kit_presenter",
+      "controllerName": "kit_controller",
       "kitType":       "DNA"
     }, {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start": "row",
         "operate": "row",
@@ -469,17 +468,16 @@
   {
     "accepts": [ "samples.extraction.manual_dna_only.spin_column_dna" ],
     "processTitle":  "Manual Extraction Spin Column DNA Transfer",
-    "presenterName": "step_presenter",
-    "defaultPrinter":"e367bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
       { "action": "start", "title": "Start elution process" },
       { "action": "end",   "title": "Elution process completed" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start": "start",
         "operate": "start",
@@ -509,8 +507,8 @@
 
     {
       "accepts": [ "samples.extraction.manual_rna_only.input_tube_rnap.awaiting_reception" ],
-      "presenterName":"selection_page_presenter",
-      "processTitle": "Manual RNA Only Extraction - Register Samples",
+      "controllerName":"selection_page_controller",
+      "processTitle": "Manual RNA Only Extraction - Receive Tubes",
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.manual_rna_only.input_tube_rnap.awaiting_reception",
@@ -531,7 +529,7 @@
 
   {
     "accepts": [ "samples.extraction.manual_rna_only.input_tube_rnap" ],
-    "presenterName":"selection_page_presenter",
+    "controllerName":"selection_page_controller",
     "processTitle": "Manual RNA Only Extraction",
     "input":        {
       "role":"samples.extraction.manual_rna_only.input_tube_rnap",
@@ -548,8 +546,8 @@
 
     {
       "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception" ],
-      "presenterName":"selection_page_presenter",
-      "processTitle": "Automated DNA and RNA Extraction (QIAcube) - Register Samples",
+      "controllerName":"selection_page_controller",
+      "processTitle": "Automated DNA and RNA Extraction (QIAcube) - Receive Tubes",
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception",
@@ -568,7 +566,7 @@
 
   {
     "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_nap" ],
-    "presenterName":"selection_page_presenter",
+    "controllerName":"selection_page_controller",
     "processTitle": "Automated DNA and RNA Extraction (QIAcube)",
     "input":        {
       "role":"samples.extraction.qiacube_dna_and_rna.input_tube_nap",
@@ -585,8 +583,8 @@
   {
     "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_nap.batched" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -594,12 +592,12 @@
       { "action": "end",   "title": "Unloading QIAcube" },
       { "action": "next",  "title": "Done" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName": "kit_presenter",
+      "controllerName": "kit_controller",
       "kitType":       "DNA & RNA"
     }, {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start": "start",
         "operate": "start",
@@ -638,16 +636,16 @@
   {
     "accepts": [ "samples.extraction.qiacube_dna_and_rna.byproduct_tube_rnap" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube) Rotor Aptapter Transfer",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
       { "action": "next",  "title": "Done" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start": "row",
         "operate": "row",
@@ -676,8 +674,8 @@
   {
     "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_rnap.batched" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -685,12 +683,12 @@
       { "action": "end",   "title": "Unloading QIAcube" },
       { "action": "next",  "title": "Done" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName": "kit_presenter",
+      "controllerName": "kit_controller",
       "kitType":       "DNA & RNA"
     }, {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start": "start",
         "operate": "start",
@@ -723,8 +721,8 @@
   {
     "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.batched" ],
     "processTitle":  "Automated RNA Only Extraction (QIAcube)",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -732,12 +730,12 @@
       { "action": "end",   "title": "Unloading QIAcube" },
       { "action": "next",  "title": "Done" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName": "kit_presenter",
+      "controllerName": "kit_controller",
       "kitType":       "RNA"
     }, {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start": "start",
         "operate": "start",
@@ -770,8 +768,8 @@
 
     {
       "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception" ],
-      "presenterName":"selection_page_presenter",
-      "processTitle": "Automated DNA Only Extraction (QIAcube) - Register Samples",
+      "controllerName":"selection_page_controller",
+      "processTitle": "Automated DNA Only Extraction (QIAcube) - Receive Tubes",
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception",
@@ -790,7 +788,7 @@
 
   {
     "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap" ],
-    "presenterName":"selection_page_presenter",
+    "controllerName":"selection_page_controller",
     "processTitle": "Automated DNA Only Extraction (QIAcube)",
     "input":        {
       "role":"samples.extraction.qiacube_dna_only.input_tube_dnap",
@@ -807,8 +805,8 @@
   {
     "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.batched" ],
     "processTitle":  "Automated DNA Only Extraction (QIAcube)",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -816,12 +814,12 @@
       { "action": "end",   "title": "Unloading QIAcube" },
       { "action": "next",  "title": "Done" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName": "kit_presenter",
+      "controllerName": "kit_controller",
       "kitType":       "DNA"
     }, {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start": "start",
         "operate": "start",
@@ -854,8 +852,8 @@
 
     {
       "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception" ],
-      "presenterName":"selection_page_presenter",
-      "processTitle": "Automated RNA Only Extraction (QIAcube) - Register Samples",
+      "controllerName":"selection_page_controller",
+      "processTitle": "Automated RNA Only Extraction (QIAcube) - Receive Tubes",
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception",
@@ -874,7 +872,7 @@
 
   {
     "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap" ],
-    "presenterName":  "selection_page_presenter",
+    "controllerName":  "selection_page_controller",
     "processTitle":   "Automated RNA Only Extraction (QIAcube)",
     "input":        {
       "role":   "samples.extraction.qiacube_rna_only.input_tube_rnap",
@@ -890,7 +888,7 @@
 
   {
     "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed" ],
-    "presenterName":  "selection_page_presenter",
+    "controllerName":  "selection_page_controller",
     "processTitle":   "DNA and RNA Retubing",
     "input":        {
       "role":   "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed",
@@ -907,16 +905,16 @@
   {
     "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed.batched" ],
     "processTitle":  "DNA and RNA Re-Tubing",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
       { "action": "next",  "title": "Done" }
     ],
-    "presenters": [
+    "controllers": [
       {
-        "presenterName": "connected_presenter",
+        "controllerName": "connected_controller",
         "behaviours": {
           "start":    "row",
           "operate":  "row",
@@ -942,17 +940,17 @@
 
   {
     "accepts": [ "samples.extraction.retubing.eppendorf_tube_dna" ],
-    "presenterName": "step_presenter",
     "defaultPrinter": "g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Start transfers" },
       { "action": "next",  "title": "Done" }
     ],
     "processTitle":   "Post DNA Extraction Racking - 2D Tube Transfer",
-    "presenters": [
+    "controllers": [
       {
-        "presenterName": "connected_presenter",
+        "controllerName": "connected_controller",
         "behaviours": {
           "start":    "row",
           "operate":  "row",
@@ -986,7 +984,7 @@
 
   {
     "accepts": [ "samples.extraction.racking.fluidx_tube_dna" ],
-    "presenterName": "step_presenter",
+    "controllerName": "step_controller",
     "defaultPrinter": "d304bc",
     "printerType": 1,
     "buttons": [
@@ -994,9 +992,9 @@
       { "action": "next",  "title": "Done" }
     ],
     "processTitle":   "Post DNA Extraction Racking - Rack Scanning",
-    "presenters": [
+    "controllers": [
       {
-        "presenterName": "rack_scan_presenter",
+        "controllerName": "rack_scan_controller",
         "defaultPrinter": "d304bc",
         "printerType": 1,
         "model": "RackScanModel",
@@ -1020,17 +1018,17 @@
 
   {
     "accepts": [ "samples.extraction.retubing.eppendorf_tube_rna" ],
-    "presenterName": "step_presenter",
     "defaultPrinter": "g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Start transfers" },
       { "action": "next",  "title": "Done" }
     ],
     "processTitle":   "Post RNA Extraction Racking - 2D Tube Transfer",
-    "presenters": [
+    "controllers": [
       {
-        "presenterName": "connected_presenter",
+        "controllerName": "connected_controller",
         "behaviours": {
           "start":    "row",
           "operate":  "row",
@@ -1063,7 +1061,7 @@
 
   {
     "accepts": [ "samples.extraction.racking.fluidx_tube_rna" ],
-    "presenterName": "step_presenter",
+    "controllerName": "step_controller",
     "defaultPrinter": "d304bc",
     "printerType": 1,
     "buttons": [
@@ -1071,9 +1069,9 @@
       { "action": "next",  "title": "Done" }
     ],
     "processTitle":   "Post RNA Extraction Racking - Rack Scanning",
-    "presenters": [
+    "controllers": [
       {
-        "presenterName": "rack_scan_presenter",
+        "controllerName": "rack_scan_controller",
         "defaultPrinter": "d304bc",
         "printerType": 1,
         "model": "RackScanModel",
@@ -1098,7 +1096,7 @@
 
   {
     "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed" ],
-    "presenterName":  "selection_page_presenter",
+    "controllerName":  "selection_page_controller",
     "processTitle":   "Retubing for DNA only Extraction",
     "input":        {
       "role":   "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed",
@@ -1115,16 +1113,16 @@
   {
     "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed.batched" ],
     "processTitle":  "Retubing for DNA only Extraction",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
       { "action": "next",  "title": "Done" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName":  "connected_presenter",
+      "controllerName":  "connected_controller",
       "behaviours":     {
         "start":     "row",
         "operate":   "row",
@@ -1151,7 +1149,7 @@
 
   {
     "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed" ],
-    "presenterName":  "selection_page_presenter",
+    "controllerName":  "selection_page_controller",
     "processTitle":   "Retubing for RNA only Extraction",
     "input":        {
       "role":   "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed",
@@ -1168,16 +1166,16 @@
   {
     "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched" ],
     "processTitle":  "Retubing for RNA only Extraction",
-    "presenterName": "step_presenter",
     "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
       { "action": "next",  "title": "Done" }
     ],
-    "presenters": [
+    "controllers": [
       {
-      "presenterName":   "connected_presenter",
+      "controllerName":   "connected_controller",
       "behaviours": {
         "start":     "row",
         "operate":   "row",
@@ -1203,8 +1201,8 @@
 
   {
     "accepts":       [ "samples.rack.stock.dna" ],
-    "presenterName": "step_presenter",
     "defaultPrinter": "g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons":       [
       {
@@ -1217,9 +1215,9 @@
       }
     ],
     "processTitle":  "Volume control",
-    "presenters":    [
+    "controllers":    [
       {
-        "presenterName":  "volume_control_presenter",
+        "controllerName":  "volume_control_controller",
         "input":          {
           "role":  "samples.rack.stock.dna",
           "model": "tube_racks"
@@ -1244,8 +1242,8 @@
 
   {
     "accepts":       [ "samples.rack.stock.dna.volume_control_added" ],
-    "presenterName": "step_presenter",
     "defaultPrinter": "g216bc",
+    "controllerName": "step_controller",
     "printerType": 2,
     "buttons":       [
       {
@@ -1258,9 +1256,9 @@
       }
     ],
     "processTitle":  "DNA Volume checking",
-    "presenters":    [
+    "controllers":    [
       {
-        "presenterName":  "rack_scan_presenter",
+        "controllerName":  "rack_scan_controller",
         "defaultPrinter": "d304bc",
         "printerType": 1,
         "model":          "VolumeCheckModel",
@@ -1282,7 +1280,7 @@
 
   {
     "accepts":       [ "samples.rack.stock.rna" ],
-    "presenterName": "step_presenter",
+    "controllerName": "step_controller",
     "defaultPrinter": "d304bc",
     "printerType": 1,
     "buttons":       [
@@ -1296,7 +1294,7 @@
       }
     ],
     "processTitle":  "RNA Volume checking",
-    "presenters":    [
+    "controllers":    [
       {
         "model":          "VolumeCheckModel",
         "input":          {
@@ -1317,7 +1315,7 @@
 
   {
     "accepts":       [ "samples.rack.stock.rna.volume_checked" ],
-    "presenterName": "step_presenter",
+    "controllerName": "step_controller",
     "defaultPrinter":"d304bc",
     "printerType": 1,
     "buttons":       [
@@ -1325,9 +1323,9 @@
       { "action": "next",  "title": "Done" }
     ],
     "processTitle":  "DNA Working Dilution",
-    "presenters":    [
+    "controllers":    [
       {
-      "presenterName": "connected_presenter",
+      "controllerName": "connected_controller",
       "behaviours": {
         "start": "row",
         "operate": "row",
@@ -1353,7 +1351,7 @@
   },
     {
     "accepts":       [ "samples.rack.stock.dna.volume_checked" ],
-    "presenterName": "step_presenter",
+    "controllerName": "step_controller",
     "defaultPrinter":"d304bc",
     "printerType": 1,
     "buttons":       [
@@ -1361,9 +1359,9 @@
       { "action": "next",  "title": "Done" }
     ],
     "processTitle":  "DNA Working Dilution",
-    "presenters":    [
+    "controllers":    [
       {
-      "presenterName": "connected_presenter",
+      "controllerName": "connected_controller",
       "behaviours": {
         "start": "row",
         "operate": "row",
@@ -1390,12 +1388,12 @@
   ],
 
   "spentBatch": {
-    "presenterName": "summary_page_presenter",
+    "controllerName": "summary_page_controller",
     "processTitle":  "Spent Batch",
     "spentBatch":    true
   },
   "unknownRole": {
-    "presenterName": "summary_page_presenter",
+    "controllerName": "summary_page_controller",
     "processTitle":  "Summary Page",
     "spentBatch":    false
   }

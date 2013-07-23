@@ -7,9 +7,9 @@ define([ 'config'
 ], function (config, nextWorkflow, S2Root, BusyBox, alerts, Logger) {
   'use strict';
 
-  var App = function (thePresenterFactory) {
+  var App = function (theControllerFactory) {
     var app = this;
-    app.presenterFactory = thePresenterFactory;
+    app.controllerFactory = theControllerFactory;
     _.templateSettings.variable = 'templateData';
 
     $('#server-url').text(config.apiUrl);
@@ -19,19 +19,19 @@ define([ 'config'
       // ToDo #content exists at this point we should pass it directly not a function
       app.jquerySelection = function () { return $('#content'); };
       app.addEventHandlers();
-      app.setupPresenter();
+      app.setupController();
     } else if ($('#content.sample-reception').length > 0) {
       var configuration = { printerList: config.printers };
-      var receptionPresenter = app.presenterFactory.create('reception_presenter', app, configuration);
-      $("#content").append(receptionPresenter.view);
+      var receptionController = app.controllerFactory.create('reception_controller', app, configuration);
+      $("#content").append(receptionController.view);
       alerts.setupPlaceholder(function () {
         return $('#alertContainer');
       });
       app.addEventHandlers();
     } else if ($('#content.extraction-reracking').length > 0) {
       var configuration = { printerList: config.printers };
-      var extractionPresenter = app.presenterFactory.create('lab_activities_presenter', app, configuration);
-      $("#content").append(extractionPresenter.view);
+      var extractionController = app.controllerFactory.create('lab_activities_controller', app, configuration);
+      $("#content").append(extractionController.view);
       alerts.setupPlaceholder(function () {
         return $('#alertContainer');
       });
@@ -59,7 +59,7 @@ define([ 'config'
     delete this.rootPromise;
   };
 
-  App.prototype.setupPresenter = function (inputModel) {
+  App.prototype.setupController = function (inputModel) {
     alerts.setupPlaceholder(function () {
       return $('#alertContainer');
     });
@@ -72,17 +72,17 @@ define([ 'config'
     var application = this;
     this.model = $.extend(this.model, model);
 
-    if (this.currentPagePresenter) {
-      this.currentPagePresenter.release();
-      delete this.currentPagePresenter;
+    if (this.currentPageController) {
+      this.currentPageController.release();
+      delete this.currentPageController;
     }
 
     nextWorkflow(this.model).
       then(function(workflowConfig){
-      return application.presenterFactory.create(workflowConfig && workflowConfig.presenterName, application, workflowConfig);
-    }).then(function(nextPresenter){
-      application.currentPagePresenter = nextPresenter;
-      application.currentPagePresenter.setupPresenter(application.model, application.jquerySelection);
+      return application.controllerFactory.create(workflowConfig && workflowConfig.controllerName, application, workflowConfig);
+    }).then(function(nextController){
+      application.currentPageController = nextController;
+      application.currentPageController.setupController(application.model, application.jquerySelection);
       delete application.model.labware;
     });
 

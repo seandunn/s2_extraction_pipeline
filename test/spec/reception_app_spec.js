@@ -3,23 +3,23 @@ define([
   , 'lib/fake_user'
   , 'text!pipeline_testjson/reception_app_test_data.json'
   , 'mapper_test/resource_test_helper'
-  , 'presenters/reception_presenter'
+  , 'controllers/reception_controller'
   , 'text!mapper_testjson/unit/root.json'
   , 'mapper/s2_root'
   , 'text!pipeline_testcsv/manifest_csv_test_data.csv'
-  , 'presenters/presenter_factory'
+  , 'controllers/controller_factory'
   , 'extraction_pipeline/lib/reception_templates'
   , 'text!pipeline_testjson/csv_template_test_data.json'
   , 'text!pipeline_testjson/csv_template_display_test_data.json'
 ]
-  , function (config, FakeUser, appTestData, TestHelper, ReceptionPresenter, rootTestData, S2Root, manifestCSVData, PresenterFactory, ReceptionTemplates, CSVTemplateTestData, CSVTemplateDisplayTestData) {
+  , function (config, FakeUser, appTestData, TestHelper, ReceptionController, rootTestData, S2Root, manifestCSVData, ControllerFactory, ReceptionTemplates, CSVTemplateTestData, CSVTemplateDisplayTestData) {
     'use strict';
 
 
     TestHelper(function (results) {
       describe("The Reception App", function () {
 
-        var presenter, fakeDOM, fakeContent;
+        var controller, fakeDOM, fakeContent;
         beforeEach(function () {
           config.loadTestData(appTestData);
           config.cummulativeLoadingTestDataInFirstStage(rootTestData);
@@ -50,10 +50,10 @@ define([
             manifest_path:"../test/json/manifest_test_data.xls"
           };
 
-          var pf = new PresenterFactory();
-          var presenterConfig = {};
-          presenter = pf.create('reception_presenter', app, presenterConfig);
-          fakeContent().append(presenter.view);
+          var pf = new ControllerFactory();
+          var controllerConfig = {};
+          controller = pf.create('reception_controller', app, controllerConfig);
+          fakeContent().append(controller.view);
           fakeContent()
             .find("#userValidation input")
             .val("1")
@@ -85,7 +85,7 @@ define([
               waits(500);
 
               //simulate file input
-              presenter.manifestReaderComponent.presenter.responderCallback(manifestCSVData)
+              controller.manifestReaderComponent.controller.responderCallback(manifestCSVData)
                 .then(function () {
                   FakeUser.waitsForIt(fakeDOM, "#registrationBtn", results.expected);
                 })
