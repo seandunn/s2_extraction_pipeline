@@ -1,4 +1,4 @@
-define([ 'extraction_pipeline/presenters/base_presenter'
+define([ 'extraction_pipeline/controllers/base_controller'
   , 'extraction_pipeline/models/selection_page_model'
   , 'text!extraction_pipeline/html_partials/selection_page_partial.html'
   , 'extraction_pipeline/lib/pubsub'
@@ -9,62 +9,62 @@ define([ 'extraction_pipeline/presenters/base_presenter'
 
   $.extend(PagePresenter, {
     register:function (callback) {
-      callback('selection_page_presenter', function (owner, factory, initData) {
+      callback('selection_page_controller', function (owner, factory, initData) {
         return Object.create(PagePresenter).init(owner, factory, initData);
       });
     },
 
-    init: function (owner, presenterFactory, workflowConfig) {
-      this.presenterFactory = presenterFactory;
+    init: function (owner, controllerFactory, workflowConfig) {
+      this.controllerFactory = controllerFactory;
       this.notBatched = workflowConfig.output[0].not_batched;
       this.model = Object.create(Model).init(this, workflowConfig);
       this.owner = owner;
       return this;
     },
     setupPresenter: function (setupData, jquerySelection) {
-      var presenter = this;
+      var controller = this;
       this.jquerySelection = jquerySelection;
       this.model
           .then(function (model) {
             return model.setup(setupData);
           })
           .then(function (model) {
-            return presenter.setupSubPresenters();
+            return controller.setupSubPresenters();
           }).then(function(){
-            return presenter.renderView();
+            return controller.renderView();
           });
       return this;
     },
 
     makeBatchHandler: function() {
-      var presenter = this;
-      if (presenter.notBatched) {
+      var controller = this;
+      if (controller.notBatched) {
         return function (e) {
-          presenter.model
+          controller.model
             .then(function (model) {
               return model.changeRoleWithoutChangingBatch();
             })
             .fail(function (error) {
-              PubSub.publish('s2.status.error', presenter, error);
+              PubSub.publish('s2.status.error', controller, error);
             })
             .then(function (model) {
-              presenter.owner.childDone(presenter, "done", {batch:null,labware:null});
+              controller.owner.childDone(controller, "done", {batch:null,labware:null});
             });
         }
       } else {
         return function (e) {
-          if (!presenter.batchCreated) {
-            presenter.batchCreated = true;
-            presenter.jquerySelection().find("button.btn").attr("disabled", "disabled");
-            presenter.model
+          if (!controller.batchCreated) {
+            controller.batchCreated = true;
+            controller.jquerySelection().find("button.btn").attr("disabled", "disabled");
+            controller.model
               .then(function (model) {
                 return model.makeBatch()
               })
               .fail(function (error) {
-                PubSub.publish('s2.status.error', presenter, error);
+                PubSub.publish('s2.status.error', controller, error);
               })
               .then(function (model) {
-                presenter.owner.childDone(presenter, "done", {batch: model.batch});
+                controller.owner.childDone(controller, "done", {batch: model.batch});
               });
           }
         }
@@ -81,30 +81,30 @@ define([ 'extraction_pipeline/presenters/base_presenter'
             thisPresenter.jquerySelection().html(template(thisModel));
             thisPresenter.jquerySelection().find("button.btn").on("click", thisPresenter.makeBatchHandler());
             // render subviews...
-            _.each(thisPresenter.presenters, function (presenter) {
-              presenter.renderView();
+            _.each(thisPresenter.controllers, function (controller) {
+              controller.renderView();
             });
             return thisModel.inputs;
           })
           .then(function (inputs) {
             var numTubes = inputs.length;
             if (numTubes < thisModel.capacity) {
-              thisPresenter.presenters[inputs.length].barcodeFocus();
+              thisPresenter.controllers[inputs.length].barcodeFocus();
             }
           });
     },
 
     setupSubPresenters:function () {
-      var presenter = this;
+      var controller = this;
       var thisModel;
-      this.presenters = [];
+      this.controllers = [];
 
-      return presenter.model
+      return controller.model
           .then(function (model) {
             thisModel = model;
             _(thisModel.capacity).times(function () {
-              var subPresenter = presenter.presenterFactory.create('labware_presenter', presenter);
-              presenter.presenters.push(subPresenter);
+              var subPresenter = controller.controllerFactory.create('labware_controller', controller);
+              controller.controllers.push(subPresenter);
             });
             return thisModel.inputs;
           })
@@ -113,12 +113,12 @@ define([ 'extraction_pipeline/presenters/base_presenter'
 
             var jQueryForNthChild = function (childIndex) {
               return function () {
-                return presenter.jquerySelection().find("li :eq(" + childIndex + ")");
+                return controller.jquerySelection().find("li :eq(" + childIndex + ")");
               };
             };
-            var presenterData = [];
+            var controllerData = [];
             _.each(inputs, function (tube) {
-              presenterData.push({
+              controllerData.push({
                 resource:tube,
                 expected_type:thisModel.config.input.model.singularize(),
                 display_remove:true,
@@ -128,7 +128,7 @@ define([ 'extraction_pipeline/presenters/base_presenter'
             });
             var nbNoneLabwareRows = thisModel.capacity - (numTubes);
             if (nbNoneLabwareRows > 0 ) {
-              presenterData.push({
+              controllerData.push({
                 expected_type:thisModel.config.input.model.singularize(),
                 display_remove:false,
                 display_barcode:true,
@@ -136,7 +136,7 @@ define([ 'extraction_pipeline/presenters/base_presenter'
                 title: thisModel.config.input.title
               });
               _(nbNoneLabwareRows-1).times(function () {
-                presenterData.push({
+                controllerData.push({
                   display_remove:false,
                   display_barcode:false,
                   display_labware:false,
@@ -145,9 +145,9 @@ define([ 'extraction_pipeline/presenters/base_presenter'
               });
             }
 
-            _.chain(presenter.presenters).zip(presenterData).each(function (pair, index) {
-              var presenter = pair[0], config = pair[1];
-              presenter.setupPresenter(config, jQueryForNthChild(index));
+            _.chain(controller.controllers).zip(controllerData).each(function (pair, index) {
+              var controller = pair[0], config = pair[1];
+              controller.setupPresenter(config, jQueryForNthChild(index));
             }).value();
 
           })
@@ -159,7 +159,7 @@ define([ 'extraction_pipeline/presenters/base_presenter'
     },
 
     childDone:function (child, action, data) {
-      var presenter = this;
+      var controller = this;
       if (child === this.model) {
         // model should not talk using 'childDone' anymore
       } else {
@@ -169,11 +169,11 @@ define([ 'extraction_pipeline/presenters/base_presenter'
                 return model.addTubeFromBarcode(data.BC);
               })
               .fail(function (error) {
-                PubSub.publish('s2.status.error', presenter, error);
+                PubSub.publish('s2.status.error', controller, error);
               })
               .then(function () {
-                presenter.setupSubPresenters();
-                presenter.renderView();
+                controller.setupSubPresenters();
+                controller.renderView();
               });
         } else if (action === "removeLabware") {
           this.model
@@ -181,8 +181,8 @@ define([ 'extraction_pipeline/presenters/base_presenter'
                 return model.removeTubeByUuid(data.resource.uuid);
               })
               .then(function () {
-                presenter.setupSubPresenters();
-                presenter.renderView();
+                controller.setupSubPresenters();
+                controller.renderView();
               })
         }
       }

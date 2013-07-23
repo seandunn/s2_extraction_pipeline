@@ -1,5 +1,5 @@
 define([
-  'extraction_pipeline/presenters/base_presenter',
+  'extraction_pipeline/controllers/base_controller',
   'text!extraction_pipeline/html_partials/kit_partial.html',
   'extraction_pipeline/models/kit_model',
   'extraction_pipeline/lib/pubsub',
@@ -9,7 +9,7 @@ define([
   'use strict';
 
 
-  function validationOnReturnKeyCallback (presenter) {
+  function validationOnReturnKeyCallback (controller) {
     return function (element, callback, errorCallback) {
       // validation of the barcode on return key
       return function (event) {
@@ -20,35 +20,35 @@ define([
         setScannerTimeout(barcodeSelection);
 
         if (BarcodeChecker.isKitBarcodeValid(value)) {
-          callback(value, element, presenter);
+          callback(value, element, controller);
         } else {
-          errorCallback(value, element, presenter);
+          errorCallback(value, element, controller);
         }
       };
     }
   }
 
-  function kitScannedCallback(presenter) {
-    return function (value, template, presenter) {
-      presenter.model
+  function kitScannedCallback(controller) {
+    return function (value, template, controller) {
+      controller.model
           .then(function(model){
             return model.setKitFromBarcode(value);
           })
           .fail(function (error) {
-            PubSub.publish('s2.status.error', presenter, error);
+            PubSub.publish('s2.status.error', controller, error);
           })
           .then(function(model){
-            PubSub.publish('s2.status.message', presenter, {message:'Kit details validated/saved'});
-            PubSub.publish("s2.step_presenter.next_process", presenter, {batch: model.batch});
-            presenter.selector().find('.barcodeInput').attr("disabled", "disabled");
+            PubSub.publish('s2.status.message', controller, {message:'Kit details validated/saved'});
+            PubSub.publish("s2.step_controller.next_process", controller, {batch: model.batch});
+            controller.selector().find('.barcodeInput').attr("disabled", "disabled");
           });
     }
   }
 
-  function kitScannedErrorCallback(presenter) {
+  function kitScannedErrorCallback(controller) {
     return function (errorText) {
-      return function (value, template, presenter) {
-        PubSub.publish('s2.status.error', presenter, {message:errorText});
+      return function (value, template, controller) {
+        PubSub.publish('s2.status.error', controller, {message:errorText});
       };
     };
   }
@@ -63,7 +63,7 @@ define([
 
   _.extend(Presenter, {
     register: function(callback) {
-      callback('kit_presenter', function() {
+      callback('kit_controller', function() {
         var instance = Object.create(Presenter);
         Presenter.init.apply(instance, arguments);
         return instance;
@@ -73,38 +73,38 @@ define([
     init: function(owner, factory, config) {
       this.owner            = owner;
       this.config           = config;
-      this.presenterFactory = factory;
+      this.controllerFactory = factory;
       this.model            = Object.create(Model).init(this, config);
       return this;
     },
 
     setupPresenter: function(setupData, selector) {
-      var presenter = this;
-      presenter.selector = selector;
-      presenter.model
+      var controller = this;
+      controller.selector = selector;
+      controller.model
           .then(function (model) {
             return model.setupModel(setupData);
           })
           .then(function(model){
           if(!model.batch.kit){
-            presenter.selector().html(_.template(kitPartialHtml)({}));
-            presenter.barcodePresenter = presenter.presenterFactory.create('scan_barcode_presenter', presenter);
-            presenter.barcodePresenter.init({ type: 'Kit' });
-            presenter.selector()
+            controller.selector().html(_.template(kitPartialHtml)({}));
+            controller.barcodePresenter = controller.controllerFactory.create('scan_barcode_controller', controller);
+            controller.barcodePresenter.init({ type: 'Kit' });
+            controller.selector()
                 .find('.barcode')
-                .append(presenter.bindReturnKey( presenter.barcodePresenter.renderView(), kitScannedCallback(presenter), kitScannedErrorCallback(presenter)('Barcode must be a 22 digit number.'), validationOnReturnKeyCallback(presenter) ));
-            presenter.selector().find('.barcode input').focus();
+                .append(controller.bindReturnKey( controller.barcodePresenter.renderView(), kitScannedCallback(controller), kitScannedErrorCallback(controller)('Barcode must be a 22 digit number.'), validationOnReturnKeyCallback(controller) ));
+            controller.selector().find('.barcode input').focus();
           }
           });
-      return presenter;
+      return controller;
     },
 
     focus: function () {
-      var presenter = this;
-      presenter.model
+      var controller = this;
+      controller.model
         .then(function (model) {
           if (model.batch.kit) {
-            PubSub.publish("s2.step_presenter.next_process", presenter, {batch: model.batch});
+            PubSub.publish("s2.step_controller.next_process", controller, {batch: model.batch});
           }
         });
     },

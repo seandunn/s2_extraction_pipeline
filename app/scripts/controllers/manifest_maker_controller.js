@@ -1,5 +1,5 @@
 define(['config'
-  , 'extraction_pipeline/presenters/base_presenter'
+  , 'extraction_pipeline/controllers/base_controller'
   , 'text!extraction_pipeline/html_partials/manifest_maker_partial.html'
   , 'extraction_pipeline/models/manifest_maker_model'
   , 'extraction_pipeline/lib/pubsub'
@@ -12,7 +12,7 @@ define(['config'
 
   $.extend(Presenter, {
     register: function (callback) {
-      callback('manifest_maker_presenter', function() {
+      callback('manifest_maker_controller', function() {
         var instance = Object.create(Presenter);
         Presenter.init.apply(instance, arguments);
         return instance;
@@ -46,18 +46,18 @@ define(['config'
       this.printBoxSelection = html.find(".printer-div");
 
       this.generateManifestBtnSelection.click(onGenerateManifestEventHandler(thisPresenter));
-      function onGenerateManifestEventHandler(presenter){ return function(){ presenter.onGenerateManifest(); } }
+      function onGenerateManifestEventHandler(controller){ return function(){ controller.onGenerateManifest(); } }
 
       this.downloadManifestBtnSelection.hide().click(onDownloadManifestEventHandler(thisPresenter));
-      function onDownloadManifestEventHandler(presenter){ return function(){ presenter.onDownloadManifest(); } }
+      function onDownloadManifestEventHandler(controller){ return function(){ controller.onDownloadManifest(); } }
 
       this.printBCBtnSelection.click(onPrintBarcodeEventHandler(thisPresenter));
-      function onPrintBarcodeEventHandler(presenter){ return function(){ presenter.onPrintBarcode(); } }
+      function onPrintBarcodeEventHandler(controller){ return function(){ controller.onPrintBarcode(); } }
 
       this.printBoxSelection.hide();
 
       this.templateSelectSelection.change(onChangeTemplateEventHandler(thisPresenter));
-      function onChangeTemplateEventHandler(presenter){ return function(event){ presenter.onChangeTemplate(event); } }
+      function onChangeTemplateEventHandler(controller){ return function(event){ controller.onChangeTemplate(event); } }
 
       html.find("#number-of-sample").bind("keypress",function(event){
             if (event.which !== 13) return;

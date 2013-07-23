@@ -1,5 +1,5 @@
 define([
-  'extraction_pipeline/presenters/base_presenter',
+  'extraction_pipeline/controllers/base_controller',
   'extraction_pipeline/views/rack_scan_view',
   'extraction_pipeline/models/rack_scan_model',
   'extraction_pipeline/models/volume_check_model',
@@ -15,7 +15,7 @@ define([
 
   _.extend(Presenter, {
     register: function (callback) {
-      callback('rack_scan_presenter', function () {
+      callback('rack_scan_controller', function () {
         var instance = Object.create(Presenter);
         Presenter.init.apply(instance, arguments);
         return instance;
@@ -25,7 +25,7 @@ define([
     init: function (owner, factory, config) {
       this.owner = owner;
       this.config = config;
-      this.presenterFactory = factory;
+      this.controllerFactory = factory;
       this.model = Object.create(models[this.config.model]).init(this, config);
       return this;
     },
@@ -41,18 +41,18 @@ define([
     },
 
     setupSubPresenters: function (reset) {
-      var presenter = this;
+      var controller = this;
 
-      if (!presenter.labwarePresenter) {
-        presenter.labwarePresenter = presenter.presenterFactory.create('labware_presenter', this);
+      if (!controller.labwarePresenter) {
+        controller.labwarePresenter = controller.controllerFactory.create('labware_controller', this);
       }
-      presenter.labwarePresenter.setupPresenter({
+      controller.labwarePresenter.setupPresenter({
         "expected_type":    "tube_rack",
         "display_labware":  true,
         "display_remove":   false,
         "display_barcode":  false
       }, function() {
-        return presenter.selector().find('.labware');
+        return controller.selector().find('.labware');
       });
       return this;
     },

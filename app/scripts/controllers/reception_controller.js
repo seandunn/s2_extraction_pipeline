@@ -1,5 +1,5 @@
 define(['config'
-  , 'extraction_pipeline/presenters/base_presenter'
+  , 'extraction_pipeline/controllers/base_controller'
   , 'text!extraction_pipeline/html_partials/reception_partial.html'
   , 'extraction_pipeline/models/reception_model'
   , 'extraction_pipeline/lib/util'
@@ -11,7 +11,7 @@ define(['config'
 
   $.extend(ReceptionPresenter, {
     register: function (callback) {
-      callback('reception_presenter', function () {
+      callback('reception_controller', function () {
         var instance = Object.create(ReceptionPresenter);
         ReceptionPresenter.init.apply(instance, arguments);
         return instance;
@@ -30,10 +30,10 @@ define(['config'
 
       this.view = this.createHtml();
 
-      $.extend(this.manifestMakerComponent,{presenter:this.factory.create('manifest_maker_presenter', this, config)});
-      this.manifestMakerComponent.selection.append(this.manifestMakerComponent.presenter.view);
-      $.extend(this.manifestReaderComponent,{presenter:this.factory.create('manifest_reader_presenter', this, config)});
-      this.manifestReaderComponent.selection.append(this.manifestReaderComponent.presenter.view);
+      $.extend(this.manifestMakerComponent,{controller:this.factory.create('manifest_maker_controller', this, config)});
+      this.manifestMakerComponent.selection.append(this.manifestMakerComponent.controller.view);
+      $.extend(this.manifestReaderComponent,{controller:this.factory.create('manifest_reader_controller', this, config)});
+      this.manifestReaderComponent.selection.append(this.manifestReaderComponent.controller.view);
 
       this.currentComponent = this.homeComponent;
 
@@ -43,7 +43,7 @@ define(['config'
     createHtml: function () {
       var html = $(_.template(receptionPartialHtml)());
 
-      var userBCSubPresenter = this.factory.create('scan_barcode_presenter', this).init({type:"user"});
+      var userBCSubPresenter = this.factory.create('scan_barcode_controller', this).init({type:"user"});
 
       this.backButtonSelection = html.find("#back-button");
       this.manifestMakerBtnSelection = html.find("#create-manifest-btn");
@@ -66,22 +66,22 @@ define(['config'
           barcodeErrorCallback("User barcode is not valid."))
       );
 
-      function userCallback(value, template, presenter){
+      function userCallback(value, template, controller){
         var barcode = Util.pad(value);
-        presenter.model.setUserFromBarcode(barcode)
+        controller.model.setUserFromBarcode(barcode)
           .fail(function (error) {
-            PubSub.publish('s2.status.error', presenter, error);
+            PubSub.publish('s2.status.error', controller, error);
           })
           .then(function(){
             template.find("input").val(barcode);
             template.find("input").attr('disabled', true);
-            presenter.userValidationSelection.hide();
-            presenter.componentChoiceSelection.show();
+            controller.userValidationSelection.hide();
+            controller.componentChoiceSelection.show();
           });
       }
 
       function barcodeErrorCallback(errorText){
-        return function(value, template, presenter){
+        return function(value, template, controller){
           PubSub.publish('s2.status.error', this, {message: errorText});
         };
       }

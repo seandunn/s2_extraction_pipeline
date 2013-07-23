@@ -1,5 +1,5 @@
 define([
-  'extraction_pipeline/presenters/base_presenter',
+  'extraction_pipeline/controllers/base_controller',
   'extraction_pipeline/views/step_view',
   'extraction_pipeline/lib/pubsub'
 ], function (Base, View, PubSub) {
@@ -9,7 +9,7 @@ define([
 
   _.extend(Presenter, {
     register: function (callback) {
-      callback('step_presenter', function () {
+      callback('step_controller', function () {
         var instance = Object.create(Presenter);
         Presenter.init.apply(instance, arguments);
         return instance;
@@ -47,10 +47,10 @@ define([
       this.view = new View(this, this.selector);
       this.view.renderView(this.config);
 
-      PubSub.subscribe("s2.step_presenter.enable_buttons", enableButtonsEventHandler);
-      PubSub.subscribe("s2.step_presenter.disable_buttons", disableButtonsEventHandler);
-      PubSub.subscribe("s2.step_presenter.show_buttons", showButtonsEventHandler);
-      PubSub.subscribe("s2.step_presenter.hide_buttons", hideButtonsEventHandler);
+      PubSub.subscribe("s2.step_controller.enable_buttons", enableButtonsEventHandler);
+      PubSub.subscribe("s2.step_controller.disable_buttons", disableButtonsEventHandler);
+      PubSub.subscribe("s2.step_controller.show_buttons", showButtonsEventHandler);
+      PubSub.subscribe("s2.step_controller.hide_buttons", hideButtonsEventHandler);
 
       function enableButtonsEventHandler(event, source, eventData) {
         thisPresenter.changeButtonsState(eventData, true);
@@ -65,14 +65,14 @@ define([
         thisPresenter.changeButtonsVisibility(eventData, false);
       }
 
-      PubSub.subscribe("s2.step_presenter.next_process", nextProcessEventHandler);
+      PubSub.subscribe("s2.step_controller.next_process", nextProcessEventHandler);
       function nextProcessEventHandler(event, source, eventData) {
         // hack: reusing a bit of code defined in childDone
         thisPresenter.childDone(source,'done',eventData);
       }
 
-      PubSub.subscribe("s2.step_presenter.printing_finished", printingFinishedEventHandler);
-      PubSub.subscribe("s2.step_presenter.printing_started", printingStartedEventHandler);
+      PubSub.subscribe("s2.step_controller.printing_finished", printingFinishedEventHandler);
+      PubSub.subscribe("s2.step_controller.printing_started", printingStartedEventHandler);
       function printingFinishedEventHandler(event, source, eventData) {
         thisPresenter.selector().find('.component').trigger("s2.busybox.end_process");
 
@@ -87,25 +87,25 @@ define([
     },
 
     setupSubPresenters: function () {
-      var presenter = this;
-      presenter.presenters = _.chain(presenter.config.presenters).map(function (config, index) {
-        var subPresenter = presenter.factory.create(config.presenterName, presenter, config);
+      var controller = this;
+      controller.controllers = _.chain(controller.config.controllers).map(function (config, index) {
+        var subPresenter = controller.factory.create(config.controllerName, controller, config);
         subPresenter.setupPresenter({
-          batch: presenter.batch
+          batch: controller.batch
         }, (function (i) {
           return function () {
-            return presenter.selector().find('#step' + i);
+            return controller.selector().find('#step' + i);
           }
         })(index + 1));
 
         return subPresenter;
       }).value();
-      presenter.activePresenter = presenter.presenters[0];
-      presenter.activePresenter.initialPresenter();
+      controller.activePresenter = controller.controllers[0];
+      controller.activePresenter.initialPresenter();
 
-      this.selector().find('.printer-select').val(presenter.activePresenter.config.defaultPrinter);
+      this.selector().find('.printer-select').val(controller.activePresenter.config.defaultPrinter);
 
-      presenter.activePresenter.focus();
+      controller.activePresenter.focus();
     },
 
     release: function () {
@@ -114,44 +114,44 @@ define([
     },
 
     childDone: function (child, action, data) {
-      var presenter = this;
+      var controller = this;
 
       if (child === this.view) {
         // using a flag so that additional clicks
         // on a button will not be registered
         // before the button is actually disabled
-        if (!presenter.buttonClickedFlags[action]){
-          presenter.buttonClickedFlags[action] = true;
+        if (!controller.buttonClickedFlags[action]){
+          controller.buttonClickedFlags[action] = true;
           // disable the button
           this.view.setButtonEnabled(action, false);
           var handler = this.activePresenter[action];
           handler && handler.apply(this.activePresenter, arguments);
-          PubSub.publish("s2.step_presenter."+action+"_clicked", this);
+          PubSub.publish("s2.step_controller."+action+"_clicked", this);
         }
       }
       else if (action === 'done') {
-        var index = _.indexOf(this.presenters, child);
+        var index = _.indexOf(this.controllers, child);
         if (index !== -1) {
-          var activeSubPresenter = presenter.presenters[index + 1] || {
+          var activeSubPresenter = controller.controllers[index + 1] || {
             config:           {defaultPrinter: null},
             previousDone:     function () {
-              presenter.owner.childDone.apply(presenter.owner, arguments);
+              controller.owner.childDone.apply(controller.owner, arguments);
             },
             initialPresenter: function () {
               // Ignore this!
             }
           };
           activeSubPresenter.previousDone(child, action, data);
-          presenter.activePresenter = activeSubPresenter;
-          presenter.activePresenter.initialPresenter();
-          this.selector().find('.printer-select').val(presenter.activePresenter.config.defaultPrinter);
-          presenter.activePresenter.focus();
+          controller.activePresenter = activeSubPresenter;
+          controller.activePresenter.initialPresenter();
+          this.selector().find('.printer-select').val(controller.activePresenter.config.defaultPrinter);
+          controller.activePresenter.focus();
         }
       } else if (action === 'enableBtn' || action === 'disableBtn') {
-        presenter.changeButtonsState(data, action === 'enableBtn');
+        controller.changeButtonsState(data, action === 'enableBtn');
       }
       else if (action === 'showBtn' || action === 'hideBtn') {
-        presenter.changeButtonsVisibility(data, action === 'showBtn');
+        controller.changeButtonsVisibility(data, action === 'showBtn');
       }
       else {
         this.owner.childDone(child, action, data);

@@ -1,5 +1,5 @@
 define(['config'
-  , 'extraction_pipeline/presenters/base_presenter'
+  , 'extraction_pipeline/controllers/base_controller'
   , 'extraction_pipeline/views/labware_view'
   , 'extraction_pipeline/lib/pubsub'
   , 'extraction_pipeline/lib/barcode_checker'
@@ -30,14 +30,14 @@ define(['config'
 
   $.extend(LabwarePresenter, {
     register: function(callback) {
-      callback('labware_presenter', function(owner, factory) {
+      callback('labware_controller', function(owner, factory) {
         return Object.create(LabwarePresenter).init(owner, factory);
       });
     },
 
-    init: function (owner, presenterFactory) {
+    init: function (owner, controllerFactory) {
       this.owner = owner;
-      this.presenterFactory = presenterFactory;
+      this.controllerFactory = controllerFactory;
       return this;
     },
 
@@ -77,10 +77,10 @@ define(['config'
         throw "type declaration mismatch! Check the type is correctly entered in the pipeline config for this page.";
       } else {
         if (this.labwareModel.displayLabware()) {
-          this.resourcePresenter = this.presenterFactory.createLabwareSubPresenter(this, type);
+          this.resourcePresenter = this.controllerFactory.createLabwareSubPresenter(this, type);
         }
         if (!this.barcodeInputPresenter && this.labwareModel.display_barcode && !this.isSpecial()) {
-          this.barcodeInputPresenter = this.presenterFactory.create('scan_barcode_presenter', this);
+          this.barcodeInputPresenter = this.controllerFactory.create('scan_barcode_controller', this);
         }
         this.setupSubModel();
       }
@@ -121,13 +121,13 @@ define(['config'
       }
 
       if (this.barcodeInputPresenter) {
-        var labwareCallback = function(value, template, presenter){
-          presenter.owner.childDone(presenter, 'barcodeScanned', {
-            modelName: presenter.labwareModel.expected_type.pluralize(),
+        var labwareCallback = function(value, template, controller){
+          controller.owner.childDone(controller, 'barcodeScanned', {
+            modelName: controller.labwareModel.expected_type.pluralize(),
             BC:        Util.pad(value)
           });
-          PubSub.publish("s2.labware.barcode_scanned", presenter, {
-            modelName: presenter.labwareModel.expected_type.pluralize(),
+          PubSub.publish("s2.labware.barcode_scanned", controller, {
+            modelName: controller.labwareModel.expected_type.pluralize(),
             BC:        Util.pad(value)
           });
         };
@@ -228,8 +228,8 @@ define(['config'
   }
 
   function barcodeErrorCallback(errorText){
-    return function(value, template, presenter){
-      PubSub.publish('s2.status.error', presenter, {message: errorText});
+    return function(value, template, controller){
+      PubSub.publish('s2.status.error', controller, {message: errorText});
     };
   }
 
@@ -242,7 +242,7 @@ define(['config'
     }, 250);
   }
 
-  function validationOnReturnKeyCallback (presenter, type, barcodePrefixes) {
+  function validationOnReturnKeyCallback (controller, type, barcodePrefixes) {
     var validationCallBack ;
     switch(type){
       case "2D_tube":
@@ -263,9 +263,9 @@ define(['config'
         
         setScannedTimeout(barcodeSelection);
         if (validationCallBack(Util.pad(value),barcodePrefixes)) {
-          callback(value, element, presenter);
+          callback(value, element, controller);
         } else {
-          errorCallback(value, element, presenter);
+          errorCallback(value, element, controller);
         }
       };
     }

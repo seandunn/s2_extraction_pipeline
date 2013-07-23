@@ -1,4 +1,4 @@
-define(['extraction_pipeline/presenters/base_presenter'
+define(['extraction_pipeline/controllers/base_controller'
   , 'extraction_pipeline/models/summary_page_model'
   , 'text!extraction_pipeline/html_partials/summary_page_partial.html'
   , 'extraction_pipeline/lib/pubsub'
@@ -8,7 +8,7 @@ define(['extraction_pipeline/presenters/base_presenter'
 
   $.extend(SummaryPagePresenter, {
     register: function (callback) {
-      callback('summary_page_presenter', function (owner, factory, initData) {
+      callback('summary_page_controller', function (owner, factory, initData) {
         return Object.create(SummaryPagePresenter).init(owner, factory, initData);
       });
     },
@@ -16,7 +16,7 @@ define(['extraction_pipeline/presenters/base_presenter'
     init: function (owner, factory, config) {
       this.owner = owner;
       this.config = config;
-      this.presenterFactory = factory;
+      this.controllerFactory = factory;
       this.model = Object.create(Model).init(this, config);
 
       // page is refreshed after 5 seconds

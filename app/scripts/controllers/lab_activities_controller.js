@@ -1,5 +1,5 @@
 define(['config'
-  , 'extraction_pipeline/presenters/base_presenter'
+  , 'extraction_pipeline/controllers/base_controller'
   , 'text!extraction_pipeline/html_partials/extraction_partial.html'
   , 'extraction_pipeline/models/lab_activities_model'
   , 'extraction_pipeline/lib/util'
@@ -11,7 +11,7 @@ define(['config'
 
   $.extend(LabActivitiesPresenter, {
     register: function (callback) {
-      callback('lab_activities_presenter', function () {
+      callback('lab_activities_controller', function () {
         var instance = Object.create(LabActivitiesPresenter);
         LabActivitiesPresenter.init.apply(instance, arguments);
         return instance;
@@ -29,8 +29,8 @@ define(['config'
 
       this.view = this.createHtml();
 
-      $.extend(this.rerackingComponent,{presenter:this.factory.create('reracking_presenter', this, config)});
-      this.rerackingComponent.selection.append(this.rerackingComponent.presenter.view);
+      $.extend(this.rerackingComponent,{controller:this.factory.create('reracking_controller', this, config)});
+      this.rerackingComponent.selection.append(this.rerackingComponent.controller.view);
 
       this.currentComponent = this.homeComponent;
 
@@ -40,7 +40,7 @@ define(['config'
     createHtml: function () {
       var html = $(_.template(extractionPartialHtml)());
 
-      var userBCSubPresenter = this.factory.create('scan_barcode_presenter', this).init({type:"user"});
+      var userBCSubPresenter = this.factory.create('scan_barcode_controller', this).init({type:"user"});
 
       this.backButtonSelection = html.find("#back-button");
       this.rerackingBtnSelection = html.find("#reracking-btn");
@@ -60,22 +60,22 @@ define(['config'
               barcodeErrorCallback("User barcode is not valid."))
       );
 
-      function userCallback(value, template, presenter){
+      function userCallback(value, template, controller){
         var barcode = Util.pad(value);
-        presenter.model.setUserFromBarcode(barcode)
+        controller.model.setUserFromBarcode(barcode)
             .fail(function (error) {
-              PubSub.publish('s2.status.error', presenter, error);
+              PubSub.publish('s2.status.error', controller, error);
             })
             .then(function(){
               template.find("input").val(barcode);
               template.find("input").attr('disabled', true);
-              presenter.userValidationSelection.hide();
-              presenter.componentChoiceSelection.show();
+              controller.userValidationSelection.hide();
+              controller.componentChoiceSelection.show();
             });
       }
 
       function barcodeErrorCallback(errorText){
-        return function(value, template, presenter){
+        return function(value, template, controller){
           PubSub.publish('s2.status.error', this, {message: errorText});
         };
       }

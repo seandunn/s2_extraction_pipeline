@@ -1,5 +1,5 @@
 define(['config'
-  , 'extraction_pipeline/presenters/base_presenter'
+  , 'extraction_pipeline/controllers/base_controller'
   , 'text!extraction_pipeline/html_partials/volume_control_partial.html'
   , 'extraction_pipeline/models/volume_control_model'
   , 'extraction_pipeline/lib/pubsub'
@@ -10,7 +10,7 @@ define(['config'
 
   $.extend(VolumeControlPresenter, {
     register: function (callback) {
-      callback('volume_control_presenter', function (owner, factory, initData) {
+      callback('volume_control_controller', function (owner, factory, initData) {
         return Object.create(VolumeControlPresenter).init(owner, factory, initData);
       });
     },
@@ -18,7 +18,7 @@ define(['config'
     init: function (owner, factory, config) {
       this.owner = owner;
       this.config = config;
-      this.presenterFactory = factory;
+      this.controllerFactory = factory;
       this.model = Object.create(Model).init(this, config);
       return this;
     },
@@ -44,8 +44,8 @@ define(['config'
             thisPresenter.jquerySelectionForControlTube = function () {
               return jquerySelection().find('.control .labware');
             };
-            thisPresenter.rackPresenter = thisPresenter.presenterFactory.create('labware_presenter', thisPresenter);
-            thisPresenter.controlPresenter = thisPresenter.presenterFactory.create('labware_presenter', thisPresenter);
+            thisPresenter.rackPresenter = thisPresenter.controllerFactory.create('labware_controller', thisPresenter);
+            thisPresenter.controlPresenter = thisPresenter.controllerFactory.create('labware_controller', thisPresenter);
 
             thisPresenter.rackPresenter.setupPresenter({
               "expected_type":   "rack",
@@ -63,8 +63,8 @@ define(['config'
 
             PubSub.subscribe("s2.labware.barcode_scanned", barcodeScannedEventHandler);
             PubSub.subscribe("s2.labware.removed", controlLabwareRemovedEventHandler);
-            PubSub.subscribe("s2.step_presenter.end_clicked", makeTransferEventHandler);
-            PubSub.subscribe("s2.step_presenter.next_clicked", endProcessEventHandler);
+            PubSub.subscribe("s2.step_controller.end_clicked", makeTransferEventHandler);
+            PubSub.subscribe("s2.step_controller.next_clicked", endProcessEventHandler);
 
             function barcodeScannedEventHandler(event, source, eventData) {
               thisPresenter.barcodeScanned(event, source, eventData);
@@ -128,17 +128,17 @@ define(['config'
           .fail(function (error) {
             thisPresenter.message('error', error.message);
             container.find('.component').trigger("s2.busybox.end_process");
-            PubSub.publish("s2.step_presenter.disable_buttons", thisPresenter, {buttons: [
+            PubSub.publish("s2.step_controller.disable_buttons", thisPresenter, {buttons: [
               {action: "end"}
             ]});
           })
           .then(function (model) {
             thisPresenter.message('success', 'The transfert was successful. Click on the \'Done\' button to carry on.');
             container.find('.component').trigger("s2.busybox.end_process");
-            PubSub.publish("s2.step_presenter.disable_buttons", thisPresenter, {buttons: [
+            PubSub.publish("s2.step_controller.disable_buttons", thisPresenter, {buttons: [
               {action: "end"}
             ]});
-            PubSub.publish("s2.step_presenter.enable_buttons", thisPresenter, {buttons: [
+            PubSub.publish("s2.step_controller.enable_buttons", thisPresenter, {buttons: [
               {action: "next"}
             ]});
           })
@@ -147,7 +147,7 @@ define(['config'
     endProcess: function () {
       var thisPresenter = this;
       this.model.then(function (model) {
-        PubSub.publish("s2.step_presenter.next_process", thisPresenter, {batch: model.batch});
+        PubSub.publish("s2.step_controller.next_process", thisPresenter, {batch: model.batch});
       });
     },
 
@@ -167,7 +167,7 @@ define(['config'
             var volumeControlPosition = model.findVolumeControlPosition();
             thisPresenter.rackPresenter.resourcePresenter.fillWell(volumeControlPosition, "blue");
             if (model.isReady) {
-              PubSub.publish("s2.step_presenter.enable_buttons", thisPresenter, {buttons: [
+              PubSub.publish("s2.step_controller.enable_buttons", thisPresenter, {buttons: [
                 {action: "end"}
               ]});
             }
@@ -305,7 +305,7 @@ define(['config'
       return $("<h4/>", {class: "alert-heading", text: errorText});
     };
 
-    return function (event, template, presenter) {
+    return function (event, template, controller) {
       template.
           find('.alert-error').
           html(errorHtml(errorText)).

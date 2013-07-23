@@ -7,7 +7,7 @@ define(['config'
   var BasePresenter = Object.create(null);
 
   $.extend(BasePresenter, {
-    // This should be registered with model not presenter
+    // This should be registered with model not controller
     getS2Root: function(user) { return this.owner.getS2Root(user); },
 
     setupPlaceholder:function (jquerySelection) {

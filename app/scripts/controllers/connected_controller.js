@@ -1,5 +1,5 @@
 define([
-      'extraction_pipeline/presenters/base_presenter',
+      'extraction_pipeline/controllers/base_controller',
        'extraction_pipeline/models/connected',
        'text!extraction_pipeline/html_partials/connected_partial.html',
        'extraction_pipeline/lib/pubsub'
@@ -10,17 +10,17 @@ define([
 
   $.extend(Presenter, {
     register:function (callback) {
-      callback('connected_presenter', function (owner, factory, initData) {
+      callback('connected_controller', function (owner, factory, initData) {
         return Object.create(Presenter).init(owner, factory, initData);
       });
     },
 
-    init:function (owner, presenterFactory, initData) {
+    init:function (owner, controllerFactory, initData) {
       this.config           = initData;
       this.owner            = owner;
       this.model            = Object.create(Model).init(this, initData);
       this.rowPresenters    = [];
-      this.presenterFactory = presenterFactory;
+      this.controllerFactory = controllerFactory;
       this.template         = _.template(Template);
       return this;
     },
@@ -47,8 +47,8 @@ define([
       var thisPresenter = this;
       this.model.setupInputPresenters(reset)
           .then(function(){
-            var currentPresenter = _.find(thisPresenter.rowPresenters, function (presenter) {
-              return !presenter.isRowComplete();
+            var currentPresenter = _.find(thisPresenter.rowPresenters, function (controller) {
+              return !controller.isRowComplete();
             });
             // There will not be an incomplete row returned if the entire page is complete. Therefore nothing to focus on.
             if (currentPresenter) {
@@ -56,8 +56,8 @@ define([
               // we lock the other rows...
               _.chain(thisPresenter.rowPresenters).reject(function(rowPresenter){
                 return rowPresenter === currentPresenter;
-              }).each(function(presenter){
-                presenter.lockRow();
+              }).each(function(controller){
+                controller.lockRow();
               });
               currentPresenter.unlockRow();
             }
@@ -78,8 +78,8 @@ define([
     },
 
     checkPageComplete:function () {
-      return _.all(this.rowPresenters, function (presenter) {
-        return presenter.isRowComplete();
+      return _.all(this.rowPresenters, function (controller) {
+        return controller.isRowComplete();
       });
     },
 
@@ -94,25 +94,25 @@ define([
     },
 
     unknownDone:function (child, action, data) {
-      var originator = data.origin, presenter = this;
+      var originator = data.origin, controller = this;
       if (action === 'inputBarcodeScanned') {
-        presenter.model.inputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
-          presenter.model.inputs.pull(resource);
+        controller.model.inputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
+          controller.model.inputs.pull(resource);
         }).done(function() {
-          presenter.focus();
+          controller.focus();
         });
       } else if (action === 'outputBarcodeScanned') {
-        presenter.model.outputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
-          presenter.model.outputs.pull(resource);
+        controller.model.outputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
+          controller.model.outputs.pull(resource);
         }).done(function() {
-          presenter.focus();
+          controller.focus();
         });
       } else if (action === 'inputRemoved') {
         this.model.inputs.push(data.resource);
-        presenter.owner.childDone(presenter, "disableBtn", {buttons:[{action:"start"}]});
+        controller.owner.childDone(controller, "disableBtn", {buttons:[{action:"start"}]});
       } else if (action === 'outputRemoved') {
         this.model.outputs.push(data.resource);
-        presenter.owner.childDone(presenter, "disableBtn", {buttons:[{action:"start"}]});
+        controller.owner.childDone(controller, "disableBtn", {buttons:[{action:"start"}]});
       } else if (action === 'completed') {
         this.rowDone(child, action, data);
       }
@@ -133,18 +133,18 @@ define([
 
         this.model.ready = true;
         this.setupSubPresenters(true);
-        PubSub.publish('s2.step_presenter.printing_finished', this);
+        PubSub.publish('s2.step_controller.printing_finished', this);
 
       } else if (action === "barcodePrintSuccess") {
 
         PubSub.publish('s2.status.message', this, {message: 'Barcode labels printed'});
-        PubSub.publish('s2.step_presenter.printing_finished', this);
+        PubSub.publish('s2.step_controller.printing_finished', this);
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "barcodePrintFailure") {
 
         PubSub.publish('s2.status.error', this, {message: 'Barcode labels could not be printed'});
-        PubSub.publish('s2.step_presenter.printing_finished', this);
+        PubSub.publish('s2.step_controller.printing_finished', this);
         this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "startOperation") {
@@ -169,8 +169,8 @@ define([
 
       } else if (action === "successfulOperation") {
         // locks the rowPresenters which have successfully completed their operations
-        _.each(data, function(presenter){
-          presenter.lockRow();
+        _.each(data, function(controller){
+          controller.lockRow();
         });
 
         // find the index of the last rowPresenter which has successfully completed its operations
@@ -180,7 +180,7 @@ define([
             lastIndex = lastIndex < index ? index : lastIndex;
           }
         });
-        // if there is at least one presenter after...
+        // if there is at least one controller after...
         if (lastIndex+1 < this.rowPresenters.length){
           // we unlock it
           this.rowPresenters[lastIndex+1].unlockRow();
@@ -206,17 +206,17 @@ define([
 
     print: function(child, action, data) {
       if (this.readyToCreateOutputs()) {
-        PubSub.publish('s2.step_presenter.printing_started', this);
+        PubSub.publish('s2.step_controller.printing_started', this);
         this.model.createOutputs(data);
       }
     },
 
     next:  function(child, action, data){
-      var presenter = this;
+      var controller = this;
 
       this.model.behaviours.done[action](
-        function(){ presenter.owner.childDone(presenter, 'done') },
-        function(){ eventHandler.call(presenter, child, action, data); }
+        function(){ controller.owner.childDone(controller, 'done') },
+        function(){ eventHandler.call(controller, child, action, data); }
       )
     },
 

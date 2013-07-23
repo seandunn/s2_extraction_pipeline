@@ -3,9 +3,9 @@ define([
 ], function (scanBarcodePartialHtml) {
   'use strict';
 
-  var ScanBarcodePresenter = function (owner, presenterFactory) {
+  var ScanBarcodePresenter = function (owner, controllerFactory) {
     this.owner = owner;
-    this.presenterFactory = presenterFactory;
+    this.controllerFactory = controllerFactory;
     return this;
   };
 
@@ -20,7 +20,7 @@ define([
 
   return {
     register:function (callback) {
-      callback('scan_barcode_presenter', function (owner, factory) {
+      callback('scan_barcode_controller', function (owner, factory) {
         return new ScanBarcodePresenter(owner, factory);
       });
     }

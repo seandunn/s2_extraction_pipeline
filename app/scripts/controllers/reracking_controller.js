@@ -1,5 +1,5 @@
 define(['config'
-  , 'extraction_pipeline/presenters/base_presenter'
+  , 'extraction_pipeline/controllers/base_controller'
   , 'text!extraction_pipeline/html_partials/reracking_partial.html'
   , 'extraction_pipeline/models/reracking_model'
   , 'extraction_pipeline/lib/pubsub'
@@ -11,7 +11,7 @@ define(['config'
 
   $.extend(Presenter, {
     register: function (callback) {
-      callback('reracking_presenter', function () {
+      callback('reracking_controller', function () {
         var instance = Object.create(Presenter);
         Presenter.init.apply(instance, arguments);
         return instance;
@@ -46,7 +46,7 @@ define(['config'
       this.outputrackSelection = html.find('.output-labware');
       this.rackListSelection = html.find('#rack-list');
       this.barcodeReaderSelection = html.find("#barcodeReader");
-      var scanBarcodePresenter = this.factory.create('scan_barcode_presenter', this).init({type: "labware"});
+      var scanBarcodePresenter = this.factory.create('scan_barcode_controller', this).init({type: "labware"});
       this.barcodeReaderSelection.append(
           this.bindReturnKey(scanBarcodePresenter.renderView(),
               labwareCallback,
@@ -69,26 +69,26 @@ define(['config'
       this.startRerackingBtnSelection.click(onStartRerackingEventHandler(thisPresenter));
       return html;
 
-      function onPrintRerackingEventHandler(presenter) {
+      function onPrintRerackingEventHandler(controller) {
         return function () {
-          presenter.onPrintBarcode();
+          controller.onPrintBarcode();
         }
       }
-      function onRerackingEventHandler(presenter) {
+      function onRerackingEventHandler(controller) {
         return function () {
-          presenter.onReracking();
+          controller.onReracking();
         }
       }
-      function onStartRerackingEventHandler(presenter) {
+      function onStartRerackingEventHandler(controller) {
         return function () {
-          presenter.onStartReracking();
+          controller.onStartReracking();
         }
       }
       function barcodeErrorCallback(errorText) {
         var errorHtml = function (errorText) {
           return $("<h4/>", {class: "alert-heading", text: errorText});
         };
-        return function (event, template, presenter) {
+        return function (event, template, controller) {
           thisPresenter.message('error', errorText);
           template
               .find('input')
@@ -96,7 +96,7 @@ define(['config'
         };
       }
 
-      function labwareCallback(event, template, presenter) {
+      function labwareCallback(event, template, controller) {
         template.find('.alert-error').addClass('hide');
         thisPresenter.labwareScannedHandler(Util.pad(event.currentTarget.value));
         thisPresenter.barcodeReaderSelection.find('input').val(''); // clear the input
@@ -167,7 +167,7 @@ define(['config'
             // creates the rack list from the loaded racks
             thisPresenter.rackPresenters = [];
             var rackList = _.map(model.inputRacks, function (rack, index) {
-              var rackPresenter = thisPresenter.factory.create('labware_presenter', thisPresenter);
+              var rackPresenter = thisPresenter.factory.create('labware_controller', thisPresenter);
               function selection(s) {
                 return function () {
                   return thisPresenter.rackListSelection.find(s);
@@ -182,13 +182,13 @@ define(['config'
                 "display_barcode": false
               }, selection("li:nth(" + index + ")"));
               var listItem = "<li>" + rack.labels.barcode.value + "</li>";
-              return {"item": listItem, presenter: rackPresenter, rackData: rack};
+              return {"item": listItem, controller: rackPresenter, rackData: rack};
             });
             var listItems = _.pluck(rackList, "item");
             thisPresenter.rackListSelection.empty().append(listItems);
             _.each(rackList, function (rackItem) {
-              rackItem.presenter.renderView();
-              rackItem.presenter.updateModel(rackItem.rackData);
+              rackItem.controller.renderView();
+              rackItem.controller.updateModel(rackItem.rackData);
             });
             if (model.isReady) {
               // ready to merge
@@ -285,7 +285,7 @@ define(['config'
             thisPresenter.view.trigger("s2.busybox.end_process");
             thisPresenter.message('success', 'File loaded successfully.');
             thisPresenter.outputrackSelection.show();
-            thisPresenter.outputRackPresenter = thisPresenter.factory.create('labware_presenter', thisPresenter);
+            thisPresenter.outputRackPresenter = thisPresenter.factory.create('labware_controller', thisPresenter);
             thisPresenter.outputRackPresenter.setupPresenter({
               "expected_type":   "tube_rack",
               "display_labware": true,

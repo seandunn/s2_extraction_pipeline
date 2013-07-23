@@ -1,32 +1,32 @@
 define([
-  'labware/presenters/tube_presenter',
-  'labware/presenters/spin_column_presenter',
-  'labware/presenters/waste_tube_presenter',
-  'labware/presenters/rack_presenter',
-  'labware/presenters/gel_presenter',
-  'labware/presenters/plate_presenter',
+  'labware/controllers/tube_controller',
+  'labware/controllers/spin_column_controller',
+  'labware/controllers/waste_tube_controller',
+  'labware/controllers/rack_controller',
+  'labware/controllers/gel_controller',
+  'labware/controllers/plate_controller',
 
-  // Add new presenters after this point for automatic registration
+  // Add new controllers after this point for automatic registration
 
-  // The top level presenters (typically these get re-used)
-  'extraction_pipeline/presenters/row_presenter',
-  'extraction_pipeline/presenters/step_presenter',
-  'extraction_pipeline/presenters/scan_barcode_presenter',
-  'extraction_pipeline/presenters/labware_presenter',
-  'extraction_pipeline/presenters/connected_presenter',
+  // The top level controllers (typically these get re-used)
+  'extraction_pipeline/controllers/row_controller',
+  'extraction_pipeline/controllers/step_controller',
+  'extraction_pipeline/controllers/scan_barcode_controller',
+  'extraction_pipeline/controllers/labware_controller',
+  'extraction_pipeline/controllers/connected_controller',
 
   // Presenters that add extra behaviour, for some reason
-  'extraction_pipeline/presenters/kit_presenter',
-  'extraction_pipeline/presenters/rack_scan_presenter',
-  'extraction_pipeline/presenters/reracking_presenter',
-  'extraction_pipeline/presenters/selection_page_presenter',
-  'extraction_pipeline/default/default_presenter',
-  'extraction_pipeline/presenters/volume_control_presenter',
-  'extraction_pipeline/presenters/reception_presenter',
-  'extraction_pipeline/presenters/lab_activities_presenter',
-  'extraction_pipeline/presenters/manifest_maker_presenter',
-  'extraction_pipeline/presenters/manifest_reader_presenter',
-  'extraction_pipeline/presenters/summary_page_presenter'
+  'extraction_pipeline/controllers/kit_controller',
+  'extraction_pipeline/controllers/rack_scan_controller',
+  'extraction_pipeline/controllers/reracking_controller',
+  'extraction_pipeline/controllers/selection_page_controller',
+  'extraction_pipeline/default/default_controller',
+  'extraction_pipeline/controllers/volume_control_controller',
+  'extraction_pipeline/controllers/reception_controller',
+  'extraction_pipeline/controllers/lab_activities_controller',
+  'extraction_pipeline/controllers/manifest_maker_controller',
+  'extraction_pipeline/controllers/manifest_reader_controller',
+  'extraction_pipeline/controllers/summary_page_controller'
 ], function(TubePresenter, SpinColumnPresenter, WasteTubePresenter, RackPresenter, GelPresenter, PlatePresenter) {
   'use strict';
 
@@ -34,17 +34,17 @@ define([
     /* Construct an instance of PresenterFactory
      *
      * This is an implementation of the AbstractFactory pattern. The
-     * intention of using the pattern is to allow presenters that create
-     * partial presenters to have a mock implementation in the testing. Otherwise
+     * intention of using the pattern is to allow controllers that create
+     * partial controllers to have a mock implementation in the testing. Otherwise
      * views are likely to be created in the testing, which will likely mess about
      * with the Jasmine testing library.
      */
     return this;
   };
 
-  PresenterFactory.prototype.presenters = _.chain(arguments).drop(6).reduce(function(presenters, presenter) {
-    presenter.register(function(name, method) { presenters[name] = method; });
-    return presenters;
+  PresenterFactory.prototype.controllers = _.chain(arguments).drop(6).reduce(function(controllers, controller) {
+    controller.register(function(name, method) { controllers[name] = method; });
+    return controllers;
   }, {
     createSpinColumnPresenter: function(owner) { return new SpinColumnPresenter(owner, this); },
     createTubePresenter:       function(owner) { return new TubePresenter(owner, this); },
@@ -55,25 +55,25 @@ define([
   }).value();
 
   // Function can take variable number of parameters, passing them onto the constructor function
-  // for the named presenter.  It is here to ensure that the first two arguments are always the
-  // for the named presenter.  It is here to ensure that the first two arguments are always the
-  // owner and the factory with which the presenter was registered.
+  // for the named controller.  It is here to ensure that the first two arguments are always the
+  // for the named controller.  It is here to ensure that the first two arguments are always the
+  // owner and the factory with which the controller was registered.
   PresenterFactory.prototype.create = function(name, owner) {
-    var constructor = this.presenters[name] || this.presenters.default;
+    var constructor = this.controllers[name] || this.controllers.default;
     return $.extend(
       _.partial(constructor, owner, this).apply(null, _.chain(arguments).drop(2).value()),
-      { presenter_type_name_debug: name }
+      { controller_type_name_debug: name }
     );
   };
 
   PresenterFactory.prototype.createLabwareSubPresenter = function(owner, type) {
     switch (type) {
-      case 'tube':        return this.presenters.createTubePresenter(owner);       break;
-      case 'spin_column': return this.presenters.createSpinColumnPresenter(owner); break;
-      case 'waste_tube':  return this.presenters.createWasteTubePresenter(owner);  break;
-      case 'tube_rack':   return this.presenters.createRackPresenter(owner);       break;
-      case 'gel':         return this.presenters.createGelPresenter(owner);        break;
-      case 'plate':       return this.presenters.createPlatePresenter(owner);      break;
+      case 'tube':        return this.controllers.createTubePresenter(owner);       break;
+      case 'spin_column': return this.controllers.createSpinColumnPresenter(owner); break;
+      case 'waste_tube':  return this.controllers.createWasteTubePresenter(owner);  break;
+      case 'tube_rack':   return this.controllers.createRackPresenter(owner);       break;
+      case 'gel':         return this.controllers.createGelPresenter(owner);        break;
+      case 'plate':       return this.controllers.createPlatePresenter(owner);      break;
       default:            debugger;
     }
   };

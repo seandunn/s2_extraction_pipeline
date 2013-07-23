@@ -1,5 +1,5 @@
 define(['config'
-  , 'extraction_pipeline/presenters/base_presenter'
+  , 'extraction_pipeline/controllers/base_controller'
   , 'text!extraction_pipeline/html_partials/default_page_partial.html'
   , 'extraction_pipeline/default/default_model'
   , 'extraction_pipeline/lib/util'
@@ -7,16 +7,16 @@ define(['config'
 ], function (config, BasePresenter, defaultPagePartialHtml, Model, Util, PubSub) {
   'use strict';
 
-  var userCallback = function(value, template, presenter){
+  var userCallback = function(value, template, controller){
     var barcode = Util.pad(value);
-    presenter.model.setUserFromBarcode(barcode)
+    controller.model.setUserFromBarcode(barcode)
         .fail(function (error) {
-          PubSub.publish('s2.status.error', presenter, error);
+          PubSub.publish('s2.status.error', controller, error);
         })
         .then(function(){
           template.find("input").val(barcode);
           template.find("input").attr('disabled', true);
-          presenter.jquerySelectionForLabware().
+          controller.jquerySelectionForLabware().
               find("input").
               removeAttr('disabled').
               focus();
@@ -24,22 +24,22 @@ define(['config'
   };
 
   var barcodeErrorCallback = function(errorText){
-    return function(value, template, presenter){
+    return function(value, template, controller){
       PubSub.publish('s2.status.error', this, {message: errorText});
     };
   };
 
-  var labwareCallback = function(value, template, presenter){
+  var labwareCallback = function(value, template, controller){
     template.find("input").attr('disabled', true);
     template.find('.alert-error').addClass('hide');
-    presenter.model.setLabwareFromBarcode(Util.pad(value))
+    controller.model.setLabwareFromBarcode(Util.pad(value))
         .fail(function (error) {
-          PubSub.publish('s2.status.error', presenter, error);
+          PubSub.publish('s2.status.error', controller, error);
         })
         .then(login);
     function login(model){
       if (model.isValid()){
-        presenter.owner.childDone(presenter, "login", model);
+        controller.owner.childDone(controller, "login", model);
       } else {
         barcodeErrorCallback("Labware not found on system.")(undefined, template);
       }
@@ -55,8 +55,8 @@ define(['config'
       });
     },
 
-    init:function (owner, presenterFactory) {
-      this.presenterFactory = presenterFactory;
+    init:function (owner, controllerFactory) {
+      this.controllerFactory = controllerFactory;
       this.owner = owner;
       return this;
     },
@@ -66,8 +66,8 @@ define(['config'
       this.setupPlaceholder(jquerySelection);
       this.model = Object.create(Model).init(this);
 
-      this.userBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this).init({type:"user"});
-      this.labwareBCSubPresenter = this.presenterFactory.create('scan_barcode_presenter', this).init({type:"tube"});
+      this.userBCSubPresenter = this.controllerFactory.create('scan_barcode_controller', this).init({type:"user"});
+      this.labwareBCSubPresenter = this.controllerFactory.create('scan_barcode_controller', this).init({type:"tube"});
 
       this.jquerySelectionForUser = function () {
         return that.jquerySelection().find(".user_barcode");

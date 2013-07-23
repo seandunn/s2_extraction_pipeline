@@ -1,5 +1,5 @@
 define(['config'
-  , 'extraction_pipeline/presenters/base_presenter'
+  , 'extraction_pipeline/controllers/base_controller'
   , 'text!extraction_pipeline/html_partials/manifest_reader_partial.html'
   , 'text!extraction_pipeline/html_partials/sample_row_partial.html'
   , 'extraction_pipeline/models/manifest_reader_model'
@@ -12,7 +12,7 @@ define(['config'
 
   $.extend(Presenter, {
     register: function (callback) {
-      callback('manifest_reader_presenter', function () {
+      callback('manifest_reader_controller', function () {
         var instance = Object.create(Presenter);
         Presenter.init.apply(instance, arguments);
         return instance;
@@ -41,9 +41,9 @@ define(['config'
 
       this.enableDropzone();
       this.registerBtnSelection.hide().click(onRegistrationButtonClickEventHandler(this));
-      function onRegistrationButtonClickEventHandler(presenter) {
+      function onRegistrationButtonClickEventHandler(controller) {
         return function () {
-          presenter.onRegisterButtonClick();
+          controller.onRegisterButtonClick();
         }
       }
 
