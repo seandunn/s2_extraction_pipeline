@@ -58,7 +58,7 @@
     {
       "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_nap.awaiting_reception" ],
       "presenterName":"selection_page_presenter",
-      "processTitle": "Manual DNA and RNA Extraction - Register Samples",
+      "processTitle": "Manual DNA and RNA Extraction - Receive Tubes",
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.manual_dna_and_rna.input_tube_nap.awaiting_reception",
@@ -390,7 +390,7 @@
     {
       "accepts": [ "samples.extraction.manual_dna_only.input_tube_dnap.awaiting_reception" ],
       "presenterName":"selection_page_presenter",
-      "processTitle": "Manual DNA Only Extraction - Register Samples",
+      "processTitle": "Manual DNA Only Extraction - Receive Tubes",
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.manual_dna_only.input_tube_dnap.awaiting_reception",
@@ -510,7 +510,7 @@
     {
       "accepts": [ "samples.extraction.manual_rna_only.input_tube_rnap.awaiting_reception" ],
       "presenterName":"selection_page_presenter",
-      "processTitle": "Manual RNA Only Extraction - Register Samples",
+      "processTitle": "Manual RNA Only Extraction - Receive Tubes",
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.manual_rna_only.input_tube_rnap.awaiting_reception",
@@ -549,7 +549,7 @@
     {
       "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception" ],
       "presenterName":"selection_page_presenter",
-      "processTitle": "Automated DNA and RNA Extraction (QIAcube) - Register Samples",
+      "processTitle": "Automated DNA and RNA Extraction (QIAcube) - Receive Tubes",
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception",
@@ -771,7 +771,7 @@
     {
       "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception" ],
       "presenterName":"selection_page_presenter",
-      "processTitle": "Automated DNA Only Extraction (QIAcube) - Register Samples",
+      "processTitle": "Automated DNA Only Extraction (QIAcube) - Receive Tubes",
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception",
@@ -855,7 +855,7 @@
     {
       "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception" ],
       "presenterName":"selection_page_presenter",
-      "processTitle": "Automated RNA Only Extraction (QIAcube) - Register Samples",
+      "processTitle": "Automated RNA Only Extraction (QIAcube) - Receive Tubes",
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception",
