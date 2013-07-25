@@ -8,7 +8,6 @@
     "requirejs": "~2.1.4",
     "requirejs-domready": "~2.0.1",
     "S2Mapper": "https://github.com/sanger/S2Mapper.git",
-    "labware": "https://github.com/sanger/labware.git",
     "requirejs-text": "~2.0.5",
     "spin.js": "~1.3.0",
     "FileSaver": "https://github.com/eligrey/FileSaver.js.git"
