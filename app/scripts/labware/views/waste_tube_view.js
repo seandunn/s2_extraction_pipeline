@@ -1,4 +1,4 @@
-define(['text!labware/../images/waste_tube.svg'], function (wasteTubeSvg) {
+define(['text!images/waste_tube.svg'], function (wasteTubeSvg) {
   'use strict';
 
   var tubeView = function (owner, jquerySelection) {

@@ -1,4 +1,4 @@
-define(['text!labware/../images/spin_column2.svg'], function (spinColumnSvg) {
+define(['text!images/spin_column2.svg'], function (spinColumnSvg) {
     'use strict';
 
     var spinColumnView = function (owner, jquerySelection) {

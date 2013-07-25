@@ -1,5 +1,5 @@
-define(['text!labware/../images/96_plate.svg', 'text!labware/../images/384_plate.svg'], function (plate96Svg, plate384Svg) {
-    'use strict';
+define(['text!images/96_plate.svg', 'text!images/384_plate.svg'], function (plate96Svg, plate384Svg) {
+  'use strict';
 
   var plateView = function (owner, jquerySelection) {
     this.owner = owner;

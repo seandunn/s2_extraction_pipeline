@@ -11,7 +11,7 @@ function is_empty(obj) {
   return true;
 }
 
-define(['text!labware/../images/96_gel.svg'], function (gelSvg) {
+define(['text!images/96_gel.svg'], function (gelSvg) {
   'use strict';
 
   var gelView = function (owner, jquerySelection) {
