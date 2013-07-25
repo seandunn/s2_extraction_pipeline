@@ -1,17 +1,4 @@
-/* Helper function which determines whether an object is empty
- *
- *
- * Arguments
- * ---------
- * obj: The object to be examined
- *
- *
- * Returns
- * -------
- * whether the object is empty or not (bool)
- */
 function is_empty(obj) {
-
   // Assume if it has a length property with a non-zero value
   // that that property is correct.
   if (obj.length && obj.length > 0)    return false;
@@ -36,18 +23,6 @@ define(['text!labware/../images/96_gel.svg'], function (gelSvg) {
   };
 
 
-  /* Draws the plate in the given container space
-   *
-   *
-   * Arguments
-   * ---------
-   * data:    The gel plate data object
-   *
-   *
-   * Returns
-   * -------
-   * The gel plate uuid
-   */
   gelView.prototype.renderView = function () {
 
     this.release();
@@ -81,33 +56,10 @@ define(['text!labware/../images/96_gel.svg'], function (gelSvg) {
     return this;
   };
 
-  /* Removes the image from the assigned view container
-   *
-   *
-   * Arguments
-   * ---------
-   *
-   *
-   * Returns
-   * -------
-   * this
-   */
   gelView.prototype.release = function () {
     this.container().empty();
   };
 
-  /* Modifies the plate window in the defined HTML section container to display as full
-   *
-   *
-   * Arguments
-   * ---------
-   * container:    The selected jQuery element
-   *
-   *
-   * Returns
-   * -------
-   * void
-   */
   gelView.prototype.fillWindow = function (window) {
 
     // Selects the svg element and changes the display property to show a sample in the window

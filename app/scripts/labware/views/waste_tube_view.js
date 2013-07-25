@@ -10,18 +10,6 @@ define(['text!labware/../images/waste_tube.svg'], function (wasteTubeSvg) {
   };
 
 
-  /* Draws the test tube in the given container space
-   *
-   *
-   * Arguments
-   * ---------
-   * data:    The tube data object
-   *
-   *
-   * Returns
-   * -------
-   * The tube uuid
-   */
   tubeView.prototype.renderView = function () {
 
     this.drawTube(wasteTubeSvg);
@@ -45,17 +33,6 @@ define(['text!labware/../images/waste_tube.svg'], function (wasteTubeSvg) {
     this.container().append(importedNode);
   };
 
-  /* Removes the image from the assigned view container
-   *
-   *
-   * Arguments
-   * ---------
-   *
-   *
-   * Returns
-   * -------
-   * this
-   */
   tubeView.prototype.release = function () {
     this.container().empty();
   };

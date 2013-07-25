@@ -10,18 +10,6 @@ define(['text!labware/../images/spin_column2.svg'], function (spinColumnSvg) {
     };
 
 
-    /* Draws the spin column in the given container space
-     *
-     *
-     * Arguments
-     * ---------
-     * data:    The spin column data object
-     *
-     *
-     * Returns
-     * -------
-     * The spin column uuid
-     */
     spinColumnView.prototype.renderView = function () {
 
       var barcodeText = 'N/A';
@@ -43,17 +31,6 @@ define(['text!labware/../images/spin_column2.svg'], function (spinColumnSvg) {
       return this;
     };
 
-    /* Removes the image from the assigned view container
-     *
-     *
-     * Arguments
-     * ---------
-     * 
-     * 
-     * Returns
-     * -------
-     * this
-     */
     spinColumnView.prototype.release = function () {
         this.container().empty();
     };
