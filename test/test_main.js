@@ -8,7 +8,7 @@ require.config({
     text:                 'components/requirejs-text/text',
     spinjs:               'components/spin.js/spin',
     domReady:             'components/requirejs-domready/domReady',
-    labware:              'components/labware/app/scripts',
+    labware:              'scripts/labware',
     mapper:               'components/S2Mapper/app/scripts/mapper/',
     mapper_services:      'components/S2Mapper/app/scripts/services/',
     mapper_test:          'components/S2Mapper/test/',

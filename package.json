@@ -4,7 +4,6 @@
   "version": "0.0.1",
   "dependencies": {
       "S2Mapper": "https://github.com/sanger/S2Mapper/tarball/master",
-      "labware":"https://github.com/sanger/labware/tarball/master"
   },
   "devDependencies": {
       "yeoman": "0.9.6",
