@@ -49,6 +49,7 @@ define([], function() {
       callback();
     },
 
+    // This is for logging only not for authentication or authorisation.
     UserData: {
       "0000000000001": "TEST_USER_1",
       "0000000000002": "TEST_USER_2"

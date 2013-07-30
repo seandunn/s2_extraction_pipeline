@@ -283,7 +283,6 @@ define(['config'
           })
           .then(function (model) {
             thisController.view.trigger("s2.busybox.end_process");
-            thisController.message('success', 'File loaded successfully.');
             thisController.outputrackSelection.show();
             thisController.outputRackController = thisController.factory.create('labware_controller', thisController);
             thisController.outputRackController.setupController({
