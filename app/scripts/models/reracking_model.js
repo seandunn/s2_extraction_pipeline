@@ -302,10 +302,15 @@ define([
                 var label = {
                   template: thisModel.outputModelType.singularize()
                 };
+
                 label[thisModel.outputModelType.singularize()] = {
                   ean13:      thisModel.barcodeForOuputRack.ean13,
-                  sanger:     thisModel.barcodeForOuputRack.sanger,
-                  label_text: thisModel.purpose
+                  sanger:     thisModel.barcodeForOuputRack.sanger.prefix
+                            + thisModel.barcodeForOuputRack.sanger.number
+                            + thisModel.barcodeForOuputRack.sanger.suffix,
+                  label_text: {
+                    role: thisModel.purpose + " " + thisModel.contentType
+                  }
                 };
                 return label;
               }
