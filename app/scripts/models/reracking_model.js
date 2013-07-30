@@ -17,7 +17,7 @@ define([
       this.isReady = false;
       this.nbOfRows = 8;
       this.nbOfColumns = 12;
-      this.purpose = "Stock";
+      this.purpose = "stock";
       this.outputModelType = "tube_rack";
       this.outputCapacity = this.nbOfRows * this.nbOfColumns;
       this.initialiseCaching();
