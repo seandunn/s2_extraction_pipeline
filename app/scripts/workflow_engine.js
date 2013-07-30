@@ -34,7 +34,7 @@ define([ 'text!scripts/pipeline_config.json' ], function (pipelineJSON) {
 
     var foundWorkflows = pipelineConfig.workflows.filter(byRole(activeRole));
 
-    // no presenter to deal with this role -> summary page
+    // no controller to deal with this role -> summary page
     if(foundWorkflows.length < 1){
       foundWorkflows.push(pipelineConfig.unknownRole);
     }
@@ -49,8 +49,8 @@ define([ 'text!scripts/pipeline_config.json' ], function (pipelineJSON) {
     var itemsPromise;
 
     if (!model.user) return $.Deferred().resolve().promise();
-
-    if (!model.batch && model.labware) {
+    if (!model.batch && !model.labware) return $.Deferred().resolve().promise();
+    if (!model.batch) {
       itemsPromise = model.labware.order().then(function(order) {
         return order.items.filter(function(item){
           return item.uuid === model.labware.uuid;

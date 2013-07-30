@@ -3,23 +3,23 @@ define([
   , 'lib/fake_user'
   , 'text!pipeline_testjson/reception_app_test_data.json'
   , 'mapper_test/resource_test_helper'
-  , 'presenters/reception_presenter'
+  , 'controllers/reception_controller'
   , 'text!mapper_testjson/unit/root.json'
   , 'mapper/s2_root'
   , 'text!pipeline_testcsv/manifest_csv_test_data.csv'
-  , 'presenters/presenter_factory'
+  , 'controllers/controller_factory'
   , 'extraction_pipeline/lib/reception_templates'
   , 'text!pipeline_testjson/csv_template_test_data.json'
   , 'text!pipeline_testjson/csv_template_display_test_data.json'
 ]
-  , function (config, FakeUser, appTestData, TestHelper, ReceptionPresenter, rootTestData, S2Root, manifestCSVData, PresenterFactory, ReceptionTemplates, CSVTemplateTestData, CSVTemplateDisplayTestData) {
+  , function (config, FakeUser, appTestData, TestHelper, ReceptionController, rootTestData, S2Root, manifestCSVData, ControllerFactory, ReceptionTemplates, CSVTemplateTestData, CSVTemplateDisplayTestData) {
     'use strict';
 
 
     TestHelper(function (results) {
       describe("The Reception App", function () {
 
-        var presenter, fakeDOM, fakeContent;
+        var controller, fakeDOM, fakeContent;
         beforeEach(function () {
           config.loadTestData(appTestData);
           config.cummulativeLoadingTestDataInFirstStage(rootTestData);
@@ -50,10 +50,10 @@ define([
             manifest_path:"../test/json/manifest_test_data.xls"
           };
 
-          var pf = new PresenterFactory();
-          var presenterConfig = {};
-          presenter = pf.create('reception_presenter', app, presenterConfig);
-          fakeContent().append(presenter.view);
+          var pf = new ControllerFactory();
+          var controllerConfig = {};
+          controller = pf.create('reception_controller', app, controllerConfig);
+          fakeContent().append(controller.view);
           fakeContent()
             .find("#userValidation input")
             .val("1")
@@ -85,7 +85,7 @@ define([
               waits(500);
 
               //simulate file input
-              presenter.manifestReaderComponent.presenter.responderCallback(manifestCSVData)
+              controller.manifestReaderComponent.controller.responderCallback(manifestCSVData)
                 .then(function () {
                   FakeUser.waitsForIt(fakeDOM, "#registrationBtn", results.expected);
                 })
@@ -107,9 +107,8 @@ define([
 
               results.resetFinishedFlag();
               fakeContent()
-                .find('#barcodeReader .barcodeInput')
-                .val("2881460250710")
-                .trigger(FakeUser.aPressReturnEvent());
+                .find("tbody :nth-child(2) input")
+                .trigger("click");
 
               waits(100);
 
@@ -140,20 +139,6 @@ define([
               };
 
               results.resetFinishedFlag();
-              fakeContent()
-                .find('#barcodeReader .barcodeInput')
-                .val("2881460250710")
-                .trigger(FakeUser.aPressReturnEvent());
-
-              waits(100);
-
-              results.resetFinishedFlag();
-              fakeContent()
-                .find('#barcodeReader .barcodeInput')
-                .val("2886789170794")
-                .trigger(FakeUser.aPressReturnEvent());
-
-              waits(100);
 
               spyOn(config, "ajax").andCallThrough();
 
@@ -167,114 +152,6 @@ define([
 
             runs(function () {
               expect(config.ajax).toHaveBeenCalledWith(expectedData);
-            });
-          });
-
-          describe("and a barcode which cannot be found is entered", function () {
-            beforeEach(function () {
-              runs(function () {
-                fakeContent()
-                  .find("#barcodeReader input.barcodeInput")
-                  .val("1234567890123")
-                  .trigger(FakeUser.aPressReturnEvent());
-              });
-              waitsFor(function () {
-                return fakeContent().find("#barcodeReader input.barcodeInput").val() == "";
-              });
-            });
-
-            it("clears the input box", function () {
-              runs(function () {
-                expect(fakeContent().find("#barcodeReader input.barcodeInput").val()).toEqual("");
-              });
-            });
-
-            it("displays an error message to the user", function () {
-              runs(function () {
-                expect(fakeContent().find("div.validationText.alert.alert-error").length).toBeGreaterThan(0);
-              });
-            });
-          });
-
-          describe("and a barcode of less than 13 characters is entered", function () {
-            beforeEach(function () {
-              runs(function () {
-                fakeContent()
-                  .find("#barcodeReader input.barcodeInput")
-                  .val("12345")
-                  .trigger(FakeUser.aPressReturnEvent());
-              });
-              waitsFor(function () {
-                return fakeContent().find("#barcodeReader input.barcodeInput").val() == "";
-              });
-            });
-
-            it("clears the input box", function () {
-              runs(function () {
-                expect(fakeContent().find("#barcodeReader input.barcodeInput").val()).toEqual("");
-              });
-            });
-
-            it("displays a barcode error message to the user", function () {
-              runs(function () {
-                expect(fakeContent().find("div.validationText.alert.alert-error").length).toBeGreaterThan(0);
-              });
-            });
-          });
-
-          describe("and a valid barcode is entered", function () {
-            beforeEach(function () {
-              runs(function () {
-                results.resetFinishedFlag();
-                fakeContent()
-                  .find('#barcodeReader input.barcodeInput')
-                  .val("2881460250710")
-                  .trigger(FakeUser.aPressReturnEvent());
-
-                FakeUser.waitsForIt(fakeContent(),
-                  "tbody tr.selectedRow",
-                  results.expected
-                );
-              });
-              waitsFor(results.hasFinished);
-            });
-
-            it("highlights the row", function () {
-              runs(function () {
-                expect(fakeContent().find('tbody tr.selectedRow').length).toEqual(1);
-              });
-            });
-
-            it("removes the barcode from the input", function () {
-              runs(function () {
-                expect(fakeContent().find('#barcodeReader .barcodeInput').val()).toEqual('')
-              });
-            });
-
-            it("the checkbox is enabled on the highlighed row", function () {
-              runs(function () {
-                expect(fakeContent().find('tbody tr.selectedRow td:first input').attr("checked")).toEqual("checked");
-              });
-            });
-
-            it("the other checkbox is disabled", function () {
-              runs(function () {
-                expect(fakeContent().find('tbody tr.disabledRow td:first input').attr("disabled")).toEqual("disabled");
-              });
-            });
-
-            it("after the checkbox is un-checked, the row it belongs to is disabled", function () {
-              runs(function () {
-                results.resetFinishedFlag();
-                fakeContent()
-                  .find('tbody tr.selectedRow td:first input')
-                  .trigger('click');
-              });
-              waits(500);
-
-              runs(function () {
-                expect(fakeContent().find('tbody tr.disabledRow').length).toEqual(2);
-              });
             });
           });
         });

@@ -10,7 +10,7 @@ require.config({
     jquery:               'vendor/jquery.min',
     text:                 'components/requirejs-text/text',
     spinjs:               'components/spin.js/spin',
-    labware:              'components/labware/app/scripts',
+    labware:              'scripts/labware',
     mapper:               'components/S2Mapper/app/scripts/mapper',
     mapper_services:      'components/S2Mapper/app/scripts/services',
     mapper_test:          'components/S2Mapper/test',
@@ -22,10 +22,10 @@ require.config({
 });
 
 require(['extraction_pipeline/app',
-  'extraction_pipeline/presenters/presenter_factory'
-], function (App, PresenterFactory) {
+  'extraction_pipeline/controllers/controller_factory'
+], function (App, ControllerFactory) {
 
-    var theApp = new App(new PresenterFactory());
+    var theApp = new App(new ControllerFactory());
 
 });
 

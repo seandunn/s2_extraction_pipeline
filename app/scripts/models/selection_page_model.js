@@ -114,6 +114,75 @@ define([
           });
     },
 
+    changeRoleWithoutChangingBatch: function(){
+      var thisModel = this;
+      var itemsByOrderUUID = {};
+      var inputs;
+      var addingRoles = {updates:[]};
+      var changingRoles = {updates:[]};
+      var deferred = $.Deferred();
+
+      thisModel.inputs
+        .then(function (results) {
+          inputs = results;
+        })
+        .then(function () {
+          return $.when.apply(null, _.map(inputs, function (input) {
+            return input.order()
+              .fail(function () {
+                deferred.reject({
+                  message: "Couldn't load one of the orders! Contact the administrator of the system."
+                });
+              })
+              .then(function (order) {
+                itemsByOrderUUID[order.uuid] = itemsByOrderUUID[order.uuid] || { order:order, items: []};
+                var labware = _.find(order.items[thisModel.config.input.role], function(labware) { return labware.status === "done" && labware.uuid === input.uuid; } );
+                itemsByOrderUUID[order.uuid].items.push(labware);
+              })
+          }));
+        })
+        .fail(function(){
+          deferred.reject({
+            message:"Couldn't load the orders. Contact the administrator of the system."
+          });
+        })
+        .then(function(){
+          _.each(itemsByOrderUUID, function (orderKey) {
+            _.each(orderKey.items, function (item) {
+              addingRoles.updates.push({
+                input:  {
+                  order: orderKey.order
+                },
+                output: {
+                  resource: item,
+                  role:     thisModel.config.output[0].role
+                }});
+              changingRoles.updates.push({
+                input:  {
+                  order:    orderKey.order,
+                  resource: item,
+                  role:     thisModel.config.input.role
+                },
+                output: {
+                  resource: item,
+                  role:     thisModel.config.output[0].role
+                }});
+            });
+          });
+          return Operations.stateManagement().start(addingRoles);
+        })
+        .then(function(){
+          return Operations.stateManagement().complete(changingRoles);
+        })
+        .then(function(){
+          deferred.resolve(thisModel);
+        })
+        .fail(function(){
+          deferred.reject({message: "Couldn't update the role!"});
+        });
+      return deferred.promise();
+    },
+
     makeBatch:function () {
       var thisModel = this;
       var deferred = $.Deferred();

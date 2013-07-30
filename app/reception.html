@@ -7,13 +7,19 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="styles/main.css">
-    <script src="components/d3/d3.js"></script>
+    <link rel="stylesheet" href="styles/jquery-ui.css"/>
     <script src="components/underscore/underscore-min.js"></script>
  </head>
 <body>
 <header>
-    <img id="sanger-logo" class="pull-left" src="images/sanger-logo.png"/>
-    <h1 id="title-text" class="pull-right">S2 Reception Module</h1>
+    <div style="overflow: hidden">
+        <img id="sanger-logo" class="pull-left" src="images/sanger-logo.png"/>
+        <h1 id="title-text" class="pull-right">S2 Reception</h1>
+    </div>
+    <ul class="nav nav-pills pull-right" role="menu" aria-labelledby="dLabel">
+        <li><a href="index.html">Extraction</a></li>
+        <li><a href="lab_activities.html">Lab Activities</a></li>
+    </ul>
 </header>
 
 <div id="alertContainer" class="container"></div>
@@ -21,6 +27,7 @@
 
 <p class="navbar navbar-fixed-bottom">Release: <span id="release">unknown</span> - S2 Server: <span id="server-url">unknown</span></p>
 <script>window.jQuery || document.write('<script src="components/jquery/jquery.min.js"><\/script>')</script>
+<script src="components/jquery-ui/ui/jquery-ui.js"></script>
 <script src="components/FileSaver/FileSaver.js"></script>
 <script src="components/jquery-csv/src/jquery.csv.js"></script>
 
