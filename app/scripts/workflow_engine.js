@@ -39,7 +39,7 @@ define([ 'text!scripts/pipeline_config.json' ], function (pipelineJSON) {
       foundWorkflows.push(pipelineConfig.unknownRole);
     }
 
-    if (foundWorkflows.length > 1) throw "More than 1 workflow active.";
+    if (foundWorkflows.length > 1) throw "More than 1 workflow active. I've made a terrible mistake!";
 
     return foundWorkflows[0];
   };
