@@ -6,18 +6,18 @@ define(['extraction_pipeline/lib/util'], function (Util) {
     it("merges two flat objects", function () {
       // setup data
       var firstObject = {
-        "greeting": "hello",
+        "greeting": "annyong",
         "money":    500
       };
       var secondObject = {
-        "language": "English",
+        "language": "Korean",
         "currency": "pounds"
       };
 
       var expected = {
-        "greeting": "hello",
+        "greeting": "annyong",
         "money":    500,
-        "language": "English",
+        "language": "Korean",
         "currency": "pounds"
       };
 
@@ -28,7 +28,7 @@ define(['extraction_pipeline/lib/util'], function (Util) {
     it("merges nested objects recursively", function () {
       // setup data
       var firstObject = {
-        stuff: {"greeting": "hello"},
+        stuff: {"greeting": "annyong"},
         bank:  {
           account: {
             "money":  500,
@@ -37,14 +37,14 @@ define(['extraction_pipeline/lib/util'], function (Util) {
         }
       };
       var secondObject = {
-        stuff:      {"language": "English"},
+        stuff:      {"language": "Korean"},
         "currency": "pounds"
       };
 
       var expected = {
         stuff:      {
-          "greeting": "hello",
-          "language": "English"
+          "greeting": "annyong",
+          "language": "Korean"
         },
         bank:       {
           account: {
@@ -63,7 +63,7 @@ define(['extraction_pipeline/lib/util'], function (Util) {
       // setup data
       var firstObject = {
         stuff: {
-          "greeting": "hello",
+          "greeting": "annyong",
           "copy":     "this won't be merged :("
         },
         bank:  {
@@ -75,7 +75,7 @@ define(['extraction_pipeline/lib/util'], function (Util) {
       };
       var secondObject = {
         stuff:      {
-          "language": "English",
+          "language": "Korean",
           // this should overwrite
           "copy":     "this will be merged :)"
         },
@@ -91,8 +91,8 @@ define(['extraction_pipeline/lib/util'], function (Util) {
 
       var expected = {
         stuff:      {
-          "greeting": "hello",
-          "language": "English",
+          "greeting": "annyong",
+          "language": "Korean",
           "copy":     "this will be merged :)"
         },
         bank:       {
