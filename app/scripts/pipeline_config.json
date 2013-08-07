@@ -50,7 +50,9 @@
    "samples.extraction.racking.fluidx_tube_dna",
 
    "samples.extraction.retubing.eppendorf_tube_rna",
-   "samples.extraction.racking.fluidx_tube_rna"
+   "samples.extraction.racking.fluidx_tube_rna",
+
+   "samples.rack.stock.rna"
   ],
 
   "workflows":[
@@ -1288,6 +1290,7 @@
     "processTitle":  "RNA Volume checking",
     "controllers":    [
       {
+        "controllerName": "rack_scan_controller",
         "model":          "VolumeCheckModel",
         "input":          {
           "role":  "samples.rack.stock.rna",
