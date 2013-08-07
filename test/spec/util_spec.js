@@ -22,7 +22,7 @@ define(['extraction_pipeline/lib/util'], function (Util) {
       };
 
       // expectation
-      expect(util.deepMerge(firstObject, secondObject)).toEqual(expected);
+      expect(util.deepMerge(firstObject, secondObject)).to.deep.equal(expected);
     });
 
     it("merges nested objects recursively", function () {
@@ -56,7 +56,7 @@ define(['extraction_pipeline/lib/util'], function (Util) {
       };
 
       // expectation
-      expect(util.deepMerge(firstObject, secondObject)).toEqual(expected);
+      expect(util.deepMerge(firstObject, secondObject)).to.deep.equal(expected);
     });
 
     it("when there is a clash in key, it chooses the value of the second object", function () {
@@ -105,7 +105,7 @@ define(['extraction_pipeline/lib/util'], function (Util) {
       };
 
       // expectation
-      expect(util.deepMerge(firstObject, secondObject)).toEqual(expected);
+      expect(util.deepMerge(firstObject, secondObject)).to.deep.equal(expected);
     });
   });
 });

@@ -3,11 +3,11 @@ define([
   , 'lib/fake_user'
   , 'text!pipeline_testjson/reception_app_test_data.json'
   , 'mapper_test/resource_test_helper'
-  , 'controllers/reception_controller'
+  , 'extraction_pipeline/controllers/reception_controller'
   , 'text!mapper_testjson/unit/root.json'
   , 'mapper/s2_root'
   , 'text!pipeline_testcsv/manifest_csv_test_data.csv'
-  , 'controllers/controller_factory'
+  , 'extraction_pipeline/controllers/controller_factory'
   , 'extraction_pipeline/lib/reception_templates'
   , 'text!pipeline_testjson/csv_template_test_data.json'
   , 'text!pipeline_testjson/csv_template_display_test_data.json'
@@ -17,19 +17,20 @@ define([
 
 
     TestHelper(function (results) {
-      describe("The Reception App", function () {
+      describe.skip("The Reception App", function () {
 
         var controller, fakeDOM, fakeContent;
+
         beforeEach(function () {
+          
+          this.clock = sinon.useFakeTimers();
+
           config.loadTestData(appTestData);
           config.cummulativeLoadingTestDataInFirstStage(rootTestData);
-          var app;
-          fakeDOM = $('<div><div id="content"></div></div>');
-          fakeContent = function () {
-            return fakeDOM.find("#content");
-          };
-          app = {
+          
+          var app = {
             getS2Root: function () {
+              debugger;
               if (this.rootPromise === undefined) {
                 this.rootPromise = S2Root.load({user: "username"});
               }
@@ -37,6 +38,12 @@ define([
             }
           };
 
+          fakeDOM = $('<div><div id="content"></div></div>');
+          
+          fakeContent = function () {
+            return fakeDOM.find("#content");
+          };
+          
           // Injecting test template.
           ReceptionTemplates.templateList.push({ template_name: "test_template", friendly_name: "test_template" });
           ReceptionTemplates["test_template"] = {
@@ -59,45 +66,60 @@ define([
             .val("1")
             .trigger(FakeUser.aPressReturnEvent());
 
-          waits(100);
+          this.clock.tick(100);
         });
 
         afterEach(function(){
+          this.clock.restore();
+          
           delete ReceptionTemplates["test_template"];
+          
           ReceptionTemplates.templateList.pop();
         });
 
         it('gives the user the option to create or load a manifest', function () {
-          expect(fakeContent().find('#create-manifest-btn').length).toEqual(1);
-          expect(fakeContent().find('#read-manifest-btn').length).toEqual(1);
+          expect(fakeContent().find('#create-manifest-btn').length).to.equal(1);
+          expect(fakeContent().find('#read-manifest-btn').length).to.equal(1);
         });
 
         describe("where a manifest csv is loaded", function () {
-          beforeEach(function () {
-            runs(function () {
 
-              results.resetFinishedFlag();
-              fakeContent()
-                .find("#read-manifest-btn")
-                .trigger('click');
+          beforeEach(function (done) {
+            
+            this.timeout(10000);
 
-              //wait for jquery animation
-              waits(500);
+            this.clock = sinon.useFakeTimers();
 
-              //simulate file input
-              controller.manifestReaderComponent.controller.responderCallback(manifestCSVData)
-                .then(function () {
-                  FakeUser.waitsForIt(fakeDOM, "#registrationBtn", results.expected);
-                })
-                .fail(results.unexpected);
-            });
-            waitsFor(results.hasFinished);
+            results.resetFinishedFlag();
+            
+            fakeContent()
+              .find("#read-manifest-btn")
+              .trigger('click');
+
+            //wait for jquery animation
+            this.clock.tick(500);
+
+            //simulate file input
+            controller.manifestReaderComponent.controller.responderCallback(manifestCSVData)
+              .then(function () {
+                FakeUser.waitsForIt(fakeDOM, "#registrationBtn", function() {
+                  results.expected();
+                  expect(results.hasFinished()).to.equal(true);
+                });
+              })
+              .fail(function() { 
+                results.unexpected(); 
+              })
+              .always(done)
           });
 
+          afterEach(function() {
+            this.clock.restore();
+          })
+
           it("makes the correct call when 'register' is clicked with one update selected", function () {
-            var expectedData;
-            runs(function () {
-              expectedData = {
+            
+            var expectedData = {
                 type:     'POST',
                 url:      '/actions/bulk_update_sample',
                 dataType: 'json',
@@ -118,7 +140,7 @@ define([
               fakeContent()
                 .find('#registrationBtn')
                 .trigger('click');
-            });
+            
 
             waits(500);
 
