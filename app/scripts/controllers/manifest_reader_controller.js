@@ -225,6 +225,8 @@ define(['config'
             });
           });
       this.orderMakerSelection.append(_.template(sampleRowPartial)({headers:headers, data: sampleData}));
+
+      this.dropzoneBoxSelection.hide();
       this.orderMakerSelection
           .find("td input")
           .filter(function(){
