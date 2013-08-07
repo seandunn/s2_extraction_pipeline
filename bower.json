@@ -4,7 +4,7 @@
   "dependencies": {
     "jquery": "~1.9.1",
     "jquery-ui": "~1.9.1",
-    "jquery-csv": "https://code.google.com/p/jquery-csv.git",
+    "jquery-csv": "https://code.google.com/p/jquery-csv/",
     "requirejs": "~2.1.4",
     "requirejs-domready": "~2.0.1",
     "S2Mapper": "https://github.com/sanger/S2Mapper.git",

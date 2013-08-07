@@ -8,3 +8,4 @@ dist
 app/components
 components
 *.orig
+node_modules
