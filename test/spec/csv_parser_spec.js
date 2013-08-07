@@ -19,23 +19,23 @@ define([
         });
 
         it("finds the right number of rows", function () {
-          expect(array.length).toEqual(4);
+          expect(array.length).to.equal(4);
         });
 
         it("finds the right number of columns", function () {
-          expect(array[0].length).toEqual(2);
-          expect(array[1].length).toEqual(2);
+          expect(array[0].length).to.equal(2);
+          expect(array[1].length).to.equal(2);
         });
 
         it("finds the right content", function () {
-          expect(array[0][0]).toEqual("A1");
-          expect(array[0][1]).toEqual("FR1234567");
-          expect(array[1][0]).toEqual("B1");
-          expect(array[1][1]).toEqual("FR234567890");
-          expect(array[2][0]).toEqual("D1");
-          expect(array[2][1]).toEqual("FR334567890");
-          expect(array[3][0]).toEqual("E1");
-          expect(array[3][1]).toEqual("FR434567890");
+          expect(array[0][0]).to.equal("A1");
+          expect(array[0][1]).to.equal("FR1234567");
+          expect(array[1][0]).to.equal("B1");
+          expect(array[1][1]).to.equal("FR234567890");
+          expect(array[2][0]).to.equal("D1");
+          expect(array[2][1]).to.equal("FR334567890");
+          expect(array[3][0]).to.equal("E1");
+          expect(array[3][1]).to.equal("FR434567890");
         });
 
       });
@@ -48,17 +48,17 @@ define([
         });
 
         it("finds the right number of rows", function () {
-          expect(array.length).toEqual(1);
+          expect(array.length).to.equal(1);
         });
 
         it("finds the right number of columns", function () {
-          expect(array[0].length).toEqual(2);
-          expect(array[0].length).toEqual(2);
+          expect(array[0].length).to.equal(2);
+          expect(array[0].length).to.equal(2);
         });
 
         it("finds the right content", function () {
-          expect(array[0][0]).toEqual("A1");
-          expect(array[0][1]).toEqual("FR1234567");
+          expect(array[0][0]).to.equal("A1");
+          expect(array[0][1]).to.equal("FR1234567");
         });
 
       });
@@ -86,11 +86,11 @@ define([
         });
 
         it("finds the right number of keys", function () {
-          expect(_.keys(localisedRscs).length).toEqual(4);
+          expect(_.keys(localisedRscs).length).to.equal(4);
         });
 
         it("returns the correct thingy", function () {
-          expect(localisedRscs).toEqual(expectedResult);
+          expect(localisedRscs).to.deep.equal(expectedResult);
         });
       });
 
@@ -108,25 +108,25 @@ define([
         });
 
         it("finds the right rack ID", function () {
-          expect(rack_barcode).toEqual("1220214083760");
+          expect(rack_barcode).to.equal("1220214083760");
         });
 
         it("finds the right number of rows", function () {
-          expect(array.length).toEqual(3);
+          expect(array.length).to.equal(3);
         });
 
         it("finds the right number of columns", function () {
-          expect(array[0].length).toEqual(2);
-          expect(array[1].length).toEqual(2);
+          expect(array[0].length).to.equal(2);
+          expect(array[1].length).to.equal(2);
         });
 
         it("finds the right content", function () {
-          expect(array[0][0]).toEqual("A1");
-          expect(array[0][1]).toEqual(0.8960);
-          expect(array[1][0]).toEqual("B1");
-          expect(array[1][1]).toEqual(0.5985);
-          expect(array[2][0]).toEqual("C1");
-          expect(array[2][1]).toEqual(23.3150);
+          expect(array[0][0]).to.equal("A1");
+          expect(array[0][1]).to.equal(0.8960);
+          expect(array[1][0]).to.equal("B1");
+          expect(array[1][1]).to.equal(0.5985);
+          expect(array[2][0]).to.equal("C1");
+          expect(array[2][1]).to.equal(23.3150);
         });
       });
     });
@@ -145,20 +145,20 @@ define([
 
       it("can parse a manifest CSV into an array", function(){
         var csvArray = csvParser.manifestCsvToArray(csvData);
-        expect(csvArray[0][0]).toEqual("");
-        expect(csvArray[2][0]).toEqual("880000000000011");
+        expect(csvArray[0][0]).to.equal("");
+        expect(csvArray[2][0]).to.equal("880000000000011");
       });
 
       it("will give the same array if same data is given but where the outer whitespace differs", function(){
         var csvArray = csvParser.manifestCsvToArray(csvData);
         var csvArrayFromDataWithWhitespace = csvParser.manifestCsvToArray(csvDataWithWhitespace);
-        expect(csvArray).toEqual(csvArrayFromDataWithWhitespace);
+        expect(csvArray).to.deep.equal(csvArrayFromDataWithWhitespace);
       });
 
       it("does not remove whitespace between characters in individual data elements", function(){
         var csvArray = csvParser.manifestCsvToArray(csvData);
-        expect(csvArray[1][0]).toEqual("Tube Barcode");
-        expect(csvArray[1][2]).toEqual("SANGER SAMPLE ID");
+        expect(csvArray[1][0]).to.equal("Tube Barcode");
+        expect(csvArray[1][2]).to.equal("SANGER SAMPLE ID");
       });
 
     });
@@ -175,17 +175,17 @@ define([
 
       it("ignores newlines at the end of a csv file", function(){
         var csvArray = csvParser.manifestCsvToArray(csvDataWithSpacesAtEnd);
-        expect(csvArray.length).toEqual(3);
+        expect(csvArray.length).to.equal(3);
       });
 
       it("does not ignore newlines in the middle of a csv file", function(){
         var csvArray = csvParser.manifestCsvToArray(csvDataWithSpacesInMiddle);
-        expect(csvArray.length).toEqual(5);
+        expect(csvArray.length).to.equal(5);
       });
 
       it("deals with old mac style line endings", function(){
         var csvArray = csvParser.manifestCsvToArray(csvDataWithMacLineEndings);
-        expect(csvArray.length).toEqual(5);
+        expect(csvArray.length).to.equal(5);
       });
     });
   });
