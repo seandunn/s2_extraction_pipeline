@@ -257,7 +257,7 @@ define(['config'
       this.model
           .then(function (model) {
             thisController.view.trigger("s2.busybox.start_process");
-            var rows = thisController.orderMakerSelection.find("tbody tr.selectedRow");
+            var rows = thisController.orderMakerSelection.find("tbody tr.success");
 
             var dataFromGUI = $.makeArray(rows.map(function(){
               var sample = {};
@@ -315,13 +315,13 @@ define(['config'
   function disableRow(tr) {
     tr.find("select").attr("disabled", true);
     tr.find("input").prop('checked', false);
-    tr.addClass("disabledRow").removeClass("selectedRow");
+    tr.addClass("disabledRow").removeClass("success");
   }
 
   function enableRow(tr) {
     tr.find("select").attr("disabled", false);
     tr.find("input").prop('checked', true).attr("disabled", false);
-    tr.addClass("selectedRow").removeClass("disabledRow");
+    tr.addClass("success").removeClass("disabledRow");
   }
 
   function toggleRowEnabled(tr) {

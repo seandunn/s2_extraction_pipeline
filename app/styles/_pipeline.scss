@@ -211,27 +211,6 @@ div.row0 .title {
   float: right;
 }
 
-table {
-  tr.selectedRow {
-    background: #90ee90;
-  }
-  tr.disabledRow {
-    background: rgb(196, 196, 196);
-    color: rgb(247, 247, 247);
-    font-style: italic;
-  }
-  td {
-    padding: 0.7em;
-  }
-  th {
-    padding: 0.7em;
-    background: rgb(247, 239, 187);
-    opacity: 0.9;
-    font-style: normal;
-    color: #000000;
-    font-size: 1.0em;
-  }
-}
 
 div.reception-component {
   width: 100%;
