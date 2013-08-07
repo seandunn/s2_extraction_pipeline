@@ -157,7 +157,9 @@ define(['config'
               thisController.downloadManifestBtnSelection.show();
               thisController.printBoxSelection.show();
               thisController.view.trigger("s2.busybox.end_process");
-              return thisController.message('success','Samples generated. The manifest is ready for download, and the barcodes ready for printing.');
+
+              thisController.downloadManifestBtnSelection.click();
+              return thisController.message('success','Samples generated and manifest saved. Barcodes ready for printing.');
             });
       }
     },
