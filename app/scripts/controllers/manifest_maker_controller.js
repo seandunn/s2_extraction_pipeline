@@ -1,6 +1,6 @@
 define(['config'
   , 'controllers/base_controller'
-  , 'text!html_partials/manifest_maker_partial.html'
+  , 'text!html_partials/_manifest_maker.html'
   , 'models/manifest_maker_model'
   , 'lib/pubsub'
   , 'lib/reception_templates'

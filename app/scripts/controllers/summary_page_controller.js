@@ -1,6 +1,6 @@
 define(['controllers/base_controller'
   , 'models/summary_page_model'
-  , 'text!html_partials/summary_page_partial.html'
+  , 'text!html_partials/_summary_page.html'
   , 'lib/pubsub'
 ], function (BaseController, Model, summaryPagePartialHtml, PubSub) {
 

@@ -1,6 +1,6 @@
 define(['config'
   , 'controllers/base_controller'
-  , 'text!html_partials/reception_partial.html'
+  , 'text!html_partials/_reception.html'
   , 'models/reception_model'
   , 'lib/util'
   , 'lib/pubsub'

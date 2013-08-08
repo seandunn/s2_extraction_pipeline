@@ -1,5 +1,5 @@
 define([
-       'text!html_partials/rack_scan_partial.html'
+       'text!html_partials/_rack_scan.html'
 ], function(partial) {
   var View = function(owner, selector) {
     this.owner    = owner;

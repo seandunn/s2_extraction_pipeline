@@ -1,6 +1,6 @@
 define(['config'
   , 'controllers/base_controller'
-  , 'text!html_partials/reracking_partial.html'
+  , 'text!html_partials/_reracking.html'
   , 'models/reracking_model'
   , 'lib/pubsub'
   , 'lib/util'

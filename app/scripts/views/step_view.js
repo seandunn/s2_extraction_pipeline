@@ -1,5 +1,5 @@
 define([
-  'text!html_partials/step_partial.html'
+  'text!html_partials/_step.html'
 ], function(partial) {
   var View = function(owner, selector) {
     this.owner    = owner;

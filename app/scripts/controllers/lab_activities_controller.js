@@ -1,6 +1,6 @@
 define(['config'
   , 'controllers/base_controller'
-  , 'text!html_partials/extraction_partial.html'
+  , 'text!html_partials/_extraction.html'
   , 'models/lab_activities_model'
   , 'lib/util'
   , 'lib/pubsub'
