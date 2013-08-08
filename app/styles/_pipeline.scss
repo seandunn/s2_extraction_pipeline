@@ -1,18 +1,12 @@
-body, html {
-  height: 100%;
-}
-
 header, #content {
   @extend .container;
 }
 
-body, html {
-  height: 100%;
+#alertContainer {
+  min-height: 5em;
 }
 
-ol.labware {
-  font-size: 24px;
-  list-style-position: inside;
+ol.labware-selection {
   margin-left: 0px;
   li {
     padding: 0px 10px 5px 0px;
@@ -20,31 +14,14 @@ ol.labware {
 
   li .resource {
     vertical-align: middle;
-    display: inline-block;
   }
 
-  li:nth-child(odd) {
-    background-color: #f9f9f9;
-  }
-  li:before, li:after {
-    content: none;
-  }
 }
 
 svg text {
   font-size: 10px;
 }
 
-.removeButton {
-  @extend .btn;
-  @extend .btn-small;
-  @extend .pull-right;
-  margin: 5px;
-}
-
-ul {
-  list-style-type: none;
-}
 
 .kitSelect {
   margin-top: 20px;
@@ -101,25 +78,25 @@ ul {
   background: #e0e0e0;
 }
 
-.labwareDisplay input {
-  width: 10em;
+.labwareRow {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    float: left;
+    margin-right: 10px;
+  }
+
+  .transferArrow {
+    font-size: 3em;
+    padding-top: 2em;
+  }
 }
 
-.labwareRow {
-  position: relative;
-  li {
-    position: relative;
-  }
-  .containerList {
-    overflow: auto;
-  }
-  .containerElement {
-    float: left;
-  }
-  .transferArrow {
-    font-size: 6em;
-    padding-top: 60%;
-  }
+.labware {
+  @extend .well;
+  width: 232px;
 }
 
 .rowDisabled {
@@ -132,10 +109,6 @@ ul {
   background: #ffffff;
   z-index: 3;
   display: none;
-}
-
-.labware1, .labware2 {
-  min-width: 17em;
 }
 
 .printerSelect {
@@ -187,28 +160,13 @@ ul {
   }
 }
 
-#alertContainer {
-  height: 60px;
-  font-size:14px;
-  .alert {
-    margin-top: 5px;
-    margin-bottom: 0px;
-    padding: 4px;
-  }
-  .fade {
-    transition: opacity 0.3s linear;
-  }
-  .fade.in {
-    opacity: 1;
-  }
-}
 
 div.row0 .title {
   display: block;
 }
 
 #buttonRack {
-  float: right;
+  @extend .pull-right;
 }
 
 

@@ -17,43 +17,45 @@
     
 </head>
 <body>
-<header>
-    <div style="overflow: hidden">
-        <img id="sanger-logo" class="pull-left" src="images/sanger-logo.png"/>
-        <h1 id="title-text" class="pull-right">S2 Extraction Pipeline</h1>
+  <header>
+    <div class="page-title">
+      <img id="sanger-logo" src="images/sanger-logo.png"/>
+      <h1 id="title-text" class="pull-right">S2 Extraction Pipeline</h1>
     </div>
+
     <ul class="nav nav-pills pull-right" role="menu" aria-labelledby="dLabel">
-        <li><a href="lab_activities.html">Lab Activities</a></li>
+      <li class="active"><a href="#">Extraction</a></li>
+      <li><a href="lab_activities.html">Lab Activities</a></li>
     </ul>
-</header>
 
-<div id="alertContainer" class="container"></div>
-<div id="content" class="sample-extraction container clear-top"></div>
+    <div id="alertContainer" class="container"></div>
+  </header>
+  <div id="content" class="sample-extraction "></div>
 
-<p class="navbar navbar-fixed-bottom">Release: <span id="release">unknown</span> - S2 Server: <span id="server-url">unknown</span></p>
+  <p class="navbar navbar-fixed-bottom">Release: <span id="release">unknown</span> - S2 Server: <span id="server-url">unknown</span></p>
 
-<!-- build:js components/underscore/underscore-min.js -->
-<script src="components/underscore/underscore-min.js"></script>
-<!-- endbuild -->
+  <!-- build:js components/underscore/underscore-min.js -->
+  <script src="components/underscore/underscore-min.js"></script>
+  <!-- endbuild -->
 
-<!-- build:js components/jquery/jquery.min.js -->
-<script src="components/jquery/jquery.min.js"></script>
-<!-- endbuild -->
+  <!-- build:js components/jquery/jquery.min.js -->
+  <script src="components/jquery/jquery.min.js"></script>
+  <!-- endbuild -->
 
-<!-- build:js components/jquery-ui/ui/jquery-ui.js -->
-<script src="components/jquery-ui/ui/jquery-ui.js"></script>
-<!-- endbuild -->
+  <!-- build:js components/jquery-ui/ui/jquery-ui.js -->
+  <script src="components/jquery-ui/ui/jquery-ui.js"></script>
+  <!-- endbuild -->
 
-<!-- build:js components/jquery-csv/src/jquery.csv.js -->
-<script src="components/jquery-csv/src/jquery.csv.js"></script>
-<!-- endbuild -->
+  <!-- build:js components/jquery-csv/src/jquery.csv.js -->
+  <script src="components/jquery-csv/src/jquery.csv.js"></script>
+  <!-- endbuild -->
 
-<!-- build:js components/FileSaver/FileSaver.js -->
-<script src="components/FileSaver/FileSaver.js"></script>
-<!-- endbuild -->
+  <!-- build:js components/FileSaver/FileSaver.js -->
+  <script src="components/FileSaver/FileSaver.js"></script>
+  <!-- endbuild -->
 
-<!-- build:js scripts/amd-app.js -->
-<script data-main="scripts/main" src="components/requirejs/require.js"></script>
-<!-- endbuild -->
+  <!-- build:js scripts/amd-app.js -->
+  <script data-main="scripts/main" src="components/requirejs/require.js"></script>
+  <!-- endbuild -->
 </body>
 </html>
