@@ -1,8 +1,8 @@
 define([
-  'extraction_pipeline/models/base_page_model'
+  'models/base_page_model'
   , 'mapper/operations'
-  , 'extraction_pipeline/lib/csv_parser'
-  , 'extraction_pipeline/lib/json_templater'
+  , 'lib/csv_parser'
+  , 'lib/json_templater'
 ], function (BasePageModel, Operations, CSVParser, JsonTemplater) {
   'use strict';
 

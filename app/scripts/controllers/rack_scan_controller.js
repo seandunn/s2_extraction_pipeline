@@ -1,9 +1,9 @@
 define([
-  'extraction_pipeline/controllers/base_controller',
-  'extraction_pipeline/views/rack_scan_view',
-  'extraction_pipeline/models/rack_scan_model',
-  'extraction_pipeline/models/volume_check_model',
-  'extraction_pipeline/lib/pubsub'
+  'controllers/base_controller',
+  'views/rack_scan_view',
+  'models/rack_scan_model',
+  'models/volume_check_model',
+  'lib/pubsub'
 ], function (Base, View, RackScanModel, VolumeCheckModel, PubSub) {
 
   var models = {

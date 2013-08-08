@@ -1,6 +1,6 @@
 define(['mapper_test/test_config'
   , 'text!mapper_testjson/unit/root.json'
-  , 'text!extraction_pipeline/reception_test_data.json'], function (mapperConfig, root, json) {
+  , 'text!reception_test_data.json'], function (mapperConfig, root, json) {
   'use strict';
   var config = $.extend(mapperConfig, {
     // Handler for exceptions (does absolutely nothing, but could try..catch!)

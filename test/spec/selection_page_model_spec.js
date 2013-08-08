@@ -2,7 +2,7 @@ define([
   'config'
   , 'mapper_test/resource_test_helper'
   , 'mapper/s2_root'
-  , 'extraction_pipeline/models/selection_page_model'
+  , 'models/selection_page_model'
   , 'text!mapper_testjson/unit/root.json'
   , 'text!pipeline_testjson/selection_page_model_test_data.json'
 ], function (config, TestHelper, S2Root, Model, rootTestData, testData) {

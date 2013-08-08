@@ -1,5 +1,5 @@
 define([
-  'lib/fake_user'
+  'test/lib/fake_user'
   , 'mapper_test/resource_test_helper'
 ], function (FakeUser, TestHelper) {
   'use strict';

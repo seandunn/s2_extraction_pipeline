@@ -1,14 +1,14 @@
 define([
   'config'
-  , 'lib/fake_user'
+  , 'test/lib/fake_user'
   , 'text!pipeline_testjson/reception_app_test_data.json'
   , 'mapper_test/resource_test_helper'
-  , 'extraction_pipeline/controllers/reception_controller'
+  , 'controllers/reception_controller'
   , 'text!mapper_testjson/unit/root.json'
   , 'mapper/s2_root'
   , 'text!pipeline_testcsv/manifest_csv_test_data.csv'
-  , 'extraction_pipeline/controllers/controller_factory'
-  , 'extraction_pipeline/lib/reception_templates'
+  , 'controllers/controller_factory'
+  , 'lib/reception_templates'
   , 'text!pipeline_testjson/csv_template_test_data.json'
   , 'text!pipeline_testjson/csv_template_display_test_data.json'
 ]

@@ -1,6 +1,6 @@
 define([
   'mapper/support/deferred',
-  'extraction_pipeline/connected/missing_handlers_parser'
+  'connected/missing_handlers_parser'
 ], function(Deferred, parser) {
   'use strict';
 

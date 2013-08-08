@@ -1,4 +1,4 @@
-define(['text!extraction_pipeline/html_partials/row_partial.html'], function (rowPartialHtml) {
+define(['text!html_partials/row_partial.html'], function (rowPartialHtml) {
 
   'use strict';
 

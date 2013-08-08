@@ -1,9 +1,9 @@
 define(['config'
-  , 'extraction_pipeline/controllers/base_controller'
-  , 'text!extraction_pipeline/html_partials/reception_partial.html'
-  , 'extraction_pipeline/models/reception_model'
-  , 'extraction_pipeline/lib/util'
-  , 'extraction_pipeline/lib/pubsub'
+  , 'controllers/base_controller'
+  , 'text!html_partials/reception_partial.html'
+  , 'models/reception_model'
+  , 'lib/util'
+  , 'lib/pubsub'
 ], function (config, BaseController, receptionPartialHtml, Model, Util,  PubSub) {
   'use strict';
 

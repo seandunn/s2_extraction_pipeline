@@ -1,9 +1,9 @@
 define([ 'config'
-  , 'extraction_pipeline/workflow_engine'
+  , 'workflow_engine'
   , 'mapper/s2_root'
-  , 'extraction_pipeline/extra_components/busy_box'
-  , 'extraction_pipeline/alerts'
-  , 'extraction_pipeline/lib/logger'
+  , 'extra_components/busy_box'
+  , 'alerts'
+  , 'lib/logger'
 ], function (config, nextWorkflow, S2Root, BusyBox, alerts, Logger) {
   'use strict';
 

@@ -1,7 +1,7 @@
-define([ 'extraction_pipeline/controllers/base_controller'
-  , 'extraction_pipeline/models/selection_page_model'
-  , 'text!extraction_pipeline/html_partials/selection_page_partial.html'
-  , 'extraction_pipeline/lib/pubsub'
+define([ 'controllers/base_controller'
+  , 'models/selection_page_model'
+  , 'text!html_partials/selection_page_partial.html'
+  , 'lib/pubsub'
 ], function(BaseController, Model, selectionPagePartialHtml, PubSub) {
   'use strict';
 
