@@ -1,4 +1,4 @@
-define(['text!extraction_pipeline/html_partials/labware_partial.html'], function (labwarePartialHtml) {
+define(['text!html_partials/labware_partial.html'], function (labwarePartialHtml) {
 
   'use strict';
 

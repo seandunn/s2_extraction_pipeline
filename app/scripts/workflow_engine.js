@@ -1,4 +1,4 @@
-define([ 'text!scripts/pipeline_config.json' ], function (pipelineJSON) {
+define([ 'text!pipeline_config.json' ], function (pipelineJSON) {
 
   var pipelineConfig = JSON.parse(pipelineJSON);
 

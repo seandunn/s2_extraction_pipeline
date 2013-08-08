@@ -1,7 +1,7 @@
 define([
-  'extraction_pipeline/controllers/base_controller',
-  'extraction_pipeline/views/step_view',
-  'extraction_pipeline/lib/pubsub'
+  'controllers/base_controller',
+  'views/step_view',
+  'lib/pubsub'
 ], function (Base, View, PubSub) {
   'use strict';
 

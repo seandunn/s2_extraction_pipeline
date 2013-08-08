@@ -1,7 +1,7 @@
 define([
   'config',
   'mapper_services/print',
-  'extraction_pipeline/connected/caching'
+  'connected/caching'
 ], function (config, PrintService, Cache) {
 
   'use strict';

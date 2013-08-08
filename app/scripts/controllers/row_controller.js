@@ -1,7 +1,7 @@
 define([
-  'extraction_pipeline/views/row_view'
+  'views/row_view'
   , 'labware/controllers/tube_controller'
-  , 'extraction_pipeline/controllers/base_controller'
+  , 'controllers/base_controller'
 ], function (View, TubeController, BaseController) {
   "use strict";
 

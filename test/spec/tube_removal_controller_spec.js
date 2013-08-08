@@ -1,4 +1,4 @@
-define(['extraction_pipeline/controllers/tube_removal_controller'], function(TubeRemovalController) {
+define(['controllers/tube_removal_controller'], function(TubeRemovalController) {
   'use strict';
 
   describe('TubeRemovalController', function() {

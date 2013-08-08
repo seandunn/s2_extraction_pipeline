@@ -1,5 +1,5 @@
 define([
-  'text!extraction_pipeline/extra_components/busy_box_partial.html'
+  'text!extra_components/busy_box_partial.html'
     ,'spinjs'
 ],
     function (partialHtml, Spinner) {

@@ -1,7 +1,7 @@
-define(['extraction_pipeline/controllers/base_controller'
-  , 'extraction_pipeline/models/summary_page_model'
-  , 'text!extraction_pipeline/html_partials/summary_page_partial.html'
-  , 'extraction_pipeline/lib/pubsub'
+define(['controllers/base_controller'
+  , 'models/summary_page_model'
+  , 'text!html_partials/summary_page_partial.html'
+  , 'lib/pubsub'
 ], function (BaseController, Model, summaryPagePartialHtml, PubSub) {
 
   var SummaryPageController = Object.create(BaseController);

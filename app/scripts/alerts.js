@@ -1,6 +1,6 @@
 define(['config',
-  'text!extraction_pipeline/html_partials/alerts_partial.html',
-  'extraction_pipeline/lib/pubsub'
+  'text!html_partials/alerts_partial.html',
+  'lib/pubsub'
 ], function (config, alertsPartialHtml, PubSub) {
   'use strict';
 

@@ -1,9 +1,9 @@
 define(['config'
-  , 'extraction_pipeline/controllers/base_controller'
-  , 'text!extraction_pipeline/html_partials/reracking_partial.html'
-  , 'extraction_pipeline/models/reracking_model'
-  , 'extraction_pipeline/lib/pubsub'
-  , 'extraction_pipeline/lib/util'
+  , 'controllers/base_controller'
+  , 'text!html_partials/reracking_partial.html'
+  , 'models/reracking_model'
+  , 'lib/pubsub'
+  , 'lib/util'
 ], function (config, BaseController, componentPartialHtml, Model, PubSub, Util) {
   'use strict';
 

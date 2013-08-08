@@ -1,4 +1,4 @@
-define(['extraction_pipeline/lib/util'], function (Util) {
+define(['lib/util'], function (Util) {
   describe("The deepMergeFunction", function () {
 
     var util = Object.create(Util);

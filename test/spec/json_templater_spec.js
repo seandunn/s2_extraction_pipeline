@@ -1,4 +1,4 @@
-define(['extraction_pipeline/lib/json_templater'], function (ArrayToJSON) {
+define(['lib/json_templater'], function (ArrayToJSON) {
   'use strict';
 
   describe("ArrayToJSON module", function () {

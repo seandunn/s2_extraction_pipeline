@@ -1,6 +1,6 @@
 define(['mapper_test/test_config'
   , 'text!mapper_testjson/unit/root.json'
-  , 'text!extraction_pipeline/dna_and_ran_manual_test_data.json'
+  , 'text!dna_and_ran_manual_test_data.json'
 ], function (mapperConfig, root, json) {
   'use strict';
   var config = $.extend(mapperConfig, {

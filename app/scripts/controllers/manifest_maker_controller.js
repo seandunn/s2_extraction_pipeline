@@ -1,10 +1,10 @@
 define(['config'
-  , 'extraction_pipeline/controllers/base_controller'
-  , 'text!extraction_pipeline/html_partials/manifest_maker_partial.html'
-  , 'extraction_pipeline/models/manifest_maker_model'
-  , 'extraction_pipeline/lib/pubsub'
-  , 'extraction_pipeline/lib/reception_templates'
-  , 'extraction_pipeline/lib/reception_studies'
+  , 'controllers/base_controller'
+  , 'text!html_partials/manifest_maker_partial.html'
+  , 'models/manifest_maker_model'
+  , 'lib/pubsub'
+  , 'lib/reception_templates'
+  , 'lib/reception_studies'
 ], function (config, BaseController, componentPartialHtml, Model, PubSub, ReceptionTemplates, ReceptionStudies) {
   'use strict';
 

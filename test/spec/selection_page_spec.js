@@ -1,12 +1,12 @@
 define([
   'config'
-  , 'lib/fake_user'
+  , 'test/lib/fake_user'
   , 'mapper_test/resource_test_helper'
   , 'mapper/s2_root'
-  , 'extraction_pipeline/models/selection_page_model'
-  , 'extraction_pipeline/controllers/selection_page_controller'
-  , 'extraction_pipeline/controllers/controller_factory'
-  , 'extraction_pipeline/lib/pubsub'
+  , 'models/selection_page_model'
+  , 'controllers/selection_page_controller'
+  , 'controllers/controller_factory'
+  , 'lib/pubsub'
   , 'text!mapper_testjson/unit/root.json'
   , 'text!pipeline_testjson/selection_page_data.json'
 ], function (config, FakeUser, TestHelper, S2Root, SelectionPageModel,
