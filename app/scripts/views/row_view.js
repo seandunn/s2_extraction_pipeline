@@ -1,4 +1,4 @@
-define(['text!html_partials/row_partial.html'], function (rowPartialHtml) {
+define(['text!html_partials/_row.html'], function (rowPartialHtml) {
 
   'use strict';
 

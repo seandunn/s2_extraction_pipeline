@@ -1,6 +1,6 @@
 define([
   'controllers/base_controller',
-  'text!html_partials/kit_partial.html',
+  'text!html_partials/_kit.html',
   'models/kit_model',
   'lib/pubsub',
   'lib/barcode_checker',

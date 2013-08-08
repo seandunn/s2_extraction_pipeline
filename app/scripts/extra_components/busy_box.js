@@ -1,5 +1,5 @@
 define([
-  'text!extra_components/busy_box_partial.html'
+  'text!extra_components/_busy_box.html'
     ,'spinjs'
 ],
     function (partialHtml, Spinner) {

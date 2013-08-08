@@ -1,5 +1,5 @@
 define([
-       'text!html_partials/scan_barcode_partial.html'
+       'text!html_partials/_scan_barcode.html'
 ], function (scanBarcodePartialHtml) {
   'use strict';
 

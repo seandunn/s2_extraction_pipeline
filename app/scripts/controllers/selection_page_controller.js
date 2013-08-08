@@ -1,6 +1,6 @@
 define([ 'controllers/base_controller'
   , 'models/selection_page_model'
-  , 'text!html_partials/selection_page_partial.html'
+  , 'text!html_partials/_selection_page.html'
   , 'lib/pubsub'
 ], function(BaseController, Model, selectionPagePartialHtml, PubSub) {
   'use strict';

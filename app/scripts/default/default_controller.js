@@ -1,6 +1,6 @@
 define(['config'
   , 'controllers/base_controller'
-  , 'text!html_partials/default_page_partial.html'
+  , 'text!html_partials/_default_page.html'
   , 'default/default_model'
   , 'lib/util'
   , 'lib/pubsub'

@@ -1,5 +1,5 @@
 define(['config',
-  'text!html_partials/alerts_partial.html',
+  'text!html_partials/_alerts.html',
   'lib/pubsub'
 ], function (config, alertsPartialHtml, PubSub) {
   'use strict';
