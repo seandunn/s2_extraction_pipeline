@@ -1,8 +1,8 @@
-<header class="alert">
+<header >
   <h3 id="process-title" class="pull-left"><%- templateData.config.processTitle %></h3>
   <h3 class="pull-right">User: <%- templateData.user %></h3>
 </header>
-<ol class="labware">
+<ol class="labware-selection">
     <% _(templateData.capacity).times(function () { %>
     <li> <p>NO PRESENTER ASSOCIATED WITH THIS ITEM</p></li>
     <% }); %>
