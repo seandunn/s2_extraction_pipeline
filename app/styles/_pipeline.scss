@@ -23,6 +23,22 @@ header, #content {
 //   }
 // }
 // 
+#alertContainer {
+  min-height: 5em;
+}
+
+ol.labware-selection {
+  margin-left: 0px;
+  li {
+    padding: 0px 10px 5px 0px;
+  }
+
+  li .resource {
+    vertical-align: middle;
+  }
+
+}
+
 svg text {
   font-size: 10px;
 }
@@ -171,7 +187,7 @@ div.row0 .title {
 }
 
 #buttonRack {
-  float: right;
+  @extend .pull-right;
 }
 
 
