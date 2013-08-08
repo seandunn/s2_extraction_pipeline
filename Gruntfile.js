@@ -227,6 +227,12 @@ module.exports = function (grunt) {
                     cwd: '<%= yeoman.app %>/images',
                     src: '{,*/}*.{png,jpg,jpeg}',
                     dest: '<%= yeoman.dist %>/images'
+                },
+                {
+                    expand: true,
+                    cwd: '<%= yeoman.app %>/styles/images',
+                    src: '{,*/}*.{png,jpg,jpeg}',
+                    dest: '<%= yeoman.dist %>/styles/images'
                 }]
             }
         },
@@ -288,7 +294,7 @@ module.exports = function (grunt) {
                     src: [
                         '*.{ico,png,txt}',
                         '.htaccess',
-                        'images/{,*/}*.{webp,gif}',
+                        'images/{,*/}*.{webp,gif,svg}',
                         'styles/fonts/*'
                     ]
                 }, {
@@ -313,7 +319,7 @@ module.exports = function (grunt) {
                 'coffee',
                 'compass',
                 'imagemin',
-                //'svgmin',
+                // 'svgmin',
                 'htmlmin'
             ]
         },
