@@ -7,13 +7,12 @@ header, #content {
 }
 
 ol.labware-selection {
-  margin-left: 0px;
+    vertical-align: middle;
   li {
-    padding: 0px 10px 5px 0px;
+    vertical-align: middle;
   }
 
   li .resource {
-    vertical-align: middle;
   }
 
 }
@@ -88,6 +87,9 @@ svg text {
 }
 
 .labware {
+  .title {
+    min-height: 2em;
+  }
 }
 
 .rowDisabled {

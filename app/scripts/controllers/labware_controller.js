@@ -6,12 +6,6 @@ define(['config'
   , 'lib/util'
 ], function (config, BaseController, LabwareView, PubSub, BarcodeChecker, Util) {
 
-  var defaultTitles = {
-    tube: 'Tube',
-    spin_column: 'Spin Column',
-    waste_tube: 'Waste Tube'
-  };
-
   var LabwareModel = Object.create(null);
   $.extend(LabwareModel, {
     init: function (owner, setupData) {
@@ -143,7 +137,7 @@ define(['config'
         this.view.hideRemoveButton();
       }
 
-      this.view.setTitle(this.labwareModel.title || defaultTitles[this.labwareModel.expected_type]);
+      this.view.setTitle(this.labwareModel.title);
       this.owner.childDone(this, "labwareRendered", {});
     },
 

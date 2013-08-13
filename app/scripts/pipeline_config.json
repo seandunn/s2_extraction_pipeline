@@ -62,14 +62,12 @@
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.manual_dna_and_rna.input_tube_nap.awaiting_reception",
-        "model":"tubes",
-        "title": "Input tube - reception"
+        "model":"tubes"
       },
       "output":       [
         {
           "role":       "samples.extraction.manual_dna_and_rna.input_tube_nap",
           "aliquotType":"NA+P",
-          "title": "Input tube",
           "not_batched":true
         }
       ]
@@ -81,14 +79,12 @@
     "processTitle": "Manual DNA and RNA Extraction",
     "input":        {
       "role":"samples.extraction.manual_dna_and_rna.input_tube_nap",
-      "model":"tubes",
-      "title": "Input tube"
+      "model":"tubes"
     },
     "output":       [
       {
       "role":       "samples.extraction.manual_dna_and_rna.input_tube_nap.batched",
-      "aliquotType":"NA+P",
-      "title": "Batched Input tube"
+      "aliquotType":"NA+P"
     }
     ]
   },
@@ -394,8 +390,7 @@
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.manual_dna_only.input_tube_dnap.awaiting_reception",
-        "model":"tubes",
-        "title": "Input tube - Reception"
+        "model":"tubes"
       },
       "output":       [
         {
@@ -514,8 +509,7 @@
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.manual_rna_only.input_tube_rnap.awaiting_reception",
-        "model":"tubes",
-        "title": "Input tube - reception"
+        "model":"tubes"
       },
       "output":       [
         {
@@ -553,8 +547,7 @@
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception",
-        "model":"tubes",
-        "title": "Input tube - reception"
+        "model":"tubes"
       },
       "output":       [
         {
@@ -775,8 +768,7 @@
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception",
-        "model":"tubes",
-        "title": "Input tube - reception"
+        "model":"tubes"
       },
       "output":       [
         {
@@ -859,14 +851,12 @@
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception",
-        "model":"tubes",
-        "title": "Input tube - reception"
+        "model":"tubes"
       },
       "output":       [
         {
           "role":       "samples.extraction.qiacube_rna_only.input_tube_rnap",
           "aliquotType":"RNA+P",
-          "title": "Input tube",
           "not_batched":true
         }
       ]
