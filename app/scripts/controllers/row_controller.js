@@ -35,17 +35,14 @@ define([
     init:function (owner) {
       this.owner        = owner;
       this.labwares     = {};
-      this.remove_arrow = false;
       this.enabled      = true;
       return this;
     },
     setupModel:function (inputModel) {
       this.rowNum       = inputModel.rowNum;
-      this.remove_arrow = inputModel.remove_arrow;
       this.enabled      = inputModel.enabled;
       this.labwares     = inputModel;
       delete this.labwares.rowNum;
-      delete this.labwares.remove_arrow;
       delete this.labwares.enabled;
     },
     setResource:function (value) {
@@ -70,7 +67,7 @@ define([
 
     setupController:function (input_model, jquerySelection) {
       var controller = this;
-      this.setupPlaceholder(jquerySelection);
+      this.jquerySelection = jquerySelection;
 
       this.rowModel = Object.create(RowModel).init(this);
       this.rowModel.setupModel(input_model);
@@ -88,16 +85,6 @@ define([
       this.currentView.renderView();
       this.controllers.each(function(p) { p.renderView(); });
 
-      if (input_model.remove_arrow) {
-        this.currentView.removeArrow();
-      }
-
-      return this;
-    },
-
-    setupPlaceholder:function (jquerySelection) {
-      this.jquerySelection = jquerySelection;
-      return this;
     },
 
 

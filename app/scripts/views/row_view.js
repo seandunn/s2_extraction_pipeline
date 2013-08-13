@@ -19,10 +19,6 @@ define(['text!html_partials/_row.html'], function (rowPartialHtml) {
     return this;
   };
 
-  RowView.prototype.removeArrow = function() {
-    this.jquerySelector.find('.arrow').empty();
-  };
-
   RowView.prototype.renderView = function (model) {
     this.jquerySelector.empty().append(rowPartialHtml);
   };
