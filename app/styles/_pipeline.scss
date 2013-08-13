@@ -79,24 +79,15 @@ svg text {
 }
 
 .labwareRow {
-  list-style: none;
-  padding: 0;
-  margin: 0;
 
-  li {
-    float: left;
-    margin-right: 10px;
-  }
+}
 
-  .transferArrow {
-    font-size: 3em;
-    padding-top: 2em;
-  }
+.transferArrow {
+  font-size: 5em;
+  padding-top: 1em;
 }
 
 .labware {
-  @extend .well;
-  width: 232px;
 }
 
 .rowDisabled {
@@ -160,10 +151,6 @@ svg text {
   }
 }
 
-
-div.row0 .title {
-  display: block;
-}
 
 #buttonRack {
   @extend .pull-right;
@@ -240,14 +227,8 @@ div.header-box {
 }
 
 #arrow-image {
-  width: 4em;
 }
 
-div.component {
-  height: 100%;
-  width: 100%;
-  position: relative;
-}
 
 div.template-selection-box {
   //  border: 1px dashed #444444;
