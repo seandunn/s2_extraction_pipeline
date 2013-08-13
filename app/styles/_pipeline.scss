@@ -87,9 +87,8 @@ svg text {
 }
 
 .labware {
-  .title {
-    min-height: 2em;
-  }
+  // Todo: remove this when we replace the "labware" controller stuff...
+  min-height: 207px;
 }
 
 .rowDisabled {
