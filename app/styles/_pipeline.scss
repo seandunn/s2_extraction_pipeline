@@ -3,7 +3,7 @@ header, #content {
 }
 
 #alertContainer {
-  min-height: 5em;
+  min-height: 3em;
 }
 
 ol.labware-selection {
@@ -86,9 +86,8 @@ svg text {
   padding-top: 1em;
 }
 
-.labware {
-  // Todo: remove this when we replace the "labware" controller stuff...
-  min-height: 207px;
+.title {
+  height:2em;
 }
 
 .rowDisabled {

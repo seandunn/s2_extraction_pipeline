@@ -160,31 +160,28 @@ define([ 'controllers/base_controller'
 
     childDone:function (child, action, data) {
       var controller = this;
-      if (child === this.model) {
-        // model should not talk using 'childDone' anymore
-      } else {
-        if (action === "barcodeScanned") {
-          this.model
-              .then(function (model) {
-                return model.addTubeFromBarcode(data.BC);
-              })
-              .fail(function (error) {
-                PubSub.publish('s2.status.error', controller, error);
-              })
-              .then(function () {
-                controller.setupSubControllers();
-                controller.renderView();
-              });
-        } else if (action === "removeLabware") {
-          this.model
-              .then(function (model) {
-                return model.removeTubeByUuid(data.resource.uuid);
-              })
-              .then(function () {
-                controller.setupSubControllers();
-                controller.renderView();
-              })
-        }
+      // model should not talk using 'childDone' anymore
+      if (action === "barcodeScanned") {
+        this.model
+        .then(function (model) {
+          return model.addTubeFromBarcode(data.BC);
+        })
+        .fail(function (error) {
+          PubSub.publish('s2.status.error', controller, error);
+        })
+        .then(function () {
+          controller.setupSubControllers();
+          controller.renderView();
+        });
+      } else if (action === "removeLabware") {
+        this.model
+        .then(function (model) {
+          return model.removeTubeByUuid(data.resource.uuid);
+        })
+        .then(function () {
+          controller.setupSubControllers();
+          controller.renderView();
+        })
       }
     }
   });

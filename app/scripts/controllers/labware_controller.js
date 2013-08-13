@@ -1,10 +1,9 @@
-define(['config'
-  , 'controllers/base_controller'
+define(['controllers/base_controller'
   , 'views/labware_view'
   , 'lib/pubsub'
   , 'lib/barcode_checker'
   , 'lib/util'
-], function (config, BaseController, LabwareView, PubSub, BarcodeChecker, Util) {
+], function (BaseController, LabwareView, PubSub, BarcodeChecker, Util) {
 
   var LabwareModel = Object.create(null);
   $.extend(LabwareModel, {
