@@ -1,6 +1,10 @@
 {
   "author": "WTSI PSD",
   "name": "s2_extraction_pipeline",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sanger/s2_extraction_pipeline"
+  },
   "version": "0.0.1",
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -26,10 +30,13 @@
     "grunt-concurrent": "~0.1.0",
     "matchdep": "~0.1.1",
     "connect-livereload": "~0.2.0",
-    "cucumber": "~0.3.1",
-    "selenium-webdriver": "~2.35.0"
+    "selenium-webdriver": "~2.35.0",
+    "grunt-cucumber": "~0.2.1"
   },
   "engines": {
     "node": ">=0.8.0"
+  },
+  "scripts": {
+    "test": "grunt testAll --force"
   }
 }
