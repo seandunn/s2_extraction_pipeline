@@ -330,6 +330,13 @@ module.exports = function (grunt) {
             all: {
                 rjsConfig: '<%= yeoman.app %>/scripts/main.js'
             }
+        },
+        cucumberjs: {
+            files: 'test/features',
+            options: {
+                steps: 'test/features/step_definitions',
+                format: 'pretty'
+            }
         }
     });
 
@@ -355,6 +362,11 @@ module.exports = function (grunt) {
         'clean:server',
         'connect:test',
         'mocha'
+    ]);
+
+    grunt.registerTask('testAll', [
+        'test',
+        'cucumberjs'
     ]);
 
     grunt.registerTask('build', [
