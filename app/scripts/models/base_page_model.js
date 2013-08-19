@@ -88,7 +88,7 @@ define([
                 return deferred.resolve(result);
               })
               .fail(function () {
-                root.spin_columns.findByEan13Barcode(barcode)
+                root.tube_racks.findByEan13Barcode(barcode)
                     .then(function (result) {
                       labware = result;
                       return deferred.resolve(result);
