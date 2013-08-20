@@ -87,25 +87,27 @@ define([
     },
 
     setupSubControllers: function () {
-      var controller = this;
-      controller.controllers = _.chain(controller.config.controllers).map(function (config, index) {
-        var subController = controller.factory.create(config.controllerName, controller, config);
+      var stepController = this;
+      stepController.controllers = _.chain(stepController.config.controllers).map(function (controller, index) {
+        var subController = stepController.factory.create(controller.controllerName, stepController, controller);
         subController.setupController({
-          batch: controller.batch
+          batch: stepController.batch,
+          user:  stepController.config.user,
+          initialLabware: stepController.config.initialLabware
         }, (function (i) {
           return function () {
-            return controller.selector().find('#step' + i);
+            return stepController.selector().find('#step' + i);
           }
         })(index + 1));
 
         return subController;
       }).value();
-      controller.activeController = controller.controllers[0];
-      controller.activeController.initialController();
+      stepController.activeController = stepController.controllers[0];
+      stepController.activeController.initialController();
 
-      this.selector().find('.printer-select').val(controller.activeController.config.defaultPrinter);
+      this.selector().find('.printer-select').val(stepController.activeController.config.defaultPrinter);
 
-      controller.activeController.focus();
+      stepController.activeController.focus();
     },
 
     release: function () {

@@ -30,6 +30,7 @@ define([
       $(document).bind('dragover', handleDragOver);
 
       function handleRerackingFile(fileHandle){
+
         var reader = new FileReader();
 
         reader.onload = (function(fileEvent){
@@ -48,7 +49,6 @@ define([
       }
 
       function handleInputFileChanged(event){
-        //
         event.stopPropagation();
         event.preventDefault();
         handleRerackingFile(event.originalEvent.target.files[0]);

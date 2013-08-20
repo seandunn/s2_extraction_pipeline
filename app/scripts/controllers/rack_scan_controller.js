@@ -23,29 +23,33 @@ define([
     },
 
     init: function (owner, factory, config) {
+      this.class = "RackScanController";
       this.owner = owner;
       this.config = config;
       this.controllerFactory = factory;
-      this.model = Object.create(models[this.config.model]).init(this, config);
-      return this;
     },
 
-    setupController: function (input_model, selector) {
-      this.selector = selector;
-      this.model.setUser(input_model.user);
+    setupController: function (inputModel, selector) {
+      this.model = Object.create(models[this.config.model]).init(this, this.config, inputModel);
 
-      this.setupView();
+      this.selector = selector;
+      this.view = new View(this, this.selector);
+
       this.setupSubControllers();
-      this.renderView();
-      return this;
+
+      this.view.renderView({
+        batch: this.model.batch && this.model.batch.uuid,
+        user: this.model.user
+      });
+
+      this.labwareController.renderView();
+
     },
 
     setupSubControllers: function (reset) {
       var controller = this;
+      controller.labwareController = controller.controllerFactory.create('labware_controller', this);
 
-      if (!controller.labwareController) {
-        controller.labwareController = controller.controllerFactory.create('labware_controller', this);
-      }
       controller.labwareController.setupController({
         "expected_type":    "tube_rack",
         "display_labware":  true,
@@ -54,32 +58,12 @@ define([
       }, function() {
         return controller.selector().find('.labware');
       });
-      return this;
     },
 
-    setupSubModel: function () {
-      return this;
-    },
-
-    focus: function () {
-    },
-
-    setupView: function () {
-      this.view = new View(this, this.selector);
-      return this;
-    },
+    focus: function () { },
 
     release: function () {
       this.view.clear();
-      return this;
-    },
-
-    renderView: function () {
-      this.view.renderView({
-        batch: this.model.batch && this.model.batch.uuid,
-        user: this.model.user
-      });
-      this.labwareController.renderView();
       return this;
     },
 
@@ -129,11 +113,19 @@ define([
       if (action === 'fileRead') {
         this.model.analyseFileContent(data)
           .fail(function () {
+            debugger
             PubSub.publish('s2.status.error', thisController, {message:"Impossible to find the required resources. Contact the system administrator."});
           })
           .then(function(tube_rack){
-          thisController.childDone(thisController.model, "fileValid", {model: tube_rack, message: 'The file has been processed properly. Click on the \'Start\' button to validate the process.'})
-        });
+            debugger
+          thisController.childDone(
+            thisController.model,
+            "fileValid",
+            {
+              model: tube_rack,
+              message: "The file has been processed properly. Click on the 'Start' button to validate the process."
+            });
+          });
       } else if (action === 'transferAuthorised') {
         this.model.fire();
       }
