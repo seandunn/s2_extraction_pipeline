@@ -19,39 +19,36 @@ define([
       return this;
     },
 
-    volumeCsvToArray:function (data) {
+    parseVolumeFile:function (data) {
       var csvArray = $.csv.toArrays(data);
       var reBarcode = /\s*(\w)(\d\d)\s*/i
       var tubes = _.chain(csvArray).drop()
-        .reduce(function (row, memo) {
+        .reduce(function (memo, row) {
           var matches = reBarcode.exec(row[1]);
+
           if (matches) {
             var locationLetter = matches[1];
             var locationNumber = parseInt(matches[2]);
-
             memo[ (locationLetter + locationNumber).trim() ] = parseFloat(row[2].trim());
           }
           return memo;
         }, {}).value();
 
-debugger;
       return {
         rackBarcode:  csvArray[1][0].replace(/ /g,''),
         tubes:        tubes
       };
 
     },
+
     analyseFileContent: function (data) {
       var deferred = $.Deferred();
       var thisModel = this;
-      var parsedVolumeFile = this.volumeCsvToArray(data.csvAsTxt);
+      var parsedVolumes = this.parseVolumeFile(data.csvAsTxt);
 
 
-      checkFileIntegrity(thisModel, parsedVolumeFile).then(function (validatedVolumeFile) {
+      checkFileIntegrity(thisModel, parsedVolumes).then(function (validatedVolumes) {
 
-        _.each(validatedVolumeFile.tubes, function (tube) {
-          rackData.tubes[tube[0]] = {volume: tube[1]};
-        });
 
         thisModel.rackData = rackData;
 
@@ -140,7 +137,7 @@ debugger;
   }
 
   // // Check that volumes are within tolerance...
-  // function checkFileVolumes(model, parsedVolumeFile) {
+  // function checkFileVolumes(model, parsedVolumes) {
   //   var deferred = $.Deferred();
 
   //   model.inputs.then(function (inputs) {
@@ -150,7 +147,7 @@ debugger;
   //     // we need to check if the last tube is volume control or not...
   //     if ("H12" !== lastPosition || !inputs[0].tubes[lastPosition].labels) {
   //       // last tube is for volume checking...
-  //       var volumeControl = _.chain(parsedVolumeFile["array"])
+  //       var volumeControl = _.chain(parsedVolumes["array"])
   //       .filter(function (tuple) {
   //         return tuple[0] === lastPosition
   //       })
@@ -181,13 +178,13 @@ debugger;
   // 3rd column: Tube volume in uL
   //
   // There should be a volume for every location even empty wells.
-  function checkFileIntegrity(model, parsedVolumeFile) {
+  function checkFileIntegrity(model, parsedVolumes) {
     var deferred = $.Deferred();
 
     var rack = model.rack;
 
-      if (rack.labels.barcode.value === parsedVolumeFile.rackBarcode) {
-        deferred.resolve(parsedVolumeFile);
+      if (rack.labels.barcode.value === parsedVolumes.rackBarcode) {
+        deferred.resolve(parsedVolumes);
       } else {
         // This should use Q style exception handling and get rid of the extra
         // deferred
