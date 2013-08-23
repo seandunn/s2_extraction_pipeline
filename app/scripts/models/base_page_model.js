@@ -1,14 +1,13 @@
 define([
-  'config',
   'mapper_services/print',
   'connected/caching'
-], function (config, PrintService, Cache) {
+], function (PrintService, Cache) {
 
   'use strict';
 
   var BasePageModel = Object.create(null);
 
-  $.extend(BasePageModel, {
+  _.extend(BasePageModel, {
     initialiseCaching: function() {
       var model = this;
       this.cache = _.extend(Cache.init(), {
@@ -18,6 +17,7 @@ define([
             _.bind(findByUuid, model, uuid)
           );
         },
+
         fetchResourcePromiseFromBarcode:function (barcode, labwareModel) {
           return this.get(
             function(r) { return r.labels && r.labels.barcode.value === barcode; },
@@ -63,43 +63,14 @@ define([
     });
   }
 
-  function findByBarcode(labwareModel) {
-    labwareModel = labwareModel || "tubes";
-   return function (barcode) {
-    // a bit horrible, but it works for now.
-    // because of the nature of the promise, we can NOT chain them
-    // indeed, if one of the search fails (as in empty), the whole chain
-    // of promise as failed, and all the remaining 'fail' callbacks will be triggered
-    // To avoid this, we do not chain them, but create a promise (spin_columns.findBy())
-    // and respond to this isolated promise, inside the failure callback of 'tube.findBy()'...
-    // Then, we resolve the 'global' promise by side effect...
-
-    // Possible to avoid this:
-    // empty search doesn't fail, but returns undefined. (=> must change the code to handle this new behaviour in several places in the code)
-    var deferred = $.Deferred();
-    var root;
-    this.owner.getS2Root()
-        .then(function (result) {
-          root = result;
-          var labware;
-          root[labwareModel].findByEan13Barcode(barcode)
-              .then(function (result) {
-                labware = result;
-                return deferred.resolve(result);
-              })
-              .fail(function () {
-                root.tube_racks.findByEan13Barcode(barcode)
-                    .then(function (result) {
-                      labware = result;
-                      return deferred.resolve(result);
-                    })
-                    .fail(function (result) {
-                      return deferred.reject();
-                    })
-              })
+  function findByBarcode() {
+    return function (barcode) {
+      return this.owner.getS2Root().then(function (root) {
+        return root.findByLabEan13(barcode).fail(function () {
+          return "Labware labellabled: "+barcode+" can't be found on S2."
         });
+      });
 
-    return deferred.promise();
-   }
+    }
   }
 });
