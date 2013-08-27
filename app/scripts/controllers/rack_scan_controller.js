@@ -1,10 +1,11 @@
 define([
-  'controllers/base_controller',
-  'views/rack_scan_view',
-  'models/rack_scan_model',
-  'models/volume_check_model',
-  'lib/pubsub'
+  "controllers/base_controller",
+  "views/rack_scan_view",
+  "models/rack_scan_model",
+  "models/volume_check_model",
+  "lib/pubsub"
 ], function (Base, View, RackScanModel, VolumeCheckModel, PubSub) {
+  "use strict";
 
   var models = {
     RackScanModel: RackScanModel,
@@ -15,7 +16,7 @@ define([
 
   _.extend(Controller, {
     register: function (callback) {
-      callback('rack_scan_controller', function () {
+      callback("rack_scan_controller", function () {
         var instance = Object.create(Controller);
         Controller.init.apply(instance, arguments);
         return instance;
@@ -46,9 +47,9 @@ define([
 
     },
 
-    setupSubControllers: function (reset) {
+    setupSubControllers: function () {
       var controller = this;
-      controller.labwareController = controller.controllerFactory.create('labware_controller', this);
+      controller.labwareController = controller.controllerFactory.create("labware_controller", this);
 
       controller.labwareController.setupController({
         "expected_type":    "tube_rack",
@@ -56,11 +57,11 @@ define([
         "display_remove":   false,
         "display_barcode":  false
       }, function() {
-        return controller.selector().find('.labware');
+        return controller.selector().find(".labware");
       });
     },
 
-    focus: function () { },
+    focus: function () {},
 
     release: function () {
       this.view.clear();
@@ -74,17 +75,17 @@ define([
     childDone: function (child, action, data) {
       if (child === this.view) {
         this.viewDone(child, action, data);
-      } else if (child === this.model) {
-        this.modelDone(child, action, data);
+      } else {
+        // debugger
       }
     },
 
-    print: function(child,action, data){
-      var thisController = this,
-          printer       = $('.printer-select').val();
+    print: function(){
+      var thisController = this;
+      var printer        = $(".printer-select").val();
 
       this.model.fire(printer).fail(function(error){
-        PubSub.publish('s2.status.error', thisController, error);
+        PubSub.publish("s2.status.error", thisController, error);
       }).then(function(){
         thisController.view.disableDropZone();
 
@@ -96,57 +97,32 @@ define([
           buttons: [{action: "next"}]
         });
 
-        PubSub.publish('s2.status.message', thisController, "Rack registered.");
-      })
+        PubSub.publish("s2.status.message", thisController, "Rack registered.");
+      });
     },
 
-    end: function(child,action, data){
-      this.model.saveVolumes();
+    end: function(){
+      var thisController = this;
+      this.model.saveVolumes().then(function(rackModel){
+        thisController.view.disableDropZone();
+        thisController.owner.childDone(thisController, "disableBtn", {buttons: [{action: "end"}]});
+        thisController.owner.childDone(thisController, "enableBtn", {buttons: [{action: "next"}]});
+      },
+      function(errorMessage){
+        $("body").trigger("s2.status.error", errorMessage);
+      });
     },
 
-    next: function(child,action, data){
+    next: function(){
       this.owner.childDone(this, "done", {batch: this.model.batch, user: this.model.user});
     },
 
-    viewDone: function (child, action, data) {
-      var thisController = this;
-      if (action === 'fileRead') {
-        this.model.analyseFileContent(data)
-          .fail(function () {
-            debugger
-            PubSub.publish('s2.status.error', thisController, {message:"Impossible to find the required resources. Contact the system administrator."});
-          })
-          .then(function(tube_rack){
-            debugger
-          thisController.childDone(
-            thisController.model,
-            "fileValid",
-            {
-              model: tube_rack,
-              message: "The file has been processed properly. Click on the 'Start' button to validate the process."
-            });
-          });
-      } else if (action === 'transferAuthorised') {
+    viewDone: function (child, action) {
+      if (action === "transferAuthorised") {
         this.model.fire();
       }
-    },
-
-    modelDone: function (child, action, data) {
-      if (action === 'fileValid') {
-        this.view.validateFile(data.message);
-        this.labwareController.updateModel(data.model);
-        this.owner.childDone(this, "enableBtn", {buttons: [{action: "print"}]});
-        this.owner.childDone(this, "enableBtn", {buttons: [{action: "end"}]});
-      } else if (action === 'error') {
-        //this.view.in(data);
-        this.view.error(data);
-      } else if (action === 'transferDone') {
-      } else if (action === 'volumesSaved') {
-        this.view.disableDropZone();
-        this.owner.childDone(this, "disableBtn", {buttons: [{action: "end"}]});
-        this.owner.childDone(this, "enableBtn", {buttons: [{action: "next"}]});
-      }
     }
+
   });
 
   return Controller;
