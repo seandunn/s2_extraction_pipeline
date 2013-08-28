@@ -53,7 +53,9 @@
    "samples.extraction.racking.fluidx_tube_rna",
 
    "samples.rack.stock.rna",
+   "samples.rack.stock.rna.volume_checked.batched",
    "samples.rack.stock.rna.volume_checked"
+
   ],
 
   "workflows":[
