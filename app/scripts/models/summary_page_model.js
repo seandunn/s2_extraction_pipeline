@@ -1,5 +1,5 @@
 define([
-  'extraction_pipeline/models/base_page_model'
+  'models/base_page_model'
 ], function (BasePageModel) {
   'use strict';
 

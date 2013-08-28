@@ -1,10 +1,10 @@
 define([
-  'extraction_pipeline/models/base_page_model',
+  'models/base_page_model',
   'mapper/operations',
-  'extraction_pipeline/connected/behaviours',
-  'extraction_pipeline/connected/missing_handlers',
-  'extraction_pipeline/connected/caching',
-  'extraction_pipeline/lib/barcode_checker'
+  'connected/behaviours',
+  'connected/missing_handlers',
+  'connected/caching',
+  'lib/barcode_checker'
 ], function(Base, Operations, Behaviour, Missing, Cache, BarcodeChecker ) {
   'use strict';
 

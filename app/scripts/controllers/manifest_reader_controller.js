@@ -1,10 +1,10 @@
 define(['config'
-  , 'extraction_pipeline/controllers/base_controller'
-  , 'text!extraction_pipeline/html_partials/manifest_reader_partial.html'
-  , 'text!extraction_pipeline/html_partials/sample_row_partial.html'
-  , 'extraction_pipeline/models/manifest_reader_model'
-  , 'extraction_pipeline/lib/pubsub'
-  , 'extraction_pipeline/lib/reception_templates'
+  , 'controllers/base_controller'
+  , 'text!html_partials/_manifest_reader.html'
+  , 'text!html_partials/_sample_row.html'
+  , 'models/manifest_reader_model'
+  , 'lib/pubsub'
+  , 'lib/reception_templates'
 ], function (config, BaseController, componentPartialHtml, sampleRowPartial, Model, PubSub, ReceptionTemplates) {
   'use strict';
 
@@ -225,6 +225,8 @@ define(['config'
             });
           });
       this.orderMakerSelection.append(_.template(sampleRowPartial)({headers:headers, data: sampleData}));
+
+      this.dropzoneBoxSelection.hide();
       this.orderMakerSelection
           .find("td input")
           .filter(function(){
@@ -255,7 +257,7 @@ define(['config'
       this.model
           .then(function (model) {
             thisController.view.trigger("s2.busybox.start_process");
-            var rows = thisController.orderMakerSelection.find("tbody tr.selectedRow");
+            var rows = thisController.orderMakerSelection.find("tbody tr.success");
 
             var dataFromGUI = $.makeArray(rows.map(function(){
               var sample = {};
@@ -313,13 +315,13 @@ define(['config'
   function disableRow(tr) {
     tr.find("select").attr("disabled", true);
     tr.find("input").prop('checked', false);
-    tr.addClass("disabledRow").removeClass("selectedRow");
+    tr.addClass("disabledRow").removeClass("success");
   }
 
   function enableRow(tr) {
     tr.find("select").attr("disabled", false);
     tr.find("input").prop('checked', true).attr("disabled", false);
-    tr.addClass("selectedRow").removeClass("disabledRow");
+    tr.addClass("success").removeClass("disabledRow");
   }
 
   function toggleRowEnabled(tr) {

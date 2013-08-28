@@ -50,7 +50,12 @@
    "samples.extraction.racking.fluidx_tube_dna",
 
    "samples.extraction.retubing.eppendorf_tube_rna",
-   "samples.extraction.racking.fluidx_tube_rna"
+   "samples.extraction.racking.fluidx_tube_rna",
+
+   "samples.rack.stock.rna",
+   "samples.rack.stock.rna.volume_checked.batched",
+   "samples.rack.stock.rna.volume_checked"
+
   ],
 
   "workflows":[
@@ -62,14 +67,12 @@
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.manual_dna_and_rna.input_tube_nap.awaiting_reception",
-        "model":"tubes",
-        "title": "Input tube - reception"
+        "model":"tubes"
       },
       "output":       [
         {
           "role":       "samples.extraction.manual_dna_and_rna.input_tube_nap",
           "aliquotType":"NA+P",
-          "title": "Input tube",
           "not_batched":true
         }
       ]
@@ -81,14 +84,12 @@
     "processTitle": "Manual DNA and RNA Extraction",
     "input":        {
       "role":"samples.extraction.manual_dna_and_rna.input_tube_nap",
-      "model":"tubes",
-      "title": "Input tube"
+      "model":"tubes"
     },
     "output":       [
       {
       "role":       "samples.extraction.manual_dna_and_rna.input_tube_nap.batched",
-      "aliquotType":"NA+P",
-      "title": "Batched Input tube"
+      "aliquotType":"NA+P"
     }
     ]
   },
@@ -393,8 +394,7 @@
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.manual_dna_only.input_tube_dnap.awaiting_reception",
-        "model":"tubes",
-        "title": "Input tube - Reception"
+        "model":"tubes"
       },
       "output":       [
         {
@@ -512,8 +512,7 @@
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.manual_rna_only.input_tube_rnap.awaiting_reception",
-        "model":"tubes",
-        "title": "Input tube - reception"
+        "model":"tubes"
       },
       "output":       [
         {
@@ -551,8 +550,7 @@
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception",
-        "model":"tubes",
-        "title": "Input tube - reception"
+        "model":"tubes"
       },
       "output":       [
         {
@@ -773,8 +771,7 @@
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception",
-        "model":"tubes",
-        "title": "Input tube - reception"
+        "model":"tubes"
       },
       "output":       [
         {
@@ -857,14 +854,12 @@
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception",
-        "model":"tubes",
-        "title": "Input tube - reception"
+        "model":"tubes"
       },
       "output":       [
         {
           "role":       "samples.extraction.qiacube_rna_only.input_tube_rnap",
           "aliquotType":"RNA+P",
-          "title": "Input tube",
           "not_batched":true
         }
       ]
@@ -1296,6 +1291,7 @@
     "processTitle":  "RNA Volume checking",
     "controllers":    [
       {
+        "controllerName": "rack_scan_controller",
         "model":          "VolumeCheckModel",
         "input":          {
           "role":  "samples.rack.stock.rna",
@@ -1314,7 +1310,24 @@
   },
 
   {
-    "accepts":       [ "samples.rack.stock.rna.volume_checked" ],
+    "accepts": [ "samples.rack.stock.rna.volume_checked" ],
+    "controllerName":"selection_page_controller",
+    "processTitle": "Batching for Working Dilution",
+    "capacity": 4,
+    "input":        {
+      "role":"samples.rack.stock.rna.volume_checked",
+      "model":"tube_racks"
+    },
+    "output":       [
+      {
+        "role":       "samples.rack.stock.rna.volume_checked.batched",
+        "not_batched":false
+      }
+    ]
+  },
+
+  {
+    "accepts":       [ "samples.rack.stock.rna.volume_checked.batched" ],
     "controllerName": "step_controller",
     "defaultPrinter":"d304bc",
     "printerType": 1,
@@ -1334,7 +1347,7 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.rack.stock.rna.volume_checked",
+        "role": "samples.rack.stock.rna.volume_checked.batched",
         "model":"tube_racks",
         "title": "Volume Checked DNA Rack"
       },

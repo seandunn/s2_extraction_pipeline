@@ -1,20 +1,21 @@
 define([
-  'extraction_pipeline/models/base_page_model'
+  'models/base_page_model'
   , 'mapper/operations'
-  , 'extraction_pipeline/lib/csv_parser'
+  , 'lib/csv_parser'
 ], function (BasePageModel, Operations, CSVParser) {
   'use strict';
 
   var Model = Object.create(BasePageModel);
 
   $.extend(Model, {
-    init: function (owner, config) {
+    init: function (owner, config, inputModel) {
       this.owner = owner;
       this.config = config;
       this.inputs = $.Deferred();
       this.output = [];
       this.initialiseCaching();
-      return this;
+
+      _.extend(this, inputModel);
     },
 
     createOutputs: function(printer) {
@@ -142,12 +143,8 @@ define([
           });
           return tube_rack;
         });
-    },
-
-    setUser: function (user) {
-      this.user = user;
-      this.owner.childDone(this, "userAdded");
     }
+
   });
 
   function getTubesOnRack(model, locationsSortedByBarcode) {

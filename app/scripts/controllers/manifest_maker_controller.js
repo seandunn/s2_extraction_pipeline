@@ -1,10 +1,10 @@
 define(['config'
-  , 'extraction_pipeline/controllers/base_controller'
-  , 'text!extraction_pipeline/html_partials/manifest_maker_partial.html'
-  , 'extraction_pipeline/models/manifest_maker_model'
-  , 'extraction_pipeline/lib/pubsub'
-  , 'extraction_pipeline/lib/reception_templates'
-  , 'extraction_pipeline/lib/reception_studies'
+  , 'controllers/base_controller'
+  , 'text!html_partials/_manifest_maker.html'
+  , 'models/manifest_maker_model'
+  , 'lib/pubsub'
+  , 'lib/reception_templates'
+  , 'lib/reception_studies'
 ], function (config, BaseController, componentPartialHtml, Model, PubSub, ReceptionTemplates, ReceptionStudies) {
   'use strict';
 
@@ -157,7 +157,9 @@ define(['config'
               thisController.downloadManifestBtnSelection.show();
               thisController.printBoxSelection.show();
               thisController.view.trigger("s2.busybox.end_process");
-              return thisController.message('success','Samples generated. The manifest is ready for download, and the barcodes ready for printing.');
+
+              thisController.downloadManifestBtnSelection.click();
+              return thisController.message('success','Samples generated and manifest saved. Barcodes ready for printing.');
             });
       }
     },

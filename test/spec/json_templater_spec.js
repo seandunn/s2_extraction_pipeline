@@ -1,4 +1,4 @@
-define(['extraction_pipeline/lib/json_templater'], function (ArrayToJSON) {
+define(['lib/json_templater'], function (ArrayToJSON) {
   'use strict';
 
   describe("ArrayToJSON module", function () {
@@ -14,7 +14,7 @@ define(['extraction_pipeline/lib/json_templater'], function (ArrayToJSON) {
           {name1: 1, name2: 2},
           {name1: 3, name2: 4}
         ];
-        expect(ArrayToJSON.combineHeadersToData(cols, data)).toEqual(expected);
+        expect(ArrayToJSON.combineHeadersToData(cols, data)).to.deep.equal(expected);
       });
 
       it("produces the expected array of objects with a decoration", function () {
@@ -27,7 +27,7 @@ define(['extraction_pipeline/lib/json_templater'], function (ArrayToJSON) {
           {_DECORATION_name1: 1, _DECORATION_name2: 2},
           {_DECORATION_name1: 3, _DECORATION_name2: 4}
         ];
-        expect(ArrayToJSON.combineHeadersToData(cols, data, "_DECORATION_")).toEqual(expected);
+        expect(ArrayToJSON.combineHeadersToData(cols, data, "_DECORATION_")).to.deep.equal(expected);
       });
     });
 
@@ -53,7 +53,7 @@ define(['extraction_pipeline/lib/json_templater'], function (ArrayToJSON) {
           {key1: 1, stuff: {key2: 2}},
           {key1: 3, stuff: {key2: 4}}
         ];
-        expect(combinedData).toEqual(expectedData);
+        expect(combinedData).to.deep.equal(expectedData);
       });
     });
 
@@ -99,7 +99,7 @@ define(['extraction_pipeline/lib/json_templater'], function (ArrayToJSON) {
             {stuff: {nochanged:"name5", key2: 4, key3 : "test9", "key4":true}}
           ]
         ];
-        expect(combinedData).toEqual(expectedData);
+        expect(combinedData).to.deep.equal(expectedData);
       });
     });
 
@@ -150,7 +150,7 @@ define(['extraction_pipeline/lib/json_templater'], function (ArrayToJSON) {
             }
           }
         ];
-        expect(JSON.parse(JSON.stringify(combinedData))).toEqual(expectedData);
+        expect(JSON.parse(JSON.stringify(combinedData))).to.deep.equal(expectedData);
       });
     });
   });

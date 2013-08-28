@@ -1,0 +1,19 @@
+<div class="row" >
+  <div class="span9">
+  <h3 id="process-title" ><%- templateData.config.processTitle %></h3>
+  </div>
+
+  <div class="span3 ">
+    <h4 class="pull-right">User: <%- templateData.user %></h4>
+  </div>
+</div >
+<ol class="labware-selection">
+    <% _(templateData.capacity).times(function () { %>
+    <li> <p>NO PRESENTER ASSOCIATED WITH THIS ITEM</p></li>
+    <% }); %>
+</ol>
+<div class="row">
+  <div class="span12">
+    <button class="btn pull-right btn-primary btn-large">Continue</button>
+  </div>
+</div>

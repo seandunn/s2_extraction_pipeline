@@ -1,7 +1,7 @@
 define([
-  'extraction_pipeline/models/base_page_model'
+  'models/base_page_model'
   , 'mapper/operations'
-  , 'extraction_pipeline/lib/csv_parser'
+  , 'lib/csv_parser'
 ], function (BasePageModel, Operations, CSVParser) {
   'use strict';
 
@@ -10,6 +10,7 @@ define([
   $.extend(VolumeControlModel, {
 
     init: function (owner, config) {
+      this.class = 'VolumeControlModel';
       this.owner = owner;
       this.config = config;
       this.inputs = $.Deferred();

@@ -1,10 +1,10 @@
 define([
-  'extraction_pipeline/controllers/base_controller',
-  'text!extraction_pipeline/html_partials/kit_partial.html',
-  'extraction_pipeline/models/kit_model',
-  'extraction_pipeline/lib/pubsub',
-  'extraction_pipeline/lib/barcode_checker',
-  'extraction_pipeline/lib/util'
+  'controllers/base_controller',
+  'text!html_partials/_kit.html',
+  'models/kit_model',
+  'lib/pubsub',
+  'lib/barcode_checker',
+  'lib/util'
 ], function(Base, kitPartialHtml, Model, PubSub, BarcodeChecker, Util) {
   'use strict';
 

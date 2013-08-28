@@ -1,8 +1,8 @@
 define([
-      'extraction_pipeline/controllers/base_controller',
-       'extraction_pipeline/models/connected',
-       'text!extraction_pipeline/html_partials/connected_partial.html',
-       'extraction_pipeline/lib/pubsub'
+      'controllers/base_controller',
+       'models/connected',
+       'text!html_partials/_connected.html',
+       'lib/pubsub'
 ], function(BaseController, Model, Template, PubSub) {
   'use strict';
 

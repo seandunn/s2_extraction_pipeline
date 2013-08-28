@@ -17,27 +17,6 @@ define([], function () {
       });
     },
 
-    volumeCsvToArray:function (data) {
-     var csvArray = $.csv.toArrays(data);
-      var matches = undefined;
-      var rack_barcode ;
-      var reBarcode = new RegExp("\\s*(\\w)(\\d\\d)\\s*", "i")
-
-      rack_barcode = csvArray[1][0].replace(/ /g,'');
-      var array = _.chain(csvArray)
-        .drop()
-        .map(function (row) {
-          matches = reBarcode.exec(row[1]);
-          if (matches) {
-            var locationLetter = matches[1];
-            var locationNumber = parseInt(matches[2]);
-            return [(locationLetter + locationNumber).trim(),
-                    parseFloat(row[2].trim())];
-          }
-        })
-        .value();
-      return {rack_barcode:rack_barcode,array:array};
-    },
 
     manifestCsvToArray:function(dataAsText) {
       var csvArray = $.csv.toArrays(dataAsText.replace(/(\r\n)|(\n)|(\r)/g,'\n').replace(/[\r\n]+$/g,''));

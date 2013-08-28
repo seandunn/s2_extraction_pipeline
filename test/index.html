@@ -1,25 +1,35 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <title>Jasmine Spec Runner</title>
-
-    <link rel="stylesheet" href="lib/jasmine-1.2.0/jasmine.css">
-    <script src="lib/jasmine-1.2.0/jasmine.js"></script>
-    <script src="lib/jasmine-1.2.0/jasmine-html.js"></script>
-    <script src="components/jquery/jquery.min.js"></script>
-    <script src="components/jquery-csv/src/jquery.csv.js"></script>
-    <script src="components/underscore/underscore-min.js"></script>
-
-  <script>
-    if (window.phantom)
-      document.write('<script src="runner/headless_requirejs.js"><\/script>');
-    else
-      document.write('<script src="runner/html_requirejs.js"><\/script>');
-  </script>
-
-  <script data-main="test_main.js" src="components/requirejs/require.js"></script>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Mocha Spec Runner</title>
+    <link rel="stylesheet" href="lib/mocha/mocha.css">
 </head>
 <body>
+    <div id="mocha"></div>
+    <script src="lib/mocha/mocha.js"></script>
+    <script>
+        mocha.setup({
+            ui: 'bdd',
+            ignoreLeaks: false,
+            bail: false,
+            globals: ['WUIE_delays']
+        })
+    </script>
+    
+    <!-- assertion framework -->
+    <script src="lib/chai.js"></script>
+    <script src="lib/sinon-chai.js"></script>
+    <script src="lib/sinon.js"></script>
+    <script>var expect = chai.expect;</script>
+
+    <!-- include source files here... -->
+    <script src="../app/components/jquery/jquery.min.js"></script>
+    <script src="../app/components/jquery-csv/src/jquery.csv.js"></script>
+    <script src="../app/components/underscore/underscore.js"></script>
+
+    <!-- include spec files here... -->
+    <script src="../app/components/requirejs/require.js" data-main="test_main.js"></script>
 
 </body>
 </html>

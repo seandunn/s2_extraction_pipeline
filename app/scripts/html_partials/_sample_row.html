@@ -1,0 +1,21 @@
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <% _.each (templateData.headers, function (item) { %>
+      <th>
+        <%- item %>
+      </th>
+      <% }); %>
+    </tr>
+  </thead>
+  <tbody>
+    <% _.each (templateData.data, function (dataSet) { %>
+    <tr>
+      <% _.each (dataSet, function (item, item_name) { %>
+      <td> <%= item %></td>
+      <% }); %>
+    </tr>
+    <% }); %>
+  </tbody>
+</table>
+
