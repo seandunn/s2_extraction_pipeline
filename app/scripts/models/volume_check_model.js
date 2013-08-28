@@ -78,28 +78,31 @@ define([
 
     saveVolumes: function () {
       var model = this;
-        debugger
 
-      return this.owner.getS2Root()
+      return model.owner
+      .getS2Root()
       .then(function (root) {
-        var tubeVolumes = _.reduce(model.rack.tubes, function(memo, tube, location){
+
+        var tubeVolumes = _
+        .reduce(model.rack.tubes, function(memo, tube, location){
           memo[location] = {
-            tube_uuid: tube.uuid,
-            volume: model.validatedVolumes.tubes[location]
-          }
+            tube_uuid:  tube.uuid,
+            volume:     model.validatedVolumes.tubes[location]
+          };
 
           return memo;
         }, {});
 
-        model.rack.update({ tubes: tubeVolumes});
+        return model.rack.update({ tubes: tubeVolumes});
       })
-      .fail(function (errorMessage) {
-        return "Saving of volumes has failed: " + errorMessage;
-      })
+
       .then(function(tubeRack){
         // Add new role of volume_checked: in_progess
-        return orders
+        throw "Can't change rack role yet"
+      }, function (errorMessage) {
+        return "Saving of volumes has failed: " + errorMessage;
       })
+
       .then(function(orders){
         // change old role to unused and new role to done.
       });
