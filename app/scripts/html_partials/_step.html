@@ -14,7 +14,9 @@
   <div id="step2" class="step-row span12"> </div>
 </div>
 
-<div id="buttonRack" class="form-inline">
+<div id="buttonRack" class="row">
+  <div class="span12">
+    <form class="form-inline pull-right ">
   <% if (_.contains(_.pluck(templateData.buttons, 'action'), 'print')) { %>
   <label for="printer-select">Current Printer:</label>
   <select class="printer-select" name="printer-select">
@@ -26,4 +28,6 @@
   <% _.each (templateData.buttons, function (buttonsDetails) { %>
   <button class="btn <%- buttonsDetails.action %>Button" disabled="disabled"><%- buttonsDetails.title %></button>
   <% }); %>
+    </form>
+  </div>
 </div>

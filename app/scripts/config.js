@@ -17,7 +17,7 @@ define([], function() {
 
   return {
     // Configure the API to S2
-    apiUrl: 'http://psd2g.internal.sanger.ac.uk:8000/',
+    apiUrl: 'http://psd2f.internal.sanger.ac.uk:8000/',
 
     // No touching! Release branch value as it's picked up by the deployment script
     release: 'development_branch',
@@ -37,7 +37,7 @@ define([], function() {
     },
 
     // Configure the print service
-    printServiceUrl: 'http://psd2g.internal.sanger.ac.uk:8000/printers/legacy/soap',
+    printServiceUrl: 'http://psd2f.internal.sanger.ac.uk:8000/printers/legacy/soap',
     printers: [
       printer('e367bc', 2),
       printer('d304bc', 1)

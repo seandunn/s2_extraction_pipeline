@@ -79,6 +79,7 @@ define([ 'config'
 
     nextWorkflow(this.model).
       then(function(workflowConfig){
+      $.extend(workflowConfig, {initialLabware: application.model.labware});
       return application.controllerFactory.create(workflowConfig && workflowConfig.controllerName, application, workflowConfig);
     }).then(function(nextController){
       application.currentPageController = nextController;

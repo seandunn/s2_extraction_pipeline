@@ -3,7 +3,7 @@ header, #content {
 }
 
 #alertContainer {
-  min-height: 3em;
+  min-height: 4em;
 }
 
 ol.labware-selection {
@@ -21,29 +21,6 @@ svg text {
   font-size: 10px;
 }
 
-
-.kitSelect {
-  margin-top: 20px;
-}
-
-#kitPageHeader {
-  margin-top: 20px;
-  padding: 10px;
-  background: #f9f9f9;
-  border-radius: 10px;
-  .kitSelection {
-    float: left;
-    overflow: auto;
-  }
-  .validationSection {
-    float: right;
-    overflow: auto;
-  }
-}
-
-.kitPrintButton {
-  float: right;
-}
 
 .twoColumns {
   overflow: auto;
@@ -69,8 +46,6 @@ svg text {
   font-weight: bold;
   border: 3px #eeeeee dashed;
   border-radius: 7px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .dropzoneBox.hover {
@@ -151,10 +126,6 @@ svg text {
   }
 }
 
-
-#buttonRack {
-  @extend .pull-right;
-}
 
 
 div.reception-component {
