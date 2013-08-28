@@ -52,6 +52,23 @@ define([
     return deferred.promise();
   }
 
+  function updateJSON(uuid,newRole, oldRole) {
+    var updateJson = { items: {} };
+    var newEvent   = "start";
+
+    if (oldRole){
+      updateJson.items[oldRole]       = {};
+      updateJson.items[oldRole][uuid] = { event: "unuse" };
+
+      newEvent = "complete";
+    }
+
+    updateJson.items[newRole]       = {};
+    updateJson.items[newRole][uuid] = { event: newEvent };
+
+    return updateJson;
+  }
+
   $.extend(Model, {
     init: function (owner, config, inputModel) {
       this.class = "VolumeCheckRackModel";
@@ -77,12 +94,14 @@ define([
     },
 
     saveVolumes: function () {
-      var model = this;
+      var model      = this;
+      var inputRole  = model.config.input.role;
+      var outputRole = model.config.output[0].role;
 
       return model.owner
       .getS2Root()
-      .then(function (root) {
 
+      .then(function (root) {
         var tubeVolumes = _
         .reduce(model.rack.tubes, function(memo, tube, location){
           memo[location] = {
@@ -98,13 +117,21 @@ define([
 
       .then(function(tubeRack){
         // Add new role of volume_checked: in_progess
-        throw "Can't change rack role yet"
+        return tubeRack.orders();
       }, function (errorMessage) {
         return "Saving of volumes has failed: " + errorMessage;
       })
 
-      .then(function(orders){
-        // change old role to unused and new role to done.
+      .then(function(orders) {
+        var orderPromises = _.map(orders, function (order) {
+          return order
+          .update(updateJSON(model.rack.uuid, outputRole))
+          .then(function(order) {
+            return order.update(updateJSON(model.rack.uuid, outputRole, inputRole))
+          });
+        });
+
+        return $.when.apply(undefined, orderPromises);
       });
 
     }

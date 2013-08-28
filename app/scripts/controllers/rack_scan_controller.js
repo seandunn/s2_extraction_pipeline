@@ -107,6 +107,7 @@ define([
         thisController.view.disableDropZone();
         thisController.owner.childDone(thisController, "disableBtn", {buttons: [{action: "end"}]});
         thisController.owner.childDone(thisController, "enableBtn", {buttons: [{action: "next"}]});
+        PubSub.publish("s2.status.message", thisController, "Volume check complete.");
       },
       function(errorMessage){
         $("body").trigger("s2.status.error", errorMessage);
