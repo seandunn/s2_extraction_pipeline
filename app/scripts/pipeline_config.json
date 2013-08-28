@@ -52,7 +52,8 @@
    "samples.extraction.retubing.eppendorf_tube_rna",
    "samples.extraction.racking.fluidx_tube_rna",
 
-   "samples.rack.stock.rna"
+   "samples.rack.stock.rna",
+   "samples.rack.stock.rna.volume_checked"
   ],
 
   "workflows":[
@@ -1309,7 +1310,24 @@
   },
 
   {
-    "accepts":       [ "samples.rack.stock.rna.volume_checked" ],
+    "accepts": [ "samples.rack.stock.rna.volume_checked" ],
+    "controllerName":"selection_page_controller",
+    "processTitle": "Batching for Working Dilution",
+    "capacity": 4,
+    "input":        {
+      "role":"samples.rack.stock.rna.volume_checked",
+      "model":"tube_racks"
+    },
+    "output":       [
+      {
+        "role":       "samples.rack.stock.rna.volume_checked.batched",
+        "not_batched":false
+      }
+    ]
+  },
+
+  {
+    "accepts":       [ "samples.rack.stock.rna.volume_checked.batched" ],
     "controllerName": "step_controller",
     "defaultPrinter":"d304bc",
     "printerType": 1,
@@ -1329,7 +1347,7 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.rack.stock.rna.volume_checked",
+        "role": "samples.rack.stock.rna.volume_checked.batched",
         "model":"tube_racks",
         "title": "Volume Checked DNA Rack"
       },
