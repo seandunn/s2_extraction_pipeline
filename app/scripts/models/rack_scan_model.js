@@ -16,6 +16,8 @@ define([
       this.initialiseCaching();
 
       _.extend(this, inputModel);
+
+      return this;
     },
 
     createOutputs: function(printer) {
