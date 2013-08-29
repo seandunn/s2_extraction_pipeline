@@ -111,8 +111,8 @@ define([
     },
 
 
-    analyseFileContent: function (data) {
-      var locationsSortedByBarcode = CSVParser.convertCSVDataToJSON(data.csvAsTxt);
+    analyseFileContent: function (csvAsTxt) {
+      var locationsSortedByBarcode = CSVParser.convertCSVDataToJSON(csvAsTxt);
       var model = this;
       var root;
 
