@@ -295,7 +295,8 @@ module.exports = function (grunt) {
                         '*.{ico,png,txt}',
                         '.htaccess',
                         'images/{,*/}*.{webp,gif,svg}',
-                        'styles/fonts/*'
+                        'styles/fonts/*',
+                        'scripts/lib/**/*.xls' // Matches xls files in lib directory and all its subdirectories
                     ]
                 }, {
                     expand: true,
