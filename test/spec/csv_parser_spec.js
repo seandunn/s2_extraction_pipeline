@@ -96,7 +96,7 @@ define([
 
     });
 
-    describe("VolumeCSV Parser,", function(){
+    xdescribe("VolumeCSV Parser,", function(){
 
       describe("when transforming VolumeCSV with spaces to an Array, ", function () {
         var output, array ,rack_barcode;
