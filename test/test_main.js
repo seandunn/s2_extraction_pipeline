@@ -26,7 +26,8 @@ requirejs.config({
 });
 
 requirejs([
-    'spec/csv_parser_spec',
+    'spec/underscore_extensions_spec',
+    'spec/file_handling_spec',
     'spec/fake_user_spec',
     'spec/json_templater_spec',
     'spec/reception_app_spec',

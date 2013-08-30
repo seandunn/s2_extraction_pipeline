@@ -1,7 +1,7 @@
 define([
   'models/base_page_model'
   , 'mapper/operations'
-  , 'lib/csv_parser'
+  , 'lib/file_handling/racking'
 ], function (BasePageModel, Operations, CSVParser) {
   'use strict';
 
@@ -111,8 +111,8 @@ define([
     },
 
 
-    analyseFileContent: function (csvAsTxt) {
-      var locationsSortedByBarcode = CSVParser.convertCSVDataToJSON(csvAsTxt);
+    analyseFileContent: function (data) {
+      var locationsSortedByBarcode = CSVParser.from(data); // .csvAsTxt);
       var model = this;
       var root;
 

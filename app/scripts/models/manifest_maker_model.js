@@ -1,11 +1,10 @@
 define([
   'models/base_page_model'
   , 'mapper/operations'
-  , 'lib/csv_parser'
   , 'lib/json_templater'
   , 'lib/reception_templates'
   , 'lib/reception_studies'
-], function (BasePageModel, Operations, CSVParser, JsonTemplater, ReceptionTemplates, ReceptionStudies) {
+], function (BasePageModel, Operations, JsonTemplater, ReceptionTemplates, ReceptionStudies) {
   'use strict';
 
   var ReceptionModel = Object.create(BasePageModel);
