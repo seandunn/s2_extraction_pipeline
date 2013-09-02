@@ -198,6 +198,11 @@ div.header-box {
 }
 
 #arrow-image {
+div.resource {
+  height: 180px;
+  &:empty {
+    height: auto;
+  }
 }
 
 
