@@ -1,7 +1,7 @@
 define([
   'models/base_page_model'
   , 'mapper/operations'
-  , 'lib/csv_parser'
+  , 'lib/file_handling/manifests'
   , 'lib/json_templater'
   , 'lib/reception_templates'
   , 'lib/util'
@@ -29,7 +29,7 @@ define([
     setFileContent: function (fileContent) {
       var thisModel = this;
       var deferred = $.Deferred();
-      var dataAsArray = CSVParser.manifestCsvToArray(fileContent);
+      var dataAsArray = CSVParser.from(fileContent);
       var templateName = dataAsArray[2][0]; // always A3 !!
       var columnHeaders = dataAsArray[ReceptionTemplate[templateName].header_line_number];
       var sampleAsArray = _.chain(dataAsArray)

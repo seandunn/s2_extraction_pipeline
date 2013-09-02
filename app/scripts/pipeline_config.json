@@ -1333,17 +1333,19 @@
     "printerType": 1,
     "buttons":       [
       { "action": "print", "title": "Print Plate Labels" },
+      { "action": "start", "title": "Start NX" },
+      { "action": "end",   "title": "Stop NX" },
       { "action": "next",  "title": "Done" }
     ],
-    "processTitle":  "DNA Working Dilution",
+    "processTitle":  "NX RNA Working Dilution",
     "controllers":    [
       {
       "controllerName": "connected_controller",
       "behaviours": {
-        "start": "row",
-        "operate": "row",
-        "complete": "row",
-        "done": "next",
+        "start": "start",
+        "operate": "start",
+        "complete": "end",
+        "done": "transfer",
         "outputs": "print"
       },
       "input":         {
@@ -1355,7 +1357,7 @@
         {
         "role":       "samples.plates.working_dilution.rna",
         "aliquotType":"RNA",
-        "purpose":    "Working_dilution",
+        "purpose":    "Working Dilution",
         "model":      "plates",
         "title":      "RNA Working Dilution"
       }

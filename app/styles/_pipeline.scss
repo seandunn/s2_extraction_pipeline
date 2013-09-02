@@ -14,13 +14,11 @@ ol.labware-selection {
 
   li .resource {
   }
-
 }
 
 svg text {
   font-size: 10px;
 }
-
 
 .twoColumns {
   overflow: auto;
@@ -46,10 +44,9 @@ svg text {
   font-weight: bold;
   border: 3px #eeeeee dashed;
   border-radius: 7px;
-}
-
-.dropzoneBox.hover {
-  background: #e0e0e0;
+  .hover {
+    background: #e0e0e0;
+  }
 }
 
 .labwareRow {
@@ -126,8 +123,6 @@ svg text {
   }
 }
 
-
-
 div.reception-component {
   width: 100%;
   height: 100%;
@@ -197,12 +192,14 @@ div.header-box {
   height: 6em;
 }
 
-#arrow-image {
+div.resource {
+  height: 180px;
+  &:empty {
+    height: auto;
+  }
 }
 
-
 div.template-selection-box {
-  //  border: 1px dashed #444444;
   border-radius: 8px;
   display: block;
   padding: 10px;
