@@ -62,7 +62,7 @@ define([
     var constructor = this.controllers[name] || this.controllers.default;
     return $.extend(
       _.partial(constructor, owner, this).apply(null, _.chain(arguments).drop(2).value()),
-      { controller_type_name_debug: name }
+      { className: name }
     );
   };
 
