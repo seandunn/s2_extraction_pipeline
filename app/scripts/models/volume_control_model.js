@@ -10,7 +10,7 @@ define([
   $.extend(VolumeControlModel, {
 
     init: function (owner, config) {
-      this.class = 'VolumeControlModel';
+      this.className = 'VolumeControlModel';
       this.owner = owner;
       this.config = config;
       this.inputs = $.Deferred();

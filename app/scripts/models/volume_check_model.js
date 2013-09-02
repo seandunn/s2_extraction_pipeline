@@ -71,7 +71,7 @@ define([
 
   $.extend(Model, {
     init: function (owner, config, inputModel) {
-      this.class = "VolumeCheckRackModel";
+      this.className = "VolumeCheckRackModel";
       this.owner = owner;
       this.config = config;
       this.rack = inputModel.initialLabware;

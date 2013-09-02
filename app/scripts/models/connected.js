@@ -13,6 +13,7 @@ define([
   _.extend(Model, {
     init: function(owner, config) {
       var instance = this;
+      this.className = "ConnectedModel";
 
       this.owner = owner;
       this.previous = false;
