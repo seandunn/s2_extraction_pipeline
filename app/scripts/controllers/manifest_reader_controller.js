@@ -84,7 +84,6 @@ define(['config'
           .then(function (model) {
             thisController.registerBtnSelection.show();
             thisController.createSamplesView(model);
-//            thisController.barcodeReaderSelection.find('.barcodeInput').focus(); // does not work!!??
             thisController.view.trigger("s2.busybox.end_process");
             deferred.resolve(thisController);
           });
