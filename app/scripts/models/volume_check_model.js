@@ -74,6 +74,7 @@ define([
       this.className = "VolumeCheckRackModel";
       this.owner = owner;
       this.config = config;
+      this.expected_type = "tube_rack";
       this.rack = inputModel.initialLabware;
       this.output = [];
       this.initialiseCaching();

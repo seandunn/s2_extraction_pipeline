@@ -54,7 +54,7 @@ define([
       controller.labwareController = controller.controllerFactory.create("labware_controller", this);
 
       controller.labwareController.setupController({
-        "expected_type":    "tube_rack",
+        "expected_type":    this.model.expected_type,
         "display_labware":  true,
         "display_remove":   false,
         "display_barcode":  false
