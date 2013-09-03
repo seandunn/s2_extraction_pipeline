@@ -73,6 +73,9 @@ define([
     initialController: function () {
       this.owner.childDone(this, "disableBtn", {});
     },
+    previousDone: function() {
+      this.owner.childDone(this, "disableBtn", {});
+    },
 
     childDone: function (child, action, data) {
       if (child === this.view) {

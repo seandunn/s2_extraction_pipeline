@@ -1,15 +1,16 @@
 define([
   "controllers/base_controller",
   "views/file_generator_view",
+  'lib/pubsub',
 
   // Add file generator models after this point to have them automatically picked up
   "models/file_generator/nano_drop"
-], function(Base, View) {
+], function(Base, View, PubSub) {
   'use strict';
 
   var formats =
     _.chain(arguments)
-     .drop(2) // Base, View, ...
+     .drop(3) // Base, View, ...
      .reduce(function(memo, module) {
        module.register(function(name, code) {
          memo[name] = code;
@@ -59,6 +60,7 @@ define([
     // Called from the onClick handler of the button on the view, but with 'this' set to an instance of this class.
     triggerDownload: function() {
       this.model.generateFile(_.bind(this.view.downloadFile, this.view));
+      PubSub.publish("s2.step_controller.next_process", this, {batch: this.model.batch});
     }
   });
 });

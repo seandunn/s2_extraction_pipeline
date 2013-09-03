@@ -1408,7 +1408,8 @@
       "defaultPrinter": "d304bc",
       "printerType": 1,
       "buttons": [
-        { "action": "end",  "title": "Done" }
+        { "action": "end",  "title": "Save results" },
+        { "action": "next", "title": "Done" }
       ],
       "processTitle":   "NanoDrop",
       "controllers": [
