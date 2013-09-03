@@ -93,7 +93,7 @@ define([
 
     },
 
-    saveVolumes: function () {
+    save: function () {
       var model      = this;
       var inputRole  = model.config.input.role;
       var outputRole = model.config.output[0].role;
@@ -132,6 +132,9 @@ define([
         });
 
         return $.when.apply(undefined, orderPromises);
+      })
+      .then(function() {
+        return "Volume check complete.";
       });
 
     }

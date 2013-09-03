@@ -26,7 +26,8 @@ define([
   'controllers/lab_activities_controller',
   'controllers/manifest_maker_controller',
   'controllers/manifest_reader_controller',
-  'controllers/summary_page_controller'
+  'controllers/summary_page_controller',
+  'controllers/file_generator_controller'
 ], function(TubeController, SpinColumnController, WasteTubeController, RackController, GelController, PlateController) {
   'use strict';
 
