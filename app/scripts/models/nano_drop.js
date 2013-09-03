@@ -56,25 +56,24 @@ define([
          .object()
          .value();
 
-      return
-        this.plate
-            .update({plate:{wells:updates}})
-            .then(function(plate) {
-              return plate.orders();
-            }, function() {
-              return "Unable to update information for plate.";
-            }).then(function(orders) {
-              return $.when.apply(undefined, _.map(orders, function(order) {
-                return order.update(orderUpdate);
-              }));
-            }, function() {
-              return "Unable to retrieve the orders associated with the plate.";
-            })
-            .then(function() {
-              return "NanoDrop information complete.";
-            }, function() {
-              return "Unable to update orders containing the plate.";
-            });
+      return this.plate
+                 .update({plate:{wells:updates}})
+                 .then(function(plate) {
+                   return plate.orders();
+                 }, function() {
+                   return "Unable to update information for plate.";
+                 }).then(function(orders) {
+                   return $.when.apply(undefined, _.map(orders, function(order) {
+                     return order.update(orderUpdate);
+                   }));
+                 }, function() {
+                   return "Unable to retrieve the orders associated with the plate.";
+                 })
+                 .then(function() {
+                   return "NanoDrop information complete.";
+                 }, function() {
+                   return "Unable to update orders containing the plate.";
+                 });
     }
   });
 });
