@@ -1,6 +1,8 @@
 define([
   'text!html_partials/_file_generator.html'
 ], function(partial) {
+  'use strict';
+
   var View = function(owner, selector) {
     this.owner    = owner;
     this.selector = selector;
