@@ -15,11 +15,12 @@ define([
 
   return _.extend(Object.create(BasePageModel), {
     init: function(owner, config, inputModel) {
-      this.owner   = owner;
-      this.config  = config;
-      this.rack    = inputModel.initialLabware;
-      this.plate   = this.rack;
-      this.updates = undefined;
+      this.owner         = owner;
+      this.config        = config;
+      this.expected_type = "plate";
+      this.rack          = inputModel.initialLabware;
+      this.plate         = this.rack;
+      this.updates       = undefined;
 
       this.initialiseCaching();
       _.extend(this, inputModel);
@@ -35,7 +36,7 @@ define([
                         "does not match the file barcode of '" + parsedBarcode + "'");
       } else {
         this.updates = parsed[parsedBarcode];
-        deferred.resolve(this.updates);
+        deferred.resolve(this);
       }
       return deferred.promise();
     },
