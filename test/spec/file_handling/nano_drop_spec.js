@@ -7,8 +7,7 @@ define([
   return function() {
     describe("NanoDrop", function() {
       describe("to", function() {
-        var result = undefined, expected = undefined;
-        beforeEach(function() {
+        it("generates a TSV file", function() {
           var plate = {
             wells: {
               "A1": [{sample: {uuid: "UUID1"}}],
@@ -16,11 +15,21 @@ define([
             }
           };
 
-          result = NanoDrop.to(plate);
-          expected = "Well\tSanger ID\nA1\tUUID1\nB1\tUUID2";
+          var result = NanoDrop.to(plate);
+          var expected = "Well\tSanger ID\nA1\tUUID1\nB1\tUUID2";
+          expect(result).to.equal(expected);
         });
 
-        it("generates the TSV file", function() {
+        it("handles empty wells", function() {
+          var plate = {
+            wells: {
+              "A1": [],
+              "B1": [{sample: {uuid: "UUID2"}}]
+            }
+          };
+
+          var result = NanoDrop.to(plate);
+          var expected = "Well\tSanger ID\nB1\tUUID2";
           expect(result).to.equal(expected);
         });
       });
@@ -38,7 +47,7 @@ define([
         beforeEach(function() {
           array = NanoDrop.from(inputData);
           expected = {
-            "286167": {
+            "6250296910789": {
               "A1": {"Sample ID":"foo5546782", "Conc.": 1249.0, "260/280": 2.03, "260/230": 1.75},
               "B1": {"Sample ID":"foo5546783", "Conc.":  622.2, "260/280": 1.96, "260/230": 1.47},
               "C1": {"Sample ID":"foo5546784", "Conc.":  838.7, "260/280": 2.00, "260/230": 1.71},

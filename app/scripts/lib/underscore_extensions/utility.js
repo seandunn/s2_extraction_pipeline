@@ -25,6 +25,19 @@ define([], function() {
         var pair = _.find(mappings, function(p) { return p[0] == index; });
         return pair ? pair[1] : _.identity;
       }
+    },
+
+    // Restructures a given (flat) object so that it fits the template structure specified.
+    restructure: function(template, source) {
+      return _.chain(template)
+              .map(mapAttribute)
+              .object()
+              .value();
+
+      function mapAttribute(sourceKey, targetKey) {
+        var value = _.isObject(sourceKey) ? _.restructure(sourceKey, source) : source[sourceKey];
+        return [targetKey,value];
+      }
     }
   };
 });

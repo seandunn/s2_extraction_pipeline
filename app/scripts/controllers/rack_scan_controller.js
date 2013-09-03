@@ -3,13 +3,15 @@ define([
   "views/rack_scan_view",
   "models/rack_scan_model",
   "models/volume_check_model",
+  "models/nano_drop",
   "lib/pubsub"
-], function (Base, View, RackScanModel, VolumeCheckModel, PubSub) {
+], function (Base, View, RackScanModel, VolumeCheckModel, NanoDrop, PubSub) {
   "use strict";
 
   var models = {
     RackScanModel: RackScanModel,
-    VolumeCheckModel: VolumeCheckModel
+    VolumeCheckModel: VolumeCheckModel,
+    NanoDropModel: NanoDrop
   };
 
   var Controller = Object.create(Base);
@@ -71,6 +73,9 @@ define([
     initialController: function () {
       this.owner.childDone(this, "disableBtn", {});
     },
+    previousDone: function() {
+      this.owner.childDone(this, "disableBtn", {});
+    },
 
     childDone: function (child, action, data) {
       if (child === this.view) {
@@ -103,11 +108,11 @@ define([
 
     end: function(){
       var thisController = this;
-      this.model.saveVolumes().then(function(rackModel){
+      this.model.save().then(function(message){
         thisController.view.disableDropZone();
         thisController.owner.childDone(thisController, "disableBtn", {buttons: [{action: "end"}]});
         thisController.owner.childDone(thisController, "enableBtn", {buttons: [{action: "next"}]});
-        PubSub.publish("s2.status.message", thisController, "Volume check complete.");
+        PubSub.publish("s2.status.message", thisController, {message:message})
       },
       function(errorMessage){
         $("body").trigger("s2.status.error", errorMessage);

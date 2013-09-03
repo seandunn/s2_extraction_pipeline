@@ -17,6 +17,34 @@ define([
         });
       });
 
+      describe("restructure", function() {
+        it("deals with flat templates", function() {
+          expect(_.restructure({
+            "OA": "IA",
+            "OB": "IB"
+          }, {
+            "IA": 1,
+            "IB": 2
+          })).to.deep.equal({
+            "OA": 1,
+            "OB": 2
+          });
+        });
+
+        it("deals with nested templates", function() {
+          expect(_.restructure({
+            "OA": {"A": "IA"},
+            "OB": {"B": "IB"}
+          }, {
+            "IA": 1,
+            "IB": 2
+          })).to.deep.equal({
+            "OA": {"A": 1},
+            "OB": {"B": 2}
+          });
+        });
+      });
+
       describe("mapFields", function() {
         it("applies the function to the fields", function() {
           expect(_.mapFields({
