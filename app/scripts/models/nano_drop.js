@@ -6,7 +6,7 @@ define([
 
   var mapToUpdate = _.partial(_.restructure, {
     "sample_uuid":     "Sample ID",
-    "out-of-band": {
+    "out_of_bounds": {
       "Concentration": "Conc.",
       "260/280":       "260/280",
       "260/230":       "260/230"
@@ -35,10 +35,42 @@ define([
         deferred.reject("The scanned plate barcode '" + this.plate.labels.barcode.value + "' " +
                         "does not match the file barcode of '" + parsedBarcode + "'");
       } else {
-        this.updates = parsed[parsedBarcode];
-        deferred.resolve(this);
+        var updates = parsed[parsedBarcode];
+        this.updates = updates;
+
+        var details =
+          _.chain(this.plate.wells)
+           .map(function(aliquots, location) { return [location, something(aliquots, updates[location])]; })
+           .reject(function(v) { return _.isUndefined(v[1]); })
+           .object()
+           .value();
+
+        deferred.resolve({
+          rack: {
+            resourceType: "plate",
+            wells: details,
+            number_of_rows: this.plate.number_of_rows,
+            number_of_columns: this.plate.number_of_columns,
+            barcode: this.plate.labels.barcode.value
+          }
+        });
       }
       return deferred.promise();
+
+      function something(plate, file) {
+        if (undefinedOrEmpty(file) && undefinedOrEmpty(plate)) {
+          return undefined;
+        } else if (undefinedOrEmpty(file) && !undefinedOrEmpty(plate)) {
+          return "resourceNotData";
+        } else if (!undefinedOrEmpty(file) && undefinedOrEmpty(plate)) {
+          return "dataNotResource";
+        } else {
+          return "resourceAndData";
+        }
+      }
+      function undefinedOrEmpty(value) {
+        return (value === undefined) || (value.length == 0);
+      }
     },
 
     save: function() {
