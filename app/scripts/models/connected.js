@@ -339,26 +339,28 @@ define([
             })
             .value();
 
-            // If we are using something plateLike then prepare multiple transfers
-            // for each well, tube or window (this will overwrite the original
-            // transfer.
-            transferDetails = _
-            .chain(source.tubes || source.windows || source.wells || {})
-            .keys()
-            .reduce(function(memo, location){
-              memo.push({
-                input:            transferDetails[0].input,
-                output:           transferDetails[0].output,
-                aliquot_type:     transferDetails[0].aliquot_type,
-                source_location:  location,
-                target_location:  location,
-                fraction:         0.4,
-              });
+            if (source.transferBehaviour ==="plateLike") {
+              // If we are using something plateLike then prepare multiple transfers
+              // for each well, tube or window (this will overwrite the original
+              // transfer.
+              transferDetails = _
+              .chain(source.tubes || source.windows || source.wells)
+              .keys()
+              .reduce(function(memo, location){
+                memo.push({
+                  input:            transferDetails[0].input,
+                  output:           transferDetails[0].output,
+                  aliquot_type:     transferDetails[0].aliquot_type,
+                  source_location:  location,
+                  target_location:  location,
+                  fraction:         0.4,
+                });
 
               return memo;
             }, [])
             .value();
 
+            }
             memo.push(transferDetails);
           });
 
