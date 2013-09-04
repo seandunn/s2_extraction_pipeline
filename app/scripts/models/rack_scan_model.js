@@ -11,6 +11,7 @@ define([
     init: function (owner, config, inputModel) {
       this.owner = owner;
       this.config = config;
+      this.expected_type = "tube_rack";
       this.inputs = $.Deferred();
       this.output = [];
       this.initialiseCaching();

@@ -115,6 +115,8 @@ define([
       return this;
     },
 
+    focus: function(){},
+
     childDone: function (child, action, data) {
       var controller = this;
 

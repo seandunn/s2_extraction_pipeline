@@ -27,6 +27,7 @@ define([
     to: function(plate) {
       return _.chain(plate.wells)
               .map(wellAndLocationToDetails)
+              .reject(_.isUndefined)
               .tabularize(["Well", "Sanger ID"])
               .toCSV("\t")
               .value();
@@ -34,6 +35,7 @@ define([
   };
 
   function wellAndLocationToDetails(well, location) {
+    if (well.length == 0) return undefined;
     return {
       "Well": location,
       "Sanger ID": well[0].sample.uuid
