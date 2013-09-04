@@ -129,7 +129,6 @@ define(['config'
       this.accordionSelection.accordion("option","active", 0);
       this.rackListSelection.empty();
       this.startRerackingBtnSelection.hide();
-      this.rackControllers = [];
       delete this.outputRackController;
       this.outputrackSelection.hide();
       this.outputSelection.hide();
@@ -148,53 +147,24 @@ define(['config'
 
     labwareScannedHandler: function (barcode) {
       var thisController = this;
-      thisController.rackControllers = [];
-      thisController.model
-          .fail(function () {
+      this.model
+          .then(this.startProcess(function (model) {
+            return model.addRack(barcode);
+          }), function () {
             thisController.message('error', "Impossible to load the model!");
           })
-          .then(function (model) {
-            thisController.view.trigger("s2.busybox.start_process");
-
-            return model.addRack(barcode);
-          })
-          .fail(function (error) {
-            thisController.view.trigger("s2.busybox.end_process");
-
+          .then(this.finishProcess(function (model) {
+            var rackList = _.map(model.inputRacks, _.partial(rackUI, thisController));
+            thisController.rackListSelection.empty().append(_.pluck(rackList, "item"));
+            _.each(rackList, _.callMemberFunction("render"));
+            return model;
+          }), this.finishProcess(function (error) {
             thisController.message('error', error.message);
-          })
-          .then(function (model) {
-            // creates the rack list from the loaded racks
-            thisController.rackControllers = [];
-            var rackList = _.map(model.inputRacks, function (rack, index) {
-              var rackController = thisController.factory.create('labware_controller', thisController);
-              function selection(s) {
-                return function () {
-                  return thisController.rackListSelection.find(s);
-                }
-              }
-              thisController.rackControllers.push(rackController);
-              thisController.rackListSelection.find();
-              rackController.setupController({
-                "expected_type":   "tube_rack",
-                "display_labware": true,
-                "display_remove":  false,
-                "display_barcode": false
-              }, selection("li:nth(" + index + ")"));
-              var listItem = "<li>" + rack.labels.barcode.value + "</li>";
-              return {"item": listItem, controller: rackController, rackData: rack};
-            });
-            var listItems = _.pluck(rackList, "item");
-            thisController.rackListSelection.empty().append(listItems);
-            _.each(rackList, function (rackItem) {
-              rackItem.controller.renderView();
-              rackItem.controller.updateModel(rackItem.rackData);
-            });
+          }))
+          .then(function(model) {
             if (model.isReady) {
-              // ready to merge
               thisController.startRerackingBtnSelection.show();
             }
-            thisController.view.trigger("s2.busybox.end_process");
           });
     },
 
@@ -372,5 +342,46 @@ define(['config'
   });
 
   return Controller;
+
+  function rackUI(owner, rack, index) {
+    var controller = owner.factory.create('labware_controller', owner);
+    controller.setupController({
+      "expected_type":   "tube_rack",
+      "display_labware": true,
+      "display_remove":  false,
+      "display_barcode": false
+    }, selection("li:nth(" + index + ")"));
+
+    var rackRepresentation = representAsLabware(rack);
+
+    return {
+      item: "<li>" + rack.labels.barcode.value + "</li>",
+      render: function() {
+        controller.renderView();
+        controller.updateModel(rackRepresentation);
+      }
+    };
+
+    function selection(s) {
+      return function () {
+        return owner.rackListSelection.find(s);
+      }
+    }
+  };
+
+  function representAsLabware(rack) {
+    return {
+      resourceType: rack.resourceType,
+      barcode: rack.labels.barcode.value,
+      locations: _.chain(rack.tubes).map(tubeToCss).object().value()
+    };
+
+    function tubeToCss(tube, location) {
+      return [location, empty(tube) ? "empty" : "full"];
+    }
+    function empty(tube) {
+      return tube.aliquots.length == 0;
+    }
+  }
 });
 
