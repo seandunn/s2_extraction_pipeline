@@ -182,9 +182,13 @@ define([
         var sanger_sample_id = _.find(thisModel.samples,function (sample) {
           return sample.uuid === sampleUUID;
         }).sanger_sample_id;
-        return [labware.labels.barcode.value, sanger_sample_id, sampleType ].join(',');
+        return [labware.labels.barcode.value, 
+                labware.labels['sanger label'].value, 
+                sanger_sample_id, 
+                sampleType]
+                .join(',');
       });
-      data.unshift("Tube Barcode,Sanger Sample ID,SAMPLE TYPE");
+      data.unshift("Tube Barcode,Sanger Barcode,Sanger Sample ID,SAMPLE TYPE");
       var txt = data.join("\n");
       return new Blob([txt], { "type" : "text\/csv" })
     },

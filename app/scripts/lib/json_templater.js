@@ -18,7 +18,7 @@ define([], function () {
         case "float":
           return parseFloat(value);
         case "boolean":
-          return ( value.toUpperCase() === 'YES' ) || ( value.toUpperCase() === 'TRUE' );
+          return ( value.toUpperCase() === 'YES' ) || ( value.toUpperCase() === 'TRUE' ) || ( value.toUpperCase() === 'Y');
         // used to generate html nodes
         case "select":
           return $.extend({}, cellDescriptor, {value:value} );
