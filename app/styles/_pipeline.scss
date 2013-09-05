@@ -44,7 +44,7 @@ svg text {
   font-weight: bold;
   border: 3px #eeeeee dashed;
   border-radius: 7px;
-  .hover {
+  &.hover {
     background: #e0e0e0;
   }
 }
