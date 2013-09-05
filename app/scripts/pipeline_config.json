@@ -636,7 +636,7 @@
 
   {
     "accepts": [ "samples.extraction.qiacube_dna_and_rna.byproduct_tube_rnap" ],
-    "processTitle":  "Automated DNA and RNA Extraction (QIAcube) Rotor Aptapter Transfer",
+    "processTitle":  "Automated DNA and RNA Extraction (QIAcube) Rotor Adapter Transfer",
     "controllerName": "step_controller",
     "defaultPrinter":"e367bc",
     "printerType": 2,
