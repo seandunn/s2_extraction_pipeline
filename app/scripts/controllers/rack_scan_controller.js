@@ -90,7 +90,7 @@ define([
       var printer        = $(".printer-select").val();
 
       this.model.fire(printer).fail(function(error){
-        PubSub.publish("s2.status.error", thisController, error);
+        PubSub.publish("s2.status.error", thisController, { message: error });
       }).then(function(){
         thisController.view.disableDropZone();
 
@@ -102,7 +102,7 @@ define([
           buttons: [{action: "next"}]
         });
 
-        PubSub.publish("s2.status.message", thisController, "Rack registered.");
+        PubSub.publish("s2.status.message", thisController, { message: "Rack registered." });
       });
     },
 
