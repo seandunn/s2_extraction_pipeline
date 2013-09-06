@@ -9,13 +9,11 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
-   viewBox="124 47 145.00007 164.0022"
-   width="110"
-   height="130"
+   width="264"
+   height="141"
    id="svg61332"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="SpinColumn.svg"
-   style="margin-bottom: 11px">
+   sodipodi:docname="spin_column2.svg">
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -26,20 +24,39 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1920"
-     inkscape:window-height="1086"
+     inkscape:window-height="1068"
      id="namedview61389"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:zoom="0.72163114"
-     inkscape:cx="293.13161"
-     inkscape:cy="22.599889"
+     inkscape:zoom="2.8865246"
+     inkscape:cx="145.48849"
+     inkscape:cy="29.346989"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg61332" />
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg61332"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       orientation="1,0"
+       position="109.47421,65.823102"
+       id="guide4154" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="0.34643738,65.130227"
+       id="guide4156" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="-33.604426,106.35628"
+       id="guide5039" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="-18.361181,20.786243"
+       id="guide5041" />
+  </sodipodi:namedview>
   <metadata
      id="metadata61334">
     <dc:date>2013-02-13 13:39Z</dc:date>
@@ -181,7 +198,7 @@
   </defs>
   <g
      id="g61438"
-     transform="translate(-10.499924,-7.606398)">
+     transform="matrix(0.51843448,0,0,0.51843448,-69.729438,-18.334236)">
     <g
        transform="translate(1.5306355e-6,1.1085999)"
        id="id13_Graphic"
@@ -221,4 +238,12 @@
          x="180" />
     </g>
   </g>
+  <text id="type" style="display:none;">
+    <tspan x="68.758698" y="57.489433">Type:</tspan>
+    <tspan x="110.758698" y="57.489433" class="value"/>
+  </text>
+  <text id="barcode" style="display:none;">
+    <tspan x="68.758698" y="95">Barcode:</tspan>
+    <tspan x="110.758698" y="95" class="value"/>
+  </text>
 </svg>

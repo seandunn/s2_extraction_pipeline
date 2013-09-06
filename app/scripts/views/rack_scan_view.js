@@ -32,7 +32,11 @@ define([
                       .analyseFileContent(contents)
                       .then(function(scanModel){
                         PubSub.publish('s2.status.message', thisController, {message: "File validated."});
-                        thisController.labwareController.updateModel(scanModel.rack);
+
+                        // We update the labware view but we've already translated it, so force the display to
+                        // be the identity, rather than the default mapping.
+                        thisController.labwareController.updateModel(scanModel.rack, _.identity);
+
                         thisController.owner.childDone(this, "enableBtn", {buttons: [{action: "print"}]});
                         thisController.owner.childDone(this, "enableBtn", {buttons: [{action: "end"}]});
                       }, function (errorMessage) {

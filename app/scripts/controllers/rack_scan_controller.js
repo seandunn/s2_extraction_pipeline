@@ -47,10 +47,7 @@ define([
 
       this.labwareController.renderView();
 
-      this.model.presentResource(
-        this.model.rack,
-        _.bind(this.labwareController.updateModel, this.labwareController)
-      );
+      this.labwareController.updateModel(this.model.rack);
     },
 
     setupSubControllers: function () {
@@ -58,10 +55,11 @@ define([
       controller.labwareController = controller.controllerFactory.create("labware_controller", this);
 
       controller.labwareController.setupController({
-        "expected_type":    this.model.expected_type,
-        "display_labware":  true,
-        "display_remove":   false,
-        "display_barcode":  false
+        expected_type:    this.model.expected_type,
+        display_labware:  true,
+        display_remove:   false,
+        display_barcode:  false,
+        remap:            _.identity
       }, function() {
         return controller.selector().find(".labware");
       });

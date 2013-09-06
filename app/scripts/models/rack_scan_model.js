@@ -54,7 +54,8 @@ define([
               });
             }
           });
-          return tube_rack;
+
+          return {rack: model.presentResource(tube_rack)};
         });
     },
 

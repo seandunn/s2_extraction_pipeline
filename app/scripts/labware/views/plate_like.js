@@ -12,7 +12,7 @@ define([], function() {
 
       // Display the information related to the individual locations
       _.each(labware.locations, function(value, location) {
-        container.find("svg #" + location).attr("class", value);
+        container.find("svg #" + location).attr("class", cssForType(value));
       });
 
       // Display any extraneous data
@@ -30,6 +30,10 @@ define([], function() {
         } else {
           element.show().find(".value").text(value);
         }
+      }
+
+      function cssForType(type) {
+        return _.isUndefined(type) ? "empty" : type.replace(/\W+/, '_').toLowerCase();
       }
     },
 

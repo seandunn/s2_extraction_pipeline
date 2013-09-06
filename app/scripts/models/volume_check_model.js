@@ -1,6 +1,6 @@
 define([
   "models/base_page_model",
-  "lib/file_handling/volume"
+  "lib/file_handling/volume",
   "labware/presenter"
 ], function (BasePageModel, FileHandler, LabwarePresenter) {
   "use strict";

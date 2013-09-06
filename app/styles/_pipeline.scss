@@ -210,6 +210,15 @@ div.resource {
   .good      { fill: hsl(120, 100%, 30%); background-color: hsl(120, 100%, 30%); }
   .very-good { fill: hsl(120, 100%, 20%); background-color: hsl(120, 100%, 20%); }
   .excellent { fill: hsl(120, 100%, 10%); background-color: hsl(120, 100%, 10%); }
+
+  .dna   { fill: hsl(120, 100%, 70%); background-color: hsl(120, 100%, 70%); }
+  .dna_p { fill: hsl(120, 100%, 40%); background-color: hsl(120, 100%, 40%); }
+  .rna   { fill: hsl(160, 100%, 70%); background-color: hsl(160, 100%, 70%); }
+  .rna_p { fill: hsl(160, 100%, 40%); background-color: hsl(160, 100%, 40%); }
+  .na    { fill: hsl(200, 100%, 70%); background-color: hsl(200, 100%, 70%); }
+  .na_p  { fill: hsl(200, 100%, 40%); background-color: hsl(200, 100%, 40%); }
+
+  .tube .empty { display: none; }
 }
 
 div.template-selection-box {

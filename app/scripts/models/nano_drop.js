@@ -49,7 +49,6 @@ define([
         deferred.resolve({
           rack: {
             resourceType: this.plate.resourceType,
-            resourceType: "plate",
             locations: details,
             number_of_rows: this.plate.number_of_rows,
             number_of_columns: this.plate.number_of_columns,
