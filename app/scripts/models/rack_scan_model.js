@@ -2,12 +2,13 @@ define([
   'models/base_page_model'
   , 'mapper/operations'
   , 'lib/file_handling/racking'
-], function (BasePageModel, Operations, CSVParser) {
+  , 'labware/presenter'
+], function (BasePageModel, Operations, CSVParser, LabwarePresenter) {
   'use strict';
 
   var Model = Object.create(BasePageModel);
 
-  $.extend(Model, {
+  _.extend(Model, LabwarePresenter, {
     init: function (owner, config, inputModel) {
       this.owner = owner;
       this.config = config;

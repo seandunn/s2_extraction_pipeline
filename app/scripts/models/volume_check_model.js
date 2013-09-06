@@ -1,6 +1,7 @@
 define([
   "models/base_page_model",
-], function (BasePageModel) {
+  "labware/presenter"
+], function (BasePageModel, LabwarePresenter) {
   "use strict";
 
   var Model = Object.create(BasePageModel);
@@ -69,7 +70,7 @@ define([
     return updateJson;
   }
 
-  $.extend(Model, {
+  _.extend(Model, LabwarePresenter, {
     init: function (owner, config, inputModel) {
       this.className = "VolumeCheckRackModel";
       this.owner = owner;
