@@ -1,8 +1,8 @@
 define(['config'
-  , 'extraction_pipeline/controllers/base_controller'
-  , 'text!extraction_pipeline/html_partials/volume_control_partial.html'
-  , 'extraction_pipeline/models/volume_control_model'
-  , 'extraction_pipeline/lib/pubsub'
+  , 'controllers/base_controller'
+  , 'text!html_partials/_volume_control.html'
+  , 'models/volume_control_model'
+  , 'lib/pubsub'
 ], function (config, BaseController, volumeControlPartialHtml, Model, PubSub) {
   'use strict';
 

@@ -66,51 +66,49 @@ define([
 
     describe("Selection page model", function () {
       var tube, model, modelPromise, inputs;
-      beforeEach(function(){
+      
+      beforeEach(function(done){
+
+        results.resetFinishedFlag();
+        
+        getAResource(fakeOwner, "tube1_UUID")
+            .then(results.assignTo('tube1'))
+            .then(results.expected)
+            .fail(results.unexpected)
+            .always(done);
+      });        
+
+      beforeEach(function(done) {
         modelPromise = Object.create(Model).init(fakeOwner, initData);
 
-        runs(function(){
+        results.resetFinishedFlag();
+        
+        tube = results.get('tube1');
+        
+        modelPromise
+          .then(results.assignTo('model'))
+          .then(results.expected)
+          .fail(results.unexpected)
+          .always(done);
+      });
 
-          results.resetFinishedFlag();
-          getAResource(fakeOwner, "tube1_UUID")
-              .then(results.assignTo('tube1'))
-              .then(results.expected)
-              .fail(results.unexpected);
-        });
-
-        waitsFor(results.hasFinished);
-
-        runs(function(){
-          results.resetFinishedFlag();
-          tube = results.get('tube1');
-          modelPromise
-              .then(results.assignTo('model'))
-              .then(results.expected)
-              .fail(results.unexpected);
-        });
-
-        waitsFor(results.hasFinished);
-
-        runs(function(){
-          results.resetFinishedFlag();
-          model = results.get('model');
-          model.setup({labware:tube});
-          model.inputs
-              .then(results.assignTo('inputs'))
-              .then(results.expected)
-              .fail(results.unexpected);
-        });
-
-        waitsFor(results.hasFinished);
-
+      beforeEach(function(done) {
+        results.resetFinishedFlag();
+        model = results.get('model');
+        model.setup({labware:tube});
+        model.inputs
+            .then(results.assignTo('inputs'))
+            .then(results.expected)
+            .fail(results.unexpected)
+            .always(done);
       });
 
       it("can add a labware, and then contains one tube", function () {
-          expect(tube.uuid).toEqual("tube1_UUID");
-          inputs = results.get('inputs');
+        expect(tube.uuid).to.equal("tube1_UUID");
+        inputs = results.get('inputs');
 
-        expect(inputs.length).toEqual(1);
-          expect(inputs[0].uuid).toEqual("tube1_UUID");
+        expect(inputs.length).to.equal(1);
+        expect(inputs[0].uuid).to.equal("tube1_UUID");
       });
     });
   });

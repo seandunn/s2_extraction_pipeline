@@ -1,8 +1,8 @@
 define([
-  'extraction_pipeline/models/base_page_model'
+  'models/base_page_model'
   , 'mapper/operations'
-  , 'extraction_pipeline/lib/csv_parser'
-  , 'extraction_pipeline/lib/json_templater'
+  , 'lib/file_handling/racking'
+  , 'lib/json_templater'
 ], function (BasePageModel, Operations, CSVParser, JsonTemplater) {
   'use strict';
 
@@ -91,7 +91,7 @@ define([
 
     setFileContent: function (csvAsTxt) {
       var deferred = $.Deferred();
-      var locationsSortedByBarcode = CSVParser.convertCSVDataToJSON(csvAsTxt);
+      var locationsSortedByBarcode = CSVParser.from(csvAsTxt);
       var model = this;
       var root;
       model.owner.getS2Root()

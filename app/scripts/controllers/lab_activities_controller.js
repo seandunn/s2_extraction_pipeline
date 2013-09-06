@@ -1,9 +1,9 @@
 define(['config'
-  , 'extraction_pipeline/controllers/base_controller'
-  , 'text!extraction_pipeline/html_partials/extraction_partial.html'
-  , 'extraction_pipeline/models/lab_activities_model'
-  , 'extraction_pipeline/lib/util'
-  , 'extraction_pipeline/lib/pubsub'
+  , 'controllers/base_controller'
+  , 'text!html_partials/_extraction.html'
+  , 'models/lab_activities_model'
+  , 'lib/util'
+  , 'lib/pubsub'
 ], function (config, BaseController, extractionPartialHtml, Model, Util,  PubSub) {
   'use strict';
 

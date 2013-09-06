@@ -1,7 +1,7 @@
 define([
-  'extraction_pipeline/controllers/base_controller',
-  'extraction_pipeline/views/step_view',
-  'extraction_pipeline/lib/pubsub'
+  'controllers/base_controller',
+  'views/step_view',
+  'lib/pubsub'
 ], function (Base, View, PubSub) {
   'use strict';
 
@@ -87,31 +87,35 @@ define([
     },
 
     setupSubControllers: function () {
-      var controller = this;
-      controller.controllers = _.chain(controller.config.controllers).map(function (config, index) {
-        var subController = controller.factory.create(config.controllerName, controller, config);
+      var stepController = this;
+      stepController.controllers = _.chain(stepController.config.controllers).map(function (controller, index) {
+        var subController = stepController.factory.create(controller.controllerName, stepController, controller);
         subController.setupController({
-          batch: controller.batch
+          batch: stepController.batch,
+          user:  stepController.config.user,
+          initialLabware: stepController.config.initialLabware
         }, (function (i) {
           return function () {
-            return controller.selector().find('#step' + i);
+            return stepController.selector().find('#step' + i);
           }
         })(index + 1));
 
         return subController;
       }).value();
-      controller.activeController = controller.controllers[0];
-      controller.activeController.initialController();
+      stepController.activeController = stepController.controllers[0];
+      stepController.activeController.initialController();
 
-      this.selector().find('.printer-select').val(controller.activeController.config.defaultPrinter);
+      this.selector().find('.printer-select').val(stepController.activeController.config.defaultPrinter);
 
-      controller.activeController.focus();
+      stepController.activeController.focus();
     },
 
     release: function () {
       this.selector().empty().off();
       return this;
     },
+
+    focus: function(){},
 
     childDone: function (child, action, data) {
       var controller = this;
@@ -133,13 +137,15 @@ define([
         var index = _.indexOf(this.controllers, child);
         if (index !== -1) {
           var activeSubController = controller.controllers[index + 1] || {
+            className: 'Step Controller Subcontroller',
             config:           {defaultPrinter: null},
             previousDone:     function () {
               controller.owner.childDone.apply(controller.owner, arguments);
             },
             initialController: function () {
               // Ignore this!
-            }
+            },
+            focus: function() {}
           };
           activeSubController.previousDone(child, action, data);
           controller.activeController = activeSubController;

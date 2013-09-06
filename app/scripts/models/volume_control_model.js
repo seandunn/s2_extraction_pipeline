@@ -1,7 +1,7 @@
 define([
-  'extraction_pipeline/models/base_page_model'
+  'models/base_page_model'
   , 'mapper/operations'
-  , 'extraction_pipeline/lib/csv_parser'
+  , 'lib/file_handling/volume'
 ], function (BasePageModel, Operations, CSVParser) {
   'use strict';
 
@@ -10,6 +10,7 @@ define([
   $.extend(VolumeControlModel, {
 
     init: function (owner, config) {
+      this.className = 'VolumeControlModel';
       this.owner = owner;
       this.config = config;
       this.inputs = $.Deferred();
@@ -67,7 +68,7 @@ define([
     setRackContent: function (dataAsTxt) {
       var thisModel = this;
       var deferred = $.Deferred();
-      var locationVolumeData = CSVParser.volumeCsvToArray(dataAsTxt);
+      var locationVolumeData = CSVParser.from(dataAsTxt);
 
       checkFileValidity(thisModel, locationVolumeData)
           .fail(function (error) {

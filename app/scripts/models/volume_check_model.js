@@ -1,240 +1,146 @@
 define([
-  'extraction_pipeline/models/base_page_model'
-  , 'mapper/operations'
-  , 'extraction_pipeline/lib/csv_parser'
-], function (BasePageModel, Operations, CSVParser) {
-  'use strict';
+  "models/base_page_model",
+  "labware/presenter"
+], function (BasePageModel, LabwarePresenter) {
+  "use strict";
 
   var Model = Object.create(BasePageModel);
 
-  $.extend(Model, {
-    init:               function (owner, config) {
+  function parseVolumeFile(csvAsTxt) {
+    var csvArray = $.csv.toArrays(csvAsTxt);
+    var reBarcode = /\s*(\w)(\d\d)\s*/i;
+
+    var tubes = _.chain(csvArray)
+      .drop()
+      .reduce(function (memo, row) {
+        var matches = reBarcode.exec(row[1]);
+
+        if (matches) {
+          var locationLetter = matches[1];
+          var locationNumber = parseInt(matches[2], 10);
+          memo[(locationLetter + locationNumber).trim()] = parseFloat(row[2].trim());
+        }
+
+        return memo;
+      }, {})
+      .value();
+
+    return {
+      rackBarcode:  csvArray[1][0].replace(/ /g,""),
+      tubes:        tubes
+    };
+  }
+
+  function checkFileIntegrity(model, parsedVolumes) {
+    // A valid MicroLab volume files should have 3 columns
+    // 1st column: rack EAN13 barcode
+    // 2nd column: Tube location e.g. A01, B01, etc.
+    // 3rd column: Tube volume in uL
+    //
+    // There should be a volume for every location even empty wells.
+    var deferred = $.Deferred();
+
+    var rack = model.rack;
+
+    if (rack.labels.barcode.value === parsedVolumes.rackBarcode) {
+      deferred.resolve(parsedVolumes);
+    } else {
+      // This should use Q style exception handling and get rid of the extra
+      // deferred
+      deferred.reject("This file does not match the current Tube Rack.");
+    }
+
+    return deferred.promise();
+  }
+
+  function updateJSON(uuid,newRole, oldRole) {
+    var updateJson = { items: {} };
+    var newEvent   = "start";
+
+    if (oldRole){
+      updateJson.items[oldRole]       = {};
+      updateJson.items[oldRole][uuid] = { event: "unuse" };
+
+      newEvent = "complete";
+    }
+
+    updateJson.items[newRole]       = {};
+    updateJson.items[newRole][uuid] = { event: newEvent };
+
+    return updateJson;
+  }
+
+  _.extend(Model, LabwarePresenter, {
+    init: function (owner, config, inputModel) {
+      this.className = "VolumeCheckRackModel";
       this.owner = owner;
       this.config = config;
-      this.inputs = $.Deferred();
+      this.expected_type = "tube_rack";
+      this.rack = inputModel.initialLabware;
       this.output = [];
       this.initialiseCaching();
+
+      _.extend(this, inputModel);
       return this;
     },
 
-    analyseFileContent: function (data) {
-      var deferred = $.Deferred();
-      var thisModel = this;
-      var locationVolumeData = CSVParser.volumeCsvToArray(data.csvAsTxt);
+    analyseFileContent: function (csvAsTxt) {
+      var thisModel     = this;
+      var parsedVolumes = parseVolumeFile(csvAsTxt);
 
-      checkFileIntegrity(thisModel, locationVolumeData)
-          .then(function (results) {
-            if (results.action) {
-              thisModel.owner.childDone(thisModel, results.action, results.data);
-            }
-            if (results.status == 'valid') {
-              checkFileVolumes(thisModel, locationVolumeData)
-                  .then(function (resultsVolumeCheck) {
-                    if (resultsVolumeCheck.status === "valid" || resultsVolumeCheck.status === "undetermined") {
-                      var rackData = {};
-                      rackData.resourceType = 'tube_rack';
-                      rackData.tubes = {};
-                      _.each(locationVolumeData.array, function (volumeItem) {
-                        rackData.tubes[volumeItem[0]] = {volume: volumeItem[1]};
-                      });
-                      thisModel.rack_data = rackData;
-                      thisModel.owner.childDone(thisModel, 'fileValid', {model: rackData, message: resultsVolumeCheck.message + ' Click on the \'Save\' button to store the volumes.'});
-                    } else {
-                      thisModel.owner.childDone(thisModel, 'error', {message: resultsVolumeCheck.message});
-                    }
-                    deferred.resolve(thisModel);
-                  });
-            } else {
-              thisModel.owner.childDone(thisModel, 'error', {message: results.message});
-            }
-          });
-      return deferred.promise();
-    },
-
-    saveVolumes: function () {
-      var model = this;
-
-      var array = this.owner.getS2Root()
-          .then(function (root) {
-            return model.inputs.then(function (inputs) {
-              return $.when.apply(null, _.map(inputs[0].tubes,
-                  function (resource, location) {
-                    return root.find(resource.uuid)
-                        .then(function (tube) {
-                          var volume = model.rack_data.tubes[location].volume;
-                          var updateJSON = {
-                            "aliquot_quantity": volume
-                          };
-                          return tube.update(updateJSON);
-                        });
-                  }
-              ));
-            });
-          })
-          .then(function () {
-            return model.updateRoles();
-          })
-          .then(function () {
-            model.owner.childDone(model, "volumesSaved", {});
-          })
-          .fail(function () {
-            $('body').trigger('s2.status.error', "Saving of volumes has failed.")
-          });
+      return checkFileIntegrity(thisModel, parsedVolumes).then(function (validatedVolumes) {
+        thisModel.validatedVolumes = validatedVolumes;
+        return thisModel;
+      });
 
     },
 
-    updateRoles: function () {
-      var model = this;
+    save: function () {
+      var model      = this;
+      var inputRole  = model.config.input.role;
+      var outputRole = model.config.output[0].role;
 
-      function makeJSONUpdateFor(role, uuid, event) {
-        var updateJson = { items: {} };
-        updateJson.items[role] = {};
-        updateJson.items[role][uuid] = {
-          event: event,
-          batch_uuid: model.batch.uuid
-        };
-        return updateJson;
-      }
+      return model.owner
+      .getS2Root()
 
-      return model.inputs
-          .then(function (inputs) {
-            var rack = inputs[0];
-            return rack.order()
-                .then(function (order) {
-                  return order.update(makeJSONUpdateFor(model.config.input.role, rack.uuid, "unuse"))
-                }).then(function (order) {
-                  return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "start"))
-                }).then(function (order) {
-                  return order.update(makeJSONUpdateFor(model.config.output[0].role, rack.uuid, "complete"))
-                });
+      .then(function (root) {
+        var tubeVolumes = _
+        .reduce(model.rack.tubes, function(memo, tube, location){
+          memo[location] = {
+            tube_uuid:  tube.uuid,
+            volume:     model.validatedVolumes.tubes[location]
+          };
+
+          return memo;
+        }, {});
+
+        return model.rack.update({ tubes: tubeVolumes});
+      })
+
+      .then(function(tubeRack){
+        // Add new role of volume_checked: in_progess
+        return tubeRack.orders();
+      }, function (errorMessage) {
+        return "Saving of volumes has failed: " + errorMessage;
+      })
+
+      .then(function(orders) {
+        var orderPromises = _.map(orders, function (order) {
+          return order
+          .update(updateJSON(model.rack.uuid, outputRole))
+          .then(function(order) {
+            return order.update(updateJSON(model.rack.uuid, outputRole, inputRole))
           });
-    },
+        });
 
-    setBatch: function (batch) {
-      this.cache.push(batch);
-      this.batch = batch;
-      var model = this;
-      setupInputs(model)
-          .then(function () {
-            model.owner.childDone(model, "batchAdded");
-          })
-          .fail(function () {
-            $('body').trigger('s2.status.error', "couldn't load the batch resources!");
-          });
-    },
+        return $.when.apply(undefined, orderPromises);
+      })
+      .then(function() {
+        return "Volume check complete.";
+      });
 
-    setUser: function (userUUID) {
-      this.user = userUUID;
-      this.owner.childDone(this, "userAdded");
     }
   });
-
-  function setupInputs(that) {
-    var inputs = [];
-    return that.batch.items.then(function (items) {
-      return $.when.apply(null,
-          _.chain(items)
-              .filter(function (item) {
-                return item.role === that.config.input.role && item.status === 'done';
-              })
-              .map(function (item) {
-                return that.cache.fetchResourcePromiseFromUUID(item.uuid)
-                    .then(function (resource) {
-                      inputs.push(resource);
-                    });
-              })
-              .value());
-    })
-        .then(function () {
-          return that.inputs.resolve(inputs);
-        }).fail(that.inputs.reject);
-  }
-
-  function checkFileVolumes(model, locationVolumeData) {
-    var deferred = $.Deferred();
-
-    model.inputs.then(function (inputs) {
-      var tubePositions = _.keys(inputs[0].tubes);
-      var lastPosition = getLastPositions(tubePositions);
-
-      // we need to check if the last tube is volume control or not...
-      if ("H12" !== lastPosition || !inputs[0].tubes[lastPosition].labels) {
-        // last tube is for volume checking...
-        var volumeControl = _.chain(locationVolumeData["array"])
-            .filter(function (tuple) {
-              return tuple[0] === lastPosition
-            })
-            .first()
-            .value()[1];
-        var expectedVolume = inputs[0].tubes[lastPosition].aliquots[0].quantity;
-
-        // TODO: fix the values used for the volume checking...
-        var tolerance = 0.05;
-        var volumeError = (volumeControl - expectedVolume) / expectedVolume;
-        if (Math.abs(volumeError) <= tolerance) {
-          deferred.resolve({status: "valid", message: "The volume control is nomimal (with " + Math.round(volumeError * 100) + "% variation)."});
-        } else {
-          deferred.resolve({status: "invalid", message: "The volume control is NOT nominal (by " + Math.round(volumeError * 100) + "%)."});
-        }
-      } else {
-        deferred.resolve({status: "undetermined", message: "There is no tube for volume control."});
-      }
-      return deferred.promise();
-    });
-
-    return deferred.promise();
-  }
-
-  function checkFileIntegrity(model, locationVolumeData) {
-    var deferred = $.Deferred();
-    model.inputs.then(function (inputs) {
-      var expectedNbOfTubes;
-      var tubePositions = _.keys(inputs[0].tubes);
-      expectedNbOfTubes = tubePositions.length;
-
-      var arrayOfRackLocations = _.map(locationVolumeData.array, function (volItem) {
-        return volItem[0];
-      });
-      var nbOfTubesInRack = arrayOfRackLocations.length;
-      if (nbOfTubesInRack !== expectedNbOfTubes) {
-        deferred.resolve({
-          action: "error",
-          status: "error",
-          data:   {message: "The number of tube is not correct. The current batch" +
-                                " contains " + expectedNbOfTubes + " tubes, while the " +
-                                "current volume file contains " + nbOfTubesInRack + " tubes!"}
-        });
-      }
-      if (inputs[0].labels && inputs[0].labels.barcode.value !== locationVolumeData.rack_barcode) {
-        deferred.resolve({
-          action: "error",
-          status: "error",
-          data:   {message: "This file is not matching the current tube rack. The current batch" +
-                                " refers the rack barcoded " +  inputs[0].labels.barcode.value + ", while the " +
-                                "current volume file refers to " + locationVolumeData.rack_barcode + " !"}
-        });
-      }
-      deferred.resolve({status: "valid"});
-    });
-
-    return deferred.promise();
-  }
-
-  function getLastPositions(positions) {
-    var tuple = _.chain(positions)
-        .map(function (position) {
-          // convert A1 -> A01
-          var matches = /([a-zA-Z])(\d+)/.exec(position);
-          return  [ matches[1] + ("00" + matches[2]).slice(-2), matches[1], parseInt(matches[2]) ];
-        })
-        .sortBy(function (trio) {
-          return trio[0];
-        })
-        .last()
-        .value();
-    // reconvert A01 -> A1
-    return tuple[1] + tuple[2];
-  }
 
   return Model;
 });

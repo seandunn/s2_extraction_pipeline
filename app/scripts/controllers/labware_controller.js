@@ -1,16 +1,9 @@
-define(['config'
-  , 'extraction_pipeline/controllers/base_controller'
-  , 'extraction_pipeline/views/labware_view'
-  , 'extraction_pipeline/lib/pubsub'
-  , 'extraction_pipeline/lib/barcode_checker'
-  , 'extraction_pipeline/lib/util'
-], function (config, BaseController, LabwareView, PubSub, BarcodeChecker, Util) {
-
-  var defaultTitles = {
-    tube: 'Tube',
-    spin_column: 'Spin Column',
-    waste_tube: 'Waste Tube'
-  };
+define(['controllers/base_controller'
+  , 'views/labware_view'
+  , 'lib/pubsub'
+  , 'lib/barcode_checker'
+  , 'lib/util'
+], function (BaseController, LabwareView, PubSub, BarcodeChecker, Util) {
 
   var LabwareModel = Object.create(null);
   $.extend(LabwareModel, {
@@ -143,7 +136,7 @@ define(['config'
         this.view.hideRemoveButton();
       }
 
-      this.view.setTitle(this.labwareModel.title || defaultTitles[this.labwareModel.expected_type]);
+      this.view.setTitle(this.labwareModel.title);
       this.owner.childDone(this, "labwareRendered", {});
     },
 

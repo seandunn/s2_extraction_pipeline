@@ -1,7 +1,7 @@
-define([ 'extraction_pipeline/controllers/base_controller'
-  , 'extraction_pipeline/models/selection_page_model'
-  , 'text!extraction_pipeline/html_partials/selection_page_partial.html'
-  , 'extraction_pipeline/lib/pubsub'
+define([ 'controllers/base_controller'
+  , 'models/selection_page_model'
+  , 'text!html_partials/_selection_page.html'
+  , 'lib/pubsub'
 ], function(BaseController, Model, selectionPagePartialHtml, PubSub) {
   'use strict';
 
@@ -160,31 +160,28 @@ define([ 'extraction_pipeline/controllers/base_controller'
 
     childDone:function (child, action, data) {
       var controller = this;
-      if (child === this.model) {
-        // model should not talk using 'childDone' anymore
-      } else {
-        if (action === "barcodeScanned") {
-          this.model
-              .then(function (model) {
-                return model.addTubeFromBarcode(data.BC);
-              })
-              .fail(function (error) {
-                PubSub.publish('s2.status.error', controller, error);
-              })
-              .then(function () {
-                controller.setupSubControllers();
-                controller.renderView();
-              });
-        } else if (action === "removeLabware") {
-          this.model
-              .then(function (model) {
-                return model.removeTubeByUuid(data.resource.uuid);
-              })
-              .then(function () {
-                controller.setupSubControllers();
-                controller.renderView();
-              })
-        }
+      // model should not talk using 'childDone' anymore
+      if (action === "barcodeScanned") {
+        this.model
+        .then(function (model) {
+          return model.addTubeFromBarcode(data.BC);
+        })
+        .fail(function (error) {
+          PubSub.publish('s2.status.error', controller, error);
+        })
+        .then(function () {
+          controller.setupSubControllers();
+          controller.renderView();
+        });
+      } else if (action === "removeLabware") {
+        this.model
+        .then(function (model) {
+          return model.removeTubeByUuid(data.resource.uuid);
+        })
+        .then(function () {
+          controller.setupSubControllers();
+          controller.renderView();
+        })
       }
     }
   });

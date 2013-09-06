@@ -1,4 +1,4 @@
-define(['text!extraction_pipeline/html_partials/labware_partial.html'], function (labwarePartialHtml) {
+define(['text!html_partials/_labware.html'], function (labwarePartialHtml) {
 
   'use strict';
 
@@ -81,8 +81,11 @@ define(['text!extraction_pipeline/html_partials/labware_partial.html'], function
   }
 
   LabwareView.prototype.setTitle = function (titleString) {
-    this.jquerySelector().find('.title').empty().append(titleString);
-    return this;
+    if (titleString !== undefined) {
+      this.jquerySelector().find('.title').empty().append(titleString).show();
+    } else {
+      this.jquerySelector().find('.title').empty().hide();
+    }
   };
 
   LabwareView.prototype.clear = function () {

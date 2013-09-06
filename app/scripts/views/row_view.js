@@ -1,4 +1,4 @@
-define(['text!extraction_pipeline/html_partials/row_partial.html'], function (rowPartialHtml) {
+define(['text!html_partials/_row.html'], function (rowPartialHtml) {
 
   'use strict';
 
@@ -17,10 +17,6 @@ define(['text!extraction_pipeline/html_partials/row_partial.html'], function (ro
     this.jquerySelector = jquerySelector;
 
     return this;
-  };
-
-  RowView.prototype.removeArrow = function() {
-    this.jquerySelector.find('.arrow').empty();
   };
 
   RowView.prototype.renderView = function (model) {

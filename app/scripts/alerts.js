@@ -1,6 +1,6 @@
 define(['config',
-  'text!extraction_pipeline/html_partials/alerts_partial.html',
-  'extraction_pipeline/lib/pubsub'
+  'text!html_partials/_alerts.html',
+  'lib/pubsub'
 ], function (config, alertsPartialHtml, PubSub) {
   'use strict';
 
@@ -8,9 +8,9 @@ define(['config',
 
   $.extend(alerts, {
 
-    setupPlaceholder:function (jquerySelector) {
+    setupPlaceholder:function (alertElement) {
       var alert = this;
-      this.jquerySelector = jquerySelector;
+      this.alertElement = alertElement;
 
       // Set both regular and error event handlers
       PubSub.subscribe('s2.status.message', function (event, source, eventData) {
@@ -24,10 +24,10 @@ define(['config',
     appendView:function (templateData) {
       var element = $(_.template(alertsPartialHtml)(templateData));
       setTimeout(function () {
-        element.alert('close');
+        element.detach();
       }, config.messageTimeout);
 
-      element.appendTo(this.jquerySelector());
+      element.appendTo(this.alertElement());
     },
 
     addMessage:function (messageType, message) {
@@ -38,7 +38,7 @@ define(['config',
     },
 
     clear:function () {
-      this.jquerySelector().empty();
+      this.alertElement().empty();
     }
   });
 

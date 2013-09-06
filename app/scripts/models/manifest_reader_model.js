@@ -1,10 +1,10 @@
 define([
-  'extraction_pipeline/models/base_page_model'
+  'models/base_page_model'
   , 'mapper/operations'
-  , 'extraction_pipeline/lib/csv_parser'
-  , 'extraction_pipeline/lib/json_templater'
-  , 'extraction_pipeline/lib/reception_templates'
-  , 'extraction_pipeline/lib/util'
+  , 'lib/file_handling/manifests'
+  , 'lib/json_templater'
+  , 'lib/reception_templates'
+  , 'lib/util'
 ], function (BasePageModel, Operations, CSVParser, JsonTemplater, ReceptionTemplate, Util) {
   'use strict';
 
@@ -29,7 +29,7 @@ define([
     setFileContent: function (fileContent) {
       var thisModel = this;
       var deferred = $.Deferred();
-      var dataAsArray = CSVParser.manifestCsvToArray(fileContent);
+      var dataAsArray = CSVParser.from(fileContent);
       var templateName = dataAsArray[2][0]; // always A3 !!
       var columnHeaders = dataAsArray[ReceptionTemplate[templateName].header_line_number];
       var sampleAsArray = _.chain(dataAsArray)

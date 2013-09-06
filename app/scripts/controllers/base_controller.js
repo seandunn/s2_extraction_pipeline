@@ -1,6 +1,6 @@
 define(['config'
-, 'extraction_pipeline/lib/barcode_checker'
-, 'extraction_pipeline/lib/util'
+, 'lib/barcode_checker'
+, 'lib/util'
 ], function (appConfig, BarcodeChecker, Util) {
   'use strict';
 

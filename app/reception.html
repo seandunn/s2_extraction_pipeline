@@ -3,12 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>S2 Extraction Pipeline</title>
+    <title>S2 Samples Pipeline</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/jquery-ui.css"/>
-    <script src="components/underscore/underscore-min.js"></script>
  </head>
 <body>
 <header>
@@ -17,8 +16,9 @@
         <h1 id="title-text" class="pull-right">S2 Reception</h1>
     </div>
     <ul class="nav nav-pills pull-right" role="menu" aria-labelledby="dLabel">
-        <li><a href="index.html">Extraction</a></li>
+        <li><a href="index.html">Pipeline</a></li>
         <li><a href="lab_activities.html">Lab Activities</a></li>
+        <li class="active"><a href="#">Sample Reception</a></li>
     </ul>
 </header>
 
@@ -26,29 +26,16 @@
 <div id="content" class="sample-reception container clear-top"></div>
 
 <p class="navbar navbar-fixed-bottom">Release: <span id="release">unknown</span> - S2 Server: <span id="server-url">unknown</span></p>
-<script>window.jQuery || document.write('<script src="components/jquery/jquery.min.js"><\/script>')</script>
+
+<script src="components/underscore/underscore-min.js"></script>
+<script src="components/jquery/jquery.min.js"></script>
 <script src="components/jquery-ui/ui/jquery-ui.js"></script>
 <script src="components/FileSaver/FileSaver.js"></script>
 <script src="components/jquery-csv/src/jquery.csv.js"></script>
 
-<!-- build:js scripts/plugins.js -->
-<script src="scripts/vendor/bootstrap/bootstrap-affix.js"></script>
-<script src="scripts/vendor/bootstrap/bootstrap-alert.js"></script>
-<script src="scripts/vendor/bootstrap/bootstrap-dropdown.js"></script>
-<script src="scripts/vendor/bootstrap/bootstrap-tooltip.js"></script>
-<script src="scripts/vendor/bootstrap/bootstrap-modal.js"></script>
-<script src="scripts/vendor/bootstrap/bootstrap-transition.js"></script>
-<script src="scripts/vendor/bootstrap/bootstrap-button.js"></script>
-<script src="scripts/vendor/bootstrap/bootstrap-popover.js"></script>
-<script src="scripts/vendor/bootstrap/bootstrap-typeahead.js"></script>
-<script src="scripts/vendor/bootstrap/bootstrap-carousel.js"></script>
-<script src="scripts/vendor/bootstrap/bootstrap-scrollspy.js"></script>
-<script src="scripts/vendor/bootstrap/bootstrap-collapse.js"></script>
-<script src="scripts/vendor/bootstrap/bootstrap-tab.js"></script>
+<!-- build:js scripts/amd-app.js -->
+<script data-main="scripts/main" src="components/requirejs/require.js"></script>
 <!-- endbuild -->
 
-<!-- build:js scripts/amd-app.js -->
-<script data-main="scripts/main" src="scripts/vendor/require.js"></script>
-<!-- endbuild -->
 </body>
 </html>

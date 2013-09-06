@@ -1,5 +1,5 @@
 define([
-  'extraction_pipeline/models/base_page_model'
+  'models/base_page_model'
   , 'mapper/operations'
 ], function (BasePageModel, Operations) {
   'use strict';
@@ -12,6 +12,12 @@ define([
       this.inputs = $.Deferred();
       this.capacity = workflowConfig.capacity || 12;
       this.config = workflowConfig;
+      this.validators = [batchHasCapacity, labwareUniqueInBatch, labwareRoleIsEqual];
+
+      // Only add contentsAreEqual for tubes or spin columns
+      if (this.config.output[0].aliquotType) {
+        this.validators.unshift(contentsAreEqual);
+      }
 
       this.initialiseCaching();
       return $.Deferred().resolve(this).promise();
@@ -42,45 +48,25 @@ define([
     addTube: function (newInput) {
       var deferred = $.Deferred();
       var thisModel = this;
-      var inputs;
-      thisModel.inputs
-          .then(function (result) {
-            inputs = result;
-            if (inputs.length > thisModel.capacity - 1) {
-              // check if not full
-              return deferred.reject({message: "Only " + thisModel.capacity + " orders can be selected", previous_error: null});
-            } else if (thisModel.config.output[0].aliquotType !== newInput.aliquots[0].type) {
-              // check if correct type
-              var msg = "You can only add '"
-                  + thisModel.config.output[0].aliquotType
-                  + "' inputs into this batch. The scanned barcode corresponds to a '"
-                  + newInput.aliquots[0].type
-                  + "' input.";
-              return deferred.reject({message: msg, previous_error: null});
-            } else if (_.some(inputs, function (input) {
-              return input.uuid === newInput.uuid;
-            })) {
-              // check if not already there
-              return deferred.reject({message: 'You cannot add the same tube twice.', previous_error: null});
-            }
-            // check if correct role
-            return newInput.order();
-          })
-          .fail(function () {
-            return deferred.reject({message: "Couldn't send the search for the order", previous_error: null});
-          })
-          .then(function (order) {
-            var newTubeHasCorrectRole = _.chain(order.items.filter(function (item) {
-              return (item.uuid === newInput.uuid) && (thisModel.config.input.role === item.role) && ( "done" === item.status);
-            })).some().value();
-            if (!newTubeHasCorrectRole) {
-              return deferred.reject({message: "This tube cannot be added to the current batch, because it does not have the correct role."});
-            }
-            // it is only now that we can add the tube....
-            inputs.push(newInput);
-            thisModel.inputs = $.Deferred().resolve(inputs).promise();
-            return deferred.resolve(thisModel);
-          });
+      
+      var context = {
+        model: thisModel,
+        input: newInput,
+        deferred: deferred
+      };
+
+      _.reduce(this.validators, function(memo, validator) {
+        return memo.then(_.partial(validator, context));
+      }, thisModel.inputs.fail(function () {
+        return deferred.reject({message: "Couldn't send the search for the order", previous_error: null});
+      })).then(function (result) {
+            
+        // it is only now that we can add the tube....
+        result.push(newInput);
+        thisModel.inputs = $.Deferred().resolve(result).promise();
+        return deferred.resolve(thisModel);
+      })
+
       return deferred.promise();
     },
 
@@ -263,4 +249,52 @@ define([
   }
 
   return SelectionPageModel;
+
+  function batchHasCapacity(context, result) {
+    if (result.length > context.model.capacity - 1) {
+      // check if not full
+      return context.deferred.reject({message: "Only " + context.model.capacity + " orders can be selected", previous_error: null});
+    } else {
+      return result;
+    }
+  }
+
+  function contentsAreEqual (context, result) {
+    if (context.model.config.output[0].aliquotType !== context.input.aliquots[0].type) {
+      // check if correct type
+      var msg = "You can only add '"
+          + context.model.config.output[0].aliquotType
+          + "' inputs into this batch. The scanned barcode corresponds to a '"
+          + context.input.aliquots[0].type
+          + "' input.";
+      return context.deferred.reject({message: msg, previous_error: null});
+    } else {
+      return result;
+    }
+  }
+
+  function labwareUniqueInBatch(context, result) {
+    if (_.some(result, function (input) { return input.uuid === context.input.uuid; })) {
+      // check if not already there
+      return context.deferred.reject({message: 'You cannot add the same tube twice.', previous_error: null});
+    } else {
+      return result;
+    }
+  }
+
+  function labwareRoleIsEqual(context, result) {
+    // check if correct role
+    return context.input.order().then(function(order) {
+      var newTubeHasCorrectRole = _.chain(order.items.filter(function (item) {
+        return (item.uuid === context.input.uuid) && 
+          (context.model.config.input.role === item.role) && 
+          ( "done" === item.status);
+      })).some().value();
+      if (!newTubeHasCorrectRole) {
+        return context.deferred.reject({message: "This tube cannot be added to the current batch, because it does not have the correct role."});
+      } else {
+        return result;
+      }                
+    })
+  }
 });

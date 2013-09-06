@@ -1,14 +1,14 @@
-define(['extraction_pipeline/controllers/base_controller'
-  , 'extraction_pipeline/models/summary_page_model'
-  , 'text!extraction_pipeline/html_partials/summary_page_partial.html'
-  , 'extraction_pipeline/lib/pubsub'
-], function (BaseController, Model, summaryPagePartialHtml, PubSub) {
+define(["controllers/base_controller"
+  , "models/summary_page_model"
+  , "text!html_partials/_summary_page.html"
+], function (BaseController, Model, summaryPagePartialHtml) {
+  "use strict";
 
   var SummaryPageController = Object.create(BaseController);
 
   $.extend(SummaryPageController, {
     register: function (callback) {
-      callback('summary_page_controller', function (owner, factory, initData) {
+      callback("summary_page_controller", function (owner, factory, initData) {
         return Object.create(SummaryPageController).init(owner, factory, initData);
       });
     },
@@ -63,7 +63,7 @@ define(['extraction_pipeline/controllers/base_controller'
 //          return model.labwares;
 //        })
 //        .fail(function (error) {
-//          thisController.message('error', 'Labware not found for this batch');
+//          thisController.message("error", 'Labware not found for this batch');
 //        })
         .then(function (labwares) {
 //          templateData.items = transformOrdersAndLabwareToHtmlTemplateData(model.ordersByUUID, labwares, model.batch.uuid);
@@ -75,17 +75,20 @@ define(['extraction_pipeline/controllers/base_controller'
     message:    function (type, message) {
       if (!type) {
         this.jquerySelection()
-          .find('.validationText')
+          .find(".validationText")
           .hide();
       } else {
         this.jquerySelection()
-          .find('.validationText')
+          .find(".validationText")
           .show()
           .removeClass('alert-error alert-info alert-success')
-          .addClass('alert-' + type)
+          .addClass("alert-" + type)
           .html(message);
       }
-    }
+    },
+
+    focus: function(){}
+
   });
 
   function transformOrdersAndLabwareToHtmlTemplateData(orders, labwares, modelBatchUUID) {

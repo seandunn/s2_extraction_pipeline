@@ -1,5 +1,5 @@
 define([
-       'text!extraction_pipeline/html_partials/kit_partial.html'
+       'text!html_partials/_kit.html'
 ], function(partial) {
   var View = function(owner, selector) {
     this.owner    = owner;

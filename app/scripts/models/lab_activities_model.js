@@ -1,6 +1,6 @@
 define([
   'config'
-  , 'extraction_pipeline/models/base_page_model'
+  , 'models/base_page_model'
 ], function (config, BasePageModel) {
   'use strict';
 

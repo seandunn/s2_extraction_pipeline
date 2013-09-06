@@ -1,10 +1,10 @@
 define(['config'
-  , 'extraction_pipeline/controllers/base_controller'
-  , 'text!extraction_pipeline/html_partials/manifest_maker_partial.html'
-  , 'extraction_pipeline/models/manifest_maker_model'
-  , 'extraction_pipeline/lib/pubsub'
-  , 'extraction_pipeline/lib/reception_templates'
-  , 'extraction_pipeline/lib/reception_studies'
+  , 'controllers/base_controller'
+  , 'text!html_partials/_manifest_maker.html'
+  , 'models/manifest_maker_model'
+  , 'lib/pubsub'
+  , 'lib/reception_templates'
+  , 'lib/reception_studies'
 ], function (config, BaseController, componentPartialHtml, Model, PubSub, ReceptionTemplates, ReceptionStudies) {
   'use strict';
 
@@ -45,23 +45,17 @@ define(['config'
       this.templateSelectSelection = html.find("#xls-templates");
       this.printBoxSelection = html.find(".printer-div");
 
-      this.generateManifestBtnSelection.click(onGenerateManifestEventHandler(thisController));
-      function onGenerateManifestEventHandler(controller){ return function(){ controller.onGenerateManifest(); } }
-
-      this.downloadManifestBtnSelection.hide().click(onDownloadManifestEventHandler(thisController));
-      function onDownloadManifestEventHandler(controller){ return function(){ controller.onDownloadManifest(); } }
-
-      this.printBCBtnSelection.click(onPrintBarcodeEventHandler(thisController));
-      function onPrintBarcodeEventHandler(controller){ return function(){ controller.onPrintBarcode(); } }
+      this.generateManifestBtnSelection.click(_.bind(this.onGenerateManifest, this));
+      this.downloadManifestBtnSelection.hide().click(_.bind(this.onDownloadManifest, this));
+      this.printBCBtnSelection.click(_.bind(this.onPrintBarcode, this));
 
       this.printBoxSelection.hide();
 
-      this.templateSelectSelection.change(onChangeTemplateEventHandler(thisController));
-      function onChangeTemplateEventHandler(controller){ return function(event){ controller.onChangeTemplate(event); } }
+      this.templateSelectSelection.change(_.bind(this.onChangeTemplate, this));
 
       html.find("#number-of-sample").bind("keypress",function(event){
             if (event.which !== 13) return;
-            onGenerateManifestEventHandler(thisController)();
+            thisController.onGenerateManifest();
           }
       );
 
@@ -157,7 +151,9 @@ define(['config'
               thisController.downloadManifestBtnSelection.show();
               thisController.printBoxSelection.show();
               thisController.view.trigger("s2.busybox.end_process");
-              return thisController.message('success','Samples generated. The manifest is ready for download, and the barcodes ready for printing.');
+
+              thisController.downloadManifestBtnSelection.click();
+              return thisController.message('success','Samples generated and manifest saved. Barcodes ready for printing.');
             });
       }
     },

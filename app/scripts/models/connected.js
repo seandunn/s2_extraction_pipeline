@@ -1,18 +1,19 @@
 define([
-  'extraction_pipeline/models/base_page_model',
-  'mapper/operations',
-  'extraction_pipeline/connected/behaviours',
-  'extraction_pipeline/connected/missing_handlers',
-  'extraction_pipeline/connected/caching',
-  'extraction_pipeline/lib/barcode_checker'
+  "models/base_page_model",
+  "mapper/operations",
+  "connected/behaviours",
+  "connected/missing_handlers",
+  "connected/caching",
+  "lib/barcode_checker"
 ], function(Base, Operations, Behaviour, Missing, Cache, BarcodeChecker ) {
-  'use strict';
+  "use strict";
 
   var Model = Object.create(Base);
 
   _.extend(Model, {
     init: function(owner, config) {
       var instance = this;
+      this.className = "ConnectedModel";
 
       this.owner = owner;
       this.previous = false;
@@ -27,8 +28,8 @@ define([
       }).object().value();
 
       // Configure the behaviour of inputs & outputs from configuration
-      _.extend(this, _.chain(['inputs','outputs']).map(function(cacheName) {
-        var name = (config.cache || {})[cacheName] || 'singular(report)';
+      _.extend(this, _.chain(["inputs","outputs"]).map(function(cacheName) {
+        var name = (config.cache || {})[cacheName] || "singular(report)";
         var missingHandler = _.bind(Missing(name), instance);
         var cache = _.extend(Cache.init(), {
           getByBarcode: function(requester, modelName, barcode) {
@@ -81,35 +82,37 @@ define([
     },
 
     setupInputControllers: function(reset) {
-      var that = this;
+      var model = this;
       return this.owner.getS2Root()
-            .then(function(root){
-              // Becareful! inputs is not a promise!
-              return that.inputs.then(function(inputs) {
-              that.owner.rowControllers = _.chain(inputs).map(function (input, index) {
-                var input = reset ? undefined : input;
-                var rowController = that.owner.controllerFactory.create('row_controller', that.owner);
-                rowController.setupController(that.getRowModel(root,index, input), selectorFunction(that.owner, index));
-                return rowController;
-              }).value();
-            });
-          });
+      .then(function(root){
+        // Becareful! inputs is not a promise!
+        return model.inputs.then(function(inputs) {
+          model.owner.rowControllers = _.chain(inputs).map(function (input, index) {
+            input = reset ? undefined : input;
+            var rowController = model.owner.controllerFactory.create("row_controller", model.owner);
+            rowController.setupController(model.getRowModel(root,index, input), selectorFunction(model.owner, index));
+            return rowController;
+          })
+          .value();
+        });
+      });
+
       function selectorFunction(controller, row) {
         return function() {
-          return controller.jquerySelection().find('.row' + row);
+          return controller.jquerySelection().find(".row" + row);
         };
       }
     },
 
     getRowModel: function (root,rowNum, input) {
-      var that = this, previous = this.previous && this.ready;
+      var model = this, previous = this.previous && this.ready;
       var hasResourceForThisRow = false;
-      if (that.started){
-        hasResourceForThisRow = (that.reLoadedOutputs.length > 0);
+      if (model.started){
+        hasResourceForThisRow = (model.reLoadedOutputs.length > 0);
       }
       return _.chain(this.config.output).pairs().sort().reduce(function(rowModel, nameToDetails, index) {
         var details = nameToDetails[1];
-        var name    = 'labware' + (index+2);  // index=0, labware1=input, therefore labware2 first output
+        var name    = "labware" + (index+2);  // index=0, labware1=input, therefore labware2 first output
         var resource;
 
         if (hasResourceForThisRow){
@@ -119,7 +122,7 @@ define([
               resource = root[details.model.pluralize()].instantiate();
             }
           } else {
-            resource = popAMatchingOutput(that,input,details.model.singularize(), details.barcodePrefixes);
+            resource = popAMatchingOutput(model,input,details.model.singularize(), details.barcodePrefixes);
           }
         }
 
@@ -141,11 +144,11 @@ define([
         labware1: {
           input:           true,
           resource:        input,
-          expected_type:   that.config.input.model.singularize(),
+          expected_type:   model.config.input.model.singularize(),
           display_remove:  previous,
           display_barcode: previous,
-          title:           that.config.input.title,
-          validation:      that.config.input.validation
+          title:           model.config.input.title,
+          validation:      model.config.input.validation
         }
       }).value();
 
@@ -155,7 +158,7 @@ define([
       // 2. and of the correct type
       // HOWEVER, the point number 1 is not fulfilled yet.
       // there is no way to know which input correspond to which output after the transfer has been completed.
-      // it might be possible to do so if one can search for 'transfers' on S2.
+      // it might be possible to do so if one can search for "transfers" on S2.
       // For now, it does not matter, as we don't really care, the transfer being already achieved at this stage...
       function popAMatchingOutput(model, inputLabware, outputResourceType, barcodePrefixes){
         var correspondingOutput = _.find(model.reLoadedOutputs, function(labware){
@@ -174,45 +177,56 @@ define([
     },
 
     createOutputs: function(printer) {
-      var that = this;
+      var model = this;
       this.behaviours.outputs.print(function() {
-        var root;
 
-        that.owner.getS2Root().then(function(result) {
-          root = result;
-        }).then(function() {
-          that.inputs.then(function(inputs) {
+        model.owner.getS2Root()
+        .then(function(root) {
+          model.inputs.then(function(inputs) {
             var labels = [];
             var outputsCreated = [];
-            var promises = _.chain(inputs).map(function(input) {
+
+            var promises = _.chain(inputs)
+            .map(function(input) {
               // For each input we have to create a number of outputs.  These outputs are effectively
               // tied together in some fashion and should be printed next to each other.  Hence, here
               // we build output structures, which we will then print.
               var output = { };
-              var promises = _.chain(that.config.output).pairs().filter(function(outputNameAndDetails) {
+
+              var promises = _.chain(model.config.output)
+              .pairs()
+              .filter(function(outputNameAndDetails) {
                 var details = outputNameAndDetails[1];
+
                 return details.tracked === undefined ? true : details.tracked;
-              }).map(function(outputNameAndDetails) {
+              })
+              .map(function(outputNameAndDetails) {
                 var details = outputNameAndDetails[1];
-                return Operations.registerLabware(
+
+                return Operations
+                .registerLabware(
                   root[details.model],
                   details.aliquotType,
-                  details.purpose
-                ).then(function(state) {
-                  that.cache.push(state.labware);
+                  details.purpose,
+                  details.attributes
+                )
+                .then(function(state) {
+                  model.cache.push(state.labware);
                   outputsCreated.push(state.labware);
                   output[details.title] = state.labware;
                   return state.labware;
-                }).fail(function() {
-                  that.owner.childDone(that, "failed", {});
+                }, function() {
+                  model.owner.childDone(model, "failed", {});
                 });
-              }).value();
+
+              })
+              .value();
 
               // We are only done once all of the outputs have been created and stuck into the output
               // structure.  At that point we can turn the output into an object that will behave like
               // it can be printed.  We'll assume that the template name can be made by joining the
-              // template names for each label together (i.e. 2 'tube' labels mean 'tube_and_tube', or
-              // a 'tube' and 'spin_column' means 'tube_and_spin_column').  So, whilst one "label" might
+              // template names for each label together (i.e. 2 "tube" labels mean "tube_and_tube", or
+              // a "tube" and "spin_column" means "tube_and_spin_column").  So, whilst one "label" might
               // be sent to the printer, it might physically print a couple of labels.
               //
               // WARNING: Whilst this works for N alike things (N tubes for instance), or tuples (1 tube
@@ -225,7 +239,7 @@ define([
 
                   // Ensure that we have some way of determining what's what!
                   var details = label[labware.resourceType];
-                  details['label_text'] = details['label_text'] || {};
+                  details["label_text"] = details["label_text"] || {};
                   details.label_text.role = nameAndLabware[0];
 
                   return {
@@ -258,23 +272,23 @@ define([
 
             // Now we can print out special labels!
             $.when.apply(null, promises).then(function(placeholder) {
-              that.outputs.resolve(outputsCreated).then(function(outputs) {
-                that.printBarcodes(labels, printer);
+              model.outputs.resolve(outputsCreated).then(function(outputs) {
+                model.printBarcodes(labels, printer);
               });
-              that.owner.childDone(that, 'outputsReady', {});
+              model.owner.childDone(model, "outputsReady", {});
             }).fail(function() {
-              that.owner.childDone(that, 'failed', {});
+              model.owner.childDone(model, "failed", {});
             });
           });
         });
       }, function() {
-        that.outputs.resolve([]);
-        that.owner.childDone(that, 'outputsReady', {});
+        model.outputs.resolve([]);
+        model.owner.childDone(model, "outputsReady", {});
       });
-    },
+    }, // end of createOutputs
 
     operate: function(happeningAt, controllers) {
-      var that = this;
+      var model = this;
       var s2root;
 
       this.owner.getS2Root().then(function (result) {
@@ -283,77 +297,130 @@ define([
         return result;
       }).then(function() {
         // STEP 2: Retrieve the items for the batch we're working with
-        return that.batch.items;
+        return model.batch.items;
       }).then(function(items) {
         // STEP 3: Map the controllers to the appropriate transfers that are required
-        var sourceToOrder = _.chain(items).reduce(function(memo, item) {
+
+        var sourceToOrder = _
+        .chain(items)
+        .reduce(function(memo, item) {
           memo[item.uuid] = item.order;
           return memo;
-        }, {}).value();
+        }, {})
+        .value();
 
-        return _.chain(controllers).reduce(function(memo, controller) {
+        return _
+        .chain(controllers)
+        .reduce(function(memo, controller) {
           controller.handleResources(function(source) {
-            var operation = _.chain(arguments).drop(1).map(function(destination, index) {
+
+            var transferDetails = _
+            .chain(arguments)
+            .drop(1)
+            .map(function(destination, index) {
               // if not_batch === true -> undefined
-              // if not_batch === false -> that.batch.uuid
-              // if not_batch === undefined -> that.batch.uuid
-              var batchUUID = (!that.config.output[index].not_batched) ? that.batch.uuid : undefined;
+              // if not_batch === false -> model.batch.uuid
+              // if not_batch === undefined -> model.batch.uuid
+              var batchUUID = (!model.config.output[index].not_batched) ? model.batch.uuid : undefined;
               return {
-                input:        { resource: source,      role: that.config.input.role,         order: sourceToOrder[source.uuid] },
-                output:       { resource: destination, role: that.config.output[index].role, batch: batchUUID },
+                input: {
+                  resource: source,
+                  role: model.config.input.role,
+                  order: sourceToOrder[source.uuid]
+                },
+                output: {
+                  resource: destination,
+                  role: model.config.output[index].role,
+                  batch: batchUUID
+                },
                 fraction:     1.0,
-                aliquot_type: that.config.output[index].aliquotType
+                aliquot_type: model.config.output[index].aliquotType
               };
-            }).value();
+            })
+            .value();
 
-            // This adds the transfer map for the plate -> plate transfer i.e A1->A1, B2->B2 etc
-            operation[0].transfer_map = _.chain(source.tubes || source.windows || source.wells || {})
+            if (source.transferBehaviour ==="plateLike") {
+              // If we are using something plateLike then prepare multiple transfers
+              // for each well, tube or window (this will overwrite the original
+              // transfer.
+              transferDetails = _
+              .chain(source.tubes || source.windows || source.wells)
               .keys()
-              .reduce(function(memo, loc){ memo[loc] = loc; return memo },{})
-              .value();
+              .reduce(function(memo, location){
+                memo.push({
+                  input:            transferDetails[0].input,
+                  output:           transferDetails[0].output,
+                  aliquot_type:     transferDetails[0].aliquot_type,
+                  source_location:  location,
+                  target_location:  location,
+                  amount:           2000, // 2000nl Currently only used by working
+                                          // dilution creation but needs to be
+                                          // moved to config file.
+                });
 
-            memo.push(operation);
+              return memo;
+            }, [])
+            .value();
+
+            }
+            memo.push(transferDetails);
           });
 
-          return memo;
-        }, []).flatten().value();
-      }).then(function(transferDetails) {
-        // STEP 4: Setup the operation
 
-        // Determines the type of transfer to undertake based on the input or destination type. We assume all transfers
-        // in the current operation are of the same type. As tube->plates isn't possible, we can assume
-        // plate->plate transfer if the output is a plate.
-        var transfer;
-        if (transferDetails[0].output.resource.tubes
-          || transferDetails[0].output.resource.wells
-          || transferDetails[0].output.resource.windows) {
-            transfer = s2root.actions.transfer_plates_to_plates;
-        } else if (transferDetails[0].input.resource.tubes
-          || transferDetails[0].input.resource.wells
-          || transferDetails[0].input.resource.windows){
-            transfer = s2root.actions.transfer_wells_to_tubes;
-        } else {
-            transfer =   s2root.actions.transfer_tubes_to_tubes;
+          return memo;
+        }, [])
+        .flatten()
+        .value();
+
+
+      })
+      .then(function(transferDetails) {
+        // STEP 4: Setup the operation
+        function transferType(source, destination){
+          var transfer = _.find({
+            "plateLike=>plateLike":  s2root.actions.transfer_plates_to_plates,
+            "plateLike=>tubeTubes":  s2root.actions.transfer_wells_to_tubes,
+            "tubeLike=>tubeLike":    s2root.actions.transfer_tubes_to_tubes
+          }, function (transfer, key){
+            return key === (source.transferBehaviour+"=>"+destination.transferBehaviour);
+          });
+
+          if (transfer === undefined) {
+            throw "Transfer between: " + source.resourceType +
+              " and " + destination.resourceType + " not defined.";
+          }
+
+          return transfer;
         }
+
+        var source      = transferDetails[0].input.resource;
+        var destination = transferDetails[0].output.resource;
+        var transfer    = transferType(source, destination);
+
+
 
         return Operations.betweenLabware(
           transfer,
           _.map(transferDetails, function(details) {
-            return function(operations, state) {
+
+            return function(operations) {
               operations.push(details);
               return $.Deferred().resolve();
             };
+
           })
-        )
-      }).then(function(operation) {
+        );
+
+      })
+      .then(function(operation) {
         // STEP 5: Override the behaviour of the operation so that we do the correct things
         var doNothing = function() { };
-        _.each(['start','operate','complete'], function(event) {
-          that.behaviours[event][happeningAt](function() {
+        _.each(["start","operate","complete"], function(event) {
+          model.behaviours[event][happeningAt](function() {
             var handler = operation[event];
             operation[event] = function() {
               return handler.apply(this, arguments).then(function() {
-                that.owner.childDone(that,event+'Operation',{});
+                model.owner.childDone(model,event+"Operation",{});
               });
             };
           }, function() {
@@ -364,9 +431,9 @@ define([
       }).then(function(operation) {
         // STEP 6: Finally perform the operation and report the final completion
         operation.operation().then(function () {
-          that.owner.childDone(that, 'successfulOperation', controllers);
+          model.owner.childDone(model, "successfulOperation", controllers);
         }).fail(function() {
-          that.owner.childDone(that, 'failedOperation', {});
+          model.owner.childDone(model, "failedOperation", {});
         });
       });
     }
@@ -375,47 +442,47 @@ define([
   return Model;
 
   // Configures the inputs
-  function setupInputs(that) {
-    return that.batch.items.then(function(items) {
+  function setupInputs(model) {
+    return model.batch.items.then(function(items) {
       var inputs = [];
       return $.when.apply(null, _.chain(items).filter(function(item) {
-        return item.role === that.config.input.role && item.status === 'done';
+        return item.role === model.config.input.role && item.status === "done";
       }).map(function(item) {
-        return that.cache.fetchResourcePromiseFromUUID(item.uuid).then(function(resource) {
+        return model.cache.fetchResourcePromiseFromUUID(item.uuid).then(function(resource) {
           inputs.push(resource);
         });
       }).value()).then(function() {
-        that.inputs.resolve(inputs);
-      }).fail(that.inputs.reject);
+        model.inputs.resolve(inputs);
+      }).fail(model.inputs.reject);
     });
   }
 
   // configure the reLoadedOutputs
-  function setupOutputs(that) {
-    return that.batch.items.then(function(items) {
+  function setupOutputs(model) {
+    return model.batch.items.then(function(items) {
       var deferred = $.Deferred();
       var reLoadedOutputs = [];
       $.when.apply(null, _.chain(items)
-          .filter(function (item) {
-            return item.status === 'in_progress';
-          })
-          .filter(function (item) {
-            return _.reduce(that.config.output,function(memo, output){
-              return memo || (item.role === output.role);
-            },false);
-          })
-          .map(function (item) {
-            return that.cache.fetchResourcePromiseFromUUID(item.uuid).then(function (resource) {
-              reLoadedOutputs.push(resource);
-            });
-          }).value())
-          .then(function () {
-            return deferred.resolve(reLoadedOutputs);
-          })
-          .fail(function(){
-            deferred.reject({message:"Couldn't load the output resources!"});
-          });
-      return deferred.promise();
+                   .filter(function (item) {
+                     return item.status === "in_progress";
+                   })
+                   .filter(function (item) {
+                     return _.reduce(model.config.output,function(memo, output){
+                       return memo || (item.role === output.role);
+                     },false);
+                   })
+                   .map(function (item) {
+                     return model.cache.fetchResourcePromiseFromUUID(item.uuid).then(function (resource) {
+                       reLoadedOutputs.push(resource);
+                     });
+                   }).value())
+                   .then(function () {
+                     return deferred.resolve(reLoadedOutputs);
+                   })
+                   .fail(function(){
+                     deferred.reject({message:"Couldn't load the output resources!"});
+                   });
+                   return deferred.promise();
     });
   }
 

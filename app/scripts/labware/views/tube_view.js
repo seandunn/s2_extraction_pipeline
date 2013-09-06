@@ -29,7 +29,7 @@ define(['text!images/tube_final5.svg', 'text!images/waste_tube.svg'], function (
 
       // TODO: When we receive json with multiple aliquots this will have to be adapted to handle better
       var aliquot = newTube.aliquots[0];
-      volumeText  = aliquot.quantity? (aliquot.quantity + " " + aliquot.unit) : "Currently Unmeasured";
+      volumeText  = aliquot.quantity? (aliquot.quantity + " " + aliquot.unit) : "Unmeasured";
 
       this.container().find("svg #Type_Text").text('Type: ' + aliquot.type);
       this.fillTube(aliquot.type);

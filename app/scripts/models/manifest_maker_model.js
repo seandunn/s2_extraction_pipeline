@@ -1,11 +1,10 @@
 define([
-  'extraction_pipeline/models/base_page_model'
+  'models/base_page_model'
   , 'mapper/operations'
-  , 'extraction_pipeline/lib/csv_parser'
-  , 'extraction_pipeline/lib/json_templater'
-  , 'extraction_pipeline/lib/reception_templates'
-  , 'extraction_pipeline/lib/reception_studies'
-], function (BasePageModel, Operations, CSVParser, JsonTemplater, ReceptionTemplates, ReceptionStudies) {
+  , 'lib/json_templater'
+  , 'lib/reception_templates'
+  , 'lib/reception_studies'
+], function (BasePageModel, Operations, JsonTemplater, ReceptionTemplates, ReceptionStudies) {
   'use strict';
 
   var ReceptionModel = Object.create(BasePageModel);
@@ -182,9 +181,13 @@ define([
         var sanger_sample_id = _.find(thisModel.samples,function (sample) {
           return sample.uuid === sampleUUID;
         }).sanger_sample_id;
-        return [labware.labels.barcode.value, sanger_sample_id, sampleType ].join(',');
+        return [labware.labels.barcode.value, 
+                labware.labels['sanger label'].value, 
+                sanger_sample_id, 
+                sampleType]
+                .join(',');
       });
-      data.unshift("Tube Barcode,Sanger Sample ID,SAMPLE TYPE");
+      data.unshift("Tube Barcode,Sanger Barcode,Sanger Sample ID,SAMPLE TYPE");
       var txt = data.join("\n");
       return new Blob([txt], { "type" : "text\/csv" })
     },

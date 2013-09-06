@@ -9,24 +9,25 @@ define([
   // Add new controllers after this point for automatic registration
 
   // The top level controllers (typically these get re-used)
-  'extraction_pipeline/controllers/row_controller',
-  'extraction_pipeline/controllers/step_controller',
-  'extraction_pipeline/controllers/scan_barcode_controller',
-  'extraction_pipeline/controllers/labware_controller',
-  'extraction_pipeline/controllers/connected_controller',
+  'controllers/row_controller',
+  'controllers/step_controller',
+  'controllers/scan_barcode_controller',
+  'controllers/labware_controller',
+  'controllers/connected_controller',
 
   // Controllers that add extra behaviour, for some reason
-  'extraction_pipeline/controllers/kit_controller',
-  'extraction_pipeline/controllers/rack_scan_controller',
-  'extraction_pipeline/controllers/reracking_controller',
-  'extraction_pipeline/controllers/selection_page_controller',
-  'extraction_pipeline/default/default_controller',
-  'extraction_pipeline/controllers/volume_control_controller',
-  'extraction_pipeline/controllers/reception_controller',
-  'extraction_pipeline/controllers/lab_activities_controller',
-  'extraction_pipeline/controllers/manifest_maker_controller',
-  'extraction_pipeline/controllers/manifest_reader_controller',
-  'extraction_pipeline/controllers/summary_page_controller'
+  'controllers/kit_controller',
+  'controllers/rack_scan_controller',
+  'controllers/reracking_controller',
+  'controllers/selection_page_controller',
+  'default/default_controller',
+  'controllers/volume_control_controller',
+  'controllers/reception_controller',
+  'controllers/lab_activities_controller',
+  'controllers/manifest_maker_controller',
+  'controllers/manifest_reader_controller',
+  'controllers/summary_page_controller',
+  'controllers/file_generator_controller'
 ], function(TubeController, SpinColumnController, WasteTubeController, RackController, GelController, PlateController) {
   'use strict';
 
@@ -62,7 +63,7 @@ define([
     var constructor = this.controllers[name] || this.controllers.default;
     return $.extend(
       _.partial(constructor, owner, this).apply(null, _.chain(arguments).drop(2).value()),
-      { controller_type_name_debug: name }
+      { className: name }
     );
   };
 

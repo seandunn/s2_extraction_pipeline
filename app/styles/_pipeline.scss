@@ -1,72 +1,23 @@
-body, html {
-  height: 100%;
-}
-
 header, #content {
   @extend .container;
 }
 
-body, html {
-  height: 100%;
+#alertContainer {
+  min-height: 4em;
 }
 
-ol.labware {
-  font-size: 24px;
-  list-style-position: inside;
-  margin-left: 0px;
+ol.labware-selection {
+    vertical-align: middle;
   li {
-    padding: 0px 10px 5px 0px;
+    vertical-align: middle;
   }
 
   li .resource {
-    vertical-align: middle;
-    display: inline-block;
-  }
-
-  li:nth-child(odd) {
-    background-color: #f9f9f9;
-  }
-  li:before, li:after {
-    content: none;
   }
 }
 
 svg text {
   font-size: 10px;
-}
-
-.removeButton {
-  @extend .btn;
-  @extend .btn-small;
-  @extend .pull-right;
-  margin: 5px;
-}
-
-ul {
-  list-style-type: none;
-}
-
-.kitSelect {
-  margin-top: 20px;
-}
-
-#kitPageHeader {
-  margin-top: 20px;
-  padding: 10px;
-  background: #f9f9f9;
-  border-radius: 10px;
-  .kitSelection {
-    float: left;
-    overflow: auto;
-  }
-  .validationSection {
-    float: right;
-    overflow: auto;
-  }
-}
-
-.kitPrintButton {
-  float: right;
 }
 
 .twoColumns {
@@ -93,33 +44,22 @@ ul {
   font-weight: bold;
   border: 3px #eeeeee dashed;
   border-radius: 7px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.dropzoneBox.hover {
-  background: #e0e0e0;
-}
-
-.labwareDisplay input {
-  width: 10em;
+  .hover {
+    background: #e0e0e0;
+  }
 }
 
 .labwareRow {
-  position: relative;
-  li {
-    position: relative;
-  }
-  .containerList {
-    overflow: auto;
-  }
-  .containerElement {
-    float: left;
-  }
-  .transferArrow {
-    font-size: 6em;
-    padding-top: 60%;
-  }
+
+}
+
+.transferArrow {
+  font-size: 5em;
+  padding-top: 1em;
+}
+
+.title {
+  height:2em;
 }
 
 .rowDisabled {
@@ -132,10 +72,6 @@ ul {
   background: #ffffff;
   z-index: 3;
   display: none;
-}
-
-.labware1, .labware2 {
-  min-width: 17em;
 }
 
 .printerSelect {
@@ -184,52 +120,6 @@ ul {
   }
   .innerElement {
     opacity: 0.6;
-  }
-}
-
-#alertContainer {
-  height: 60px;
-  font-size:14px;
-  .alert {
-    margin-top: 5px;
-    margin-bottom: 0px;
-    padding: 4px;
-  }
-  .fade {
-    transition: opacity 0.3s linear;
-  }
-  .fade.in {
-    opacity: 1;
-  }
-}
-
-div.row0 .title {
-  display: block;
-}
-
-#buttonRack {
-  float: right;
-}
-
-table {
-  tr.selectedRow {
-    background: #90ee90;
-  }
-  tr.disabledRow {
-    background: rgb(196, 196, 196);
-    color: rgb(247, 247, 247);
-    font-style: italic;
-  }
-  td {
-    padding: 0.7em;
-  }
-  th {
-    padding: 0.7em;
-    background: rgb(247, 239, 187);
-    opacity: 0.9;
-    font-style: normal;
-    color: #000000;
-    font-size: 1.0em;
   }
 }
 
@@ -302,18 +192,20 @@ div.header-box {
   height: 6em;
 }
 
-#arrow-image {
-  width: 4em;
-}
+div.resource {
+  height: 180px;
+  &:empty {
+    height: auto;
+  }
 
-div.component {
-  height: 100%;
-  width: 100%;
-  position: relative;
+  .empty           { fill: #f5f5f5; background-color: #f5f5f5; }
+  .full            { fill: #5bb75b; background-color: #5bb75b; }
+  .resourceNotData { fill: #49afcd; background-color: #49afcd; }
+  .dataNotResource { fill: #da4f49; background-color: #da4f49; }
+  .resourceAndData { fill: #5bb75b; background-color: #5bb75b; }
 }
 
 div.template-selection-box {
-  //  border: 1px dashed #444444;
   border-radius: 8px;
   display: block;
   padding: 10px;
