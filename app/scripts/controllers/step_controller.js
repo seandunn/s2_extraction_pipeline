@@ -137,13 +137,15 @@ define([
         var index = _.indexOf(this.controllers, child);
         if (index !== -1) {
           var activeSubController = controller.controllers[index + 1] || {
+            className: 'Step Controller Subcontroller',
             config:           {defaultPrinter: null},
             previousDone:     function () {
               controller.owner.childDone.apply(controller.owner, arguments);
             },
             initialController: function () {
               // Ignore this!
-            }
+            },
+            focus: function() {}
           };
           activeSubController.previousDone(child, action, data);
           controller.activeController = activeSubController;

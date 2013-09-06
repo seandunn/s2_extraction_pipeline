@@ -45,23 +45,17 @@ define(['config'
       this.templateSelectSelection = html.find("#xls-templates");
       this.printBoxSelection = html.find(".printer-div");
 
-      this.generateManifestBtnSelection.click(onGenerateManifestEventHandler(thisController));
-      function onGenerateManifestEventHandler(controller){ return function(){ controller.onGenerateManifest(); } }
-
-      this.downloadManifestBtnSelection.hide().click(onDownloadManifestEventHandler(thisController));
-      function onDownloadManifestEventHandler(controller){ return function(){ controller.onDownloadManifest(); } }
-
-      this.printBCBtnSelection.click(onPrintBarcodeEventHandler(thisController));
-      function onPrintBarcodeEventHandler(controller){ return function(){ controller.onPrintBarcode(); } }
+      this.generateManifestBtnSelection.click(_.bind(this.onGenerateManifest, this));
+      this.downloadManifestBtnSelection.hide().click(_.bind(this.onDownloadManifest, this));
+      this.printBCBtnSelection.click(_.bind(this.onPrintBarcode, this));
 
       this.printBoxSelection.hide();
 
-      this.templateSelectSelection.change(onChangeTemplateEventHandler(thisController));
-      function onChangeTemplateEventHandler(controller){ return function(event){ controller.onChangeTemplate(event); } }
+      this.templateSelectSelection.change(_.bind(this.onChangeTemplate, this));
 
       html.find("#number-of-sample").bind("keypress",function(event){
             if (event.which !== 13) return;
-            onGenerateManifestEventHandler(thisController)();
+            thisController.onGenerateManifest();
           }
       );
 
