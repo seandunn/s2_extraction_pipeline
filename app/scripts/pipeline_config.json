@@ -1362,7 +1362,8 @@
         "aliquotType":"RNA",
         "purpose":    "Working Dilution",
         "model":      "plates",
-        "title":      "RNA Working Dilution"
+        "title":      "RNA Working Dilution",
+        "not_batched": true
       }
       ]}
     ]
