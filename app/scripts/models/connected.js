@@ -353,7 +353,9 @@ define([
                   aliquot_type:     transferDetails[0].aliquot_type,
                   source_location:  location,
                   target_location:  location,
-                  fraction:         0.4,
+                  amount:           2000, // 2000nl Currently only used by working
+                                          // dilution creation but needs to be
+                                          // moved to config file.
                 });
 
               return memo;
