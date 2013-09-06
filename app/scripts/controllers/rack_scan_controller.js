@@ -47,6 +47,10 @@ define([
 
       this.labwareController.renderView();
 
+      this.model.presentResource(
+        this.model.rack,
+        _.bind(this.labwareController.updateModel, this.labwareController)
+      );
     },
 
     setupSubControllers: function () {

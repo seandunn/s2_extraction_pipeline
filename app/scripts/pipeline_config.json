@@ -98,8 +98,8 @@
   {
     "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_nap.batched" ],
     "processTitle":  "Manual DNA and RNA Binding",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print spin column & labels" },
@@ -146,8 +146,8 @@
   {
     "accepts": [ "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap" ],
     "processTitle":  "Manual DNA and RNA Collection Tube Transfer",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -185,8 +185,8 @@
   {
     "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_rnap.batched" ],
     "processTitle":  "Manual DNA and RNA Binding, Input tube RNA+P",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print spin column labels" },
@@ -228,8 +228,8 @@
   {
     "accepts": [ "samples.extraction.manual_dna_and_rna.spin_column_dna" ],
     "processTitle":  "Manual Extraction Spin Column DNA Transfer",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -268,8 +268,8 @@
   {
     "accepts": [ "samples.extraction.manual_rna_only.input_tube_rnap.batched" ],
     "processTitle":  "Manual RNA Only Binding, Input tube RNA+P",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print spin column labels" },
@@ -311,8 +311,8 @@
   {
     "accepts": [ "samples.extraction.manual_dna_and_rna.spin_column_rna" ],
     "processTitle":  "Manual Extraction Spin Column RNA Transfer",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -353,7 +353,6 @@
     "accepts": [ "samples.extraction.manual_rna_only.spin_column_rna" ],
     "processTitle":  "Manual Extraction Spin Column RNA Transfer",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -428,8 +427,8 @@
   {
     "accepts": [ "samples.extraction.manual_dna_only.input_tube_dnap.batched" ],
     "processTitle":  "Manual DNA Only Binding",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print spin column labels" },
@@ -471,7 +470,6 @@
     "accepts": [ "samples.extraction.manual_dna_only.spin_column_dna" ],
     "processTitle":  "Manual Extraction Spin Column DNA Transfer",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -584,8 +582,8 @@
   {
     "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_nap.batched" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -637,8 +635,8 @@
   {
     "accepts": [ "samples.extraction.qiacube_dna_and_rna.byproduct_tube_rnap" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube) Rotor Adapter Transfer",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -675,8 +673,8 @@
   {
     "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_rnap.batched" ],
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -722,8 +720,8 @@
   {
     "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.batched" ],
     "processTitle":  "Automated RNA Only Extraction (QIAcube)",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -805,8 +803,8 @@
   {
     "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.batched" ],
     "processTitle":  "Automated DNA Only Extraction (QIAcube)",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -903,8 +901,8 @@
   {
     "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed.batched" ],
     "processTitle":  "DNA and RNA Re-Tubing",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -938,8 +936,8 @@
 
   {
     "accepts": [ "samples.extraction.retubing.eppendorf_tube_dna" ],
+    "defaultPrinter": "g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter": "e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Start transfers" },
@@ -1016,8 +1014,8 @@
 
   {
     "accepts": [ "samples.extraction.retubing.eppendorf_tube_rna" ],
+    "defaultPrinter": "g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter": "e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Start transfers" },
@@ -1111,8 +1109,8 @@
   {
     "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed.batched" ],
     "processTitle":  "Retubing for DNA only Extraction",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -1164,8 +1162,8 @@
   {
     "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched" ],
     "processTitle":  "Retubing for RNA only Extraction",
+    "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter":"e367bc",
     "printerType": 2,
     "buttons": [
       { "action": "print", "title": "Print tube labels" },
@@ -1199,8 +1197,8 @@
 
   {
     "accepts":       [ "samples.rack.stock.dna" ],
+    "defaultPrinter": "g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter": "e367bc",
     "printerType": 2,
     "buttons":       [
       {
@@ -1240,8 +1238,8 @@
 
   {
     "accepts":       [ "samples.rack.stock.dna.volume_control_added" ],
+    "defaultPrinter": "g216bc",
     "controllerName": "step_controller",
-    "defaultPrinter": "e367bc",
     "printerType": 2,
     "buttons":       [
       {

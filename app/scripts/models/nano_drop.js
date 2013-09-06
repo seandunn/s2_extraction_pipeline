@@ -1,7 +1,8 @@
 define([
   'models/base_page_model',
-  'lib/file_handling/nano_drop'
-], function(BasePageModel, FileHandling, PubSub) {
+  'lib/file_handling/nano_drop',
+  'labware/presenter'
+], function(BasePageModel, FileHandling, LabwarePresenter) {
   'use strict';
 
   var mapToUpdate = _.partial(_.restructure, {
@@ -13,7 +14,7 @@ define([
     }
   });
 
-  return _.extend(Object.create(BasePageModel), {
+  return _.extend(Object.create(BasePageModel), LabwarePresenter, {
     init: function(owner, config, inputModel) {
       this.owner         = owner;
       this.config        = config;
@@ -47,7 +48,7 @@ define([
 
         deferred.resolve({
           rack: {
-            resourceType: "plate",
+            resourceType: this.plate.resourceType,
             wells: details,
             number_of_rows: this.plate.number_of_rows,
             number_of_columns: this.plate.number_of_columns,
