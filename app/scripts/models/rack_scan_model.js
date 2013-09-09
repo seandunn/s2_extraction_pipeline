@@ -22,6 +22,43 @@ define([
       return this;
     },
 
+    analyseFileContent: function (data) {
+      var locationsSortedByBarcode = CSVParser.from(data);
+      var model = this;
+      var root;
+
+      return getTubesOnRack(model, locationsSortedByBarcode)
+        .fail(function (error) {
+          model.owner.childDone(model, "error", error.message);
+        })
+        .then(function (inputTubes) {
+          model.inputs = $.Deferred().resolve(inputTubes).promise();
+          return prepareTransferDataPromise(model, locationsSortedByBarcode);
+        })
+        .then(function () {
+          return model.owner.getS2Root();
+        })
+        .then(function (result) {
+          root = result;
+          return model.inputs;
+        })
+        .then(function (inputs) {
+          // TODO: This creation is fake! We artificially build a tube_rack like this
+          // because it's not a base resource for now...
+          var tube_rack = root.tube_racks.new();
+          tube_rack.tubes = {};
+          _.each(model.preparedTransferData, function (uuid, location) {
+            if (uuid) {
+              tube_rack.tubes[location] = _.find(inputs, function (input) {
+                return input.uuid === uuid
+              });
+            }
+          });
+
+          return {rack: model.presentResource(tube_rack)};
+        });
+    },
+
     createOutputs: function(printer) {
       var model = this;
       var root;
@@ -110,45 +147,7 @@ define([
         });
 
       return deferred.promise();
-    },
-
-
-    analyseFileContent: function (data) {
-      var locationsSortedByBarcode = CSVParser.from(data); // .csvAsTxt);
-      var model = this;
-      var root;
-
-      return getTubesOnRack(model, locationsSortedByBarcode)
-        .fail(function (error) {
-          model.owner.childDone(model, "error", error.message);
-        })
-        .then(function (inputTubes) {
-          model.inputs = $.Deferred().resolve(inputTubes).promise();
-          return prepareTransferDataPromise(model, locationsSortedByBarcode);
-        })
-        .then(function () {
-          return model.owner.getS2Root();
-        })
-        .then(function (result) {
-          root = result;
-          return model.inputs;
-        })
-        .then(function (inputs) {
-          // TODO: This creation is fake! We artificially build a tube_rack like this
-          // because it's not a base resource for now...
-          var tube_rack = root.tube_racks.new();
-          tube_rack.tubes = {};
-          _.each(model.preparedTransferData, function (uuid, location) {
-            if (uuid) {
-              tube_rack.tubes[location] = _.find(inputs, function (input) {
-                return input.uuid === uuid
-              });
-            }
-          });
-          return tube_rack;
-        });
     }
-
   });
 
   function getTubesOnRack(model, locationsSortedByBarcode) {

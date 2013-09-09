@@ -49,7 +49,7 @@ define([
         deferred.resolve({
           rack: {
             resourceType: this.plate.resourceType,
-            wells: details,
+            locations: details,
             number_of_rows: this.plate.number_of_rows,
             number_of_columns: this.plate.number_of_columns,
             barcode: this.plate.labels.barcode.value
@@ -62,11 +62,11 @@ define([
         if (undefinedOrEmpty(file) && undefinedOrEmpty(plate)) {
           return undefined;
         } else if (undefinedOrEmpty(file) && !undefinedOrEmpty(plate)) {
-          return "resourceNotData";
+          return "resource-not-data";
         } else if (!undefinedOrEmpty(file) && undefinedOrEmpty(plate)) {
-          return "dataNotResource";
+          return "data-not-resource";
         } else {
-          return "resourceAndData";
+          return "resource-and-data";
         }
       }
       function undefinedOrEmpty(value) {

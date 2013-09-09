@@ -3,15 +3,29 @@ define(['controllers/base_controller'
   , 'lib/pubsub'
   , 'lib/barcode_checker'
   , 'lib/util'
-], function (BaseController, LabwareView, PubSub, BarcodeChecker, Util) {
+  , 'labware/presenter'
+], function (BaseController, LabwareView, PubSub, BarcodeChecker, Util, LabwarePresenter) {
 
   var LabwareModel = Object.create(null);
-  $.extend(LabwareModel, {
+  _.extend(LabwareModel, LabwarePresenter, {
     init: function (owner, setupData) {
       this.owner = owner;
       $.extend(this, setupData);
 
       return this;
+    },
+
+    displayResource: function(resourceSelector) {
+      var resourceController = this.owner.resourceController;
+      var resource           = this.resource;
+      if (_.isUndefined(resource)) {
+        resourceController.setupController(undefined, resourceSelector);
+      } else {
+        resourceController.setupController(
+          _.wrap(resource.resourceType, this.presentResource(resource)),
+          resourceSelector
+        );
+      }
     },
 
     displayLabware: function() {
@@ -53,8 +67,9 @@ define(['controllers/base_controller'
       return this;
     },
 
-    updateModel: function (newResource) {
-      this.labwareModel.resource = newResource;
+    updateModel: function (newResource, presentationHandler) {
+      this.labwareModel.presentResource = presentationHandler || LabwarePresenter.presentResource;
+      this.labwareModel.resource        = newResource;
       this.childDone(this.labwareModel, 'resourceUpdated', {});
       return this;
     },
@@ -90,11 +105,10 @@ define(['controllers/base_controller'
         // we wrap the resource...
         data[this.labwareModel.resource.resourceType] = this.labwareModel.resource;
       }
-      var resourceSelector = function () {
-        return that.jquerySelection().find("div.resource")
-      };
       if (this.resourceController) {
-        this.resourceController.setupController(data, resourceSelector);
+        this.labwareModel.displayResource(function() {
+          return that.jquerySelection().find("div.resource");
+        });
       }
       if (this.barcodeInputController) {
         this.barcodeInputController.init(data, function () {
@@ -141,7 +155,11 @@ define(['controllers/base_controller'
     },
 
     isSpecial: function() {
-      return specialType(this.labwareModel.expected_type);
+      return specialType(this.labwareModel.expected_type) || isUntracked(this.labwareModel);
+
+      function isUntracked(model) {
+        return !_.isUndefined(model.resource) && (model.tracked === false);
+      }
     },
 
     isComplete: function () {
@@ -217,7 +235,7 @@ define(['controllers/base_controller'
   return LabwareController;
 
   function specialType(type) {
-    return _.contains(['waste_tube', 'qia_cube', 'centrifuge'], type);
+    return _.contains(['qia_cube', 'centrifuge'], type);
   }
 
   function barcodeErrorCallback(errorText){

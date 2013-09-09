@@ -10,12 +10,12 @@ define([
               .parseAsSeparatedRows(",")
               .untabularize()
               .map(_.partial(_.mapFields, {TUBE: LocationHelper.remapLocation, VOLAVG: parseFloat}))
-              .reduce(buildReturnResult, {rack_barcode: undefined, array: []})
+              .reduce(buildReturnResult, {rack_barcode: undefined, tubes: []})
               .value();
 
       function buildReturnResult(memo, tubeData) {
         memo.rack_barcode = memo.rack_barcode || tubeData.RACKID;
-        memo.array.push([tubeData.TUBE, tubeData.VOLAVG]);
+        memo.tubes.push([tubeData.TUBE, tubeData.VOLAVG]);
         return memo;
       }
     }
