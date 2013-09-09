@@ -90,7 +90,7 @@ define([
          .value();
 
       return this.plate
-                 .update({plate:{wells:updates}})
+                 .update({wells:updates})
                  .then(function(plate) {
                    return plate.orders();
                  }, function() {
