@@ -1,6 +1,8 @@
 define([], function() {
   'use strict';
 
+  var barcodeLookup = optional('labels', 'barcode', 'value');
+
   // Anything not listed in these mappings is assumed to apply the identity mapping.
   var resourceTypeToLabwareDataMappers = {
     // These all behave like they are plates, with locations mapping to aliquots
@@ -24,14 +26,35 @@ define([], function() {
   };
 
   function plateLikePresenter(locationExtractor) {
-    var fieldsToOmit = _.drop(arguments, 1);
-    fieldsToOmit.unshift('resourceType');
+    return presenter(_.drop(arguments, 1), detailsFrom);
+
+    function detailsFrom(labware) {
+      return {
+        barcode: barcodeLookup(labware),
+        locations: _.chain(locationExtractor(labware)).map(locationCss).object().value()
+      };
+    }
+  }
+
+  function tubeLikePresenter() {
+    return presenter(_.drop(arguments, 0), trackedDetailsFrom);
+
+    function trackedDetailsFrom(labware) {
+      return {
+        barcode: barcodeLookup(labware),
+        type: aliquotTypeFor(labware.aliquots),
+        volume: volumeIn(labware)
+      };
+    }
+  }
+
+  function presenter(fields, detailsHelper) {
+    fields.unshift('resourceType');
+    fields.unshift('tracked');
 
     return function(labware) {
-      return _.extend(_.pick(labware, fieldsToOmit), {
-        barcode: optional('labels', 'barcode', 'value')(labware),
-        locations: _.chain(locationExtractor(labware)).map(locationCss).object().value()
-      });
+      var details = (labware.tracked === false) ? {} : detailsHelper(labware);
+      return _.extend(_.pick(labware, fields), details);
     };
   }
 
@@ -39,19 +62,6 @@ define([], function() {
     var path = arguments;
     return function(value) {
       return _.reduce(path, function(memo, step) { return memo && memo[step]; }, value);
-    };
-  }
-
-  function tubeLikePresenter() {
-    var fieldsToOmit = _.drop(arguments, 0);
-    fieldsToOmit.unshift('resourceType');
-
-    return function(labware) {
-      return _.extend(_.pick(labware, fieldsToOmit), {
-        barcode: labware.labels.barcode.value,
-        type: aliquotTypeFor(labware.aliquots),
-        volume: volumeIn(labware)
-      });
     };
   }
 
@@ -71,7 +81,7 @@ define([], function() {
     return [pair[0], aliquotTypeFor(pair[1])];
   }
   function empty(aliquots) {
-    return aliquots.length == 0;
+    return _.isUndefined(aliquots) || (aliquots.length == 0);
   }
 
   function aliquotTypeFor(aliquots) {

@@ -216,7 +216,7 @@
         "purpose":    "stock",
         "model":      "spin_columns"
       }, {
-        "model": "waste_tube",
+        "model": "tube",
         "tracked": false,
         "title":  "Collection Tube"
       }
@@ -299,7 +299,7 @@
         "purpose":    "stock",
         "model":      "spin_columns"
       }, {
-        "model": "waste_tube",
+        "model": "tube",
         "tracked": false,
         "title":  "Collection Tube"
       }
@@ -458,7 +458,7 @@
         "purpose":    "stock",
         "model":      "spin_columns"
       }, {
-        "model": "waste_tube",
+        "model": "tube",
         "tracked": false
       }
       ]
@@ -709,7 +709,7 @@
         "title":      "Eppendorf Extracted RNA Tube",
         "not_batched": false
       }, {
-        "model": "waste_tube",
+        "model": "tube",
         "tracked": false
       }
       ]
@@ -756,7 +756,7 @@
         "title":      "Eppendorf Extracted RNA Tube",
         "not_batched": false
       }, {
-        "model": "waste_tube",
+        "model": "tube",
         "tracked": false
       }
       ]
@@ -839,7 +839,7 @@
         "title":      "Eppendorf Extracted DNA Tube",
         "not_batched": false
       }, {
-        "model": "waste_tube",
+        "model": "tube",
         "tracked": false
       }
       ]

@@ -18,8 +18,9 @@ define([], function() {
 
       container.append(document.importNode(image, true));
 
-      // Ensure the tube is filled
+      // Ensure the tube is filled, and that an unused marker is displayed if necessary.
       container.find("svg #aliquot").attr('class', cssForType(labware.type));
+      container.find("svg #unused")[labware.tracked === false ? 'show' : 'hide']();
 
       // Display the extraneous data
       _.chain(labware)

@@ -1,15 +1,11 @@
 define([
   'labware/views/tube_like',
-  'text!images/tube.svg',
-  'text!images/waste_tube.svg'
-], function (TubeLike, tubeSvg, wasteTubeSvg) {
+  'text!images/tube.svg'
+], function (TubeLike, tubeSvg) {
   'use strict';
 
   var parser = new DOMParser();
-  var svg = {
-    tube: parser.parseFromString(tubeSvg, "image/svg+xml").documentElement,
-    waste_tube: parser.parseFromString(wasteTubeSvg, "image/svg+xml").documentElement
-  };
+  var svg = parser.parseFromString(tubeSvg, "image/svg+xml").documentElement;
 
   var unknownTube = {
     barcode: undefined,
@@ -31,12 +27,8 @@ define([
     },
 
     imageFor: function(labware) {
-      return svg.tube;
-    },
-
-    drawWasteTube: function() {
-      return this.drawLabware(unknownTube, svg.waste_tube);
-    },
+      return svg;
+    }
   });
 
   return View;

@@ -580,16 +580,22 @@
      inkscape:label="Background"
      style="display:none"
      transform="translate(-12.11806,-13.961353)" />
+  <path
+     style="display:none;stroke-width:0.32456377;"
+     d="m 8.03157,25.656334 -2.825,1.175 17.775,42.250006 -17.775,42.225 2.825,1.2 16.625,-39.475 16.625,39.475 2.825,-1.2 -17.775,-42.225 17.775,-42.250006 -2.825,-1.175 -16.625,39.475006 -16.625,-39.475006 z"
+     id="unused"
+     class="unused"
+     inkscape:connector-curvature="0" />
 
-  <text id="volume">
+  <text id="volume" style="display:none;">
     <tspan x="68.758698" y="19.984566">Volume:</tspan>
     <tspan x="110.758698" y="19.984566" class="value"/>
   </text>
-  <text id="type">
+  <text id="type" style="display:none;">
     <tspan x="68.758698" y="57.489433">Type:</tspan>
     <tspan x="110.758698" y="57.489433" class="value"/>
   </text>
-  <text id="barcode">
+  <text id="barcode" style="display:none;">
     <tspan x="68.758698" y="95">Barcode:</tspan>
     <tspan x="110.758698" y="95" class="value"/>
   </text>

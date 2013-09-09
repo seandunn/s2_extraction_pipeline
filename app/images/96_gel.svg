@@ -3068,7 +3068,7 @@
        y="197.73012" />
   </g>
   </text>
-  <text id="barcode">
+  <text id="barcode" style="display:none;">
     <tspan x="0" y="245">Barcode:</tspan>
     <tspan class="value" x="100" y="245"/>
   </text>

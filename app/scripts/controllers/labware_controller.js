@@ -155,7 +155,11 @@ define(['controllers/base_controller'
     },
 
     isSpecial: function() {
-      return specialType(this.labwareModel.expected_type);
+      return specialType(this.labwareModel.expected_type) || isUntracked(this.labwareModel);
+
+      function isUntracked(model) {
+        return !_.isUndefined(model.resource) && (model.tracked === false);
+      }
     },
 
     isComplete: function () {
@@ -231,7 +235,7 @@ define(['controllers/base_controller'
   return LabwareController;
 
   function specialType(type) {
-    return _.contains(['waste_tube', 'qia_cube', 'centrifuge'], type);
+    return _.contains(['qia_cube', 'centrifuge'], type);
   }
 
   function barcodeErrorCallback(errorText){

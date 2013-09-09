@@ -198,6 +198,8 @@ div.resource {
     height: auto;
   }
 
+  .unused          { fill: #d40000; background-colour: #d40000; stroke: #000000; opacity: 0.6; }
+
   .empty           { fill: #f5f5f5; background-color: #f5f5f5; }
   .full            { fill: #5bb75b; background-color: #5bb75b; }
   .resourceNotData { fill: #49afcd; background-color: #49afcd; }
