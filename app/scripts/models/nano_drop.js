@@ -62,11 +62,11 @@ define([
         if (undefinedOrEmpty(file) && undefinedOrEmpty(plate)) {
           return undefined;
         } else if (undefinedOrEmpty(file) && !undefinedOrEmpty(plate)) {
-          return "resourceNotData";
+          return "resource-not-data";
         } else if (!undefinedOrEmpty(file) && undefinedOrEmpty(plate)) {
-          return "dataNotResource";
+          return "data-not-resource";
         } else {
-          return "resourceAndData";
+          return "resource-and-data";
         }
       }
       function undefinedOrEmpty(value) {

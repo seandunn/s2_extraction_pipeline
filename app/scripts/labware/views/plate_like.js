@@ -33,12 +33,12 @@ define([], function() {
       }
 
       function cssForType(type) {
-        return _.isUndefined(type) ? "empty" : type.replace(/\W+/, '_').toLowerCase();
+        return _.isUndefined(type) ? "empty" : type.replace(/[^\w-]+/g, '_').toLowerCase();
       }
     },
 
     release: function() {
-      this.container().empty();
+      this.container().find("svg").remove();
     }
   };
 

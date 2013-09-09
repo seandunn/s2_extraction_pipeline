@@ -91,7 +91,7 @@ define([
   function score(thresholds, volumeInFile, tubeInRack) {
     var score = _.find(thresholds, _.partial(overThreshold, volumeInFile))[1];
     if (_.isUndefined(tubeInRack) && !isAcceptableForEmptySlot(score)) {
-      return "dataNotResource";
+      return "data-not-resource";
     } else {
       return score;
     }

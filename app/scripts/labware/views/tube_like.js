@@ -24,7 +24,7 @@ define([], function() {
 
       // Display the extraneous data
       _.chain(labware)
-       .omit(['resourceType'])
+       .omit(['resourceType', 'tracked'])
        .each(displayValueIfSet)
        .value();
 

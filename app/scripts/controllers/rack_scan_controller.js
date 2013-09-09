@@ -34,6 +34,7 @@ define([
 
     setupController: function (inputModel, selector) {
       this.model = Object.create(models[this.config.model]).init(this, this.config, inputModel);
+      this.model.containerName = this.config.model;
 
       this.selector = selector;
       this.view = new View(this, this.selector);

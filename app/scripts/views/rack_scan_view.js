@@ -21,6 +21,7 @@ define([
       });
 
       var container = this.selector().empty().append(html);
+      container.addClass(this.owner.model.containerName).addClass('pre-file');
       var fileNameSpan = container.find(".filenameSpan");
 
       // thisController is used until I can sort out these messy event handlers.
@@ -31,6 +32,8 @@ define([
         thisController.model
                       .analyseFileContent(contents)
                       .then(function(scanModel){
+                        container.removeClass('pre-file').addClass('post-file');
+
                         PubSub.publish('s2.status.message', thisController, {message: "File validated."});
 
                         // We update the labware view but we've already translated it, so force the display to
