@@ -115,15 +115,12 @@ define([
         var name    = "labware" + (index+2);  // index=0, labware1=input, therefore labware2 first output
         var resource;
 
-        if (hasResourceForThisRow){
-          if (details.tracked === false) {
-            // we can't reload an untracked resource, therefore, we create an empty one.
-            if (details.model.pluralize() !== "waste_tubes") {
-              resource = root[details.model.pluralize()].instantiate();
-            }
-          } else {
-            resource = popAMatchingOutput(model,input,details.model.singularize(), details.barcodePrefixes);
-          }
+        if (details.tracked === false) {
+          // we can't reload an untracked resource, therefore, we create an empty one.
+          resource         = root[details.model.pluralize()].instantiate();
+          resource.tracked = false;
+        } else if (hasResourceForThisRow) {
+          resource = popAMatchingOutput(model,input,details.model.singularize(), details.barcodePrefixes);
         }
 
         rowModel[name] = {

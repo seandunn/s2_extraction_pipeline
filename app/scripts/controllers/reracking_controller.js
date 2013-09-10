@@ -4,7 +4,8 @@ define(['config'
   , 'models/reracking_model'
   , 'lib/pubsub'
   , 'lib/util'
-], function (config, BaseController, componentPartialHtml, Model, PubSub, Util) {
+  , 'views/drop_zone'
+], function (config, BaseController, componentPartialHtml, Model, PubSub, Util, DropZone) {
   'use strict';
 
   var Controller = Object.create(BaseController);
@@ -37,12 +38,9 @@ define(['config'
       var html = $(_.template(componentPartialHtml)(templateData));
       this.outputSelection = html.find('#output');
       this.accordionSelection = html.find('#accordion');
-      this.dropzoneSelection = html.find('.dropzone');
-      this.dropzoneBoxSelection = html.find('.dropzoneBox');
       this.rerackingBtnSelection = html.find('#rerack-btn');
       this.printRerackBtnSelection = html.find('#print-rerack-btn');
       this.startRerackingBtnSelection = html.find('#start-rerack-btn');
-      this.hiddenFileInputSelection = html.find('.hiddenFileInput');
       this.outputrackSelection = html.find('.output-labware');
       this.rackListSelection = html.find('#rack-list');
       this.barcodeReaderSelection = html.find("#barcodeReader");
@@ -54,7 +52,7 @@ define(['config'
               validation)
       );
       this.barcodeReaderSelection.show();
-      this.enableDropzone();
+      this.enableDropzone(html);
       this.outputSelection.hide();
       this.startRerackingBtnSelection.hide();
       this.printRerackBtnSelection.hide();
@@ -129,7 +127,6 @@ define(['config'
       this.accordionSelection.accordion("option","active", 0);
       this.rackListSelection.empty();
       this.startRerackingBtnSelection.hide();
-      this.rackControllers = [];
       delete this.outputRackController;
       this.outputrackSelection.hide();
       this.outputSelection.hide();
@@ -148,123 +145,34 @@ define(['config'
 
     labwareScannedHandler: function (barcode) {
       var thisController = this;
-      thisController.rackControllers = [];
-      thisController.model
-          .fail(function () {
+      this.model
+          .then(this.startProcess(function (model) {
+            return model.addRack(barcode);
+          }), function () {
             thisController.message('error', "Impossible to load the model!");
           })
-          .then(function (model) {
-            thisController.view.trigger("s2.busybox.start_process");
-
-            return model.addRack(barcode);
-          })
-          .fail(function (error) {
-            thisController.view.trigger("s2.busybox.end_process");
-
+          .then(this.finishProcess(function (model) {
+            var rackList = _.map(model.inputRacks, _.partial(rackUI, thisController));
+            thisController.rackListSelection.empty().append(_.pluck(rackList, "item"));
+            _.each(rackList, _.callMemberFunction("render"));
+            return model;
+          }), this.finishProcess(function (error) {
             thisController.message('error', error.message);
-          })
-          .then(function (model) {
-            // creates the rack list from the loaded racks
-            thisController.rackControllers = [];
-            var rackList = _.map(model.inputRacks, function (rack, index) {
-              var rackController = thisController.factory.create('labware_controller', thisController);
-              function selection(s) {
-                return function () {
-                  return thisController.rackListSelection.find(s);
-                }
-              }
-              thisController.rackControllers.push(rackController);
-              thisController.rackListSelection.find();
-              rackController.setupController({
-                "expected_type":   "tube_rack",
-                "display_labware": true,
-                "display_remove":  false,
-                "display_barcode": false
-              }, selection("li:nth(" + index + ")"));
-              var listItem = "<li>" + rack.labels.barcode.value + "</li>";
-              return {"item": listItem, controller: rackController, rackData: rack};
-            });
-            var listItems = _.pluck(rackList, "item");
-            thisController.rackListSelection.empty().append(listItems);
-            _.each(rackList, function (rackItem) {
-              rackItem.controller.renderView();
-              rackItem.controller.updateModel(rackItem.rackData);
-            });
+          }))
+          .then(function(model) {
             if (model.isReady) {
-              // ready to merge
               thisController.startRerackingBtnSelection.show();
             }
-            thisController.view.trigger("s2.busybox.end_process");
           });
     },
 
-    enableDropzone: function () {
-      var thisController = this;
-      // add listeners to the hiddenFileInput
-      thisController.dropzoneSelection.bind('click', handleClickOnDropZone); // forward the click to the hiddenFileInput
-      thisController.dropzoneSelection.bind('drop', handleDropFileOnDropZone);
-      thisController.dropzoneSelection.bind('dragover', handleDragFileOverDropZone);
-      thisController.hiddenFileInputSelection.bind("change", handleInputFileChanged);
-      //
-      function handleInputFile(fileHandle) {
-        // what to do when a file has been selected
-        var reader = new FileReader();
-        reader.onload = (function (fileEvent) {
-          return function (e) {
-          }
-        })(fileHandle);
-        reader.onloadend = function (event) {
-          if (event.target.readyState === FileReader.DONE) {
-            thisController.responderCallback(event.target.result);
-          }
-        };
-        reader.readAsText(fileHandle, "UTF-8");
-      }
-
-      //
-      function handleInputFileChanged(event) {
-        // what to do when the file selected by the hidden input changed
-        event.stopPropagation();
-        event.preventDefault();
-        handleInputFile(event.originalEvent.target.files[0]);
-      }
-
-      //
-      function handleClickOnDropZone(event) {
-        // what to do when one clicks on the drop zone
-        event.stopPropagation();
-        event.preventDefault();
-        if (thisController.hiddenFileInputSelection) {
-          thisController.hiddenFileInputSelection.click();
-        }
-      }
-
-      //
-      function handleDropFileOnDropZone(event) {
-        // what to do when one drops a file
-        event.stopPropagation();
-        event.preventDefault();
-        handleInputFile(event.originalEvent.dataTransfer.files[0]);
-      }
-
-      //
-      function handleDragFileOverDropZone(event) {
-        // what to do when one hovers over the dropzone
-        event.stopPropagation();
-        event.preventDefault();
-        if (event.target === thisController.dropzoneSelection[0]) {
-          thisController.dropzoneSelection.addClass('hover');
-        } else {
-          thisController.dropzoneSelection.removeClass('hover');
-        }
-      }
+    enableDropzone: function (html) {
+      this.dropzone = DropZone.init(html.find('.dropzone'));
+      this.dropzone.enable(_.bind(this.responderCallback, this));
     },
 
     disableDropZone:function(){
-      this.dropzoneBoxSelection.hide();
-      this.dropzoneSelection.unbind('click');
-      $(document).unbind('drop');
-      $(document).unbind('dragover');
+      this.dropzone.disable();
     },
 
     responderCallback: function (fileContent) {
@@ -372,5 +280,46 @@ define(['config'
   });
 
   return Controller;
+
+  function rackUI(owner, rack, index) {
+    var controller = owner.factory.create('labware_controller', owner);
+    controller.setupController({
+      "expected_type":   "tube_rack",
+      "display_labware": true,
+      "display_remove":  false,
+      "display_barcode": false
+    }, selection("li:nth(" + index + ")"));
+
+    var rackRepresentation = representAsLabware(rack);
+
+    return {
+      item: "<li>" + rack.labels.barcode.value + "</li>",
+      render: function() {
+        controller.renderView();
+        controller.updateModel(rackRepresentation);
+      }
+    };
+
+    function selection(s) {
+      return function () {
+        return owner.rackListSelection.find(s);
+      }
+    }
+  };
+
+  function representAsLabware(rack) {
+    return {
+      resourceType: rack.resourceType,
+      barcode: rack.labels.barcode.value,
+      locations: _.chain(rack.tubes).map(tubeToCss).object().value()
+    };
+
+    function tubeToCss(tube, location) {
+      return [location, empty(tube) ? "empty" : "full"];
+    }
+    function empty(tube) {
+      return tube.aliquots.length == 0;
+    }
+  }
 });
 
