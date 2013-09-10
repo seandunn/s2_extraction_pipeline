@@ -52,7 +52,7 @@
    "samples.extraction.retubing.eppendorf_tube_rna",
    "samples.extraction.racking.fluidx_tube_rna",
 
-   "samples.extraction.stock_rack_rna",
+   "samples.rack.stock.rna",
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna.batched",
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna",
 
@@ -1079,7 +1079,7 @@
         },
         "output": [
           {
-            "role": "samples.extraction.stock_rack_rna",
+            "role": "samples.rack.stock.rna",
             "aliquotType": "RNA",
             "purpose": "stock",
             "model": "tube_racks",
@@ -1196,86 +1196,7 @@
   },
 
   {
-    "accepts":       [ "samples.rack.stock.dna" ],
-    "defaultPrinter": "g216bc",
-    "controllerName": "step_controller",
-    "printerType": 2,
-    "buttons":       [
-      {
-        "action": "end",
-        "title":  "Add control"
-      },
-      {
-        "action": "next",
-        "title":  "Done"
-      }
-    ],
-    "processTitle":  "Volume control",
-    "controllers":    [
-      {
-        "controllerName":  "volume_control_controller",
-        "input":          {
-          "role":  "samples.rack.stock.dna",
-          "model": "tube_racks"
-        },
-        "output":         [
-          {
-            "role":        "samples.rack.stock.dna.volume_control_added",
-            "aliquotType": "DNA",
-            "purpose":     "stock",
-            "model":       "tube_racks"
-          },
-          {
-            "role":        "TEMP_output_role_for_volume_control_tube",
-            "aliquotType": "TEMP",
-            "purpose":     "TEMP",
-            "model":       "tubes"
-          }
-        ]
-      }
-    ]
-  },
-
-  {
-    "accepts":       [ "samples.rack.stock.dna.volume_control_added" ],
-    "defaultPrinter": "g216bc",
-    "controllerName": "step_controller",
-    "printerType": 2,
-    "buttons":       [
-      {
-        "action": "end",
-        "title":  "Save volumes"
-      },
-      {
-        "action": "next",
-        "title":  "Done"
-      }
-    ],
-    "processTitle":  "DNA Volume checking",
-    "controllers":    [
-      {
-        "controllerName":  "rack_scan_controller",
-        "defaultPrinter": "d304bc",
-        "printerType": 1,
-        "model":          "VolumeCheckModel",
-        "input":          {
-          "role":  "samples.rack.stock.dna.volume_control_added",
-          "model": "tube_racks"
-        },
-        "output":         [
-          {
-            "role":        "samples.rack.stock.dna.volume_checked",
-            "aliquotType": "DNA",
-            "purpose":     "stock",
-            "model":       "tube_racks"
-          }
-        ]
-      }
-    ]
-  },
-
-  {
-    "accepts":       [ "samples.extraction.stock_rack_rna" ],
+    "accepts":       [ "samples.rack.stock.rna" ],
     "controllerName": "step_controller",
     "defaultPrinter": "d304bc",
     "printerType": 1,
@@ -1295,7 +1216,7 @@
         "controllerName": "rack_scan_controller",
         "model":          "VolumeCheckModel",
         "input":          {
-          "role":  "samples.extraction.stock_rack_rna",
+          "role":  "samples.rack.stock.rna",
           "model": "tube_racks"
         },
         "output":         [
@@ -1366,42 +1287,6 @@
       ]}
     ]
   },
-    {
-    "accepts":       [ "samples.rack.stock.dna.volume_checked" ],
-    "controllerName": "step_controller",
-    "defaultPrinter":"d304bc",
-    "printerType": 1,
-    "buttons":       [
-      { "action": "print", "title": "Print Plate Labels" },
-      { "action": "next",  "title": "Done" }
-    ],
-    "processTitle":  "DNA Working Dilution",
-    "controllers":    [
-      {
-      "controllerName": "connected_controller",
-      "behaviours": {
-        "start": "row",
-        "operate": "row",
-        "complete": "row",
-        "done": "next",
-        "outputs": "print"
-      },
-      "input":         {
-        "role": "samples.rack.stock.dna.volume_checked",
-        "model":"tube_racks",
-        "title": "Volume Checked DNA Rack"
-      },
-      "output":        [
-        {
-        "role":       "samples.plates.working_dilution.dna",
-        "aliquotType":"DNA",
-        "purpose":    "Working_dilution",
-        "model":      "plates",
-        "title":      "DNA Working Dilution"
-      }
-      ]}
-    ]
-    },
 
     {
       "accepts": [ "samples.qc.nx_nanodrop.working_dilution_rna" ],
