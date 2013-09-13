@@ -139,7 +139,7 @@ define([
     model.owner.getS2Root()
         .then(function (result) {
           root = result;
-          return root.tubes.findByEan13Barcode(inputBarcodes, true);
+          return root.tubes.searchByBarcode().ean13(inputBarcodes).all();
         })
         .fail(function () {
           return searchDeferred.reject({message: "Couldn't search for the tubes in the rack!"});
