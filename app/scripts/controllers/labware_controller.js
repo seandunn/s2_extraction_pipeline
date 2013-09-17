@@ -22,7 +22,7 @@ define(['controllers/base_controller'
         resourceController.setupController(undefined, resourceSelector);
       } else {
         resourceController.setupController(
-          _.wrap(resource.resourceType, this.presentResource(resource)),
+          _.build(resource.resourceType, this.presentResource(resource)),
           resourceSelector
         );
       }

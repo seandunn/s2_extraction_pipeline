@@ -104,12 +104,12 @@ define([
   }
 
   function start(uuid, role) {
-    return _.wrap('items', role, uuid, 'event', 'start');
+    return _.build('items', role, uuid, 'event', 'start');
   }
   function complete(uuid, roleToComplete, roleToUnuse) {
-    return _.wrap('items', _.object([
-      [roleToUnuse,    _.wrap(uuid, {event:"unuse"})],
-      [roleToComplete, _.wrap(uuid, {event:"complete"})]
+    return _.build('items', _.object([
+      [roleToUnuse,    _.build(uuid, {event:"unuse"})],
+      [roleToComplete, _.build(uuid, {event:"complete"})]
     ]));
   }
 });
