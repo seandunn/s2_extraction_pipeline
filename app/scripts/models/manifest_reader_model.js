@@ -184,6 +184,11 @@ define([
     if (sample.sanger_sample_id !== tubeDetails.sample) {
       tubeDetails.errors.push("Should contain '" + sample.sanger_sample_id + "' not '" + tubeDetails.sample + "'");
     }
+
+    var gender = tubeDetails.row['GENDER'];
+    if (_.isUndefined(gender) || !_.isString(gender) || (gender.trim() === '')) {
+      tubeDetails.errors.push("Gender is invalid");
+    }
   }
 
   function generateDisplay(manifestInfo, template) {
