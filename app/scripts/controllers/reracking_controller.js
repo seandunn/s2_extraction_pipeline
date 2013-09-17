@@ -136,11 +136,8 @@ define([
           validation
         )
       );
-      this.html.find("#barcodeReader").show();
       this.enableDropzone(this.html);
-      this.html.find("#output").hide();
-      this.html.find("#start-rerack-btn").hide();
-      this.html.find("#print-rerack-btn").hide();
+
 
       this.html.find("#reracking h3:nth(1)").hide();
       this.html.find("#reracking h3:nth(2)").hide();
@@ -148,7 +145,7 @@ define([
       this.html.find("#print-rerack-btn").click(_.bind(thisController.onPrintBarcode, thisController));
       this.html.find("#rerack-btn").click(_.bind(thisController.onReracking, thisController));
 
-      this.html.find("#start-rerack-btn").click(_.bind(thisController.onStartReracking, this));
+      this.html.find("#start-rerack-btn").click(_.bind(thisController.onStartReracking, thisController));
       return this.html;
 
     },
@@ -240,9 +237,7 @@ define([
 
       .then(function () {
         thisController.view.trigger("s2.busybox.end_process");
-        thisController.html.find("#output").show();
-        thisController.html.find("#start-rerack-btn").hide();
-        thisController.html.find("#reracking").find("h3:nth(2)").show();
+        $("#racking-file-upload").collapse({parent: thisController.html});
         return thisController.message("success", "The barcodes have been sent to printer.");
       },
       function (error) {
@@ -253,10 +248,7 @@ define([
     },
 
     onStartReracking: function () {
-      $("#output").show();
-      $("#start-rerack-btn").hide();
-      $("#reracking").find("h3:nth(1)").show();
-      $("#print-rerack-btn").show();
+      $("#rack-labelling").collapse({parent: this.html});
     },
 
     onReracking: function () {

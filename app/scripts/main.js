@@ -5,6 +5,9 @@ require.config({
   baseUrl: "scripts",
 
   paths:{
+    hm:                   "vendor/hm",
+    esprima:              "vendor/esprima",
+    jquery:               "vendor/jquery.min",
     bootstrap:            "vendor/bootstrap/bootstrap",
     text:                 "../components/requirejs-text/text",
     spinjs:               "../components/spin.js/spin",
@@ -19,8 +22,10 @@ require.config({
   }
 });
 
-require(["app",
-  "controllers/controller_factory"
+require([
+  "app",
+  "controllers/controller_factory",
+  "bootstrap"
 ], function (App, ControllerFactory) {
   "use strict";
 
