@@ -31,8 +31,8 @@ define([], function() {
           .then(function(result) {
             return {responseText:result};
           })
-          .fail(function(){
-            throw "AJAX response (error)!";
+          .fail(function(error){
+            throw "AJAX response error: "+ error.responseText;
           })
     },
 
