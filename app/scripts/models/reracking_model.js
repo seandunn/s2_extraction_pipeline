@@ -28,44 +28,49 @@ define([
       delete this.outputRack;
     },
 
-    isReady: function() { return this.inputRacks.length > 1; },
 
     // Should lookup a rack resource and add it to the model.
     addRack: function (rackBarcode) {
       var deferred = $.Deferred();
       var thisModel = this;
-      var resource;
+      var rack;
 
       var isInRackList = _.find(thisModel.inputRacks, function (rack) {
         return rack.labels.barcode.value === rackBarcode;
       });
 
-      if (isInRackList) { return deferred.reject({message: "already there"}).promise; }
+      if (isInRackList) {
+        return $.Deferred()
+        .reject({
+          message: "Rack '"+rackBarcode+"' alraedy included in list."
+        })
+        .promise();
+      }
 
       if (!thisModel.contentType) { thisModel.nbOfTubesToRerack = 0; }
 
       this.cache
       .fetchResourcePromiseFromBarcode(rackBarcode, "tube_racks")
-      .fail(function () {
-        deferred.reject({message:"Couldn't find the rack!"});
-      })
-
-      .then(function (result) {
-        resource = result;
-        return resource.order();
+      .then(function (returnedRack) {
+        rack = returnedRack;
+        return rack.order();
+      }, function () {
+        return deferred.reject({message:"Couldn't find the rack!"});
       })
 
       .then(function (order) {
-        var rackHasActiveRole = _.some(order.items,function(roles){
-          return _.chain(roles)
-          .filter(function(item){return item.status==="done";})
-          .pluck("uuid")
-          .contains(resource.uuid)
-          .value();
-        });
+        var rackRole = _.chain(order.items)
+        .values()
+        .flatten()
+        .where({uuid: rack.uuid, status: "done"})
+        .pluck("role")
+        .first()
+        .value();
+
+        _.defaults(thisModel, {rackRole: rackRole});
 
         var contentTypesInNewRack = _
-        .chain(resource.tubes)
+        .chain(rack.tubes)
         .pluck("aliquots")
         .flatten()
         .pluck("type")
@@ -73,30 +78,34 @@ define([
         .keys()
         .value();
 
+        // vvvvvvvvv----- Must clean this mess up!
+
         if (contentTypesInNewRack.length > 2) {
           // is the rack homogeneous (sanity check) ?
           // DNA + Solvent or RNA + Solvent
-          var msg = "The content of the rack is not homogenous. It contains " +
+          var message = "The content of the rack is not homogenous. It contains " +
             contentTypesInNewRack.join(" & ") +
             " aliquots. Please check the rack content.";
-          deferred.reject({message: msg });
+          deferred.reject({message: message});
         } else if (thisModel.contentType && thisModel.contentType !== contentTypesInNewRack[0]) {
 
           // is the content of the new rack the same than the rack already there ?
           deferred.reject({message: "The content of the rack (" + contentTypesInNewRack[0] + ") is not compatible with the previous racks (" + thisModel.contentType + ")!"});
-        } else if (thisModel.nbOfTubesToRerack + _.size(resource.tubes) >= thisModel.outputCapacity) {
+        } else if (thisModel.nbOfTubesToRerack + _.size(rack.tubes) >= thisModel.outputCapacity) {
           // will there be enough space on the output rack ?
 
           deferred.reject({message: "It is not possible to rerack all this racks together, as there will be more than " + thisModel.outputCapacity + " tubes on the output rack!"});
 
-        } else if (!rackHasActiveRole) {
+        } else if (_.isUndefined(rackRole)) {
 
           deferred.reject({message:"This rack is not in use anymore!!"});
+        } else if (thisModel.rackRole !== rackRole){
+          deferred.reject({message: "This rack is not of the same type as the other racks."});
         } else {
 
           thisModel.contentType = contentTypesInNewRack[0];
-          thisModel.inputRacks.push(resource);
-          thisModel.nbOfTubesToRerack += _.size(resource.tubes);
+          thisModel.inputRacks.push(rack);
+          thisModel.nbOfTubesToRerack += _.size(rack.tubes);
 
           deferred.resolve(thisModel);
         }
@@ -206,20 +215,13 @@ define([
           return memo;
         }, {});
 
-        var jsonForOutputRack = {items:{}};
 
-        jsonForOutputRack.items["samples.rack.stock.rna"] = {};
+        var updateMessage = {};
+        updateMessage[thisModel.outputRack.uuid] = { event: "start" };
 
-        jsonForOutputRack
-        .items["samples.rack.stock.rna"][thisModel.outputRack.uuid] = {
-          event: "start"
-        };
-
-        var orderUpdatePromises = _.map(ordersByUuid, function(order){
-          return order.update(jsonForOutputRack);
-        });
-
-        return $.when.apply(null, orderUpdatePromises);
+        return updateAllOrders(
+           _.map(ordersByUuid, function(order) { return [order, updateMessage]; })
+        );
       })
 
       .then(function(firstOrder){
@@ -233,13 +235,10 @@ define([
       .then(function(){
         // Update orders to unuse empty racks and complete the new rack.
 
-        var orderUpdatePromises = _.map(
+        var orderUpdatePairs = _.map(
           racksPerOrderUuid,
           function(racks, orderUuid){
-            var jsonForOrderUpdate = {items:{}};
-
-            // jsonForOrderUpdate.items["samples.rack.stock.rna"] = {};
-            jsonForOrderUpdate.items["samples.rack.stock.rna"] = _.reduce(racks, function(memo, rackUuid){
+            var updateMessage = _.reduce(racks, function(memo, rackUuid){
               if (_.contains(thisModel.racksToEmpty, rackUuid)){
                 memo[rackUuid] = {event: "unuse"};
               }
@@ -247,23 +246,31 @@ define([
               return memo;
             }, {});
 
-            jsonForOrderUpdate
-            .items["samples.rack.stock.rna"][thisModel.outputRack.uuid] = {
+            updateMessage[thisModel.outputRack.uuid] = {
               event: "complete"
             };
 
-            return ordersByUuid[orderUuid].update(jsonForOrderUpdate);
-          }
-        );
+            return [ordersByUuid[orderUuid],updateMessage];
+          });
 
-        return $.when.apply(null, orderUpdatePromises);
+        return updateAllOrders(orderUpdatePairs);
       })
 
       .then(function(){
-        // Send thisModel back to the controller.
+        // ...send thisModel back to the controller.
         return thisModel;
       });
 
+
+
+      function updateAllOrders(orderUpdatePairs) {
+        return $.when.apply(null, _.map(orderUpdatePairs, function(pair) {
+          var order         = pair[0];
+          var eventMessages = pair[1];
+
+          return order.update({items:{"samples.rack.stock.rna": eventMessages}});
+        }));
+      }
     },
 
 
@@ -273,7 +280,6 @@ define([
       return thisModel.owner
       .getS2Root()
       .then(function (root) {
-
         return Operations.registerLabware(
           root[thisModel.outputModelType],
           thisModel.contentType,
@@ -293,9 +299,7 @@ define([
         thisModel.printBarcodes([rack], printerName);
         return rack;
       });
-
     }
-
 
   });
 
