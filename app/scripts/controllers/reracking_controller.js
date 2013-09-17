@@ -1,36 +1,27 @@
 define([
-  "config",
   "controllers/base_controller",
   "text!html_partials/_reracking.html",
   "models/reracking_model",
   "lib/pubsub",
   "lib/util",
   "views/drop_zone"
-], function (config, BaseController, componentPartialHtml, Model, PubSub, Util, DropZone) {
+], function (BaseController, rerackingPartial, Model, PubSub, Util, DropZone) {
   "use strict";
 
   function barcodeErrorCallback(errorText) {
     return function (event, template, controller) {
       controller.message("error", errorText);
-
-      template
-      .find("input")
-      .val(""); // clear the input
     };
   }
 
-  function labwareCallback(event, labwareHtml, controller) {
-    labwareHtml.find(".alert-error").addClass("hide");
+  function addRackCallback(event, labwareHtml, controller) {
+    $(".validationText").hide();
 
     var barcode = Util.pad(event.currentTarget.value);
 
     controller.model
     .then(function (model) {
-      // Add rack to model
-      return  model.addRack(barcode);
-    }, function () {
-      controller.message("error", "Impossible to load the model!");
-
+      return model.addRack(barcode);
     })
     .then(function (model) {
       // render the rack list?
@@ -38,17 +29,15 @@ define([
 
       controller.html.find("#rack-list").empty().append(_.pluck(rackList, "item"));
 
-      _.each(rackList, _.callMemberFunction("render"));
+      _.invoke(rackList, "render");
 
       return model;
     }, function (error) {
       controller.message("error", error.message);
     })
 
-    .then(function(model) {
-      if (model.isReady()) {
-        controller.html.find("#start-rerack-btn").show();
-      }
+    .then(function(){
+      controller.html.find("#start-rerack-btn").show();
     });
 
     labwareHtml.find("input").val(""); // clear the input
@@ -124,7 +113,7 @@ define([
 
     createHtml: function () {
       var thisController = this;
-      this.html = $(_.template(componentPartialHtml)(this));
+      this.html = $(_.template(rerackingPartial)(this));
 
       function validation(element, callback, errorCallback) {
         return function (event) {
@@ -142,7 +131,7 @@ define([
       this.html.find("#barcodeReader").append(
         this.bindReturnKey(
           scanBarcodeController.renderView(),
-          labwareCallback,
+          addRackCallback,
           barcodeErrorCallback("Barcode must be a 13 digit number."),
           validation
         )
@@ -153,12 +142,8 @@ define([
       this.html.find("#start-rerack-btn").hide();
       this.html.find("#print-rerack-btn").hide();
 
-      this.html.find("#accordion h3:nth(1)").hide();
-      this.html.find("#accordion h3:nth(2)").hide();
-      this.html.find("#accordion").accordion({
-        collapsible: true,
-        heightStyle: "content"
-      });
+      this.html.find("#reracking h3:nth(1)").hide();
+      this.html.find("#reracking h3:nth(2)").hide();
 
       this.html.find("#print-rerack-btn").click(_.bind(thisController.onPrintBarcode, thisController));
       this.html.find("#rerack-btn").click(_.bind(thisController.onReracking, thisController));
@@ -179,7 +164,6 @@ define([
       this.model.then(function (model) {
         model.reset();
       });
-      this.html.find("#accordion").accordion("option","active", 0);
       this.html.find("#rack-list").empty();
       this.html.find("#start-rerack-btn").hide();
       this.rackControllers = [];
@@ -190,8 +174,8 @@ define([
       this.html.find("#print-rerack-btn").hide();
 
 
-      this.html.find("#accordion").find("h3:nth(1)").hide();
-      this.html.find("#accordion").find("h3:nth(2)").hide();
+      this.html.find("#reracking").find("h3:nth(1)").hide();
+      this.html.find("#reracking").find("h3:nth(2)").hide();
 
       this.view.find(".validationText").hide();
     },
@@ -258,8 +242,7 @@ define([
         thisController.view.trigger("s2.busybox.end_process");
         thisController.html.find("#output").show();
         thisController.html.find("#start-rerack-btn").hide();
-        thisController.html.find("#accordion").find("h3:nth(2)").show();
-        thisController.html.find("#accordion").accordion("option", "active", 2);
+        thisController.html.find("#reracking").find("h3:nth(2)").show();
         return thisController.message("success", "The barcodes have been sent to printer.");
       },
       function (error) {
@@ -272,8 +255,7 @@ define([
     onStartReracking: function () {
       $("#output").show();
       $("#start-rerack-btn").hide();
-      $("#accordion").find("h3:nth(1)").show();
-      $("#accordion").accordion("option", "active", 1);
+      $("#reracking").find("h3:nth(1)").show();
       $("#print-rerack-btn").show();
     },
 
