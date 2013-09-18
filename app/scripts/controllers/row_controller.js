@@ -84,7 +84,6 @@ define([
 
       this.currentView.renderView();
       this.controllers.each(function(p) { p.renderView(); });
-
     },
 
 
@@ -114,9 +113,13 @@ define([
       }, this.rowModel.enabled).value();
     },
     focus: function() {
-      this.editableControllers().find(function(p) { return !p.isComplete(); })
-          .value()
-          .barcodeFocus();
+      var nextInput = this.editableControllers()
+        .find(function(p) { return !p.isComplete(); })
+        .value();
+
+      if (nextInput) {
+        nextInput.barcodeFocus();
+      }
     },
 
     childDone:function (child, action, data) {
@@ -142,11 +145,14 @@ define([
       } else if (action === "barcodeScanned") {
         var eventPrefix = child.labwareModel.input ? 'input' : 'output';
         this.owner.childDone(this, eventPrefix+'BarcodeScanned', data);
+        this.focus();
       }
     },
 
     editableControllers: function() {
-      return this.controllers.compact().filter(function(p) { return !p.isSpecial(); });
+      return this.controllers.compact().filter(function(controller) { 
+        return !controller.isSpecial()  && !((!_.isUndefined(controller.labwareModel.resource)) && (controller.labwareModel.resource.tracked === false));
+      });
     },
 
     isRowComplete: function() {
@@ -163,6 +169,7 @@ define([
       this.controllers.each(function(controller) {
         controller.showEditable();
       });
+      this.focus();
     },
 
     handleResources: function(callback) {
@@ -171,5 +178,4 @@ define([
   });
 
   return RowController;
-
 });

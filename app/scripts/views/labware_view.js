@@ -81,11 +81,7 @@ define(['text!html_partials/_labware.html'], function (labwarePartialHtml) {
   }
 
   LabwareView.prototype.setTitle = function (titleString) {
-    if (titleString !== undefined) {
-      this.jquerySelector().find('.title').empty().append(titleString).show();
-    } else {
-      this.jquerySelector().find('.title').empty().hide();
-    }
+    this.jquerySelector().find('.title').empty().append(titleString).show();
   };
 
   LabwareView.prototype.clear = function () {
