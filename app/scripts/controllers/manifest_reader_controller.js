@@ -189,11 +189,12 @@ define(['config'
 
   function createSamplesView(view, manifest) {
     // Generate the display and then render the view
-    _.each(manifest.tubes, _.compose(generateView, _.partial(updateDisplay, manifest.template.json_template_display)));
-    view.append(template({
-      headers:  _.map(manifest.tubes[0].display, function(c) { return c.friendlyName || c.columnName; }),
-      manifest: manifest
-    }));
+    var data = { headers: [], manifest: manifest };
+    if (manifest.template) {
+      _.each(manifest.tubes, _.compose(generateView, _.partial(updateDisplay, manifest.template.json_template_display)));
+      data.headers = _.map(manifest.tubes[0].display, function(c) { return c.friendlyName || c.columnName; });
+    }
+    view.append(template(data));
 
     // Deal with checking & unchecking rows for orders
     view.delegate(
@@ -231,7 +232,13 @@ define(['config'
 
     function failure(controller, deferred, value) {
       controller.message('error', 'There are errors with the manifest. Fix these or proceed with caution!');
-      controller.view.find("#registrationBtn").addClass("btn-warning");
+
+      var button = controller.view.find("#registrationBtn");
+      if (value.errors.length > 0) {
+        button.hide();
+      } else {
+        button.addClass("btn-warning");
+      }
       deferred.reject();
       return value;
     }

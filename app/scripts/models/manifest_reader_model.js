@@ -21,28 +21,32 @@ define([
     },
 
     setFileContent: function (fileContent) {
-      var thisModel   = this;
-      var dataAsArray = CSVParser.from(fileContent);
-
       // This is what we are going to fill out: information on each of the tubes (the tube itself but also if there is an
       // issue associated with it), and any global errors (missing barcodes, search errors).
       this.manifest = {
         template: undefined,
         errors: [],
-        tubes:  undefined
+        tubes:  []
       };
+      var resolver = _.partial(resolveSearch, this.manifest);
+
+      var dataAsArray = CSVParser.from(fileContent);
+      if (_.isUndefined(dataAsArray)) {
+        this.manifest.errors.push("The file uploaded does not appear to be a valid manifest.");
+        return resolver();
+      }
 
       var templateName       = dataAsArray[2][0]; // always A3 !!
       this.manifest.template = ReceptionTemplate[templateName];
       if (_.isUndefined(this.manifest.template)) {
         this.manifest.errors.push("Could not find the corresponding template!");
-        return $.Deferred().reject(this);
+        return resolver();
       }
 
       var columnHeaders = dataAsArray[this.manifest.template.header_line_number];
       if (columnHeaders.length <= 1 && columnHeaders[0]) {
         this.manifest.errors.push("The file contains no header!");
-        return $.Deferred().reject(this);
+        return resolver();
       }
 
       this.manifest.tubes =
@@ -61,12 +65,12 @@ define([
       // Page through all of the tubes from the manifest, checking the information from the manifest against what the
       // system believes should be true.  Once that's done, any tubes that were specified in the manifest but not found
       // in the system should be pushed as errors.  Finally, resolve the search appropriately.
-      return this.owner
-                 .getS2Root()
-                 .then(_.partial(pageThroughTubes, this.manifest))
-                 .then(_.partial(pushMissingTubeErrors, this.manifest))
-                 .then(_.partial(resolveSearch, this.manifest))
-                 .always(function() { return thisModel; });
+      var deferred =
+        this.owner
+            .getS2Root()
+            .then(_.partial(pageThroughTubes, this.manifest))
+            .then(_.partial(pushMissingTubeErrors, this.manifest));
+      return _.regardless(deferred, resolver);
     },
 
     updateSamples: function (dataFromGUI) {
