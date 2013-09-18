@@ -2,19 +2,6 @@ define([], function () {
   'use strict';
 
   return {
-    combineHeadersToData: function (columnNames, data, decorator) {
-      decorator = decorator || "";
-      var combinedArray = [];
-      _.each(data, function (row) {
-        var combinedObject = {};
-        _.each(columnNames, function (columnName, columnIndex) {
-          combinedObject[(decorator+columnName)] = row[columnIndex];
-        });
-        combinedArray.push(combinedObject);
-      });
-      return combinedArray;
-    },
-
     applicator: function(template) {
       var extractorMap = createExtractorMap(template);
       var extractor    = _.partial(extractRowData, extractorMap);

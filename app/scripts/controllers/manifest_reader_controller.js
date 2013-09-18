@@ -4,9 +4,8 @@ define(['config'
   , 'text!html_partials/_sample_row.html'
   , 'models/manifest_reader_model'
   , 'lib/pubsub'
-  , 'lib/reception_templates'
   , 'views/drop_zone'
-], function (config, BaseController, componentPartialHtml, sampleRowPartial, Model, PubSub, ReceptionTemplates, DropZone) {
+], function (config, BaseController, componentPartialHtml, sampleRowPartial, Model, PubSub, DropZone) {
   'use strict';
 
   var template = _.template(sampleRowPartial);
@@ -70,13 +69,13 @@ define(['config'
       this.factory = factory;
       this.config = config;
       this.model = Object.create(Model).init(this, config);
-      this.view = this.createHtml({templates: ReceptionTemplates.templateList, printerList: config.printerList});
+      this.view = this.createHtml();
       this.subscribeToPubSubEvents();
       return this;
     },
 
-    createHtml: function (templateData) {
-      var html = $(_.template(componentPartialHtml)(templateData));
+    createHtml: function () {
+      var html = $(_.template(componentPartialHtml)());
       // saves the selection for performances
       this.registerBtnSelection = html.find('#registrationBtn').hide();
       this.orderMakerSelection = html.find(".orderMaker");
@@ -157,7 +156,13 @@ define(['config'
   // Some utility functions for dealing with processes
   function displayManifest(controller, manifest) {
     controller.registerBtnSelection.show();
-    createSamplesView(controller.orderMakerSelection, manifest);
+
+    createSamplesView(
+      controller.orderMakerSelection,
+      manifest,
+      controller.model.template.json_template_display
+    );
+
     return manifest;
   }
   function startProcess(controller, value) {
@@ -171,20 +176,25 @@ define(['config'
   }
 
   // View related functions
-  function createSamplesView(view, manifest) {
-    // Prepare the headers, and each of the components for each row in the manifest.
-    var headers = _.map(manifest.tubes[0].display, function (column) {
-      return column.friendlyName || column.columnName;
-    });
-    _.each(manifest.tubes, function(details) {
-      var viewCreators = [normalView];
-      if (details.errors.length > 0) viewCreators.unshift(errorView);
-      viewCreators.unshift(elementToHtml);
-      details.views = _.map(details.display, _.compose.apply(undefined, viewCreators));
-    });
+  function updateDisplay(transform, details) {
+    details.display = transform(details.row);
+    return details;
+  }
+  function generateView(details) {
+    var viewCreators = [normalView];
+    if (details.errors.length > 0) viewCreators.unshift(errorView);
+    viewCreators.unshift(elementToHtml);
+    details.views = _.map(details.display, _.compose.apply(undefined, viewCreators));
+    return details;
+  }
 
-    // Render the manifest
-    view.append(template({headers:headers, manifest:manifest}));
+  function createSamplesView(view, manifest, transform) {
+    // Generate the display and then render the view
+    _.each(manifest.tubes, _.compose(generateView, _.partial(updateDisplay, transform)));
+    view.append(template({
+      headers:  _.map(manifest.tubes[0].display, function(c) { return c.friendlyName || c.columnName; }),
+      manifest: manifest
+    }));
 
     // Deal with checking & unchecking rows for orders
     view.delegate(

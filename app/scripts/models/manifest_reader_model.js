@@ -2,9 +2,8 @@ define([
   'models/base_page_model'
   , 'mapper/operations'
   , 'lib/file_handling/manifests'
-  , 'lib/json_templater'
   , 'lib/reception_templates'
-], function (BasePageModel, Operations, CSVParser, JsonTemplater, ReceptionTemplate) {
+], function (BasePageModel, Operations, CSVParser, ReceptionTemplate) {
   'use strict';
 
   var ReceptionModel = Object.create(BasePageModel);
@@ -19,7 +18,7 @@ define([
 
     reset: function () {
       this.template = undefined;
-      delete this.combinedData;
+      this.manifest = undefined;
     },
 
     setFileContent: function (fileContent) {
@@ -31,31 +30,20 @@ define([
       if (_.isUndefined(template)) {
         manifestInfo.errors.push("Could not find the corresponding template!");
       }
-      var applyTemplate = JsonTemplater.applicator(_.reduce(
-        template.json_template_display,
-        function(m,v,i) { return _.extend(m,v); },
-        {}
-      ));
 
       var columnHeaders = dataAsArray[template.header_line_number];
       if (columnHeaders.length <= 1 && columnHeaders[0]) {
         manifestInfo.errors.push("The file contains no header!");
       }
 
-      var combinedData = JsonTemplater.combineHeadersToData(
-        columnHeaders,
-        _.chain(dataAsArray).drop(template.header_line_number + 1).filter(_.first).value()
-      );
-
-      var tubeDetails    = _.map(combinedData, function(row) {
-        return {
-          row:      row,
-          barcode:  row['Tube Barcode'],
-          sample:   row['SANGER SAMPLE ID'],
-          resource: undefined,
-          errors:   []
-        };
-      });
+      var tubeDetails =
+        _.chain(dataAsArray)
+         .drop(template.header_line_number+1)
+         .filter(_.first)
+         .map(function(row) { return _.zip(columnHeaders, row); })
+         .map(function(pairs) { return _.object(pairs); })
+         .map(buildTubeDetailsForRow)
+         .value();
 
       // This is what we are going to fill out: information on each of the tubes (the tube itself but also if there is an
       // issue associated with it), and any global errors (missing barcodes, search errors).
@@ -63,7 +51,7 @@ define([
         errors: [],
         tubes:  tubeDetails
       };
-      if (combinedData.length <= 0) {
+      if (tubeDetails.length <= 0) {
         manifestInfo.errors.push("The file contains no data!");
       }
 
@@ -75,13 +63,12 @@ define([
                  .then(_.partial(pageThroughTubes, manifestInfo))
                  .then(_.partial(pushMissingTubeErrors, manifestInfo))
                  .then(_.partial(resolveSearch, manifestInfo))
-                 .always(_.partial(generateDisplay, manifestInfo, applyTemplate), maintainInformation);
+                 .always(maintainInformation);
 
       // TODO: this is 2 functions: save state, resolve
       function maintainInformation() {
         // we only save the details once we're certain that the data are correct!
         thisModel.manifest     = manifestInfo;
-        thisModel.combinedData = combinedData;
         thisModel.template     = template;
         return thisModel;
       }
@@ -89,9 +76,8 @@ define([
 
     updateSamples: function (dataFromGUI) {
       // Transform the GUI & manifest data into the same format
-      var applyTemplate  = JsonTemplater.applicator(this.template.json_template);
-      var samplesFromGUI = _.map(dataFromGUI, _.compose(removeUndefinedKeys, applyTemplate));
-      var samples        = _.map(this.combinedData, applyTemplate);
+      var samplesFromGUI = _.map(dataFromGUI, _.compose(removeUndefinedKeys, this.template.json_template));
+      var samples        = _.map(_.pluck(this.manifest.tubes, 'row'), this.template.json_template);
       var lookup         = _.partial(_.findBy, 'sanger_sample_id', samples);
 
       // Pair up the samples selected in the GUI with their manifest partners.  Merge the
@@ -198,12 +184,6 @@ define([
     return sample;
   }
 
-  function generateDisplay(manifestInfo, template) {
-    _.each(manifestInfo.tubes, function(details) {
-      details.display = template(details.row);
-    });
-  }
-
   // recursively remove undefined keys from this JS object
   function removeUndefinedKeys(object) {
     return _.reduce(object, function (memo, value, key) {
@@ -227,8 +207,20 @@ define([
   }
 
   function chain(handlers, chaining) {
+    if (handlers.length == 0) return;   // It's fair to assume this is an immediate return of undefined!
+
     var args = _.drop(arguments, 2);
     return _.chain(handlers).drop(1).reduce(chaining, handlers[0].apply(handlers[0], args)).value();
+  }
+
+  function buildTubeDetailsForRow(row) {
+    return {
+      row:      row,
+      barcode:  row['Tube Barcode'],
+      sample:   row['SANGER SAMPLE ID'],
+      resource: undefined,
+      errors:   []
+    };
   }
 
   return ReceptionModel;
