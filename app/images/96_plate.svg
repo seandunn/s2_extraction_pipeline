@@ -4039,10 +4039,8 @@
          id="tspan5299"
          sodipodi:role="line">12</tspan></text>
   </g>
-  <text id="Text">
-    <tspan
-       id="Barcode_Text"
-       x="0"
-       y="245" />
+  <text id="barcode" style="display:none;">
+    <tspan x="0" y="245">Barcode:</tspan>
+    <tspan class="value" x="100" y="245"/>
   </text>
 </svg>

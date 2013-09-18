@@ -5,23 +5,14 @@ define([
   'use strict';
 
   var RackController = function (owner, controllerFactory) {
-    var labType = "rack";
     BaseController.call(this);
     this.controllerFactory = controllerFactory;
-    this.init(owner, View, labType);
+    this.init(owner, View, "rack");
 
     return this;
   };
 
   RackController.prototype = new BaseController();
-
-  RackController.prototype.fillWell = function (well, colour){
-    this.currentView.fillWell(well,colour);
-  };
-
-  RackController.prototype.resetWells = function (){
-    this.currentView.resetWells();
-  };
 
   return RackController;
 });

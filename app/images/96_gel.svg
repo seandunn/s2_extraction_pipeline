@@ -2302,7 +2302,7 @@
        height="21.213203"
        id="A1"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="25.26355"
        y="22.721186" />
@@ -2310,7 +2310,7 @@
        height="21.213203"
        id="B1"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="25.26355"
        y="48.177029" />
@@ -2318,7 +2318,7 @@
        height="21.213203"
        id="C1"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="25.26355"
        y="73.27932" />
@@ -2326,7 +2326,7 @@
        height="21.213203"
        id="D1"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="25.26355"
        y="98.735161" />
@@ -2334,7 +2334,7 @@
        height="21.213203"
        id="E1"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="25.26355"
        y="122.77679" />
@@ -2342,7 +2342,7 @@
        height="21.213203"
        id="F1"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="25.26355"
        y="147.52553" />
@@ -2350,7 +2350,7 @@
        height="21.213203"
        id="G1"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="25.26355"
        y="172.98138" />
@@ -2358,7 +2358,7 @@
        height="21.213203"
        id="H1"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="25.26355"
        y="197.73012" />
@@ -2366,7 +2366,7 @@
        height="21.213203"
        id="A2"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="50.719395"
        y="22.721186" />
@@ -2374,7 +2374,7 @@
        height="21.213203"
        id="B2"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="50.719395"
        y="48.177029" />
@@ -2382,7 +2382,7 @@
        height="21.213203"
        id="C2"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="50.719395"
        y="73.27932" />
@@ -2390,7 +2390,7 @@
        height="21.213203"
        id="D2"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="50.719395"
        y="98.735161" />
@@ -2398,7 +2398,7 @@
        height="21.213203"
        id="E2"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="50.719395"
        y="122.77679" />
@@ -2406,7 +2406,7 @@
        height="21.213203"
        id="F2"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="50.719395"
        y="147.52553" />
@@ -2414,7 +2414,7 @@
        height="21.213203"
        id="G2"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="50.719395"
        y="172.98138" />
@@ -2422,7 +2422,7 @@
        height="21.213203"
        id="H2"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="50.719395"
        y="197.73012" />
@@ -2430,7 +2430,7 @@
        height="21.213203"
        id="A3"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="76.17524"
        y="22.721186" />
@@ -2438,7 +2438,7 @@
        height="21.213203"
        id="B3"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="76.17524"
        y="48.177029" />
@@ -2446,7 +2446,7 @@
        height="21.213203"
        id="C3"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="76.17524"
        y="73.27932" />
@@ -2454,7 +2454,7 @@
        height="21.213203"
        id="D3"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="76.17524"
        y="98.735161" />
@@ -2462,7 +2462,7 @@
        height="21.213203"
        id="E3"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="76.17524"
        y="122.77679" />
@@ -2470,7 +2470,7 @@
        height="21.213203"
        id="F3"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="76.17524"
        y="147.52553" />
@@ -2478,7 +2478,7 @@
        height="21.213203"
        id="G3"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="76.17524"
        y="172.98138" />
@@ -2486,7 +2486,7 @@
        height="21.213203"
        id="H3"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="76.17524"
        y="197.73012" />
@@ -2494,7 +2494,7 @@
        height="21.213203"
        id="A4"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="101.63108"
        y="22.721186" />
@@ -2502,7 +2502,7 @@
        height="21.213203"
        id="B4"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="101.63108"
        y="48.177029" />
@@ -2510,7 +2510,7 @@
        height="21.213203"
        id="C4"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="101.63108"
        y="73.27932" />
@@ -2518,7 +2518,7 @@
        height="21.213203"
        id="D4"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="101.63108"
        y="98.735161" />
@@ -2526,7 +2526,7 @@
        height="21.213203"
        id="E4"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="101.63108"
        y="122.77679" />
@@ -2534,7 +2534,7 @@
        height="21.213203"
        id="F4"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="101.63108"
        y="147.52553" />
@@ -2542,7 +2542,7 @@
        height="21.213203"
        id="G4"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="101.63108"
        y="172.98138" />
@@ -2550,7 +2550,7 @@
        height="21.213203"
        id="H4"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="101.63108"
        y="197.73012" />
@@ -2558,7 +2558,7 @@
        height="21.213203"
        id="A5"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="127.08692"
        y="22.721186" />
@@ -2566,7 +2566,7 @@
        height="21.213203"
        id="B5"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="127.08692"
        y="48.177029" />
@@ -2574,7 +2574,7 @@
        height="21.213203"
        id="C5"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="127.08692"
        y="73.27932" />
@@ -2582,7 +2582,7 @@
        height="21.213203"
        id="D5"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="127.08692"
        y="98.735161" />
@@ -2590,7 +2590,7 @@
        height="21.213203"
        id="E5"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="127.08692"
        y="122.77679" />
@@ -2598,7 +2598,7 @@
        height="21.213203"
        id="F5"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="127.08692"
        y="147.52553" />
@@ -2606,7 +2606,7 @@
        height="21.213203"
        id="G5"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="127.08692"
        y="172.98138" />
@@ -2614,7 +2614,7 @@
        height="21.213203"
        id="H5"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="127.08692"
        y="197.73012" />
@@ -2622,7 +2622,7 @@
        height="21.213203"
        id="A6"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="152.54277"
        y="22.721186" />
@@ -2630,7 +2630,7 @@
        height="21.213203"
        id="B6"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="152.54277"
        y="48.177029" />
@@ -2638,7 +2638,7 @@
        height="21.213203"
        id="C6"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="152.54277"
        y="73.27932" />
@@ -2646,7 +2646,7 @@
        height="21.213203"
        id="D6"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="152.54277"
        y="98.735161" />
@@ -2654,7 +2654,7 @@
        height="21.213203"
        id="E6"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="152.54277"
        y="122.77679" />
@@ -2662,7 +2662,7 @@
        height="21.213203"
        id="F6"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="152.54277"
        y="147.52553" />
@@ -2670,7 +2670,7 @@
        height="21.213203"
        id="G6"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="152.54277"
        y="172.98138" />
@@ -2678,7 +2678,7 @@
        height="21.213203"
        id="H6"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="152.54277"
        y="197.73012" />
@@ -2686,7 +2686,7 @@
        height="21.213203"
        id="A7"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="177.99861"
        y="22.721186" />
@@ -2694,7 +2694,7 @@
        height="21.213203"
        id="B7"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="177.99861"
        y="48.177029" />
@@ -2702,7 +2702,7 @@
        height="21.213203"
        id="C7"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="177.99861"
        y="73.27932" />
@@ -2710,7 +2710,7 @@
        height="21.213203"
        id="D7"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="177.99861"
        y="98.735161" />
@@ -2718,7 +2718,7 @@
        height="21.213203"
        id="E7"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="177.99861"
        y="122.77679" />
@@ -2726,7 +2726,7 @@
        height="21.213203"
        id="F7"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="177.99861"
        y="147.52553" />
@@ -2734,7 +2734,7 @@
        height="21.213203"
        id="G7"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="177.99861"
        y="172.98138" />
@@ -2742,7 +2742,7 @@
        height="21.213203"
        id="H7"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="177.99861"
        y="197.73012" />
@@ -2750,7 +2750,7 @@
        height="21.213203"
        id="A8"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="203.45445"
        y="22.721186" />
@@ -2758,7 +2758,7 @@
        height="21.213203"
        id="B8"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="203.45445"
        y="48.177029" />
@@ -2766,7 +2766,7 @@
        height="21.213203"
        id="C8"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="203.45445"
        y="73.27932" />
@@ -2774,7 +2774,7 @@
        height="21.213203"
        id="D8"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="203.45445"
        y="98.735161" />
@@ -2782,7 +2782,7 @@
        height="21.213203"
        id="E8"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="203.45445"
        y="122.77679" />
@@ -2790,7 +2790,7 @@
        height="21.213203"
        id="F8"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="203.45445"
        y="147.52553" />
@@ -2798,7 +2798,7 @@
        height="21.213203"
        id="G8"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="203.45445"
        y="172.98138" />
@@ -2806,7 +2806,7 @@
        height="21.213203"
        id="H8"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="203.45445"
        y="197.73012" />
@@ -2814,7 +2814,7 @@
        height="21.213203"
        id="A9"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="228.20319"
        y="22.721186" />
@@ -2822,7 +2822,7 @@
        height="21.213203"
        id="B9"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="228.20319"
        y="48.177029" />
@@ -2830,7 +2830,7 @@
        height="21.213203"
        id="C9"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="228.20319"
        y="73.27932" />
@@ -2838,7 +2838,7 @@
        height="21.213203"
        id="D9"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="228.20319"
        y="98.735161" />
@@ -2846,7 +2846,7 @@
        height="21.213203"
        id="E9"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="228.20319"
        y="122.77679" />
@@ -2854,7 +2854,7 @@
        height="21.213203"
        id="F9"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="228.20319"
        y="147.52553" />
@@ -2862,7 +2862,7 @@
        height="21.213203"
        id="G9"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="228.20319"
        y="172.98138" />
@@ -2870,7 +2870,7 @@
        height="21.213203"
        id="H9"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="228.20319"
        y="197.73012" />
@@ -2878,7 +2878,7 @@
        height="21.213203"
        id="A10"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="253.65904"
        y="22.721186" />
@@ -2886,7 +2886,7 @@
        height="21.213203"
        id="B10"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="253.65904"
        y="48.177029" />
@@ -2894,7 +2894,7 @@
        height="21.213203"
        id="C10"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="253.65904"
        y="73.27932" />
@@ -2902,7 +2902,7 @@
        height="21.213203"
        id="D10"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="253.65904"
        y="98.735161" />
@@ -2910,7 +2910,7 @@
        height="21.213203"
        id="E10"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="253.65904"
        y="122.77679" />
@@ -2918,7 +2918,7 @@
        height="21.213203"
        id="F10"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="253.65904"
        y="147.52553" />
@@ -2926,7 +2926,7 @@
        height="21.213203"
        id="G10"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="253.65904"
        y="172.98138" />
@@ -2934,7 +2934,7 @@
        height="21.213203"
        id="H10"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="253.65904"
        y="197.73012" />
@@ -2942,7 +2942,7 @@
        height="21.213203"
        id="A11"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="279.11487"
        y="22.721186" />
@@ -2950,7 +2950,7 @@
        height="21.213203"
        id="B11"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="279.11487"
        y="48.177029" />
@@ -2958,7 +2958,7 @@
        height="21.213203"
        id="C11"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="279.11487"
        y="73.27932" />
@@ -2966,7 +2966,7 @@
        height="21.213203"
        id="D11"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="279.11487"
        y="98.735161" />
@@ -2974,7 +2974,7 @@
        height="21.213203"
        id="E11"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="279.11487"
        y="122.77679" />
@@ -2982,7 +2982,7 @@
        height="21.213203"
        id="F11"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="279.11487"
        y="147.52553" />
@@ -2990,7 +2990,7 @@
        height="21.213203"
        id="G11"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="279.11487"
        y="172.98138" />
@@ -2998,7 +2998,7 @@
        height="21.213203"
        id="H11"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="279.11487"
        y="197.73012" />
@@ -3006,7 +3006,7 @@
        height="21.213203"
        id="A12"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="304.57071"
        y="22.721186" />
@@ -3014,7 +3014,7 @@
        height="21.213203"
        id="B12"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="304.57071"
        y="48.177029" />
@@ -3022,7 +3022,7 @@
        height="21.213203"
        id="C12"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="304.57071"
        y="73.27932" />
@@ -3030,7 +3030,7 @@
        height="21.213203"
        id="D12"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="304.57071"
        y="98.735161" />
@@ -3038,7 +3038,7 @@
        height="21.213203"
        id="E12"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="304.57071"
        y="122.77679" />
@@ -3046,7 +3046,7 @@
        height="21.213203"
        id="F12"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="304.57071"
        y="147.52553" />
@@ -3054,7 +3054,7 @@
        height="21.213203"
        id="G12"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="304.57071"
        y="172.98138" />
@@ -3062,16 +3062,14 @@
        height="21.213203"
        id="H12"
        ry="0"
-       style="fill:#e6e6e6;fill-opacity:0.61181138;stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.96289277;stroke-opacity:1"
        width="21.634893"
        x="304.57071"
        y="197.73012" />
   </g>
-  <text
-     id="Text">
-    <tspan
-       id="Barcode_Text"
-       x="0"
-       y="245" />
+  </text>
+  <text id="barcode" style="display:none;">
+    <tspan x="0" y="245">Barcode:</tspan>
+    <tspan class="value" x="100" y="245"/>
   </text>
 </svg>

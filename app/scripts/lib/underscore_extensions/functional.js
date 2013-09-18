@@ -37,6 +37,16 @@ define([], function() {
               .map(f)
               .object()
               .value();
+    },
+
+    // Returns a function that will call the given member function when passed an object.  Note
+    // that addition parameters can be specified at call time but are static for each call to
+    // the returned function.
+    callMemberFunction: function(name) {
+      var params = _.drop(arguments, 1);
+      return function(object) {
+        return object[name].apply(object, params);
+      };
     }
   };
 });
