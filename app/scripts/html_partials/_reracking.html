@@ -1,55 +1,51 @@
-<div> <!-- style="background: #e0ffff ; position: absolute">-->
-    <!--<div style="background: #fafad2; width:200px; top:0; float: left;">-->
-    <!--<div style="">Add</div>-->
-    <!--</div>-->
-    <div style="">
-        <div id="accordion">
-            <h3>1 - Scan the rack barcodes</h3>
-            <div class="process-step">
-                <div>
-                    <div id="barcodeReader"/>
-                </div>
-                <ul id="rack-list">
-                </ul>
-                <div style="position: relative; padding: 30px">
-                    <button id="start-rerack-btn" style="position: absolute; right:20px">
-                        Start reracking
-                    </button>
-                </div>
-            </div>
-            <h3>2 - Print barcode for the new rack</h3>
-            <div class="process-step">
-                <div style="position: relative; padding: 30px">
-                    <label for="printer-select">Current Printer:</label>
-                    <select class="printerSelect" id="printer-select">
-                        <% _.each (templateData.printerList, function (printer) { %>
-                        <option value="<%- printer.name %>"><%- printer.name %></option>
-                        <% }); %>
-                    </select>
-                    <button id="print-rerack-btn" style="position: absolute; right:20px">
-                        Print barcode
-                    </button>
-                </div>
-            </div>
-            <h3>3 - Load new rack content</h3>
-            <div class="process-step">
-                <div style="" id="output">
-                    <div class="kitSelection">
-                        <input type="file" accept="text/csv" class="hiddenFileInput hide">
+<div id="reracking" class="accordion">
+  <div class="accordion-group">
+    <h4 class="accordion-heading">1 - Scan the rack barcodes</h4>
 
-                        <div class="dropzone">
-                            <div class="dropzoneBox">Drop the file here, or click.</div>
-                            <div class="labware output-labware"></div>
-                        </div>
-                        <button id="rerack-btn">
-                            rerack
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="validationText alert hide">Transfer completed.</div>
+    <div id="rack-selection" class="accordion-body collapse in">
+      <div class="accordion-inner">
+        <div id="barcodeReader"></div>
+          <ul id="rack-list" class="unstyled"></ul>
+          <button type="button" id="start-rerack-btn" class="btn btn-primary hide">Start reracking</button>
+      </div>
     </div>
-</div>
+  </div>
 
+
+  <div class="accordion-group">
+    <div class="accordion-heading"><h4>2 - Print barcode for the new rack</h4></div>
+
+    <div id="rack-labelling" class="accordion-body collapse">
+      <div class="accordion-inner">
+
+        <label for="printer-select">Current Printer:</label>
+        <select class="printerSelect" id="printer-select">
+          <% _.each (templateData.printerList, function (printer) { %>
+          <option value="<%- printer.name %>"><%- printer.name %></option>
+          <% }); %>
+        </select>
+        <button type="button" id="print-rerack-btn" class="btn btn-primary">Print new rack barcode</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="accordion-group">
+    <h4 class="accordion-heading">3 - Scan new rack</h4>
+
+    <div id="racking-file-upload" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <div class="dropzone">
+          <input type="file" accept="text/csv" class="hiddenFileInput hide">
+          <div class="dropzoneBox"><i class="icon-file"></i>Drop the file here, or click.</div>
+          <div class="labware output-labware"></div>
+        </div>
+        <button type="button" id="rerack-btn" class="btn btn-primary">Re-Rack Tubes</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="validationText alert hide"></div>
+</div>
 

@@ -175,79 +175,13 @@ define(['config'
     },
 
     disableDropzone: function () {
-      var container = this.jquerySelection();
-      container.find('.dropzoneBox').hide();
-      container.find('.dropzone').unbind('click');
-      $(document).unbind('drop');
-      $(document).unbind('dragover');
+      this.dropzone.disable();
     },
 
     enableDropzone: function () {
-      var thisController = this;
       var container = this.jquerySelection();
-      container.find('.dropzoneBox').show();
-
-      var dropzone = container.find('.dropzone');
-
-      // add listeners to the hiddenFileInput
-      dropzone.bind('click', handleClickOnDropZone); // forward the click to the hiddenFileInput
-      $(document).bind('drop', handleDropFileOnDropZone);
-      $(document).bind('dragover', handleDragFileOverDropZone);
-      var fileNameSpan = container.find('.filenameSpan');
-
-      var hiddenFileInput = container.find('.hiddenFileInput');
-      hiddenFileInput.bind("change", handleInputFileChanged);
-
-      function handleInputFile(fileHandle) {
-        // what to do when a file has been selected
-        var reader = new FileReader();
-        reader.onload = (function (fileEvent) {
-          return function (e) {
-            fileNameSpan.text(fileHandle.name);
-          }
-        })(fileHandle);
-        reader.onloadend = function (event) {
-          if (event.target.readyState === FileReader.DONE) {
-            thisController.responderCallback(event.target.result);
-          }
-        };
-        reader.readAsText(fileHandle, "UTF-8");
-      }
-
-      function handleInputFileChanged(event) {
-        // what to do when the file selected by the hidden input changed
-        event.stopPropagation();
-        event.preventDefault();
-        handleInputFile(event.originalEvent.target.files[0]);
-      }
-
-      function handleClickOnDropZone(event) {
-        // what to do when one clicks on the drop zone
-        event.stopPropagation();
-        event.preventDefault();
-        if (hiddenFileInput) {
-          hiddenFileInput.click();
-        }
-      }
-
-      function handleDropFileOnDropZone(event) {
-        // what to do when one drops a file
-        event.stopPropagation();
-        event.preventDefault();
-        handleInputFile(event.originalEvent.dataTransfer.files[0]);
-      }
-
-      function handleDragFileOverDropZone(event) {
-        // what to do when one hovers over the dropzone
-        event.stopPropagation();
-        event.preventDefault();
-        if (event.target === dropzone[0]) {
-          dropzone.addClass('hover');
-        } else {
-          dropzone.removeClass('hover');
-        }
-      }
-
+      this.dropzone = DropZone.init(container.find('.dropzone'));
+      this.dropzone.enable(_.bind(this.responderCallback, this));
     },
 
     renderView: function () {

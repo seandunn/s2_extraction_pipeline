@@ -5,7 +5,8 @@ define(['config'
   , 'models/manifest_reader_model'
   , 'lib/pubsub'
   , 'lib/reception_templates'
-], function (config, BaseController, componentPartialHtml, sampleRowPartial, Model, PubSub, ReceptionTemplates) {
+  , 'views/drop_zone'
+], function (config, BaseController, componentPartialHtml, sampleRowPartial, Model, PubSub, ReceptionTemplates, DropZone) {
   'use strict';
 
   var Controller = Object.create(BaseController);
@@ -32,14 +33,12 @@ define(['config'
     createHtml: function (templateData) {
       var html = $(_.template(componentPartialHtml)(templateData));
       // saves the selection for performances
-      this.dropzoneSelection = html.find('.dropzone');
-      this.dropzoneBoxSelection = html.find('.dropzoneBox');
       this.registerBtnSelection = html.find('#registrationBtn');
-      this.fileNameSpanSelection = html.find('.filenameSpan');
-      this.hiddenFileInputSelection = html.find('.hiddenFileInput');
       this.orderMakerSelection = html.find(".orderMaker");
 
-      this.enableDropzone();
+      this.dropzone = DropZone.init(html.find('.dropzone'));
+      this.dropzone.enable(_.bind(this.responderCallback, this));
+
       this.registerBtnSelection.hide().click(onRegistrationButtonClickEventHandler(this));
       function onRegistrationButtonClickEventHandler(controller) {
         return function () {
@@ -62,77 +61,10 @@ define(['config'
       this.model.then(function (model) {
         model.reset();
       });
-      this.dropzoneBoxSelection.show();
+      this.dropzone.disable();
       this.registerBtnSelection.hide();
-      this.fileNameSpanSelection.empty();
-      this.hiddenFileInputSelection.removeAttr('disabled');
       this.removeSamplesView();
       this.message();
-    },
-
-    // dropzone
-
-    enableDropzone: function () {
-      var thisController = this;
-      // add listeners to the hiddenFileInput
-      thisController.dropzoneSelection.bind('click', handleClickOnDropZone); // forward the click to the hiddenFileInput
-      thisController.dropzoneSelection.bind('drop', handleDropFileOnDropZone);
-      thisController.dropzoneSelection.bind('dragover', handleDragFileOverDropZone);
-      thisController.hiddenFileInputSelection.bind("change", handleInputFileChanged);
-      //
-      function handleInputFile(fileHandle) {
-        // what to do when a file has been selected
-        var reader = new FileReader();
-        reader.onload = (function (fileEvent) {
-          return function (e) {
-            thisController.fileNameSpanSelection.text(fileHandle.name);
-          }
-        })(fileHandle);
-        reader.onloadend = function (event) {
-          if (event.target.readyState === FileReader.DONE) {
-            thisController.responderCallback(event.target.result);
-          }
-        };
-        reader.readAsText(fileHandle, "UTF-8");
-      }
-
-      //
-      function handleInputFileChanged(event) {
-        // what to do when the file selected by the hidden input changed
-        event.stopPropagation();
-        event.preventDefault();
-        handleInputFile(event.originalEvent.target.files[0]);
-      }
-
-      //
-      function handleClickOnDropZone(event) {
-        // what to do when one clicks on the drop zone
-        event.stopPropagation();
-        event.preventDefault();
-        if (thisController.hiddenFileInputSelection) {
-          thisController.hiddenFileInputSelection.click();
-        }
-      }
-
-      //
-      function handleDropFileOnDropZone(event) {
-        // what to do when one drops a file
-        event.stopPropagation();
-        event.preventDefault();
-        handleInputFile(event.originalEvent.dataTransfer.files[0]);
-      }
-
-      //
-      function handleDragFileOverDropZone(event) {
-        // what to do when one hovers over the dropzone
-        event.stopPropagation();
-        event.preventDefault();
-        if (event.target === thisController.dropzoneSelection[0]) {
-          thisController.dropzoneSelection.addClass('hover');
-        } else {
-          thisController.dropzoneSelection.removeClass('hover');
-        }
-      }
     },
 
     responderCallback: function (fileContent) {
@@ -152,8 +84,6 @@ define(['config'
           .then(function (model) {
             thisController.registerBtnSelection.show();
             thisController.createSamplesView(model);
-            thisController.hiddenFileInputSelection.attr('disabled', 'disabled');
-//            thisController.barcodeReaderSelection.find('.barcodeInput').focus(); // does not work!!??
             thisController.view.trigger("s2.busybox.end_process");
             deferred.resolve(thisController);
           });
@@ -226,7 +156,6 @@ define(['config'
           });
       this.orderMakerSelection.append(_.template(sampleRowPartial)({headers:headers, data: sampleData}));
 
-      this.dropzoneBoxSelection.hide();
       this.orderMakerSelection
           .find("td input")
           .filter(function(){
@@ -286,7 +215,6 @@ define(['config'
           })
           .then(function (model) {
             thisController.registerBtnSelection.hide();
-            thisController.dropzoneBoxSelection.hide();
             thisController.view.trigger("s2.busybox.end_process");
             return thisController.message('success', 'Samples updated.');
           })

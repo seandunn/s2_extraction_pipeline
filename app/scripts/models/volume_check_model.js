@@ -1,74 +1,11 @@
 define([
   "models/base_page_model",
+  "lib/file_handling/volume",
   "labware/presenter"
-], function (BasePageModel, LabwarePresenter) {
+], function (BasePageModel, FileHandler, LabwarePresenter) {
   "use strict";
 
   var Model = Object.create(BasePageModel);
-
-  function parseVolumeFile(csvAsTxt) {
-    var csvArray = $.csv.toArrays(csvAsTxt);
-    var reBarcode = /\s*(\w)(\d\d)\s*/i;
-
-    var tubes = _.chain(csvArray)
-      .drop()
-      .reduce(function (memo, row) {
-        var matches = reBarcode.exec(row[1]);
-
-        if (matches) {
-          var locationLetter = matches[1];
-          var locationNumber = parseInt(matches[2], 10);
-          memo[(locationLetter + locationNumber).trim()] = parseFloat(row[2].trim());
-        }
-
-        return memo;
-      }, {})
-      .value();
-
-    return {
-      rackBarcode:  csvArray[1][0].replace(/ /g,""),
-      tubes:        tubes
-    };
-  }
-
-  function checkFileIntegrity(model, parsedVolumes) {
-    // A valid MicroLab volume files should have 3 columns
-    // 1st column: rack EAN13 barcode
-    // 2nd column: Tube location e.g. A01, B01, etc.
-    // 3rd column: Tube volume in uL
-    //
-    // There should be a volume for every location even empty wells.
-    var deferred = $.Deferred();
-
-    var rack = model.rack;
-
-    if (rack.labels.barcode.value === parsedVolumes.rackBarcode) {
-      deferred.resolve(parsedVolumes);
-    } else {
-      // This should use Q style exception handling and get rid of the extra
-      // deferred
-      deferred.reject("This file does not match the current Tube Rack.");
-    }
-
-    return deferred.promise();
-  }
-
-  function updateJSON(uuid,newRole, oldRole) {
-    var updateJson = { items: {} };
-    var newEvent   = "start";
-
-    if (oldRole){
-      updateJson.items[oldRole]       = {};
-      updateJson.items[oldRole][uuid] = { event: "unuse" };
-
-      newEvent = "complete";
-    }
-
-    updateJson.items[newRole]       = {};
-    updateJson.items[newRole][uuid] = { event: newEvent };
-
-    return updateJson;
-  }
 
   _.extend(Model, LabwarePresenter, {
     init: function (owner, config, inputModel) {
@@ -84,15 +21,33 @@ define([
       return this;
     },
 
-    analyseFileContent: function (csvAsTxt) {
-      var thisModel     = this;
-      var parsedVolumes = parseVolumeFile(csvAsTxt);
+    analyseFileContent: function (csv) {
+      var deferred = $.Deferred();
+      var parsed = FileHandler.from(csv);
+      var rack = this.rack;
 
-      return checkFileIntegrity(thisModel, parsedVolumes).then(function (validatedVolumes) {
-        thisModel.validatedVolumes = validatedVolumes;
-        return thisModel;
-      });
+      if (parsed.rack_barcode !== rack.labels.barcode.value) {
+        deferred.reject("The uploaded file is for '" + parsed.rack_barcode + "' " +
+                        "not '" + rack.labels.barcode.value + "'");
+      } else {
+        var scored = 
+          _.chain(parsed.tubes)
+           .map(_.partial(scoreTubes, this.config.thresholds, rack))
+           .object()
+           .value();
 
+        this.validatedVolumes = _.object(parsed.tubes);
+
+        deferred.resolve({
+          rack: {
+            resourceType: "tube_rack",
+            locations: scored,
+            barcode: parsed.rack_barcode
+          }
+        });
+      }
+
+      return deferred.promise();
     },
 
     save: function () {
@@ -100,48 +55,62 @@ define([
       var inputRole  = model.config.input.role;
       var outputRole = model.config.output[0].role;
 
-      return model.owner
-      .getS2Root()
+      var tubeVolumes =
+        _.chain(model.rack.tubes)
+         .map(function(tube, location) { return [location, {tube_uuid: tube.uuid, volume: model.validatedVolumes[location]}]; })
+         .object()
+         .value();
 
-      .then(function (root) {
-        var tubeVolumes = _
-        .reduce(model.rack.tubes, function(memo, tube, location){
-          memo[location] = {
-            tube_uuid:  tube.uuid,
-            volume:     model.validatedVolumes.tubes[location]
-          };
+      return model.rack
+                  .update({ tubes: tubeVolumes })
+                  .then(function(tubeRack){
+                    return tubeRack.orders();
+                  }, function (errorMessage) {
+                    return "Saving of volumes has failed: " + errorMessage;
+                  })
+                  .then(updateOrders)
+                  .then(function() { return "Volume check complete."; });
 
-          return memo;
-        }, {});
-
-        return model.rack.update({ tubes: tubeVolumes});
-      })
-
-      .then(function(tubeRack){
-        // Add new role of volume_checked: in_progess
-        return tubeRack.orders();
-      }, function (errorMessage) {
-        return "Saving of volumes has failed: " + errorMessage;
-      })
-
-      .then(function(orders) {
-        var orderPromises = _.map(orders, function (order) {
-          return order
-          .update(updateJSON(model.rack.uuid, outputRole))
-          .then(function(order) {
-            return order.update(updateJSON(model.rack.uuid, outputRole, inputRole))
-          });
-        });
-
-        return $.when.apply(undefined, orderPromises);
-      })
-      .then(function() {
-        return "Volume check complete.";
-      });
-
+      function updateOrders(orders) {
+        return $.when.apply(undefined, _.map(orders, function(order) {
+          return order.update(start(model.rack.uuid, outputRole))
+                      .then(function(order) {
+                        return order.update(complete(model.rack.uuid, outputRole, inputRole));
+                      });
+        }));
+      }
     }
   });
 
   return Model;
+
+  function scoreTubes(thresholds, rack, details) {
+    var location = details[0], volume = details[1];
+    return [location, score(thresholds, volume, rack.tubes[location])];
+  }
+  function score(thresholds, volumeInFile, tubeInRack) {
+    var score = _.find(thresholds, _.partial(overThreshold, volumeInFile))[1];
+    if (_.isUndefined(tubeInRack) && !isAcceptableForEmptySlot(score)) {
+      return "data-not-resource";
+    } else {
+      return score;
+    }
+  }
+  function overThreshold(volume, threshold) {
+    return _.isNull(threshold[0]) || (volume < threshold[0]);
+  }
+  function isAcceptableForEmptySlot(score) {
+    return (score == "empty") || (score == "error");
+  }
+
+  function start(uuid, role) {
+    return _.build('items', role, uuid, 'event', 'start');
+  }
+  function complete(uuid, roleToComplete, roleToUnuse) {
+    return _.build('items', _.object([
+      [roleToUnuse,    _.build(uuid, {event:"unuse"})],
+      [roleToComplete, _.build(uuid, {event:"complete"})]
+    ]));
+  }
 });
 

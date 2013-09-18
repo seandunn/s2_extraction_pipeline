@@ -216,7 +216,7 @@
         "purpose":    "stock",
         "model":      "spin_columns"
       }, {
-        "model": "waste_tube",
+        "model": "tube",
         "tracked": false,
         "title":  "Collection Tube"
       }
@@ -299,7 +299,7 @@
         "purpose":    "stock",
         "model":      "spin_columns"
       }, {
-        "model": "waste_tube",
+        "model": "tube",
         "tracked": false,
         "title":  "Collection Tube"
       }
@@ -458,7 +458,7 @@
         "purpose":    "stock",
         "model":      "spin_columns"
       }, {
-        "model": "waste_tube",
+        "model": "tube",
         "tracked": false
       }
       ]
@@ -709,7 +709,7 @@
         "title":      "Eppendorf Extracted RNA Tube",
         "not_batched": false
       }, {
-        "model": "waste_tube",
+        "model": "tube",
         "tracked": false
       }
       ]
@@ -756,7 +756,7 @@
         "title":      "Eppendorf Extracted RNA Tube",
         "not_batched": false
       }, {
-        "model": "waste_tube",
+        "model": "tube",
         "tracked": false
       }
       ]
@@ -839,7 +839,7 @@
         "title":      "Eppendorf Extracted DNA Tube",
         "not_batched": false
       }, {
-        "model": "waste_tube",
+        "model": "tube",
         "tracked": false
       }
       ]
@@ -1215,6 +1215,15 @@
       {
         "controllerName": "rack_scan_controller",
         "model":          "VolumeCheckModel",
+        "thresholds": [
+          [ 0.00, "error" ],
+          [ 0.10, "empty" ],
+          [ 0.50, "very-poor" ],
+          [ 0.75, "poor" ],
+          [ 1.00, "good" ],
+          [ 1.25, "very good" ],
+          [ null, "excellent" ]
+        ],
         "input":          {
           "role":  "samples.rack.stock.rna",
           "model": "tube_racks"
@@ -1273,7 +1282,7 @@
       "input":         {
         "role": "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna.batched",
         "model":"tube_racks",
-        "title": "Volume Checked DNA Rack"
+        "title": "Volume Checked RNA Rack"
       },
       "output":        [
         {

@@ -1,7 +1,6 @@
 define([
   'labware/controllers/tube_controller',
   'labware/controllers/spin_column_controller',
-  'labware/controllers/waste_tube_controller',
   'labware/controllers/rack_controller',
   'labware/controllers/gel_controller',
   'labware/controllers/plate_controller',
@@ -28,7 +27,7 @@ define([
   'controllers/manifest_reader_controller',
   'controllers/summary_page_controller',
   'controllers/file_generator_controller'
-], function(TubeController, SpinColumnController, WasteTubeController, RackController, GelController, PlateController) {
+], function(TubeController, SpinColumnController, RackController, GelController, PlateController) {
   'use strict';
 
   var ControllerFactory = function () {
@@ -43,13 +42,12 @@ define([
     return this;
   };
 
-  ControllerFactory.prototype.controllers = _.chain(arguments).drop(6).reduce(function(controllers, controller) {
+  ControllerFactory.prototype.controllers = _.chain(arguments).drop(5).reduce(function(controllers, controller) {
     controller.register(function(name, method) { controllers[name] = method; });
     return controllers;
   }, {
     createSpinColumnController: function(owner) { return new SpinColumnController(owner, this); },
     createTubeController:       function(owner) { return new TubeController(owner, this); },
-    createWasteTubeController:  function(owner) { return new WasteTubeController(owner, this); },
     createGelController:        function(owner) { return new GelController(owner, this); },
     createRackController:       function(owner) { return new RackController(owner, this); },
     createPlateController:      function(owner) { return new PlateController(owner, this); }
@@ -71,7 +69,6 @@ define([
     switch (type) {
       case 'tube':        return this.controllers.createTubeController(owner);       break;
       case 'spin_column': return this.controllers.createSpinColumnController(owner); break;
-      case 'waste_tube':  return this.controllers.createWasteTubeController(owner);  break;
       case 'tube_rack':   return this.controllers.createRackController(owner);       break;
       case 'gel':         return this.controllers.createGelController(owner);        break;
       case 'plate':       return this.controllers.createPlateController(owner);      break;

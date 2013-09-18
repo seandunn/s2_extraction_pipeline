@@ -49,6 +49,23 @@ define(['config'
       return appConfig.printers.filter(function(printer){
         return printer.type === workflowConfig.printerType;
       });
+    },
+
+    startProcess: function(f) {
+      var controller = this;
+      return _.wrap(f, function(func) {
+        controller.view.trigger("s2.busybox.start_process");
+        return func.apply(undefined, _.drop(arguments, 1));
+      });
+    },
+
+    finishProcess: function(f) {
+      var controller = this;
+      return _.wrap(f, function(func) {
+        var rc = func.apply(undefined, _.drop(arguments, 1));
+        controller.view.trigger("s2.busybox.end_process");
+        return rc;
+      });
     }
   });
 
