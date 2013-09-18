@@ -64,7 +64,7 @@ define([
       item: "<li>" + rack.labels.barcode.value + "</li>",
       render: function() {
         controller.renderView();
-        controller.updateModel(rackRepresentation);
+        controller.updateModel(rackRepresentation, _.identity);
       }
     };
   }
