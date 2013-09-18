@@ -151,7 +151,7 @@ define([
 
     editableControllers: function() {
       return this.controllers.compact().filter(function(controller) { 
-        return !controller.isSpecial()  && !((typeof controller.labwareModel.resource!== 'undefined') && (controller.labwareModel.resource.tracked === false));
+        return !controller.isSpecial()  && !((!_.isUndefined(controller.labwareModel.resource)) && (controller.labwareModel.resource.tracked === false));
       });
     },
 

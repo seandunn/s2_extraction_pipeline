@@ -157,10 +157,6 @@ define(['controllers/base_controller'
     isSpecial: function() {
       return specialType(this.labwareModel.expected_type) || isUntracked(this.labwareModel);
 
-      function isEppendorfDNA(model) {
-        return (model.title === "Eppendorf DNA Tube");
-      }
-      
       function isUntracked(model) {
         return !_.isUndefined(model.resource) && (model.tracked === false);
       }
