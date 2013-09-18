@@ -17,7 +17,6 @@ define([
     },
 
     reset: function () {
-      this.template = undefined;
       this.manifest = undefined;
     },
 
@@ -25,34 +24,38 @@ define([
       var thisModel   = this;
       var dataAsArray = CSVParser.from(fileContent);
 
-      var templateName = dataAsArray[2][0]; // always A3 !!
-      var template     = ReceptionTemplate[templateName];
-      if (_.isUndefined(template)) {
-        manifestInfo.errors.push("Could not find the corresponding template!");
+      // This is what we are going to fill out: information on each of the tubes (the tube itself but also if there is an
+      // issue associated with it), and any global errors (missing barcodes, search errors).
+      this.manifest = {
+        template: undefined,
+        errors: [],
+        tubes:  undefined
+      };
+
+      var templateName       = dataAsArray[2][0]; // always A3 !!
+      this.manifest.template = ReceptionTemplate[templateName];
+      if (_.isUndefined(this.manifest.template)) {
+        this.manifest.errors.push("Could not find the corresponding template!");
+        return $.Deferred().reject(this);
       }
 
-      var columnHeaders = dataAsArray[template.header_line_number];
+      var columnHeaders = dataAsArray[this.manifest.template.header_line_number];
       if (columnHeaders.length <= 1 && columnHeaders[0]) {
-        manifestInfo.errors.push("The file contains no header!");
+        this.manifest.errors.push("The file contains no header!");
+        return $.Deferred().reject(this);
       }
 
-      var tubeDetails =
+      this.manifest.tubes =
         _.chain(dataAsArray)
-         .drop(template.header_line_number+1)
+         .drop(this.manifest.template.header_line_number+1)
          .filter(_.first)
          .map(function(row) { return _.zip(columnHeaders, row); })
          .map(function(pairs) { return _.object(pairs); })
          .map(buildTubeDetailsForRow)
          .value();
 
-      // This is what we are going to fill out: information on each of the tubes (the tube itself but also if there is an
-      // issue associated with it), and any global errors (missing barcodes, search errors).
-      var manifestInfo = {
-        errors: [],
-        tubes:  tubeDetails
-      };
-      if (tubeDetails.length <= 0) {
-        manifestInfo.errors.push("The file contains no data!");
+      if (this.manifest.tubes.length <= 0) {
+        this.manifest.errors.push("The file contains no data!");
       }
 
       // Page through all of the tubes from the manifest, checking the information from the manifest against what the
@@ -60,24 +63,16 @@ define([
       // in the system should be pushed as errors.  Finally, resolve the search appropriately.
       return this.owner
                  .getS2Root()
-                 .then(_.partial(pageThroughTubes, manifestInfo))
-                 .then(_.partial(pushMissingTubeErrors, manifestInfo))
-                 .then(_.partial(resolveSearch, manifestInfo))
-                 .always(maintainInformation);
-
-      // TODO: this is 2 functions: save state, resolve
-      function maintainInformation() {
-        // we only save the details once we're certain that the data are correct!
-        thisModel.manifest     = manifestInfo;
-        thisModel.template     = template;
-        return thisModel;
-      }
+                 .then(_.partial(pageThroughTubes, this.manifest))
+                 .then(_.partial(pushMissingTubeErrors, this.manifest))
+                 .then(_.partial(resolveSearch, this.manifest))
+                 .always(function() { return thisModel; });
     },
 
     updateSamples: function (dataFromGUI) {
       // Transform the GUI & manifest data into the same format
-      var samplesFromGUI = _.map(dataFromGUI, _.compose(removeUndefinedKeys, this.template.json_template));
-      var samples        = _.map(_.pluck(this.manifest.tubes, 'row'), this.template.json_template);
+      var samplesFromGUI = _.map(dataFromGUI, _.compose(removeUndefinedKeys, this.manifest.template.json_template));
+      var samples        = _.map(_.pluck(this.manifest.tubes, 'row'), this.manifest.template.json_template);
       var lookup         = _.partial(_.findBy, 'sanger_sample_id', samples);
 
       // Pair up the samples selected in the GUI with their manifest partners.  Merge the
@@ -112,8 +107,8 @@ define([
   // handled individually, with the entries on the page being handled sequentially.  Therefore, rather
   // than having 1000 simultaneous requests, we get 10 simultaneous requests that are 100 sequential
   // requests.  This should reduce the load on the browser.
-  function pageThroughTubes(manifestInfo, root) {
-    var barcodes = _.pluck(manifestInfo.tubes, 'barcode');
+  function pageThroughTubes(manifest, root) {
+    var barcodes = _.pluck(manifest.tubes, 'barcode');
     var promises = [];
     return root.tubes.searchByBarcode().ean13(barcodes).paged(function(page, hasNext) {
       if (page.entries.length == 0) return;
@@ -127,14 +122,14 @@ define([
 
     function promiseHandler(tube) {
       return function() {
-        return updateManifestDetails(root, manifestInfo, tube);
+        return updateManifestDetails(root, manifest, tube);
       };
     }
   }
 
   // Any barcodes that were not found need to be marked as being missing.
-  function pushMissingTubeErrors(manifestInfo, value) {
-    _.each(manifestInfo.tubes, function(tube) {
+  function pushMissingTubeErrors(manifest, value) {
+    _.each(manifest.tubes, function(tube) {
       if (!_.isUndefined(tube.resource)) return;
       tube.errors.push("Cannot find this barcode in the system");
     });
@@ -142,31 +137,32 @@ define([
   }
 
   // If there are any global errors, or any individual tube errors, then we should reject the search.
-  function resolveSearch(manifestInfo) {
+  function resolveSearch(manifest) {
     var deferred   = $.Deferred();
     var resolution = 'resolve';
-    if (manifestInfo.errors.length > 0) {
+    if (manifest.errors.length > 0) {
       resolution = 'reject';
-    } else if (_.chain(manifestInfo.tubes).pluck('errors').flatten().value().length > 0) {
+    } else if (_.chain(manifest.tubes).pluck('errors').flatten().value().length > 0) {
       resolution = 'reject';
     }
 
-    return deferred[resolution](manifestInfo);
+    return deferred[resolution](manifest);
   }
 
-  function updateManifestDetails(root, manifestInfo, tube) {
-    var tubeDetails = _.find(manifestInfo.tubes, function (details) {
+  function updateManifestDetails(root, manifest, tube) {
+    var tubeDetails = _.find(manifest.tubes, function (details) {
       return details.barcode === tube.labels.barcode.value;
     });
 
     if (_.isUndefined(tubeDetails)) {
-      manifestInfo.errors.push("Tube '" + tube.labels.barcode.value + "' is not part of the manifest!");
+      manifest.errors.push("Tube '" + tube.labels.barcode.value + "' is not part of the manifest!");
       return $.Deferred().reject();
     } else {
       tubeDetails.resource = tube;
       return root.samples
                  .find(tube.aliquots[0].sample.uuid)
-                 .then(_.partial(checkSample, tubeDetails));
+                 .then(_.partial(checkSample, tubeDetails))
+                 .then(manifest.template.validation);
     }
   }
 
@@ -181,7 +177,7 @@ define([
     if (_.isUndefined(gender) || !_.isString(gender) || (gender.trim() === '')) {
       tubeDetails.errors.push("Gender is invalid");
     }
-    return sample;
+    return tubeDetails;
   }
 
   // recursively remove undefined keys from this JS object

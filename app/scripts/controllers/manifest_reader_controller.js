@@ -159,8 +159,7 @@ define(['config'
 
     createSamplesView(
       controller.orderMakerSelection,
-      manifest,
-      controller.model.template.json_template_display
+      manifest
     );
 
     return manifest;
@@ -188,9 +187,9 @@ define(['config'
     return details;
   }
 
-  function createSamplesView(view, manifest, transform) {
+  function createSamplesView(view, manifest) {
     // Generate the display and then render the view
-    _.each(manifest.tubes, _.compose(generateView, _.partial(updateDisplay, transform)));
+    _.each(manifest.tubes, _.compose(generateView, _.partial(updateDisplay, manifest.template.json_template_display)));
     view.append(template({
       headers:  _.map(manifest.tubes[0].display, function(c) { return c.friendlyName || c.columnName; }),
       manifest: manifest

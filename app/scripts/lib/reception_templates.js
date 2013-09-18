@@ -15,7 +15,8 @@ define([
   var register = function(name, template) {
     Templates[name] = _.extend(template, {
       json_template:         JsonTemplater.applicator(templateTransform(template.templates.updates)),
-      json_template_display: JsonTemplater.applicator(displayTransform(template.templates.display))
+      json_template_display: JsonTemplater.applicator(displayTransform(template.templates.display)),
+      validation:            template.validation || _.identity
     });
     Templates.templateList.push({
       template_name: name,
