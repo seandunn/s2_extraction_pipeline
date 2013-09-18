@@ -5,10 +5,8 @@ require.config({
   baseUrl: "scripts",
 
   paths:{
-    hm:                   "vendor/hm",
-    esprima:              "vendor/esprima",
-    jquery:               "vendor/jquery.min",
-    bootstrap:            "vendor/bootstrap/bootstrap",
+    jquery:               "../components/jquery/jquery.min",
+    bootstrap:            "../components/sass-bootstrap/js",
     text:                 "../components/requirejs-text/text",
     spinjs:               "../components/spin.js/spin",
     labware:              "labware",
@@ -25,7 +23,7 @@ require.config({
 require([
   "app",
   "controllers/controller_factory",
-  "bootstrap"
+  "bootstrap/bootstrap-collapse"
 ], function (App, ControllerFactory) {
   "use strict";
 
