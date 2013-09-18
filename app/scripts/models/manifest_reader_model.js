@@ -75,8 +75,7 @@ define([
                  .then(_.partial(pageThroughTubes, manifestInfo))
                  .then(_.partial(pushMissingTubeErrors, manifestInfo))
                  .then(_.partial(resolveSearch, manifestInfo))
-                 .always(_.partial(generateDisplay, manifestInfo, applyTemplate))
-                 .always(maintainInformation);
+                 .always(_.partial(generateDisplay, manifestInfo, applyTemplate), maintainInformation);
 
       // TODO: this is 2 functions: save state, resolve
       function maintainInformation() {
@@ -123,30 +122,37 @@ define([
     }
   });
 
-  // Search for each of the tubes in the manifest so that we can process them in pages.
+  // Search for each of the tubes in the manifest so that we can process them in pages.  Each page is
+  // handled individually, with the entries on the page being handled sequentially.  Therefore, rather
+  // than having 1000 simultaneous requests, we get 10 simultaneous requests that are 100 sequential
+  // requests.  This should reduce the load on the browser.
   function pageThroughTubes(manifestInfo, root) {
-    var deferred = $.Deferred();
     var barcodes = _.pluck(manifestInfo.tubes, 'barcode');
+    var promises = [];
+    return root.tubes.searchByBarcode().ean13(barcodes).paged(function(page, hasNext) {
+      if (page.entries.length == 0) return;
+      promises.push(chain(_.map(page.entries, promiseHandler), _.regardless));
+    }).then(function() {
+      // Normally we would use '$.when' here but the problem is that we want to wait for all promises
+      // to finish, regardless of their reject/resolve status.  $.when will reject immediately upon
+      // *one* of the promises being rejected.
+      return chain(_.map(promises, _.partial(_.partial, _.identity)), _.regardless);
+    })
 
-    // WARNING: Paging does not finish when it reaches the end, because the handling is done asynchronously.
-    // Therefore we need to resolve only once we reach the end of the handling, and if there are no more
-    // pages to come.
-    //
-    // TODO: Handle failures.  If there are failures during the processing of each page then we need to 
-    // collect those errors together somehow.
-    root.tubes.searchByBarcode().ean13(barcodes).paged(function(page, hasNext) {
-      var promise = $.when.apply(null, _.map(page.entries, _.partial(updateManifestDetails, root, manifestInfo)))
-      if (!hasNext) { promise.then(_.bind(deferred.resolve, deferred)); }
-    });
-    return deferred;
+    function promiseHandler(tube) {
+      return function() {
+        return updateManifestDetails(root, manifestInfo, tube);
+      };
+    }
   }
 
   // Any barcodes that were not found need to be marked as being missing.
-  function pushMissingTubeErrors(manifestInfo) {
+  function pushMissingTubeErrors(manifestInfo, value) {
     _.each(manifestInfo.tubes, function(tube) {
       if (!_.isUndefined(tube.resource)) return;
       tube.errors.push("Cannot find this barcode in the system");
     });
+    return value;
   }
 
   // If there are any global errors, or any individual tube errors, then we should reject the search.
@@ -189,6 +195,7 @@ define([
     if (_.isUndefined(gender) || !_.isString(gender) || (gender.trim() === '')) {
       tubeDetails.errors.push("Gender is invalid");
     }
+    return sample;
   }
 
   function generateDisplay(manifestInfo, template) {
@@ -217,6 +224,11 @@ define([
   function markSampleForPublishing(sample) {
     sample["state"] = "published";
     return sample;
+  }
+
+  function chain(handlers, chaining) {
+    var args = _.drop(arguments, 2);
+    return _.chain(handlers).drop(1).reduce(chaining, handlers[0].apply(handlers[0], args)).value();
   }
 
   return ReceptionModel;
