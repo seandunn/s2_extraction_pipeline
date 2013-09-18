@@ -2,10 +2,8 @@ define([
   'models/base_page_model'
   , 'mapper/operations'
   , 'lib/file_handling/manifests'
-  , 'lib/json_templater'
   , 'lib/reception_templates'
-  , 'lib/util'
-], function (BasePageModel, Operations, CSVParser, JsonTemplater, ReceptionTemplate, Util) {
+], function (BasePageModel, Operations, CSVParser, ReceptionTemplate) {
   'use strict';
 
   var ReceptionModel = Object.create(BasePageModel);
@@ -15,166 +13,214 @@ define([
     init: function (owner, config) {
       this.owner = owner;
       this.config = config;
-      return $.Deferred().resolve(this).promise();
+      return this;
     },
 
     reset: function () {
-      delete this.json_template_display;
-      delete this.samplesForDisplay;
-      delete this.samplesFromManifest;
-      delete this.combinedData;
-      delete this.templateName;
+      this.manifest = undefined;
     },
 
     setFileContent: function (fileContent) {
-      var thisModel = this;
-      var deferred = $.Deferred();
+      // This is what we are going to fill out: information on each of the tubes (the tube itself but also if there is an
+      // issue associated with it), and any global errors (missing barcodes, search errors).
+      this.manifest = {
+        template: undefined,
+        errors: [],
+        tubes:  []
+      };
+      var resolver = _.partial(resolveSearch, this.manifest);
+
       var dataAsArray = CSVParser.from(fileContent);
-      var templateName = dataAsArray[2][0]; // always A3 !!
-      var columnHeaders = dataAsArray[ReceptionTemplate[templateName].header_line_number];
-      var sampleAsArray = _.chain(dataAsArray)
-          .drop(ReceptionTemplate[templateName].header_line_number + 1)
-          .filter(function (row) {
-            return row[0]
-          })
-          .value();
+      if (_.isUndefined(dataAsArray)) {
+        this.manifest.errors.push("The file uploaded does not appear to be a valid manifest.");
+        return resolver();
+      }
 
-      var combinedData = JsonTemplater.combineHeadersToData(columnHeaders, sampleAsArray);
+      var templateName       = dataAsArray[2][0]; // always A3 !!
+      this.manifest.template = ReceptionTemplate[templateName];
+      if (_.isUndefined(this.manifest.template)) {
+        this.manifest.errors.push("Could not find the corresponding template!");
+        return resolver();
+      }
 
-      sanityCheck(thisModel, combinedData)
-          .fail(function(error){
-            deferred.reject(error);
-          })
-          .then(function(){
-            if (!ReceptionTemplate[templateName]) {
-              deferred.reject({message: "Couldn't find the corresponding template!"});
-            }
-            else if (columnHeaders.length <= 1 && columnHeaders[0]) {
-              deferred.reject({message: "The file contains no header !"});
-            }
-            else if (combinedData.length <= 0) {
-              deferred.reject({message: "The file contains no data !"});
-            }
-            else {
-              thisModel.json_template_display = ReceptionTemplate[templateName].json_template_display;
-              thisModel.samplesForDisplay = JsonTemplater.applyTemplateToDataSet(combinedData, thisModel.json_template_display);
-              // we only save the details once we're certain that the data are correct!
-              thisModel.combinedData = combinedData;
-              thisModel.templateName = templateName;
-              deferred.resolve(thisModel);
-            }
-          });
-      return deferred.promise();
+      var columnHeaders = dataAsArray[this.manifest.template.header_line_number];
+      if (columnHeaders.length <= 1 && columnHeaders[0]) {
+        this.manifest.errors.push("The file contains no header!");
+        return resolver();
+      }
+
+      this.manifest.tubes =
+        _.chain(dataAsArray)
+         .drop(this.manifest.template.header_line_number+1)
+         .filter(_.first)
+         .map(function(row) { return _.zip(columnHeaders, row); })
+         .map(function(pairs) { return _.object(pairs); })
+         .map(buildTubeDetailsForRow)
+         .value();
+
+      if (this.manifest.tubes.length <= 0) {
+        this.manifest.errors.push("The file contains no data!");
+      }
+
+      // Page through all of the tubes from the manifest, checking the information from the manifest against what the
+      // system believes should be true.  Once that's done, any tubes that were specified in the manifest but not found
+      // in the system should be pushed as errors.  Finally, resolve the search appropriately.
+      var deferred =
+        this.owner
+            .getS2Root()
+            .then(_.partial(pageThroughTubes, this.manifest))
+            .then(_.partial(pushMissingTubeErrors, this.manifest));
+      return _.regardless(deferred, resolver);
     },
 
     updateSamples: function (dataFromGUI) {
+      // Transform the GUI & manifest data into the same format
+      var samplesFromGUI = _.map(dataFromGUI, _.compose(removeUndefinedKeys, this.manifest.template.json_template));
+      var samples        = _.map(_.pluck(this.manifest.tubes, 'row'), this.manifest.template.json_template);
+      var lookup         = _.partial(_.findBy, 'sanger_sample_id', samples);
+
+      // Pair up the samples selected in the GUI with their manifest partners.  Merge the
+      // former into the latter and mark the new sample as published.  Then build an
+      // object that details the updates to perform.
+      var updates =
+        _.chain(samplesFromGUI)
+         .pairwise(lookup)
+         .map(function(pair) { return _.deepMerge.apply(undefined, pair); })
+         .map(markSampleForPublishing)
+         .map(function(sample) { return [sample.sanger_sample_id, _.omit(sample,'sanger_sample_id')]; })
+         .object()
+         .value();
+
       var deferred = $.Deferred();
       var thisModel = this;
-      thisModel.owner.getS2Root()
-          .fail(function () {
-            return deferred.reject({message: "Couldn't get the root! Is the server accessible?"});
-          })
-          .then(function (root) {
-            // transforms the data extracted from the GUI according to the template format + cleanup of the undefined keys
-            var samplesFromGUI = _.map(JsonTemplater.applyTemplateToDataSet(dataFromGUI, ReceptionTemplate[thisModel.templateName].json_template),
-                function (sample) {
-                  // recursively remove undefined keys from this JS object
-                  function removeUndefinedKeys(object) {
-                    return _.reduce(object, function (memo, value, key) {
-                      if ($.isPlainObject(value)) {
-                        value = removeUndefinedKeys(value);
-                      }
-                      if (value && !($.isEmptyObject(value))) {
-                        memo[key] = value;
-                      }
-                      return memo;
-                    }, {});
-                  }
-                  return removeUndefinedKeys(sample);
-                });
-            // extracts the IDs of the selected tubes, allowing us to filter the file data
-            var selectedSampleSangerIDs = _.pluck(samplesFromGUI,'sanger_sample_id');
-            // transforms the data extracted from the file according to the template format
-            var samples = JsonTemplater.applyTemplateToDataSet(thisModel.combinedData, ReceptionTemplate[thisModel.templateName].json_template);
-            // merges both data set and transforms into a dictionary
-            samples = _.chain(samples)
-                .filter(function(sample){
-                  // filters the file data to only retains the selected tubes in the GUI
-                  return _.contains(selectedSampleSangerIDs,sample.sanger_sample_id);
-                })
-                .zip(samplesFromGUI)
-                .map(function (pair) {
-                  // merges the GUI and File data
-                  return Util.deepMerge(pair[0], pair[1])
-                })
-                .reduce(function (memo, sampleUpdate) {
-                  // dictionarised using the sanger_sample_id
-                  memo[sampleUpdate.sanger_sample_id] = sampleUpdate;
-                  memo[sampleUpdate.sanger_sample_id]["state"]= "published";
-                  delete memo[sampleUpdate.sanger_sample_id].sanger_sample_id;
-                  return memo
-                }, {})
-                .value();
-            // makes the update request
-            return root.bulk_update_samples.create({"by": "sanger_sample_id", "updates": samples});
-          })
-          .fail(function () {
-            return deferred.reject({message: "Couldn't update the samples on S2."});
-          })
-          .then(function () {
-            return deferred.resolve(thisModel);
-          });
+
+      thisModel.owner
+               .getS2Root()
+               .then(_.partial(updateSamplesInS2, updates))
+               .then(function () {
+                 return deferred.resolve(thisModel);
+               }, function() {
+                 return deferred.reject({message: "Couldn't update the samples on S2."});
+               });
 
       return deferred.promise();
     }
   });
 
-  function sanityCheck(model, combinedData) {
+  // Search for each of the tubes in the manifest so that we can process them in pages.  Each page is
+  // handled individually, with the entries on the page being handled sequentially.  Therefore, rather
+  // than having 1000 simultaneous requests, we get 10 simultaneous requests that are 100 sequential
+  // requests.  This should reduce the load on the browser.
+  function pageThroughTubes(manifest, root) {
+    var barcodes = _.pluck(manifest.tubes, 'barcode');
+    var promises = [];
+    return root.tubes.searchByBarcode().ean13(barcodes).paged(function(page, hasNext) {
+      if (page.entries.length == 0) return;
+      promises.push(chain(_.map(page.entries, promiseHandler), _.regardless));
+    }).then(function() {
+      // Normally we would use '$.when' here but the problem is that we want to wait for all promises
+      // to finish, regardless of their reject/resolve status.  $.when will reject immediately upon
+      // *one* of the promises being rejected.
+      return chain(_.map(promises, _.partial(_.partial, _.identity)), _.regardless);
+    })
 
-    var searchDeferred = $.Deferred();
-    var root;
-    var sangerSampleIDByTubeBarcode;
-    var inputBarcodes = _.pluck(combinedData,'Tube Barcode');
-    var tubes;
-    model.owner.getS2Root()
-        .then(function (result) {
-          root = result;
-          return root.tubes.findByEan13Barcode(inputBarcodes, true);
-        })
-        .fail(function () {
-          return searchDeferred.reject({message: "Couldn't search for the tubes in the rack!"});
-        })
-        .then(function (inputTubes) {
-          tubes = inputTubes;
+    function promiseHandler(tube) {
+      return function() {
+        return updateManifestDetails(root, manifest, tube);
+      };
+    }
+  }
 
-          if (tubes.length === 0) {
-            return searchDeferred.reject({message: "No tube corresponding to the given barcodes could be found!"});
-          }
-          if (tubes.length !== inputBarcodes.length) {
-            return searchDeferred.reject({message: "Not all the tubes corresponding to the given barcodes could be found!"});
-          }
-          sangerSampleIDByTubeBarcode = {};
-          return $.when.apply(null,_.map(tubes,function(tube){
-            var uuid = tube.aliquots[0].sample.uuid;
-            return root.samples.find(uuid)
-                .then(function(sample){
-                  sangerSampleIDByTubeBarcode[tube.labels.barcode.value] = sample.sanger_sample_id;
-                });
-          }));
-        })
-        .fail(function () {
-          return searchDeferred.reject({message: "Couldn't find the samples using their sanger_sample_id!"});
-        })
-        .then(function () {
-          _.each(combinedData, function(row){
-            var sangerSampleIDInS2 = sangerSampleIDByTubeBarcode[ row["Tube Barcode"] ];
-            if (row['SANGER SAMPLE ID'] !== sangerSampleIDInS2) {
-              searchDeferred.reject({message: "At least one of the sanger sample ID is not linked to the correct barcode! Please contact the administrator. (" + sangerSampleIDInS2 + " must match the barcode " + row["Tube Barcode"] + ")"});
-            }
-          });
-          return searchDeferred.resolve(tubes);
-        });
-    return searchDeferred.promise();
+  // Any barcodes that were not found need to be marked as being missing.
+  function pushMissingTubeErrors(manifest, value) {
+    _.each(manifest.tubes, function(tube) {
+      if (!_.isUndefined(tube.resource)) return;
+      tube.errors.push("Cannot find this barcode in the system");
+    });
+    return value;
+  }
+
+  // If there are any global errors, or any individual tube errors, then we should reject the search.
+  function resolveSearch(manifest) {
+    var deferred   = $.Deferred();
+    var resolution = 'resolve';
+    if (manifest.errors.length > 0) {
+      resolution = 'reject';
+    } else if (_.chain(manifest.tubes).pluck('errors').flatten().value().length > 0) {
+      resolution = 'reject';
+    }
+
+    return deferred[resolution](manifest);
+  }
+
+  function updateManifestDetails(root, manifest, tube) {
+    var tubeDetails = _.find(manifest.tubes, function (details) {
+      return details.barcode === tube.labels.barcode.value;
+    });
+
+    if (_.isUndefined(tubeDetails)) {
+      manifest.errors.push("Tube '" + tube.labels.barcode.value + "' is not part of the manifest!");
+      return $.Deferred().reject();
+    } else {
+      tubeDetails.resource = tube;
+      return root.samples
+                 .find(tube.aliquots[0].sample.uuid)
+                 .then(_.partial(checkSample, tubeDetails))
+                 .then(manifest.template.validation);
+    }
+  }
+
+  // Checks the details from the manifest about the sample against the sample that is actually present
+  // in the tube in the system.
+  function checkSample(tubeDetails, sample) {
+    if (sample.sanger_sample_id !== tubeDetails.sample) {
+      tubeDetails.errors.push("Should contain '" + sample.sanger_sample_id + "' not '" + tubeDetails.sample + "'");
+    }
+
+    var gender = tubeDetails.row['GENDER'];
+    if (_.isUndefined(gender) || !_.isString(gender) || (gender.trim() === '')) {
+      tubeDetails.errors.push("Gender is invalid");
+    }
+    return tubeDetails;
+  }
+
+  // recursively remove undefined keys from this JS object
+  function removeUndefinedKeys(object) {
+    return _.reduce(object, function (memo, value, key) {
+      if ($.isPlainObject(value)) {
+        value = removeUndefinedKeys(value);
+      }
+      if (value && !($.isEmptyObject(value))) {
+        memo[key] = value;
+      }
+      return memo;
+    }, {});
+  }
+
+  function updateSamplesInS2(updates, root) {
+    return root.bulk_update_samples.create({by: "sanger_sample_id", updates: updates});
+  }
+
+  function markSampleForPublishing(sample) {
+    sample["state"] = "published";
+    return sample;
+  }
+
+  function chain(handlers, chaining) {
+    if (handlers.length == 0) return;   // It's fair to assume this is an immediate return of undefined!
+
+    var args = _.drop(arguments, 2);
+    return _.chain(handlers).drop(1).reduce(chaining, handlers[0].apply(handlers[0], args)).value();
+  }
+
+  function buildTubeDetailsForRow(row) {
+    return {
+      row:      row,
+      barcode:  row['Tube Barcode'],
+      sample:   row['SANGER SAMPLE ID'],
+      resource: undefined,
+      errors:   []
+    };
   }
 
   return ReceptionModel;

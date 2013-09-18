@@ -50,6 +50,47 @@ define([], function() {
       function build(value, name) {
         return _.object([[name, value]]);
       }
+    },
+
+    // Finds a given value in an array using a particular field.
+    findBy: function(field, array, value) {
+      return _.find(array, function(v) {
+        return v[field] === value[field];
+      });
+    },
+
+    // Recursively merges, left-to-right, all of the objects passed in the parameters.  Will
+    // not merge arrays.
+    deepMerge: function() {
+      return _.reduce(arguments, deepMergeTwoObjects, {});
     }
   };
+
+  function deepMergeTwoObjects(target, source) {
+    var mergingIn =
+      _.chain(source)
+       .pairs()
+       .pairwise(_.compose(_.partial(_.extractor, target), _.first))
+       .map(flattenToTrio)
+       .map(recursivelyMergeObjectValues)
+       .object()
+       .value();
+
+    return _.extend(_.clone(target), mergingIn);
+  }
+
+  function flattenToTrio(pair) {
+    return [pair[0][0], pair[0][1], pair[1]];
+  }
+
+  function recursivelyMergeObjectValues(trio) {
+    var key = trio[0], sourceValue = trio[1], targetValue = trio[2];
+    var value = undefined;
+    if (_.isObject(sourceValue) && _.isObject(targetValue)) {
+      value = deepMergeTwoObjects(targetValue, sourceValue);
+    } else {
+      value = sourceValue || targetValue;
+    }
+    return [key,value];
+  }
 });
