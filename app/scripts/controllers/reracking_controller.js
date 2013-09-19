@@ -43,29 +43,26 @@ define([
     labwareHtml.find("input").val(""); // clear the input
   }
 
-  function rackUI(owner, rack, index) {
+  function rackUI(rerackingController, rack, index) {
     function selection(s) {
       return function () {
-        return owner.html.find("#rack-list").find(s);
+        return rerackingController.html.find("#rack-list").find(s);
       };
     }
 
-    var controller = owner.factory.create("labware_controller", owner);
-    controller.setupController({
-      "expected_type":   "tube_rack",
-      "display_labware": true,
-      "display_remove":  false,
-      "display_barcode": false
-    }, selection("li:nth(" + index + ")"));
+    var rackController = rerackingController.factory.createLabwareSubController(rerackingController, "tube_rack");
 
     var rackRepresentation = representAsLabware(rack);
 
+    rackController.setupController(
+      _.build("tube_rack", _.identity(rackRepresentation)),
+      selection("li:nth("+index+") .resource")
+    );
+
+
     return {
-      item: "<li>" + rack.labels.barcode.value + "</li>",
-      render: function() {
-        controller.renderView();
-        controller.updateModel(rackRepresentation, _.identity);
-      }
+      item:   "<li><div class='resource'></div></li>",
+      render: function() { rackController.renderView(); }
     };
   }
 
