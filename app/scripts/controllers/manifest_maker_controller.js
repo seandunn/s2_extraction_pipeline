@@ -1,12 +1,12 @@
 define([
   "controllers/base_controller",
-  "components/filesaver/filesaver",
   "text!html_partials/_manifest_maker.html",
   "models/manifest_maker_model",
   "lib/pubsub",
   "lib/reception_templates",
-  "lib/reception_studies"
-], function (BaseController, saveAs, componentPartialHtml, Model, PubSub, ReceptionTemplates, ReceptionStudies) {
+  "lib/reception_studies",
+  "components/filesaver/filesaver"
+], function (BaseController, componentPartialHtml, Model, PubSub, ReceptionTemplates, ReceptionStudies) {
   'use strict';
 
   var Controller = Object.create(BaseController);
