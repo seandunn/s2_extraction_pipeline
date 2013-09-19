@@ -15,6 +15,9 @@ define(['config'
       return this;
     },
 
+    onBarcodeScanned: function() {
+    },
+
     bindReturnKey: function (element, successCallback, errorCallback, validationCallback) {
       var thisController = this;
 
@@ -25,10 +28,14 @@ define(['config'
       }
 
       var validation = validationCallback || function (element, callback, errorCallback) {
-        return function (event) {
-          if (event.which !== 13) return;
 
+	  var RETURN_KEYCODE=13, SIZE_LABEL=13;
+
+        return function (event) {
           var value = event.currentTarget.value;
+	  if ((value.length!==SIZE_LABEL) && (event.which !== RETURN_KEYCODE))
+	      return;
+
           var barcodeSelection = $(event.currentTarget);
           setScannerTimeout(barcodeSelection);
 
@@ -36,6 +43,7 @@ define(['config'
             return validationCallback(Util.pad(value));
           })) {
             callback(value, element, thisController);
+	    controller.onBarcodeScanned();
           } else {
             errorCallback(value, element, thisController);
           }
