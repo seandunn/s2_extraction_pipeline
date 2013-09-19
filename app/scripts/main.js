@@ -9,6 +9,7 @@ require.config({
     bootstrap:            "../components/sass-bootstrap/js",
     text:                 "../components/requirejs-text/text",
     spinjs:               "../components/spin.js/spin",
+    components:           "../components",
     labware:              "labware",
     mapper:               "../components/S2Mapper/app/scripts/mapper",
     mapper_services:      "../components/S2Mapper/app/scripts/services",
