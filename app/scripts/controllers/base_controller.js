@@ -15,9 +15,6 @@ define(['config'
       return this;
     },
 
-    onBarcodeScanned: function() {
-    },
-
     bindReturnKey: function (element, successCallback, errorCallback, validationCallback) {
       var thisController = this;
 
@@ -28,14 +25,15 @@ define(['config'
       }
 
       var validation = validationCallback || function (element, callback, errorCallback) {
-
-	  var RETURN_KEYCODE=13, SIZE_LABEL=13;
-
         return function (event) {
-          var value = event.currentTarget.value;
-	  if ((value.length!==SIZE_LABEL) && (event.which !== RETURN_KEYCODE))
-	      return;
+	  var CRKEYCODE=13, TABKEYCODE=9;
+	  if (!((event.which === TABKEYCODE) || (event.which === CRKEYCODE)))
+	      {
+		  return;
+	      }
+	  event.preventDefault();
 
+          var value = event.currentTarget.value;
           var barcodeSelection = $(event.currentTarget);
           setScannerTimeout(barcodeSelection);
 
@@ -43,15 +41,12 @@ define(['config'
             return validationCallback(Util.pad(value));
           })) {
             callback(value, element, thisController);
-	    controller.onBarcodeScanned();
           } else {
             errorCallback(value, element, thisController);
           }
         }
       };
-
-      element.on("keyup", "input", validation(element, successCallback, errorCallback));
-      return element.on("keypress", "input", validation(element, successCallback, errorCallback) );
+      return element.on("keydown", "input", validation(element, successCallback, errorCallback) );
     },
 
     printerList: function(workflowConfig) {

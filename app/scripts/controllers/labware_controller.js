@@ -256,6 +256,7 @@ define(['controllers/base_controller'
     }, 250);
   }
 
+  
   function validationOnReturnKeyCallback (controller, type, barcodePrefixes) {
     var validationCallBack ;
     switch(type){
@@ -267,20 +268,22 @@ define(['controllers/base_controller'
         validationCallBack = BarcodeChecker.isBarcodeValid;
     }
 
-    var RETURN_KEYCODE=13, SIZE_LABEL=13;
-
     return function (element, callback, errorCallback) {
       // validation of the barcode only on return key
       return function (event) {
-        var value = event.currentTarget.value;
-	  if ((value.length!==SIZE_LABEL) && (event.which !== RETURN_KEYCODE))
-	      return;
+	  var CRKEYCODE=13, TABKEYCODE=9;
+	  if (!((event.which === TABKEYCODE) || (event.which === CRKEYCODE)))
+	      {
+		  return;
+	      }
+	  event.preventDefault();
+
+	var value = event.currentTarget.value;
         var barcodeSelection = $(event.currentTarget);
 	setScannedTimeout(barcodeSelection);
 	if (validationCallBack(Util.pad(value),barcodePrefixes)) {
 	    callback(value, element, controller);
 	    controller.onBarcodeScanned();
-	    //event.currentTarget.blur();
 	} else {
 	    errorCallback(value, element, controller);
 	}
