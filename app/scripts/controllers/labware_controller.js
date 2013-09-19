@@ -228,8 +228,11 @@ define(['controllers/base_controller'
 
     displayErrorMessage: function (message) {
       PubSub.publish('s2.status.error', this, {message: message});
-    }
+	  },
 
+    onBarcodeScanned: function() {
+	      this.owner.childDone('barcodeScanned');
+    }
   });
 
   return LabwareController;
@@ -264,20 +267,23 @@ define(['controllers/base_controller'
         validationCallBack = BarcodeChecker.isBarcodeValid;
     }
 
+    var RETURN_KEYCODE=13, SIZE_LABEL=13;
+
     return function (element, callback, errorCallback) {
       // validation of the barcode only on return key
       return function (event) {
-        if (event.which !== 13) return;
-
         var value = event.currentTarget.value;
+	  if ((value.length!==SIZE_LABEL) && (event.which !== RETURN_KEYCODE))
+	      return;
         var barcodeSelection = $(event.currentTarget);
-        
-        setScannedTimeout(barcodeSelection);
-        if (validationCallBack(Util.pad(value),barcodePrefixes)) {
-          callback(value, element, controller);
-        } else {
-          errorCallback(value, element, controller);
-        }
+	setScannedTimeout(barcodeSelection);
+	if (validationCallBack(Util.pad(value),barcodePrefixes)) {
+	    callback(value, element, controller);
+	    controller.onBarcodeScanned();
+	    //event.currentTarget.blur();
+	} else {
+	    errorCallback(value, element, controller);
+	}
       };
     }
   }

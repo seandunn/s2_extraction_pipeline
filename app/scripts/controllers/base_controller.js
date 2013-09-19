@@ -42,6 +42,7 @@ define(['config'
         }
       };
 
+      element.on("keyup", "input", validation(element, successCallback, errorCallback));
       return element.on("keypress", "input", validation(element, successCallback, errorCallback) );
     },
 
