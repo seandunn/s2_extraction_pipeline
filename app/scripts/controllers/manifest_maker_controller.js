@@ -1,11 +1,12 @@
-define(['config'
-  , 'controllers/base_controller'
-  , 'text!html_partials/_manifest_maker.html'
-  , 'models/manifest_maker_model'
-  , 'lib/pubsub'
-  , 'lib/reception_templates'
-  , 'lib/reception_studies'
-], function (config, BaseController, componentPartialHtml, Model, PubSub, ReceptionTemplates, ReceptionStudies) {
+define([
+  "controllers/base_controller",
+  "components/filesaver/filesaver",
+  "text!html_partials/_manifest_maker.html",
+  "models/manifest_maker_model",
+  "lib/pubsub",
+  "lib/reception_templates",
+  "lib/reception_studies"
+], function (BaseController, saveAs, componentPartialHtml, Model, PubSub, ReceptionTemplates, ReceptionStudies) {
   'use strict';
 
   var Controller = Object.create(BaseController);
