@@ -191,8 +191,8 @@ define(['config'
     // Generate the display and then render the view
     var data = { headers: [], manifest: manifest };
     if (manifest.template) {
-      _.each(manifest.tubes, _.compose(generateView, _.partial(updateDisplay, manifest.template.json_template_display)));
-      data.headers = _.map(manifest.tubes[0].display, function(c) { return c.friendlyName || c.columnName; });
+      _.each(manifest.details, _.compose(generateView, _.partial(updateDisplay, manifest.template.json_template_display)));
+      data.headers = _.map(manifest.details[0].display, function(c) { return c.friendlyName || c.columnName; });
     }
     view.append(template(data));
 
@@ -282,7 +282,7 @@ define(['config'
 
   function buildDataFromGUI(controller) {
     var extractors =
-      _.chain(controller.model.manifest.tubes[0].display)
+      _.chain(controller.model.manifest.details[0].display)
        .pluck('type')
        .map(buildExtractor)
        .value();
