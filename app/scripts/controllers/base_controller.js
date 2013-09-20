@@ -26,7 +26,12 @@ define(['config'
 
       var validation = validationCallback || function (element, callback, errorCallback) {
         return function (event) {
-          if (event.which !== 13) return;
+	  var CRKEYCODE=13, TABKEYCODE=9;
+	  if (!((event.which === TABKEYCODE) || (event.which === CRKEYCODE)))
+	      {
+		  return;
+	      }
+	  event.preventDefault();
 
           var value = event.currentTarget.value;
           var barcodeSelection = $(event.currentTarget);
@@ -41,8 +46,7 @@ define(['config'
           }
         }
       };
-
-      return element.on("keypress", "input", validation(element, successCallback, errorCallback) );
+      return element.on("keydown", "input", validation(element, successCallback, errorCallback) );
     },
 
     printerList: function(workflowConfig) {
