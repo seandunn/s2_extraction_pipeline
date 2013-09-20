@@ -4,12 +4,11 @@ define([
 ], function(updates, display) {
   'use strict';
 
-  return function(register) {
-    register('cgap_lysed', {
+  return {
+    cgap_lysed: {
       friendly_name:         "CGAP - lysed",
       manifest_path:         "scripts/lib/reception_templates/cgap_lysed/manifest.xls",
       model:                 "tube",
-      sample_type:           "RNA",
       aliquot_type:          "NA+P",
       templates: {
         updates: JSON.parse(updates),
@@ -17,6 +16,6 @@ define([
       },
       header_line_number:    8,
       sample_types:         ["Cell Pellet"]
-    });
+    }
   };
 });
