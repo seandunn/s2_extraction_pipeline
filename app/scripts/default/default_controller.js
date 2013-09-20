@@ -4,23 +4,31 @@ define(['config'
   , 'default/default_model'
   , 'lib/util'
   , 'lib/pubsub'
-], function (config, BaseController, defaultPagePartialHtml, Model, Util, PubSub) {
+  , 'lib/promise_tracker'
+], function (config, BaseController, defaultPagePartialHtml, Model, Util, PubSub, PromiseTracker) {
   'use strict';
 
   var userCallback = function(value, template, controller){
     var barcode = Util.pad(value);
-    controller.model.setUserFromBarcode(barcode)
-        .fail(function (error) {
-          PubSub.publish('s2.status.error', controller, error);
-        })
-        .then(function(){
-          template.find("input").val(barcode);
-          template.find("input").attr('disabled', true);
-          controller.jquerySelectionForLabware().
-              find("input").
-              removeAttr('disabled').
-              focus();
-        });
+
+    controller.userBCSubController.showProgress();
+
+    PromiseTracker(controller.model.setUserFromBarcode(barcode))
+      .fail(function (error) {
+        PubSub.publish('s2.status.error', controller, error);
+      })
+      .afterThen(function(tracker) {
+        controller.userBCSubController.updateProgress((tracker.thens_called / tracker.number_of_thens) * 100)
+      })
+      .then(function(){
+        console.log('This is inside the final then')
+        template.find("input").val(barcode);
+        template.find("input").attr('disabled', true);
+        controller.jquerySelectionForLabware().
+          find("input").
+          removeAttr('disabled').
+          focus();
+      });
   };
 
   var barcodeErrorCallback = function(errorText){
@@ -32,11 +40,18 @@ define(['config'
   var labwareCallback = function(value, template, controller){
     template.find("input").attr('disabled', true);
     template.find('.alert-error').addClass('hide');
-    controller.model.setLabwareFromBarcode(Util.pad(value))
-        .fail(function (error) {
-          PubSub.publish('s2.status.error', controller, error);
-        })
-        .then(login);
+    
+    controller.labwareBCSubController.showProgress();
+
+    PromiseTracker(controller.model.setLabwareFromBarcode(Util.pad(value)))
+      .fail(function (error) {
+        PubSub.publish('s2.status.error', controller, error);
+      })
+      .afterThen(function(tracker) {
+        controller.labwareBCSubController.updateProgress((tracker.thens_called / tracker.number_of_thens) * 100)
+      })
+      .then(login)
+
     function login(model){
       if (model.isValid()){
         controller.owner.childDone(controller, "login", model);

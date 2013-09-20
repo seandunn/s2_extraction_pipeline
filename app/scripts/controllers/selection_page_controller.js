@@ -2,7 +2,8 @@ define([ 'controllers/base_controller'
   , 'models/selection_page_model'
   , 'text!html_partials/_selection_page.html'
   , 'lib/pubsub'
-], function(BaseController, Model, selectionPagePartialHtml, PubSub) {
+  , 'lib/promise_tracker'
+], function(BaseController, Model, selectionPagePartialHtml, PubSub, PromiseTracker) {
   'use strict';
 
   var PageController = Object.create(BaseController);
@@ -162,17 +163,52 @@ define([ 'controllers/base_controller'
       var controller = this;
       // model should not talk using 'childDone' anymore
       if (action === "barcodeScanned") {
-        this.model
-        .then(function (model) {
-          return model.addTubeFromBarcode(data.BC);
-        })
-        .fail(function (error) {
-          PubSub.publish('s2.status.error', controller, error);
-        })
-        .then(function () {
-          controller.setupSubControllers();
-          controller.renderView();
-        });
+        child.barcodeInputController.showProgress();
+
+        PromiseTracker(this.model, {number_of_thens: 9})
+          .afterThen(function(tracking){
+            child.barcodeInputController.updateProgress((tracking.thens_called / tracking.number_of_thens) * 100);
+          })
+          .then(function (model) {
+            return model.addTubeFromBarcode(data.BC);
+          })
+          .fail(function (error) {
+            PubSub.publish('s2.status.error', controller, error);
+          })
+          .then(function() {
+            var def = $.Deferred();
+
+            setTimeout(function() {
+              console.log('first then')
+              def.resolve();
+            }, 2000)
+
+            return def.promise();
+          })
+          .then(function() {
+            var def = $.Deferred();
+
+            setTimeout(function() {
+              console.log('second then')
+              def.resolve();
+            }, 3000)
+
+            return def.promise();
+          })
+          .then(function() {
+            var def = $.Deferred();
+
+            setTimeout(function() {
+              console.log('third then')
+              def.resolve();
+            }, 4000)
+
+            return def.promise();
+          })
+          /*.then(function () {
+            controller.setupSubControllers();
+            controller.renderView();
+          });*/
       } else if (action === "removeLabware") {
         this.model
         .then(function (model) {
