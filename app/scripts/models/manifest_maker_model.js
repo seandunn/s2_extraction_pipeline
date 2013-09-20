@@ -1,8 +1,7 @@
 define([
-  'models/base_page_model'
-  , 'mapper/operations'
-  , 'lib/json_templater'
-], function (BasePageModel, Operations, JsonTemplater) {
+  'models/base_page_model',
+  'config'
+], function (BasePageModel, Config) {
   'use strict';
 
   var ReceptionModel = Object.create(BasePageModel);
@@ -41,16 +40,16 @@ define([
               // We can create the labware and label it at the same time as producing the
               // manifest XLS file
               var data      = placeSamples(samples, barcodes, sampleType);
-              var blob      = generateCSVBlob(template.generator.manifest(data));
+              var blob      = _.toCSV(template.generator.manifest(data), ",");
 
               var manifest  = sendManifestRequest(template, blob).fail(fail);
-              var resources = template.generator.resources(root, data).then(_.partial(labelResources, root, model)).fail(fail);
+              var resources = createResources(template.generator.resources, root, data).then(_.partial(labelResources, root, model)).fail(fail);
 
               return $.when(resources, manifest);
             }).then(function(model, manifest) {
               model.manifestBlob = manifest;
               return model;
-            }, _.partial(fail, "Couldn't associate the barcodes to the labware."))
+            }, fail);
           }, _.partial(fail, "Couldn't get the root! Is the server accessible?"));
         }
       );
@@ -129,69 +128,87 @@ define([
     };
   }
 
-  function plateCSVBlob(rows) {
-    return generateCSVBlob(
-       ["Plate Barcode", "Sanger Barcode", "Location", "Sanger Sample ID", "SAMPLE TYPE"],
-       _.map(rows, rowHandler)
-    );
+  function sendManifestRequest(template,csv) {
+    return binaryAjax({
+      type: "GET",
+      url:  template.manifest_path,
+    }).then(function(xls) {
+      // Encode the data in such a way that we get a multi-part MIME body, otherwise all we
+      // get is form data which doesn't work with the manifest merge service.
+      var form = new FormData();
+      form.append("template",         xls);
+      form.append("manifest-details", new Blob([csv], {type:"text/csv"}));
 
-    function rowHandler(row) {
-      var sample = row[0], label = row[1], location = row[2], type = row[3];
-      return [
-        label.ean13,
-        label.sanger.prefix + label.sanger.number + label.sanger.suffix,
-        location,
-        sample.sanger_sample_id,
-        type
-      ];
-    }
-  }
-
-  function generateCSVBlob(table) {
-    return new Blob([ _.toCSV(table, ",") ], { type: "text/csv" });
-  }
-
-  // TODO: Use jQuery because this is fugly
-  function sendManifestRequest(template,manifestBlob) {
-    return getXLSTemplate(template).then(function(templateBlob){
-      var deferred = $.Deferred();
-      try {
-        var xhr = new XMLHttpRequest;
-        xhr.open("POST", 'http://psd2g.internal.sanger.ac.uk:8100/manifest-merge-service/');
-        xhr.responseType = "blob";
-        xhr.onerror = function (oEvent) {
-          deferred.reject("Unable to send the manifest... Is the XLS merger server up and running?");
-        };
-        xhr.onload = function (oEvent) {
-          deferred.resolve(this.response);
-        };
-
-        var form = new FormData();
-        form.append("template",templateBlob);
-        form.append("manifest-details",manifestBlob);
-        xhr.send(form);
-      } catch (err) {
-        var message = " msg:" + err.message;
-        message += "\n" + err.code;
-        message += "\n" + err.name;
-        message += "\n" + err.stack;
-        deferred.reject(message);
-      }
-      return deferred.promise();
+      return binaryAjax({
+        type: "POST",
+        url:  Config.mergeServiceUrl,
+        data: form
+      });
+    }).fail(function() {
+      return "Unable to generate the manifest";
     });
   }
-  function getXLSTemplate(template) {
+
+  // Performing Ajax with binary data through jQuery isn't really possible as the data comes
+  // back and gets converted to a string, which is treated as Unicode and becomes invalid in
+  // the process.  So here we drop to XMLHttpRequest in such a way that we can deal with the
+  // data using Blob.
+  function binaryAjax(options) {
     var deferred = $.Deferred();
-    var oReq = new XMLHttpRequest();
-    oReq.open("GET", template.manifest_path, true);
-    oReq.responseType = "blob";
-    oReq.onload = function(oEvent) { deferred.resolve(oReq.response); };
-    oReq.onerror = function(oEvent) { deferred.reject("Unable to load the template"); };
-    oReq.send();
+    var fail     = function() { deferred.reject("Communications error with backend systems!"); };
+
+    var xhr      = new XMLHttpRequest;
+    xhr.open(options.type, options.url, true);
+    xhr.responseType = "blob";
+    xhr.onerror      = fail;
+    xhr.onload       = function() {
+      if (isServerOk(xhr)) {
+        deferred.resolve(xhr.response);
+      } else {
+        fail();
+      }
+    };
+    xhr.send(options.data);
     return deferred.promise();
+  }
+  function isServerOk(xhr) {
+    return xhr.status === 200;
+  }
+
+  function createResources(helper, root, manifest) {
+    return helper(function(model, sampleFor, prepareRequest) {
+      var sampleBarcodes =
+        _.chain(manifest)
+         .map(function(r) { return [r[0].uuid, r[1]]; })
+         .object()
+         .value();
+
+      var builder = _.compose(
+        function(resource) {
+          resource.labels = sampleBarcodes[sampleFor(resource).uuid];
+          return resource;
+        },
+        function(raw) {
+          return root[model].instantiate(_.build("rawJson", model.singularize(), raw));
+        }
+      );
+
+      // Remove any temporary information that might have been stored in the data for creation.
+      // Creating plates does this because it needs barcodes to group samples correctly.
+      var data   = _.reduce(manifest, prepareRequest, []);
+      var fields = _.chain(data).map(_.keys).flatten().uniq().filter(function(v) { return v[0] === "_"; }).value();
+
+      return root["bulk_create_" + model].create(
+        _.build(model, _.map(data, function(o) { return _.omit(o, fields); }))
+      ).then(function(bulk) {
+        return _.map(bulk.result[model], builder);
+      }, function() {
+        return "Could not register the labware";
+      });
+    });
   }
 
   function fail(m) {
-    return {message: m};
+    return {message:m};
   }
 });

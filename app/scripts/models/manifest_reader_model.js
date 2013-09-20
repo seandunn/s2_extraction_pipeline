@@ -6,31 +6,6 @@ define([
 ], function (BasePageModel, Operations, CSVParser, ReceptionTemplate) {
   'use strict';
 
-  // These functions deal with pairing the details from the manifest with the sample UUID in the
-  // resource passed.  In the case of the tube it can be assumed tht the first aliquot is the one
-  // we're after; in the case of a plate we look at the well at the location specified in the
-  // manifest details.
-  var AliquotExtractors = {
-    tubes:      sampleFromContainer,
-    plates:     plateLikeExtractor('wells'),
-    tube_racks: plateLikeExtractor('tubes')
-  };
-
-  function plateLikeExtractor(receptacles) {
-    return function(container, details) {
-      return sampleFromContainer(container[receptacles][details.row['LOCATION']]);
-    };
-  }
-  function sampleFromContainer(receptacle) {
-    if (_.isEmpty(receptacle.aliquots)) {
-      return undefined;
-    } else if (_.isUndefined(receptacle.aliquots[0].sample)) {
-      return undefined;
-    } else {
-      return receptacle.aliquots[0].sample.uuid;
-    }
-  }
-
   var ReceptionModel = Object.create(BasePageModel);
 
   $.extend(ReceptionModel, {
@@ -81,7 +56,7 @@ define([
          .filter(_.first)
          .map(function(row) { return _.zip(columnHeaders, row); })
          .map(function(pairs) { return _.object(pairs); })
-         .map(buildDetailsForRow)
+         .map(this.manifest.template.reader.builder)
          .value();
 
       if (this.manifest.details.length <= 0) {
@@ -139,7 +114,6 @@ define([
   // requests.  This should reduce the load on the browser.
   function pageThroughResources(manifest, root) {
     var barcodes  = _.chain(manifest.details).indexBy('barcode').keys().value();
-    var extractor = AliquotExtractors[manifest.model];
     var promises  = [];
     return root[manifest.model].searchByBarcode().ean13(barcodes).paged(function(page, hasNext) {
       if (page.entries.length == 0) return;
@@ -153,31 +127,40 @@ define([
 
     function promiseHandler(resource) {
       return function() {
-        return updateManifestDetails(root, manifest, extractor, resource);
+        return updateManifestDetails(root, manifest, resource);
       };
     }
   }
 
-  function updateManifestDetails(root, manifest, extractor, resource) {
-    var details = _.filter(manifest.details, function (details) {
-      return details.barcode === resource.labels.barcode.value;
-    });
+  function updateManifestDetails(root, manifest, resource) {
+    var details = 
+      _.chain(manifest.details)
+       .filter(function(details) { return details.barcode === resource.labels.barcode.value; })
+       .map(function(details) { details.resource = resource; return details; })
+       .value();
 
     if (_.isEmpty(details)) {
       manifest.errors.push("Barcode '" + resource.labels.barcode.value + "' is not part of the manifest!");
       return $.Deferred().reject();
     } else {
-      details.resource = resource;
-
       // Pair up each of the details with the samples that are in the resource.  Then we can lookup
       // the associated sample and check it against the details.
-      var sampleUuid = _.compose(_.partial(extractor, resource), sampleFromContainer);
+      var sampleUuid = _.compose(sampleFromContainer, _.partial(manifest.template.reader.extractor, resource));
       return waitForAllPromises(
         _.chain(details)
          .map(function(details) { return [details,sampleUuid(details)]; })
          .map(_.partial(validateSampleDetails, root, manifest))
          .value()
       );
+    }
+  }
+  function sampleFromContainer(aliquots) {
+    if (_.isEmpty(aliquots)) {
+      return undefined;
+    } else if (_.isUndefined(aliquots[0].sample)) {
+      return undefined;
+    } else {
+      return aliquots[0].sample.uuid;
     }
   }
 
@@ -260,16 +243,6 @@ define([
   }
   function waitForAllPromises(promises) {
     return chain(_.map(promises, _.partial(_.partial, _.identity)), _.regardless);
-  }
-
-  function buildDetailsForRow(row) {
-    return {
-      row:      row,
-      barcode:  row['Tube Barcode'],
-      sample:   row['SANGER SAMPLE ID'],
-      resource: undefined,
-      errors:   []
-    };
   }
 
   return ReceptionModel;

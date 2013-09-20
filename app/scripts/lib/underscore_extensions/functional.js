@@ -83,6 +83,13 @@ define([], function() {
     // Creates an array containing the times elements, each value
     repeat: function(value, times) {
       return _.times(times, _.partial(_.identity, value));
+    },
+
+    // Returns a function that is the complement (negation) of the specified function
+    complement: function(f) {
+      return function() {
+        return !f.apply(this, arguments);
+      }
     }
   };
 });
