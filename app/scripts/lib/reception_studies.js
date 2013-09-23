@@ -10,6 +10,10 @@ define([
     QC2Hip: {
       friendly_name: "QC2Hip",
       sanger_sample_id_core: "QC2Hip"
+    },
+    SBC: {
+      friendly_name: "Skin Biopsy Collection",
+      sanger_sample_id_core: "SBC"
     }
   };
 
