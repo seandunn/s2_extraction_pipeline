@@ -23,6 +23,7 @@ define([
     generateSamples: function (template, study, sampleType, numberOfLabwares) {
       var model              = this;
       var sangerSampleIdCore = study.sanger_sample_id_core;
+      var resourceGenerator  = _.partial(template.generator.resources, template.sample_types[sampleType]);
 
       return template.generator.prepare(
         preRegisterSamples,
@@ -43,7 +44,7 @@ define([
               var blob      = _.toCSV(template.generator.manifest(data), ",");
 
               var manifest  = sendManifestRequest(template, blob).fail(fail);
-              var resources = createResources(template.generator.resources, root, data).then(_.partial(labelResources, root, model)).fail(fail);
+              var resources = createResources(resourceGenerator, root, data).then(_.partial(labelResources, root, model)).fail(fail);
 
               return $.when(resources, manifest);
             }).then(function(model, manifest) {

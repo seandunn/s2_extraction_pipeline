@@ -3,7 +3,7 @@ define([], function() {
     tube: function(template) {
       return {
         prepare:   _.partial(prepare, template.model),
-        resources: _.partial(createResources, template.aliquot_type),
+        resources: createResources,
         manifest:  createManifest
       }
     }
