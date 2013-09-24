@@ -57,17 +57,22 @@ define([
     },
 
     printBarcodes: function (printerName) {
-      var deferred = $.Deferred();
-      var thisModel = this;
-      BasePageModel.printBarcodes(thisModel.labwareOutputs, printerName)
-                   .then(function(){
-                     return deferred.resolve(thisModel);
-                   }, function(){
-                     return deferred.reject({message: "Couldn't print the barcodes."});
-                   })
-      return deferred.promise();
-    },
+      // We have to remap the resources so that they look like they are printable.  What we have within
+      // our data is the original label data, but what we need is what it would have looked like
+      // *after* labelling.
+      var labels = _.map(this.labwareOutputs, function(resource) {
+        return _.extend({
+          template:           resource.resourceType,
+          returnPrintDetails: function() { return this; }
+        }, _.build(resource.resourceType, {
+          ean13:  resource.labels.ean13,
+          sanger: resource.labels.sanger.prefix + resource.labels.sanger.number + resource.labels.sanger.suffix
+        }));
+      });
 
+      return BasePageModel.printBarcodes(labels, printerName)
+                          .then(_.identity(this), _.identity({message: "Could not print the barcodes"}));
+    }
   });
 
   return ReceptionModel;
