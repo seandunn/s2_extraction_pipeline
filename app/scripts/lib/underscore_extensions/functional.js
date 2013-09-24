@@ -68,6 +68,28 @@ define([], function() {
       return function() {
         return f.apply(this, args);
       };
+    },
+
+    // Generates a cross product of the parameters passed.  For example:
+    //   crossProduction([1,2],[3,4]) => [[1,3],[1,4],[2,3],[2,4]]
+    crossProduct: function() {
+      return _.reduce(_.drop(arguments, 1), function(l, r) {
+        return _.reduce(l, function(memo, lv) {
+          return memo.concat(_.map(r, function(lr) { return lv.concat([lr]); }));
+        }, []);
+      }, _.map(arguments[0], function(v) { return [v]; }));
+    },
+
+    // Creates an array containing the times elements, each value
+    repeat: function(value, times) {
+      return _.times(times, _.partial(_.identity, value));
+    },
+
+    // Returns a function that is the complement (negation) of the specified function
+    complement: function(f) {
+      return function() {
+        return !f.apply(this, arguments);
+      }
     }
   };
 });

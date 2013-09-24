@@ -1,12 +1,12 @@
 define([
   "controllers/base_controller",
-  "components/filesaver/filesaver",
   "text!html_partials/_manifest_maker.html",
   "models/manifest_maker_model",
   "lib/pubsub",
   "lib/reception_templates",
-  "lib/reception_studies"
-], function (BaseController, saveAs, componentPartialHtml, Model, PubSub, ReceptionTemplates, ReceptionStudies) {
+  "lib/reception_studies",
+  "components/filesaver/filesaver"
+], function (BaseController, componentPartialHtml, Model, PubSub, ReceptionTemplates, ReceptionStudies) {
   'use strict';
 
   var Controller = Object.create(BaseController);
@@ -134,13 +134,14 @@ define([
       if (!numberValid) {
         this.message('error', 'The number of sample is not valid.');
       } else {
-        var template = this.view.find('#xls-templates').val();
-        var study = this.view.find('#studies').val();
+        var template = ReceptionTemplates[this.view.find('#xls-templates').val()];
+        var study = ReceptionStudies[this.view.find('#studies').val()];
         var sampleType = this.view.find('#samplePrefixes').val();
         var nbOfSample = parseInt(this.view.find('#number-of-sample').val());
         this.model
             .then(function (model) {
               thisController.view.trigger("s2.busybox.start_process");
+
               return model.generateSamples(template, study, sampleType, nbOfSample);
             })
             .fail(function (error) {

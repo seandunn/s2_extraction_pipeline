@@ -13,7 +13,7 @@
     </tr>
   </thead>
   <tbody>
-<% _.each(manifest.tubes, function(details) { %>
+<% _.each(manifest.details, function(details) { %>
     <% if (details.errors.length > 0) { %><tr class="error"><% } else { %><tr class="success"><% } %>
       <% _.each(details.views, function(view) { %><td><%= view %></td><% }); %>
     </tr>
