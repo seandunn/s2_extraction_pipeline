@@ -43,20 +43,17 @@ define([
     labwareHtml.find("input").val(""); // clear the input
   }
 
-  function rackUI(rerackingController, rack, index) {
-    function selection(s) {
-      return function () {
-        return rerackingController.html.find("#rack-list").find(s);
-      };
-    }
+  function rackUI(thisController, rack, index) {
 
-    var rackController = rerackingController.factory.createLabwareSubController(rerackingController, "tube_rack");
+    var rackController = thisController.factory.createLabwareSubController(thisController, "tube_rack");
 
     var rackRepresentation = representAsLabware(rack);
 
     rackController.setupController(
-      _.build("tube_rack", _.identity(rackRepresentation)),
-      selection("li:nth("+index+") .resource")
+      _.build("tube_rack", rackRepresentation),
+      function() {
+        return thisController.html.find("#rack-list li:nth("+index+") .resource");
+      }
     );
 
 
@@ -136,9 +133,6 @@ define([
       this.enableDropzone(this.html);
 
 
-      this.html.find("#reracking h3:nth(1)").hide();
-      this.html.find("#reracking h3:nth(2)").hide();
-
       this.html.find("#print-rerack-btn").click(_.bind(thisController.onPrintBarcode, thisController));
       this.html.find("#rerack-btn").click(_.bind(thisController.onReracking, thisController));
 
@@ -168,15 +162,12 @@ define([
       this.html.find("#print-rerack-btn").hide();
 
 
-      this.html.find("#reracking").find("h3:nth(1)").hide();
-      this.html.find("#reracking").find("h3:nth(2)").hide();
-
       this.view.find(".validationText").hide();
     },
 
     enableDropzone: function (html) {
       this.dropzone = DropZone.init(html.find(".dropzone"));
-      this.dropzone.enable(_.bind(this.responderCallback, this));
+      this.dropzone.enable(_.bind(this.fileUploadedCallback, this));
     },
 
     disableDropZone: function(){
@@ -184,7 +175,7 @@ define([
     },
 
     // This dropZone callback when a file is received...
-    responderCallback: function (fileContent) {
+    fileUploadedCallback: function (fileContent) {
       var thisController = this;
 
       return thisController.model
@@ -196,21 +187,29 @@ define([
       .then(function (model) {
         thisController.view.trigger("s2.busybox.end_process");
         thisController.html.find(".output-labware").show();
-        thisController.outputRackController = thisController.factory.create("labware_controller", thisController);
 
-        thisController.outputRackController.setupController({
-          "expected_type":   "tube_rack",
-          "display_labware": true,
-          "display_remove":  false,
-          "display_barcode": false
-        }, function () {
-          return thisController.html.find(".output-labware");
-        });
+        thisController.outputRackController = thisController.factory.createLabwareSubController(thisController, "tube_rack");
+
+        var rackRepresentation = {
+          resourceType:  "tube_rack",
+          barcode:       model.outputRack.labels.barcode.value,
+          locations:     _
+          .chain(model.tubeMoves.moves)
+          .pluck("target_location")
+          .reduce(function(memo, location){memo[location] = "full"; return memo;}, {})
+          .value()
+        };
+
+        thisController.outputRackController.setupController(
+          _.build("tube_rack", rackRepresentation),
+          function() { return thisController.html.find(".output-labware"); }
+        );
 
         thisController.html.find(".output-labware").empty();
         thisController.outputRackController.renderView();
-        thisController.outputRackController.updateModel(model.outputRack);
-        thisController.disableDropZone();
+
+
+        // thisController.disableDropZone();
         return thisController;
       },
 
@@ -279,11 +278,9 @@ define([
       .html(message);
     },
 
-    childDone: function () {
-      // throw "RerackingController#childDone is deprecated";
-    },
+    release: function() {},
 
-    release: function() {}
+    childDone: function(){}
   });
 
   return Controller;
