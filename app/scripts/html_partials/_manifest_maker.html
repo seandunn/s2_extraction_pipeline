@@ -9,8 +9,8 @@
           <div class="template-selection-box">
             <label for="xls-templates">Select a template:</label>
             <select class="xls-templates" id="xls-templates">
-              <% _.each (templateData.templates, function (template) { %>
-              <option value="<%- template.template_name %>"><%- template.friendly_name %></option>
+              <% _.each (templateData.templates, function (template, name) { %>
+              <option value="<%- name %>"><%- template.friendly_name %></option>
               <% }); %>
             </select>
           </div>
@@ -20,11 +20,7 @@
           </div>
           <div class="template-selection-box">
             <label for="studies">Select a study:</label>
-            <select class="studies" id="studies">
-              <% _.each (templateData.studies, function (study) { %>
-              <option value="<%- study.study_name %>"><%- study.friendly_name %></option>
-              <% }); %>
-            </select>
+            <select class="studies" id="studies"></select>
           </div>
         </div>
       </div>

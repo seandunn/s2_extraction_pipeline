@@ -44,7 +44,7 @@ define([
       }
       this.manifest.model = this.manifest.template.model.pluralize();
 
-      var columnHeaders = dataAsArray[this.manifest.template.header_line_number];
+      var columnHeaders = dataAsArray[this.manifest.template.manifest.header_line_number];
       if (columnHeaders.length <= 1 && columnHeaders[0]) {
         this.manifest.errors.push("The file contains no header!");
         return resolver();
@@ -52,7 +52,7 @@ define([
 
       this.manifest.details =
         _.chain(dataAsArray)
-         .drop(this.manifest.template.header_line_number+1)
+         .drop(this.manifest.template.manifest.header_line_number+1)
          .filter(_.first)
          .map(function(row) { return _.zip(columnHeaders, row); })
          .map(function(pairs) { return _.object(pairs); })

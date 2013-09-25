@@ -4,13 +4,12 @@ define([
   "text!html_partials/_manifest_maker.html",
   "lib/pubsub",
   "lib/reception_templates",
-  "lib/reception_studies",
   "models/base_page_model",
 
   // Global namespace updates
   "lib/jquery_extensions",
   "components/filesaver/filesaver"
-], function (Config, BaseController, componentPartialHtml, PubSub, ReceptionTemplates, ReceptionStudies, BasePageModel) {
+], function (Config, BaseController, componentPartialHtml, PubSub, ReceptionTemplates, BasePageModel) {
   'use strict';
 
   var Controller = Object.create(BaseController);
@@ -28,7 +27,6 @@ define([
       var controller = this;
       var view = createHtml(
         ReceptionTemplates,
-        ReceptionStudies,
         config.printerList,
         function(details) {
           return controller.getS2Root().then(function(root) {
@@ -46,10 +44,9 @@ define([
 
   return Controller;
 
-  function createHtml(templates, studies, printers, generateSamples) {
+  function createHtml(templates, printers, generateSamples) {
     var html        = $(_.template(componentPartialHtml)({
-      templates:   templates.templateList,
-      studies:     studies.studyList,
+      templates:   templates,
       printerList: printers
     }));
 
@@ -64,10 +61,20 @@ define([
     var error   = _.partial(message, "error");
     var success = _.partial(message, "success");
 
+    // Handle the manifest generation
+    var generate    = html.find("#generateManifest");
+    var sampleCount = html.find("#number-of-sample");
+    var studiesList = html.find("#studies");
+    var form        = html.find("form .template-selection-box").find("input,select");
+
+    generate.lockingClick(_.partial(checkSamples, process(html, _.partial(generateManifest, generate))));
+    sampleCount.enterHandler(_.bind(generate.click, generate));
+
     // When someone changes the template we need to change the view!
     var templatePicker = html.find("#xls-templates");
     var prefixes       = html.find("#samplePrefixes");
-    templatePicker.change(updateSampleTypeSelection);
+    templatePicker.change(_.compose(_.partial(updateSampleTypeSelection, prefixes), _.partial(selectedTemplate, templates)));
+    templatePicker.change(_.compose(_.partial(updateStudiesSelection, studiesList), _.partial(selectedTemplate, templates)));
     templatePicker.change();
 
     // When someone clicks the download button we need to download the manifest.  When the manifest
@@ -84,15 +91,6 @@ define([
     printArea.find("button").lockingClick(process(html, _.partial(printBarcodes, printers, printArea)));
     printArea.hide();
 
-    // Handle the manifest generation
-    var generate    = html.find("#generateManifest");
-    var sampleCount = html.find("#number-of-sample");
-    var studiesList = html.find("#studies");
-    var form        = html.find("form .template-selection-box").find("input,select");
-
-    generate.lockingClick(_.compose(process(html, _.partial(generateManifest, generate)), checkSamples));
-    sampleCount.enterHandler(generate.click);
-
     // Finally pick up the pub-sub messages (and cry!)
     PubSub.subscribe("s2.reception.reset_view", function() {
       printAreaHelper.reset();
@@ -103,26 +101,22 @@ define([
 
     return html;
 
-    function updateSampleTypeSelection(event) {
-      var name     = $(templatePicker).val();
-      var template = _.find(templates.templateList, function(template) { return template.template_name === name; });
-      var options  = _.map(template.sample_types, function(value) { return "<option value=\""+value+"\">" + value + "</option>"; });
-      prefixes.empty().append(options.join(""));
-    }
-
-    function checkSamples() {
+    function checkSamples(f, button) {
       var numberOfSamples = parseInt(sampleCount.val());
       if (_.isNaN(numberOfSamples)) {
+        button.prop("disabled", false);
         error("The number of samples is not valid.");
       } else if (numberOfSamples < 1) {
+        button.prop("disabled", false);
         error("You can only register 1 or more samples!");
       } else {
-        return {
+        var template = templates[templatePicker.val()];
+        return f(button, {
           number_of_labwares:    numberOfSamples,
-          template:              templates[templatePicker.val()],
-          sanger_sample_id_core: studies[studiesList.val()].sanger_sample_id_core,
+          template:              template,
+          sanger_sample_id_core: template.studies[studiesList.val()].sanger_sample_id_core,
           sample_type:           prefixes.val()
-        };
+        });
       }
     }
 
@@ -136,6 +130,24 @@ define([
         return success("Samples generated and manifest saved. Barcodes ready for printing.");
       });
     }
+  }
+
+  function selectedTemplate(templates, event) {
+    return templates[$(event.target).val()];
+  }
+
+  function updateSampleTypeSelection(select, template) {
+    select.html(_.map(
+      template.sample_types,
+      function(value, key) { return "<option value=\""+key+"\">" + key + "</option>"; }
+    ));
+  }
+
+  function updateStudiesSelection(select, template) {
+    select.html(_.map(
+      template.studies,
+      function(value, key) { return "<option value=\"" + key + "\">" + value.friendly_name + "</option>"; }
+    ));
   }
 
   function printBarcodes(printers, source, button) {
@@ -266,7 +278,7 @@ define([
   function sendManifestRequest(template,csv) {
     return $.binaryAjax({
       type: "GET",
-      url:  template.manifest_path,
+      url:  template.manifest.path,
     }).then(function(xls) {
       // Encode the data in such a way that we get a multi-part MIME body, otherwise all we
       // get is form data which doesn't work with the manifest merge service.

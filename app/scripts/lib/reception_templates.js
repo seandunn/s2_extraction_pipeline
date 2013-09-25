@@ -13,21 +13,10 @@ define([
     return _.reduce(json, function(m,v,i) { return _.extend(m,v); }, {});
   };
 
-  var Templates = 
-    _.chain(arguments)
-     .drop(2)
-     .reduce(function(m,v) { return _.extend(m, enhance(v)); }, {})
-     .value();
-
-  Templates.templateList = _.map(Templates, function(template, name) {
-    return {
-      template_name: name,
-      friendly_name: template.friendly_name,
-      sample_types:  _.keys(template.sample_types)
-    };
-  });
-
-  return Templates;
+  return _.chain(arguments)
+          .drop(2)
+          .reduce(function(m,v) { return _.extend(m, enhance(v)); }, {})
+          .value();
 
   function enhance(object) {
     return _.chain(object)
