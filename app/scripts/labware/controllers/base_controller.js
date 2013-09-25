@@ -68,8 +68,6 @@ define([], function () {
   baseController.prototype.updateModel = function (inputModel) {
     this.model = inputModel;
     this.setupView();
-    this.owner.childDone(this, this.labwareType + ' rendered', inputModel);
-
     return this;
   };
 
@@ -125,21 +123,6 @@ define([], function () {
   baseController.prototype.release = function () {
     this.currentView.release();
 
-    return this;
-  };
-
-  /* Placeholder for future functionality
-   *
-   *
-   * Arguments
-   * ---------
-   *
-   *
-   * Returns
-   * -------
-   * this
-   */
-  baseController.prototype.childDone = function (childPtr, action, data) {
     return this;
   };
 
