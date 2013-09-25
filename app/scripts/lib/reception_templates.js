@@ -29,7 +29,8 @@ define([
       json_template:         JsonTemplater(templateTransform(template.templates.updates)),
       json_template_display: JsonTemplater(displayTransform(template.templates.display)),
       validation:            template.validation || _.identity,
-      generator:             Generators[template.model](template)
+      generator:             Generators[template.model](template),
+      reader:                Readers[template.model](template)
     });
   }
 
