@@ -192,7 +192,20 @@ div.header-box {
   height: 6em;
 }
 
-.legend { display: none; }
+.legend {
+  display: none;
+  @extend .unstyled;
+  @extend .inline;
+  li {
+    text-align: center;
+    font-size: 75%;
+    color: white;
+    border-radius: 25px;
+    width: 35px;
+    height: 20px;
+    padding: 12px;
+  }
+}
 .RackScanModel              .legend.contents         { display: block; }
 .VolumeCheckModel.pre-file  .legend.contents         { display: block; }
 .VolumeCheckModel.post-file .legend.quality          { display: block; }
@@ -201,11 +214,13 @@ div.header-box {
 
 div.resource {
   height: 180px;
-  &:empty {
-    height: auto;
-  }
+  &:empty { height: auto; }
 
   .unused          { fill: #d40000; background-colour: #d40000; stroke: #000000; opacity: 0.6; }
+
+
+  .tube .empty { display: none; }
+}
 
   .empty             { fill: #f5f5f5; background-color: #f5f5f5; }
   .full              { fill: #5bb75b; background-color: #5bb75b; }
@@ -220,15 +235,11 @@ div.resource {
   .very-good { fill: hsl(120, 100%, 20%); background-color: hsl(120, 100%, 20%); }
   .excellent { fill: hsl(120, 100%, 10%); background-color: hsl(120, 100%, 10%); }
 
-  .dna   { fill: hsl(120, 100%, 70%); background-color: hsl(120, 100%, 70%); }
-  .dna_p { fill: hsl(120, 100%, 40%); background-color: hsl(120, 100%, 40%); }
-  .rna   { fill: hsl(300, 100%, 70%); background-color: hsl(300, 100%, 70%); }
-  .rna_p { fill: hsl(300, 100%, 40%); background-color: hsl(300, 100%, 40%); }
-  .na    { fill: hsl(200, 100%, 70%); background-color: hsl(200, 100%, 70%); }
-  .na_p  { fill: hsl(200, 100%, 40%); background-color: hsl(200, 100%, 40%); }
-
-  .tube .empty { display: none; }
-}
+  .dna   { fill: hsl(120, 45%, 58%);  background-color: hsl(120, 45%, 58%); }
+  .dna_p { fill: hsl(120, 34%, 25%);  background-color: hsl(120, 34%, 25%); }
+  .rna   { fill: hsl(3, 60%, 46%);    background-color: hsl(3, 60%, 46%); }
+  .rna_p { fill: hsl(3, 60%, 25%);    background-color: hsl(3, 60%, 25%); }
+  .na_p  { fill: hsl(194, 59%, 45%);  background-color: hsl(194, 59%, 45%); }
 
 div.template-selection-box {
   border-radius: 8px;
