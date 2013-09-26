@@ -8,15 +8,18 @@ define([ 'config'
 
   // Components, probably best loaded dynamically!
   , 'app-components/reception/component'
-], function (config, nextWorkflow, S2Root, BusyBox, alerts, Logger, PubSub, ReceptionController) {
+  , 'app-components/reracking/component'
+], function (config, nextWorkflow, S2Root, BusyBox, alerts, Logger, PubSub, ReceptionController, Reracking) {
   'use strict';
 
   var ComponentConfig = [
-    { name: "reception", selector: ".sample-reception", constructor: ReceptionController }
+    { name: "reception",  selector: ".sample-reception",     constructor: ReceptionController },
+    { name: "re-racking", selector: ".extraction-reracking", constructor: Reracking }
   ];
 
   var App = function (theControllerFactory) {
     var app = this;
+    app.config = config;
     app.controllerFactory = theControllerFactory;
     _.templateSettings.variable = 'templateData';
 
@@ -47,14 +50,6 @@ define([ 'config'
         app.jquerySelection = _.constant(html);
         app.addEventHandlers();
         app.setupController();
-      } else if (html.is('.extraction-reracking')) {
-        var configuration = { printerList: config.printers };
-        var extractionController = app.controllerFactory.create('lab_activities_controller', app, configuration);
-        html.append(extractionController.view);
-        alerts.setupPlaceholder(function () {
-          return $('#alertContainer');
-        });
-        app.addEventHandlers();
       } else {
         console.log('#content control class missing from web page.')
       }

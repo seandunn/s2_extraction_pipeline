@@ -1,13 +1,12 @@
 define([
-  'config'
-  , 'text!app-components/reception/_component.html'
+  'text!app-components/reception/_component.html'
   , 'app-components/manifest/maker'
   , 'app-components/manifest/reader'
   , 'app-components/user-barcode/scanner'
 
   // Globally included stuff added after this comment
   , 'lib/jquery_extensions'
-], function (Config, receptionPartialHtml, ManifestMaker, ManifestReader, UserScanning) {
+], function (receptionPartialHtml, ManifestMaker, ManifestReader, UserScanning) {
   'use strict';
 
   // These are the components that need to be connected up on the UI.
@@ -61,7 +60,7 @@ define([
 
   // Deals with connecting the user with the specified barcode to the system.
   function connect(context, success, error, event, barcode) {
-    var user = Config.UserData[barcode];
+    var user = context.config.UserData[barcode];
     if (_.isUndefined(user)) {
       error("User barcode is unrecognised");
     } else {

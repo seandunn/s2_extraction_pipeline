@@ -1,5 +1,4 @@
 define([
-  "config",
   "text!app-components/manifest/_maker.html",
   "lib/reception_templates",
   "models/base_page_model",
@@ -7,16 +6,16 @@ define([
   // Global namespace updates
   "lib/jquery_extensions",
   "components/filesaver/filesaver"
-], function (Config, componentPartialHtml, ReceptionTemplates, BasePageModel) {
+], function (componentPartialHtml, ReceptionTemplates, BasePageModel) {
   'use strict';
 
   return function(context) {
     var view = createHtml(
       ReceptionTemplates,
-      Config.printers,
+      context.config.printers,
       function(details) {
         return context.getS2Root().then(function(root) {
-          return GenerateSamples(root, details);
+          return GenerateSamples(context, root, details);
         }, _.constant("Couldn't get the root! Is the server accessible?"));
       }
     );
@@ -162,7 +161,7 @@ define([
     button.prop("disabled", false);
   }
 
-  function GenerateSamples(root, details) {
+  function GenerateSamples(context, root, details) {
     var model             = {};
     var template          = details.template;
     var resourceGenerator = _.partial(template.generator.resources, template.sample_types[details.sample_type]);
@@ -184,7 +183,7 @@ define([
           var data      = placeSamples(samples, barcodes, details.sample_type);
           var blob      = _.toCSV(template.generator.manifest(data), ",");
 
-          var manifest  = sendManifestRequest(template, blob);
+          var manifest  = sendManifestRequest(context, template, blob);
           var resources = createResources(resourceGenerator, root, data).then(_.partial(labelResources, root, model));
 
           return $.when(resources, manifest);
@@ -247,7 +246,7 @@ define([
     };
   }
 
-  function sendManifestRequest(template,csv) {
+  function sendManifestRequest(context,template,csv) {
     return $.binaryAjax({
       type: "GET",
       url:  template.manifest.path,
@@ -260,7 +259,7 @@ define([
 
       return $.binaryAjax({
         type: "POST",
-        url:  Config.mergeServiceUrl,
+        url:  context.config.mergeServiceUrl,
         data: form
       });
     }).fail(_.constant("Unable to generate the manifest"));
