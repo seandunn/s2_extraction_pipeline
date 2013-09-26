@@ -1,43 +1,63 @@
 define([
-       'text!html_partials/_scan_barcode.html'
-], function (scanBarcodePartialHtml) {
+  'text!html_partials/_scan_barcode.html'
+], function ( scanBarcodePartialHtml ) {
   'use strict';
 
-  var ScanBarcodeController = function (owner, controllerFactory) {
+  var ScanBarcodeController = function ( owner, controllerFactory ) {
     this.owner = owner;
     this.controllerFactory = controllerFactory;
+
     return this;
   };
 
   ScanBarcodeController.prototype = {
     init: function (inputModel) {
       this.model = inputModel;
+      
       return this;
     },
 
+    template: _.template(scanBarcodePartialHtml),
+
     renderView: function () {
-      this.view = $(_.template(scanBarcodePartialHtml)(this.model));
+      this.view = $(this.template({templateData: this.model}));
+      this.getElements();
+
       return this.view;
     },
 
+    getElements: function() {
+      this.progressView = $('div.progress', this.view);
+      this.barView = $('div.bar', this.view)
+    },
+
     showProgress: function() {
-      $('div.progress', this.view).show();
+      this.progressView.show();
+
+      return this;
     },
 
     updateProgress: function(percentage) {
-      var $this = this;
-
-      if (percentage == 100) {
-        $('div.bar', this.view).on('transitionend', function() {
-          $this.hideProgress();
-        })
+      if ( percentage === 100 ) {
+        this.barView.on( 'transitionend', _.bind(function(e) { 
+          this.hideProgress(400); 
+        }, this));
       }
 
-      $('div.bar', this.view).css('width', [percentage, '%'].join(""))
+      this.barView.css( 'width', [percentage, '%'].join("") );
+
+      return this;
     },
 
-    hideProgress: function() {
-      $('div.progress', this.view).hide();
+    hideProgress: function(delay) {
+      if (!_.isNull(delay) && delay > 0) {
+        var progressViewHide = _.bind(this.progressView.hide, this.progressView);
+        _.delay(progressViewHide, delay);
+      } else {
+        this.progressView.hide();
+      }
+
+      return this;
     }
   }
 
@@ -49,4 +69,3 @@ define([
     }
   };
 });
-

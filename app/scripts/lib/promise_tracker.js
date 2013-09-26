@@ -1,13 +1,4 @@
 define(function() {
-
-  function promiseTrackingInfo(settings) {
-    return _.extend({}, {
-      number_of_thens: 0,
-      thens_called: 0,
-      callbacks: {},
-      origConfig: settings
-    }, settings);
-  }
   
   var promises = [];
 
@@ -23,8 +14,12 @@ define(function() {
         newCallbacks = ['beforeThen', 'afterThen'],
         thisPromise = promises[uniq];
 
-    // Create a unique id for  this chain of promises
+    // Create a unique id for this chain of promises
     if (_.isUndefined(uniq)) {
+
+      // Don't want to alter the original
+      promise = _.clone(promise);
+
       uniq = _.uniqueId();
       
       thisPromise = promises[uniq] = promiseTrackingInfo(_.omit(config, 'uniq'));
@@ -37,19 +32,20 @@ define(function() {
     // Add extra callbacks to the promise
     _.reduce(newCallbacks, function(memo, val) {
         memo[val] = createCallback(val);
-        return memo
+        return memo;
     }, promise);
 
-    // Decorate the promise's then method 
+    // Decorate the promise's then method
     promise.then = _.wrap(fnThen, function(fn) {
+      
       var args = _.rest(arguments, 1),
-          doneFn = args[0];
+          doneFn = _.first(args);
 
       args[0] = decorateDoneCallback(doneFn);
 
       incrementNumberOfThens();
       
-      return promise_tracker(fn.apply(null, args), {uniq: uniq});
+      return promise_tracker(fn.apply(fn, args), {uniq: uniq});
     });
 
     // Expose the original then
@@ -65,6 +61,20 @@ define(function() {
 
     function isPromise(promise) {
       return (_.isObject(promise) && _.isFunction(promise.promise))
+    }
+
+    // Create our tracking setup with optional settings
+    function promiseTrackingInfo(settings) {
+      return _.extend({}, {
+        number_of_thens: 0,
+        thens_called: 0,
+        thens_called_pc: function() {
+          if (this.number_of_thens === 0) return 0;
+          return (( this.thens_called / this.number_of_thens ) * 100);
+        },
+        callbacks: {},
+        origConfig: settings
+      }, settings);
     }
 
     // Create callbacks list on unique hash
@@ -91,7 +101,7 @@ define(function() {
         thisPromise.callbacks.beforeThen.fire(promise.track(), done);
 
         // Invoke the done callback
-        var res = done.apply(null, _.toArray(arguments));
+        var res = done.apply(done, _.toArray(arguments));
         thisPromise.thens_called++;
 
         if (isPromise(res)) {

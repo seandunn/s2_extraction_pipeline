@@ -22,6 +22,7 @@ define([ 'controllers/base_controller'
       this.owner = owner;
       return this;
     },
+
     setupController: function (setupData, jquerySelection) {
       var controller = this;
       this.jquerySelection = jquerySelection;
@@ -165,50 +166,21 @@ define([ 'controllers/base_controller'
       if (action === "barcodeScanned") {
         child.barcodeInputController.showProgress();
 
-        PromiseTracker(this.model, {number_of_thens: 9})
+        PromiseTracker(this.model, {number_of_thens: 1})
           .afterThen(function(tracking){
-            child.barcodeInputController.updateProgress((tracking.thens_called / tracking.number_of_thens) * 100);
+            child.barcodeInputController.updateProgress(tracking.thens_called_pc());
           })
           .then(function (model) {
             return model.addTubeFromBarcode(data.BC);
           })
           .fail(function (error) {
             PubSub.publish('s2.status.error', controller, error);
+            child.barcodeInputController.hideProgress();
           })
-          .then(function() {
-            var def = $.Deferred();
-
-            setTimeout(function() {
-              console.log('first then')
-              def.resolve();
-            }, 2000)
-
-            return def.promise();
-          })
-          .then(function() {
-            var def = $.Deferred();
-
-            setTimeout(function() {
-              console.log('second then')
-              def.resolve();
-            }, 3000)
-
-            return def.promise();
-          })
-          .then(function() {
-            var def = $.Deferred();
-
-            setTimeout(function() {
-              console.log('third then')
-              def.resolve();
-            }, 4000)
-
-            return def.promise();
-          })
-          /*.then(function () {
+          .then(function () {
             controller.setupSubControllers();
             controller.renderView();
-          });*/
+          });
       } else if (action === "removeLabware") {
         this.model
         .then(function (model) {
@@ -224,4 +196,3 @@ define([ 'controllers/base_controller'
 
   return PageController;
 });
-

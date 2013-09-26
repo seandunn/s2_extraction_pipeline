@@ -16,14 +16,15 @@ define(['config'
     PromiseTracker(controller.model.setUserFromBarcode(barcode))
       .fail(function (error) {
         PubSub.publish('s2.status.error', controller, error);
+        controller.userBCSubController.hideProgress();
       })
       .afterThen(function(tracker) {
-        controller.userBCSubController.updateProgress((tracker.thens_called / tracker.number_of_thens) * 100)
+        controller.userBCSubController.updateProgress(tracker.thens_called_pc());
       })
       .then(function(){
-        console.log('This is inside the final then')
         template.find("input").val(barcode);
         template.find("input").attr('disabled', true);
+
         controller.jquerySelectionForLabware().
           find("input").
           removeAttr('disabled').
@@ -40,15 +41,16 @@ define(['config'
   var labwareCallback = function(value, template, controller){
     template.find("input").attr('disabled', true);
     template.find('.alert-error').addClass('hide');
-    
+
     controller.labwareBCSubController.showProgress();
 
     PromiseTracker(controller.model.setLabwareFromBarcode(Util.pad(value)))
       .fail(function (error) {
         PubSub.publish('s2.status.error', controller, error);
+        controller.labwareBCSubController.hideProgress();
       })
       .afterThen(function(tracker) {
-        controller.labwareBCSubController.updateProgress((tracker.thens_called / tracker.number_of_thens) * 100)
+        controller.labwareBCSubController.updateProgress(tracker.thens_called_pc());
       })
       .then(login)
 
@@ -115,4 +117,3 @@ define(['config'
 
   return DefaultController;
 });
-
