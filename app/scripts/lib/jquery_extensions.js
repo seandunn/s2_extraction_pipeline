@@ -81,13 +81,21 @@ define([], function() {
     // Causes the specified element to be swiped into view, and any currently swiped in element
     // to be swiped out.  Note that this works with a CSS class called "swipe-in" and any effects
     // should be added to that class itself.
-    //
-    // NOTE: It would be nice to capture the transitionend event and then hide the
-    // outgoing element, but that seems to mess with the transition itself.
     swipeIn: function(incoming) {
       var outgoing = this.find(".swipe-in");
-      outgoing.show().delay(50).removeClass("swipe-in");
-      incoming.show().delay(50).addClass("swipe-in");
+
+      // When the element goes out of scope, hide it.
+      outgoing.on("transitionend", _.once(_.bind(outgoing.hide, outgoing)))
+              .removeClass("swipe-in")
+
+      // Unfortunately there is an issue that the element, if it's just been shown, will not
+      // transition properly.  Hence, we have to put in a short delay, which can give the 
+      // impression of a pause which we'd like to get rid of.
+      incoming.show();
+      window.setTimeout(
+        _.bind(_.partial(incoming.addClass, "swipe-in"), incoming),
+        10
+      );
       return this;
     },
 
