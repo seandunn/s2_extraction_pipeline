@@ -1,53 +1,36 @@
 define([
   "config",
-  "controllers/base_controller",
-  "text!html_partials/_manifest_maker.html",
-  "lib/pubsub",
+  "text!app-components/manifest/_maker.html",
   "lib/reception_templates",
   "models/base_page_model",
 
   // Global namespace updates
   "lib/jquery_extensions",
   "components/filesaver/filesaver"
-], function (Config, BaseController, componentPartialHtml, PubSub, ReceptionTemplates, BasePageModel) {
+], function (Config, componentPartialHtml, ReceptionTemplates, BasePageModel) {
   'use strict';
 
-  var Controller = Object.create(BaseController);
+  return function(context) {
+    var view = createHtml(
+      ReceptionTemplates,
+      Config.printers,
+      function(details) {
+        return context.getS2Root().then(function(root) {
+          return GenerateSamples(root, details);
+        }, _.constant("Couldn't get the root! Is the server accessible?"));
+      }
+    );
 
-  $.extend(Controller, {
-    register: function (callback) {
-      callback('manifest_maker_controller', function() {
-        var instance = Object.create(Controller);
-        Controller.init.apply(instance, arguments);
-        return instance;
-      });
-    },
-
-    init: function (owner, factory, config) {
-      var controller = this;
-      var view = createHtml(
-        ReceptionTemplates,
-        config.printerList,
-        function(details) {
-          return controller.getS2Root().then(function(root) {
-            return GenerateSamples(root, details);
-          }, _.identity("Couldn't get the root! Is the server accessible?"));
-        }
-      );
-
-      this.owner  = owner;
-      this.config = config;
-      this.view   = view;
-      return this;
-    },
-  });
-
-  return Controller;
+    return {
+      view: view,
+      events: { "s2.reception.reset_view": _.bind(view.reset, view) }
+    };
+  };
 
   function createHtml(templates, printers, generateSamples) {
-    var html        = $(_.template(componentPartialHtml)({
-      templates:   templates,
-      printerList: printers
+    var html = $(_.template(componentPartialHtml)({
+      templates: templates,
+      printers:  printers
     }));
 
     var messageView = html.find(".validationText");
@@ -67,7 +50,7 @@ define([
     var studiesList = html.find("#studies");
     var form        = html.find("form .template-selection-box").find("input,select");
 
-    generate.lockingClick(_.partial(checkSamples, process(html, _.partial(generateManifest, generate))));
+    generate.lockingClick(_.partial(checkSamples, process(html, generateManifest)));
     sampleCount.enterHandler(_.bind(generate.click, generate));
 
     // When someone changes the template we need to change the view!
@@ -91,13 +74,13 @@ define([
     printArea.find("button").lockingClick(process(html, _.partial(printBarcodes, printers, printArea)));
     printArea.hide();
 
-    // Finally pick up the pub-sub messages (and cry!)
-    PubSub.subscribe("s2.reception.reset_view", function() {
+    // Bind in a reset function that we can call
+    html.reset = function() {
       printAreaHelper.reset();
       downloadHelper.reset();
       form.prop("disabled", false);
       messageView.hide();
-    });
+    };
 
     return html;
 
@@ -130,6 +113,30 @@ define([
         return success("Samples generated and manifest saved. Barcodes ready for printing.");
       });
     }
+
+    function printBarcodes(printers, source, button) {
+      // We have to remap the resources so that they look like they are printable.  What we have within
+      // our data is the original label data, but what we need is what it would have looked like
+      // *after* labelling.
+      var labels = _.map(source.data("resources"), function(resource) {
+        return _.extend({
+          template:           resource.resourceType,
+          returnPrintDetails: function() { return this; }
+        }, _.build(resource.resourceType, {
+          ean13:  resource.labels.ean13,
+          sanger: resource.labels.sanger.prefix + resource.labels.sanger.number + resource.labels.sanger.suffix
+        }));
+      });
+
+      return BasePageModel.printBarcodes(labels, printers.val())
+                          .then(function() {
+                            return success("The barcodes have been sent to the printer!");
+                          }, function() {
+                            return error("Could not print the barcodes");
+                          }).always(function() {
+                            button.prop("disabled", false);
+                          });
+    }
   }
 
   function selectedTemplate(templates, event) {
@@ -150,44 +157,9 @@ define([
     ));
   }
 
-  function printBarcodes(printers, source, button) {
-    // We have to remap the resources so that they look like they are printable.  What we have within
-    // our data is the original label data, but what we need is what it would have looked like
-    // *after* labelling.
-    var labels = _.map(source.data("resources"), function(resource) {
-      return _.extend({
-        template:           resource.resourceType,
-        returnPrintDetails: function() { return this; }
-      }, _.build(resource.resourceType, {
-        ean13:  resource.labels.ean13,
-        sanger: resource.labels.sanger.prefix + resource.labels.sanger.number + resource.labels.sanger.suffix
-      }));
-    });
-
-    return BasePageModel.printBarcodes(labels, printers.val())
-                        .then(function() {
-                          return success("The barcodes have been sent to the printer!");
-                        }, function() {
-                          return error("Could not print the barcodes");
-                        }).always(function() {
-                          button.prop("disabled", false);
-                        });
-  }
-
   function downloadManifest(source, button) {
     saveAs(source.data("manifest"), "manifest.xls");
     button.prop("disabled", false);
-  }
-
-  // Wraps a function in the process reporting.
-  function process(html, f) {
-    var start  = function() { html.trigger("s2.busybox.start_process"); };
-    var finish = function() { html.trigger("s2.busybox.end_process"); };
-
-    return function() {
-      start();
-      return f.apply(this, arguments).always(finish);
-    };
   }
 
   function GenerateSamples(root, details) {
@@ -233,7 +205,7 @@ define([
       sanger_sample_id_core: core
     }).then(function(action) {
       return action.result.samples;
-    }, _.identity("Could not pre-register " + number + " samples in S2."));
+    }, _.constant("Could not pre-register " + number + " samples in S2."));
   }
   function preRegisterBarcodes(number, model, type, root) {
     return root.bulk_create_barcodes.create({
@@ -243,7 +215,7 @@ define([
       contents:           type
     }).then(function(action) {
       return action.result.barcodes;
-    }, _.identity("Could not pre-register " + number + " barcodes in S2."));
+    }, _.constant("Could not pre-register " + number + " barcodes in S2."));
   }
   function labelResources(root, model, resources) {
     model.labwareOutputs = resources;
@@ -251,7 +223,7 @@ define([
       labellables: _.map(model.labwareOutputs, labellableForResource)
     }).then(function() {
       return model;
-    }, _.identity("Couldn't connect the labware to their labels in S2."));
+    }, _.constant("Couldn't connect the labware to their labels in S2."));
   }
 
   function labelForBarcode(barcode) {
@@ -291,7 +263,7 @@ define([
         url:  Config.mergeServiceUrl,
         data: form
       });
-    }).fail(_.identity("Unable to generate the manifest"));
+    }).fail(_.constant("Unable to generate the manifest"));
   }
 
   function createResources(helper, root, manifest) {
@@ -321,8 +293,19 @@ define([
         _.build(model, _.map(data, function(o) { return _.omit(o, fields); }))
       ).then(function(bulk) {
         return _.map(bulk.result[model], builder);
-      }, _.identity("Could not register the labware"));
+      }, _.constant("Could not register the labware"));
     });
+  }
+
+  // Wraps a function in the process reporting.
+  function process(html, f) {
+    var start  = function() { html.trigger("s2.busybox.start_process"); };
+    var finish = function() { html.trigger("s2.busybox.end_process"); };
+
+    return function() {
+      start();
+      return f.apply(this, arguments).always(finish);
+    };
   }
 });
 

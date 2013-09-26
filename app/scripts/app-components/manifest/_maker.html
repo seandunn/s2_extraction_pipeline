@@ -34,8 +34,8 @@
         <div id="printer-div">
           <label for="printer-select">Current Printer:</label>
           <select id="printer-select">
-<% _.each (templateData.printerList, function (printer) { %>
-            <option value="<%- printer.name %>"><%- printer.name %></option>
+<% _.each (templateData.printers, function (printer) { %>
+            <option value="<%- printer.name %>"><%- printer.friendlyName %></option>
 <% }); %>
           </select>
           <button class="btn">Print Barcodes</button>

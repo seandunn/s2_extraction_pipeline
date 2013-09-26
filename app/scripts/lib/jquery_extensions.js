@@ -22,6 +22,19 @@ define([], function() {
       };
       xhr.send(options.data);
       return deferred.promise();
+    },
+
+    // Chain deferreds really
+    chain: function(handlers, chaining) {
+      if (handlers.length == 0) return;   // It's fair to assume this is an immediate return of undefined!
+
+      var args = _.drop(arguments, 2);
+      return _.chain(handlers).drop(1).reduce(chaining, handlers[0].apply(handlers[0], args)).value();
+    },
+
+    // Wait for all of the promises to complete, whether that is resolution or rejection.
+    waitForAllPromises: function(promises) {
+      return this.chain(_.map(promises, _.partial(_.partial, _.identity)), _.regardless);
     }
   });
 
@@ -32,7 +45,7 @@ define([], function() {
     enterHandler: function(f) {
       this.bind("keypress", function(event) {
         if (event.which !== 13) return;
-        f();
+        return f.apply(this, arguments);
       });
     },
 
@@ -63,6 +76,25 @@ define([], function() {
         this.element.data(attribute, d).show();
         return this;
       }));
+    },
+
+    // Causes the specified element to be swiped into view, and any currently swiped in element
+    // to be swiped out.  Note that this works with a CSS class called "swipe-in" and any effects
+    // should be added to that class itself.
+    //
+    // NOTE: It would be nice to capture the transitionend event and then hide the
+    // outgoing element, but that seems to mess with the transition itself.
+    swipeIn: function(incoming) {
+      var outgoing = this.find(".swipe-in");
+      outgoing.show().delay(50).removeClass("swipe-in");
+      incoming.show().delay(50).addClass("swipe-in");
+      return this;
+    },
+
+    // Makes the element believe it has been swiped into view!
+    swipedIn: function() {
+      this.addClass("swipe-in");
+      return this;
     }
   });
 
