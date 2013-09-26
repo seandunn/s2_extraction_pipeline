@@ -4,40 +4,55 @@ define([ 'config'
   , 'extra_components/busy_box'
   , 'alerts'
   , 'lib/logger'
-], function (config, nextWorkflow, S2Root, BusyBox, alerts, Logger) {
+  , 'lib/pubsub'
+
+  // Components, probably best loaded dynamically!
+  , 'app-components/reception/component'
+  , 'app-components/reracking/component'
+], function (config, nextWorkflow, S2Root, BusyBox, alerts, Logger, PubSub, ReceptionController, Reracking) {
   'use strict';
+
+  var ComponentConfig = [
+    { name: "reception",  selector: ".sample-reception",     constructor: ReceptionController },
+    { name: "re-racking", selector: ".extraction-reracking", constructor: Reracking }
+  ];
 
   var App = function (theControllerFactory) {
     var app = this;
+    app.config = config;
     app.controllerFactory = theControllerFactory;
     _.templateSettings.variable = 'templateData';
 
     $('#server-url').text(config.apiUrl);
     $('#release').text(config.release);
 
-    if ($('#content.sample-extraction').length > 0) {
-      // ToDo #content exists at this point we should pass it directly not a function
-      app.jquerySelection = function () { return $('#content'); };
-      app.addEventHandlers();
-      app.setupController();
-    } else if ($('#content.sample-reception').length > 0) {
-      var configuration = { printerList: config.printers };
-      var receptionController = app.controllerFactory.create('reception_controller', app, configuration);
-      $("#content").append(receptionController.view);
-      alerts.setupPlaceholder(function () {
-        return $('#alertContainer');
-      });
-      app.addEventHandlers();
-    } else if ($('#content.extraction-reracking').length > 0) {
-      var configuration = { printerList: config.printers };
-      var extractionController = app.controllerFactory.create('lab_activities_controller', app, configuration);
-      $("#content").append(extractionController.view);
-      alerts.setupPlaceholder(function () {
-        return $('#alertContainer');
+    var html = $("#content");
+    html.on("s2.status.error", function(event, message) {
+      PubSub.publish("s2.status.error", app, {message: message});
+    });
+
+    var activate = _.find(ComponentConfig, function(config) {
+      return html.is(config.selector);
+    });
+    if (!_.isUndefined(activate)) {
+      var component = activate.constructor(app);
+      html.append(component.view).on(component.events);
+
+      alerts.setupPlaceholder(function() {
+        return $("#alertContainer");
       });
       app.addEventHandlers();
     } else {
-      console.log('#content control class missing from web page.')
+      // Handle the non-components
+      // TODO: Move these to be components!
+      if (html.is('.sample-extraction')) {
+        // ToDo #content exists at this point we should pass it directly not a function
+        app.jquerySelection = _.constant(html);
+        app.addEventHandlers();
+        app.setupController();
+      } else {
+        console.log('#content control class missing from web page.')
+      }
     }
   };
 

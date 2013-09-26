@@ -1,5 +1,12 @@
 define([], function() {
   return {
+    // Returns a function that will return the specified value every time it's called
+    constant: function(value) {
+      return function() {
+        return value;
+      };
+    },
+
     // Collapses the given reducible using the function f on every element.  zero is the initial
     // element which, if undefined, is []
     plus: function(reducible, f, zero) {

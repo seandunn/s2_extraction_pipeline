@@ -1,0 +1,47 @@
+<div class="component">
+  <div class="twoColumns">
+    <div class="component-title">
+      <h2>Create a new manifest</h2>
+    </div>
+    <form onsubmit="return false;">
+      <div class="columnLeft">
+        <div class="manifest-options">
+          <div class="template-selection-box">
+            <label for="xls-templates">Select a template:</label>
+            <select class="xls-templates" id="xls-templates">
+              <% _.each (templateData.templates, function (template, name) { %>
+              <option value="<%- name %>"><%- template.friendly_name %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="template-selection-box">
+            <label for="samplePrefixes">Select a sample type:</label>
+            <select class="samplePrefixes" id="samplePrefixes"></select>
+          </div>
+          <div class="template-selection-box">
+            <label for="studies">Select a study:</label>
+            <select class="studies" id="studies"></select>
+          </div>
+        </div>
+      </div>
+      <div class="columnRight">
+        <div class="template-selection-box">
+          <label for="number-of-sample">Enter the number of samples:</label>
+          <input id="number-of-sample" type="text" value="1">
+        </div>
+        <button id="generateManifest" class="btn">Generate Manifest</button>
+        <button id="downloadManifest" class="btn">Download Manifest</button>
+        <div id="printer-div">
+          <label for="printer-select">Current Printer:</label>
+          <select id="printer-select">
+<% _.each (templateData.printers, function (printer) { %>
+            <option value="<%- printer.name %>"><%- printer.friendlyName %></option>
+<% }); %>
+          </select>
+          <button class="btn">Print Barcodes</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="validationText alert" style="display:none"></div>
+</div>

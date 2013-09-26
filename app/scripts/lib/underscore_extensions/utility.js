@@ -63,6 +63,19 @@ define([], function() {
     // not merge arrays.
     deepMerge: function() {
       return _.reduce(arguments, deepMergeTwoObjects, {});
+    },
+
+    // recursively remove undefined keys from this JS object
+    removeUndefinedKeys: function(object) {
+      return _.reduce(object, function (memo, value, key) {
+        if (_.isObject(value)) {
+          value = _.removeUndefinedKeys(value);
+        }
+        if (value && !_.isEmpty(value)) {
+          memo[key] = value;
+        }
+        return memo;
+      }, {});
     }
   };
 

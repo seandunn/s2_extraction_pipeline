@@ -129,33 +129,6 @@ div.reception-component {
   position: relative;
 }
 
-div.manifest {
-  clear: both;
-  position: absolute;
-  left: 100%;
-  display: none;
-  width: 100%;
-  height: 100%;
-}
-
-div.manifest-btn {
-  border: 6px solid #808080;
-  border-radius: 16px;
-  width: 20em;
-  height: 100px;
-  margin: auto;
-  clear: both;
-  position: relative;
-  display: table;
-}
-
-div.manifest-btn-text-box {
-  text-align: center;
-  display: table-cell;
-  vertical-align: middle;
-  font-size: 1.3em;
-}
-
 div.choice-box {
   position: relative;
   height: 300px;
@@ -280,4 +253,50 @@ div.number-of-samples-box {
     overflow:scroll;
     height:440px;
   }
+}
+
+
+
+
+.manifest, .reracking, #homePage {
+  position: absolute;
+  clear: both;
+  width: 100%;
+  height: 100%;
+}
+.manifest, #homePage {
+  transition-property: left;
+  transition-timing-function: ease;
+  transition-duration: 0.5s;
+  transition-delay: 0.1s;
+}
+.manifest {
+  left: 150%;
+  &.swipe-in {
+    left: 0;
+  }
+}
+#homePage {
+  left: -150%;
+  &.swipe-in {
+    left: 0;
+  }
+}
+
+div.manifest-btn {
+  border: 6px solid #808080;
+  border-radius: 16px;
+  width: 20em;
+  height: 100px;
+  margin: auto;
+  clear: both;
+  position: relative;
+  display: table;
+}
+
+div.manifest-btn-text-box {
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 1.3em;
 }
