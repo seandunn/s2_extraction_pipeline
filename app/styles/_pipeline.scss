@@ -265,21 +265,26 @@ div.number-of-samples-box {
   height: 100%;
 }
 .manifest, #homePage {
-  transition-property: left;
+  transition-property: left, opacity;
   transition-timing-function: ease;
   transition-duration: 0.5s;
   transition-delay: 0.1s;
+
+  display:none;
+  opacity:0;
 }
 .manifest {
-  left: 150%;
+  left: 100%;
   &.swipe-in {
     left: 0;
+    opacity: 1;
   }
 }
 #homePage {
-  left: -150%;
+  left: -100%;
   &.swipe-in {
     left: 0;
+    opacity: 1;
   }
 }
 
