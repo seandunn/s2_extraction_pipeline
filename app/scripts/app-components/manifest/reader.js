@@ -2,12 +2,11 @@ define([
     'text!app-components/manifest/_reader.html'
   , 'text!app-components/manifest/_row.html'
   , 'lib/file_handling/manifests'
-  , 'lib/reception_templates'
   , 'views/drop_zone'
 
   // Loaded in the global namespace after this comment
   , 'lib/jquery_extensions'
-], function (componentPartialHtml, sampleRowPartial, CSVParser, ReceptionTemplate, DropZone) {
+], function (componentPartialHtml, sampleRowPartial, CSVParser, DropZone) {
   'use strict';
 
   var template = _.template(sampleRowPartial);
@@ -162,9 +161,9 @@ define([
       "click",
       _.compose(enableRowSelector, enableRow, nearestRow)
     ).delegate(
-    "input[data-name_of_column='_SELECTED']:not(:checked)",
-    "click",
-    _.compose(enableRowSelector, disableRow, nearestRow)
+      "input[data-name_of_column='_SELECTED']:not(:checked)",
+      "click",
+      _.compose(enableRowSelector, disableRow, nearestRow)
     );
 
     view.show();
@@ -251,7 +250,7 @@ define([
     }
 
     var templateName       = dataAsArray[2][0]; // always A3 !!
-    manifest.template = ReceptionTemplate[templateName];
+    manifest.template = context.templates[templateName];
     if (_.isUndefined(manifest.template)) {
       manifest.errors.push("Could not find the corresponding template!");
       return resolver();

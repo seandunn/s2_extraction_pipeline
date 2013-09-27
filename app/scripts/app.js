@@ -6,10 +6,20 @@ define([ 'config'
   , 'lib/logger'
   , 'lib/pubsub'
 
+  , 'models/base_page_model'
+  , 'lib/reception_templates'
+
   // Components, probably best loaded dynamically!
   , 'app-components/reception/component'
   , 'app-components/reracking/component'
-], function (config, nextWorkflow, S2Root, BusyBox, alerts, Logger, PubSub, ReceptionController, Reracking) {
+], function(
+  config,
+  nextWorkflow,
+  S2Root,
+  BusyBox, alerts, Logger, PubSub,
+  BasePageModel, ReceptionTemplates,
+  ReceptionController, Reracking
+) {
   'use strict';
 
   var ComponentConfig = [
@@ -35,7 +45,24 @@ define([ 'config'
       return html.is(config.selector);
     });
     if (!_.isUndefined(activate)) {
-      var component = activate.constructor(app);
+      var component = activate.constructor({
+        app:       app,
+
+        templates: ReceptionTemplates,
+
+        printers:  app.config.printers,
+        print:     _.flip(BasePageModel.printBarcodes),
+
+        user: function(barcode) {
+          var deferred = $.Deferred();
+          var user = app.config.UserData[barcode];
+          deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);
+          return deferred.promise();
+        },
+
+        resetS2Root: _.bind(app.resetS2Root, app),
+        getS2Root:   _.bind(app.getS2Root, app)
+      });
       html.append(component.view).on(component.events);
 
       alerts.setupPlaceholder(function() {

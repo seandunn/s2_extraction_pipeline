@@ -60,16 +60,15 @@ define([
 
   // Deals with connecting the user with the specified barcode to the system.
   function connect(context, success, error, event, barcode) {
-    var user = context.config.UserData[barcode];
-    if (_.isUndefined(user)) {
-      error("User barcode is unrecognised");
-    } else {
-      context.getS2Root(user)
-                .then(
-                  _.partial(success, "Connected to system!"),
-                  _.partial(error, "There was an issue connecting to the system with that user barcode.")
-                );
-    }
+    context.user(barcode)
+           .then(
+             _.bind(context.getS2Root, context),
+             _.partial(error, "User barcode is unrecognised")
+           )
+           .then(
+             _.partial(success, "Connected to system!"),
+             _.partial(error, "There was an issue connecting to the system with that user barcode.")
+           );
   }
 
   // Builds the component using the given configuration in the specified context.

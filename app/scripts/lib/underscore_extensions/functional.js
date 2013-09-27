@@ -97,6 +97,13 @@ define([], function() {
       return function() {
         return !f.apply(this, arguments);
       }
+    },
+
+    // Returns a function that has the arguments of f in reverse order!
+    flip: function(f) {
+      return function() {
+        return f.apply(this, _.reverse(arguments));
+      }
     }
   };
 });

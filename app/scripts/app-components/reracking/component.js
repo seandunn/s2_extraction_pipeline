@@ -1,10 +1,10 @@
 // TODO: This is a placeholder for the re-racking component
 define([], function() {
   return function(context) {
-    var controller = context.controllerFactory.create(
+    var controller = context.app.controllerFactory.create(
       'lab_activities_controller',
-      context,
-      {printerList: context.config.printers}
+      context.app,
+      {printerList: context.printers}
     );
 
     return {

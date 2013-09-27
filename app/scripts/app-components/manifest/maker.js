@@ -1,18 +1,15 @@
 define([
   "text!app-components/manifest/_maker.html",
-  "lib/reception_templates",
-  "models/base_page_model",
 
   // Global namespace updates
   "lib/jquery_extensions",
   "components/filesaver/filesaver"
-], function (componentPartialHtml, ReceptionTemplates, BasePageModel) {
+], function (componentPartialHtml) {
   'use strict';
 
   return function(context) {
     var view = createHtml(
-      ReceptionTemplates,
-      context.config.printers,
+      context,
       function(details) {
         return context.getS2Root().then(function(root) {
           return GenerateSamples(context, root, details);
@@ -26,10 +23,10 @@ define([
     };
   };
 
-  function createHtml(templates, printers, generateSamples) {
+  function createHtml(context, generateSamples) {
     var html = $(_.template(componentPartialHtml)({
-      templates: templates,
-      printers:  printers
+      templates: context.templates,
+      printers:  context.printers
     }));
 
     var messageView = html.find(".validationText");
@@ -55,8 +52,8 @@ define([
     // When someone changes the template we need to change the view!
     var templatePicker = html.find("#xls-templates");
     var prefixes       = html.find("#samplePrefixes");
-    templatePicker.change(_.compose(_.partial(updateSampleTypeSelection, prefixes), _.partial(selectedTemplate, templates)));
-    templatePicker.change(_.compose(_.partial(updateStudiesSelection, studiesList), _.partial(selectedTemplate, templates)));
+    templatePicker.change(_.compose(_.partial(updateSampleTypeSelection, prefixes), _.partial(selectedTemplate, context.templates)));
+    templatePicker.change(_.compose(_.partial(updateStudiesSelection, studiesList), _.partial(selectedTemplate, context.templates)));
     templatePicker.change();
 
     // When someone clicks the download button we need to download the manifest.  When the manifest
@@ -69,8 +66,8 @@ define([
     // Handle barcode label printing.
     var printArea = html.find("#printer-div");
     var printAreaHelper = printArea.dataHelper("resources");
-    var printers  = printArea.find("select");
-    printArea.find("button").lockingClick(process(html, _.partial(printBarcodes, printers, printArea)));
+    var printerSelect  = printArea.find("select");
+    printArea.find("button").lockingClick(process(html, _.partial(printBarcodes, context.print, printerSelect, printArea)));
     printArea.hide();
 
     // Bind in a reset function that we can call
@@ -92,7 +89,7 @@ define([
         button.prop("disabled", false);
         error("You can only register 1 or more samples!");
       } else {
-        var template = templates[templatePicker.val()];
+        var template = context.templates[templatePicker.val()];
         return f(button, {
           number_of_labwares:    numberOfSamples,
           template:              template,
@@ -113,7 +110,7 @@ define([
       });
     }
 
-    function printBarcodes(printers, source, button) {
+    function printBarcodes(print, selection, source, button) {
       // We have to remap the resources so that they look like they are printable.  What we have within
       // our data is the original label data, but what we need is what it would have looked like
       // *after* labelling.
@@ -127,14 +124,13 @@ define([
         }));
       });
 
-      return BasePageModel.printBarcodes(labels, printers.val())
-                          .then(function() {
-                            return success("The barcodes have been sent to the printer!");
-                          }, function() {
-                            return error("Could not print the barcodes");
-                          }).always(function() {
-                            button.prop("disabled", false);
-                          });
+      return print(selection.val(), labels).then(function() {
+        return success("The barcodes have been sent to the printer!");
+      }, function() {
+        return error("Could not print the barcodes");
+      }).always(function() {
+        button.prop("disabled", false);
+      });
     }
   }
 
