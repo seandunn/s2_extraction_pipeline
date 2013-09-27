@@ -4,7 +4,7 @@ define([
   "models/reracking_model",
   "lib/pubsub",
   "lib/util",
-  "views/drop_zone"
+  "app-components/dropzone/component"
 ], function (BaseController, rerackingPartial, Model, PubSub, Util, DropZone) {
   "use strict";
 
@@ -166,16 +166,17 @@ define([
     },
 
     enableDropzone: function (html) {
-      this.dropzone = DropZone.init(html.find(".dropzone"));
-      this.dropzone.enable(_.bind(this.fileUploadedCallback, this));
+      this.dropzone = DropZone(this);
+      html.find("#dropzone").append(this.dropzone.view).on(this.dropzone.events);
+      html.on("dropzone.file", _.bind(this.fileUploadedCallback, this));
     },
 
     disableDropZone: function(){
-      this.dropzone.disable();
+      this.dropzone.view.disable();
     },
 
     // This dropZone callback when a file is received...
-    fileUploadedCallback: function (fileContent) {
+    fileUploadedCallback: function (event, fileContent) {
       var thisController = this;
 
       return thisController.model

@@ -21,7 +21,6 @@ define([
   'controllers/selection_page_controller',
   'default/default_controller',
   'controllers/volume_control_controller',
-  'controllers/lab_activities_controller',
   'controllers/summary_page_controller',
   'controllers/file_generator_controller'
 ], function(TubeController, SpinColumnController, RackController, GelController, PlateController) {

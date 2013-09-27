@@ -1,0 +1,14 @@
+#reception-component {
+  ul#choice li {
+    display:        table-cell;
+    vertical-align: middle;
+    text-align:     center;
+    padding:        1em;
+  }
+
+  ul#choice li {
+    border: 6px solid #808080;
+    border-radius: 16px;
+    width: 20em;
+  }
+}

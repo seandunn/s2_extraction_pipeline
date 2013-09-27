@@ -2,7 +2,7 @@ define([
     'text!app-components/manifest/_reader.html'
   , 'text!app-components/manifest/_row.html'
   , 'lib/file_handling/manifests'
-  , 'views/drop_zone'
+  , 'app-components/dropzone/component'
 
   // Loaded in the global namespace after this comment
   , 'lib/jquery_extensions'
@@ -67,18 +67,23 @@ define([
 
     // saves the selection for performances
     var manifestTable      = html.find(".orderMaker");
-    var dropzone           = DropZone.init(html.find('.dropzone'));
     var registration       = html.find("#registrationBtn").hide();
     var registrationHelper = registration.dataHelper("manifest");
 
-    dropzone.enable(process(html, warningButton(registration, hideUnhide(dropzone, function(content) {
+    // Configure and establish the dropzone
+    var dropzone = DropZone({
+      mime: "text/csv",
+      message: "Drop the manifest CSV file here, or click to select."
+    });
+    html.find("#dropzone").append(dropzone.view).on(dropzone.events);
+    html.on("dropzone.file", process(html, warningButton(registration, hideUnhide(dropzone.view, function(event, content) {
       return dropZoneLoad(context, registration, manifestTable, content).then(
         _.bind(registrationHelper.manifest, registrationHelper),
         error
       );
     }))));
 
-    registration.lockingClick(process(html, hideUnhide(dropzone, function(source) {
+    registration.lockingClick(process(html, hideUnhide(dropzone.view, function(source) {
       return createOrder(context, manifestTable, source.data("manifest")).then(
         success,
         error
@@ -87,7 +92,7 @@ define([
 
     _.extend(html, {
       reset: function() {
-        dropzone.show();
+        dropzone.view.show();
         registration.hide();
         manifestTable.empty();
         messageView.hide();

@@ -1,0 +1,13 @@
+.dropzone .target {
+  background: #f5f5f5;
+  min-width: 250px;
+  min-height: 50px;
+  line-height: 50px;
+  text-align: center;
+  font-weight: bold;
+  border: 3px #eeeeee dashed;
+  border-radius: 7px;
+  &.hover {
+    background: #e0e0e0;
+  }
+}

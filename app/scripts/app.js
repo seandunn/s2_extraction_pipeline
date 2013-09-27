@@ -9,22 +9,22 @@ define([ 'config'
   , 'models/base_page_model'
   , 'lib/reception_templates'
 
-  // Components, probably best loaded dynamically!
+  // TODO: These will move with the configuration
   , 'app-components/reception/component'
-  , 'app-components/reracking/component'
+  , 'app-components/lab-activities/component'
 ], function(
   config,
   nextWorkflow,
   S2Root,
   BusyBox, alerts, Logger, PubSub,
   BasePageModel, ReceptionTemplates,
-  ReceptionController, Reracking
+  Reception, LabActivities
 ) {
   'use strict';
 
   var ComponentConfig = [
-    { name: "reception",  selector: ".sample-reception",     constructor: ReceptionController },
-    { name: "re-racking", selector: ".extraction-reracking", constructor: Reracking }
+    { name: "reception",  selector: ".sample-reception",     constructor: Reception     },
+    { name: "re-racking", selector: ".extraction-reracking", constructor: LabActivities }
   ];
 
   var App = function (theControllerFactory) {
