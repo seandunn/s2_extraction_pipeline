@@ -2,7 +2,8 @@ define([
   'lib/json_templater',
 
   // Add new templates after this comment and they will be automatically loaded
-  'reception_templates/cgap_lysed'
+  'reception_templates/cgap_lysed',
+  'reception_templates/hmdmc_lysed'
 ], function (JsonTemplater) {
   'use strict';
 
