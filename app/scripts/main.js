@@ -8,6 +8,7 @@ require.config({
   paths:{
     jquery:               "../components/jquery/jquery.min",
     underscore:           "../components/underscore/underscore-min",
+    underscore_string:    "../components/underscore.string/lib/underscore.string",
     bootstrap:            "../components/sass-bootstrap/js",
     text:                 "../components/requirejs-text/text",
     spinjs:               "../components/spin.js/spin",
@@ -28,7 +29,7 @@ require([
   "underscore",
   "app",
   "controllers/controller_factory",
-  "bootstrap/bootstrap-collapse"
+  "lib/bootstrap-shim"
 ], function ($, _, App, ControllerFactory) {
   "use strict";
 
