@@ -1,5 +1,5 @@
 define([
-  "text!app-components/barcode-scanner/_scanner.html",
+  "text!app-components/labelling/_scanning.html",
   "lib/util"
 ], function(View, Util) {
   var template = _.compose($, _.template(View));

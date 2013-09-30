@@ -2,7 +2,7 @@ define([
     'text!app-components/process-choice/_component.html'
   , 'text!app-components/process-choice/_component-view.html'
   , 'text!app-components/process-choice/_choice.html'
-  , 'app-components/barcode-scanner/scanner'
+  , 'app-components/labelling/scanning',
 
   // Globally included stuff added after this comment
   , 'lib/jquery_extensions'

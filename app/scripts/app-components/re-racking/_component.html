@@ -16,16 +16,7 @@
     <div class="accordion-heading"><h4>2 - Print barcode for the new rack</h4></div>
 
     <div id="rack-labelling" class="accordion-body collapse">
-      <div class="accordion-inner">
-
-        <label for="printer-select">Current Printer:</label>
-        <select class="printerSelect" id="printer-select">
-          <% _.each (printerList, function (printer) { %>
-          <option value="<%- printer.name %>"><%- printer.name %></option>
-          <% }); %>
-        </select>
-        <button type="button" id="print-rerack-btn" class="btn btn-primary">Print new rack barcode</button>
-      </div>
+      <div id="printer-area" class="accordion-inner"></div>
     </div>
   </div>
 

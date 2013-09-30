@@ -2,13 +2,13 @@ define([
   "text!app-components/re-racking/_component.html",
   "app-components/re-racking/model",
   "app-components/dropzone/component",
-  "app-components/barcode-scanner/scanner",
+  "app-components/labelling/scanning",
+  "app-components/labelling/printing",
 
   // Code added to global namespace after this point
   "lib/underscore_extensions",
-  "lib/jquery_extensions",
-  "bootstrap/bootstrap-collapse"
-], function (rerackingPartial, Model, DropZone, BarcodeScanner) {
+  "lib/jquery_extensions"
+], function (rerackingPartial, Model, DropZone, BarcodeScanner, LabelPrinter) {
   "use strict";
 
   var template = _.compose($, _.template(rerackingPartial));
@@ -26,9 +26,7 @@ define([
   };
 
   function createHtml(context, model) {
-    var html = template({
-      printerList: _.filter(context.printers, function(p) { return p.type === 1; })
-    });
+    var html = template();
 
     var messageView = html.find(".validationText");
     var message     = function(type, message) {
@@ -43,14 +41,22 @@ define([
 
     var rackList = html.find("#rack-list");
 
+    // Setup the label printing
+    var labelPrinter = LabelPrinter({
+      printers: _.filter(context.printers, function(p) { return p.canPrint("tube_rack"); }),
+      print:    context.print
+    });
+    html.find("#printer-area").append(labelPrinter.view);
+    html.on(labelPrinter.events);
+    html.on("s2.print.trigger", $.ignoresEvent(_.partial(onPrintLabels, html, model)));
+    html.on("s2.print.success", function() { html.find("#racking-file-upload").collapse({parent: html}); });
+
     // Setup the re-racking buttons
-    var printButton          = html.find("#print-rerack-btn");
     var startRerackingButton = html.find("#start-rerack-btn");
     var rerackButton         = html.find("#rerack-btn");
-    printButton.click(process(html, _.partial(onPrintBarcode, html, model)));
     startRerackingButton.click(_.partial(onStartReracking, html));
     rerackButton.click(process(html, _.partial(onReracking, html, model, rerackButton)));
-    html.on("s2.print.success", $.ignoresEvent(_.partial(success, "The barcodes have been sent to the printer.")));
+    html.on("s2.print.success", $.ignoresEvent(_.partial(success, "The labels have been sent to the printer.")));
     html.on("s2.reracking.complete", $.ignoresEvent(_.partial(success, "Re-racking completed.")));
     rerackButton.hide();
 
@@ -90,7 +96,7 @@ define([
         rerackButton.hide();
         html.find(".output-labware").hide();
         html.find("#output").hide();
-        printButton.hide();
+        labelPrinter.view.hide();
         messageView.hide();
       }
     });
@@ -135,15 +141,13 @@ define([
     return outputRackController;
   }
 
-  // BARCODE PRINTING FUNCTIONS
-  function onPrintBarcode(html, model) {
-    var printerName = html.find("#printer-select").val();
-
-    return model.printRackBarcode(printerName)
-                .then(function () {
-                  html.find("#racking-file-upload").collapse({parent: html});
-                  html.trigger("s2.print.success");
-                }, _.partial(structuredError, html, "Could not print the barcodes"));
+  // LABEL PRINTING FUNCTIONS
+  function onPrintLabels(html, model, printer) {
+    return model.createOutputRack()
+                .then(function(rack) {
+                  html.trigger("s2.print.labels", [printer, [rack]]);
+                  return rack;
+                });
   }
 
   // INPUT RACK HANDLING FUNCTIONS

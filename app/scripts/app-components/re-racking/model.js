@@ -274,7 +274,7 @@ define([
     },
 
 
-    printRackBarcode: function (printerName) {
+    createOutputRack: function () {
       var thisModel = this;
 
       return thisModel.owner
@@ -295,10 +295,6 @@ define([
         thisModel.outputRack = state.labware;
         return state.labware;
       })
-      .then(function(rack){
-        thisModel.printBarcodes([rack], printerName);
-        return rack;
-      });
     }
 
   });

@@ -36,9 +36,20 @@ define([ 'config'
     $('#server-url').text(config.apiUrl);
     $('#release').text(config.release);
 
+    // Fix up the printers so that we can simply print to them!
+    _.each(app.config.printers, function(printer) {
+      _.extend(printer, {
+        print: _.partial(_.flip(BasePageModel.printBarcodes), printer.name)
+      });
+    });
+
+    // Ensure that messages are properly picked up & dispatched
+    // TODO: die, eat-flaming-death!
     var html = $("#content");
-    html.on("s2.status.error", function(event, message) {
-      PubSub.publish("s2.status.error", app, {message: message});
+    _.map(["error", "success", "info"], function(type) {
+      html.on("s2.status." + type, function(event, message) {
+        PubSub.publish("s2.status." + type, app, {message: message});
+      });
     });
 
     var activate = _.find(ComponentConfig, function(config) {
@@ -51,7 +62,6 @@ define([ 'config'
         templates: ReceptionTemplates,
 
         printers:  app.config.printers,
-        print:     _.flip(BasePageModel.printBarcodes),
 
         user: function(barcode) {
           var deferred = $.Deferred();

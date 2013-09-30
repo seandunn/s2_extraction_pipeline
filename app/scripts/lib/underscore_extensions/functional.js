@@ -104,6 +104,11 @@ define([], function() {
       return function() {
         return f.apply(this, _.reverse(arguments));
       }
+    },
+
+    // Reverses the array (cannot believe this isn't in underscore!)
+    reverse: function(array) {
+      return _.reduceRight(array, function(m, v) { m.push(v); return m; }, []);
     }
   };
 });

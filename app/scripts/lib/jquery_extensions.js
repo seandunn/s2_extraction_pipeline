@@ -1,4 +1,6 @@
-define([], function() {
+define([
+  "jquery"
+], function() {
   // Extend the behaviour of the jQuery top level object
   _.extend(jQuery, {
     // Performing Ajax with binary data through jQuery isn't really possible as the data comes
