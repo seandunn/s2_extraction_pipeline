@@ -19,7 +19,7 @@ define([
       this.outputModelType = "tube_racks";
       this.outputCapacity  = this.nbOfRows * this.nbOfColumns;
       this.initialiseCaching();
-      return $.Deferred().resolve(this).promise();
+      return this;
     },
 
     reset: function () {
@@ -198,7 +198,7 @@ define([
       var ordersByUuid = {};
       var racksPerOrderUuid;
 
-      $.when.apply(null, orderPromisesByRack)
+      return $.when.apply(null, orderPromisesByRack)
       .then(function(){
 
         racksPerOrderUuid = _

@@ -2,11 +2,11 @@ define([
     'text!app-components/process-choice/_component.html'
   , 'text!app-components/process-choice/_component-view.html'
   , 'text!app-components/process-choice/_choice.html'
-  , 'app-components/user-barcode/scanner'
+  , 'app-components/barcode-scanner/scanner'
 
   // Globally included stuff added after this comment
   , 'lib/jquery_extensions'
-], function (receptionView, componentView, choiceView, UserScanning) {
+], function (receptionView, componentView, choiceView, BarcodeScanner) {
   'use strict';
 
   var reception          = _.compose($, _.template(receptionView));
@@ -30,15 +30,18 @@ define([
     var choices    = html.find("#choice");
 
     // The user needs to scan themselves in before doing anything
-    var userComponent = UserScanning(context);
-    var userView      = html.find("#userValidation");
+    var userComponent = BarcodeScanner({
+      label: "Scan your barcode",
+      model: "user"
+    });
+    var userView = html.find("#userValidation");
     userView.append(userComponent.view);
     html.on(userComponent.events);
 
     // The choice view should hide when the display is reset, and show when there is a valid user.
     html.on("s2.reception.reset_view", _.partial(swap, choices, userView));
-    html.on("s2.search.user", _.partial(connect, context, _.partial(swap, userView, choices), error));
-    html.on("s2.search.error", error);
+    html.on("s2.barcode.scanned.user", _.partial(connect, context, _.partial(swap, userView, choices), error));
+    html.on("s2.barcode.error", $.ignoresEvent(error));
 
     // Attach each of the components into the view.
     _.chain(context.components)

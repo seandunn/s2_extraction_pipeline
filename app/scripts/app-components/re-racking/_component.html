@@ -20,7 +20,7 @@
 
         <label for="printer-select">Current Printer:</label>
         <select class="printerSelect" id="printer-select">
-          <% _.each (templateData.printerList, function (printer) { %>
+          <% _.each (printerList, function (printer) { %>
           <option value="<%- printer.name %>"><%- printer.name %></option>
           <% }); %>
         </select>
@@ -35,12 +35,8 @@
 
     <div id="racking-file-upload" class="accordion-body collapse">
       <div class="accordion-inner">
-        <div class="dropzone">
-          <input type="file" accept="text/csv" class="hiddenFileInput hide">
-          <div class="dropzoneBox"><i class="icon-file"></i>Drop the file here, or click.</div>
-          <div class="labware output-labware resource">
-          </div>
-        </div>
+        <div id="dropzone"></div>
+        <div class="labware output-labware resource"></div>
         <button type="button" id="rerack-btn" class="btn btn-primary">Re-Rack Tubes</button>
       </div>
     </div>

@@ -1,19 +1,12 @@
 define([
-  'app-components/process-choice/component'
-], function(ProcessChoice) {
+  'app-components/process-choice/component',
+  'app-components/re-racking/component'
+], function(ProcessChoice, Reracking) {
   return function(context) {
     return ProcessChoice(_.extend({
       components: [
-        {label: "Re-racking", constructor: RackingComponent}
+        {label: "Re-racking", constructor: Reracking}
       ]
     }, context));
   };
-
-  function RackingComponent(context) {
-    var rackingController = context.app.controllerFactory.create("reracking_controller", context.app, context.app.config);
-    return {
-      view: rackingController.view,
-      events: {}
-    };
-  }
 });

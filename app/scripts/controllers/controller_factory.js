@@ -17,7 +17,6 @@ define([
   // Controllers that add extra behaviour, for some reason
   'controllers/kit_controller',
   'controllers/rack_scan_controller',
-  'controllers/reracking_controller',
   'controllers/selection_page_controller',
   'default/default_controller',
   'controllers/volume_control_controller',
