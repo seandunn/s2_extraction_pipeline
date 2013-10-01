@@ -1,7 +1,7 @@
 define([
   "text!html_partials/_rack_scan.html",
   "lib/pubsub",
-  "views/drop_zone"
+  "app-components/dropzone/component"
 ], function(partial, PubSub, DropZone) {
   "use strict";
 
@@ -27,8 +27,9 @@ define([
       // thisController is used until I can sort out these messy event handlers.
       // NB. This sort of nonsense make me a sad panda :(
       var thisController = this.owner;
-      this.dropzone = DropZone.init(container.find(".dropzone"));
-      this.dropzone.enable(function(contents) {
+      this.dropzone = DropZone(this);
+      container.find("#dropzone").append(this.dropzone.view).on(this.dropzone.events);
+      container.on("dropzone.file", function(event, contents) {
         thisController.model
                       .analyseFileContent(contents)
                       .then(function(scanModel){
@@ -50,7 +51,7 @@ define([
 
     // TODO: should be triggered via an event
     disableDropZone:function(){
-      this.dropzone.disable();
+      this.dropzone.prop("disabled", true);
     },
 
     clear: function() {

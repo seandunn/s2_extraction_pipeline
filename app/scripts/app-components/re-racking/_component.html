@@ -16,16 +16,7 @@
     <div class="accordion-heading"><h4>2 - Print barcode for the new rack</h4></div>
 
     <div id="rack-labelling" class="accordion-body collapse">
-      <div class="accordion-inner">
-
-        <label for="printer-select">Current Printer:</label>
-        <select class="printerSelect" id="printer-select">
-          <% _.each (templateData.printerList, function (printer) { %>
-          <option value="<%- printer.name %>"><%- printer.name %></option>
-          <% }); %>
-        </select>
-        <button type="button" id="print-rerack-btn" class="btn btn-primary">Print new rack barcode</button>
-      </div>
+      <div id="printer-area" class="accordion-inner"></div>
     </div>
   </div>
 
@@ -35,18 +26,11 @@
 
     <div id="racking-file-upload" class="accordion-body collapse">
       <div class="accordion-inner">
-        <div class="dropzone">
-          <input type="file" accept="text/csv" class="hiddenFileInput hide">
-          <div class="dropzoneBox"><i class="icon-file"></i>Drop the file here, or click.</div>
-          <div class="labware output-labware resource">
-          </div>
-        </div>
+        <div id="dropzone"></div>
+        <div class="labware output-labware resource"></div>
         <button type="button" id="rerack-btn" class="btn btn-primary">Re-Rack Tubes</button>
       </div>
     </div>
   </div>
-
-
-  <div class="validationText alert hide"></div>
 </div>
 

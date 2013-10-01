@@ -1,4 +1,6 @@
-define([], function() {
+define([
+  "jquery"
+], function() {
   // Extend the behaviour of the jQuery top level object
   _.extend(jQuery, {
     // Performing Ajax with binary data through jQuery isn't really possible as the data comes
@@ -35,6 +37,15 @@ define([], function() {
     // Wait for all of the promises to complete, whether that is resolution or rejection.
     waitForAllPromises: function(promises) {
       return this.chain(_.map(promises, _.partial(_.partial, _.identity)), _.regardless);
+    },
+
+    // Wraps the given function in another function that will drop the event argument.  This is useful if
+    // you have an event being sent that you do not care about the type, but you do care about the
+    // arguments passed as part of the event trigger.
+    ignoresEvent: function(f) {
+      return function(event) {
+        return f.apply(this, _.drop(arguments, 1));
+      };
     }
   });
 

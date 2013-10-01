@@ -1,18 +1,18 @@
 define([
   "text!app-components/manifest/_maker.html",
-  "lib/reception_templates",
-  "models/base_page_model",
+  "app-components/labelling/printing",
 
   // Global namespace updates
   "lib/jquery_extensions",
   "components/filesaver/filesaver"
-], function (componentPartialHtml, ReceptionTemplates, BasePageModel) {
+], function (componentPartialHtml, LabelPrinter) {
   'use strict';
+
+  var viewTemplate = _.compose($, _.template(componentPartialHtml));
 
   return function(context) {
     var view = createHtml(
-      ReceptionTemplates,
-      context.config.printers,
+      context,
       function(details) {
         return context.getS2Root().then(function(root) {
           return GenerateSamples(context, root, details);
@@ -26,20 +26,12 @@ define([
     };
   };
 
-  function createHtml(templates, printers, generateSamples) {
-    var html = $(_.template(componentPartialHtml)({
-      templates: templates,
-      printers:  printers
-    }));
+  function createHtml(context, generateSamples) {
+    var html = viewTemplate({
+      templates: context.templates
+    });
 
-    var messageView = html.find(".validationText");
-    var message     = function(type, message) {
-      messageView.removeClass("alert-error alert-info alert-success")
-                 .addClass("alert-"+type)
-                 .html(message)
-                 .show();
-    };
-
+    var message = function(type, message) { html.trigger("s2.status." + type, message); };
     var error   = _.partial(message, "error");
     var success = _.partial(message, "success");
 
@@ -53,10 +45,13 @@ define([
     sampleCount.enterHandler(_.bind(generate.click, generate));
 
     // When someone changes the template we need to change the view!
-    var templatePicker = html.find("#xls-templates");
-    var prefixes       = html.find("#samplePrefixes");
-    templatePicker.change(_.compose(_.partial(updateSampleTypeSelection, prefixes), _.partial(selectedTemplate, templates)));
-    templatePicker.change(_.compose(_.partial(updateStudiesSelection, studiesList), _.partial(selectedTemplate, templates)));
+    var templatePicker    = html.find("#xls-templates");
+    var prefixes          = html.find("#samplePrefixes");
+    var dependsOnTemplate = function(f) { return _.compose(f, _.partial(selectedTemplate, context.templates)); };
+
+    templatePicker.change(dependsOnTemplate(_.partial(updateSampleTypeSelection, prefixes)));
+    templatePicker.change(dependsOnTemplate(_.partial(updateStudiesSelection, studiesList)));
+    templatePicker.change(dependsOnTemplate(_.partial(updatePrinters, html)));
     templatePicker.change();
 
     // When someone clicks the download button we need to download the manifest.  When the manifest
@@ -66,19 +61,23 @@ define([
     download.lockingClick(_.partial(downloadManifest, download));
     download.hide();
 
-    // Handle barcode label printing.
-    var printArea = html.find("#printer-div");
-    var printAreaHelper = printArea.dataHelper("resources");
-    var printers  = printArea.find("select");
-    printArea.find("button").lockingClick(process(html, _.partial(printBarcodes, printers, printArea)));
-    printArea.hide();
+    // Setup the label printing component so that we can get the labels out.
+    var labelPrinter = LabelPrinter({
+      printers: context.printers,
+      print:    context.print
+    });
+    var printAreaHelper = labelPrinter.view.dataHelper("resources");
+    html.on("s2.print.trigger", $.ignoresEvent(_.partial(printLabels, html, labelPrinter.view)));
+    html.find("#printer-div").append(labelPrinter.view);
+    html.on(labelPrinter.events);
+    labelPrinter.view.hide();
+
 
     // Bind in a reset function that we can call
     html.reset = function() {
       printAreaHelper.reset();
       downloadHelper.reset();
       form.prop("disabled", false);
-      messageView.hide();
     };
 
     return html;
@@ -92,7 +91,7 @@ define([
         button.prop("disabled", false);
         error("You can only register 1 or more samples!");
       } else {
-        var template = templates[templatePicker.val()];
+        var template = context.templates[templatePicker.val()];
         return f(button, {
           number_of_labwares:    numberOfSamples,
           template:              template,
@@ -112,30 +111,23 @@ define([
         return success("Samples generated and manifest saved. Barcodes ready for printing.");
       });
     }
+  }
 
-    function printBarcodes(printers, source, button) {
-      // We have to remap the resources so that they look like they are printable.  What we have within
-      // our data is the original label data, but what we need is what it would have looked like
-      // *after* labelling.
-      var labels = _.map(source.data("resources"), function(resource) {
-        return _.extend({
-          template:           resource.resourceType,
-          returnPrintDetails: function() { return this; }
-        }, _.build(resource.resourceType, {
-          ean13:  resource.labels.ean13,
-          sanger: resource.labels.sanger.prefix + resource.labels.sanger.number + resource.labels.sanger.suffix
-        }));
-      });
+  // We have to remap the resources so that they look like they are printable.  What we have within
+  // our data is the original label data, but what we need is what it would have looked like
+  // *after* labelling.
+  function printLabels(html, source, printer) {
+    var labels = _.map(source.data("resources"), function(resource) {
+      return _.extend({
+        template:           resource.resourceType,
+        returnPrintDetails: function() { return this; }
+      }, _.build(resource.resourceType, {
+        ean13:  resource.labels.ean13,
+        sanger: resource.labels.sanger.prefix + resource.labels.sanger.number + resource.labels.sanger.suffix
+      }));
+    });
 
-      return BasePageModel.printBarcodes(labels, printers.val())
-                          .then(function() {
-                            return success("The barcodes have been sent to the printer!");
-                          }, function() {
-                            return error("Could not print the barcodes");
-                          }).always(function() {
-                            button.prop("disabled", false);
-                          });
-    }
+    html.trigger("s2.print.labels", [printer, labels]);
   }
 
   function selectedTemplate(templates, event) {
@@ -154,6 +146,12 @@ define([
       template.studies,
       function(value, key) { return "<option value=\"" + key + "\">" + value.friendly_name + "</option>"; }
     ));
+  }
+
+  function updatePrinters(html, template) {
+    html.trigger("s2.print.filter", [function(printer) {
+      return printer.canPrint(template.model);
+    }]);
   }
 
   function downloadManifest(source, button) {
@@ -259,7 +257,7 @@ define([
 
       return $.binaryAjax({
         type: "POST",
-        url:  context.config.mergeServiceUrl,
+        url:  context.app.config.mergeServiceUrl,
         data: form
       });
     }).fail(_.constant("Unable to generate the manifest"));

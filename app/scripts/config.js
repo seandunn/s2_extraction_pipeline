@@ -2,16 +2,27 @@ define([], function() {
   'use strict';
 
   var printerTypes = {
-    1: '96 Well Plate Printer',
-    2: 'Tube Printer',
-    3: 'Rack Printer'
+    1: {
+      name: '96 Well Plate Printer',
+      canPrint: _.partial(_.contains, ["plate"])
+    },
+    2: {
+      name: 'Tube Printer',
+      canPrint: _.partial(_.contains, ["tube", "spin_column"])
+    },
+    3: {
+      name: 'Rack Printer',
+      canPrint: _.partial(_.contains, ["tube_rack"])
+    }
   };
 
   function printer(name,type){
+    var details = printerTypes[type];
     return {
-      name: name,
-      type: type,
-      friendlyName: name + ' ' + printerTypes[type]
+      name:         name,
+      type:         type,
+      friendlyName: name + ' ' + details.name,
+      canPrint:     details.canPrint
     };
   }
 

@@ -19,6 +19,12 @@ define(['config',
       PubSub.subscribe('s2.status.error', function (event, source, eventData) {
         alert.addMessage('error', eventData.message);
       });
+      PubSub.subscribe('s2.status.success', function (event, source, eventData) {
+        alert.addMessage('success', eventData.message);
+      });
+      PubSub.subscribe('s2.status.info', function (event, source, eventData) {
+        alert.addMessage('info', eventData.message);
+      });
     },
 
     appendView:function (templateData) {

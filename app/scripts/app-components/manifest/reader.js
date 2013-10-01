@@ -2,15 +2,15 @@ define([
     'text!app-components/manifest/_reader.html'
   , 'text!app-components/manifest/_row.html'
   , 'lib/file_handling/manifests'
-  , 'lib/reception_templates'
-  , 'views/drop_zone'
+  , 'app-components/dropzone/component'
 
   // Loaded in the global namespace after this comment
   , 'lib/jquery_extensions'
-], function (componentPartialHtml, sampleRowPartial, CSVParser, ReceptionTemplate, DropZone) {
+], function (componentPartialHtml, sampleRowPartial, CSVParser, DropZone) {
   'use strict';
 
-  var template = _.template(sampleRowPartial);
+  var viewTemplate = _.compose($, _.template(componentPartialHtml));
+  var rowTemplate  = _.template(sampleRowPartial);
 
   // Functions that generate will display a particular value based on the type it should be.
   var CellTemplates = {
@@ -53,33 +53,32 @@ define([
   };
 
   function createHtml(context) {
-    var html = $(_.template(componentPartialHtml)());
+    var html = viewTemplate();
 
-    var messageView = html.find(".validationText");
-    var message     = function(type, message) {
-      messageView.removeClass("alert-error alert-info alert-success")
-                 .addClass("alert-"+type)
-                 .html(message)
-                 .show();
-    };
-
-    var error   = _.partial(message, "error");
-    var success = _.partial(message, "success");
+    var message        = function(type, message) { html.trigger("s2.status." + type, message); };
+    var error          = _.partial(message, "error");
+    var success        = _.partial(message, "success");
+    var manifestErrors = function(manifest) { _.each(manifest.errors, error); return m; }
 
     // saves the selection for performances
     var manifestTable      = html.find(".orderMaker");
-    var dropzone           = DropZone.init(html.find('.dropzone'));
     var registration       = html.find("#registrationBtn").hide();
     var registrationHelper = registration.dataHelper("manifest");
 
-    dropzone.enable(process(html, warningButton(registration, hideUnhide(dropzone, function(content) {
+    // Configure and establish the dropzone
+    var dropzone = DropZone({
+      mime: "text/csv",
+      message: "Drop the manifest CSV file here, or click to select."
+    });
+    html.find("#dropzone").append(dropzone.view).on(dropzone.events);
+    html.on("dropzone.file", process(html, warningButton(registration, hideUnhide(dropzone.view, function(event, content) {
       return dropZoneLoad(context, registration, manifestTable, content).then(
         _.bind(registrationHelper.manifest, registrationHelper),
-        error
+        manifestErrors
       );
     }))));
 
-    registration.lockingClick(process(html, hideUnhide(dropzone, function(source) {
+    registration.lockingClick(process(html, hideUnhide(dropzone.view, function(source) {
       return createOrder(context, manifestTable, source.data("manifest")).then(
         success,
         error
@@ -88,10 +87,9 @@ define([
 
     _.extend(html, {
       reset: function() {
-        dropzone.show();
+        dropzone.view.show();
         registration.hide();
         manifestTable.empty();
-        messageView.hide();
       }
     });
     return html;
@@ -154,7 +152,7 @@ define([
       _.each(manifest.details, _.compose(generateView, _.partial(updateDisplay, manifest.template.json_template_display)));
       data.headers = _.map(manifest.details[0].display, function(c) { return c.friendlyName || c.columnName; });
     }
-    view.append(template(data));
+    view.append(rowTemplate(data));
 
     // Deal with checking & unchecking rows for orders
     view.delegate(
@@ -162,9 +160,9 @@ define([
       "click",
       _.compose(enableRowSelector, enableRow, nearestRow)
     ).delegate(
-    "input[data-name_of_column='_SELECTED']:not(:checked)",
-    "click",
-    _.compose(enableRowSelector, disableRow, nearestRow)
+      "input[data-name_of_column='_SELECTED']:not(:checked)",
+      "click",
+      _.compose(enableRowSelector, disableRow, nearestRow)
     );
 
     view.show();
@@ -251,7 +249,7 @@ define([
     }
 
     var templateName       = dataAsArray[2][0]; // always A3 !!
-    manifest.template = ReceptionTemplate[templateName];
+    manifest.template = context.templates[templateName];
     if (_.isUndefined(manifest.template)) {
       manifest.errors.push("Could not find the corresponding template!");
       return resolver();

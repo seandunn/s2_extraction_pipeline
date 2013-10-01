@@ -3,18 +3,27 @@ define([ 'config'
   , 'mapper/s2_root'
   , 'extra_components/busy_box'
   , 'alerts'
-  , 'lib/logger'
   , 'lib/pubsub'
 
-  // Components, probably best loaded dynamically!
+  , 'models/base_page_model'
+  , 'lib/reception_templates'
+
+  // TODO: These will move with the configuration
   , 'app-components/reception/component'
-  , 'app-components/reracking/component'
-], function (config, nextWorkflow, S2Root, BusyBox, alerts, Logger, PubSub, ReceptionController, Reracking) {
+  , 'app-components/lab-activities/component'
+], function(
+  config,
+  nextWorkflow,
+  S2Root,
+  BusyBox, alerts, PubSub,
+  BasePageModel, ReceptionTemplates,
+  Reception, LabActivities
+) {
   'use strict';
 
   var ComponentConfig = [
-    { name: "reception",  selector: ".sample-reception",     constructor: ReceptionController },
-    { name: "re-racking", selector: ".extraction-reracking", constructor: Reracking }
+    { name: "reception",  selector: ".sample-reception",     constructor: Reception     },
+    { name: "re-racking", selector: ".extraction-reracking", constructor: LabActivities }
   ];
 
   var App = function (theControllerFactory) {
@@ -26,16 +35,43 @@ define([ 'config'
     $('#server-url').text(config.apiUrl);
     $('#release').text(config.release);
 
+    // Fix up the printers so that we can simply print to them!
+    _.each(app.config.printers, function(printer) {
+      _.extend(printer, {
+        print: _.partial(_.flip(BasePageModel.printBarcodes), printer.name)
+      });
+    });
+
+    // Ensure that messages are properly picked up & dispatched
+    // TODO: die, eat-flaming-death!
     var html = $("#content");
-    html.on("s2.status.error", function(event, message) {
-      PubSub.publish("s2.status.error", app, {message: message});
+    _.map(["error", "success", "info"], function(type) {
+      html.on("s2.status." + type, function(event, message) {
+        PubSub.publish("s2.status." + type, app, {message: message});
+      });
     });
 
     var activate = _.find(ComponentConfig, function(config) {
       return html.is(config.selector);
     });
     if (!_.isUndefined(activate)) {
-      var component = activate.constructor(app);
+      var component = activate.constructor({
+        app:       app,
+
+        templates: ReceptionTemplates,
+
+        printers:  app.config.printers,
+
+        user: function(barcode) {
+          var deferred = $.Deferred();
+          var user = app.config.UserData[barcode];
+          deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);
+          return deferred.promise();
+        },
+
+        resetS2Root: _.bind(app.resetS2Root, app),
+        getS2Root:   _.bind(app.getS2Root, app)
+      });
       html.append(component.view).on(component.events);
 
       alerts.setupPlaceholder(function() {
@@ -58,13 +94,11 @@ define([ 'config'
 
   App.prototype.addEventHandlers = function(){
     BusyBox.init();
-    Logger.init();
   };
 
   App.prototype.getS2Root = function(user) {
     if ( user || (this.rootPromise === undefined) ) {
       // User should be passed in here not hard-coded
-      Logger.user = user;
       this.rootPromise = S2Root.load({user:user});
     }
     return this.rootPromise;
