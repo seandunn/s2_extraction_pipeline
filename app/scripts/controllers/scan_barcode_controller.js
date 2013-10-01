@@ -1,22 +1,65 @@
 define([
-       'text!html_partials/_scan_barcode.html'
-], function (scanBarcodePartialHtml) {
+  'text!html_partials/_scan_barcode.html'
+], function ( scanBarcodePartialHtml ) {
   'use strict';
 
-  var ScanBarcodeController = function (owner, controllerFactory) {
+  var ScanBarcodeController = function ( owner, controllerFactory ) {
     this.owner = owner;
     this.controllerFactory = controllerFactory;
+
     return this;
   };
 
-  ScanBarcodeController.prototype.init = function (inputModel) {
-    this.model = inputModel;
-    return this;
-  };
+  ScanBarcodeController.prototype = {
+    init: function (inputModel) {
+      this.model = inputModel;
+      
+      return this;
+    },
 
-  ScanBarcodeController.prototype.renderView = function () {
-    return $(_.template(scanBarcodePartialHtml)(this.model));
-  };
+    template: _.template(scanBarcodePartialHtml),
+
+    renderView: function () {
+      this.view = $(this.template({templateData: this.model}));
+      this.getElements();
+
+      return this.view;
+    },
+
+    getElements: function() {
+      this.progressView = $('div.progress', this.view);
+      this.barView = $('div.bar', this.view)
+    },
+
+    showProgress: function() {
+      this.progressView.show();
+
+      return this;
+    },
+
+    updateProgress: function(percentage) {
+      if ( percentage === 100 ) {
+        this.barView.on( 'transitionend', _.bind(function(e) { 
+          this.hideProgress(400); 
+        }, this));
+      }
+
+      this.barView.css( 'width', [percentage, '%'].join("") );
+
+      return this;
+    },
+
+    hideProgress: function(delay) {
+      if (!_.isNull(delay) && delay > 0) {
+        var progressViewHide = _.bind(this.progressView.hide, this.progressView);
+        _.delay(progressViewHide, delay);
+      } else {
+        this.progressView.hide();
+      }
+
+      return this;
+    }
+  }
 
   return {
     register:function (callback) {
@@ -26,4 +69,3 @@ define([
     }
   };
 });
-

@@ -4,8 +4,9 @@ define([
   'models/kit_model',
   'lib/pubsub',
   'lib/barcode_checker',
-  'lib/util'
-], function(Base, kitPartialHtml, Model, PubSub, BarcodeChecker, Util) {
+  'lib/util',
+  'lib/promise_tracker'
+], function(Base, kitPartialHtml, Model, PubSub, BarcodeChecker, Util, PromiseTracker) {
   'use strict';
 
 
@@ -30,12 +31,18 @@ define([
 
   function kitScannedCallback(controller) {
     return function (value, template, controller) {
-      controller.model
+      controller.barcodeController.showProgress();
+
+      PromiseTracker(controller.model)
+          .afterThen(function(tracker) {
+            controller.barcodeController.updateProgress(tracker.thens_called_pc());
+          })
           .then(function(model){
             return model.setKitFromBarcode(value);
           })
           .fail(function (error) {
             PubSub.publish('s2.status.error', controller, error);
+            controller.barcodeController.hideProgress();
           })
           .then(function(model){
             PubSub.publish('s2.status.message', controller, {message:'Kit details validated/saved'});
