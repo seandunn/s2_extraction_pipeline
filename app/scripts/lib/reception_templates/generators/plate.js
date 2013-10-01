@@ -62,9 +62,10 @@ define([], function() {
     return memo;
   }
 
-  function createManifest(rows) {
-    var table = _.map(rows, rowHandler);
-    table.unshift(["Plate Barcode", "Sanger Barcode", "Location", "Sanger Sample ID", "SAMPLE TYPE"]);
+  function createManifest(rows, extras) {
+    var headers = ["Plate Barcode", "Sanger Barcode", "Location", "Sanger Sample ID", "SAMPLE TYPE"]
+    var table   = _.map(rows, rowHandler);
+    table.unshift(headers.concat(_.keys(extras)));
     return table;
 
     function rowHandler(row) {
@@ -75,7 +76,9 @@ define([], function() {
         location,
         sample.sanger_sample_id,
         type
-      ];
+      ].concat(
+        _.map(extras, function(f, h) { return sample[f]; })
+      );
     }
   }
 });
