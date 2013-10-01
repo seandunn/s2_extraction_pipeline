@@ -133,31 +133,6 @@ div.resource {
   .rna_p { fill: hsl(3, 60%, 25%);    background-color: hsl(3, 60%, 25%); }
   .na_p  { fill: hsl(194, 59%, 45%);  background-color: hsl(194, 59%, 45%); }
 
-#logger-window{
-  display: none;
-  border:1px solid grey;
-  position: fixed;
-  height:500px;
-  left:1%;
-  width:98%;
-  bottom:15px;
-  z-index: 9000;
-  .title {
-    padding:10px;
-    font-size: 1.2em;
-    background: #808080;
-    color:#ffffff;
-    height:20px
-  }
-  pre.prettyprint {
-    background: #e3e3e3;
-    font-size: 0.8em;
-    z-index: 9001;
-    overflow:scroll;
-    height:440px;
-  }
-}
-
 // Import component specific styles
 @import "../scripts/app-components/dropzone/_styles";
 @import "../scripts/app-components/process-choice/_styles";

@@ -3,7 +3,6 @@ define([ 'config'
   , 'mapper/s2_root'
   , 'extra_components/busy_box'
   , 'alerts'
-  , 'lib/logger'
   , 'lib/pubsub'
 
   , 'models/base_page_model'
@@ -16,7 +15,7 @@ define([ 'config'
   config,
   nextWorkflow,
   S2Root,
-  BusyBox, alerts, Logger, PubSub,
+  BusyBox, alerts, PubSub,
   BasePageModel, ReceptionTemplates,
   Reception, LabActivities
 ) {
@@ -95,13 +94,11 @@ define([ 'config'
 
   App.prototype.addEventHandlers = function(){
     BusyBox.init();
-    Logger.init();
   };
 
   App.prototype.getS2Root = function(user) {
     if ( user || (this.rootPromise === undefined) ) {
       // User should be passed in here not hard-coded
-      Logger.user = user;
       this.rootPromise = S2Root.load({user:user});
     }
     return this.rootPromise;
