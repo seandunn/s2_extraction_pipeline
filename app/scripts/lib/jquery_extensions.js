@@ -1,8 +1,14 @@
 define([
-  "jquery"
+  "jquery"  // jquery will be in the global namespace
 ], function() {
+  "use strict";
+
+  function isServerOk(xhr) {
+    return xhr.status === 200;
+  }
+
   // Extend the behaviour of the jQuery top level object
-  _.extend(jQuery, {
+  _.extend($, {
     // Performing Ajax with binary data through jQuery isn't really possible as the data comes
     // back and gets converted to a string, which is treated as Unicode and becomes invalid in
     // the process.  So here we drop to XMLHttpRequest in such a way that we can deal with the
@@ -11,7 +17,7 @@ define([
       var deferred = $.Deferred();
       var fail     = function() { deferred.reject("Communications error with backend systems!"); };
 
-      var xhr      = new XMLHttpRequest;
+      var xhr      = new XMLHttpRequest();
       xhr.open(options.type, options.url, true);
       xhr.responseType = "blob";
       xhr.onerror      = fail;
@@ -28,7 +34,7 @@ define([
 
     // Chain deferreds really
     chain: function(handlers, chaining) {
-      if (handlers.length == 0) return;   // It's fair to assume this is an immediate return of undefined!
+      if (handlers.length === 0) { return; }   // It's fair to assume this is an immediate return of undefined!
 
       var args = _.drop(arguments, 2);
       return _.chain(handlers).drop(1).reduce(chaining, handlers[0].apply(handlers[0], args)).value();
@@ -43,19 +49,19 @@ define([
     // you have an event being sent that you do not care about the type, but you do care about the
     // arguments passed as part of the event trigger.
     ignoresEvent: function(f) {
-      return function(event) {
+      return function() {
         return f.apply(this, _.drop(arguments, 1));
       };
     }
   });
 
   // Extend the behaviour of a jQuery selected element.
-  _.extend(jQuery.fn, {
+  _.extend($.fn, {
     // Binds a keypress handler to the given element that will call the specified function when the 
     // enter key is pressed.
     enterHandler: function(f) {
       this.bind("keypress", function(event) {
-        if (event.which !== 13) return;
+        if (event.which !== 13) { return; }
         return f.apply(this, arguments);
       });
     },
@@ -97,7 +103,7 @@ define([
 
       // When the element goes out of scope, hide it.
       outgoing.on("transitionend", _.once(_.bind(outgoing.hide, outgoing)))
-              .removeClass("swipe-in")
+              .removeClass("swipe-in");
 
       // Unfortunately there is an issue that the element, if it's just been shown, will not
       // transition properly.  Hence, we have to put in a short delay, which can give the 
@@ -118,8 +124,4 @@ define([
   });
 
   return $;
-
-  function isServerOk(xhr) {
-    return xhr.status === 200;
-  }
 });
