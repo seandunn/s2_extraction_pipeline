@@ -9,7 +9,8 @@ define([
 ], function (componentPartialHtml, sampleRowPartial, CSVParser, DropZone) {
   'use strict';
 
-  var template = _.template(sampleRowPartial);
+  var viewTemplate = _.compose($, _.template(componentPartialHtml));
+  var rowTemplate  = _.template(sampleRowPartial);
 
   // Functions that generate will display a particular value based on the type it should be.
   var CellTemplates = {
@@ -52,18 +53,12 @@ define([
   };
 
   function createHtml(context) {
-    var html = $(_.template(componentPartialHtml)());
+    var html = viewTemplate();
 
-    var messageView = html.find(".validationText");
-    var message     = function(type, message) {
-      messageView.removeClass("alert-error alert-info alert-success")
-                 .addClass("alert-"+type)
-                 .html(message)
-                 .show();
-    };
-
-    var error   = _.partial(message, "error");
-    var success = _.partial(message, "success");
+    var message        = function(type, message) { html.trigger("s2.status." + type, message); };
+    var error          = _.partial(message, "error");
+    var success        = _.partial(message, "success");
+    var manifestErrors = function(manifest) { _.each(manifest.errors, error); return m; }
 
     // saves the selection for performances
     var manifestTable      = html.find(".orderMaker");
@@ -79,7 +74,7 @@ define([
     html.on("dropzone.file", process(html, warningButton(registration, hideUnhide(dropzone.view, function(event, content) {
       return dropZoneLoad(context, registration, manifestTable, content).then(
         _.bind(registrationHelper.manifest, registrationHelper),
-        error
+        manifestErrors
       );
     }))));
 
@@ -95,7 +90,6 @@ define([
         dropzone.view.show();
         registration.hide();
         manifestTable.empty();
-        messageView.hide();
       }
     });
     return html;
@@ -158,7 +152,7 @@ define([
       _.each(manifest.details, _.compose(generateView, _.partial(updateDisplay, manifest.template.json_template_display)));
       data.headers = _.map(manifest.details[0].display, function(c) { return c.friendlyName || c.columnName; });
     }
-    view.append(template(data));
+    view.append(rowTemplate(data));
 
     // Deal with checking & unchecking rows for orders
     view.delegate(

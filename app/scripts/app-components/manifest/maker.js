@@ -8,6 +8,8 @@ define([
 ], function (componentPartialHtml, LabelPrinter) {
   'use strict';
 
+  var viewTemplate = _.compose($, _.template(componentPartialHtml));
+
   return function(context) {
     var view = createHtml(
       context,
@@ -25,18 +27,11 @@ define([
   };
 
   function createHtml(context, generateSamples) {
-    var html = $(_.template(componentPartialHtml)({
+    var html = viewTemplate({
       templates: context.templates
-    }));
+    });
 
-    var messageView = html.find(".validationText");
-    var message     = function(type, message) {
-      messageView.removeClass("alert-error alert-info alert-success")
-                 .addClass("alert-"+type)
-                 .html(message)
-                 .show();
-    };
-
+    var message = function(type, message) { html.trigger("s2.status." + type, message); };
     var error   = _.partial(message, "error");
     var success = _.partial(message, "success");
 
@@ -83,7 +78,6 @@ define([
       printAreaHelper.reset();
       downloadHelper.reset();
       form.prop("disabled", false);
-      messageView.hide();
     };
 
     return html;

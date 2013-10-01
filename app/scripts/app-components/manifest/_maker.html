@@ -9,9 +9,9 @@
           <div class="template-selection-box">
             <label for="xls-templates">Select a template:</label>
             <select class="xls-templates" id="xls-templates">
-              <% _.each (templateData.templates, function (template, name) { %>
+<% _.each (templates, function (template, name) { %>
               <option value="<%- name %>"><%- template.friendly_name %></option>
-              <% }); %>
+<% }); %>
             </select>
           </div>
           <div class="template-selection-box">
@@ -35,5 +35,4 @@
       </div>
     </form>
   </div>
-  <div class="validationText alert" style="display:none"></div>
 </div>

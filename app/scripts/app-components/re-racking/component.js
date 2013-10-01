@@ -28,16 +28,9 @@ define([
   function createHtml(context, model) {
     var html = template();
 
-    var messageView = html.find(".validationText");
-    var message     = function(type, message) {
-      messageView.removeClass("alert-error alert-info alert-success")
-                .addClass("alert-" + type)
-                .html(message)
-                .show();
-    };
-
-    var error   = _.partial(message, "error");
-    var success = _.partial(message, "success");
+    var message        = function(type, message) { html.trigger("s2.status." + type, message); };
+    var error          = _.partial(message, "error");
+    var success        = _.partial(message, "success");
 
     var rackList = html.find("#rack-list");
 
@@ -67,24 +60,24 @@ define([
     });
     html.find("#barcodeReader").append(barcodeScanner.view);
     html.on(barcodeScanner.events);
-    html.on("s2.barcode.scanned.rack", resetMessage(function(event, barcode) {
+    html.on("s2.barcode.scanned.rack", function(event, barcode) {
       addRackCallback(html, factory, model, rackList, barcode).then(function() {
         startRerackingButton.show();
       });
       barcodeScanner.view.reset();
-    }));
+    });
     html.on("s2.barcode.error", $.ignoresEvent(error));
 
     // Build the dropzone component and attach it
     var dropzone = DropZone(this);
     html.find("#dropzone").append(dropzone.view).on(dropzone.events);
-    html.on("dropzone.file", resetMessage(process(html, $.ignoresEvent(_.compose(
+    html.on("dropzone.file", process(html, $.ignoresEvent(_.compose(
       function() { return $.Deferred().resolve(undefined); },
       function() { rerackButton.show(); },
       _.partial(presentRack, html, factory),
       outputRackRepresentation,
       _.bind(model.setFileContent, model)
-    )))));
+    ))));
     html.on("s2.reracking.complete", _.bind(dropzone.view.hide, dropzone.view));
 
     _.extend(html, {
@@ -97,18 +90,10 @@ define([
         html.find(".output-labware").hide();
         html.find("#output").hide();
         labelPrinter.view.hide();
-        messageView.hide();
       }
     });
 
     return html;
-
-    function resetMessage(f) {
-      return function() {
-        messageView.hide();
-        return f.apply(this, arguments);
-      };
-    }
 
     function factory(representation, element) {
       var rackController = context.app.controllerFactory.createLabwareSubController(context.app, "tube_rack");
