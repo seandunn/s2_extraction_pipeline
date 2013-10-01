@@ -20,22 +20,6 @@ svg text {
   font-size: 10px;
 }
 
-.twoColumns {
-  overflow: auto;
-  .columnLeft {
-    float: left;
-    width: 50%;
-  }
-  .columnRight {
-    float: right;
-    width: 50%;
-    .extraVTab {
-      margin-top: 8em;
-    }
-  }
-}
-
-
 .labwareRow {
 
 }
@@ -59,16 +43,6 @@ svg text {
   background: #ffffff;
   z-index: 3;
   display: none;
-}
-
-.printerSelect {
-  margin-right: 20px;
-}
-
-.printer-div {
-  label {
-    display: inline;
-  }
 }
 
 .busyClass {
@@ -159,22 +133,6 @@ div.resource {
   .rna_p { fill: hsl(3, 60%, 25%);    background-color: hsl(3, 60%, 25%); }
   .na_p  { fill: hsl(194, 59%, 45%);  background-color: hsl(194, 59%, 45%); }
 
-div.template-selection-box {
-  border-radius: 8px;
-  display: block;
-  padding: 10px;
-  margin: 8px 8px 8px 0px;
-}
-
-div.number-of-samples-box {
-  display: inline-block;
-  margin-top: 100px;
-}
-
-#generateManifest {
-  display: block;
-}
-
 #logger-window{
   display: none;
   border:1px solid grey;
@@ -200,61 +158,9 @@ div.number-of-samples-box {
   }
 }
 
-
-// Base mixin for maxing an element swipeable from the left or right.
-@mixin swipeable {
-  position: absolute;
-  clear: both;
-  width: 100%;
-  height: 100%;
-
-  transition-property: left, opacity;
-  transition-timing-function: ease;
-  transition-duration: 0.5s;
-  transition-delay: 0.1s;
-
-  display:none;
-  opacity:0;
-  &.swipe-in {
-    left: 0;
-    opacity: 1;
-  }
-}
-
-.swipe-in-from-right {
-  @include swipeable;
-  left: 100%;
-}
-.swipe-in-from-left {
-  @include swipeable;
-  left: -100%;
-}
-
-.reracking {
-  position: absolute;
-  clear: both;
-  width: 100%;
-  height: 100%;
-}
-
-div.manifest-btn {
-  border: 6px solid #808080;
-  border-radius: 16px;
-  width: 20em;
-  height: 100px;
-  margin: auto;
-  clear: both;
-  position: relative;
-  display: table;
-}
-
-div.manifest-btn-text-box {
-  text-align: center;
-  display: table-cell;
-  vertical-align: middle;
-  font-size: 1.3em;
-}
-
 // Import component specific styles
 @import "../scripts/app-components/dropzone/_styles";
 @import "../scripts/app-components/process-choice/_styles";
+@import "../scripts/app-components/manifest/_styles";
+@import "../scripts/app-components/re-racking/_styles";
+@import "../scripts/app-components/labelling/_styles";
