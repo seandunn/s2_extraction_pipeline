@@ -1195,8 +1195,6 @@
     ]
   },
 
-
-
   {
     "accepts":       [ "samples.rack.stock.rna" ],
     "controllerName": "step_controller",
