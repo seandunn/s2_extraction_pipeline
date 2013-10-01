@@ -81,7 +81,7 @@ define([
       var thisModel = this;
       var root;
       var labwareModel = ReceptionTemplates[templateName].model;
-      var sangerSampleIdCore = ReceptionStudies[studyName].sanger_sample_id_core;
+      var study = ReceptionStudies[studyName];
       thisModel.owner.getS2Root()
           .fail(function () {
             return deferred.reject({message: "Couldn't get the root! Is the server accessible?"});
@@ -93,7 +93,8 @@ define([
               state:     "draft",
               quantity:  nbOfSample,
               sample_type: sampleType,
-              sanger_sample_id_core:sangerSampleIdCore
+              sanger_sample_id_core: study.sanger_sample_id_core,
+              hmdmc_number: study.hmdmc_number
             });
           })
           .fail(function () {
@@ -178,16 +179,15 @@ define([
       var thisModel = this;
       var data = _.map(thisModel.labwareOutputs,function(labware){
         var sampleUUID = labware.aliquots[0].sample.uuid;
-        var sanger_sample_id = _.find(thisModel.samples,function (sample) {
-          return sample.uuid === sampleUUID;
-        }).sanger_sample_id;
+        var sample = _.find(thisModel.samples,function (sample) { return sample.uuid === sampleUUID; });
         return [labware.labels.barcode.value, 
                 labware.labels['sanger label'].value, 
-                sanger_sample_id, 
-                sampleType]
+                sample.sanger_sample_id,
+                sampleType,
+                sample.hmdmc_number]
                 .join(',');
       });
-      data.unshift("Tube Barcode,Sanger Barcode,Sanger Sample ID,SAMPLE TYPE");
+      data.unshift("Tube Barcode,Sanger Barcode,Sanger Sample ID,SAMPLE TYPE,HMDMC");
       var txt = data.join("\n");
       return new Blob([txt], { "type" : "text\/csv" })
     },

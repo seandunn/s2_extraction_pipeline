@@ -14,6 +14,13 @@ define([
     SBC: {
       friendly_name: "Skin Biopsy Collection",
       sanger_sample_id_core: "SBC"
+    },
+
+    // The following are all collections for HMDMC numbers
+    "13-058": {
+      friendly_name: "Skin Biopsy Collection (HMDMC 13-058)",
+      sanger_sample_id_core: "SBC_13-058",
+      hmdmc_number: "13-058"
     }
   };
 
