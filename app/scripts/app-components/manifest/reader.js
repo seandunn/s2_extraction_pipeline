@@ -58,7 +58,7 @@ define([
     var message        = function(type, message) { html.trigger("s2.status." + type, message); };
     var error          = _.partial(message, "error");
     var success        = _.partial(message, "success");
-    var manifestErrors = function(manifest) { _.each(manifest.errors, error); return m; }
+    var manifestErrors = function(manifest) { _.each(manifest.errors, error); return manifest; }
 
     // saves the selection for performances
     var manifestTable      = html.find(".orderMaker");
