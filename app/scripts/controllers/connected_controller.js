@@ -65,7 +65,16 @@ define([
               thisController.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
               thisController.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
             }
-          });
+          }).then(_.bind(function() {
+        	if (thisController.rowControllers.length===1) 
+        		{
+        			if (this._oneRowResourcesSelected)
+        				{
+        			thisController.rowControllers[0].controllers.value()[0].scanBarcode(this._oneRowResourcesSelected[0].returnPrintDetails().plate.ean13);
+        			thisController.rowControllers[0].controllers.value()[1].scanBarcode(this._oneRowResourcesSelected[1].returnPrintDetails().plate.ean13);
+        				}
+        		}
+          }, this));
       return this;
     },
 
