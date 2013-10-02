@@ -21,7 +21,9 @@ define([
       model: "tube",
 
       sample_types: {
-        "Cell Pellet": "NA+P"
+        "Tissue Non-Tumour": "!NA",
+        "Tissue Tumour": "!NA",
+        "Blood": "!NA"
       },
 
       studies: {
