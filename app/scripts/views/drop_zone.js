@@ -3,29 +3,41 @@ define([], function() {
 
   return {
     init: function(target) {
-      this.dropzone    = target.find(".dropzoneBox");
-      this.fileinput   = target.find("input[type=file]");
-      this.filename    = target.find(".filename");
-      this.ignoreFiles = function() { };
-      this.callback    = this.ignoreFiles;
+      this.dropzone          = target.find(".dropzoneBox");
+      this.fileinput         = target.find("input[type=file]");
+      this.filename          = target.find(".filename");
+      this.ignoreFiles       = function() { };
+      this.callback          = this.ignoreFiles;
+      this.disabled_callback = undefined;
       bindToDropZone(this);
       return this;
     },
 
     enable: function(callback) {
       this.fileinput.removeAttr('disabled');
-      this.callback = callback;
+      this.callback          = callback || this.disabled_callback;
+      this.disabled_callback = this.callback;
     },
 
     disable: function() {
       this.fileinput.attr('disabled', 'disabled');
       this.callback = this.ignoreFiles;
+    },
+
+    show: function() {
+      this.enable();
+      this.dropzone.show();
+    },
+    hide: function() {
+      this.dropzone.hide();
+      this.disable();
     }
   };
 
   function bindToDropZone(owner) {
     // Ensure that the dropzone behaves appropriate, delegating showing the file picker to the file input.
     owner.dropzone.bind('click', stopEvents(function() {
+      owner.fileinput.val('');    // Reset the value, so that the change event is triggered
       owner.fileinput.click();
     }));
     owner.dropzone.bind('drop', stopEvents(function(event) {

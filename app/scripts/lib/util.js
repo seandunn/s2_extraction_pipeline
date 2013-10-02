@@ -15,26 +15,7 @@ define([], function () {
 
     // Merges two objects recursively
     deepMerge: function (foo, bar) {
-      var util = this;
-      var merged = {};
-      for (var each in bar) {
-        if (foo.hasOwnProperty(each) && bar.hasOwnProperty(each)) {
-          if (typeof(foo[each]) === "object" && typeof(bar[each]) === "object") {
-            merged[each] = util.deepMerge(foo[each], bar[each]);
-          } else {
-            // chooses bar's version if both objects possess the key
-            merged[each] = bar[each];
-          }
-        } else if (bar.hasOwnProperty(each)) {
-          merged[each] = bar[each];
-        }
-      }
-      for (var each in foo) {
-        if (!(each in bar) && foo.hasOwnProperty(each)) {
-          merged[each] = foo[each];
-        }
-      }
-      return merged;
+      return _.deepMerge(foo, bar);
     }
   });
 

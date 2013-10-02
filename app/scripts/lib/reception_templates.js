@@ -1,47 +1,35 @@
 define([
-  'text!reception_templates/cgap_lysed/csv_template.json',
-  'text!reception_templates/cgap_lysed/csv_template_display.json'
-], function (CGAPLysed,CGAPLysedDisplay) {
+  'lib/json_templater',
+
+  // Add new templates after this comment and they will be automatically loaded
+  'reception_templates/cgap_lysed',
+  'reception_templates/hmdmc_lysed'
+], function (JsonTemplater) {
   'use strict';
 
+  var templateTransform = _.identity;
+  var displayTransform  = function(json) { return _.reduce(json, function(m,v,i) { return _.extend(m,v); }, {}); };
+
   var Templates = {
-    cgap_lysed: {
-      friendly_name: "CGAP - lysed",
-      model:         "tube",
-      sample_type:   "RNA",
-      aliquot_type:  "NA+P",
-      json_template: JSON.parse(CGAPLysed),
-      json_template_display: JSON.parse(CGAPLysedDisplay),
-      header_line_number: 8,
-      sample_types : ["Cell Pellet"]
-    }
+    templateList: []
+  };
+  var register = function(name, template) {
+    Templates[name] = _.extend(template, {
+      json_template:         JsonTemplater.applicator(templateTransform(template.templates.updates)),
+      json_template_display: JsonTemplater.applicator(displayTransform(template.templates.display)),
+      validation:            template.validation || _.identity
+    });
+    Templates.templateList.push({
+      template_name: name,
+      friendly_name: template.friendly_name,
+      sample_types:  template.sample_types
+    });
   };
 
-  // adds the manifest paths
-  _.reduce(Templates, function(memo,value, key){
-    $.extend(memo[key],{
-      manifest_path:"scripts/lib/reception_templates/"+key+"/manifest.xls"
-    });
-    return memo;
-  }, Templates);
-
-  // adds a templateList, used to simplify the html template parsing
-  // it only contains something like :
-  // [
-  //   {
-  //     template_name : "awesome_template",
-  //     friendly_name : "My awesome template"
-  //   }, ...
-  // ]
-  $.extend(Templates, {
-    templateList: _.map(Templates, function (value, key) {
-      return {
-        template_name: key,
-        friendly_name: value.friendly_name,
-        sample_types:  value.sample_types
-      };
-    })
-  });
+  _.chain(arguments)
+   .drop(1)
+   .each(function(template) { template(register); })
+   .value();
 
   return Templates;
 });

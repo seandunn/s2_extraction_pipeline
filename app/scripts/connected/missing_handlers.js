@@ -42,7 +42,7 @@ define([
     find: function() {
       return function(modelName, barcode) {
         return this.owner.getS2Root().then(function(root) {
-          return root[modelName].findByEan13Barcode(barcode);
+          return root[modelName].searchByBarcode().ean13(barcode).first();
         }).then(function(labware) {
           return labware;
         }, function() {
@@ -58,13 +58,7 @@ define([
           var labwareModel = root[modelName];
           return Deferred.sequentially(function (state) {
             var deferred = $.Deferred();
-            labwareModel.findByEan13Barcode(barcode)
-              .fail(function () {
-                deferred.resolve();
-              })
-              .then(function () {
-                deferred.reject();
-              });
+            labwareModel.searchByBarcode().ean13(barcode).first().then(deferred.resolve, deferred.reject);
             return deferred.promise()
           }, function (state) {
             return labwareModel.create({});
