@@ -127,10 +127,27 @@ define([
       }
     },
 
+    fillBarcodesIfOnlyOneRow: function(data)
+    {
+    	function updateLabware(obj, data, labwareModel) {
+    		var type = labwareModel.expected_type;
+    		
+    		var value = data[0].returnPrintDetails()[type].ean13;
+    		this.model.outputs.getByBarcode(obj, type.pluralize(), value);
+    	}
+    	if (this.rowControllers.length===1)
+    		{
+				updateLabware.call(this, 
+							this.rowControllers[0].controllers.value()[1], data, 
+							this.rowControllers[0].rowModel.labwares.labware2);
+				this._oneRowResourcesSelected = [ this.rowControllers[0].controllers.value()[0].labwareModel.resource, this.rowControllers[0].controllers.value()[1].labwareModel.resource ];
+    		}
+    },
+
     modelDone: function(child, action, data) {
 
       if (action === 'outputsReady') {
-
+        this.fillBarcodesIfOnlyOneRow(data);
         this.model.ready = true;
         this.setupSubControllers(true);
         PubSub.publish('s2.step_controller.printing_finished', this);
