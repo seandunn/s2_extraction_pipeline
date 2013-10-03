@@ -70,7 +70,7 @@ define([], function() {
     var mergingIn =
       _.chain(source)
        .pairs()
-       .pairwise(_.compose(_.partial(_.extractor, target), _.first))
+       .pairwise(_.compose(_.extractor(target), _.first))
        .map(flattenToTrio)
        .map(recursivelyMergeObjectValues)
        .object()
