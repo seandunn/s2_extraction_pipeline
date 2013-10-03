@@ -70,7 +70,7 @@ define([
 
     // Build the dropzone component and attach it
     var dropzone = DropZone(this);
-    html.find("#dropzone").append(dropzone.view).on(dropzone.events);
+    html.find(".dropzone").append(dropzone.view).on(dropzone.events);
     html.on("dropzone.file", process(html, $.ignoresEvent(_.compose(
       function() { return $.Deferred().resolve(undefined); },
       function() { rerackButton.show(); },
