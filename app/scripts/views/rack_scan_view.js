@@ -28,7 +28,7 @@ define([
       // NB. This sort of nonsense make me a sad panda :(
       var thisController = this.owner;
       this.dropzone = DropZone(this);
-      container.find("#dropzone").append(this.dropzone.view).on(this.dropzone.events);
+      container.find(".dropzone").append(this.dropzone.view).on(this.dropzone.events);
       container.on("dropzone.file", function(event, contents) {
         thisController.model
                       .analyseFileContent(contents)
