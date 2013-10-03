@@ -47,7 +47,7 @@ define([ 'controllers/base_controller'
               return model.changeRoleWithoutChangingBatch();
             })
             .fail(function (error) {
-              PubSub.publish('s2.status.error', controller, error);
+              PubSub.publish("error.status.s2", controller, error);
             })
             .then(function (model) {
               controller.owner.childDone(controller, "done", {batch:null,labware:null});
@@ -63,7 +63,7 @@ define([ 'controllers/base_controller'
                 return model.makeBatch()
               })
               .fail(function (error) {
-                PubSub.publish('s2.status.error', controller, error);
+                PubSub.publish("error.status.s2", controller, error);
               })
               .then(function (model) {
                 controller.owner.childDone(controller, "done", {batch: model.batch});
@@ -174,7 +174,7 @@ define([ 'controllers/base_controller'
             return model.addTubeFromBarcode(data.BC);
           })
           .fail(function (error) {
-            PubSub.publish('s2.status.error', controller, error);
+            PubSub.publish("error.status.s2", controller, error);
             child.barcodeInputController.hideProgress();
           })
           .then(function () {

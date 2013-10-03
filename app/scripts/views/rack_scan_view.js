@@ -34,7 +34,7 @@ define([
                       .then(function(scanModel){
                         container.removeClass("pre-file').addClass('post-file");
 
-                        PubSub.publish("s2.status.message", thisController, {message: "File validated."});
+                        PubSub.publish("message.status.s2", thisController, {message: "File validated."});
 
                         // We update the labware view but we've already translated it, so force the display to
                         // be the identity, rather than the default mapping.
@@ -43,7 +43,7 @@ define([
                         thisController.owner.childDone(this, "enableBtn", {buttons: [{action: "print"}]});
                         thisController.owner.childDone(this, "enableBtn", {buttons: [{action: "end"}]});
                       }, function (errorMessage) {
-                        PubSub.publish("s2.status.error", thisController, {message: errorMessage});
+                        PubSub.publish("error.status.s2", thisController, {message: errorMessage});
                       });
       });
     },

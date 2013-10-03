@@ -18,9 +18,10 @@ define([
     var view  = createHtml(context, model);
 
     return {
+      name:   "re-racking.s2",
       view:   view,
       events: {
-        "s2.reception.reset_view": _.bind(view.reset, view)
+        "reset_view.reception.s2": _.bind(view.reset, view)
       }
     };
   };
@@ -28,7 +29,7 @@ define([
   function createHtml(context, model) {
     var html = template();
 
-    var message        = function(type, message) { html.trigger("s2.status." + type, message); };
+    var message        = function(type, message) { html.trigger(type + ".status.s2", message); };
     var error          = _.partial(message, "error");
     var success        = _.partial(message, "success");
 
@@ -41,16 +42,16 @@ define([
     });
     html.find("#printer-area").append(labelPrinter.view);
     html.on(labelPrinter.events);
-    html.on("s2.print.trigger", $.ignoresEvent(_.partial(onPrintLabels, html, model)));
-    html.on("s2.print.success", function() { html.find("#racking-file-upload").collapse({parent: html}); });
+    html.on("trigger.print.s2", $.ignoresEvent(_.partial(onPrintLabels, html, model)));
+    html.on("success.print.s2", function() { html.find("#racking-file-upload").collapse({parent: html}); });
 
     // Setup the re-racking buttons
     var startRerackingButton = html.find("#start-rerack-btn");
     var rerackButton         = html.find("#rerack-btn");
     startRerackingButton.click(_.partial(onStartReracking, html));
     rerackButton.click(process(html, _.partial(onReracking, html, model, rerackButton)));
-    html.on("s2.print.success", $.ignoresEvent(_.partial(success, "The labels have been sent to the printer.")));
-    html.on("s2.reracking.complete", $.ignoresEvent(_.partial(success, "Re-racking completed.")));
+    html.on("success.print.s2", $.ignoresEvent(_.partial(success, "The labels have been sent to the printer.")));
+    html.on("complete.reracking.s2", $.ignoresEvent(_.partial(success, "Re-racking completed.")));
     rerackButton.hide();
 
     // Build a barcode scanner component and hook it up.
@@ -60,13 +61,13 @@ define([
     });
     html.find("#barcodeReader").append(barcodeScanner.view);
     html.on(barcodeScanner.events);
-    html.on("s2.barcode.scanned.rack", function(event, barcode) {
+    html.on("scanned.barcode.s2", function(event, barcode) {
       addRackCallback(html, factory, model, rackList, barcode).then(function() {
         startRerackingButton.show();
       });
       barcodeScanner.view.reset();
     });
-    html.on("s2.barcode.error", $.ignoresEvent(error));
+    html.on("error.barcode.s2", $.ignoresEvent(error));
 
     // Build the dropzone component and attach it
     var dropzone = DropZone(this);
@@ -78,7 +79,7 @@ define([
       outputRackRepresentation,
       _.bind(model.setFileContent, model)
     ))));
-    html.on("s2.reracking.complete", _.bind(dropzone.view.hide, dropzone.view));
+    html.on("complete.reracking.s2", _.bind(dropzone.view.hide, dropzone.view));
 
     _.extend(html, {
       reset: function () {
@@ -130,7 +131,7 @@ define([
   function onPrintLabels(html, model, printer) {
     return model.createOutputRack()
                 .then(function(rack) {
-                  html.trigger("s2.print.labels", [printer, [rack]]);
+                  html.trigger("labels.print.s2", [printer, [rack]]);
                   return rack;
                 });
   }
@@ -184,18 +185,18 @@ define([
     return model.rerack()
                 .then(function () {
                   button.hide();
-                  html.trigger("s2.reracking.complete");
+                  html.trigger("complete.reracking.s2");
                 }, _.partial(structuredError, html, "Could not re-rack"));
   }
 
   function structuredError(html, prefix, error) {
-    html.trigger("s2.status.error", [prefix + ": " + error.message]);
+    html.trigger("error.status.s2", [prefix + ": " + error.message]);
   }
 
   // Wraps a function in the process reporting.
   function process(html, f) {
-    var start  = function() { html.trigger("s2.busybox.start_process"); };
-    var finish = function() { html.trigger("s2.busybox.end_process"); };
+    var start  = function() { html.trigger("start_process.busybox.s2"); };
+    var finish = function() { html.trigger("end_process.busybox.s2"); };
 
     return function() {
       start();

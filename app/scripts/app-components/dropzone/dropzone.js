@@ -9,6 +9,7 @@ define([
     var view = createHtml(context);
 
     return {
+      name: "dropzone.s2",
       view: view,
       events: {}
     };

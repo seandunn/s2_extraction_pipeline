@@ -1,65 +1,52 @@
 define([
-    'text!app-components/process-choice/_component.html'
-  , 'text!app-components/process-choice/_component-view.html'
-  , 'text!app-components/process-choice/_choice.html'
-  , 'app-components/labelling/scanning',
+  "text!app-components/process-choice/_component.html",
+  "text!app-components/process-choice/_component-view.html",
+  "text!app-components/process-choice/_choice.html",
+  "app-components/labelling/scanning",
 
   // Globally included stuff added after this comment
-  , 'lib/jquery_extensions'
-], function (receptionView, componentView, choiceView, BarcodeScanner) {
-  'use strict';
+  "lib/jquery_extensions"
+], function (receptionView, componentView, choiceView, barcodeScanner) {
+  "use strict";
 
   var reception          = _.compose($, _.template(receptionView));
   var componentContainer = _.compose($, _.template(componentView));
   var componentChoice    = _.compose($, _.template(choiceView));
-
-  return function(context) {
-    var html = createHtml(context);
-    html.on("s2.reception.reset_view", _.bind(context.resetS2Root, context));
-
-    return {
-      view: html,
-      events: {}
-    };
-  };
 
   function createHtml(externalContext) {
     var context = _.extend({
       user: $.Deferred()
     }, externalContext);
 
-    var html  = reception(context);
-    var error = function(message) { html.trigger("s2.status.error", message); };
+    var html    = reception(context);
+    var error   = function(message) { html.trigger("error.status.s2", message); };
 
+    var tabs    = html.find(".tab-content");
     var choices = html.find("#choice");
+    var home = html.find(".processes");
 
     // The user needs to scan themselves in before doing anything
-    var userComponent = BarcodeScanner({
+    var userComponent = barcodeScanner({
       label: "Scan your barcode"
     });
-    var userView = html.find("#userValidation");
+
+    var userView = html.find(".user-validation");
     userView.append(userComponent.view);
     html.on(userComponent.events);
 
     // The choice view should hide when the display is reset, and show when there is a valid user.
-    html.on("s2.reception.reset_view", _.partial(swap, choices, userView));
-    html.on("s2.barcode.scanned", $.haltsEvent($.ignoresEvent(_.partial(connect, context, _.partial(swap, userView, choices), error))));
-    html.on("s2.barcode.error", $.ignoresEvent(error));
+    // html.on("reset_view.reception.s2", _.partial(swap, home, userView));
+
+    html.on(, _.partial(connect, context, _.partial(swap, userView, home), error));
+    html.on("scanned.barcode.s2", $.haltsEvent($.ignoresEvent(_.partial(connect, context, _.partial(swap, userView, choices), error))));
+
+    html.on("error.barcode.s2", $.ignoresEvent(error));
 
     // Attach each of the components into the view.
     _.chain(context.components)
      .map(_.partial(buildComponent, context))
-     .map(_.partial(attachComponent, html, choices))
+     .map(_.partial(attachComponent, html, choices, tabs))
      .value();
-
-    // Ensure that the home page is what's on the screen initially, and that if any back button
-    // is pressed that it is pulled back into view and the views reset.
-    var home = html.find("#homePage");
-    home.swipedIn().show();
-    html.on("click", ".back-button", function() {
-      html.swipeIn(home);
-      html.trigger("s2.reception.reset_view");
-    });
 
     return html;
   }
@@ -90,28 +77,40 @@ define([
 
 
   // Attaches the given component to the specified HTML using the configuration.
-  function attachComponent(html, choices, config) {
-    var container = componentContainer(config);
-    container.append(config.component.view);
-    html.append(container);
+  function attachComponent(html, choices, tabs, componentConfig) {
+    var container = componentContainer(componentConfig);
+    container.append(componentConfig.component.view);
+    tabs.append(container);
 
-    var choice = componentChoice(config);
-    choice.click(_.bind(_.partial(html.swipeIn, container), html));
+    var choice = componentChoice(componentConfig);
     choices.append(choice);
 
-    html.on(config.component.events);
-    html.trigger("s2.activate");
+    html.on(componentConfig.component.events);
+    html.trigger("activate.s2");
 
     return _.extend({
       element: container,
       choice:  choice
-    }, config);
+    }, componentConfig);
   }
 
   // Hides the outgoing component and shows the incoming one.
   function swap(outgoing, incoming) {
-    outgoing.hide();
-    incoming.show();
+    outgoing.fadeOut(function(){
+      incoming.fadeIn();
+    });
   }
+
+  return function(context) {
+    var html = createHtml(context);
+    html.on("reset_view.reception.s2", _.bind(context.resetS2Root, context));
+
+    return {
+      name: "process-choice.s2",
+      view: html,
+      events: {}
+    };
+  };
+
 });
 

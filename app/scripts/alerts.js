@@ -13,16 +13,16 @@ define(['config',
       this.alertElement = alertElement;
 
       // Set both regular and error event handlers
-      PubSub.subscribe('s2.status.message', function (event, source, eventData) {
+      PubSub.subscribe("message.status.s2", function (event, source, eventData) {
         alert.addMessage('success', eventData.message);
       });
-      PubSub.subscribe('s2.status.error', function (event, source, eventData) {
+      PubSub.subscribe("error.status.s2", function (event, source, eventData) {
         alert.addMessage('error', eventData.message);
       });
-      PubSub.subscribe('s2.status.success', function (event, source, eventData) {
+      PubSub.subscribe("success.status.s2", function (event, source, eventData) {
         alert.addMessage('success', eventData.message);
       });
-      PubSub.subscribe('s2.status.info', function (event, source, eventData) {
+      PubSub.subscribe("info.status.s2", function (event, source, eventData) {
         alert.addMessage('info', eventData.message);
       });
     },

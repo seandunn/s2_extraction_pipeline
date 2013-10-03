@@ -5,9 +5,9 @@ define([
   "use strict";
 
   return function(context) {
-    return ProcessChoice(_.extend({
+    return new ProcessChoice(_.extend({
       components: [
-        {label: "Re-racking", constructor: Reracking}
+        {label: "Re-racking", id: "re-racking", constructor: Reracking}
       ]
     }, context));
   };

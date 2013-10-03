@@ -85,7 +85,7 @@ define(['controllers/base_controller'
         modelName: controller.labwareModel.expected_type.pluralize(),
         BC:        Util.pad(value)
       });
-      PubSub.publish("s2.labware.barcode_scanned", controller, {
+      PubSub.publish("barcode_scanned.labware.s2", controller, {
         modelName: controller.labwareModel.expected_type.pluralize(),
         BC:        Util.pad(value)
       });
@@ -150,7 +150,7 @@ define(['controllers/base_controller'
             modelName: controller.labwareModel.expected_type.pluralize(),
             BC:        Util.pad(value)
           });
-          PubSub.publish("s2.labware.barcode_scanned", controller, {
+          PubSub.publish("barcode_scanned.labware.s2", controller, {
             modelName: controller.labwareModel.expected_type.pluralize(),
             BC:        Util.pad(value)
           });
@@ -206,7 +206,7 @@ define(['controllers/base_controller'
     viewDone: function(child, action, data) {
       if (action == "labwareRemoved") {
         this.owner.childDone(this, "removeLabware", { resource: this.labwareModel.resource });
-        PubSub.publish("s2.labware.removed", this, {
+        PubSub.publish("removed.labware.s2", this, {
           resource:  this.labwareModel.resource
         });
       }
@@ -244,7 +244,7 @@ define(['controllers/base_controller'
     },
 
     displayErrorMessage: function (message) {
-      PubSub.publish('s2.status.error', this, {message: message});
+      PubSub.publish("error.status.s2", this, {message: message});
 	  },
 
     onBarcodeScanned: function() {
@@ -260,7 +260,7 @@ define(['controllers/base_controller'
 
   function barcodeErrorCallback(errorText){
     return function(value, template, controller){
-      PubSub.publish('s2.status.error', controller, {message: errorText});
+      PubSub.publish("error.status.s2", controller, {message: errorText});
     };
   }
 

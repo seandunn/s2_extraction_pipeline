@@ -41,12 +41,12 @@ define([
             return model.setKitFromBarcode(value);
           })
           .fail(function (error) {
-            PubSub.publish('s2.status.error', controller, error);
+            PubSub.publish("error.status.s2", controller, error);
             controller.barcodeController.hideProgress();
           })
           .then(function(model){
-            PubSub.publish('s2.status.message', controller, {message:'Kit details validated/saved'});
-            PubSub.publish("s2.step_controller.next_process", controller, {batch: model.batch});
+            PubSub.publish("message.status.s2", controller, {message:'Kit details validated/saved'});
+            PubSub.publish("next_process.step_controller.s2", controller, {batch: model.batch});
             controller.selector().find('.barcodeInput').attr("disabled", "disabled");
           });
     }
@@ -55,7 +55,7 @@ define([
   function kitScannedErrorCallback(controller) {
     return function (errorText) {
       return function (value, template, controller) {
-        PubSub.publish('s2.status.error', controller, {message:errorText});
+        PubSub.publish("error.status.s2", controller, {message:errorText});
       };
     };
   }
@@ -111,7 +111,7 @@ define([
       controller.model
         .then(function (model) {
           if (model.batch.kit) {
-            PubSub.publish("s2.step_controller.next_process", controller, {batch: model.batch});
+            PubSub.publish("next_process.step_controller.s2", controller, {batch: model.batch});
           }
         });
     },

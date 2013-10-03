@@ -58,7 +58,7 @@ define(['config'
     startProcess: function(f) {
       var controller = this;
       return _.wrap(f, function(func) {
-        controller.view.trigger("s2.busybox.start_process");
+        controller.view.trigger("start_process.busybox.s2");
         return func.apply(undefined, _.drop(arguments, 1));
       });
     },
@@ -67,7 +67,7 @@ define(['config'
       var controller = this;
       return _.wrap(f, function(func) {
         var rc = func.apply(undefined, _.drop(arguments, 1));
-        controller.view.trigger("s2.busybox.end_process");
+        controller.view.trigger("end_process.busybox.s2");
         return rc;
       });
     }

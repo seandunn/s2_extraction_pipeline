@@ -60,7 +60,7 @@ define([
     // Called from the onClick handler of the button on the view, but with 'this' set to an instance of this class.
     triggerDownload: function() {
       this.model.generateFile(_.bind(this.view.downloadFile, this.view));
-      PubSub.publish("s2.step_controller.next_process", this, {batch: this.model.batch});
+      PubSub.publish("next_process.step_controller.s2", this, {batch: this.model.batch});
     }
   });
 });
