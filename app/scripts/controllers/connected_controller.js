@@ -65,17 +65,22 @@ define([
               thisController.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
               thisController.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
             }
-          }).then(_.bind(function() {
-        	if (thisController.rowControllers.length===1) 
-        		{
-        			if (this._oneRowResourcesSelected)
-        				{
-        			thisController.rowControllers[0].controllers.value()[0].scanBarcode(this._oneRowResourcesSelected[0].returnPrintDetails().plate.ean13);
-        			thisController.rowControllers[0].controllers.value()[1].scanBarcode(this._oneRowResourcesSelected[1].returnPrintDetails().plate.ean13);
-        				}
-        		}
-          }, this));
+          }).then(_.bind(this.onSetupSubcontrollers, this));
       return this;
+    },
+    
+    onSetupSubcontrollers: function() {
+      var thisController = this;
+      if (thisController.rowControllers.length===1) 
+        {
+          if (this._oneRowBarcodesSelected)
+            {
+        	  thisController.rowControllers[0].controllers.each(_.bind(function(controller, position) { 
+                controller.scanBarcode(this._oneRowBarcodesSelected[position])
+              }, this));
+        	  this._oneRowBarcodesSelected = [];
+         	}
+       	}
     },
 
     focus: function() {
@@ -136,20 +141,23 @@ define([
       }
     },
 
-    fillBarcodesIfOnlyOneRow: function(data)
+    fillBarcodesIfOnlyOneRow: function(resourcesList)
     {
-    	function updateLabware(obj, data, labwareModel) {
+    	function saveBarcode(resource, labwareModel) {
+    		if (_.isUndefined(this._oneRowBarcodesSelected))
+    			{
+            		this._oneRowBarcodesSelected = [];    			
+    			}
     		var type = labwareModel.expected_type;
-    		
-    		var value = data[0].returnPrintDetails()[type].ean13;
-    		this.model.outputs.getByBarcode(obj, type.pluralize(), value);
+    		var value = resource.returnPrintDetails()[type].ean13;
+    		this._oneRowBarcodesSelected.push(value);
     	}
+    	
     	if (this.rowControllers.length===1)
     		{
-				updateLabware.call(this, 
-							this.rowControllers[0].controllers.value()[1], data, 
-							this.rowControllers[0].rowModel.labwares.labware2);
-				this._oneRowResourcesSelected = [ this.rowControllers[0].controllers.value()[0].labwareModel.resource, this.rowControllers[0].controllers.value()[1].labwareModel.resource ];
+    		  saveBarcode.call(this, this.rowControllers[0].controllers.value()[0].labwareModel.resource, 
+					this.rowControllers[0].rowModel.labwares.labware1); 
+    		  saveBarcode.call(this, resourcesList[0], this.rowControllers[0].rowModel.labwares.labware2);
     		}
     },
 
