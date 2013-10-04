@@ -70,7 +70,7 @@ define([
       mime: "text/csv",
       message: "Drop the manifest CSV file here, or click to select."
     });
-    html.find("#dropzone").append(dropzone.view).on(dropzone.events);
+    html.find(".dropzone").append(dropzone.view).on(dropzone.events);
     html.on("dropzone.file", process(html, warningButton(registration, hideUnhide(dropzone.view, function(event, content) {
       return dropZoneLoad(context, registration, manifestTable, content).then(
         _.bind(registrationHelper.manifest, registrationHelper),
