@@ -30,6 +30,13 @@ define([], function() {
       };
     },
 
+    // Given an object will return a function that will extract the value of the given field.
+    extractor: function(object) {
+      return function(field) {
+        return object[field];
+      };
+    },
+
     // Groups the given array by the function g, then applies the function f to the groupings.
     groupMap: function(array, g, f) {
       return _.chain(array)
@@ -46,6 +53,20 @@ define([], function() {
       var params = _.drop(arguments, 1);
       return function(object) {
         return object[name].apply(object, params);
+      };
+    },
+
+    // Used typically to pair up elements of one array using a specific function.
+    pairwise: function(array, f) {
+      return _.map(array, function(v) { return [v, f(v)]; });
+    },
+
+    // Returns a function that will call the given function, with any arguments passed at the
+    // point of calling this function.  Return function completely ignores any arguments passed.
+    call: function(f) {
+      var args = arguments;
+      return function() {
+        return f.apply(this, args);
       };
     }
   };

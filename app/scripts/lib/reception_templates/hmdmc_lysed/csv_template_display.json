@@ -14,17 +14,17 @@
     }
   },
   {
+    "hmdmc_number": {
+      "columnName": "HMDMC",
+      "friendlyName": "HMDMC Number",
+      "type":         "span"
+    }
+  },
+  {
     "sample_type": {
       "columnName": "SAMPLE TYPE",
       "type":       "span",
       "friendlyName": "Sample Type"
-    }
-  },
-  {
-    "gender": {
-      "columnName": "GENDER",
-      "friendlyName": "Gender",
-      "type": "span"
     }
   },
   {
@@ -41,6 +41,14 @@
       "type":       "select",
       "options":    ["DNA & RNA Manual", "DNA & RNA QIAcube"],
       "default":    "DNA & RNA QIAcube"
+    }
+  },
+  {
+    "_": {
+      "columnName":   "_SELECTED",
+      "friendlyName": "Include in Order?",
+      "type":         "checkbox",
+      "default":      "No"
     }
   }
 ]
