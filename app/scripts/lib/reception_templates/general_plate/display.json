@@ -3,27 +3,28 @@
     "barcode": {
       "columnName":   "Plate Barcode",
       "friendlyName": "Plate EAN13 Barcode",
-      "type":         "span"
+      "type":         "barcode",
+      "format":       "ean13"
     }
   },
   {
     "location": {
       "columnName":   "Location",
       "friendlyName": "Well",
-      "type":         "span"
+      "type":         "text"
     }
   },
   {
     "sanger_sample_id": {
       "columnName": "SANGER SAMPLE ID",
       "friendlyName": "Sanger Sample ID",
-      "type":       "span"
+      "type":       "text"
     }
   },
   {
     "sample_type": {
       "columnName": "SAMPLE TYPE",
-      "type":       "span",
+      "type":       "text",
       "friendlyName": "Sample Type"
     }
   },
@@ -31,14 +32,14 @@
     "gender": {
       "columnName": "GENDER",
       "friendlyName": "Gender",
-      "type": "span"
+      "type": "text"
     }
   },
   {
     "is_sample_a_control":{
       "columnName": "IS SAMPLE A CONTROL?",
       "friendlyName": "Is Sample a Control?",
-      "type":       "span"
+      "type":       "boolean"
     }
   },
   {

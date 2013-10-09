@@ -1,29 +1,30 @@
 [
   {
     "barcode": {
-      "columnName": "Tube Barcode",
+      "columnName":   "Tube Barcode",
       "friendlyName": "Tube Ean13 Barcode",
-      "type":       "span"
+      "type":         "barcode",
+      "format":       "ean13"
     }
   },
   {
     "sanger_sample_id": {
       "columnName": "SANGER SAMPLE ID",
       "friendlyName": "Sanger Sample ID",
-      "type":       "span"
+      "type":       "text"
     }
   },
   {
     "hmdmc_number": {
       "columnName": "HMDMC",
       "friendlyName": "HMDMC Number",
-      "type":         "span"
+      "type":         "text"
     }
   },
   {
     "sample_type": {
       "columnName": "SAMPLE TYPE",
-      "type":       "span",
+      "type":       "text",
       "friendlyName": "Sample Type"
     }
   },
@@ -31,7 +32,7 @@
     "is_sample_a_control":{
       "columnName": "IS SAMPLE A CONTROL?",
       "friendlyName": "Is Sample a Control?",
-      "type":       "span"
+      "type":       "boolean"
     }
   },
   {

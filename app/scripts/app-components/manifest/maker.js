@@ -170,7 +170,7 @@ define([
       preRegisterSamples,
       preRegisterBarcodes,
       details.number_of_labwares,
-      function(registerSamples, registerBarcodes, placeSamples) {
+      function(registerSamples, registerBarcodes, placeSamples, labeller) {
         // We know, up front, how many samples are being created and therefore how many barcodes
         // we're going to need at the end of the process.  Hence, we can perform the bulk sample
         // and bulk barcode creation in parallel.
@@ -185,7 +185,7 @@ define([
           var blob   = _.toCSV(template.generator.manifest(data, template.extras || {}), ",");
 
           var manifest  = sendManifestRequest(context, template, blob);
-          var resources = createResources(resourceGenerator, root, data).then(_.partial(labelResources, root, model));
+          var resources = createResources(resourceGenerator, root, data).then(_.partial(labelResources, root, model, labeller));
 
           return $.when(resources, manifest);
         }).then(function(model, manifest) {
@@ -217,33 +217,20 @@ define([
       return action.result.barcodes;
     }, _.constant("Could not pre-register " + number + " barcodes in S2."));
   }
-  function labelResources(root, model, resources) {
+  function labelResources(root, model, labeller, resources) {
     model.labwareOutputs = resources;
     return root.bulk_create_labellables.create({
-      labellables: _.map(model.labwareOutputs, labellableForResource)
+      labellables: _.map(model.labwareOutputs, _.partial(labellableForResource, labeller))
     }).then(function() {
       return model;
     }, _.constant("Couldn't connect the labware to their labels in S2."));
   }
 
-  function labelForBarcode(barcode) {
-    return {
-      barcode:        {
-        type:  "ean13-barcode",
-        value: barcode.ean13
-      },
-      "sanger label": {
-        type:  "sanger-barcode",
-        value: barcode.sanger.prefix + barcode.sanger.number + barcode.sanger.suffix
-      }
-    };
-  }
-
-  function labellableForResource(resource) {
+  function labellableForResource(labeller, resource) {
     return {
       name: resource.uuid,
       type: "resource",
-      labels: labelForBarcode(resource.labels)
+      labels: labeller(resource.labels)
     };
   }
 

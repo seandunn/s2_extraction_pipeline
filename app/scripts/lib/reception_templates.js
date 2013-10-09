@@ -5,7 +5,8 @@ define([
   // Add new templates after this comment and they will be automatically loaded
   'reception_templates/cgap_lysed',
   'reception_templates/hmdmc_lysed',
-  'reception_templates/general_plate'
+  'reception_templates/general_plate',
+  'reception_templates/filter_paper'
 ], function (Generators, Readers) {
   'use strict';
 
@@ -27,20 +28,32 @@ define([
   }
   function enhanceTemplate(template) {
     return _.extend(template, {
-      json_template:         JsonTemplater(templateTransform(template.templates.updates)),
-      json_template_display: JsonTemplater(displayTransform(template.templates.display)),
+      json_template:         JsonTemplater(createWrapper, templateTransform(template.templates.updates)),
+      json_template_display: JsonTemplater(displayWrapper, displayTransform(template.templates.display)),
       validation:            template.validation || _.identity,
       generator:             Generators[template.model](template),
       reader:                Readers[template.model](template)
     });
   }
 
+  function createWrapper(descriptor, f) {
+    return f;
+  }
+
+  // Used to wrap standard cell converters in an structure appropriate for HTML display
+  function displayWrapper(descriptor, f) {
+    return _.compose(htmlConverter, f);
+
+    function htmlConverter(value) {
+      return $.extend({}, descriptor, {value:value});
+    }
+  }
 
   /**********************************************************************************************************
    * FUNCTIONS DEALING WITH JSON TEMPLATES
    **********************************************************************************************************/
-  function JsonTemplater(template) {
-    var extractorMap = createExtractorMap(template);
+  function JsonTemplater(wrapper, template) {
+    var extractorMap = createExtractorMap(wrapper, template);
     var extractor    = _.partial(extractRowData, extractorMap);
     return _.compose(extractor, upperCaseRowKeys);
   }
@@ -59,11 +72,15 @@ define([
   }
 
   function isCellDescriptor(item){
-    return !_.isUndefined(item["columnName"]);
+    return !_.isUndefined(item["columnName"]) || !_.isUndefined(item["constant"]);
   }
 
-  function extractorGenerator (cellDescriptor){
-    var converter = converterFor(cellDescriptor);
+  function extractorGenerator (wrapper, cellDescriptor){
+    if (!_.isUndefined(cellDescriptor.constant)) {
+      return _.constant(cellDescriptor.constant);
+    }
+
+    var converter = wrapper(cellDescriptor, converterFor(cellDescriptor));
     var column    = cellDescriptor.columnName.toUpperCase();
 
     return function(rowData) {
@@ -72,27 +89,21 @@ define([
     }
   }
 
-  function createExtractorMap (data){
+  function createExtractorMap (wrapper, data){
     return _.reduce(data, function(memo, value, key){
       var handler = undefined;
 
       if (isCellDescriptor(value)){
-        handler = extractorGenerator(value);
+        handler = extractorGenerator(wrapper, value);
       } else if ($.isPlainObject(value)) {
-        handler = _.partial(extractRowData, createExtractorMap(value));
+        handler = _.partial(extractRowData, createExtractorMap(wrapper, value));
       } else {
-        handler = memoize(value);
+        handler = _.constant(value);
       }
 
       memo[key] = handler;
       return memo;
     },{});
-  }
-
-  function memoize(value) {
-    return function() {
-      return value;
-    };
   }
 
   /*
@@ -106,22 +117,23 @@ define([
     var upped = (value || 'NO').toUpperCase();
     return (upped === 'YES') || (upped === 'TRUE') || (upped === 'Y');
   }
-  function selectConverter(cellDescriptor, value) {
-    return $.extend({}, cellDescriptor, {value:value});
+  function ean13BarcodeConverter(value) {
+    return _.str.lpad(""+intConverter(value), 13, "0");
+  }
+  function barcodeConverter(descriptor) {
+    switch(descriptor.format) {
+      case "ean13": return ean13BarcodeConverter; break;
+      default:      return _.identity;            break;
+    }
   }
   function converterFor(cellDescriptor) {
     switch (cellDescriptor.type) {
-      // used to return plain values
-      case "int":     return intConverter; break;
-      case "float":   return parseFloat; break;
-      case "boolean": return booleanConverter; break;
-
-      // used to generate html nodes
-      case "select":   return _.partial(selectConverter, cellDescriptor); break;
-      case "span":     return _.partial(selectConverter, cellDescriptor); break;
-      case "checkbox": return _.compose(_.partial(selectConverter, cellDescriptor), booleanConverter); break;
-
-      default: return _.identity; break;
+      case "int":      return intConverter;     break;
+      case "float":    return parseFloat;       break;
+      case "boolean":  return booleanConverter; break;
+      case "checkbox": return booleanConverter; break;
+      case "barcode":  return barcodeConverter(cellDescriptor); break;
+      default:         return _.identity;       break;
     }
   }
 });
