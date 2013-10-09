@@ -74,6 +74,23 @@ define(['controllers/base_controller'
       return this;
     },
 
+    scanBarcode: function(value) {
+      var controller = this;
+      if (this.barcodeInputController)
+      {
+        var input = this.jquerySelection().find("input");
+        input.value = Util.pad(value);
+      }
+      controller.owner.childDone(controller, 'barcodeScanned', {
+        modelName: controller.labwareModel.expected_type.pluralize(),
+        BC:        Util.pad(value)
+      });
+      PubSub.publish("s2.labware.barcode_scanned", controller, {
+        modelName: controller.labwareModel.expected_type.pluralize(),
+        BC:        Util.pad(value)
+      });
+    },    
+
     setupSubControllers: function () {
       if (!this.resourceController) {
         var type = this.labwareModel.expected_type;
