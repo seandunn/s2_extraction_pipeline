@@ -9,13 +9,13 @@ define(['lib/file_handling/tecan'], function(tecanHandler) {
       beforeEach(function(done){
           var files= {
           };
-          $.when.apply(this, _.map(['../test/data/gwl/original.gwl', '../test/data/gwl/original.json'], function(path) {
+          $.when.apply(this, _.map(['../test/data/gwl/127073.gwl', '../test/data/gwl/127073.json'], function(path) {
               return $.ajax(path, {success: _.partial(function(url, data) {
                   files[url]=data;
               }, path)}).promise();
           })).then(function() {
-              tecanFile = files['../test/data/gwl/original.gwl'];
-              tecanData = files['../test/data/gwl/original.json'];
+              tecanFile = files['../test/data/gwl/127073.gwl'];
+              tecanData = files['../test/data/gwl/127073.json'];
               done();
           }).fail(function() {
               console.log('error executing');
@@ -23,7 +23,7 @@ define(['lib/file_handling/tecan'], function(tecanHandler) {
       });
 
       it("can parse a Tecan File", function(){
-        var tecanParsing = tecanHandler.parse(tecanData, 15);
+        var tecanParsing = tecanHandler.parse(tecanData, 13);
         var result = tecanParsing.match(tecanFile);
         expect(result !==null).to.equal(true);
       });

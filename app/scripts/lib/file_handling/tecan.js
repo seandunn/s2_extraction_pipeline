@@ -51,6 +51,7 @@ define(
                 var buffer = [];
                 var mappingByWell = [];
                 _.chain(obj.destination).each(function(destData, destBarcode){
+                    mappingByWell=[];
                     _.each(destData.mapping, function(mapping) {
                         mappingByWell[descriptionToVerticalPlatePosition(mapping.dst_well, destData.plate_size)] = mapping;
                     });
@@ -58,9 +59,9 @@ define(
                         if (total_volume > mapping.volume)
                             {
                             var dest_name = obj.destination[destBarcode].name;
-                            var volume = ((total_volume*100) - Math.floor((mapping.volume * 100)))/100;
+                            var volume = ((total_volume*100) - (mapping.volume * 100))/100;
                             var vert_map_id = descriptionToVerticalPlatePosition(mapping.dst_well, destData.plate_size);
-                            buffer.push(["A", "BUFF", "", "96-TROUGH", vert_map_id, "", volume, "\nD", destBarcode, "", dest_name, 
+                            buffer.push(["A", "BUFF", "", "96-TROUGH", vert_map_id, "", volume+"\nD", destBarcode, "", dest_name, 
                                            vert_map_id, "", volume+"\nW", ""].join(';'));
                             }
                     });
@@ -69,32 +70,32 @@ define(
             }
 
         function footer(obj) {
-            var footerText = "C;\n";
-            
-            _.chain(obj.destination).reduce(function(barcodeLookup, plate, index) {
-                barcodeLookup[plate[0]] = index + 1;
-                return barcodeLookup;
-            }, {}).pairs().sort(function(a,b) { return a[1] < b [1]; })            
-            .each(function(barcode, index) {
-                footerText += ["C; SCRC", index, " = ", barcode, "\n"].join('');
-            });
-            
-            footerText += "C;\n";
-            
+            var footerText = "\nC;\n";
+
             _.chain(obj.destination).values().reduce(function (value, dest) { return value.concat(dest.mapping); }, [])
                 .filter(function(mapWell) { return !_.isUndefined(mapWell.src_well) && !_.isUndefined(mapWell.src_well[0]);})
                 .map(function(mapWell) { return mapWell.src_well[0];})
-            .uniq().reduce(function(barcodeLookup, plate, index) {
-                barcodeLookup[plate] = index + 1;
+                .uniq().reduce(function(barcodeLookup, plate, index) {
+                    barcodeLookup[plate] = index + 1;
+                    return barcodeLookup;
+                }, {}).pairs().sort(function(a,b) { return a[1] > b[1]; })
+            .each(function(barcodeInfo) {
+                footerText += ["C; SCRC", barcodeInfo[1], " = ", barcodeInfo[0], "\n"].join('');
+            });
+            
+            footerText += "C;\n";
+
+            _.chain(obj.destination).keys().reduce(function(barcodeLookup, keyPlate, index) {
+                barcodeLookup[keyPlate] = index + 1;
                 return barcodeLookup;
-            }, {}).sort(function(a,b) { return a[1] <= b[1]; })
-                .each(function(barcode, index) {
-                    footerText += ["C; DEST", index, " = ", barcode, "\n"].join('');
+            }, {}).pairs().sort(function(a,b) { return a[1] > b [1]; })            
+            .each(function(barcodeInfo) {
+                footerText += ["C; DEST", barcodeInfo[1], " = ", barcodeInfo[0], "\n"].join('');
             });
             
             return footerText;
         }
-        var bufSeparator =  "C;";
+        var bufSeparator =  "C;\n";
             return {
                 parse: function(obj, total_volume) {
                     return header(obj) + dynMappings(obj) + bufSeparator + buffers(obj, total_volume) + footer(obj);
