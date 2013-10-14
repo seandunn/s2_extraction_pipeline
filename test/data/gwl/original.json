@@ -18,7 +18,7 @@
                           { "src_well" :  ["95020", "E7"], "dst_well" : "D1", "volume" : 13   },
                           { "src_well" :  ["95020", "H7"], "dst_well" : "E1", "volume" : 13   },
                           { "src_well" :  ["95020", "D8"], "dst_well" : "F1", "volume" : 13   },
-                          { "src_well" :  ["95020", "E8"], "dst_well" : "G1", "volume" : 6.7 },
+                          { "src_well" :  ["95020", "E8"], "dst_well" : "G1", "volume" : 6.77 },
                           { "src_well" :  ["95020", "A8"], "dst_well" : "H1", "volume" : 13   },
                           { "src_well" :  ["95020", "G8"], "dst_well" : "A2", "volume" : 13   },
                           { "src_well" :  ["95020", "H8"], "dst_well" : "B2", "volume" : 13   },

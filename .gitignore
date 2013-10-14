@@ -3,6 +3,7 @@ dist
 .sass-cache/**
 .DS_Store
 .idea/**
+.settings/**
 .gitignore
 *~
 app/components
