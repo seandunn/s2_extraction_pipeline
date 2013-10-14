@@ -1,5 +1,6 @@
 define([
-  "jquery"  // jquery will be in the global namespace
+  "jquery",  // jquery will be in the global namespace
+  "lib/underscore_extensions"
 ], function() {
   "use strict";
 
@@ -48,10 +49,34 @@ define([
     // Wraps the given function in another function that will drop the event argument.  This is useful if
     // you have an event being sent that you do not care about the type, but you do care about the
     // arguments passed as part of the event trigger.
-    ignoresEvent: function(f) {
+    ignoresEvent: handlesEvents(function(f) {
       return function() {
         return f.apply(this, _.drop(arguments, 1));
       };
+    }),
+
+    // Wraps the given handler to prevent the event from propagating up the DOM tree.
+    stopsPropagation: handlesEvents(function(f) {
+      return function(event) {
+        var rc = f.apply(this, arguments);
+        if (!rc) event.stopPropagation();
+        return rc;
+      };
+    }),
+
+    // Causes the event to be halted after returning from the specified handler.  Essentially a wrapper around
+    // f such that it always returns false.
+    haltsEvent: function(f) {
+      return function() {
+        f.apply(this, arguments);
+        return false;
+      };
+    },
+
+    // Composite event handler, returns true if all event handlers return true.
+    compositeHandler: function() {
+      if (arguments.length == 1) { return arguments[0]; }   // No need to make composite!
+      return _.compose(_.partial(_.flip(_.every), _.isTruthy), _.composite.apply(undefined, arguments));
     }
   });
 
@@ -124,4 +149,18 @@ define([
   });
 
   return $;
+
+  // Convenience function for helper functions that deal with "$.on" event handlers.  The handlers
+  // can either be a function, in which case the helper function is called, or an object, in 
+  // which case a new object is built.
+  function handlesEvents(f) {
+    return function(events) {
+      if (_.isFunction(events)) return f(events);
+
+      return _.chain(events)
+              .map(function(h,e) { return [e, f(h)]; })
+              .object()
+              .value();
+    }
+  }
 });
