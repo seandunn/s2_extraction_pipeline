@@ -4,27 +4,27 @@
         "source" : {
           "122289" : {
             "name" : "ABgene 0765",
-            "plate_size" : 96
+            "plateSize" : 96
           },
           "80785" :{
             "name" : "ABgene 0765",
-            "plate_size" : 96
+            "plateSize" : 96
           },
           "122290" : {
             "name" : "ABgene 0765",
-            "plate_size" : 96
+            "plateSize" : 96
           }
         },
-        "destination" : {
+        "target" : {
           "127073" : {
             "name" : "ABgene 0800",
-            "plate_size" : 96,
+            "plateSize" : 96,
             "mapping" : [
-                { "src_well" :  ["122289", "G7"], "dst_well" : "D4", "volume" : 3.33   },
-                { "src_well" :  ["80785", "A1"],  "dst_well" : "E4", "volume" : 13     },
-                { "src_well" :  ["122289", "H7"], "dst_well" : "F4", "volume" : 3.27   },
-                { "src_well" :  ["122290", "A1"], "dst_well" : "E9", "volume" : 2.8    },
-                { "src_well" :  ["122290", "B1"], "dst_well" : "F9", "volume" : 4.08   }
+                { "srcWell" :  ["122289", "G7"], "targetWell" : "D4", "amount" : 23.0, "buffer": 2.0   },
+                { "srcWell" :  ["80785", "A1"],  "targetWell" : "E4", "amount" : 23.0, "buffer": 2.0   },
+                { "srcWell" :  ["122289", "H7"], "targetWell" : "F4", "amount" : 23.0, "buffer": 2.0   },
+                { "srcWell" :  ["122290", "A1"], "targetWell" : "E9", "amount" : 23.0, "buffer": 2.0   },
+                { "srcWell" :  ["122290", "B1"], "targetWell" : "F9", "amount" : 23.0, "buffer": 2.0   }
                 ]
           }
         }
