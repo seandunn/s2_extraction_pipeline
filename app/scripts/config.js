@@ -10,7 +10,7 @@ define([
     },
     2: {
       name: 'Tube Printer',
-      canPrint: _.partial(_.contains, ["tube", "spin_column"])
+      canPrint: _.partial(_.contains, ["tube", "spin_column", "filter_paper"])
     },
     3: {
       name: 'Rack Printer',

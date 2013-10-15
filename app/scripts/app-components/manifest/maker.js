@@ -122,13 +122,26 @@ define([
       return _.extend({
         template:           resource.resourceType,
         returnPrintDetails: function() { return this; }
-      }, _.build(resource.resourceType, {
-        ean13:  resource.labels.ean13,
-        sanger: resource.labels.sanger.prefix + resource.labels.sanger.number + resource.labels.sanger.suffix
-      }));
+      }, _.build(
+        resource.resourceType,
+        _.chain([ean13, sanger, identifier])
+         .map(function(f) { return f(resource.labels); })
+         .compact()
+         .reduce(function(m,a) { return _.extend(m,a); }, {})
+         .value()
+      ));
     });
 
     html.trigger("s2.print.labels", [printer, labels]);
+  }
+  function ean13(labels) {
+    return _.isUndefined(labels.ean13) ? undefined : {ean13: labels.ean13};
+  }
+  function sanger(labels) {
+    return _.isUndefined(labels.sanger) ? undefined : {sanger: labels.sanger.prefix+labels.sanger.number+labels.sanger.suffix};
+  }
+  function identifier(labels) {
+    return _.isUndefined(labels.identifier) ? undefined : {identifier: labels.identifier};
   }
 
   function selectedTemplate(templates, event) {
