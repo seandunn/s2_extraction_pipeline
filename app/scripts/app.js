@@ -62,7 +62,7 @@ define([ 'config'
 
         printers:  app.config.printers,
 
-        user: function(barcode) {
+        findUser: function(barcode) {
           var deferred = $.Deferred();
           var user = app.config.UserData[barcode];
           deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);

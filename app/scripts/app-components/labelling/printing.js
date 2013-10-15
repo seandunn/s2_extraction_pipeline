@@ -1,9 +1,10 @@
 define([
   "text!app-components/labelling/_printing.html",
+  "mapper_services/print",
 
   // Global namespace requires
   "lib/jquery_extensions"
-], function(view) {
+], function(view, PrintService) {
   var template = _.compose($, _.template(view));
 
   return function(context) {
@@ -17,7 +18,11 @@ define([
     };
   };
 
-  function createHtml(context) {
+  function createHtml(externalContext) {
+    var context = _.extend({
+      user: $.Deferred().resolve(undefined)
+    }, externalContext);
+
     var html = template();
     var printer = html.find("select");
     filter(_.constant(true));             // Display all printers until told!
@@ -45,8 +50,17 @@ define([
     return html;
 
     // Prints the specified printable objects to the given printer
-    function print(printer, printables) {
-      printer.print(printables).then(function() {
+    function print(details, printables) {
+      var printer = _.find(PrintService.printers, function(printer){
+        return printer.name === details.name;
+      });
+
+      return context.user.then(function(user) {
+        return printer.print(
+          _.invoke(printables, 'returnPrintDetails'),
+          {user:user}
+        );
+      }).then(function() {
         return success("The labels have been sent to the printer!");
       }, function() {
         return error("Could not print the labels");

@@ -64,14 +64,13 @@ define([
     // Setup the label printing component so that we can get the labels out.
     var labelPrinter = LabelPrinter({
       printers: context.printers,
-      print:    context.print
+      user:     context.user
     });
     var printAreaHelper = labelPrinter.view.dataHelper("resources");
     html.on("s2.print.trigger", $.ignoresEvent(_.partial(printLabels, html, labelPrinter.view)));
     html.find("#printer-div").append(labelPrinter.view);
     html.on(labelPrinter.events);
     labelPrinter.view.hide();
-
 
     // Bind in a reset function that we can call
     html.reset = function() {
