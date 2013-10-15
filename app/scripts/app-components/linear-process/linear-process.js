@@ -1,84 +1,158 @@
 define([
-    'text!app-components/linear-process/_component.html',
-    'app-components/linear-process/doneComponentManager'
+  'text!app-components/linear-process/_component.html',
 
   // Globally included stuff added after this comment
   , 'lib/jquery_extensions'
-], function (componentView, DoneComponentManager) {
+], function (componentView) {
   'use strict';
 
   var componentContainer = _.compose($, _.template(componentView));
-  
-  return function(context) {
-        var html = componentContainer(context);
-        // Attach each of the components into the view.
-        var components = _.chain(context.components).map(
-                _.partial(buildComponent, context)).map(
-                _.partial(attachComponent, html)).value();
-        
-        var doneComponentManager = new DoneComponentManager(components);
-        html.on('s2.done', stopsEvent(_.partial(onDoneEventHandler, doneComponentManager, html)));
-        return { 
-                 view : html, 
-                 events : { } 
-        };
+
+  return function(externalContext) {
+    var context = _.extend({
+      dynamic: _.ignore
+    }, externalContext);
+
+    var html = componentContainer(context);
+
+    // Build and attach any components that are present in the context.  This handles the
+    // non-dynamic situations.
+    var components = _.map(context.components, _.partial(buildComponent, context));
+    _.each(components, _.partial(attachComponent, html));
+
+    // Dynamic components deal with attaching components by registering a callback.
+    context.dynamic(function(component) {
+      components.push(component);
+      attachComponent(html, component);
+    });
+
+    return {
+      view: html,
+      events: $.stopsPropagation({
+        "s2.activate":   $.ignoresEvent(_.partial(initialiseProcessChain, html, components)),
+        "s2.deactivate": _.partial(deactivate, html),
+        "focus":         function() { components[0].view.focus(); }
+      })
     };
-    
-    function stopsEvent(f) {
-        return function() {
-           var event = arguments[0];
-            var value = f.apply(this, _.drop(arguments, 1));
-            if (!value) {
-              event.stopPropagation();
-            }
-            return value;
-        };
-    }
-    
-    function onDoneEventHandler(doneComponentManager, html, doneView) {
-        // If I have thrown the Done event, do not execute my own handler
-        if (doneView === html[0]) {
-            return false;
-        }
-        
-        // Decide which innerComponent has sent Done event
-        var doneComponent = doneComponentManager.findComponentDoneByView(doneView);
-        var nextComponent = doneComponentManager.findNextComponentNotDoneByComponent(doneComponent);
-        if (!_.isUndefined(nextComponent)) {
-            setActiveComponent(nextComponent, html);
-        } else {
-            // If all components had thrown previously the Done event, I'm done
-            html.trigger('s2.done', html);
-            return true;
-        }
-        return false;
-    };
-    
-    function setActiveComponent(component, html) {
-        // Send blur event to every component inside me
-        html.trigger('blur');
-        // Send focus event to selected component;
-        component.view.trigger('focus');
-    }
-  
-  
-    // Builds the component using the given configuration in the specified
-    // context.
-    function buildComponent(context, config) {
-        return _.extend({ component : config.constructor(context) }, config);
+  };
+
+  function deactivate(html, event) {
+    if (html[0] !== event.target) html.trigger("s2.deactivate");
+  }
+
+  function initialiseProcessChain(html, components) {
+    // Build all of the information about transitions: the transition to be made, how to execute
+    // it, and how to skip it.  Then tie the transition of one component, to the execution of
+    // the next, thus building a chain that can be used for handling the "s2.done" event.
+    var transitions = _.map(
+      _.zip(components, _.drop(components, 1)),
+      _.partial(buildTransition, html)
+    );
+
+    var callChain =
+      _.chain(transitions)
+       .zip(_.drop(transitions, 1))
+       .reduceRight(function(m, p) {
+         var current = p[0], next = p[1] || {execute:_.constant(undefined)};   // EOL is empty!
+         current.transition = _.partial(current.transition, next.execute);
+         current.execute    = _.partial(current.execute, current.transition);
+         current.skip       = _.partial(current.skip, current.transition);
+         m.unshift(current);
+         return m;
+       }, [])
+       .value();
+
+    // The first transition in the chain is what will be executed on the first "s2.done".
+    // Subsequent "s2.done" events will replace this with the next transition.
+    html.on("s2.done", createDoneHandler(html, callChain[0].transition));
+
+    // To handle skipping all we have to do is be able to identify which component wants skipping
+    // and then enact it's skip handler.
+    var componentsToSkip = 
+      _.chain(components)
+       .zip(_.pluck(transitions, "skip"))
+       .map(function(pair) { return {view:pair[0].view[0], skip:pair[1]}; })
+       .value();
+
+    html.on("s2.skip", stopsEvent(function(view) {
+      var details = _.find(componentsToSkip, function(details) {
+        return details.view === view;
+      });
+      details.skip();
+    }));
+
+    setActiveComponent(components[0], html);
+  }
+
+  function buildTransition(html, pair) {
+    // Determine the from and to transitions
+    var from = function() { pair[0].view.trigger("s2.deactivate"); };
+    var to   = function() { html.trigger("s2.done", html); }
+    if (!_.isUndefined(pair[1])) to = function() { pair[1].view.trigger("s2.activate").focus(); };
+
+    // By default we want our transition to be the next in the sequence.
+    var us = _.identity;
+
+    return {
+      transition: transition,
+      execute:    execute,
+      skip:       skip
     };
 
-    var firstComponentAttached=false;
-
-    // Attaches the given component to the specified HTML using the
-    // configuration.
-    function attachComponent(html, config) {
-        html.append(config.component.view);
-        html.on(config.component.events);
-        if (!firstComponentAttached) {
-            config.component.view.trigger('focus');
-        }
-        return config.component;
+    // Transition is ease: perform the from, perform the to, then perform the execution of the next
+    // component.
+    function transition(execute) {
+      from();
+      to();
+      return execute();
     }
+
+    // This is called by the transition above as 'next'.  It'll either return our transition function,
+    // or will execute our transition function, which will return the next components transition!
+    function execute(transition) {
+      return us(transition);
+    }
+
+    // Skipping ourselves is simple: call our transition!  We have to rely on the transition here
+    // being our transition!
+    function skip(transition) {
+      us = function() {
+        return transition();
+      };
+    }
+  }
+
+  function createDoneHandler(html, doneHandler) {
+    return function(event, doneView) {
+      if (html[0] === doneView) return true;
+      doneHandler = doneHandler(event, doneView);
+      return false;
+    };
+  }
+  function stopsEvent(f) {
+    return $.stopsPropagation($.ignoresEvent(f));
+  }
+
+  function setActiveComponent(component, html) {
+    // Send blur event to every component inside me
+    html.trigger('s2.deactivate');
+    // Send focus event to selected component;
+    component.view.trigger('s2.activate').focus();
+  }
+
+
+  // Builds the component using the given configuration in the specified
+  // context.
+  function buildComponent(context, config) {
+    return config.constructor(context);
+  }
+
+  // Attaches the given component to the specified HTML using the
+  // configuration.
+  function attachComponent(html, component) {
+    html.append(component.view).on(_.omit(component.events, ["focus","s2.activate"]));
+    component.view.on(_.pick(component.events, ["focus","s2.activate"]));
+    return component;
+  }
 });
 

@@ -93,6 +93,7 @@ define([
     choices.append(choice);
 
     html.on(config.component.events);
+    html.trigger("s2.activate");
 
     return _.extend({
       element: container,
