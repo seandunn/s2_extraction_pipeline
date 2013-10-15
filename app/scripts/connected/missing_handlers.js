@@ -58,7 +58,7 @@ define([
           var labwareModel = root[modelName];
           return Deferred.sequentially(function (state) {
             var deferred = $.Deferred();
-            labwareModel.searchByBarcode().ean13(barcode).first().then(deferred.resolve, deferred.reject);
+            labwareModel.searchByBarcode().ean13(barcode).first().then(deferred.reject, deferred.resolve);
             return deferred.promise()
           }, function (state) {
             return labwareModel.create({});
