@@ -9,8 +9,8 @@ define([ 'config'
   , 'lib/reception_templates'
 
   // TODO: These will move with the configuration
-  , 'app-components/reception/component'
-  , 'app-components/lab-activities/component'
+  , 'app-components/reception/reception'
+  , 'app-components/lab-activities/lab-activities'
 ], function(
   config,
   nextWorkflow,
