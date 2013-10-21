@@ -137,7 +137,10 @@ define([
   // Some utility functions for dealing with processes
   function displayManifest(registerButton, makeOrderButton, manifest) {
     registerButton.show();
-    createSamplesView(makeOrderButton, manifest);
+    if (manifest.details.length > 0) {
+      createSamplesView(makeOrderButton, manifest);
+      makeOrderButton.show();
+    }
     return manifest;
   }
 
@@ -173,8 +176,6 @@ define([
       "click",
       _.compose(enableRowSelector, disableRow, nearestRow)
     );
-
-    view.show();
   }
 
   function dropZoneLoad(context, registerButton, manifestTable, fileContent) {
@@ -413,7 +414,7 @@ define([
       return root.samples
                  .find(uuid)
                  .then(_.partial(checkSample, details))
-                 .then(manifest.template.validation);
+                 .then(_.partial(manifest.template.validation, details));
     }
   }
 
