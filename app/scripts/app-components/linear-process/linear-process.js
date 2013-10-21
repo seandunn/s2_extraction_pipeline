@@ -24,6 +24,7 @@ define([
     context.dynamic(function(component) {
       components.push(component);
       attachComponent(html, component);
+      html.trigger("s2.deactivate");
     });
 
     return {
