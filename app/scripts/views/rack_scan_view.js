@@ -1,7 +1,7 @@
 define([
   "text!html_partials/_rack_scan.html",
   "lib/pubsub",
-  "app-components/dropzone/component"
+  "app-components/dropzone/dropzone"
 ], function(partial, PubSub, dropZone) {
   "use strict";
 

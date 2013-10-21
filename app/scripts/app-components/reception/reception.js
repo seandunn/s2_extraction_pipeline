@@ -1,8 +1,10 @@
 define([
-  'app-components/process-choice/component',
-  'app-components/manifest/maker',
-  'app-components/manifest/reader'
+  "app-components/process-choice/process-choice",
+  "app-components/manifest/maker",
+  "app-components/manifest/reader"
 ], function(ProcessChoice, ManifestMaker, ManifestReader) {
+  "use strict";
+
   return function (context) {
     return ProcessChoice(_.extend({
       components: [

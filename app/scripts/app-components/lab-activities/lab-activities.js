@@ -1,7 +1,9 @@
 define([
-  'app-components/process-choice/component',
-  'app-components/re-racking/component'
+  "app-components/process-choice/process-choice",
+  "app-components/re-racking/re-racking"
 ], function(ProcessChoice, Reracking) {
+  "use strict";
+
   return function(context) {
     return ProcessChoice(_.extend({
       components: [
