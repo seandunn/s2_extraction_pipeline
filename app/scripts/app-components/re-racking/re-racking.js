@@ -57,11 +57,10 @@ define([
     // Build a barcode scanner component and hook it up.
     var barcodeScanner = BarcodeScanner({
       label: "Scan rack barcode",
-      model: "rack"
     });
     html.find("#barcodeReader").append(barcodeScanner.view);
     html.on(barcodeScanner.events);
-    html.on("scanned.barcode.s2", function(event, barcode) {
+    html.on("scanned.barcode.s2", $.haltsEvent(function(event, barcode) {
       addRackCallback(html, factory, model, rackList, barcode).then(function() {
         startRerackingButton.show();
       });

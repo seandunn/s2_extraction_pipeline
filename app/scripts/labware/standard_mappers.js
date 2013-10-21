@@ -1,46 +1,95 @@
 define([], function() {
   'use strict';
 
+  var barcodeLookup = optional('labels', 'barcode', 'value');
+
   // Anything not listed in these mappings is assumed to apply the identity mapping.
   var resourceTypeToLabwareDataMappers = {
-    plate: function(plate) {
-      return _.extend(_.pick(plate, 'resourceType', 'number_of_columns', 'number_of_rows'), {
-        barcode: plate.labels.barcode.value,
-        locations: _.chain(plate.wells).pairs().map(locationCss).object().value()
-      });
-    },
+    // These all behave like they are plates, with locations mapping to aliquots
+    plate:     plateLikePresenter(locationExtraction('wells'), 'number_of_columns', 'number_of_rows'),
+    gel:       plateLikePresenter(locationExtraction('windows')),
+    tube_rack: plateLikePresenter(extractTubesFromRack),
 
-    gel: function(gel) {
-      return _.extend(_.pick(gel, 'resourceType'), {
-        barcode: gel.labels.barcode.value,
-        locations: _.chain(gel.windows).pairs().map(locationCss).object().value()
-      });
-    },
+    // These all behave like they are tubes, with the labware containing the aliquots directly
+    tube:        tubeLikePresenter(),
+    spin_column: tubeLikePresenter()
+  };
 
-    tube_rack: function(rack) {
-      return _.extend(_.pick(rack, 'resourceType'), {
-        barcode: rack.labels.barcode.value,
-        locations: _.chain(rack.tubes).map(tubesToAliquots).map(locationCss).object().value()
-      });
+  // This is a mixin for classes that wish to do labware presentation.
+  return function(resource) {
+    var presenter = resourceTypeToLabwareDataMappers[resource.resourceType] || _.identity;
+    return presenter(resource);
+  };
 
-      function tubesToAliquots(tube, location) {
-        return [location, tube.aliquots];
-      }
+  function plateLikePresenter(locationExtractor) {
+    return presenter(_.drop(arguments, 1), detailsFrom);
+
+    function detailsFrom(labware) {
+      return {
+        barcode: barcodeLookup(labware),
+        locations: _.chain(locationExtractor(labware)).map(locationCss).object().value()
+      };
     }
-  };
+  }
 
-  return function(labware) {
-    var converter = resourceTypeToLabwareDataMappers[labware.resourceType] || _.identity;
-    return converter(labware);
-  };
+  function tubeLikePresenter() {
+    return presenter(_.drop(arguments, 0), trackedDetailsFrom);
+
+    function trackedDetailsFrom(labware) {
+      return {
+        barcode: barcodeLookup(labware),
+        type: aliquotTypeFor(labware.aliquots),
+        volume: volumeIn(labware)
+      };
+    }
+  }
+
+  function presenter(fields, detailsHelper) {
+    fields.unshift('resourceType');
+    fields.unshift('tracked');
+
+    return function(labware) {
+      var details = (labware.tracked === false) ? {} : detailsHelper(labware);
+      return _.extend(_.pick(labware, fields), details);
+    };
+  }
+
+  function optional() {
+    var path = arguments;
+    return function(value) {
+      return _.reduce(path, function(memo, step) { return memo && memo[step]; }, value);
+    };
+  }
+
+  function locationExtraction(name) {
+    return function(labware) {
+      return _.pairs(labware[name]);
+    };
+  }
+
+  function extractTubesFromRack(rack) {
+    return _.map(rack.tubes, function(tube, location) {
+      return [location, tube.aliquots];
+    });
+  }
 
   function locationCss(pair) {
-    return [pair[0], cssForAliquots(pair[1])];
-  }
-  function cssForAliquots(aliquots) {
-    return empty(aliquots) ? 'empty' : 'full';
+    return [pair[0], aliquotTypeFor(pair[1])];
   }
   function empty(aliquots) {
-    return aliquots.length == 0;
+    return _.isUndefined(aliquots) || (aliquots.length == 0);
+  }
+
+  function aliquotTypeFor(aliquots) {
+    return empty(aliquots) ? "empty" : aliquots[0].type;
+  }
+  function volumeIn(tube) {
+    if (empty(tube.aliquots)) {
+      return "Empty";
+    } else if (!_.isUndefined(tube.aliquots[0].quantity)) {
+      return tube.aliquots[0].quantity + " " + tube.aliquots[0].unit;
+    } else {
+      return "Unmeasured";
+    }
   }
 });
