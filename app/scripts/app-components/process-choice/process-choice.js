@@ -66,7 +66,7 @@ define([
   }
 
   // Deals with connecting the user with the specified barcode to the system.
-  function connect(context, success, error, event, barcode) {
+  function connect(context, success, error, barcode) {
     context.findUser(barcode).then(
       signalUserAndAttach,
       _.partial(error, "User barcode is unrecognised")
