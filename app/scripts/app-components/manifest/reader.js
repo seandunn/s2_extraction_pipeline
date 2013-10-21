@@ -2,7 +2,7 @@ define([
     'text!app-components/manifest/_reader.html'
   , 'text!app-components/manifest/_row.html'
   , 'lib/file_handling/manifests'
-  , 'app-components/dropzone/component'
+  , 'app-components/dropzone/dropzone'
 
   // Loaded in the global namespace after this comment
   , 'lib/jquery_extensions'

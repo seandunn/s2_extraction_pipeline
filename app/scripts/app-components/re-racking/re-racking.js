@@ -1,7 +1,7 @@
 define([
   "text!app-components/re-racking/_component.html",
   "app-components/re-racking/model",
-  "app-components/dropzone/component",
+  "app-components/dropzone/dropzone",
   "app-components/labelling/scanning",
   "app-components/labelling/printing",
 
