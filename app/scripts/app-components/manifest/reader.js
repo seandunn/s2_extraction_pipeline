@@ -275,7 +275,7 @@ define([
     manifest.details =
       _.chain(dataAsArray)
        .drop(manifest.template.manifest.header_line_number+1)
-       .filter(_.first)
+       .filter(manifest.template.emptyRow)
        .map(function(row) { return _.zip(columnHeaders, row); })
        .map(function(pairs) { return _.object(pairs); })
        .map(manifest.template.reader.builder)
@@ -291,7 +291,8 @@ define([
     var deferred =
       context.getS2Root()
              .then(_.partial(pageThroughResources, manifest))
-             .then(_.partial(pushMissingResourceErrors, manifest));
+             .then(_.partial(pushMissingResourceErrors, manifest))
+             .then(_.partial(invalidateManifestIfAllInvalid, manifest))
     return _.regardless(deferred, resolver);
   }
 
@@ -427,6 +428,15 @@ define([
     return value;
   }
 
+  // If all of the rows of the manifest are invalid then we can assume the manifest is invalid!
+  function invalidateManifestIfAllInvalid(manifest, value) {
+    if (_.chain(manifest.details).pluck('invalid').all(_.identity).value()) {
+      manifest.errors.push("All of the rows appear invalid so this manifest is assumed to be invalid");
+      manifest.invalid = true;
+    }
+    return value;
+  }
+
   // If there are any global errors, or any individual resource errors, then we should reject the search.
   function resolveSearch(manifest) {
     var deferred   = $.Deferred();
@@ -446,11 +456,6 @@ define([
     if (sample.sanger_sample_id !== details.sample) {
       details.errors.push("Should contain '" + sample.sanger_sample_id + "' not '" + details.sample + "'");
     }
-
-    var gender = details.row['GENDER'];
-    if (_.isUndefined(gender) || !_.isString(gender) || (gender.trim() === '')) {
-      details.errors.push("Gender is invalid");
-    }
     return details;
   }
 
@@ -465,7 +470,7 @@ define([
       return f.apply(this, arguments).then(function() {
         button.removeClass("btn-warning").prop("disabled", false);
       }, function(value) {
-        if (value.errors.length > 0) { button.hide(); }
+        if (value.invalid || value.errors.length > 0) { button.hide(); }
         button.addClass("btn-warning");
       });
     };

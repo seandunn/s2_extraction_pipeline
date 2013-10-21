@@ -1,6 +1,7 @@
 define([
   'lib/reception_templates/generators',
   'lib/reception_templates/readers',
+  'lib/underscore_extensions',
 
   // Add new templates after this comment and they will be automatically loaded
   'reception_templates/cgap_lysed',
@@ -16,7 +17,7 @@ define([
   };
 
   return _.chain(arguments)
-          .drop(2)
+          .drop(3)
           .reduce(function(m,v) { return _.extend(m, enhance(v)); }, {})
           .value();
 
@@ -32,7 +33,8 @@ define([
       json_template_display: JsonTemplater(displayWrapper, displayTransform(template.templates.display)),
       validation:            template.validation || _.identity,
       generator:             Generators[template.model](template),
-      reader:                Readers[template.model](template)
+      reader:                Readers[template.model](template),
+      emptyRow:              template.emptyRow || _.first
     });
   }
 
@@ -118,7 +120,7 @@ define([
     return (upped === 'YES') || (upped === 'TRUE') || (upped === 'Y');
   }
   function ean13BarcodeConverter(value) {
-    return _.str.lpad(""+intConverter(value), 13, "0");
+    return _.str.isBlank(value) ? undefined : _.str.lpad(""+intConverter(value), 13, "0");
   }
   function barcodeConverter(descriptor) {
     switch(descriptor.format) {

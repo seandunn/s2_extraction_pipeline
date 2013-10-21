@@ -1,8 +1,9 @@
 define([
-  'text!reception_templates/hmdmc_lysed/csv_template.json',
-  'text!reception_templates/hmdmc_lysed/csv_template_display.json'
-], function(updates, display) {
-  'use strict';
+  "text!reception_templates/hmdmc_lysed/csv_template.json",
+  "text!reception_templates/hmdmc_lysed/csv_template_display.json",
+  "lib/reception_templates/validations"
+], function(updates, display, validations) {
+  "use strict";
 
   return {
     hmdmc_lysed: {
@@ -38,7 +39,9 @@ define([
 
       extras: {
         "HMDMC": "hmdmc_number"
-      }
+      },
+
+      validation: validations.nonEmptyString(validations.optional, "GENDER")
     }
   };
 });

@@ -1,8 +1,9 @@
 define([
-  'text!reception_templates/filter_paper/updates.json',
-  'text!reception_templates/filter_paper/display.json'
-], function(updates, display) {
-  'use strict';
+  "text!reception_templates/filter_paper/updates.json",
+  "text!reception_templates/filter_paper/display.json",
+  "lib/reception_templates/validations"
+], function(updates, display, validations) {
+  "use strict";
 
   return {
     filter_paper: {
@@ -34,7 +35,10 @@ define([
 
       extras: {
         "Lysed?": "lysed"
-      }
+      },
+
+      validation: validations.nonEmptyString(validations.mandatory, "BARCODE"),
+      emptyRow:   function(row) { return row[2]; }
     }
   };
 });
