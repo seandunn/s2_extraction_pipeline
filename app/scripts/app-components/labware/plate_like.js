@@ -3,12 +3,13 @@ define([
   "text!app-components/labware/svg/384_plate.svg",
   "text!app-components/labware/svg/rack.svg",
   "text!app-components/labware/svg/96_gel.svg",
+  "text!app-components/labware/svg/filter_paper.svg",
 
   // Global namespace requirements
   "lib/underscore_extensions",
   "lib/jquery_extensions"
-], function (plate96Image, plate384Image, rackImage, gelImage) {
-  'use strict';
+], function (plate96Image, plate384Image, rackImage, gelImage, filterPaperImage) {
+  "use strict";
 
   var parser     = new DOMParser();
   var svgElement = function(svg) { return parser.parseFromString(svg, "image/svg+xml").documentElement; };
@@ -39,15 +40,23 @@ define([
     locations: []
   };
 
+  // FILTER PAPER INFORMATION
+  var filterPaperSvg = svgElement(filterPaperImage);
+  var unknownFilterPaper = {
+    barcode: undefined,
+    locations: []
+  };
+
   return {
-    plate:     PlateLike(unknownPlate, plateSvgPicker),
-    tube_rack: PlateLike(unknownRack,  _.constant(rackSvg)),
-    gel:       PlateLike(unknownGel,   _.constant(gelSvg))
+    plate:        PlateLike(unknownPlate,       plateSvgPicker),
+    tube_rack:    PlateLike(unknownRack,        _.constant(rackSvg)),
+    gel:          PlateLike(unknownGel,         _.constant(gelSvg)),
+    filter_paper: PlateLike(unknownFilterPaper, _.constant(filterPaperSvg))
   };
 
   function plateSvgPicker(labware) {
     return plateSvg["" + (labware.number_of_rows * labware.number_of_columns)];
-  };
+  }
 
   function PlateLike(unknown, picker) {
     return function(view, labware) {
@@ -68,7 +77,7 @@ define([
 
       view.show();
     };
-  };
+  }
 
   function displayValueIfSet(view, value, field) {
     var element = view.find("svg #" + field);
@@ -80,6 +89,6 @@ define([
   }
 
   function cssForType(type) {
-    return _.isUndefined(type) ? "empty" : type.replace(/[^\w-]+/g, '_').toLowerCase();
+    return _.isUndefined(type) ? "empty" : type.replace(/[^\w-]+/g, "_").toLowerCase();
   }
 });

@@ -1,14 +1,18 @@
-define([], function() {
-  'use strict';
+define([
+  "lib/underscore_extensions"
+], function() {
+  "use strict";
 
-  var barcodeLookup = optional('labels', 'barcode', 'value');
+  var barcodeLookup = field("barcode", optional("labels", "barcode", "value"));
+  var lotNoLookup   = field("lot-no",  optional("labels", "lot-no",  "value"));
 
   // Anything not listed in these mappings is assumed to apply the identity mapping.
   var resourceTypeToLabwareDataMappers = {
     // These all behave like they are plates, with locations mapping to aliquots
-    plate:     plateLikePresenter(locationExtraction('wells'), 'number_of_columns', 'number_of_rows'),
-    gel:       plateLikePresenter(locationExtraction('windows')),
-    tube_rack: plateLikePresenter(extractTubesFromRack),
+    plate:        plateLikePresenter(locationExtraction("wells"), "number_of_columns", "number_of_rows"),
+    gel:          plateLikePresenter(locationExtraction("windows")),
+    tube_rack:    plateLikePresenter(extractTubesFromRack),
+    filter_paper: plateLikePresenter(locationExtraction("locations"), lotNoLookup),
 
     // These all behave like they are tubes, with the labware containing the aliquots directly
     tube:        tubeLikePresenter(),
@@ -21,12 +25,18 @@ define([], function() {
     return presenter(resource);
   };
 
+  function field(name, extractor) {
+    return function(labware) {
+      var value = extractor(labware);
+      return (_.isUndefined(value) || _.isNull(value)) ? {} : _.build(name, value);
+    };
+  }
+
   function plateLikePresenter(locationExtractor) {
     return presenter(_.drop(arguments, 1), detailsFrom);
 
     function detailsFrom(labware) {
       return {
-        barcode: barcodeLookup(labware),
         locations: _.chain(locationExtractor(labware)).map(locationCss).object().value()
       };
     }
@@ -37,7 +47,6 @@ define([], function() {
 
     function trackedDetailsFrom(labware) {
       return {
-        barcode: barcodeLookup(labware),
         type: aliquotTypeFor(labware.aliquots),
         volume: volumeIn(labware)
       };
@@ -45,12 +54,20 @@ define([], function() {
   }
 
   function presenter(fields, detailsHelper) {
-    fields.unshift('resourceType');
-    fields.unshift('tracked');
+    fields.unshift("resourceType");
+    fields.unshift("tracked");
+    fields.unshift(barcodeLookup);
+
+    // Fields that are not already functions are turned into the appropriate picker so that we can
+    // then use a collapser to build oour final object.
+    var pickers   = _.map(fields, function(field) { return _.isFunction(field) ? field : _.picker(field) });
+    var collapser = _.collapser(pickers);
 
     return function(labware) {
-      var details = (labware.tracked === false) ? {} : detailsHelper(labware);
-      return _.extend(_.pick(labware, fields), details);
+      return collapser(
+        (labware.tracked === false) ? {} : detailsHelper(labware),
+        labware
+      );
     };
   }
 
