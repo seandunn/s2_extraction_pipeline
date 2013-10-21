@@ -1,6 +1,8 @@
 define([
-  'lib/underscore_extensions'
+  "lib/underscore_extensions"
 ], function() {
+  "use strict";
+
   return {
     // These are the validations that work with the sample details passed.
     nonEmptyString:  validatePresenceOf,
@@ -33,7 +35,7 @@ define([
 
   function validatePresenceOf(error, field) {
     return validation(function(object) {
-      return !_.str.isBlank(object[field]);
-    }, _.partial(error, field + ' is not set'));
+      return !_.str.isBlank(object.row[field]);
+    }, _.partial(error, field + " is not set"));
   }
 });

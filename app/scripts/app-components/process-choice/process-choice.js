@@ -35,8 +35,7 @@ define([
 
     // The user needs to scan themselves in before doing anything
     var userComponent = BarcodeScanner({
-      label: "Scan your barcode",
-      model: "user"
+      label: "Scan your barcode"
     });
     var userView = html.find("#userValidation");
     userView.append(userComponent.view);
@@ -44,7 +43,7 @@ define([
 
     // The choice view should hide when the display is reset, and show when there is a valid user.
     html.on("s2.reception.reset_view", _.partial(swap, choices, userView));
-    html.on("s2.barcode.scanned.user", _.partial(connect, context, _.partial(swap, userView, choices), error));
+    html.on("s2.barcode.scanned", $.haltsEvent($.ignoresEvent(_.partial(connect, context, _.partial(swap, userView, choices), error))));
     html.on("s2.barcode.error", $.ignoresEvent(error));
 
     // Attach each of the components into the view.
@@ -85,7 +84,7 @@ define([
   // Builds the component using the given configuration in the specified context.
   function buildComponent(context, config) {
     return _.extend({
-      component: config.constructor(context)
+      component: config.constructor(config.context || context)
     }, config);
   }
 

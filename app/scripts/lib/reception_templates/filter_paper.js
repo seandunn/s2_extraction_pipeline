@@ -37,7 +37,7 @@ define([
         "Lysed?": "lysed"
       },
 
-      validation: validations.nonEmptyString(validations.mandatory, "BARCODE"),
+      validation: validations.nonEmptyString(validations.mandatory, "Barcode"),
       emptyRow:   function(row) { return row[2]; }
     }
   };
