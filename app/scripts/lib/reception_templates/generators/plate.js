@@ -1,4 +1,6 @@
-define([], function() {
+define([
+  "lib/underscore_extensions"
+], function() {
   return {
     plate: function(template) {
       return {
@@ -28,9 +30,9 @@ define([], function() {
               .zip(_.crossProduct(barcodes, locations))
               .map(function(pair) { return [pair[0], pair[1][0], pair[1][1], type]; })
               .value();
-    }
+    };
 
-    return callback(registerSamples, registerBarcodes, placeSamples);
+    return callback(registerSamples, registerBarcodes, placeSamples, labelForBarcode);
   }
 
   function createResources(type, callback) {
@@ -80,5 +82,18 @@ define([], function() {
         _.map(extras, function(f, h) { return sample[f]; })
       );
     }
+  }
+
+  function labelForBarcode(barcode) {
+    return {
+      barcode:        {
+        type:  "ean13-barcode",
+        value: barcode.ean13
+      },
+      "sanger label": {
+        type:  "sanger-barcode",
+        value: barcode.sanger.prefix + barcode.sanger.number + barcode.sanger.suffix
+      }
+    };
   }
 });

@@ -1,14 +1,16 @@
-define([], function() {
+define([
+  "underscore"
+], function() {
   'use strict';
 
   var printerTypes = {
     1: {
       name: '96 Well Plate Printer',
-      canPrint: _.partial(_.contains, ["plate"])
+      canPrint: _.partial(_.contains, ["plate", "tube_rack"])
     },
     2: {
       name: 'Tube Printer',
-      canPrint: _.partial(_.contains, ["tube", "spin_column"])
+      canPrint: _.partial(_.contains, ["tube", "spin_column", "filter_paper"])
     },
     3: {
       name: 'Rack Printer',

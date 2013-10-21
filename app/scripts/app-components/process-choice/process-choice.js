@@ -23,11 +23,15 @@ define([
     };
   };
 
-  function createHtml(context) {
+  function createHtml(externalContext) {
+    var context = _.extend({
+      user: $.Deferred()
+    }, externalContext);
+
     var html  = reception(context);
     var error = function(message) { html.trigger("s2.status.error", message); };
 
-    var choices    = html.find("#choice");
+    var choices = html.find("#choice");
 
     // The user needs to scan themselves in before doing anything
     var userComponent = BarcodeScanner({
@@ -63,15 +67,19 @@ define([
 
   // Deals with connecting the user with the specified barcode to the system.
   function connect(context, success, error, event, barcode) {
-    context.user(barcode)
-           .then(
-             _.bind(context.getS2Root, context),
-             _.partial(error, "User barcode is unrecognised")
-           )
-           .then(
-             _.partial(success, "Connected to system!"),
-             _.partial(error, "There was an issue connecting to the system with that user barcode.")
-           );
+    context.findUser(barcode).then(
+      signalUserAndAttach,
+      _.partial(error, "User barcode is unrecognised")
+    )
+    .then(
+      _.partial(success, "Connected to system!"),
+      _.partial(error, "There was an issue connecting to the system with that user barcode.")
+    );
+
+    function signalUserAndAttach(user) {
+      context.user.resolve(user);
+      return context.getS2Root(user);
+    }
   }
 
   // Builds the component using the given configuration in the specified context.
@@ -93,6 +101,7 @@ define([
     choices.append(choice);
 
     html.on(config.component.events);
+    html.trigger("s2.activate");
 
     return _.extend({
       element: container,

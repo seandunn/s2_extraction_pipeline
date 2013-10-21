@@ -64,14 +64,13 @@ define([
     // Setup the label printing component so that we can get the labels out.
     var labelPrinter = LabelPrinter({
       printers: context.printers,
-      print:    context.print
+      user:     context.user
     });
     var printAreaHelper = labelPrinter.view.dataHelper("resources");
     html.on("s2.print.trigger", $.ignoresEvent(_.partial(printLabels, html, labelPrinter.view)));
     html.find("#printer-div").append(labelPrinter.view);
     html.on(labelPrinter.events);
     labelPrinter.view.hide();
-
 
     // Bind in a reset function that we can call
     html.reset = function() {
@@ -123,13 +122,26 @@ define([
       return _.extend({
         template:           resource.resourceType,
         returnPrintDetails: function() { return this; }
-      }, _.build(resource.resourceType, {
-        ean13:  resource.labels.ean13,
-        sanger: resource.labels.sanger.prefix + resource.labels.sanger.number + resource.labels.sanger.suffix
-      }));
+      }, _.build(
+        resource.resourceType,
+        _.chain([ean13, sanger, identifier])
+         .map(function(f) { return f(resource.labels); })
+         .compact()
+         .reduce(function(m,a) { return _.extend(m,a); }, {})
+         .value()
+      ));
     });
 
     html.trigger("s2.print.labels", [printer, labels]);
+  }
+  function ean13(labels) {
+    return _.isUndefined(labels.ean13) ? undefined : {ean13: labels.ean13};
+  }
+  function sanger(labels) {
+    return _.isUndefined(labels.sanger) ? undefined : {sanger: labels.sanger.prefix+labels.sanger.number+labels.sanger.suffix};
+  }
+  function identifier(labels) {
+    return _.isUndefined(labels.identifier) ? undefined : {identifier: labels.identifier};
   }
 
   function selectedTemplate(templates, event) {
@@ -170,7 +182,7 @@ define([
       preRegisterSamples,
       preRegisterBarcodes,
       details.number_of_labwares,
-      function(registerSamples, registerBarcodes, placeSamples) {
+      function(registerSamples, registerBarcodes, placeSamples, labeller) {
         // We know, up front, how many samples are being created and therefore how many barcodes
         // we're going to need at the end of the process.  Hence, we can perform the bulk sample
         // and bulk barcode creation in parallel.
@@ -185,7 +197,7 @@ define([
           var blob   = _.toCSV(template.generator.manifest(data, template.extras || {}), ",");
 
           var manifest  = sendManifestRequest(context, template, blob);
-          var resources = createResources(resourceGenerator, root, data).then(_.partial(labelResources, root, model));
+          var resources = createResources(resourceGenerator, root, data).then(_.partial(labelResources, root, model, labeller));
 
           return $.when(resources, manifest);
         }).then(function(model, manifest) {
@@ -217,33 +229,20 @@ define([
       return action.result.barcodes;
     }, _.constant("Could not pre-register " + number + " barcodes in S2."));
   }
-  function labelResources(root, model, resources) {
+  function labelResources(root, model, labeller, resources) {
     model.labwareOutputs = resources;
     return root.bulk_create_labellables.create({
-      labellables: _.map(model.labwareOutputs, labellableForResource)
+      labellables: _.map(model.labwareOutputs, _.partial(labellableForResource, labeller))
     }).then(function() {
       return model;
     }, _.constant("Couldn't connect the labware to their labels in S2."));
   }
 
-  function labelForBarcode(barcode) {
-    return {
-      barcode:        {
-        type:  "ean13-barcode",
-        value: barcode.ean13
-      },
-      "sanger label": {
-        type:  "sanger-barcode",
-        value: barcode.sanger.prefix + barcode.sanger.number + barcode.sanger.suffix
-      }
-    };
-  }
-
-  function labellableForResource(resource) {
+  function labellableForResource(labeller, resource) {
     return {
       name: resource.uuid,
       type: "resource",
-      labels: labelForBarcode(resource.labels)
+      labels: labeller(resource.labels)
     };
   }
 

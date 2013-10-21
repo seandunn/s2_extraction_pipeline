@@ -1,12 +1,12 @@
-temp
-dist
+/temp
+/dist
 .sass-cache/**
 .DS_Store
 .idea/**
 .gitignore
 *~
 app/components
-components
+/components
 *.orig
-node_modules
+/node_modules
 .tmp/**

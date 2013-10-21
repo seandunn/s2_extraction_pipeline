@@ -1,8 +1,9 @@
 define([
-  'text!reception_templates/cgap_lysed/updates.json',
-  'text!reception_templates/cgap_lysed/display.json'
-], function(updates, display) {
-  'use strict';
+  "text!reception_templates/cgap_lysed/updates.json",
+  "text!reception_templates/cgap_lysed/display.json",
+  "lib/reception_templates/validations"
+], function(updates, display, validations) {
+  "use strict";
 
   return {
     cgap_lysed: {
@@ -46,7 +47,9 @@ define([
           friendly_name: "Skin Biopsy Collection",
           sanger_sample_id_core: "SBC"
         }
-      }
+      },
+
+      validation: validations.nonEmptyString(validations.optional, "GENDER")
     }
   };
 });

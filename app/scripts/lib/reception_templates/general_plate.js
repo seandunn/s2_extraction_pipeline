@@ -1,8 +1,9 @@
 define([
-  'text!reception_templates/general_plate/updates.json',
-  'text!reception_templates/general_plate/display.json'
-], function(updates, display) {
-  'use strict';
+  "text!reception_templates/general_plate/updates.json",
+  "text!reception_templates/general_plate/display.json",
+  "lib/reception_templates/validations"
+], function(updates, display, validations) {
+  "use strict";
 
   return {
     general_plate: {
@@ -33,7 +34,9 @@ define([
           friendly_name: "Bar study",
           sanger_sample_id_core: "bar"
         }
-      }
+      },
+
+      validation: validations.nonEmptyString(validations.optional, "GENDER")
     }
   };
 });

@@ -1,4 +1,33 @@
 {
+  "resource": {
+    "identifier": {
+      "type": {
+        "constant": "text"
+      },
+      "value": {
+        "columnName": "SANGER SAMPLE ID",
+        "type": "string"
+      }
+    },
+    "barcode": {
+      "type": {
+        "constant": "ean13-barcode"
+      },
+      "value": {
+        "columnName": "Barcode",
+        "type": "string"
+      }
+    },
+    "lot-no": {
+      "type": {
+        "constant": "text"
+      },
+      "value": {
+        "columnName": "Lot No.",
+        "type": "string"
+      }
+    }
+  },
   "sample": {
     "sanger_sample_id":          {
       "columnName": "SANGER SAMPLE ID",
@@ -12,17 +41,9 @@
       "columnName": "SAMPLE TYPE",
       "type":       "string"
     },
-    "volume":                    {
-      "columnName": "VOLUME (ul)",
-      "type":       "float"
-    },
     "date_of_sample_collection": {
       "columnName": "DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)",
       "type":       "string"
-    },
-    "is_sample_a_control":       {
-      "columnName": "IS SAMPLE A CONTROL?",
-      "type":       "boolean"
     },
     "cellular_material":         {
       "lysed": {
