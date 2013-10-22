@@ -4,11 +4,11 @@ define([
   var locations = ["A1", "A2"];
 
   return {
-    filter_paper: function(template) {
+    filter_paper: function(template, fieldMappers) {
       return {
         prepare:   _.partial(prepare, template.model),
         resources: createResources,
-        manifest:  createManifest
+        manifest:  _.partial(createManifest, fieldMappers)
       };
     }
   };
@@ -63,7 +63,7 @@ define([
     return memo;
   }
 
-  function createManifest(rows, extras) {
+  function createManifest(mappers, rows, extras) {
     var headers = ["Barcode", "Sanger Sample ID", "SAMPLE TYPE"];
     var table   = _.map(rows, rowHandler);
     table.unshift(headers.concat(_.keys(extras)));
@@ -76,8 +76,13 @@ define([
         sample.sanger_sample_id,
         type
       ].concat(
-        _.map(extras, function(f, h) { return sample[f]; })
+        _.map(extras, _.partial(fieldValue, sample))
       );
+    }
+
+    function fieldValue(sample, f, header) {
+      var mapper = mappers[header] || _.identity;
+      return mapper(f(sample));
     }
   }
 

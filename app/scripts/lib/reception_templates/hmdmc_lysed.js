@@ -38,7 +38,7 @@ define([
       },
 
       extras: {
-        "HMDMC": "hmdmc_number"
+        "HMDMC": _.picker("hmdmc_number")
       },
 
       validation: validations.nonEmptyString(validations.optional, "GENDER")

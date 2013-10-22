@@ -48,6 +48,16 @@ define([], function() {
       };
     },
 
+    // Retrieves the specified field that may be optional along its path
+    optional: function() {
+      var path = arguments;
+      return function(object) {
+        return _.reduce(path, function(m,f) {
+          return _.isUndefined(m) ? undefined : m[f];
+        }, object);
+      };
+    },
+
     // Groups the given array by the function g, then applies the function f to the groupings.
     groupMap: function(array, g, f) {
       return _.chain(array)

@@ -2,11 +2,11 @@ define([
   "lib/underscore_extensions"
 ], function() {
   return {
-    plate: function(template) {
+    plate: function(template, fieldMappers) {
       return {
         prepare:   _.partial(prepare, template.model),
         resources: createResources,
-        manifest:  createManifest
+        manifest:  _.partial(createManifest, fieldMappers)
       };
     }
   };
@@ -64,7 +64,7 @@ define([
     return memo;
   }
 
-  function createManifest(rows, extras) {
+  function createManifest(mappers, rows, extras) {
     var headers = ["Plate Barcode", "Sanger Barcode", "Location", "Sanger Sample ID", "SAMPLE TYPE"]
     var table   = _.map(rows, rowHandler);
     table.unshift(headers.concat(_.keys(extras)));
@@ -79,8 +79,13 @@ define([
         sample.sanger_sample_id,
         type
       ].concat(
-        _.map(extras, function(f, h) { return sample[f]; })
+        _.map(extras, _.partial(fieldValue, sample))
       );
+    }
+
+    function fieldValue(sample, f, header) {
+      var mapper = mappers[header] || _.identity;
+      return mapper(f(sample));
     }
   }
 

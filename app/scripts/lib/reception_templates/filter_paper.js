@@ -34,7 +34,7 @@ define([
       },
 
       extras: {
-        "Lysed?": "lysed"
+        "Lysed?": _.optional("cellular_material", "lysed")
       },
 
       validation: validations.nonEmptyString(validations.mandatory, "Barcode"),
