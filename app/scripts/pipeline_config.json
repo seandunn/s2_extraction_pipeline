@@ -6,6 +6,7 @@
     "samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception",
     "samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception",
     "samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception",
+    "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception",
 
     "samples.extraction.manual_dna_and_rna.input_tube_nap",
     "samples.extraction.manual_dna_and_rna.input_tube_nap.batched",
@@ -45,6 +46,9 @@
    "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed.batched",
    "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed.batched",
    "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched",
+
+   "samples.extraction.lysing_dna_and_rna.filter_paper",
+   "samples.extraction.bio_robot_dna_and_rna.filter_paper",
 
    "samples.extraction.retubing.eppendorf_tube_dna",
    "samples.extraction.racking.fluidx_tube_dna",
@@ -1333,8 +1337,41 @@
           ]
         }
       ]
-    }
+    },
 
+    {
+      "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception" ],
+      "controllerName":"selection_page_controller",
+      "processTitle": "Receive Filter Papers - Automated DNA and RNA Extraction (Bio Robot)",
+      "capacity": 50,
+      "input":        {
+        "role":"samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception",
+        "model":"filter_papers"
+      },
+      "output":       [
+        {
+          "role":       "samples.extraction.lysing_dna_and_rna.filter_paper",
+          "title": "Filter Paper",
+          "not_batched":true
+        }
+      ]
+    },
+    {
+      "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper" ],
+      "controllerName":"lysing",
+      "processTitle": "Lyse Filter Papers - Automated DNA and RNA Extraction (Bio Robot)",
+      "capacity": 1,
+      "input":        {
+        "role":"samples.extraction.lysing_dna_and_rna.filter_paper",
+        "model":"filter_papers"
+      },
+      "output":       [
+        {
+          "role":       "samples.extraction.bio_robot_dna_and_rna.input_tube_nap",
+          "model": "tubes"
+        }
+      ]
+    }
   ],
 
   "spentBatch": {

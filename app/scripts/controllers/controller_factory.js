@@ -14,7 +14,10 @@ define([
   'controllers/volume_control_controller',
   'controllers/summary_page_controller',
   'controllers/file_generator_controller',
-  'app-components/labware/display_controller_wrapper'
+
+  // Component wrapping controllers
+  'app-components/labware/display_controller_wrapper',
+  'app-components/lysing/lysing_controller_wrapper'
 ], function() {
   'use strict';
 
