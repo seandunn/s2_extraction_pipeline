@@ -32,7 +32,7 @@ define([], function() {
   };
 
   function prepareRequest(type, memo, row) {
-    var aliquot = {sample_uuid: row[0].uuid, type: type};
+    var aliquot = {sample_uuid: row[0].uuid, type: type.aliquot};
     memo.push({ aliquots: [ aliquot ] });
     return memo;
   }

@@ -51,7 +51,7 @@ define([
 
   // Filter papers have the sample sample in both locations.
   function prepareRequest(type, memo, row) {
-    var aliquot      = [{sample_uuid: row[0].uuid, type: type}];
+    var aliquot      = [{sample_uuid: row[0].uuid, type: type.aliquot}];
     var descriptions = _.chain(locations).map(function(f) { return [f,aliquot]; }).object().value();
 
     memo.push({
@@ -71,6 +71,7 @@ define([
 
     function rowHandler(row) {
       var sample = row[0], labels = row[1], type = row[3];
+
       return [
         labels.ean13,
         sample.sanger_sample_id,

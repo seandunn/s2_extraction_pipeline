@@ -177,7 +177,8 @@ define([
   function GenerateSamples(context, root, details) {
     var model             = {};
     var template          = details.template;
-    var resourceGenerator = _.partial(template.generator.resources, template.sample_types[details.sample_type]);
+    var typeInformation   = template.sample_types[details.sample_type];
+    var resourceGenerator = _.partial(template.generator.resources, typeInformation);
 
     return template.generator.prepare(
       preRegisterSamples,
@@ -187,14 +188,14 @@ define([
         // We know, up front, how many samples are being created and therefore how many barcodes
         // we're going to need at the end of the process.  Hence, we can perform the bulk sample
         // and bulk barcode creation in parallel.
-        var samples  = registerSamples(details, root);
-        var barcodes = registerBarcodes(details.sample_type, root);
+        var samples  = registerSamples(details, typeInformation, root);
+        var barcodes = registerBarcodes(typeInformation.sample, root);
 
         return $.when(samples, barcodes).then(function(samples, barcodes) {
           // We can create the labware and label it at the same time as producing the
           // manifest XLS file.
 
-          var data   = placeSamples(samples, barcodes, details.sample_type);
+          var data   = placeSamples(samples, barcodes, typeInformation.sample);
           var blob   = _.toCSV(template.generator.manifest(data, template.extras || {}), ",");
 
           var manifest  = sendManifestRequest(context, template, blob);
@@ -210,13 +211,15 @@ define([
   }
 
   // These two functions can run in parallel
-  function preRegisterSamples(number, details, root) {
+  function preRegisterSamples(number, details, type, root) {
+    var defaults = _.deepMerge.apply(_, _.compact([details.defaults, type.defaults]));
+
     return root.bulk_create_samples.create(_.extend({
       state:                 "draft",
       quantity:              number,
-      sample_type:           details.sample_type,
+      sample_type:           type.sample,
       sanger_sample_id_core: details.sanger_sample_id_core
-    }, details.defaults || {})).then(function(action) {
+    }, defaults)).then(function(action) {
       return action.result.samples;
     }, _.constant("Could not pre-register " + number + " samples in S2."));
   }

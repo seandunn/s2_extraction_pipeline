@@ -52,7 +52,7 @@ define([
   };
 
   function prepareRequest(type, memo, row) {
-    var aliquot = _.build(row[2], [{sample_uuid: row[0].uuid, type: type}]);
+    var aliquot = _.build(row[2], [{sample_uuid: row[0].uuid, type: type.aliquot}]);
 
     var plate = _.find(memo, function(p) { return p._barcode === row[1]; });
     if (_.isUndefined(plate)) {

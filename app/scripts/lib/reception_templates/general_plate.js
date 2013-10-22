@@ -22,7 +22,7 @@ define([
       },
 
       sample_types: {
-        "Cell Pellet": "NA+P"
+        "Cell Pellet": {sample: "Cell Pellet", aliquot: "NA+P"}
       },
 
       studies: {
