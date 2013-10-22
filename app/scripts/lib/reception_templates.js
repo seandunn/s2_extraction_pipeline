@@ -77,7 +77,11 @@ define([
   }
 
   function createWrapper(descriptor, f) {
-    return f;
+    if (_.isUndefined(descriptor["default"])) return f;
+    return function() {
+      var mapped = f.apply(this, arguments);
+      return (_.isUndefined(mapped) || _.isNull(mapped)) ? descriptor["default"] : mapped;
+    };
   }
 
   // Used to wrap standard cell converters in an structure appropriate for HTML display
@@ -95,7 +99,12 @@ define([
   function fieldMappers(json) {
     return _.reduce(json, function(memo, value, field) {
       if (!_.isObject(value)) return memo;
-      var merge = _.isUndefined(value.columnName) ? fieldMappers(value) : _.build(value.columnName, converterFor(value).rawToManifest);
+      var merge = undefined;
+      if (_.isUndefined(value.columnName)) {
+        merge = fieldMappers(value)
+      } else {
+        merge = _.build(value.columnName, createWrapper(value, converterFor(value).rawToManifest));
+      }
       return _.extend(memo, merge);
     }, {});
   }

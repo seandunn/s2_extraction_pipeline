@@ -35,7 +35,8 @@
     },
     "gender":                    {
       "columnName": "GENDER",
-      "type":       "string"
+      "type":       "string",
+      "default":    "Unknown"
     },
     "sample_type":               {
       "columnName": "SAMPLE TYPE",
