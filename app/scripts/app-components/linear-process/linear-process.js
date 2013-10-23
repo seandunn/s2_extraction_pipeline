@@ -24,27 +24,27 @@ define([
     context.dynamic(function(component) {
       components.push(component);
       attachComponent(html, component);
-      html.trigger("s2.deactivate");
+      html.trigger("deactivate.s2");
     });
 
     return {
       view: html,
       events: $.stopsPropagation({
-        "s2.activate":   $.ignoresEvent(_.partial(initialiseProcessChain, html, components)),
-        "s2.deactivate": _.partial(deactivate, html),
+        "activate.s2":   $.ignoresEvent(_.partial(initialiseProcessChain, html, components)),
+        "deactivate.s2": _.partial(deactivate, html),
         "focus":         function() { components[0].view.focus(); }
       })
     };
   };
 
   function deactivate(html, event) {
-    if (html[0] !== event.target) html.trigger("s2.deactivate");
+    if (html[0] !== event.target) html.trigger("deactivate.s2");
   }
 
   function initialiseProcessChain(html, components) {
     // Build all of the information about transitions: the transition to be made, how to execute
     // it, and how to skip it.  Then tie the transition of one component, to the execution of
-    // the next, thus building a chain that can be used for handling the "s2.done" event.
+    // the next, thus building a chain that can be used for handling the "done.s2" event.
     var transitions = _.map(
       _.zip(components, _.drop(components, 1)),
       _.partial(buildTransition, html)
@@ -63,9 +63,9 @@ define([
        }, [])
        .value();
 
-    // The first transition in the chain is what will be executed on the first "s2.done".
-    // Subsequent "s2.done" events will replace this with the next transition.
-    html.on("s2.done", createDoneHandler(html, callChain[0].transition));
+    // The first transition in the chain is what will be executed on the first "done.s2".
+    // Subsequent "done.s2" events will replace this with the next transition.
+    html.on("done.s2", createDoneHandler(html, callChain[0].transition));
 
     // To handle skipping all we have to do is be able to identify which component wants skipping
     // and then enact it's skip handler.
@@ -75,7 +75,7 @@ define([
        .map(function(pair) { return {view:pair[0].view[0], skip:pair[1]}; })
        .value();
 
-    html.on("s2.skip", stopsEvent(function(view) {
+    html.on("skip.s2", stopsEvent(function(view) {
       var details = _.find(componentsToSkip, function(details) {
         return details.view === view;
       });
@@ -87,9 +87,9 @@ define([
 
   function buildTransition(html, pair) {
     // Determine the from and to transitions
-    var from = function() { pair[0].view.trigger("s2.deactivate"); };
-    var to   = function() { html.trigger("s2.done", html); }
-    if (!_.isUndefined(pair[1])) to = function() { pair[1].view.trigger("s2.activate").focus(); };
+    var from = function() { pair[0].view.trigger("deactivate.s2"); };
+    var to   = function() { html.trigger("done.s2", html); }
+    if (!_.isUndefined(pair[1])) to = function() { pair[1].view.trigger("activate.s2").focus(); };
 
     // By default we want our transition to be the next in the sequence.
     var us = _.identity;
@@ -151,8 +151,8 @@ define([
   // Attaches the given component to the specified HTML using the
   // configuration.
   function attachComponent(html, component) {
-    html.append(component.view).on(_.omit(component.events, ["focus","s2.activate"]));
-    component.view.on(_.pick(component.events, ["focus","s2.activate"]));
+    html.append(component.view).on(_.omit(component.events, ["focus","activate.s2"]));
+    component.view.on(_.pick(component.events, ["focus","activate.s2"]));
     return component;
   }
 });
