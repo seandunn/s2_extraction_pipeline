@@ -7,14 +7,11 @@ define([
   "lib/underscore_extensions",
   "lib/jquery_extensions"
 ], function(View, LabelScanner, LabwareDisplay) {
-  'use strict';
+  "use strict";
 
   var template = _.compose($, _.template(View));
   var events   = [
-    "s2.labware.display",
-    "s2.activate",
-    "s2.deactivate",
-    "focus"
+    "s2.labware.display"
   ];
 
   return function(context) {
@@ -49,6 +46,7 @@ define([
     }));
     html.on("s2.labware.display", $.ignoresEvent(function(representation) {
       if (!_.isUndefined(representation)) close.show();
+      html.trigger("s2.done", html);
     }));
 
     // Hook up our event handling: when someone scans the barcode find the labware then
