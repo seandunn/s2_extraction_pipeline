@@ -30,11 +30,10 @@ define([
 
     var success = function(message) {
       html.trigger("success.status.s2", [message]);
-      html.trigger("success.print.s2", [message]);
+      html.trigger("done.s2", html);
     };
     var error   = function(message) {
       html.trigger("error.status.s2", [message]);
-      html.trigger("error.print.s2", [message]);
     };
 
     var button  = html.find("button");
@@ -48,7 +47,22 @@ define([
       filter: $.ignoresEvent(filter)
     });
 
-    return html;
+    return {
+      view: html,
+      events: {
+        "s2.print.labels": _.bind(html.print,  html),
+        "s2.print.filter": _.bind(html.filter, html),
+        "s2.activate":     $.stopsPropagation($.ignoresEvent(_.partial(disable, false, printer, button))),
+        "s2.deactivate":   $.stopsPropagation($.ignoresEvent(_.partial(disable, true, printer, button)))
+      }
+    };
+
+    function disable(state) {
+      _.chain(arguments)
+       .drop(1)
+       .each(function(e) { e.prop("disabled", state); })
+       .value();
+    }
 
     // Prints the specified printable objects to the given printer
     function print(details, printables) {
