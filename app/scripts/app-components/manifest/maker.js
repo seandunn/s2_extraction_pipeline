@@ -21,8 +21,9 @@ define([
     );
 
     return {
+      name: "maker.manifest.s2",
       view: view,
-      events: { "s2.reception.reset_view": _.bind(view.reset, view) }
+      events: { "reset_view.reception.s2": _.bind(view.reset, view) }
     };
   };
 
@@ -31,7 +32,7 @@ define([
       templates: context.templates
     });
 
-    var message = function(type, message) { html.trigger("s2.status." + type, message); };
+    var message = function(type, message) { html.trigger(type + ".status.s2", message); };
     var error   = _.partial(message, "error");
     var success = _.partial(message, "success");
 
@@ -67,7 +68,7 @@ define([
       user:     context.user
     });
     var printAreaHelper = labelPrinter.view.dataHelper("resources");
-    html.on("s2.print.trigger", $.ignoresEvent(_.partial(printLabels, html, labelPrinter.view)));
+    html.on("trigger.print.s2", $.ignoresEvent(_.partial(printLabels, html, labelPrinter.view)));
     html.find("#printer-div").append(labelPrinter.view);
     html.on(labelPrinter.events);
     labelPrinter.view.hide();
@@ -132,7 +133,7 @@ define([
       ));
     });
 
-    html.trigger("s2.print.labels", [printer, labels]);
+    html.trigger("labels.print.s2", [printer, labels]);
   }
   function ean13(labels) {
     return _.isUndefined(labels.ean13) ? undefined : {ean13: labels.ean13};
@@ -163,7 +164,7 @@ define([
   }
 
   function updatePrinters(html, template) {
-    html.trigger("s2.print.filter", [function(printer) {
+    html.trigger("filter.print.s2", [function(printer) {
       return printer.canPrint(template.model);
     }]);
   }
@@ -298,8 +299,8 @@ define([
 
   // Wraps a function in the process reporting.
   function process(html, f) {
-    var start  = function() { html.trigger("s2.busybox.start_process"); };
-    var finish = function() { html.trigger("s2.busybox.end_process"); };
+    var start  = function() { html.trigger("start_process.busybox.s2"); };
+    var finish = function() { html.trigger("end_process.busybox.s2"); };
 
     return function() {
       start();

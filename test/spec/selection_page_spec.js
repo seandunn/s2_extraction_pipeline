@@ -102,7 +102,7 @@ define([
           });
           results.expected();          
 
-          PubSub.removeAll('s2.status.error');
+          PubSub.removeAll("error.status.s2");
         });
 
         it('displays a tube', function () {
@@ -129,7 +129,7 @@ define([
 
         it("sends an error message if the tube isn't found", function (done) {
         
-          PubSub.subscribe('s2.status.error', function (event, source, eventData) {
+          PubSub.subscribe("error.status.s2", function (event, source, eventData) {
             expect(eventData.message).to.equal("Couldn't find the resource related to this barcode");
             done();
           });
@@ -142,7 +142,7 @@ define([
 
         it("sends an error message if the tube has already been entered", function (done) {
           
-          PubSub.subscribe('s2.status.error', function (event, source, eventData) {
+          PubSub.subscribe("error.status.s2", function (event, source, eventData) {
             expect(eventData.message).to.equal("You cannot add the same tube twice.");
             done();
           });
@@ -155,7 +155,7 @@ define([
 
         it("sends an error message if the tube has the wrong aliquot", function (done) {
           
-          PubSub.subscribe('s2.status.error', function (event, source, eventData) {
+          PubSub.subscribe("error.status.s2", function (event, source, eventData) {
             expect(eventData.message).to.equal("You can only add 'NA+P' inputs into this batch. The scanned barcode corresponds to a 'DNA+P' input.");
             done();
           });
@@ -169,7 +169,7 @@ define([
 
         it("sends an error message if the tube has the wrong role", function (done) {
           
-          PubSub.subscribe('s2.status.error', function (event, source, eventData) {
+          PubSub.subscribe("error.status.s2", function (event, source, eventData) {
             expect(eventData.message).to.equal("This tube cannot be added to the current batch, because it does not have the correct role.");
             done();
           });

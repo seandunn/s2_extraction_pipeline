@@ -6,10 +6,10 @@ define([
   "use strict";
 
   return function (context) {
-    return ProcessChoice(_.extend({
+    return new ProcessChoice(_.extend({
       components: [
-        {label: "Create a manifest", constructor: ManifestMaker  },
-        {label: "Read a manifest",   constructor: ManifestReader }
+        { label: "Create a Manifest", id: "maker",  constructor: ManifestMaker  },
+        { label: "Read a Manifest",   id: "reader", constructor: ManifestReader }
       ]
     }, context));
   };

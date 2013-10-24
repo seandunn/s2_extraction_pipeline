@@ -51,8 +51,9 @@ define([
   return function(context) {
     var view = createHtml(context);
     return {
+      name: "reader.manifest.s2",
       view: view,
-      events: { "s2.reception.reset_view": _.bind(view.reset, view) }
+      events: { "reset_view.reception.s2": _.bind(view.reset, view) }
     };
   };
 
@@ -61,7 +62,7 @@ define([
 
     var message = function(type) {
       _.chain(arguments).drop(1).each(function(message) {
-        html.trigger("s2.status." + type, message);
+        html.trigger(type + ".status.s2", message);
       });
     };
     var error          = _.partial(message, "error");
@@ -485,8 +486,8 @@ define([
 
   // Wraps a function in the process reporting.
   function process(html, f) {
-    var start  = function() { html.trigger("s2.busybox.start_process"); };
-    var finish = function() { html.trigger("s2.busybox.end_process"); };
+    var start  = function() { html.trigger("start_process.busybox.s2"); };
+    var finish = function() { html.trigger("end_process.busybox.s2"); };
 
     return function() {
       start();

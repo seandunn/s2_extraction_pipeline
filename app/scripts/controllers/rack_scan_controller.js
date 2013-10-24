@@ -93,7 +93,7 @@ define([
       var printer        = $(".printer-select").val();
 
       this.model.fire(printer).fail(function(error){
-        PubSub.publish("s2.status.error", thisController, { message: error });
+        PubSub.publish("error.status.s2", thisController, { message: error });
       }).then(function(){
         thisController.view.disableDropZone();
 
@@ -105,7 +105,7 @@ define([
           buttons: [{action: "next"}]
         });
 
-        PubSub.publish("s2.status.message", thisController, { message: "Rack registered." });
+        PubSub.publish("message.status.s2", thisController, { message: "Rack registered." });
       });
     },
 
@@ -115,10 +115,10 @@ define([
         thisController.view.disableDropZone();
         thisController.owner.childDone(thisController, "disableBtn", {buttons: [{action: "end"}]});
         thisController.owner.childDone(thisController, "enableBtn", {buttons: [{action: "next"}]});
-        PubSub.publish("s2.status.message", thisController, {message:message})
+        PubSub.publish("message.status.s2", thisController, {message:message})
       },
       function(errorMessage){
-        $("body").trigger("s2.status.error", errorMessage);
+        $("body").trigger("error.status.s2", errorMessage);
       });
     },
 

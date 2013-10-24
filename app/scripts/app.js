@@ -46,8 +46,8 @@ define([ 'config'
     // TODO: die, eat-flaming-death!
     var html = $("#content");
     _.map(["error", "success", "info"], function(type) {
-      html.on("s2.status." + type, function(event, message) {
-        PubSub.publish("s2.status." + type, app, {message: message});
+      html.on(type +".status.s2", function(event, message) {
+        PubSub.publish(type + ".status.s2", app, {message: message});
       });
     });
 

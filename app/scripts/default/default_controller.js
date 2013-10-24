@@ -15,7 +15,7 @@ define(['config'
 
     PromiseTracker(controller.model.setUserFromBarcode(barcode))
       .fail(function (error) {
-        PubSub.publish('s2.status.error', controller, error);
+        PubSub.publish("error.status.s2", controller, error);
         controller.userBCSubController.hideProgress();
       })
       .afterThen(function(tracker) {
@@ -34,7 +34,7 @@ define(['config'
 
   var barcodeErrorCallback = function(errorText){
     return function(value, template, controller){
-      PubSub.publish('s2.status.error', this, {message: errorText});
+      PubSub.publish("error.status.s2", this, {message: errorText});
     };
   };
 
@@ -46,7 +46,7 @@ define(['config'
 
     PromiseTracker(controller.model.setLabwareFromBarcode(Util.pad(value)))
       .fail(function (error) {
-        PubSub.publish('s2.status.error', controller, error);
+        PubSub.publish("error.status.s2", controller, error);
         controller.labwareBCSubController.hideProgress();
       })
       .afterThen(function(tracker) {

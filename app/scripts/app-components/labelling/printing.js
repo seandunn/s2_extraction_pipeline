@@ -10,10 +10,11 @@ define([
   return function(context) {
     var view = createHtml(context);
     return {
+      name: "printing.labelling.s2",
       view: view,
       events: {
-        "s2.print.labels": _.bind(view.print, view),
-        "s2.print.filter": _.bind(view.filter, view)
+        "labels.print.s2": _.bind(view.print, view),
+        "filter.print.s2": _.bind(view.filter, view)
       }
     };
   };
@@ -28,18 +29,18 @@ define([
     filter(_.constant(true));             // Display all printers until told!
 
     var success = function(message) {
-      html.trigger("s2.status.success", [message]);
-      html.trigger("s2.print.success", [message]);
+      html.trigger("success.status.s2", [message]);
+      html.trigger("success.print.s2", [message]);
     };
     var error   = function(message) {
-      html.trigger("s2.status.error", [message]);
-      html.trigger("s2.print.error", [message]);
+      html.trigger("error.status.s2", [message]);
+      html.trigger("error.print.s2", [message]);
     };
 
     var button  = html.find("button");
     button.lockingClick(function() {
       var selected = _.find(context.printers, function(p) { return p.name == printer.val(); });
-      html.trigger("s2.print.trigger", [selected]);
+      html.trigger("trigger.print.s2", [selected]);
     });
 
     _.extend(html, {

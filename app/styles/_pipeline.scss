@@ -1,4 +1,4 @@
-header, #content {
+header {
   @extend .container;
 }
 
@@ -136,6 +136,5 @@ div.resource {
 // Import component specific styles
 @import "../scripts/app-components/dropzone/_styles";
 @import "../scripts/app-components/process-choice/_styles";
-@import "../scripts/app-components/manifest/_styles";
 @import "../scripts/app-components/re-racking/_styles";
 @import "../scripts/app-components/labelling/_styles";
