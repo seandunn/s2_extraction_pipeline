@@ -21,20 +21,24 @@ requirejs.config({
     pipeline_testjson:    '../../test/json',
     pipeline_testcsv:     '../../test/csv',
     reception_templates:  'lib/reception_templates',
-    images:               '../../images'
+    images:               '../../images',
+    jquery:               "../components/jquery/jquery.min",
+    underscore:           "../components/underscore/underscore-min",
+    underscore_string:    "../components/underscore.string/lib/underscore.string",
+    bootstrap:            "../components/sass-bootstrap/js",
+    components:           "../components"
   }
 });
 
 requirejs([
+           'underscore',
     'spec/underscore_extensions_spec',
     'spec/file_handling_spec',
     'spec/fake_user_spec',
-    'spec/json_templater_spec',
-    'spec/reception_app_spec',
     'spec/selection_page_model_spec',
     'spec/selection_page_spec',
     'spec/util_spec'
-    ], function () {
-      _.templateSettings.variable = 'templateData';
+    ], function (_) {
+     //_.templateSettings.variable = 'templateData';
       mocha.run();
 });

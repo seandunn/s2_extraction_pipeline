@@ -1,0 +1,31 @@
+{
+        "user" : "xyz987",
+        "time" : "Fri Nov 27 10:11:13 2009",
+        "source" : {
+          "122289" : {
+            "name" : "ABgene 0765",
+            "plateSize" : 96
+          },
+          "80785" :{
+            "name" : "ABgene 0765",
+            "plateSize" : 96
+          },
+          "122290" : {
+            "name" : "ABgene 0765",
+            "plateSize" : 96
+          }
+        },
+        "target" : {
+          "127073" : {
+            "name" : "ABgene 0800",
+            "plateSize" : 96,
+            "mapping" : [
+                { "srcWell" :  ["122289", "G7"], "targetWell" : "D4", "amount" : 23.0, "buffer": 2.0   },
+                { "srcWell" :  ["80785", "A1"],  "targetWell" : "E4", "amount" : 23.0, "buffer": 2.0   },
+                { "srcWell" :  ["122289", "H7"], "targetWell" : "F4", "amount" : 23.0, "buffer": 2.0   },
+                { "srcWell" :  ["122290", "A1"], "targetWell" : "E9", "amount" : 23.0, "buffer": 2.0   },
+                { "srcWell" :  ["122290", "B1"], "targetWell" : "F9", "amount" : 23.0, "buffer": 2.0   }
+                ]
+          }
+        }
+    }
