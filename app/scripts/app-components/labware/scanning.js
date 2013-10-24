@@ -11,7 +11,7 @@ define([
 
   var template = _.compose($, _.template(View));
   var events   = [
-    "s2.labware.display"
+    "display.labware.s2"
   ];
 
   return function(context) {
@@ -41,19 +41,19 @@ define([
     // Ensure that the close button appears correctly
     var close = html.find(".close");
     close.click($.haltsEvent(function() {
-      html.trigger("s2.labware.clear");
+      html.trigger("clear.labware.s2");
       close.hide();
     }));
-    html.on("s2.labware.display", $.ignoresEvent(function(representation) {
+    html.on("display.labware.s2", $.ignoresEvent(function(representation) {
       if (!_.isUndefined(representation)) close.show();
-      html.trigger("s2.done", html);
+      html.trigger("done.s2", html);
     }));
 
     // Hook up our event handling: when someone scans the barcode find the labware then
     // signal this to be displayed.
     var lookupHandler = _.isUndefined(context.model) ? lookupGenericLabware : _.partial(lookupSpecificLabware, context.model);
-    html.on("s2.barcode.scanned", $.haltsEvent($.ignoresEvent(_.partial(lookup, lookupHandler, context, html))));
-    html.on("s2.labware.present", $.ignoresEvent(_.partial(present, html, context.representer)));
+    html.on("scanned.barcode.s2", $.haltsEvent($.ignoresEvent(_.partial(lookup, lookupHandler, context, html))));
+    html.on("present.labware.s2", $.ignoresEvent(_.partial(present, html, context.representer)));
 
     // We have to do a bit of jiggery-pokery if we have an initial labware to display: we need to
     // display it before we are part of the UI, but also we need to re-display it when we are
@@ -62,7 +62,7 @@ define([
       present(html, context.representer, context.labware);
       components.push({
         events: {
-          "s2.activate": html.eventTrigger("s2.labware.present", context.labware)
+          "activate.s2": html.eventTrigger("present.labware.s2", context.labware)
         }
       })
     }
@@ -99,9 +99,9 @@ define([
     context.root().then(function(root) {
       return handler(root, barcode);
     }).then(function(labware) {
-      html.trigger("s2.labware.present", [labware]);
+      html.trigger("present.labware.s2", [labware]);
     }, function() {
-      html.trigger("s2.status.error", ["Could not find the labware with barcode '" + barcode + "'"]);
+      html.trigger("error.status.s2", ["Could not find the labware with barcode '" + barcode + "'"]);
     });
   }
 
@@ -114,6 +114,6 @@ define([
 
   function present(html, representer, labware) {
     var representation = _.isUndefined(labware) ? undefined : representer(labware);
-    html.trigger("s2.labware.display", [representation]);
+    html.trigger("display.labware.s2", [representation]);
   }
 });

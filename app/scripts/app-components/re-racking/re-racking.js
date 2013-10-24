@@ -65,7 +65,7 @@ define([
         startRerackingButton.show();
       });
       barcodeScanner.view.reset();
-    });
+    }));
     html.on("error.barcode.s2", $.ignoresEvent(error));
 
     // Build the dropzone component and attach it

@@ -32,10 +32,10 @@ define([
         // Attach the component to the view and signal the resource to be displayed.  When it
         // signals that it has completed it's work we can simulate the childDone behaviour.
         var view = selector();
-        view.html(component.view).on(component.events).trigger("s2.activate");
+        view.html(component.view).on(component.events).trigger("activate.s2");
 
         var controller = this;
-        view.on("s2.done", $.stopsPropagation($.ignoresEvent(function(view) {
+        view.on("done.s2", $.stopsPropagation($.ignoresEvent(function(view) {
           if (view === component.view[0]) owner.childDone(controller, "done", {});
           return true;
         })));

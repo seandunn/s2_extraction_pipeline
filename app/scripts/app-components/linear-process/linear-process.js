@@ -1,10 +1,10 @@
 define([
-  'text!app-components/linear-process/_component.html',
+  "text!app-components/linear-process/_component.html",
 
   // Globally included stuff added after this comment
-  , 'lib/jquery_extensions'
+  , "lib/jquery_extensions"
 ], function (componentView) {
-  'use strict';
+  "use strict";
 
   var componentContainer = _.compose($, _.template(componentView));
 
@@ -136,9 +136,9 @@ define([
 
   function setActiveComponent(component, html) {
     // Send blur event to every component inside me
-    html.trigger('s2.deactivate');
+    html.trigger("deactivate.s2");
     // Send focus event to selected component;
-    component.view.trigger('s2.activate').focus();
+    component.view.trigger("activate.s2").focus();
   }
 
 

@@ -26,8 +26,8 @@ define([
     return {
       view: view,
       events: {
-        "s2.labware.display": $.ignoresEvent(_.partial(display, resource)),
-        "s2.labware.clear": $.ignoresEvent(_.bind(resource.empty, resource))
+        "display.labware.s2": $.ignoresEvent(_.partial(display, resource)),
+        "clear.labware.s2": $.ignoresEvent(_.bind(resource.empty, resource))
       }
     };
   };

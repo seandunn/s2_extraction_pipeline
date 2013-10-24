@@ -7,19 +7,7 @@ define([
 ], function(view, PrintService) {
   var template = _.compose($, _.template(view));
 
-  return function(context) {
-    var view = createHtml(context);
-    return {
-      name: "printing.labelling.s2",
-      view: view,
-      events: {
-        "labels.print.s2": _.bind(view.print, view),
-        "filter.print.s2": _.bind(view.filter, view)
-      }
-    };
-  };
-
-  function createHtml(externalContext) {
+  return function(externalContext) {
     var context = _.extend({
       user: $.Deferred().resolve(undefined)
     }, externalContext);
@@ -48,12 +36,13 @@ define([
     });
 
     return {
+      name: "printing.labelling.s2",
       view: html,
       events: {
-        "s2.print.labels": _.bind(html.print,  html),
-        "s2.print.filter": _.bind(html.filter, html),
-        "s2.activate":     $.stopsPropagation($.ignoresEvent(_.partial(disable, false, printer, button))),
-        "s2.deactivate":   $.stopsPropagation($.ignoresEvent(_.partial(disable, true, printer, button)))
+        "labels.print.s2": _.bind(html.print, view),
+        "filter.print.s2": _.bind(html.filter, view),
+        "activate.s2":     $.stopsPropagation($.ignoresEvent(_.partial(disable, false, printer, button))),
+        "deactivate.s2":   $.stopsPropagation($.ignoresEvent(_.partial(disable, true, printer, button)))
       }
     };
 
