@@ -13,13 +13,13 @@ The context should contain one, or more, of:
 * `dynamic` which is a function that enables dynamic component addition.
 
 It generates the following events:
-* `s2.done` after all sub-components have completed;
+* `done.s2` after all sub-components have completed;
 * `focus` focuses on the first component.
 
 It responds to the following events:
-* `s2.done` from a sub-component that has been completed;
-* `s2.skip` from a sub-component that wants to be skipped over.
+* `done.s2` from a sub-component that has been completed;
+* `skip.s2` from a sub-component that wants to be skipped over.
 
 It expects the sub-components to respond to the following events:
-* `s2.activate` when the component is made active;
-* `s2.deactivate` when the component is made inactive.
+* `activate.s2` when the component is made active;
+* `deactivate.s2` when the component is made inactive.

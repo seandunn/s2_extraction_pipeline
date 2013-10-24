@@ -1,10 +1,10 @@
 define([], function() {
   return {
-    tube: function(template) {
+    tube: function(template, fieldMappers) {
       return {
         prepare:   _.partial(prepare, template.model),
         resources: createResources,
-        manifest:  createManifest
+        manifest:  _.partial(createManifest, fieldMappers)
       }
     }
   };
@@ -32,12 +32,12 @@ define([], function() {
   };
 
   function prepareRequest(type, memo, row) {
-    var aliquot = {sample_uuid: row[0].uuid, type: type};
+    var aliquot = {sample_uuid: row[0].uuid, type: type.aliquot};
     memo.push({ aliquots: [ aliquot ] });
     return memo;
   }
 
-  function createManifest(rows, extras) {
+  function createManifest(mappers, rows, extras) {
     var headers = ["Tube Barcode", "Sanger Barcode", "Sanger Sample ID", "SAMPLE TYPE"];
     var table   = _.map(rows, rowHandler);
     table.unshift(headers.concat(_.keys(extras)));
@@ -51,8 +51,13 @@ define([], function() {
        sample.sanger_sample_id,
        type
      ].concat(
-       _.map(extras, function(f, h) { return sample[f]; })
+       _.map(extras, _.partial(fieldValue, sample))
      );
+    }
+
+    function fieldValue(sample, f, header) {
+      var mapper = mappers[header] || _.identity;
+      return mapper(f(sample));
     }
   }
 

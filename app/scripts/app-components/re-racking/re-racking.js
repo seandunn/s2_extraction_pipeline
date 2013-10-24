@@ -43,30 +43,29 @@ define([
     html.find("#printer-area").append(labelPrinter.view);
     html.on(labelPrinter.events);
     html.on("trigger.print.s2", $.ignoresEvent(_.partial(onPrintLabels, html, model)));
-    html.on("success.print.s2", function() { html.find("#racking-file-upload").collapse({parent: html}); });
+    labelPrinter.view.on("done.s2", function() { html.find("#racking-file-upload").collapse({parent: html}); });
 
     // Setup the re-racking buttons
     var startRerackingButton = html.find("#start-rerack-btn");
     var rerackButton         = html.find("#rerack-btn");
     startRerackingButton.click(_.partial(onStartReracking, html));
     rerackButton.click(process(html, _.partial(onReracking, html, model, rerackButton)));
-    html.on("success.print.s2", $.ignoresEvent(_.partial(success, "The labels have been sent to the printer.")));
+    labelPrinter.view.on("done.s2", $.ignoresEvent(_.partial(success, "The labels have been sent to the printer.")));
     html.on("complete.reracking.s2", $.ignoresEvent(_.partial(success, "Re-racking completed.")));
     rerackButton.hide();
 
     // Build a barcode scanner component and hook it up.
     var barcodeScanner = BarcodeScanner({
       label: "Scan rack barcode",
-      model: "rack"
     });
     html.find("#barcodeReader").append(barcodeScanner.view);
     html.on(barcodeScanner.events);
-    html.on("scanned.barcode.s2", function(event, barcode) {
+    html.on("scanned.barcode.s2", $.haltsEvent(function(event, barcode) {
       addRackCallback(html, factory, model, rackList, barcode).then(function() {
         startRerackingButton.show();
       });
       barcodeScanner.view.reset();
-    });
+    }));
     html.on("error.barcode.s2", $.ignoresEvent(error));
 
     // Build the dropzone component and attach it

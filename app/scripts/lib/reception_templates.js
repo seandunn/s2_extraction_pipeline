@@ -16,6 +16,44 @@ define([
     return _.reduce(json, function(m,v,i) { return _.extend(m,v); }, {});
   };
 
+  /*
+   * Converters.  These map between raw values and their manifest counterparts.
+   */
+  var identityConverter = {
+    manifestToRaw: _.identity,
+    rawToManifest: _.identity
+  };
+
+  var intConverter = {
+    manifestToRaw: function(value) {
+      value = parseInt(value, 10);
+      return isNaN(value) ? undefined : value;
+    },
+    rawToManifest: _.identity
+  };
+
+  var floatConverter = {
+    manifestToRaw: parseFloat,
+    rawToManifest: _.identity
+  };
+
+  var booleanConverter = {
+    manifestToRaw: function(value) {
+      var upped = (value || 'NO').toUpperCase();
+      return (upped === 'YES') || (upped === 'TRUE') || (upped === 'Y');
+    },
+    rawToManifest: function(value) {
+      return value ? "Yes" : "No";
+    }
+  };
+
+  var ean13BarcodeConverter = {
+    manifestToRaw: function(value) {
+      return _.str.isBlank(value) ? undefined : _.str.lpad(""+intConverter.manifestToRaw(value), 13, "0");
+    },
+    rawToManifest: _.identity
+  };
+
   return _.chain(arguments)
           .drop(3)
           .reduce(function(m,v) { return _.extend(m, enhance(v)); }, {})
@@ -32,14 +70,18 @@ define([
       json_template:         JsonTemplater(createWrapper, templateTransform(template.templates.updates)),
       json_template_display: JsonTemplater(displayWrapper, displayTransform(template.templates.display)),
       validation:            template.validation || _.identity,
-      generator:             Generators[template.model](template),
+      generator:             Generators[template.model](template, fieldMappers(template.templates.updates)),
       reader:                Readers[template.model](template),
       emptyRow:              template.emptyRow || _.first
     });
   }
 
   function createWrapper(descriptor, f) {
-    return f;
+    if (_.isUndefined(descriptor["default"])) return f;
+    return function() {
+      var mapped = f.apply(this, arguments);
+      return (_.isUndefined(mapped) || _.isNull(mapped)) ? descriptor["default"] : mapped;
+    };
   }
 
   // Used to wrap standard cell converters in an structure appropriate for HTML display
@@ -49,6 +91,22 @@ define([
     function htmlConverter(value) {
       return $.extend({}, descriptor, {value:value});
     }
+  }
+
+  // Recurses down the structure passed looking for the columnName definitions.  This builds a
+  // mapping from the header in the manifest to a function that converts a raw value to it's typed
+  // representation in the manifest.
+  function fieldMappers(json) {
+    return _.reduce(json, function(memo, value, field) {
+      if (!_.isObject(value)) return memo;
+      var merge = undefined;
+      if (_.isUndefined(value.columnName)) {
+        merge = fieldMappers(value)
+      } else {
+        merge = _.build(value.columnName, createWrapper(value, converterFor(value).rawToManifest));
+      }
+      return _.extend(memo, merge);
+    }, {});
   }
 
   /**********************************************************************************************************
@@ -82,7 +140,7 @@ define([
       return _.constant(cellDescriptor.constant);
     }
 
-    var converter = wrapper(cellDescriptor, converterFor(cellDescriptor));
+    var converter = wrapper(cellDescriptor, converterFor(cellDescriptor).manifestToRaw);
     var column    = cellDescriptor.columnName.toUpperCase();
 
     return function(rowData) {
@@ -108,34 +166,20 @@ define([
     },{});
   }
 
-  /*
-   * Converters.  These take a string value and give you an appropriate representation of it.
-   */
-  function intConverter(value) {
-    value = parseInt(value, 10);
-    return isNaN(value) ? undefined : value;
-  }
-  function booleanConverter(value) {
-    var upped = (value || 'NO').toUpperCase();
-    return (upped === 'YES') || (upped === 'TRUE') || (upped === 'Y');
-  }
-  function ean13BarcodeConverter(value) {
-    return _.str.isBlank(value) ? undefined : _.str.lpad(""+intConverter(value), 13, "0");
-  }
   function barcodeConverter(descriptor) {
     switch(descriptor.format) {
       case "ean13": return ean13BarcodeConverter; break;
-      default:      return _.identity;            break;
+      default:      return identityConverter;     break;
     }
   }
   function converterFor(cellDescriptor) {
     switch (cellDescriptor.type) {
       case "int":      return intConverter;     break;
-      case "float":    return parseFloat;       break;
+      case "float":    return floatConverter;   break;
       case "boolean":  return booleanConverter; break;
       case "checkbox": return booleanConverter; break;
       case "barcode":  return barcodeConverter(cellDescriptor); break;
-      default:         return _.identity;       break;
+      default:         return identityConverter;       break;
     }
   }
 });

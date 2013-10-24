@@ -7,19 +7,7 @@ define([
 ], function(view, PrintService) {
   var template = _.compose($, _.template(view));
 
-  return function(context) {
-    var view = createHtml(context);
-    return {
-      name: "printing.labelling.s2",
-      view: view,
-      events: {
-        "labels.print.s2": _.bind(view.print, view),
-        "filter.print.s2": _.bind(view.filter, view)
-      }
-    };
-  };
-
-  function createHtml(externalContext) {
+  return function(externalContext) {
     var context = _.extend({
       user: $.Deferred().resolve(undefined)
     }, externalContext);
@@ -30,11 +18,10 @@ define([
 
     var success = function(message) {
       html.trigger("success.status.s2", [message]);
-      html.trigger("success.print.s2", [message]);
+      html.trigger("done.s2", html);
     };
     var error   = function(message) {
       html.trigger("error.status.s2", [message]);
-      html.trigger("error.print.s2", [message]);
     };
 
     var button  = html.find("button");
@@ -48,7 +35,23 @@ define([
       filter: $.ignoresEvent(filter)
     });
 
-    return html;
+    return {
+      name: "printing.labelling.s2",
+      view: html,
+      events: {
+        "labels.print.s2": _.bind(html.print, view),
+        "filter.print.s2": _.bind(html.filter, view),
+        "activate.s2":     $.stopsPropagation($.ignoresEvent(_.partial(disable, false, printer, button))),
+        "deactivate.s2":   $.stopsPropagation($.ignoresEvent(_.partial(disable, true, printer, button)))
+      }
+    };
+
+    function disable(state) {
+      _.chain(arguments)
+       .drop(1)
+       .each(function(e) { e.prop("disabled", state); })
+       .value();
+    }
 
     // Prints the specified printable objects to the given printer
     function print(details, printables) {

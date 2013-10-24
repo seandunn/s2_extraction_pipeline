@@ -8,14 +8,14 @@ The context should contain:
 * `validation` predicate function is used to check the entered label.
 
 It generates the following events:
-* `s2.barcode.scanned` when a label has been entered, with the barcode as a parameter;
-* `s2.status.error` if the label is invalid.
+* `scanned.barcode.s2` when a label has been entered, with the barcode as a parameter;
+* `error.status.s2` if the label is invalid.
 
 It responds to the following events:
-* `s2.reception.reset_view` resets the view;
-* `s2.activate` enables the field for label entry;
-* `s2.deactivate` disables the field;
-* `s2.focus` causes the field to be focused.
+* `reset_view.reception.s2` resets the view;
+* `activate.s2` enables the field for label entry;
+* `deactivate.s2` disables the field;
+* `focus.s2` causes the field to be focused.
 
 # Label Printing
 TODO: Document this component

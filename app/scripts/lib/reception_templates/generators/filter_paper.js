@@ -4,11 +4,11 @@ define([
   var locations = ["A1", "A2"];
 
   return {
-    filter_paper: function(template) {
+    filter_paper: function(template, fieldMappers) {
       return {
         prepare:   _.partial(prepare, template.model),
         resources: createResources,
-        manifest:  createManifest
+        manifest:  _.partial(createManifest, fieldMappers)
       };
     }
   };
@@ -51,7 +51,7 @@ define([
 
   // Filter papers have the sample sample in both locations.
   function prepareRequest(type, memo, row) {
-    var aliquot      = [{sample_uuid: row[0].uuid, type: type}];
+    var aliquot      = [{sample_uuid: row[0].uuid, type: type.aliquot}];
     var descriptions = _.chain(locations).map(function(f) { return [f,aliquot]; }).object().value();
 
     memo.push({
@@ -63,7 +63,7 @@ define([
     return memo;
   }
 
-  function createManifest(rows, extras) {
+  function createManifest(mappers, rows, extras) {
     var headers = ["Barcode", "Sanger Sample ID", "SAMPLE TYPE"];
     var table   = _.map(rows, rowHandler);
     table.unshift(headers.concat(_.keys(extras)));
@@ -71,13 +71,19 @@ define([
 
     function rowHandler(row) {
       var sample = row[0], labels = row[1], type = row[3];
+
       return [
         labels.ean13,
         sample.sanger_sample_id,
         type
       ].concat(
-        _.map(extras, function(f, h) { return sample[f]; })
+        _.map(extras, _.partial(fieldValue, sample))
       );
+    }
+
+    function fieldValue(sample, f, header) {
+      var mapper = mappers[header] || _.identity;
+      return mapper(f(sample));
     }
   }
 

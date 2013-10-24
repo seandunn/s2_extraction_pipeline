@@ -30,7 +30,7 @@ define([
       // Sample types that are supported by this manifest.  Selecting a particular sample type
       // infers the type of aliquots that will be created in the labware.
       sample_types: {
-        "Cell Pellet": "NA+P"
+        "Cell Pellet": {sample: "Cell Pellet", aliquot: "NA+P"}
       },
 
       // Studies that are supported by this manifest.

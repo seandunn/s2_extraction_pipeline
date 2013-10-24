@@ -1,4 +1,6 @@
 define([], function() {
+  "use strict";
+
   return {
     // Does nothing, simply ignores everything!
     ignore: function() {
@@ -45,6 +47,16 @@ define([], function() {
     extractor: function(object) {
       return function(field) {
         return object[field];
+      };
+    },
+
+    // Retrieves the specified field that may be optional along its path
+    optional: function() {
+      var path = arguments;
+      return function(object) {
+        return _.reduce(path, function(m,f) {
+          return _.isUndefined(m) ? undefined : m[f];
+        }, object);
       };
     },
 
@@ -100,14 +112,14 @@ define([], function() {
     complement: function(f) {
       return function() {
         return !f.apply(this, arguments);
-      }
+      };
     },
 
     // Returns a function that has the arguments of f in reverse order!
     flip: function(f) {
       return function() {
         return f.apply(this, _.reverse(arguments));
-      }
+      };
     },
 
     // Reverses the array (cannot believe this isn't in underscore!)
@@ -128,6 +140,15 @@ define([], function() {
         var target = this;
         var args   = arguments;
         return _.map(functions, function(f) { return f.apply(target, args); });
+      };
+    },
+
+    // Repeatedly applying functions to extract data and then collapse that into a single object
+    // structure.
+    collapser: function(functions) {
+      return function(memo) {
+        var args = _.drop(arguments, 1);
+        return _.reduce(functions, function(m,f) { return _.extend(m, f.apply(this, args)); }, memo);
       };
     }
   };

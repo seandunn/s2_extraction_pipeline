@@ -23,7 +23,16 @@ define([
 
       // Whilst the sample is actually blood, the filter paper lyses on contact!
       sample_types: {
-        "Blood": "NA+P"
+        "Unlysed": {
+          sample: "Blood",
+          aliquot: "!NA",
+          defaults: {cellular_material:{lysed: false}}
+        },
+        "Lysed": {
+          sample: "Blood",
+          aliquot: "NA+P",
+          defaults: {cellular_material:{lysed: true}}
+        }
       },
 
       studies: {
@@ -34,7 +43,8 @@ define([
       },
 
       extras: {
-        "Lysed?": "lysed"
+        "Lysed?": _.optional("cellular_material", "lysed"),
+        "GENDER": _.optional("gender")
       },
 
       validation: validations.nonEmptyString(validations.mandatory, "Barcode"),
