@@ -55,6 +55,18 @@ define([
     html.on("s2.barcode.scanned", $.haltsEvent($.ignoresEvent(_.partial(lookup, lookupHandler, context, html))));
     html.on("s2.labware.present", $.ignoresEvent(_.partial(present, html, context.representer)));
 
+    // We have to do a bit of jiggery-pokery if we have an initial labware to display: we need to
+    // display it before we are part of the UI, but also we need to re-display it when we are
+    // activated.  This makes this component behave like the scan has been performed.
+    if (!_.isUndefined(context.labware)) {
+      present(html, context.representer, context.labware);
+      components.push({
+        events: {
+          "s2.activate": html.eventTrigger("s2.labware.present", context.labware)
+        }
+      })
+    }
+
     // Now return the view, along with any compose event handlers.
     return {
       view:   html,

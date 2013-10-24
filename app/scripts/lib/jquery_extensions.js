@@ -121,6 +121,16 @@ define([
       }));
     },
 
+    // Returns a function that can be used to fire an event whenever another event fires, because we
+    // repeatedly do this across our codebase.  The arguments to the event trigger come initially
+    // from the call to this function, plus the ones to the event itself, minus the inbound event.
+    eventTrigger: function() {
+      var target = this;
+      var args   = Array.prototype.slice.call(arguments);
+      return $.ignoresEvent(function() {
+        target.trigger.apply(target, args.concat(arguments));
+      });
+    }
   });
 
   return $;
