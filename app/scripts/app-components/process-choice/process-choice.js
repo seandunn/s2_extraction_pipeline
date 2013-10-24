@@ -34,11 +34,14 @@ define([
     userView.append(userComponent.view);
     html.on(userComponent.events);
 
-    // The choice view should hide when the display is reset, and show when there is a valid user.
-    // html.on("reset_view.reception.s2", _.partial(swap, home, userView));
-
-    html.on(, _.partial(connect, context, _.partial(swap, userView, home), error));
-    html.on("scanned.barcode.s2", $.haltsEvent($.ignoresEvent(_.partial(connect, context, _.partial(swap, userView, choices), error))));
+    html.on(
+      "scanned.barcode.s2",
+      $.haltsEvent(
+        $.ignoresEvent(
+          _.partial(connect, context, _.partial(swap, userView, home), error)
+        )
+      )
+    );
 
     html.on("error.barcode.s2", $.ignoresEvent(error));
 
