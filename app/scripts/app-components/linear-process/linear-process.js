@@ -145,7 +145,7 @@ define([
   // Builds the component using the given configuration in the specified
   // context.
   function buildComponent(context, config) {
-    return config.constructor(_.extend(context, config.context || {}));
+    return config.constructor(_.extend({}, context, config.context || {}));
   }
 
   // Attaches the given component to the specified HTML using the
