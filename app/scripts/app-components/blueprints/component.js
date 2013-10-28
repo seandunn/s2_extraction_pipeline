@@ -1,6 +1,9 @@
 define([
   "text!app-components/<<componentName>>/_component.html",
-  "lib/jquery-extensions"
+
+  // Global namespace requirements
+  "lib/underscore_extensions",
+  "lib/jquery_extensions"
 ], function (htmlPartial) {
   "use strict"
 
