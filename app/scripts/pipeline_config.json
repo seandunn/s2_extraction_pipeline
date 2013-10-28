@@ -57,10 +57,10 @@
    "samples.extraction.racking.fluidx_tube_rna",
 
    "samples.rack.stock.rna",
+   "samples.qc.gel.fx_rna",
    "samples.qc.gel.fx_rna.batched",
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna.batched",
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna",
-
    "samples.qc.nx_nanodrop.working_dilution_rna"
 
   ],
@@ -84,9 +84,10 @@
       ]
     },
     {
-      "accepts": ["samples.rack.stock.rna"],
+      "accepts": ["samples.qc.gel.fx_rna"],
       "controllerName":"selection_page_controller",
       "processTitle": "RNA QC - Gel FX",
+      "buttonTitle": "Print labels",
       "capacity": 4,
       "input":        {
         "role":"samples.rack.stock.rna",
@@ -1213,7 +1214,7 @@
   },
 
   {
-    "accepts":       [ "samples.rack.stock.rna2" ],
+    "accepts":       [ "samples.rack.stock.rna" ],
     "controllerName": "step_controller",
     "defaultPrinter": "d304bc",
     "printerType": 1,
