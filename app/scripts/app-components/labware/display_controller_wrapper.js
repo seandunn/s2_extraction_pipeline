@@ -21,7 +21,9 @@ define([
         // Create the component and then tell it the resource to display
         component = LabwareDisplay({ model: resourceType });
         component.view.on(component.events);
-        component.view.trigger("display.labware.s2", resource[resourceType]);
+        if (!_.isUndefined(resource)) {
+          component.view.trigger("display.labware.s2", resource[resourceType]);
+        }
       },
 
       renderView: function() {

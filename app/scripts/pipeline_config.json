@@ -59,10 +59,10 @@
    "samples.rack.stock.rna",
    "samples.qc.gel.fx_rna",
    "samples.qc.gel.fx_rna.batched",
+   "samples.qc.gel.ebase_rna.batched",
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna.batched",
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna",
    "samples.qc.nx_nanodrop.working_dilution_rna"
-
   ],
 
   "workflows":[
@@ -1352,7 +1352,6 @@
         }
       ]
     },
-
     {
       "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception" ],
       "controllerName":"selection_page_controller",
