@@ -131,7 +131,8 @@ define([
           display_remove:  previous,
           display_barcode: previous,
           title:           details.title,
-          validation:      details.validation
+          validation:      details.validation,
+          bedTracking:     !!details.bedTracking
         };
         return rowModel;
       }, {
@@ -145,7 +146,8 @@ define([
           display_remove:  previous,
           display_barcode: previous,
           title:           model.config.input.title,
-          validation:      model.config.input.validation
+          validation:      model.config.input.validation,
+          bedTracking:     !!model.config.input.bedTracking
         }
       }).value();
 
@@ -272,7 +274,7 @@ define([
               model.outputs.resolve(outputsCreated).then(function(outputs) {
                 model.printBarcodes(labels, printer);
               });
-              model.owner.childDone(model, "outputsReady", labels);
+              model.owner.childDone(model, "outputsReady", {});
             }).fail(function() {
               model.owner.childDone(model, "failed", {});
             });

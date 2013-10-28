@@ -73,23 +73,10 @@ define(['controllers/base_controller'
       this.childDone(this.labwareModel, 'resourceUpdated', {});
       return this;
     },
-
-    scanBarcode: function(value) {
-      var controller = this;
-      if (this.barcodeInputController)
-      {
-        var input = this.jquerySelection().find("input");
-        input.value = Util.pad(value);
-      }
-      controller.owner.childDone(controller, 'barcodeScanned', {
-        modelName: controller.labwareModel.expected_type.pluralize(),
-        BC:        Util.pad(value)
-      });
-      PubSub.publish("barcode_scanned.labware.s2", controller, {
-        modelName: controller.labwareModel.expected_type.pluralize(),
-        BC:        Util.pad(value)
-      });
-    },    
+    
+    getComponentInterface: function() {
+      return (_.isUndefined(this.bedController))? {view: "", events: {}} : this.bedController.getComponentInterface();
+    },
 
     setupSubControllers: function () {
       if (!this.resourceController) {
@@ -107,6 +94,10 @@ define(['controllers/base_controller'
         if (!this.barcodeInputController && this.labwareModel.display_barcode && !this.isSpecial()) {
           this.barcodeInputController = this.controllerFactory.create('scan_barcode_controller', this);
         }
+        if (!this.bedController && (this.labwareModel.bedTracking === true))
+        {
+          this.bedController = this.controllerFactory.create('bed_controller', this);
+        }        
         this.setupSubModel();
       }
       return this;
@@ -132,6 +123,12 @@ define(['controllers/base_controller'
           return that.jquerySelection().find("div.barcodeScanner")
         });
       }
+      if (this.bedController) {
+        this.bedController.init(data[this.labwareModel.expected_type], function() {
+          that.jquerySelection().find("div.linear-process").trigger("activate");
+          return that.jquerySelection().find("div.bed");
+        });
+      }
     },
 
     renderView: function () {
@@ -140,6 +137,22 @@ define(['controllers/base_controller'
 
       this.view.renderView(this.model);
 
+      if (this.bedController) {
+        this.jquerySelection().append(this.bedController.renderView());
+        /**
+         * TODO
+         * These lines comes from setupSubcontroller. REFACTOR
+         * Begin
+         */
+        this.resourceController = this.controllerFactory.createLabwareSubController(this, this.labwareModel.expected_type);
+        this.labwareModel.displayResource(_.bind(function() {
+          return this.jquerySelection().find("div.resource");
+        }, this));
+        /**
+         * End
+         */
+      }
+      
       if (this.resourceController) {
         this.resourceController.renderView();
       }
@@ -150,7 +163,7 @@ define(['controllers/base_controller'
             modelName: controller.labwareModel.expected_type.pluralize(),
             BC:        Util.pad(value)
           });
-          PubSub.publish("barcode_scanned.labware.s2", controller, {
+          PubSub.publish("s2.labware.barcode_scanned", controller, {
             modelName: controller.labwareModel.expected_type.pluralize(),
             BC:        Util.pad(value)
           });
@@ -162,6 +175,7 @@ define(['controllers/base_controller'
               validationOnReturnKeyCallback(this, this.labwareModel.validation, this.labwareModel.barcodePrefixes))
         );
       }
+      
 
       if (!(this.labwareModel.display_remove && !this.isSpecial())) {
         this.view.hideRemoveButton();
@@ -206,7 +220,7 @@ define(['controllers/base_controller'
     viewDone: function(child, action, data) {
       if (action == "labwareRemoved") {
         this.owner.childDone(this, "removeLabware", { resource: this.labwareModel.resource });
-        PubSub.publish("removed.labware.s2", this, {
+        PubSub.publish("s2.labware.removed", this, {
           resource:  this.labwareModel.resource
         });
       }
@@ -244,7 +258,7 @@ define(['controllers/base_controller'
     },
 
     displayErrorMessage: function (message) {
-      PubSub.publish("error.status.s2", this, {message: message});
+      PubSub.publish('s2.status.error', this, {message: message});
 	  },
 
     onBarcodeScanned: function() {
@@ -260,7 +274,7 @@ define(['controllers/base_controller'
 
   function barcodeErrorCallback(errorText){
     return function(value, template, controller){
-      PubSub.publish("error.status.s2", controller, {message: errorText});
+      PubSub.publish('s2.status.error', controller, {message: errorText});
     };
   }
 
