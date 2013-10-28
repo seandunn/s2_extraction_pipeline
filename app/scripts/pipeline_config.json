@@ -1352,6 +1352,44 @@
         }
       ]
     },
+    
+    {
+      "accepts":       [ "samples.qc.gel.fx_rna.batched" ],
+      "controllerName": "step_controller",
+      "printerType": 2,
+      "defaultPrinter":"d304bc",
+      "printerType": 1,
+      "buttons": [{ "action": "print", "title": "Print labels" },
+                  { "action": "start", "title": "Begin FX" },
+                  { "action": "end",   "title": "Finished NX" },
+                  { "action": "next",  "title": "Done" }
+      ],
+      "processTitle":  "RNA QC - Gel FX",
+      "controllers": [{
+        "controllerName":   "connected_controller",
+        "behaviours": {
+          "start": "start",
+          "operate": "start",
+          "done": "transfer",
+          "outputs": "print"
+        },
+        "rowBehaviour":  "bedRecording",
+        "input": {
+          "role":  "samples.qc.gel.fx_rna.batched",
+          "model": "tube_racks",
+          "title": "Working Dillution Rack",
+          "bedTracking": true
+        },
+        "output": [{
+          "role": "samples.qc.gel.ebase_rna.batched",
+          "purpose":     "stock",
+          "model":       "tube_racks",
+          "title":      "Gel",
+          "bedTracking": true
+        }]
+      }]
+    },
+                              
     {
       "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception" ],
       "controllerName":"selection_page_controller",
