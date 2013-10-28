@@ -419,6 +419,7 @@ module.exports = function (grunt) {
 
         // Rename component to name
         grunt.file.copy(blueprint_component, new_component);
+        grunt.log.writeln("Renamed " + blueprint_component + " to " + new_component);
 
         // ...then delete the blueprint_component
         grunt.file.delete(blueprint_component);
