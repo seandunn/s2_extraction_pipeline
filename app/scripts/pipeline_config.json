@@ -60,6 +60,7 @@
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna.batched",
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna",
 
+   "samples.rack.stock.rna.batched-gel",
    "samples.qc.nx_nanodrop.working_dilution_rna"
 
   ],
@@ -1338,7 +1339,51 @@
         }
       ]
     },
-
+    {
+      "accepts":       [ "samples.rack.stock.rna.batched-gel" ],
+      "controllerName": "step_controller",
+      "printerType": 2,
+      "defaultPrinter":"d304bc",
+      "printerType": 1,
+      "buttons":       [
+                        { "action": "print", "title": "Print Plate Labels" },
+                        { "action": "start", "title": "Start NX" },
+                        { "action": "end",   "title": "Stop NX" },
+                        { "action": "next",  "title": "Done" }
+      ],
+      "processTitle":  "NX RNA Working Dilution",
+      "controllers":    [
+                         {
+                           "controllerName":   "connected_controller",
+                           "behaviours": {
+                             "start": "start",
+                             "operate": "start",
+                             "done": "transfer",
+                             "outputs": "print"
+                           },
+                           "rowBehaviour":  "bedRecording",
+                           "input":         {
+                             "role":  "samples.rack.stock.rna.batched-gel",
+                             "model": "tube_racks",
+                             "title": "Volume Checked RNA Rack",
+                             "bedTracking": true
+                           },
+                           "output":        [
+                                             {
+                                               "role":        "samples.rack.stock.rna.batched-gel.done",
+                                               "purpose":     "stock",
+                                               "model":       "tube_racks",
+                                               "title":      "",
+                                               "not_batched": true,
+                                               "bedTracking": true
+                                             }
+                                             ]
+                         }]
+    },
+                              
+                              
+                              
+                              
     {
       "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception" ],
       "controllerName":"selection_page_controller",
