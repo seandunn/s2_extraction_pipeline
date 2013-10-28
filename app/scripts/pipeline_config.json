@@ -90,7 +90,7 @@
       "buttonTitle": "Print labels",
       "capacity": 4,
       "input":        {
-        "role":"samples.rack.stock.rna",
+        "role":"samples.qc.gel.fx_rna",
         "model":"tube_racks"
       },
       "output": [{
