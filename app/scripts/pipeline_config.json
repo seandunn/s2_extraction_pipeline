@@ -1347,11 +1347,11 @@
       "printerType": 1,
       "buttons":       [
                         { "action": "print", "title": "Print Plate Labels" },
-                        { "action": "start", "title": "Start NX" },
-                        { "action": "end",   "title": "Stop NX" },
+                        { "action": "start", "title": "Begin FX" },
+                        { "action": "end",   "title": "Finished NX" },
                         { "action": "next",  "title": "Done" }
       ],
-      "processTitle":  "NX RNA Working Dilution",
+      "processTitle":  "RNA QC - Gel FX",
       "controllers":    [
                          {
                            "controllerName":   "connected_controller",
