@@ -412,7 +412,7 @@ module.exports = function (grunt) {
         // Copy over files from "blueprint" directory
         grunt.file.recurse(config.blueprintDir, function(abspath, rootdir, subdir, filename) {
             var filePath = [new_path, filename].join("/");
-            grunt.file.write(filePath, grunt.file.read(abspath));
+            grunt.file.write(filePath, grunt.file.read(abspath).replace(/<<componentName>>/g, name));
             grunt.log.writeln("New file: " + filePath + " created");
             filesCreated++;
         });

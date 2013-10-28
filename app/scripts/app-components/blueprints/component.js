@@ -1,13 +1,21 @@
-define([], function() {
+define([
+  "text!app-components/<<componentName>>/_component.html",
+  "lib/jquery-extensions"
+], function (htmlPartial) {
   "use strict"
+
+  var template = _.compose($, _.template(htmlPartial));
 
   // Just a suggestion
   function createHtml(context) {
-    return {};
+    var html = template(context);
+
+    // Do some other things here maybe...
+
+    return html;
   }
 
   return function(context) {
-    // Add something to these guys
     var view = createHtml(context), 
         events = {};
 
