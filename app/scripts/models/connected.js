@@ -274,7 +274,7 @@ define([
               model.outputs.resolve(outputsCreated).then(function(outputs) {
                 model.printBarcodes(labels, printer);
               });
-              model.owner.childDone(model, "outputsReady", {});
+              model.owner.childDone(model, "outputsReady", labels);
             }).fail(function() {
               model.owner.childDone(model, "failed", {});
             });

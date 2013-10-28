@@ -73,11 +73,9 @@ define(['controllers/base_controller'
       this.childDone(this.labwareModel, 'resourceUpdated', {});
       return this;
     },
-    
     getComponentInterface: function() {
       return (_.isUndefined(this.bedController))? {view: "", events: {}} : this.bedController.getComponentInterface();
     },
-
     setupSubControllers: function () {
       if (!this.resourceController) {
         var type = this.labwareModel.expected_type;
@@ -97,7 +95,7 @@ define(['controllers/base_controller'
         if (!this.bedController && (this.labwareModel.bedTracking === true))
         {
           this.bedController = this.controllerFactory.create('bed_controller', this);
-        }        
+        } 
         this.setupSubModel();
       }
       return this;
@@ -144,15 +142,15 @@ define(['controllers/base_controller'
          * These lines comes from setupSubcontroller. REFACTOR
          * Begin
          */
-        this.resourceController = this.controllerFactory.createLabwareSubController(this, this.labwareModel.expected_type);
-        this.labwareModel.displayResource(_.bind(function() {
-          return this.jquerySelection().find("div.resource");
-        }, this));
-        /**
-         * End
-         */
+         this.resourceController = this.controllerFactory.createLabwareSubController(this, this.labwareModel.expected_type);
+         this.labwareModel.displayResource(_.bind(function() {
+           return this.jquerySelection().find("div.resource");
+         }, this));
+         /**
+          * End
+          */
       }
-      
+
       if (this.resourceController) {
         this.resourceController.renderView();
       }
@@ -163,7 +161,7 @@ define(['controllers/base_controller'
             modelName: controller.labwareModel.expected_type.pluralize(),
             BC:        Util.pad(value)
           });
-          PubSub.publish("s2.labware.barcode_scanned", controller, {
+          PubSub.publish("barcode_scanned.labware.s2", controller, {
             modelName: controller.labwareModel.expected_type.pluralize(),
             BC:        Util.pad(value)
           });
@@ -175,7 +173,6 @@ define(['controllers/base_controller'
               validationOnReturnKeyCallback(this, this.labwareModel.validation, this.labwareModel.barcodePrefixes))
         );
       }
-      
 
       if (!(this.labwareModel.display_remove && !this.isSpecial())) {
         this.view.hideRemoveButton();
@@ -220,7 +217,7 @@ define(['controllers/base_controller'
     viewDone: function(child, action, data) {
       if (action == "labwareRemoved") {
         this.owner.childDone(this, "removeLabware", { resource: this.labwareModel.resource });
-        PubSub.publish("s2.labware.removed", this, {
+        PubSub.publish("removed.labware.s2", this, {
           resource:  this.labwareModel.resource
         });
       }
@@ -258,7 +255,7 @@ define(['controllers/base_controller'
     },
 
     displayErrorMessage: function (message) {
-      PubSub.publish('s2.status.error', this, {message: message});
+      PubSub.publish("error.status.s2", this, {message: message});
 	  },
 
     onBarcodeScanned: function() {
@@ -274,7 +271,7 @@ define(['controllers/base_controller'
 
   function barcodeErrorCallback(errorText){
     return function(value, template, controller){
-      PubSub.publish('s2.status.error', controller, {message: errorText});
+      PubSub.publish("error.status.s2", controller, {message: errorText});
     };
   }
 

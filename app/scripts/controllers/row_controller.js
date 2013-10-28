@@ -1,9 +1,8 @@
 define([
   'views/row_view'
   , 'app-components/linear-process/linear-process'
-  , 'labware/controllers/tube_controller'
   , 'controllers/base_controller'
-], function (View, linearProcess, TubeController, BaseController) {
+], function (View, linearProcess, BaseController) {
   "use strict";
 
   /* Sample model input:
