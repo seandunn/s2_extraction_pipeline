@@ -17,13 +17,11 @@ define(['controllers/base_controller'
 
     displayResource: function(resourceSelector) {
       var resourceController = this.owner.resourceController;
-      var resource           = this.resource;
-      if (!_.isUndefined(resource)) {
-        resourceController.setupController(
-          _.build(resource.resourceType, this.presentResource(resource)),
-          resourceSelector
-        );
-      }
+      var resource = this.resource;
+      
+      resourceController.setupController(!!resource ? _.build(
+        resource.resourceType, this.presentResource(resource)) : resource,
+        resourceSelector);
     },
 
     displayLabware: function() {
