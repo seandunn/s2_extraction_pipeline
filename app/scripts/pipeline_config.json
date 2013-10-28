@@ -60,9 +60,9 @@
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna.batched",
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna",
 
-   "samples.rack.stock.rna.batched-gel",
    "samples.qc.nx_nanodrop.working_dilution_rna"
-
+   "samples.qc.gel.fx_rna.batched",
+   "samples.qc.gel.fx_rna"
   ],
 
   "workflows":[
@@ -1339,50 +1339,43 @@
         }
       ]
     },
+    
     {
-      "accepts":       [ "samples.rack.stock.rna.batched-gel" ],
+      "accepts":       [ "samples.qc.gel.fx_rna.batched" ],
       "controllerName": "step_controller",
       "printerType": 2,
       "defaultPrinter":"d304bc",
       "printerType": 1,
-      "buttons":       [
-                        { "action": "print", "title": "Print Plate Labels" },
-                        { "action": "start", "title": "Begin FX" },
-                        { "action": "end",   "title": "Finished NX" },
-                        { "action": "next",  "title": "Done" }
+      "buttons": [{ "action": "print", "title": "Print labels" },
+                  { "action": "start", "title": "Begin FX" },
+                  { "action": "end",   "title": "Finished NX" },
+                  { "action": "next",  "title": "Done" }
       ],
       "processTitle":  "RNA QC - Gel FX",
-      "controllers":    [
-                         {
-                           "controllerName":   "connected_controller",
-                           "behaviours": {
-                             "start": "start",
-                             "operate": "start",
-                             "done": "transfer",
-                             "outputs": "print"
-                           },
-                           "rowBehaviour":  "bedRecording",
-                           "input":         {
-                             "role":  "samples.rack.stock.rna.batched-gel",
-                             "model": "tube_racks",
-                             "title": "Volume Checked RNA Rack",
-                             "bedTracking": true
-                           },
-                           "output":        [
-                                             {
-                                               "role":        "samples.rack.stock.rna.batched-gel.done",
-                                               "purpose":     "stock",
-                                               "model":       "tube_racks",
-                                               "title":      "",
-                                               "not_batched": true,
-                                               "bedTracking": true
-                                             }
-                                             ]
-                         }]
+      "controllers": [{
+        "controllerName":   "connected_controller",
+        "behaviours": {
+          "start": "start",
+          "operate": "start",
+          "done": "transfer",
+          "outputs": "print"
+        },
+        "rowBehaviour":  "bedRecording",
+        "input": {
+          "role":  "samples.qc.gel.fx_rna.batched",
+          "model": "tube_racks",
+          "title": "Working Dillution Rack",
+          "bedTracking": true
+        },
+        "output": [{
+          "role": "samples.qc.gel.ebase_rna.batched",
+          "purpose":     "stock",
+          "model":       "tube_racks",
+          "title":      "Gel",
+          "bedTracking": true
+        }]
+      }]
     },
-                              
-                              
-                              
                               
     {
       "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception" ],
