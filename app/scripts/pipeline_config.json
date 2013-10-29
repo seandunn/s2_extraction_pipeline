@@ -1382,6 +1382,7 @@
         },
         "output": [{
           "role": "samples.qc.gel.ebase_rna.batched",
+          "aliquotType":  "RNA",
           "purpose":     "stock",
           "model":       "tube_racks",
           "title":      "Gel",
