@@ -97,7 +97,7 @@ define([
         }, (function (i) {
           return function () {
             return stepController.selector().find('#step' + i);
-          }
+          };
         })(index + 1));
 
         return subController;
@@ -170,7 +170,7 @@ define([
       btnDetailsList = data.buttons || this.config.buttons;
       _.each(btnDetailsList, function (btnDetails) {
         thisController.view.setButtonVisible(btnDetails.action, visible);
-      })
+      });
     },
 
     changeButtonsState:function(eventData, enable){
@@ -179,7 +179,7 @@ define([
       _.each(btnDetailsList, function (btnDetails) {
         thisController.view.setButtonEnabled(btnDetails.action, enable);
         thisController.buttonClickedFlags[btnDetails.action+"clicked"] = !enable;
-      })
+      });
     }
 
   });

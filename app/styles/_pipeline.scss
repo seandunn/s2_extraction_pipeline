@@ -84,6 +84,9 @@ svg text {
   }
 }
 
+.RackScanModel div.resource { width: auto; }
+.bed-recording .labware2 { display: none; }
+.bed-recording .labware1 { display: none; }
 .RackScanModel              .legend.contents         { display: block; }
 .VolumeCheckModel.pre-file  .legend.contents         { display: block; }
 .VolumeCheckModel.post-file .legend.quality          { display: block; }
@@ -91,6 +94,8 @@ svg text {
 .NanoDropModel.post-file    .legend.presence-absence { display: block; }
 
 // Import component specific styles
+@import "../scripts/app-components/imager/_styles";
+@import "../scripts/app-components/scanning/_styles";
 @import "../scripts/app-components/dropzone/_styles";
 @import "../scripts/app-components/process-choice/_styles";
 @import "../scripts/app-components/re-racking/_styles";
