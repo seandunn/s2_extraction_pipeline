@@ -57,11 +57,12 @@
    "samples.extraction.racking.fluidx_tube_rna",
 
    "samples.rack.stock.rna",
+   "samples.qc.gel.fx_rna",
+   "samples.qc.gel.fx_rna.batched",
+   "samples.qc.gel.ebase_rna.batched",
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna.batched",
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna",
-
    "samples.qc.nx_nanodrop.working_dilution_rna"
-
   ],
 
   "workflows":[
@@ -82,7 +83,20 @@
         }
       ]
     },
-
+    {
+      "accepts": ["samples.qc.gel.fx_rna"],
+      "controllerName":"selection_page_controller",
+      "processTitle": "RNA QC - Gel FX",
+      "buttonTitle": "Print labels",
+      "capacity": 4,
+      "input":        {
+        "role":"samples.qc.gel.fx_rna",
+        "model":"tube_racks"
+      },
+      "output": [{
+        "role": "samples.qc.gel.fx_rna.batched"      
+      }]
+    },
     {
     "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_nap" ],
     "controllerName":"selection_page_controller",
@@ -1338,7 +1352,45 @@
         }
       ]
     },
-
+    
+    {
+      "accepts":       [ "samples.qc.gel.fx_rna.batched" ],
+      "controllerName": "step_controller",
+      "printerType": 2,
+      "defaultPrinter":"d304bc",
+      "printerType": 1,
+      "buttons": [{ "action": "print", "title": "Print labels" },
+                  { "action": "start", "title": "Begin FX" },
+                  { "action": "end",   "title": "Finished NX" },
+                  { "action": "next",  "title": "Done" }
+      ],
+      "processTitle":  "RNA QC - Gel FX",
+      "controllers": [{
+        "controllerName":   "connected_controller",
+        "behaviours": {
+          "start": "start",
+          "operate": "start",
+          "done": "transfer",
+          "outputs": "print"
+        },
+        "rowBehaviour":  "bedRecording",
+        "input": {
+          "role":  "samples.qc.gel.fx_rna.batched",
+          "model": "tube_racks",
+          "title": "Working Dillution Rack",
+          "bedTracking": true
+        },
+        "output": [{
+          "role": "samples.qc.gel.ebase_rna.batched",
+          "aliquotType":  "RNA",
+          "purpose":     "stock",
+          "model":       "tube_racks",
+          "title":      "Gel",
+          "bedTracking": true
+        }]
+      }]
+    },
+                              
     {
       "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception" ],
       "controllerName":"selection_page_controller",
