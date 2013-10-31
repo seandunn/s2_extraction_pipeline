@@ -5,7 +5,7 @@ define([
   "lib/underscore_extensions",
   "lib/jquery_extensions"
 ], function (htmlPartial) {
-  "use strict"
+  "use strict";
 
   var template = _.compose($, _.template(htmlPartial));
 
@@ -19,12 +19,12 @@ define([
   }
 
   return function(context) {
-    var view = createHtml(context), 
+    var view = createHtml(context),
         events = {};
 
     return {
       view:   view,
       events: events
-    }
-  }
+    };
+  };
 });
