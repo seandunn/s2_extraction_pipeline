@@ -65,24 +65,10 @@ define([
               thisController.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
               thisController.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
             }
-          }).then(_.bind(this.onSetupSubcontrollers, this));
+          });
       return this;
     },
     
-    onSetupSubcontrollers: function() {
-      var thisController = this;
-      if (thisController.rowControllers.length===1) 
-        {
-          if (this._oneRowBarcodesSelected)
-            {
-        	  thisController.rowControllers[0].controllers.each(_.bind(function(controller, position) { 
-                controller.scanBarcode(this._oneRowBarcodesSelected[position])
-              }, this));
-        	  this._oneRowBarcodesSelected = [];
-         	}
-       	}
-    },
-
     focus: function() {
     },
 
@@ -141,30 +127,9 @@ define([
       }
     },
 
-    fillBarcodesIfOnlyOneRow: function(resourcesList)
-    {
-    	function saveBarcode(resource, labwareModel) {
-    		if (_.isUndefined(this._oneRowBarcodesSelected))
-    			{
-            		this._oneRowBarcodesSelected = [];    			
-    			}
-    		var type = labwareModel.expected_type;
-    		var value = resource.returnPrintDetails()[type].ean13;
-    		this._oneRowBarcodesSelected.push(value);
-    	}
-    	
-    	if (this.rowControllers.length===1)
-    		{
-    		  saveBarcode.call(this, this.rowControllers[0].controllers.value()[0].labwareModel.resource, 
-					this.rowControllers[0].rowModel.labwares.labware1); 
-    		  saveBarcode.call(this, resourcesList[0], this.rowControllers[0].rowModel.labwares.labware2);
-    		}
-    },
-
     modelDone: function(child, action, data) {
 
       if (action === 'outputsReady') {
-        this.fillBarcodesIfOnlyOneRow(data);
         this.model.ready = true;
         this.setupSubControllers(true);
         PubSub.publish("printing_finished.step_controller.s2", this);
