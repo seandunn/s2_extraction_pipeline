@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg
+   viewBox="0 0 600 600"
+   height="350"
+   width="250"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+  <g>
+      <path d="
+        M 500 21
+        C 500 14
+          498 13
+          485 7
+
+        C 472 0
+          472 0
+          458 0
+
+        L 0   0
+        L 0   300
+        L 500 300
+        L 500 21
+        Z
+        M 500 20
+
+        C 500 14
+          500 14
+          472 14
+
+        L 472 14
+
+        C 472 0
+          472 0
+          459 0
+"
+    stroke="hsl(50, 28%, 90%)" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" fill="hsl(50, 81%, 97%)"/>
+    <ellipse cx="125"  cy="150"  rx="100"     ry="100" fill="hsl(50, 81%, 97%)" stroke="hsl(50, 28%, 90%)" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/>
+    <ellipse cx="350"  cy="150"  rx="100"     ry="100" fill="hsl(50, 81%, 97%)" stroke="hsl(50, 28%, 90%)" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/>
+  </g>
+</svg>

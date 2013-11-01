@@ -61,10 +61,10 @@ define(['config'
               "display_barcode": true
             }, thisController.jquerySelectionForControlTube);
 
-            PubSub.subscribe("s2.labware.barcode_scanned", barcodeScannedEventHandler);
-            PubSub.subscribe("s2.labware.removed", controlLabwareRemovedEventHandler);
-            PubSub.subscribe("s2.step_controller.end_clicked", makeTransferEventHandler);
-            PubSub.subscribe("s2.step_controller.next_clicked", endProcessEventHandler);
+            PubSub.subscribe("barcode_scanned.labware.s2", barcodeScannedEventHandler);
+            PubSub.subscribe("removed.labware.s2", controlLabwareRemovedEventHandler);
+            PubSub.subscribe("end_clicked.step_controller.s2", makeTransferEventHandler);
+            PubSub.subscribe("next_clicked.step_controller.s2", endProcessEventHandler);
 
             function barcodeScannedEventHandler(event, source, eventData) {
               thisController.barcodeScanned(event, source, eventData);
@@ -117,7 +117,7 @@ define(['config'
       thisController.disableDropzone();
 
       var container = this.jquerySelection();
-      container.find('.component').trigger("s2.busybox.start_process");
+      container.find('.component').trigger("start_process.busybox.s2");
 
       thisController.controlController.hideEditable();
 
@@ -127,18 +127,18 @@ define(['config'
           })
           .fail(function (error) {
             thisController.message('error', error.message);
-            container.find('.component').trigger("s2.busybox.end_process");
-            PubSub.publish("s2.step_controller.disable_buttons", thisController, {buttons: [
+            container.find('.component').trigger("end_process.busybox.s2");
+            PubSub.publish("disable_buttons.step_controller.s2", thisController, {buttons: [
               {action: "end"}
             ]});
           })
           .then(function (model) {
             thisController.message('success', 'The transfert was successful. Click on the \'Done\' button to carry on.');
-            container.find('.component').trigger("s2.busybox.end_process");
-            PubSub.publish("s2.step_controller.disable_buttons", thisController, {buttons: [
+            container.find('.component').trigger("end_process.busybox.s2");
+            PubSub.publish("disable_buttons.step_controller.s2", thisController, {buttons: [
               {action: "end"}
             ]});
-            PubSub.publish("s2.step_controller.enable_buttons", thisController, {buttons: [
+            PubSub.publish("enable_buttons.step_controller.s2", thisController, {buttons: [
               {action: "next"}
             ]});
           })
@@ -147,7 +147,7 @@ define(['config'
     endProcess: function () {
       var thisController = this;
       this.model.then(function (model) {
-        PubSub.publish("s2.step_controller.next_process", thisController, {batch: model.batch});
+        PubSub.publish("next_process.step_controller.s2", thisController, {batch: model.batch});
       });
     },
 
@@ -167,7 +167,7 @@ define(['config'
             var volumeControlPosition = model.findVolumeControlPosition();
             thisController.rackController.resourceController.fillWell(volumeControlPosition, "blue");
             if (model.isReady) {
-              PubSub.publish("s2.step_controller.enable_buttons", thisController, {buttons: [
+              PubSub.publish("enable_buttons.step_controller.s2", thisController, {buttons: [
                 {action: "end"}
               ]});
             }

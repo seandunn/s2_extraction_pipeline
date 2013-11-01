@@ -47,10 +47,10 @@ define([
       this.view = new View(this, this.selector);
       this.view.renderView(this.config);
 
-      PubSub.subscribe("s2.step_controller.enable_buttons", enableButtonsEventHandler);
-      PubSub.subscribe("s2.step_controller.disable_buttons", disableButtonsEventHandler);
-      PubSub.subscribe("s2.step_controller.show_buttons", showButtonsEventHandler);
-      PubSub.subscribe("s2.step_controller.hide_buttons", hideButtonsEventHandler);
+      PubSub.subscribe("enable_buttons.step_controller.s2", enableButtonsEventHandler);
+      PubSub.subscribe("disable_buttons.step_controller.s2", disableButtonsEventHandler);
+      PubSub.subscribe("show_buttons.step_controller.s2", showButtonsEventHandler);
+      PubSub.subscribe("hide_buttons.step_controller.s2", hideButtonsEventHandler);
 
       function enableButtonsEventHandler(event, source, eventData) {
         thisController.changeButtonsState(eventData, true);
@@ -65,20 +65,20 @@ define([
         thisController.changeButtonsVisibility(eventData, false);
       }
 
-      PubSub.subscribe("s2.step_controller.next_process", nextProcessEventHandler);
+      PubSub.subscribe("next_process.step_controller.s2", nextProcessEventHandler);
       function nextProcessEventHandler(event, source, eventData) {
         // hack: reusing a bit of code defined in childDone
         thisController.childDone(source,'done',eventData);
       }
 
-      PubSub.subscribe("s2.step_controller.printing_finished", printingFinishedEventHandler);
-      PubSub.subscribe("s2.step_controller.printing_started", printingStartedEventHandler);
+      PubSub.subscribe("printing_finished.step_controller.s2", printingFinishedEventHandler);
+      PubSub.subscribe("printing_started.step_controller.s2", printingStartedEventHandler);
       function printingFinishedEventHandler(event, source, eventData) {
-        thisController.selector().find('.component').trigger("s2.busybox.end_process");
+        thisController.selector().find('.component').trigger("end_process.busybox.s2");
 
       }
       function printingStartedEventHandler(event, source, eventData) {
-        thisController.selector().find('.component').trigger("s2.busybox.start_process");
+        thisController.selector().find('.component').trigger("start_process.busybox.s2");
       }
 
       this.setupSubControllers();
@@ -130,7 +130,7 @@ define([
           this.view.setButtonEnabled(action, false);
           var handler = this.activeController[action];
           handler && handler.apply(this.activeController, arguments);
-          PubSub.publish("s2.step_controller."+action+"_clicked", this);
+          PubSub.publish(action + "_clicked.step_controller.s2", this);
         }
       }
       else if (action === 'done') {

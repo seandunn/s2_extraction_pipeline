@@ -81,7 +81,7 @@ define([
         model.printBarcodes([rack], printer);
         return rack;
       }).fail(function () {
-        $('body').trigger('s2.status.error', "Impossible to create the rack.");
+        $('body').trigger("error.status.s2", "Impossible to create the rack.");
       });
     },
 

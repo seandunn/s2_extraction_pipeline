@@ -1,0 +1,40 @@
+[
+  {
+    "barcode": {
+      "columnName":   "Barcode",
+      "friendlyName": "Barcode",
+      "type":         "barcode",
+      "format":       "ean13"
+    }
+  },
+  {
+    "sanger_sample_id": {
+      "columnName":   "SANGER SAMPLE ID",
+      "friendlyName": "Sanger Sample ID",
+      "type":         "text"
+    }
+  },
+  {
+    "sample_type": {
+      "columnName":   "SAMPLE TYPE",
+      "type":         "text",
+      "friendlyName": "Sample Type"
+    }
+  },
+  {
+    "lysed": {
+      "columnName":   "Lysed?",
+      "type":         "boolean",
+      "friendlyName": "Lysed?"
+    }
+  },
+  {
+    "process": {
+      "columnName":   "_PROCESS",
+      "friendlyName": "Workflow",
+      "type":         "select",
+      "options":      ["DNA & RNA Bio Robot"],
+      "default":      "DNA & RNA Bio Robot"
+    }
+  }
+]

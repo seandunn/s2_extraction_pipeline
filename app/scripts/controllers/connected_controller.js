@@ -29,13 +29,13 @@ define([
       this.jquerySelection = jquerySelection;
       // send busy message
       var thisController = this;
-      thisController.jquerySelection().trigger("s2.busybox.start_process");
+      thisController.jquerySelection().trigger("start_process.busybox.s2");
       this.model.setBatch(input_model.batch)
           .then(function(){
-            thisController.jquerySelection().trigger("s2.busybox.end_process");
+            thisController.jquerySelection().trigger("end_process.busybox.s2");
           }).fail(function(error){
-            PubSub.publish('s2.status.error', thisController, error);
-            thisController.jquerySelection().trigger("s2.busybox.end_process");
+            PubSub.publish("error.status.s2", thisController, error);
+            thisController.jquerySelection().trigger("end_process.busybox.s2");
           }).then(function(){
             thisController.jquerySelection().html(thisController.template({nbRow:12}));
             thisController.setupSubControllers();
@@ -68,7 +68,7 @@ define([
           });
       return this;
     },
-
+    
     focus: function() {
     },
 
@@ -130,33 +130,32 @@ define([
     modelDone: function(child, action, data) {
 
       if (action === 'outputsReady') {
-
         this.model.ready = true;
         this.setupSubControllers(true);
-        PubSub.publish('s2.step_controller.printing_finished', this);
+        PubSub.publish("printing_finished.step_controller.s2", this);
 
       } else if (action === "barcodePrintSuccess") {
 
-        PubSub.publish('s2.status.message', this, {message: 'Barcode labels printed'});
-        PubSub.publish('s2.step_controller.printing_finished', this);
+        PubSub.publish("message.status.s2", this, {message: 'Barcode labels printed'});
+        PubSub.publish("printing_finished.step_controller.s2", this);
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "barcodePrintFailure") {
 
-        PubSub.publish('s2.status.error', this, {message: 'Barcode labels could not be printed'});
-        PubSub.publish('s2.step_controller.printing_finished', this);
+        PubSub.publish("error.status.s2", this, {message: 'Barcode labels could not be printed'});
+        PubSub.publish("printing_finished.step_controller.s2", this);
         this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "startOperation") {
 
         this.model.started = true;
-        PubSub.publish('s2.status.message', this, {message: 'Transfer started'});
+        PubSub.publish("message.status.s2", this, {message: 'Transfer started'});
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
         this.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
 
       } else if (action === "completeOperation") {
 
-        PubSub.publish('s2.status.message', this, {message: 'Transfer completed'});
+        PubSub.publish("message.status.s2", this, {message: 'Transfer completed'});
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
         if (this.checkPageComplete()) {
           this.owner.childDone(this, "enableBtn", {buttons:[{action:"next"}]});
@@ -206,7 +205,7 @@ define([
 
     print: function(child, action, data) {
       if (this.readyToCreateOutputs()) {
-        PubSub.publish('s2.step_controller.printing_started', this);
+        PubSub.publish("printing_started.step_controller.s2", this);
         this.model.createOutputs(data);
       }
     },

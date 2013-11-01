@@ -1,0 +1,54 @@
+[
+  {
+    "barcode": {
+      "columnName":   "Plate Barcode",
+      "friendlyName": "Plate EAN13 Barcode",
+      "type":         "barcode",
+      "format":       "ean13"
+    }
+  },
+  {
+    "location": {
+      "columnName":   "Location",
+      "friendlyName": "Well",
+      "type":         "text"
+    }
+  },
+  {
+    "sanger_sample_id": {
+      "columnName": "SANGER SAMPLE ID",
+      "friendlyName": "Sanger Sample ID",
+      "type":       "text"
+    }
+  },
+  {
+    "sample_type": {
+      "columnName": "SAMPLE TYPE",
+      "type":       "text",
+      "friendlyName": "Sample Type"
+    }
+  },
+  {
+    "gender": {
+      "columnName": "GENDER",
+      "friendlyName": "Gender",
+      "type": "text"
+    }
+  },
+  {
+    "is_sample_a_control":{
+      "columnName": "IS SAMPLE A CONTROL?",
+      "friendlyName": "Is Sample a Control?",
+      "type":       "boolean"
+    }
+  },
+  {
+    "process": {
+      "columnName": "_PROCESS",
+      "friendlyName": "Workflow",
+      "type":       "select",
+      "options":    ["DNA & RNA Manual", "DNA & RNA QIAcube"],
+      "default":    "DNA & RNA QIAcube"
+    }
+  }
+]

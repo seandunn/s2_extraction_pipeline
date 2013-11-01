@@ -1,8 +1,8 @@
 define([
   'views/row_view'
-  , 'labware/controllers/tube_controller'
+  , 'app-components/linear-process/linear-process'
   , 'controllers/base_controller'
-], function (View, TubeController, BaseController) {
+], function (View, linearProcess, BaseController) {
   "use strict";
 
   /* Sample model input:
@@ -74,6 +74,7 @@ define([
 
       this.currentView = new View(this, this.jquerySelection());
 
+      
       // NOTE: sort() call is needed here to ensure labware1,labware2,labware3... ordering
       this.controllers = _.chain(this.rowModel.labwares).pairs().sort().map(function(nameToDetails) {
         var name = nameToDetails[0], details = nameToDetails[1];
@@ -83,7 +84,24 @@ define([
       });
 
       this.currentView.renderView();
-      this.controllers.each(function(p) { p.renderView(); });
+      var arrow = $(".transferArrow", controller.jquerySelection());
+      
+      this.linearProcessLabwares = linearProcess({
+        dynamic: (function(componentsList, labwareList) {
+          return function(attachComponentMethod) {
+            _.each(componentsList, function(component, pos) {
+              component.view = $(labwareList[pos]).append(component.view).parent();
+              attachComponentMethod(component);
+            });
+          };
+        } (this.controllers.map(function(controller) { return controller.getComponentInterface();}).value(), $("div.labware")))
+      });
+      
+      controller.jquerySelection().html("");
+      controller.jquerySelection().append(this.linearProcessLabwares.view);
+      $($("div.span3", controller.jquerySelection())[0]).after(arrow);
+      controller.jquerySelection().on(this.linearProcessLabwares.events);
+      controller.jquerySelection().trigger("activate");      
     },
 
 

@@ -1,23 +1,37 @@
-define([], function() {
+define([
+  "underscore"
+], function() {
   'use strict';
 
   var printerTypes = {
-    1: '96 Well Plate Printer',
-    2: 'Tube Printer',
-    3: 'Rack Printer'
+    1: {
+      name: '96 Well Plate Printer',
+      canPrint: _.partial(_.contains, ["plate", "tube_rack"])
+    },
+    2: {
+      name: 'Tube Printer',
+      canPrint: _.partial(_.contains, ["tube", "spin_column", "filter_paper"])
+    },
+    3: {
+      name: 'Rack Printer',
+      canPrint: _.partial(_.contains, ["tube_rack"])
+    }
   };
 
   function printer(name,type){
+    var details = printerTypes[type];
     return {
-      name: name,
-      type: type,
-      friendlyName: name + ' ' + printerTypes[type]
+      name:         name,
+      type:         type,
+      friendlyName: name + ' ' + details.name,
+      canPrint:     details.canPrint
     };
   }
 
   return {
     // Configure the API to S2
     apiUrl: 'http://psd2f.internal.sanger.ac.uk:8000/',
+    mergeServiceUrl: 'http://psd2g.internal.sanger.ac.uk:8100/manifest-merge-service/',
 
     // No touching! Release branch value as it's picked up by the deployment script
     release: 'development_branch',
