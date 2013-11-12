@@ -208,24 +208,25 @@ define([
        .map(buildExtractor)
        .value();
 
-    var data =
-      manifestTable.find("tbody tr.success")
-                   .map(function() {
-                     return _.chain(extractors)
-                             .zip($(this).find("td"))
-                             .map(function(p) { return p[0](p[1]); })
-                             .compact()
-                             .object()
-                             .value();
-                   });
+    var data = manifestTable
+    .find("tbody tr.success")
+    .map(function() {
+      return _.chain(extractors)
+      .zip($(this).find("td"))
+      .map(function(p) { return p[0](p[1]); })
+      .compact()
+      .object()
+      .value();
+    });
+
     return context.getS2Root().then(_.partial(updateFromManifest, manifest, data));
   }
 
   function buildExtractor(type) {
     var extractor = Extractors[type || 'span'] || Extractors.span;
 
-    return function(element) {
-      element = $(element);
+    return function(el) {
+      var element = $(el);
 
       var data = element.find(":first").data();
       if (_.isUndefined(data)) return undefined;
@@ -300,14 +301,31 @@ define([
   function updateFromManifest(manifest, dataFromGUI, root) {
     // Transform the GUI & manifest data into the same format and then merge together the structures, overwriting
     // the manifest information with that from the GUI.
-    var samplesFromGUI = _.map(dataFromGUI, _.compose(_.removeUndefinedKeys, manifest.template.json_template));
-    var samples        = _.map(_.pluck(manifest.details, 'row'), manifest.template.json_template);
-    var lookup         = _.partial(_.findBy, 'sanger_sample_id', samples);
-    var updates =
-      _.chain(samplesFromGUI)
-       .pairwise(lookup)
-       .map(function(pair) { return _.deepMerge.apply(undefined, pair); })
-       .value();
+
+    function indexBySangerId(memo, o){
+      memo[o.sample.sanger_sample_id] = o.sample;
+      return memo;
+    }
+
+    var samplesFromGUI = _(dataFromGUI)
+    .map(_.compose(_.removeUndefinedKeys, manifest.template.json_template))
+    .reduce(indexBySangerId, {});
+
+    var samples = _(manifest.details)
+    .pluck("row")
+    .map(manifest.template.json_template);
+
+    var updates =_(samples)
+    .map(function(o){
+      var update = {};
+
+      update.sample = _.extend(
+        _.removeUndefinedKeys(o.sample),
+        samplesFromGUI[o.sample.sanger_sample_id]
+      );
+
+      return update;
+    });
 
     // Now perform the updates on the samples and the labware in parallel, so that we can save some time on this
     // as these are completely independent.
@@ -327,18 +345,18 @@ define([
     if (_.isEmpty(sampleUpdates)) return "No updates of sample information required";
 
     return root.bulk_update_samples
-               .create({by: "sanger_sample_id", updates: sampleUpdates})
-               .then(_.constant("Samples successfully updated."), _.constant("Could not update the samples in S2."));
+    .create({by: "sanger_sample_id", updates: sampleUpdates})
+    .then(_.constant("Samples successfully updated."), _.constant("Could not update the samples in S2."));
   }
 
   function updateLabware(model, root, updates) {
     var resourceUpdates =
       _.chain(updates)
-       .pluck('resource')
-       .compact()
-       .map(function(u) { return [u.identifier.value, _.omit(u, 'identifier')]; })
-       .object()
-       .value();
+    .pluck('resource')
+    .compact()
+    .map(function(u) { return [u.identifier.value, _.omit(u, 'identifier')]; })
+    .object()
+    .value();
 
     if (_.isEmpty(resourceUpdates)) return "No updates of resource information required";
 
@@ -346,8 +364,8 @@ define([
       by: 'identifier',
       labels: resourceUpdates
     }).then(
-      _.constant("Labware successfully updated."),
-      _.constant("Could not update the labware in S2.")
+    _.constant("Labware successfully updated."),
+    _.constant("Could not update the labware in S2.")
     );
   }
 
@@ -378,9 +396,9 @@ define([
   function updateManifestDetails(root, manifest, resource) {
     var details =
       _.chain(manifest.details)
-       .filter(function(details) { return details.label.value === resource.labels[details.label.column].value; })
-       .map(function(details) { details.resource = resource; return details; })
-       .value();
+    .filter(function(details) { return details.label.value === resource.labels[details.label.column].value; })
+    .map(function(details) { details.resource = resource; return details; })
+    .value();
 
     if (_.isEmpty(details)) {
       manifest.errors.push("Label '" + resource.labels.barcode.value + "' is not part of the manifest!");
@@ -391,9 +409,9 @@ define([
       var sampleUuid = _.compose(sampleFromContainer, _.partial(manifest.template.reader.extractor, resource));
       return $.waitForAllPromises(
         _.chain(details)
-         .map(function(details) { return [details,sampleUuid(details)]; })
-         .map(_.partial(validateSampleDetails, root, manifest))
-         .value()
+        .map(function(details) { return [details,sampleUuid(details)]; })
+        .map(_.partial(validateSampleDetails, root, manifest))
+        .value()
       );
     }
   }
@@ -414,9 +432,9 @@ define([
       return $.Deferred().reject(details);
     } else {
       return root.samples
-                 .find(uuid)
-                 .then(_.partial(checkSample, details))
-                 .then(_.partial(manifest.template.validation, details));
+      .find(uuid)
+      .then(_.partial(checkSample, details))
+      .then(_.partial(manifest.template.validation, details));
     }
   }
 
