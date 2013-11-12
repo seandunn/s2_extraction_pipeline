@@ -38,12 +38,12 @@
     <ellipse cx="350"  cy="125"  rx="100"     ry="100" fill="hsl(50, 81%, 97%)" stroke="hsl(50, 28%, 90%)" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" class=""/>
   </g>
 
-  <text class="barcode" y="255" style="display:none">
-    <tspan x="30" >Barcode:</tspan>
+  <text class="lot-no" y="255" style="display:none">
+    <tspan x="30" >Lot #:</tspan>
     <tspan class="value" x="145" />
   </text>
-  <text class="lot-no" y="285" style="display:none">
-    <tspan x="30" >Lot #:</tspan>
+  <text class="barcode" y="285" style="display:none">
+    <tspan x="30" >Barcode:</tspan>
     <tspan class="value" x="145" />
   </text>
 </svg>
