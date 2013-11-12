@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -6,82 +8,10 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    width="264"
    height="141"
-   id="svg3400"
-   class="tube"
-   inkscape:version="0.48.2 r9819"
-   sodipodi:docname="tube_final5.svg">
-  <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1071"
-     id="namedview3523"
-     showgrid="false"
-     inkscape:zoom="11.822791"
-     inkscape:cx="62.871204"
-     inkscape:cy="91.929338"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg3400"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="160"
-     fit-margin-bottom="0"
-     showguides="true"
-     inkscape:guide-bbox="true">
-    <sodipodi:guide
-       orientation="0,1"
-       position="97.608081,103.52885"
-       id="guide50519" />
-    <sodipodi:guide
-       orientation="0,1"
-       position="79.761195,76.969982"
-       id="guide50521" />
-    <sodipodi:guide
-       orientation="1,0"
-       position="51.764428,38.569574"
-       id="guide50523" />
-    <sodipodi:guide
-       orientation="0,1"
-       position="73.24835,49.819032"
-       id="guide50525" />
-    <sodipodi:guide
-       orientation="1,0"
-       position="118.41535,60.30725"
-       id="guide50527" />
-    <sodipodi:guide
-       orientation="0,1"
-       position="93.717297,23.344742"
-       id="guide7681" />
-    <sodipodi:guide
-       orientation="1,0"
-       position="0,151.57166"
-       id="guide5012" />
-    <sodipodi:guide
-       orientation="0,1"
-       position="31.126323,141.42177"
-       id="guide5014" />
-    <sodipodi:guide
-       orientation="0,1"
-       position="66.65093,0"
-       id="guide5016" />
-    <sodipodi:guide
-       orientation="1,0"
-       position="47.366143,115.70872"
-       id="guide5018" />
-  </sodipodi:namedview>
+>
   <metadata
      id="metadata3402">
     <dc:date>2013-02-12 11:42Z</dc:date>
@@ -92,7 +22,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -104,17 +34,17 @@
        id="Tube_Gradient"
        gradientUnits="userSpaceOnUse">
       <stop
-         offset="0"
-         stop-color="#d7ecf5"
-         id="stop3407" />
+         id="stop3407"
+         style="stop-color:#d7ecf5;stop-opacity:1"
+         offset="0" />
       <stop
-         offset=".42063493"
-         stop-color="#c0cdd3"
-         id="stop3409" />
+         id="stop3409"
+         style="stop-color:#c0cdd3;stop-opacity:1"
+         offset="0.42063493" />
       <stop
-         offset="1"
-         stop-color="#d7ecf5"
-         id="stop3411" />
+         id="stop3411"
+         style="stop-color:#d7ecf5;stop-opacity:1"
+         offset="1" />
     </linearGradient>
     <linearGradient
        id="Tube_Obj_Gradient"
@@ -126,20 +56,17 @@
        id="Tube_Gradient_DNA"
        gradientUnits="userSpaceOnUse">
       <stop
-         offset="0"
-         stop-color="#106a21"
-         stop-opacity=".82"
-         id="stop3415" />
+         id="stop3415"
+         style="stop-color:#106a21;stop-opacity:0.81999999"
+         offset="0" />
       <stop
-         offset=".42063493"
-         stop-color="#14ae2d"
-         stop-opacity=".83"
-         id="stop3417" />
+         id="stop3417"
+         style="stop-color:#14ae2d;stop-opacity:0.82999998"
+         offset="0.42063493" />
       <stop
-         offset="1"
-         stop-color="#106a21"
-         stop-opacity=".81"
-         id="stop3419" />
+         id="stop3419"
+         style="stop-color:#106a21;stop-opacity:0.81"
+         offset="1" />
     </linearGradient>
     <linearGradient
        x1="0"
@@ -147,20 +74,17 @@
        id="Tube_Gradient_!NA"
        gradientUnits="userSpaceOnUse">
       <stop
-         offset="0"
-         stop-color="#d40000"
-         stop-opacity=".82"
-         id="stop7569" />
+         id="stop7569"
+         style="stop-color:#d40000;stop-opacity:0.81999999"
+         offset="0" />
       <stop
-         offset=".42063493"
-         stop-color="#ff2121"
-         stop-opacity=".83"
-         id="stop7571" />
+         id="stop7571"
+         style="stop-color:#ff2121;stop-opacity:0.82999998"
+         offset="0.42063493" />
       <stop
-         offset="1"
-         stop-color="#d40000"
-         stop-opacity=".81"
-         id="stop7573" />
+         id="stop7573"
+         style="stop-color:#d40000;stop-opacity:0.81"
+         offset="1" />
     </linearGradient>
     <linearGradient
        x1="0"
@@ -168,20 +92,17 @@
        id="Tube_Gradient_NA"
        gradientUnits="userSpaceOnUse">
       <stop
-         offset="0"
-         stop-color="#a130ec"
-         stop-opacity=".82"
-         id="stop7576" />
+         id="stop7576"
+         style="stop-color:#a130ec;stop-opacity:0.81999999"
+         offset="0" />
       <stop
-         offset=".42063493"
-         stop-color="#cc8df4"
-         stop-opacity=".83"
-         id="stop7578" />
+         id="stop7578"
+         style="stop-color:#cc8df4;stop-opacity:0.82999998"
+         offset="0.42063493" />
       <stop
-         offset="1"
-         stop-color="#a130ec"
-         stop-opacity=".81"
-         id="stop7580" />
+         id="stop7580"
+         style="stop-color:#a130ec;stop-opacity:0.81"
+         offset="1" />
     </linearGradient>
     <linearGradient
        x1="0"
@@ -189,20 +110,17 @@
        id="Tube_Gradient_NA+P"
        gradientUnits="userSpaceOnUse">
       <stop
-         offset="0"
-         stop-color="#ff6b15"
-         stop-opacity=".82"
-         id="stop7583" />
+         id="stop7583"
+         style="stop-color:#ff6b15;stop-opacity:0.81999999"
+         offset="0" />
       <stop
-         offset=".42063493"
-         stop-color="#ffab7b"
-         stop-opacity=".83"
-         id="stop7585" />
+         id="stop7585"
+         style="stop-color:#ffab7b;stop-opacity:0.82999998"
+         offset="0.42063493" />
       <stop
-         offset="1"
-         stop-color="#ff6b15"
-         stop-opacity=".81"
-         id="stop7587" />
+         id="stop7587"
+         style="stop-color:#ff6b15;stop-opacity:0.81"
+         offset="1" />
     </linearGradient>
     <linearGradient
        x1="0"
@@ -210,20 +128,17 @@
        id="Tube_Gradient_DNA+P"
        gradientUnits="userSpaceOnUse">
       <stop
-         offset="0"
-         stop-color="#f1ed00"
-         stop-opacity=".82"
-         id="stop7590" />
+         id="stop7590"
+         style="stop-color:#f1ed00;stop-opacity:0.81999999"
+         offset="0" />
       <stop
-         offset=".42063493"
-         stop-color="#fffd8b"
-         stop-opacity=".83"
-         id="stop7592" />
+         id="stop7592"
+         style="stop-color:#fffd8b;stop-opacity:0.82999998"
+         offset="0.42063493" />
       <stop
-         offset="1"
-         stop-color="#f1ed00"
-         stop-opacity=".81"
-         id="stop7594" />
+         id="stop7594"
+         style="stop-color:#f1ed00;stop-opacity:0.81"
+         offset="1" />
     </linearGradient>
     <linearGradient
        x1="0"
@@ -231,20 +146,17 @@
        id="Tube_Gradient_RNA"
        gradientUnits="userSpaceOnUse">
       <stop
-         offset="0"
-         stop-color="#2770cc"
-         stop-opacity=".82"
-         id="stop7597" />
+         id="stop7597"
+         style="stop-color:#2770cc;stop-opacity:0.81999999"
+         offset="0" />
       <stop
-         offset=".42063493"
-         stop-color="#75a6e4"
-         stop-opacity=".83"
-         id="stop7599" />
+         id="stop7599"
+         style="stop-color:#75a6e4;stop-opacity:0.82999998"
+         offset="0.42063493" />
       <stop
-         offset="1"
-         stop-color="#2770cc"
-         stop-opacity=".81"
-         id="stop7601" />
+         id="stop7601"
+         style="stop-color:#2770cc;stop-opacity:0.81"
+         offset="1" />
     </linearGradient>
     <linearGradient
        x1="0"
@@ -252,20 +164,17 @@
        id="Tube_Gradient_RNA+P"
        gradientUnits="userSpaceOnUse">
       <stop
-         offset="0"
-         stop-color="#00827c"
-         stop-opacity=".82"
-         id="stop7604" />
+         id="stop7604"
+         style="stop-color:#00827c;stop-opacity:0.81999999"
+         offset="0" />
       <stop
-         offset=".42063493"
-         stop-color="#00e8df"
-         stop-opacity=".83"
-         id="stop7606" />
+         id="stop7606"
+         style="stop-color:#00e8df;stop-opacity:0.82999998"
+         offset="0.42063493" />
       <stop
-         offset="1"
-         stop-color="#00827c"
-         stop-opacity=".81"
-         id="stop7608" />
+         id="stop7608"
+         style="stop-color:#00827c;stop-opacity:0.81"
+         offset="1" />
     </linearGradient>
     <linearGradient
        id="Tube_Obj_Gradient_2"
@@ -277,59 +186,56 @@
        id="Tube_Gradient_3"
        gradientUnits="userSpaceOnUse">
       <stop
-         offset="0"
-         stop-color="#c0cdd3"
-         stop-opacity=".090000004"
-         id="stop3423" />
+         id="stop3423"
+         style="stop-color:#c0cdd3;stop-opacity:0.09"
+         offset="0" />
       <stop
-         offset=".42063493"
-         stop-color="#d7ecf5"
-         stop-opacity=".1"
-         id="stop3425" />
+         id="stop3425"
+         style="stop-color:#d7ecf5;stop-opacity:0.1"
+         offset="0.42063493" />
       <stop
-         offset="1"
-         stop-color="#c0cdd3"
-         stop-opacity=".1"
-         id="stop3427" />
+         id="stop3427"
+         style="stop-color:#c0cdd3;stop-opacity:0.1"
+         offset="1" />
     </linearGradient>
     <linearGradient
        id="Tube_Obj_Gradient_3"
        xlink:href="#Tube_Gradient_3"
        gradientTransform="matrix(28.3465,0,0,22.174222,141.732,131.27387)" />
     <filter
-       id="Shadow"
        filterUnits="userSpaceOnUse"
-       color-interpolation-filters="sRGB">
+       color-interpolation-filters="sRGB"
+       id="Shadow">
       <feGaussianBlur
-         in="SourceAlpha"
-         result="blur"
+         id="feGaussianBlur3431"
          stdDeviation=".48301077"
-         id="feGaussianBlur3431" />
+         result="blur"
+         in="SourceAlpha" />
       <feOffset
-         in="blur"
-         result="offset"
-         dx="0"
+         id="feOffset3433"
          dy="1"
-         id="feOffset3433" />
+         dx="0"
+         result="offset"
+         in="blur" />
       <feFlood
-         flood-color="black"
-         flood-opacity=".35"
+         id="feFlood3435"
          result="flood"
-         id="feFlood3435" />
+         flood-opacity=".35"
+         flood-color="black" />
       <feComposite
-         in="flood"
          in2="offset"
          operator="in"
+         in="flood"
          result="color"
          id="feComposite3437" />
       <feMerge
          id="feMerge3439">
         <feMergeNode
-           in="color"
-           id="feMergeNode3441" />
+           id="feMergeNode3441"
+           in="color" />
         <feMergeNode
-           in="SourceGraphic"
-           id="feMergeNode3443" />
+           id="feMergeNode3443"
+           in="SourceGraphic" />
       </feMerge>
     </filter>
     <linearGradient
@@ -338,89 +244,77 @@
        id="Tube_Gradient_4"
        gradientUnits="userSpaceOnUse">
       <stop
-         offset="0"
-         stop-color="#c50900"
-         id="stop3446" />
+         id="stop3446"
+         style="stop-color:#c50900;stop-opacity:1"
+         offset="0" />
       <stop
-         offset=".32539678"
-         stop-color="#d40000"
-         id="stop3448" />
+         id="stop3448"
+         style="stop-color:#d40000;stop-opacity:1"
+         offset="0.32539678" />
       <stop
-         offset="1"
-         stop-color="#870000"
-         id="stop3450" />
+         id="stop3450"
+         style="stop-color:#870000;stop-opacity:1"
+         offset="1" />
     </linearGradient>
     <linearGradient
        id="Tube_Obj_Gradient_4"
        xlink:href="#Tube_Gradient_4"
        gradientTransform="matrix(35.4331,0,0,35.4331,138.189,64.25195)" />
     <linearGradient
-       inkscape:collect="always"
-       xlink:href="#Tube_Gradient_3"
        id="linearGradient4529"
+       xlink:href="#Tube_Gradient_3"
        gradientTransform="matrix(28.3465,0,0,22.174222,141.732,131.27387)" />
     <linearGradient
-       inkscape:collect="always"
-       xlink:href="#Tube_Gradient_3"
        id="linearGradient4565"
-       gradientTransform="matrix(28.3465,0,0,22.174222,141.732,131.27387)" />
-    <linearGradient
-       inkscape:collect="always"
        xlink:href="#Tube_Gradient_3"
-       id="linearGradient4578"
        gradientTransform="matrix(28.3465,0,0,22.174222,141.732,131.27387)" />
     <linearGradient
-       inkscape:collect="always"
-       xlink:href="#Tube_Gradient_4"
+       id="linearGradient4578"
+       xlink:href="#Tube_Gradient_3"
+       gradientTransform="matrix(28.3465,0,0,22.174222,141.732,131.27387)" />
+    <linearGradient
        id="linearGradient4582"
-       gradientTransform="matrix(35.4331,0,0,35.4331,138.189,64.25195)" />
-    <linearGradient
-       inkscape:collect="always"
        xlink:href="#Tube_Gradient_4"
-       id="linearGradient4596"
        gradientTransform="matrix(35.4331,0,0,35.4331,138.189,64.25195)" />
     <linearGradient
-       inkscape:collect="always"
-       xlink:href="#Tube_Gradient"
+       id="linearGradient4596"
+       xlink:href="#Tube_Gradient_4"
+       gradientTransform="matrix(35.4331,0,0,35.4331,138.189,64.25195)" />
+    <linearGradient
        id="linearGradient4629"
+       xlink:href="#Tube_Gradient"
        gradientTransform="matrix(28.3465,0,0,28.3465,141.732,120.4724)" />
     <linearGradient
-       inkscape:collect="always"
-       xlink:href="#Tube_Gradient_DNA"
        id="linearGradientAliquot"
-       class="aliquotGradientSelector"
+       xlink:href="#Tube_Gradient_DNA"
        gradientTransform="matrix(28.3465,0,0,28.3465,141.732,124.0157)" />
   </defs>
   <g
-     style="fill:none;stroke:none"
+     transform="matrix(1.2501593,0,0,1.2501593,-171.1693,-72.478831)"
      id="g3457"
-     transform="matrix(1.2501593,0,0,1.2501593,-171.1693,-72.478831)">
+     style="fill:none;stroke:none">
     <title
        id="title3459">back</title>
     <path
-       inkscape:connector-curvature="0"
-       style="fill:url(#linearGradient4629)"
+       d="m 141.732,70.8661 28.3465,0 0,76.1547 c 0,0 -7.0866,23.0579 -14.17321,23.0579 -7.08664,0 -14.17329,-23.0579 -14.17329,-23.0579 z"
        id="path3461"
-       d="m 141.732,70.8661 28.3465,0 0,76.1547 c 0,0 -7.0866,23.0579 -14.17321,23.0579 -7.08664,0 -14.17329,-23.0579 -14.17329,-23.0579 z" />
+       style="fill:url(#linearGradient4629)" />
   </g>
   <g
-     style="stroke:none"
      transform="matrix(1.2501593,0,0,1.024456,-171.1693,-34.091622)"
      id="aliquot"
-     class="empty">
+     style="stroke:none">
     <desc
        id="desc4156">The aliquot liquid describing the full/empty state.</desc>
     <title
        id="title3465">passed</title>
     <path
-       inkscape:connector-curvature="0"
-       id="path3467"
-       d="m 141.732,77.9527 28.3465,0 0,63.77957 c 0,0 -7.0866,28.34643 -14.17321,28.34643 -7.08664,0 -14.17329,-28.34643 -14.17329,-28.34643 z" />
+       d="m 141.732,77.9527 28.3465,0 0,63.77957 c 0,0 -7.0866,28.34643 -14.17321,28.34643 -7.08664,0 -14.17329,-28.34643 -14.17329,-28.34643 z"
+       id="path3467" />
   </g>
   <path
      d="m 6.0181647,16.115032 35.4376153,0 0,95.205418 c 0,0 -8.859367,28.82607 -17.718752,28.82607 -8.859433,0 -17.7188633,-28.82607 -17.7188633,-28.82607 z"
      id="path3475"
-     inkscape:connector-curvature="0"
      style="fill:none;stroke:#c0cdd3;stroke-width:2.5003159;stroke-linecap:round;stroke-linejoin:round" />
   <line
      x1="10.309947"
@@ -486,16 +380,16 @@
      id="line3493"
      style="fill:none;stroke:#ffffff;stroke-width:3.75047636;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0.17000002" />
   <g
-     id="g4598"
      transform="matrix(1.2501593,0,0,1.2501593,-184.73208,-31.325161)"
+     id="g4598"
      style="fill:#ff2a2a">
     <rect
-       style="fill:#ff2a2a;fill-opacity:1;fill-rule:evenodd;stroke:#ff2a2a;stroke-width:0.75588518px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-dasharray:none"
-       id="rect3525"
        width="37.218475"
        height="13.658705"
        x="148.14484"
-       y="25.42054" />
+       y="25.42054"
+       id="rect3525"
+       style="fill:#ff2a2a;fill-opacity:1;fill-rule:evenodd;stroke:#ff2a2a;stroke-width:0.75588518px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-dasharray:none" />
     <line
        style="fill:#ff2a2a;stroke:#c30001;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0.45"
        id="line3505"
@@ -561,42 +455,59 @@
        x1="180.8709" />
   </g>
   <g
-     inkscape:groupmode="layer"
+     transform="translate(-12.11806,-13.961353)"
      id="layer2"
-     inkscape:label="TestTube"
-     style="display:none"
-     transform="translate(-12.11806,-13.961353)">
+     style="display:none">
     <rect
-       style="fill:#ff0000;stroke:#ff2a2a;stroke-width:0.80000001"
-       id="rect4301"
        width="53.014507"
        height="120.57451"
        x="52.84668"
-       y="8.6262741" />
+       y="8.6262741"
+       id="rect4301"
+       style="fill:#ff0000;stroke:#ff2a2a;stroke-width:0.80000001" />
   </g>
   <g
-     inkscape:groupmode="layer"
+     transform="translate(-12.11806,-13.961353)"
      id="layer3"
-     inkscape:label="Background"
-     style="display:none"
-     transform="translate(-12.11806,-13.961353)" />
+     style="display:none" />
   <path
-     style="display:none;stroke-width:0.32456377;"
      d="m 8.03157,25.656334 -2.825,1.175 17.775,42.250006 -17.775,42.225 2.825,1.2 16.625,-39.475 16.625,39.475 2.825,-1.2 -17.775,-42.225 17.775,-42.250006 -2.825,-1.175 -16.625,39.475006 -16.625,-39.475006 z"
      id="unused"
-     class="unused"
-     inkscape:connector-curvature="0" />
-
-  <text id="volume" style="display:none;">
-    <tspan x="68.758698" y="19.984566">Volume:</tspan>
-    <tspan x="110.758698" y="19.984566" class="value"/>
+     style="stroke-width:0.32456377;display:none" />
+  <text
+     id="volume"
+     style="display:none">
+    <tspan
+       x="68.758698"
+       y="19.984566"
+       id="tspan4079">Volume:</tspan>
+    <tspan
+       x="110.7587"
+       y="19.984566"
+       id="tspan4081" />
   </text>
-  <text id="type" style="display:none;">
-    <tspan x="68.758698" y="57.489433">Type:</tspan>
-    <tspan x="110.758698" y="57.489433" class="value"/>
+  <text
+     id="type"
+     style="display:none">
+    <tspan
+       x="68.758698"
+       y="57.489433"
+       id="tspan4084">Type:</tspan>
+    <tspan
+       x="110.7587"
+       y="57.489433"
+       id="tspan4086" />
   </text>
-  <text id="barcode" style="display:none;">
-    <tspan x="68.758698" y="95">Barcode:</tspan>
-    <tspan x="110.758698" y="95" class="value"/>
+  <text
+     id="barcode"
+     style="display:none">
+    <tspan
+       x="68.758698"
+       y="95"
+       id="tspan4089">Barcode:</tspan>
+    <tspan
+       x="110.7587"
+       y="95"
+       id="tspan4091" />
   </text>
 </svg>
