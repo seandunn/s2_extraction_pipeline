@@ -39,7 +39,11 @@
       "columnName": "_PROCESS",
       "friendlyName": "Workflow",
       "type":       "select",
-      "options":    ["DNA & RNA Manual", "DNA & RNA QIAcube"],
+      "options":    [
+        "DNA & RNA Manual",
+        "DNA & RNA QIAcube",
+        "Micro RNA QIAcube"
+      ],
       "default":    "DNA & RNA QIAcube"
     }
   }
