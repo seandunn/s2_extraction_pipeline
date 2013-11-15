@@ -149,7 +149,7 @@
       "input":         {
         "role": "samples.extraction.manual_dna_and_rna.input_tube_nap.batched",
         "model":"tubes",
-        "title": "Input tube"
+        "title": "Input Tube"
       },
       "output":        [
         {
@@ -429,7 +429,7 @@
         {
           "role":       "samples.extraction.manual_dna_only.input_tube_dnap",
           "aliquotType":"DNA+P",
-          "title": "Input tube",
+          "title": "Input Tube",
           "not_batched":true
         }
       ]
@@ -547,7 +547,7 @@
         {
           "role":       "samples.extraction.manual_rna_only.input_tube_rnap",
           "aliquotType":"RNA+P",
-          "title": "Input tube",
+          "title": "Input Tube",
           "not_batched":true
         }
       ]
@@ -584,7 +584,7 @@
         {
           "role":       "samples.extraction.qiacube_dna_and_rna.input_tube_nap",
           "aliquotType":"NA+P",
-          "title": "Input tube",
+          "title": "Input Tube",
           "not_batched":true
         }
       ]
@@ -773,7 +773,7 @@
     "controllers": [
       {
       "controllerName": "kit_controller",
-      "kittype":       "DNA & RNA"
+      "kitType":       "DNA & RNA"
     }, {
       "controllerName":   "connected_controller",
       "behaviours": {
@@ -842,7 +842,7 @@
         "aliquotType": "RNA+P",
         "purpose":     "stock",
         "model":       "tubes",
-        "title":       "Eppendorf RNA+P tube"
+        "title":       "Eppendorf RNA+P Tube"
       }
       ]
     }
@@ -864,7 +864,7 @@
     "controllers": [
       {
       "controllerName": "kit_controller",
-      "kittype":       "DNA & RNA"
+      "kitType":       "DNA & RNA"
     }, {
       "controllerName":   "connected_controller",
       "behaviours": {
@@ -1129,7 +1129,7 @@
         {
           "role":       "samples.extraction.qiacube_dna_only.input_tube_dnap",
           "aliquotType":"DNA+P",
-          "title": "Input tube",
+          "title": "Input Tube",
           "not_batched":true
         }
       ]
