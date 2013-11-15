@@ -154,11 +154,11 @@ define(["controllers/base_controller",
         var labwareCallback = function(value, template, controller){
           controller.owner.childDone(controller, "barcodeScanned", {
             modelName: controller.labwareModel.expected_type.pluralize(),
-            BC:        Util.pad(value)
+            BC:        value
           });
           PubSub.publish("barcode_scanned.labware.s2", controller, {
             modelName: controller.labwareModel.expected_type.pluralize(),
-            BC:        Util.pad(value)
+            BC:        value
           });
         };
         this.jquerySelection().append(
@@ -304,7 +304,7 @@ define(["controllers/base_controller",
         var value = event.currentTarget.value;
         var barcodeSelection = $(event.currentTarget);
         setScannedTimeout(barcodeSelection);
-        if (validationCallBack(Util.pad(value),barcodePrefixes)) {
+        if (validationCallBack(value,barcodePrefixes)) {
           callback(value, element, controller);
           controller.onBarcodeScanned();
         } else {

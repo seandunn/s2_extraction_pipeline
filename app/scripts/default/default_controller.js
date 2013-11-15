@@ -4,10 +4,21 @@ define(['config'
   , 'default/default_model'
   , 'lib/util'
   , 'lib/pubsub'
+  , 'lib/barcode_checker'
   , 'lib/promise_tracker'
-], function (config, BaseController, defaultPagePartialHtml, Model, Util, PubSub, PromiseTracker) {
+], function (config, BaseController, defaultPagePartialHtml, Model, Util, PubSub, BarcodeChecker, PromiseTracker) {
   'use strict';
 
+  function userBarcodeValidation(barcode)
+  {
+    return true;
+  }
+  
+  function labwareBarcodeValidation(barcode)
+  {
+    return _.some(BarcodeChecker, function (validation) { return validation(barcode);});    
+  }
+  
   var userCallback = function(value, template, controller){
     var barcode = Util.pad(value);
 
@@ -44,7 +55,7 @@ define(['config'
 
     controller.labwareBCSubController.showProgress();
 
-    PromiseTracker(controller.model.setLabwareFromBarcode(Util.pad(value)))
+    PromiseTracker(controller.model.setLabwareFromBarcode(value))
       .fail(function (error) {
         PubSub.publish("error.status.s2", controller, error);
         controller.labwareBCSubController.hideProgress();
@@ -105,8 +116,12 @@ define(['config'
       this.jquerySelection().html(_.template(defaultPagePartialHtml)({}));
       var errorCallback = barcodeErrorCallback('Barcode must be a 13 digit number.');
 
-      this.jquerySelectionForUser().append(this.bindReturnKey( this.userBCSubController.renderView(), userCallback, errorCallback ));
-      this.jquerySelectionForLabware().append(this.bindReturnKey( this.labwareBCSubController.renderView(), labwareCallback, errorCallback));
+      this.jquerySelectionForUser().append(
+        this.bindReturnKey(this.userBCSubController.renderView(),
+          userCallback, errorCallback, userBarcodeValidation));
+      this.jquerySelectionForLabware().append(
+        this.bindReturnKey(this.labwareBCSubController.renderView(),
+          labwareCallback, errorCallback, labwareBarcodeValidation));
 
       return this;
     },
