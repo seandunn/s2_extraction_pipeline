@@ -28,11 +28,12 @@ define([
     });
 
     return {
+      components: components,
       view: html,
       events: $.stopsPropagation({
-        "activate.s2":   $.ignoresEvent(_.partial(initialiseProcessChain, html, components)),
-        "deactivate.s2": _.partial(deactivate, html),
-        "focus":         function() { components[0].view.focus(); }
+        "activate.s2" : /* Not execute process chain if I receive the event from a child */
+          $.ignoresChildrenEvent(html[0], _.partial(initialiseProcessChain, html, components)),
+        "focus": function() { components[0].view.focus(); }
       })
     };
   };
@@ -81,14 +82,14 @@ define([
       });
       details.skip();
     }));
-
+    
     setActiveComponent(components[0], html);
   }
 
   function buildTransition(html, pair) {
     // Determine the from and to transitions
     var from = function() { pair[0].view.trigger("deactivate.s2"); };
-    var to   = function() { html.trigger("done.s2", html); }
+    var to   = function() { html.trigger("done.s2", html); };
     if (!_.isUndefined(pair[1])) to = function() { pair[1].view.trigger("activate.s2").focus(); };
 
     // By default we want our transition to be the next in the sequence.
@@ -125,11 +126,16 @@ define([
 
   function createDoneHandler(html, doneHandler) {
     return function(event, doneView) {
+      // If I triggered this done event
       if (html[0] === doneView) return true;
+      // After the last transition, the linear process will trigger a done event to
+      // upper level
+      doneHandler = doneHandler || function() {};
       doneHandler = doneHandler(event, doneView);
       return false;
     };
   }
+  
   function stopsEvent(f) {
     return $.stopsPropagation($.ignoresEvent(f));
   }
@@ -147,7 +153,7 @@ define([
   function buildComponent(context, config) {
     return config.constructor(_.extend({}, context, config.context || {}));
   }
-
+  
   // Attaches the given component to the specified HTML using the
   // configuration.
   function attachComponent(html, component) {
