@@ -5,6 +5,8 @@ define([
   // Global namespace requires
   "lib/jquery_extensions"
 ], function(view, PrintService) {
+  "use strict";
+
   var template = _.compose($, _.template(view));
 
   return function(externalContext) {
@@ -26,7 +28,7 @@ define([
 
     var button  = html.find("button");
     button.lockingClick(function() {
-      var selected = _.find(context.printers, function(p) { return p.name == printer.val(); });
+      var selected = _.find(context.printers, function(p) { return p.name === printer.val(); });
       html.trigger("trigger.print.s2", [selected]);
     });
 
@@ -61,7 +63,7 @@ define([
 
       return context.user.then(function(user) {
         return printer.print(
-          _.invoke(printables, 'returnPrintDetails'),
+          _.invoke(printables, "returnPrintDetails"),
           {user:user}
         );
       }).then(function() {
@@ -82,7 +84,7 @@ define([
         .value()
       );
     }
-  }
+  };
 
   function printerOption(printer) {
     return "<option value=\"" + printer.name + "\">" + printer.friendlyName + "</option>";
