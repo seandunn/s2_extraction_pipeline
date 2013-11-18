@@ -307,16 +307,17 @@ define([
       return memo;
     }
 
-    var samplesFromGUI = _(dataFromGUI)
+    var samplesFromGUI = _.chain(dataFromGUI)
     .map(_.compose(_.removeUndefinedKeys, manifest.template.json_template))
-    .reduce(indexBySangerId, {});
+    .reduce(indexBySangerId, {})
+    .value();
 
-    var samples = _(manifest.details)
+    var samples = _.chain(manifest.details)
     .pluck("row")
-    .map(manifest.template.json_template);
+    .map(manifest.template.json_template)
+    .value();
 
-    var updates =_(samples)
-    .map(function(o){
+    var updates = _.map(samples, function(o){
       var update = {};
 
       update.sample = _.extend(
