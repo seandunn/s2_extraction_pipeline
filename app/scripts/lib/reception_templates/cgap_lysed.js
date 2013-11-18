@@ -43,6 +43,12 @@ define([
           friendly_name: "QC2Hip",
           sanger_sample_id_core: "QC2Hip"
         },
+
+        "ESDM_pathogen_challenge": {
+          friendly_name:          "ESDM_pathogen_challenge",
+          sanger_sample_id_core:  "ESDM_pathogen_challenge"
+        },
+
         SBC: {
           friendly_name: "Skin Biopsy Collection",
           sanger_sample_id_core: "SBC"

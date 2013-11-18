@@ -66,7 +66,7 @@ define([
 
       // Display the information related to the individual locations
       _.each(labware.locations, function(value, location) {
-        view.find("svg #" + location).attr("class", cssForType(value));
+        view.find("svg ." + location).attr("class", cssForType(value));
       });
 
       // Display any extraneous data
@@ -80,7 +80,7 @@ define([
   }
 
   function displayValueIfSet(view, value, field) {
-    var element = view.find("svg #" + field);
+    var element = view.find("svg ." + field);
     if (_.isUndefined(value)) {
       element.hide();
     } else {

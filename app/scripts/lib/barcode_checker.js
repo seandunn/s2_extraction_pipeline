@@ -13,7 +13,7 @@ define(['config'], function (config) {
   $.extend(BarcodeChecker,
       {
         isBarcodeValid:           function (barcode, barcodePrefixes) {
-          return /^\d{13}$/.exec(barcode) !== null && checkPrefix(barcode, barcodePrefixes);
+          return (/^\d{12,13}$/.exec(barcode) !== null) && checkPrefix(barcode, barcodePrefixes);
         },
         is2DTubeBarcodeValid: function (barcode, barcodePrefixes) {
           return /FR\d/.exec(barcode) !== null && checkPrefix(barcode, barcodePrefixes);

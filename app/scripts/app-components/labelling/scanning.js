@@ -4,16 +4,16 @@ define([
   "use strict";
   var template = _.compose($, _.template(View));
 
-  function prefixValidation(acceptable) {
+  function lengthValidation(acceptable) {
     if (_.isEmpty(acceptable)) {
       return _.constant(true);
     } else {
-      return function(padded) {
-        return _.some(acceptable, function(a) { return _.str.startsWith(padded, a); });
+      return function(acceptable) {
+        return _.some(acceptable, function(str) { return str.length >= 12 && str.length <= 13; });
       };
     }
   }
-
+  
   return function (context) {
     var html  = template(_.extend({
       label: undefined
@@ -27,12 +27,10 @@ define([
     };
 
     var barcode    = html.find("input[type=text]");
-    var validation = context.validation || prefixValidation(context.acceptable);
+    var validation = context.validation || lengthValidation(context.acceptable);
 
     barcode.enterHandler(function() {
-      // TODO: Probably should check for a valid barcode
       var padded = _.string.lpad(barcode.val(), context.length || 13, "0");
-      barcode.val(padded);
       (validation(padded) ? success : invalid)(padded);
     });
 

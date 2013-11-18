@@ -54,9 +54,10 @@ define([], function() {
 
     // Finds a given value in an array using a particular field.
     findBy: function(field, array, value) {
-      return _.find(array, function(v) {
+      var ar = _.find(array, function(v) {
         return v[field] === value[field];
       });
+      return ar
     },
 
     // Recursively merges, left-to-right, all of the objects passed in the parameters.  Will
@@ -67,13 +68,22 @@ define([], function() {
 
     // recursively remove undefined keys from this JS object
     removeUndefinedKeys: function(object) {
+      if      (_.isArray(object))    { return object; }
+      else if (_.isFunction(object)) { return object; }
+      else if (!_.isObject(object))  { throw "method can only handle plain objects"; }
+
       return _.reduce(object, function (memo, value, key) {
         if (_.isObject(value)) {
           value = _.removeUndefinedKeys(value);
-        }
-        if (value && !_.isEmpty(value)) {
+
+          if (_.isTruthy(value) && !_.isEmpty(value)) {
+            memo[key] = value;
+          }
+
+        } else if (!(_.isUndefined(value) || _.isNull(value) || _.isNaN(value))) {
           memo[key] = value;
         }
+
         return memo;
       }, {});
     }
