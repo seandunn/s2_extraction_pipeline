@@ -1575,7 +1575,7 @@
     {
       "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception" ],
       "controllerName":"selection_page_controller",
-      "processTitle": "Receive Filter Papers - Automated DNA and RNA Extraction (Bio Robot)",
+      "processTitle": "Receive Unlysed Filter Papers",
       "capacity": 50,
       "input":        {
         "role":"samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception",
@@ -1592,7 +1592,7 @@
     {
       "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper" ],
       "controllerName":"lysing",
-      "processTitle": "Lyse Filter Papers - Automated DNA and RNA Extraction (Bio Robot)",
+      "processTitle": "Filter Paper Lysing",
       "capacity": 1,
       "input":        {
         "role":"samples.extraction.lysing_dna_and_rna.filter_paper",
