@@ -50,7 +50,7 @@ define([
 
     // TODO: should be triggered via an event
     disableDropZone:function(){
-      this.dropzone.prop("disabled", true);
+      this.dropzone.view.prop("disabled", true);
     },
 
     clear: function() {
