@@ -4,6 +4,9 @@
     "samples.extraction.manual_dna_only.input_tube_dnap.awaiting_reception",
     "samples.extraction.manual_rna_only.input_tube_rnap.awaiting_reception",
     "samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception",
+
+    "samples.extraction.micro_rna_qiacube.input_tube_nap.awaiting_reception",
+
     "samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception",
     "samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception",
     "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception",
@@ -33,6 +36,11 @@
     "samples.extraction.qiacube_dna_and_rna.byproduct_tube_rnap",
     "samples.extraction.qiacube_dna_and_rna.input_tube_rnap.batched",
 
+    "samples.extraction.micro_rna_qiacube.input_tube_nap",
+    "samples.extraction.micro_rna_qiacube.input_tube_nap.batched",
+    "samples.extraction.micro_rna_qiacube.byproduct_tube_rnap",
+    "samples.extraction.micro_rna_qiacube.input_tube_rnap.batched",
+
     "samples.extraction.qiacube_dna_only.input_tube_dnap",
     "samples.extraction.qiacube_dna_only.input_tube_dnap.batched",
 
@@ -40,10 +48,12 @@
     "samples.extraction.qiacube_rna_only.input_tube_rnap.batched",
 
    "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed",
+   "samples.extraction.micro_rna_qiacube.input_tube_dnap.to_be_retubed",
    "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed",
    "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed",
 
    "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed.batched",
+   "samples.extraction.micro_rna_qiacube.input_tube_dnap.to_be_retubed.batched",
    "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed.batched",
    "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched",
 
@@ -139,7 +149,7 @@
       "input":         {
         "role": "samples.extraction.manual_dna_and_rna.input_tube_nap.batched",
         "model":"tubes",
-        "title": "Input tube"
+        "title": "Input Tube"
       },
       "output":        [
         {
@@ -419,7 +429,7 @@
         {
           "role":       "samples.extraction.manual_dna_only.input_tube_dnap",
           "aliquotType":"DNA+P",
-          "title": "Input tube",
+          "title": "Input Tube",
           "not_batched":true
         }
       ]
@@ -537,7 +547,7 @@
         {
           "role":       "samples.extraction.manual_rna_only.input_tube_rnap",
           "aliquotType":"RNA+P",
-          "title": "Input tube",
+          "title": "Input Tube",
           "not_batched":true
         }
       ]
@@ -561,6 +571,177 @@
     ]
   },
 
+    {
+      "accepts": [ "samples.extraction.micro_rna_qiacube.input_tube_nap.awaiting_reception" ],
+      "controllerName":"selection_page_controller",
+      "processTitle": "Receive Tubes - Automated DNA and RNA Extraction (QIAcube)",
+      "capacity": 96,
+      "input":        {
+        "role":"samples.extraction.micro_rna_qiacube.input_tube_nap.awaiting_reception",
+        "model":"tubes"
+      },
+      "output":       [
+        {
+          "role":       "samples.extraction.qiacube_dna_and_rna.input_tube_nap",
+          "aliquotType":"NA+P",
+          "title": "Input Tube",
+          "not_batched":true
+        }
+      ]
+    },
+
+  {
+    "accepts": [ "samples.extraction.micro_rna_qiacube.input_tube_nap" ],
+    "controllerName":"selection_page_controller",
+    "processTitle": "Automated DNA and RNA Extraction (QIAcube)",
+    "input":        {
+      "role":"samples.extraction.micro_rna_qiacube.input_tube_nap",
+      "model":"tubes"
+    },
+    "output":       [
+      {
+      "role":       "samples.extraction.micro_rna_qiacube.input_tube_nap.batched",
+      "aliquotType":"NA+P"
+    }
+    ]
+  },
+
+  {
+    "accepts": [ "samples.extraction.micro_rna_qiacube.input_tube_nap.batched" ],
+    "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
+    "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
+    "printerType": 2,
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "start", "title": "Loading QIAcube" },
+      { "action": "end",   "title": "Unloading QIAcube" },
+      { "action": "next",  "title": "Done" }
+    ],
+    "controllers": [
+      {
+      "controllerName": "kit_controller",
+      "kitType":       "DNA & RNA"
+    }, {
+      "controllerName":   "connected_controller",
+      "behaviours": {
+        "start": "start",
+        "operate": "start",
+        "complete": "end",
+        "done": "transfer",
+        "outputs": "print"
+      },
+      "input":         {
+        "role": "samples.extraction.micro_rna_qiacube.input_tube_nap.batched",
+        "model":"tubes",
+        "title": "Eppendorf Input Tube"
+      },
+      "output":        [
+        {
+        "role":       "samples.extraction.micro_rna_qiacube.byproduct_tube_rnap",
+        "aliquotType":"RNA+P",
+        "purpose":    "stock",
+        "model":      "tubes",
+        "title":      "Rotor Adapter",
+        "barcodePrefixes":    [ "540" ]
+      },
+      {
+        "role":       "samples.extraction.retubing.eppendorf_tube_dna",
+        "aliquotType":"DNA",
+        "model":      "tubes",
+        "title":      "Waste DNA Tube",
+        "tracked": false
+      }
+      ]
+    }
+    ]
+  },
+
+  {
+    "accepts": [ "samples.extraction.micro_rna_qiacube.byproduct_tube_rnap" ],
+    "processTitle":  "Automated DNA and RNA Extraction (QIAcube) Rotor Adapter Transfer",
+    "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
+    "printerType": 2,
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "next",  "title": "Done" }
+    ],
+    "controllers": [
+      {
+      "controllerName":   "connected_controller",
+      "behaviours": {
+        "start": "row",
+        "operate": "row",
+        "complete": "row",
+        "done": "next",
+        "outputs": "print"
+      },
+      "input":         {
+        "role":  "samples.extraction.micro_rna_qiacube.byproduct_tube_rnap",
+        "model": "tubes",
+        "title": "Rotor Adapter"
+      },
+      "output":        [
+        {
+        "role":        "samples.extraction.micro_rna_qiacube.input_tube_rnap.batched",
+        "aliquotType": "RNA+P",
+        "purpose":     "stock",
+        "model":       "tubes",
+        "title":       "Eppendorf RNA+P Tube"
+      }
+      ]
+    }
+    ]
+  },
+
+  {
+    "accepts": [ "samples.extraction.micro_rna_qiacube.input_tube_rnap.batched" ],
+    "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
+    "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
+    "printerType": 2,
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "start", "title": "Loading QIAcube" },
+      { "action": "end",   "title": "Unloading QIAcube" },
+      { "action": "next",  "title": "Done" }
+    ],
+    "controllers": [
+      {
+      "controllerName": "kit_controller",
+      "kitType":       "DNA & RNA"
+    }, {
+      "controllerName":   "connected_controller",
+      "behaviours": {
+        "start": "start",
+        "operate": "start",
+        "complete": "end",
+        "done": "transfer",
+        "outputs": "print"
+      },
+      "input":         {
+        "role": "samples.extraction.micro_rna_qiacube.input_tube_rnap.batched",
+        "model":"tubes",
+        "title": "Eppendorf RNA+P Tube"
+      },
+      "output":        [
+        {
+        "role":       "samples.extraction.retubing.eppendorf_tube_rna",
+        "aliquotType":"RNA",
+        "purpose":    "stock",
+        "model":      "tubes",
+        "title":      "Eppendorf Extracted RNA Tube",
+        "not_batched": false
+      }, {
+        "model": "tube",
+        "tracked": false
+      }
+      ]
+    }
+    ]
+  },
+
 
     {
       "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception" ],
@@ -575,7 +756,7 @@
         {
           "role":       "samples.extraction.qiacube_dna_and_rna.input_tube_nap",
           "aliquotType":"NA+P",
-          "title": "Input tube",
+          "title": "Input Tube",
           "not_batched":true
         }
       ]
@@ -796,7 +977,7 @@
         {
           "role":       "samples.extraction.qiacube_dna_only.input_tube_dnap",
           "aliquotType":"DNA+P",
-          "title": "Input tube",
+          "title": "Input Tube",
           "not_batched":true
         }
       ]
@@ -1394,7 +1575,7 @@
     {
       "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception" ],
       "controllerName":"selection_page_controller",
-      "processTitle": "Receive Filter Papers - Automated DNA and RNA Extraction (Bio Robot)",
+      "processTitle": "Receive Unlysed Filter Papers",
       "capacity": 50,
       "input":        {
         "role":"samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception",
@@ -1411,7 +1592,7 @@
     {
       "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper" ],
       "controllerName":"lysing",
-      "processTitle": "Lyse Filter Papers - Automated DNA and RNA Extraction (Bio Robot)",
+      "processTitle": "Filter Paper Lysing",
       "capacity": 1,
       "input":        {
         "role":"samples.extraction.lysing_dna_and_rna.filter_paper",
