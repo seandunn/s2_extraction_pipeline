@@ -1,11 +1,12 @@
 define([
   'text!app-components/labware/svg/tube.svg',
   'text!app-components/labware/svg/spin_column.svg',
+  "text!app-components/labware/svg/filter_paper.svg",
 
   // Global namespace requirements
   "lib/underscore_extensions",
   "lib/jquery_extensions"
-], function (tubeImage, spinColumnImage) {
+], function (tubeImage, spinColumnImage, filterPaperImage) {
   'use strict';
 
   var parser     = new DOMParser();
@@ -27,9 +28,17 @@ define([
     type: undefined
   };
 
+  // FILTER PAPER INFORMATION
+  var filterPaperSvg = svgElement(filterPaperImage);
+  var unknownFilterPaper = {
+    barcode: undefined
+  };
+
+
   return {
     tube:        TubeLike(unknownTube,       _.constant(tubeSvg)),
-    spin_column: TubeLike(unknownSpinColumn, _.constant(spinColumnSvg))
+    spin_column: TubeLike(unknownSpinColumn, _.constant(spinColumnSvg)),
+    filter_paper: TubeLike(unknownFilterPaper, _.constant(filterPaperSvg))
   };
 
   function TubeLike(unknown, picker) {
