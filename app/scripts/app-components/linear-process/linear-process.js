@@ -2,7 +2,7 @@ define([
   "text!app-components/linear-process/_component.html",
 
   // Globally included stuff added after this comment
-  , "lib/jquery_extensions"
+  "lib/jquery_extensions"
 ], function (componentView) {
   "use strict";
 
