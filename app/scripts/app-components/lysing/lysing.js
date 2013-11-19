@@ -82,7 +82,6 @@ define([
     }));
 
     $html.on("done.s2", $.stopsPropagation($.ignoresEvent(function(view) {
-      debugger
       if (view === $html[0]) { return true; }      // Us, firing.
 
       // Wait for the promises to resolve and ensure they are in a specific order!
@@ -112,7 +111,6 @@ define([
       return {
         input:{
           resource: filterPaper,
-          location: _.chain(filterPaper.locations).keys().last().value(),
           role:     context.input.role,
           order:    order
         },
@@ -129,9 +127,8 @@ define([
 
   function performTransfer(context, transfer) {
     return context.root().then(function(root) {
-      debugger
       return Operations.betweenLabware(
-        root.actions.transfer_multiple_filter_papers_to_tubes,
+        root.actions.transfer_tubes_to_tubes,
         [prepare]
       );
     }).then(function(operation) {
