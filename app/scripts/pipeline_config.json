@@ -574,7 +574,7 @@
     {
       "accepts": [ "samples.extraction.qiacube_micro_rna.input_tube_nap.awaiting_reception" ],
       "controllerName":"selection_page_controller",
-      "processTitle": "Receive Tubes - Automated DNA and RNA Extraction (QIAcube)",
+      "processTitle": "Receive Tubes - &#181;RNA Extraction (QIAcube)",
       "capacity": 96,
       "input":        {
         "role":"samples.extraction.qiacube_micro_rna.input_tube_nap.awaiting_reception",
@@ -582,7 +582,7 @@
       },
       "output":       [
         {
-          "role":       "samples.extraction.qiacube_dna_and_rna.input_tube_nap",
+          "role":       "samples.extraction.qiacube_micro_rna.input_tube_nap",
           "aliquotType":"NA+P",
           "title": "Input Tube",
           "not_batched":true
@@ -593,7 +593,7 @@
   {
     "accepts": [ "samples.extraction.qiacube_micro_rna.input_tube_nap" ],
     "controllerName":"selection_page_controller",
-    "processTitle": "Automated DNA and RNA Extraction (QIAcube)",
+    "processTitle": "Automated &#181;RNA Extraction (QIAcube)",
     "input":        {
       "role":"samples.extraction.qiacube_micro_rna.input_tube_nap",
       "model":"tubes"
@@ -608,7 +608,7 @@
 
   {
     "accepts": [ "samples.extraction.qiacube_micro_rna.input_tube_nap.batched" ],
-    "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
+    "processTitle":  "Automated &#181;RNA Extraction (QIAcube)",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
     "printerType": 2,
@@ -646,10 +646,7 @@
         "barcodePrefixes":    [ "540" ]
       },
       {
-        "role":       "samples.extraction.retubing.eppendorf_tube_dna",
-        "aliquotType":"DNA",
         "model":      "tubes",
-        "title":      "Waste DNA Tube",
         "tracked": false
       }
       ]
@@ -659,7 +656,7 @@
 
   {
     "accepts": [ "samples.extraction.qiacube_micro_rna.byproduct_tube_rnap" ],
-    "processTitle":  "Automated DNA and RNA Extraction (QIAcube) Rotor Adapter Transfer",
+    "processTitle":  "Automated &#181;RNA Extraction (QIAcube) Rotor Adapter Transfer",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
     "printerType": 2,
@@ -697,7 +694,7 @@
 
   {
     "accepts": [ "samples.extraction.qiacube_micro_rna.input_tube_rnap.batched" ],
-    "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
+    "processTitle":  "Automated &#181;RNA Extraction (QIAcube)",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
     "printerType": 2,
