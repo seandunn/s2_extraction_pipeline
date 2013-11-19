@@ -118,8 +118,9 @@ define([
     // Skipping ourselves is simple: call our transition!  We have to rely on the transition here
     // being our transition!
     function skip(transition) {
+      var output = transition();
       us = function() {
-        return transition();
+        return output;
       };
     }
   }
