@@ -12,10 +12,10 @@ define([
     plate:        plateLikePresenter(locationExtraction("wells"), "number_of_columns", "number_of_rows"),
     gel:          plateLikePresenter(locationExtraction("windows")),
     tube_rack:    plateLikePresenter(extractTubesFromRack),
-    filter_paper: plateLikePresenter(locationExtraction("locations"), lotNoLookup),
 
     // These all behave like they are tubes, with the labware containing the aliquots directly
     tube:        tubeLikePresenter(),
+    filter_paper: plateLikePresenter(lotNoLookup),
     spin_column: tubeLikePresenter()
   };
 
