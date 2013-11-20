@@ -22,7 +22,7 @@ define([], function() {
 
     filter_paper: function() {
       return {
-        extractor: filterPaperExtractor,
+        extractor: tubeLikeExtractor,
         builder:   _.partial(row, "Barcode", "SANGER SAMPLE ID", "identifier"),
         searcher:  searchForFilterPaper
       };

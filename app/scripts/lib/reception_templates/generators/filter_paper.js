@@ -1,8 +1,6 @@
 define([
   "lib/underscore_extensions"
 ], function() {
-  var locations = ["A1", "A2"];
-
   return {
     filter_paper: function(template, fieldMappers) {
       return {
@@ -42,9 +40,8 @@ define([
   }
 
   function representativeSample(filter_paper) {
-    return _.chain(filter_paper.locations)
+    return _.chain(filter_paper.aliquots)
             .find(_.complement(_.isEmpty))
-            .first()
             .value()
             .sample;
   }
@@ -52,13 +49,10 @@ define([
   // Filter papers have the sample sample in both locations.
   function prepareRequest(type, memo, row) {
     var aliquot      = [{sample_uuid: row[0].uuid, type: type.aliquot}];
-    var descriptions = _.chain(locations).map(function(f) { return [f,aliquot]; }).object().value();
 
     memo.push({
       _barcode:              row[1],
-      number_of_rows:        1,
-      number_of_columns:     2,
-      locations_description: descriptions
+      aliquots:              aliquot
     });
     return memo;
   }
