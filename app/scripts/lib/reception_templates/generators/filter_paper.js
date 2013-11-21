@@ -19,13 +19,7 @@ define([
     var registerSamples  = _.partial(preRegisterSamples, numberOfSamples);
     var registerBarcodes = _.partial(preRegisterBarcodes, numberOfSamples, model);
 
-    var placeSamples = function(samples, barcodes, type) {
-      return _.chain(samples)
-              .zip(barcodes)
-              .zip(_.pluck(samples, "sanger_sample_id"))
-              .map(function(pair) { return [pair[0][0], _.extend(pair[0][1], {identifier:pair[1]}), pair[1], type]; })
-              .value();
-    };
+    var placeSamples     = function(samples, barcodes, type) { return _.zip(samples, barcodes, _.repeat(type, barcodes.length)); };
 
     // Because of the pre-barcoded nature of filter papers we don't need to generate labels, just labellables.
     return callback(registerSamples, registerBarcodes, placeSamples, labeller);
@@ -58,16 +52,17 @@ define([
   }
 
   function createManifest(mappers, rows, extras) {
-    var headers = ["Barcode", "Sanger Sample ID", "SAMPLE TYPE"];
+    var headers = ["Barcode", "Sanger Barcode", "Sanger Sample ID", "SAMPLE TYPE"];
     var table   = _.map(rows, rowHandler);
     table.unshift(headers.concat(_.keys(extras)));
     return table;
 
     function rowHandler(row) {
-      var sample = row[0], labels = row[1], type = row[3];
+      var sample = row[0], labels = row[1], type = row[2];
 
       return [
         labels.ean13,
+        labels.sanger.prefix + labels.sanger.number + labels.sanger.suffix,
         sample.sanger_sample_id,
         type
       ].concat(
