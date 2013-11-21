@@ -1,0 +1,36 @@
+<div id="reracking" class="accordion">
+  <div class="accordion-group">
+    <h4 class="accordion-heading">1 - Scan the rack barcodes</h4>
+
+    <div id="rack-selection" class="accordion-body collapse in">
+      <div class="accordion-inner">
+        <div id="barcodeReader"></div>
+          <ul id="rack-list" class="unstyled"></ul>
+          <button type="button" id="start-rerack-btn" class="btn btn-primary hide">Start reracking</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="accordion-group">
+    <div class="accordion-heading"><h4>2 - Print barcode for the new rack</h4></div>
+
+    <div id="rack-labelling" class="accordion-body collapse">
+      <div id="printer-area" class="accordion-inner"></div>
+    </div>
+  </div>
+
+
+  <div class="accordion-group">
+    <h4 class="accordion-heading">3 - Scan new rack</h4>
+
+    <div id="racking-file-upload" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <div class="dropzone"></div>
+        <div class="labware output-labware resource"></div>
+        <button type="button" id="rerack-btn" class="btn btn-primary">Re-Rack Tubes</button>
+      </div>
+    </div>
+  </div>
+</div>
+

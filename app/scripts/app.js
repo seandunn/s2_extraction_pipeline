@@ -3,53 +3,102 @@ define([ 'config'
   , 'mapper/s2_root'
   , 'extra_components/busy_box'
   , 'alerts'
-  , 'lib/logger'
-], function (config, nextWorkflow, S2Root, BusyBox, alerts, Logger) {
+  , 'lib/pubsub'
+
+  , 'models/base_page_model'
+  , 'lib/reception_templates'
+
+  // TODO: These will move with the configuration
+  , 'app-components/reception/reception'
+  , 'app-components/lab-activities/lab-activities'
+], function(
+  config,
+  nextWorkflow,
+  S2Root,
+  BusyBox, alerts, PubSub,
+  BasePageModel, ReceptionTemplates,
+  Reception, LabActivities
+) {
   'use strict';
+
+  var ComponentConfig = [
+    { name: "reception",  selector: ".sample-reception",     constructor: Reception     },
+    { name: "re-racking", selector: ".extraction-reracking", constructor: LabActivities }
+  ];
 
   var App = function (theControllerFactory) {
     var app = this;
+    app.config = config;
     app.controllerFactory = theControllerFactory;
     _.templateSettings.variable = 'templateData';
 
     $('#server-url').text(config.apiUrl);
     $('#release').text(config.release);
 
-    if ($('#content.sample-extraction').length > 0) {
-      // ToDo #content exists at this point we should pass it directly not a function
-      app.jquerySelection = function () { return $('#content'); };
-      app.addEventHandlers();
-      app.setupController();
-    } else if ($('#content.sample-reception').length > 0) {
-      var configuration = { printerList: config.printers };
-      var receptionController = app.controllerFactory.create('reception_controller', app, configuration);
-      $("#content").append(receptionController.view);
-      alerts.setupPlaceholder(function () {
-        return $('#alertContainer');
+    // Fix up the printers so that we can simply print to them!
+    _.each(app.config.printers, function(printer) {
+      _.extend(printer, {
+        print: _.partial(_.flip(BasePageModel.printBarcodes), printer.name)
       });
-      app.addEventHandlers();
-    } else if ($('#content.extraction-reracking').length > 0) {
-      var configuration = { printerList: config.printers };
-      var extractionController = app.controllerFactory.create('lab_activities_controller', app, configuration);
-      $("#content").append(extractionController.view);
-      alerts.setupPlaceholder(function () {
-        return $('#alertContainer');
+    });
+
+    // Ensure that messages are properly picked up & dispatched
+    // TODO: die, eat-flaming-death!
+    var html = $("#content");
+    _.map(["error", "success", "info"], function(type) {
+      html.on(type +".status.s2", function(event, message) {
+        PubSub.publish(type + ".status.s2", app, {message: message});
+      });
+    });
+
+    var activate = _.find(ComponentConfig, function(config) {
+      return html.is(config.selector);
+    });
+    if (!_.isUndefined(activate)) {
+      var component = activate.constructor({
+        app:       app,
+
+        templates: ReceptionTemplates,
+
+        printers:  app.config.printers,
+
+        findUser: function(barcode) {
+          var deferred = $.Deferred();
+          var user = app.config.UserData[barcode];
+          deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);
+          return deferred.promise();
+        },
+
+        resetS2Root: _.bind(app.resetS2Root, app),
+        getS2Root:   _.bind(app.getS2Root, app)
+      });
+      html.append(component.view).on(component.events);
+
+      alerts.setupPlaceholder(function() {
+        return $("#alertContainer");
       });
       app.addEventHandlers();
     } else {
-      console.log('#content control class missing from web page.')
+      // Handle the non-components
+      // TODO: Move these to be components!
+      if (html.is('.sample-extraction')) {
+        // ToDo #content exists at this point we should pass it directly not a function
+        app.jquerySelection = _.constant(html);
+        app.addEventHandlers();
+        app.setupController();
+      } else {
+        console.log('#content control class missing from web page.')
+      }
     }
   };
 
   App.prototype.addEventHandlers = function(){
     BusyBox.init();
-    Logger.init();
   };
 
   App.prototype.getS2Root = function(user) {
     if ( user || (this.rootPromise === undefined) ) {
       // User should be passed in here not hard-coded
-      Logger.user = user;
       this.rootPromise = S2Root.load({user:user});
     }
     return this.rootPromise;

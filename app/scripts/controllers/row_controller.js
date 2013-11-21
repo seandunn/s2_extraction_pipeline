@@ -1,8 +1,7 @@
 define([
   'views/row_view'
-  , 'labware/controllers/tube_controller'
   , 'controllers/base_controller'
-], function (View, TubeController, BaseController) {
+], function (View, BaseController) {
   "use strict";
 
   /* Sample model input:

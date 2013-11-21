@@ -1,8 +1,8 @@
 define([
   "text!html_partials/_rack_scan.html",
   "lib/pubsub",
-  "views/drop_zone"
-], function(partial, PubSub, DropZone) {
+  "app-components/dropzone/dropzone"
+], function(partial, PubSub, dropZone) {
   "use strict";
 
   var View = function(owner, selector) {
@@ -21,20 +21,20 @@ define([
       });
 
       var container = this.selector().empty().append(html);
-      container.addClass(this.owner.model.containerName).addClass('pre-file');
-      var fileNameSpan = container.find(".filenameSpan");
+      container.addClass(this.owner.model.containerName).addClass("pre-file");
 
       // thisController is used until I can sort out these messy event handlers.
       // NB. This sort of nonsense make me a sad panda :(
       var thisController = this.owner;
-      this.dropzone = DropZone.init(container.find(".dropzone"));
-      this.dropzone.enable(function(contents) {
+      this.dropzone = dropZone(this);
+      container.find(".dropzone").append(this.dropzone.view).on(this.dropzone.events);
+      container.on("dropzone.file", function(event, contents) {
         thisController.model
                       .analyseFileContent(contents)
                       .then(function(scanModel){
-                        container.removeClass('pre-file').addClass('post-file');
+                        container.removeClass("pre-file').addClass('post-file");
 
-                        PubSub.publish('s2.status.message', thisController, {message: "File validated."});
+                        PubSub.publish("message.status.s2", thisController, {message: "File validated."});
 
                         // We update the labware view but we've already translated it, so force the display to
                         // be the identity, rather than the default mapping.
@@ -43,14 +43,14 @@ define([
                         thisController.owner.childDone(this, "enableBtn", {buttons: [{action: "print"}]});
                         thisController.owner.childDone(this, "enableBtn", {buttons: [{action: "end"}]});
                       }, function (errorMessage) {
-                        PubSub.publish("s2.status.error", thisController, {message: errorMessage});
+                        PubSub.publish("error.status.s2", thisController, {message: errorMessage});
                       });
       });
     },
 
     // TODO: should be triggered via an event
     disableDropZone:function(){
-      this.dropzone.disable();
+      this.dropzone.view.prop("disabled", true);
     },
 
     clear: function() {

@@ -24,29 +24,39 @@ define(['config'
         }, 250);
       }
 
-      var validation = validationCallback || function (element, callback, errorCallback) {
-        return function (event) {
-	  var CRKEYCODE=13, TABKEYCODE=9;
-	  if (!((event.which === TABKEYCODE) || (event.which === CRKEYCODE)))
-	      {
-		  return;
-	      }
-	  event.preventDefault();
-
-          var value = event.currentTarget.value;
-          var barcodeSelection = $(event.currentTarget);
-          setScannerTimeout(barcodeSelection);
-
-          if (_.some(BarcodeChecker, function (validationCallback) {
-            return validationCallback(Util.pad(value));
-          })) {
-            callback(value, element, thisController);
-          } else {
-            errorCallback(value, element, thisController);
+      return element.on("keydown", "input", buildProcessKeyInput(element, successCallback, errorCallback) );
+      
+      function buildProcessKeyInput(element, callback, errorCallback) {
+        return function(event)
+        {
+          var states = {
+            13: /* CR_KEY  */ processCompletedInput,
+            9:  /* TAB_KEY */ processCompletedInput
+          };
+          return (states[event.which] || doNothing)(event);
+          
+          function doNothing(event) { 
+            return;
           }
-        }
-      };
-      return element.on("keydown", "input", validation(element, successCallback, errorCallback) );
+        
+          function processCompletedInput(event)
+          {
+            event.preventDefault();
+
+            var value = event.currentTarget.value;
+            var barcodeSelection = $(event.currentTarget);
+            setScannerTimeout(barcodeSelection);
+
+            validationCallback = validationCallback || function(barcode) { 
+              return _.some(BarcodeChecker, function (validation) {
+                return validation(Util.pad(value));
+              });
+            };
+            (validationCallback(value)? callback : errorCallback)(value, element, thisController);        
+          
+          }
+        };
+      }
     },
 
     printerList: function(workflowConfig) {
@@ -58,7 +68,7 @@ define(['config'
     startProcess: function(f) {
       var controller = this;
       return _.wrap(f, function(func) {
-        controller.view.trigger("s2.busybox.start_process");
+        controller.view.trigger("start_process.busybox.s2");
         return func.apply(undefined, _.drop(arguments, 1));
       });
     },
@@ -67,7 +77,7 @@ define(['config'
       var controller = this;
       return _.wrap(f, function(func) {
         var rc = func.apply(undefined, _.drop(arguments, 1));
-        controller.view.trigger("s2.busybox.end_process");
+        controller.view.trigger("end_process.busybox.s2");
         return rc;
       });
     }

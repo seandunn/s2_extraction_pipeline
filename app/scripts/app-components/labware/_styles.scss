@@ -1,0 +1,57 @@
+.legends, .legend {
+  display: none;
+}
+.legend {
+  @extend .unstyled;
+  @extend .inline;
+  li {
+    text-align: center;
+    font-size: 75%;
+    color: white;
+    border-radius: 25px;
+    width: 35px;
+    height: 20px;
+    padding: 12px;
+  }
+}
+
+.empty             { fill: #f5f5f5; background-color: #f5f5f5; }
+.full              { fill: #5bb75b; background-color: #5bb75b; }
+.resource-not-data { fill: #49afcd; background-color: #49afcd; }
+.data-not-resource { fill: #da4f49; background-color: #da4f49; }
+.resource-and-data { fill: #5bb75b; background-color: #5bb75b; }
+
+.error     { fill: #ff0000; background-color: #ff0000; }
+.very-poor { fill: hsl(120, 100%, 75%); background-color: hsl(120, 100%, 75%); }
+.poor      { fill: hsl(120, 100%, 50%); background-color: hsl(120, 100%, 50%); }
+.good      { fill: hsl(120, 100%, 30%); background-color: hsl(120, 100%, 30%); }
+.very-good { fill: hsl(120, 100%, 20%); background-color: hsl(120, 100%, 20%); }
+.excellent { fill: hsl(120, 100%, 10%); background-color: hsl(120, 100%, 10%); }
+
+.dna   { fill: hsl(120, 45%, 58%);  background-color: hsl(120, 45%, 58%); }
+.dna_p { fill: hsl(120, 34%, 25%);  background-color: hsl(120, 34%, 25%); }
+.rna   { fill: hsl(3, 60%, 46%);    background-color: hsl(3, 60%, 46%); }
+.rna_p { fill: hsl(3, 60%, 25%);    background-color: hsl(3, 60%, 25%); }
+.na_p  { fill: hsl(194, 59%, 45%);  background-color: hsl(194, 59%, 45%); }
+
+div.resource {
+  .unused      { fill: #d40000; background-colour: #d40000; stroke: #000000; opacity: 0.6; }
+  .tube .empty { display: none; }
+
+  // Ensure that the SVG is always set to contain the entire image, otherwise you get
+  // a considerably taller box than is necessary.
+  svg { height: 100%; }
+  height: auto;
+}
+
+.labware .close {
+  display: none;
+}
+
+svg text{
+    font-size: 25px ;
+}
+
+svg .value {
+  font-weight: bold
+}

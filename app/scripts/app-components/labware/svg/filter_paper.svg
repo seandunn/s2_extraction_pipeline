@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+  xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"
+  viewBox="0 0 600 350"
+  width="250" height="125"
+  class="filter-paper"
+ >
+<g>
+      <path d="
+        M 500 21
+        C 500 14
+          498 13
+          485 7
+
+        C 472 0
+          472 0
+          458 0
+
+        L 0   0
+        L 0   300
+        L 500 300
+        L 500 21
+        Z
+        M 500 20
+
+        C 500 14
+          500 14
+          472 14
+
+        L 472 14
+
+        C 472 0
+          472 0
+          459 0
+"
+    stroke="hsl(50, 28%, 90%)" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" fill="hsl(50, 81%, 97%)"/>
+    <ellipse cx="125"  cy="125"  rx="100"     ry="100" fill="hsl(50, 81%, 97%)" stroke="hsl(50, 28%, 90%)" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/>
+    <ellipse cx="350"  cy="125"  rx="100"     ry="100" fill="hsl(50, 81%, 97%)" stroke="hsl(50, 28%, 90%)" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" class=""/>
+  </g>
+
+  <text class="lot-no" y="255" style="display:none">
+    <tspan x="30" >Lot #:</tspan>
+    <tspan class="value" x="145" />
+  </text>
+  <text class="barcode" y="285" style="display:none">
+    <tspan x="30" >Barcode:</tspan>
+    <tspan class="value" x="145" />
+  </text>
+</svg>

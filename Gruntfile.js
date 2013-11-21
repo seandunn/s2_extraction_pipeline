@@ -35,7 +35,10 @@ module.exports = function (grunt) {
                 tasks: ['coffee:test']
             },
             compass: {
-                files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+                files: [
+                  '<%= yeoman.app %>/styles/{,*/}*.{scss,sass}',
+                  '<%= yeoman.app %>/scripts/app-components/{,*/}*.{scss,sass}'
+                ],
                 tasks: ['compass:server']
             },
             livereload: {
@@ -338,6 +341,11 @@ module.exports = function (grunt) {
                 steps: 'test/features/step_definitions',
                 format: 'pretty'
             }
+        },
+        createComponent: {
+            dir: '<%= yeoman.app %>/scripts/app-components',
+            blueprintDir: '<%= yeoman.app %>/scripts/app-components/blueprints',
+            blueprintComponentName: 'component.js'
         }
     });
 
@@ -382,6 +390,42 @@ module.exports = function (grunt) {
         'rev',
         'usemin'
     ]);
+
+    grunt.registerTask('createComponent', function() {
+
+        var name = grunt.option("name");
+
+        if (!name) {
+            grunt.fail.fatal("A file name must be specified.\nExample: grunt createComponent --name:re-racking");
+        }
+
+        var config   = grunt.config.get(this.name),
+            new_path     = [config.dir, name].join("/"),
+            new_component = [new_path, name+".js"].join("/"),
+            blueprint_component = [new_path, config.blueprintComponentName].join("/"),
+            filesCreated = 0;
+        
+        if (grunt.file.isDir(new_path)) {
+            grunt.fail.fatal("Directory " + new_path + " already exists!");
+        }
+
+        // Copy over files from "blueprint" directory
+        grunt.file.recurse(config.blueprintDir, function(abspath, rootdir, subdir, filename) {
+            var filePath = [new_path, filename].join("/");
+            grunt.file.write(filePath, grunt.file.read(abspath).replace(/<<componentName>>/g, name));
+            grunt.log.writeln("New file: " + filePath + " created");
+            filesCreated++;
+        });
+
+        // Rename component to name
+        grunt.file.copy(blueprint_component, new_component);
+        grunt.log.writeln("Renamed " + blueprint_component + " to " + new_component);
+
+        // ...then delete the blueprint_component
+        grunt.file.delete(blueprint_component);
+
+        grunt.log.ok(filesCreated + " files created in " + new_path).ok();
+    });
 
     grunt.registerTask('default', [
         'jshint',

@@ -6,7 +6,8 @@ define([
   'spec/file_handling/manifests_spec',
   'spec/file_handling/nano_drop_spec',
   'spec/file_handling/racking_spec',
-  'spec/file_handling/volume_spec'
+  'spec/file_handling/volume_spec',
+  'spec/file_handling/tecan_spec'
 ], function(TestHelper) {
   'use strict';
 

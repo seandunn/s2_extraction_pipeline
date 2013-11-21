@@ -4,39 +4,67 @@ define(['config'
   , 'default/default_model'
   , 'lib/util'
   , 'lib/pubsub'
-], function (config, BaseController, defaultPagePartialHtml, Model, Util, PubSub) {
+  , 'lib/barcode_checker'
+  , 'lib/promise_tracker'
+], function (config, BaseController, defaultPagePartialHtml, Model, Util, PubSub, BarcodeChecker, PromiseTracker) {
   'use strict';
 
+  function userBarcodeValidation(barcode)
+  {
+    return true;
+  }
+  
+  function labwareBarcodeValidation(barcode)
+  {
+    return _.some(BarcodeChecker, function (validation) { return validation(barcode);});    
+  }
+  
   var userCallback = function(value, template, controller){
     var barcode = Util.pad(value);
-    controller.model.setUserFromBarcode(barcode)
-        .fail(function (error) {
-          PubSub.publish('s2.status.error', controller, error);
-        })
-        .then(function(){
-          template.find("input").val(barcode);
-          template.find("input").attr('disabled', true);
-          controller.jquerySelectionForLabware().
-              find("input").
-              removeAttr('disabled').
-              focus();
-        });
+
+    controller.userBCSubController.showProgress();
+
+    PromiseTracker(controller.model.setUserFromBarcode(barcode))
+      .fail(function (error) {
+        PubSub.publish("error.status.s2", controller, error);
+        controller.userBCSubController.hideProgress();
+      })
+      .afterThen(function(tracker) {
+        controller.userBCSubController.updateProgress(tracker.thens_called_pc());
+      })
+      .then(function(){
+        template.find("input").val(barcode);
+        template.find("input").attr('disabled', true);
+
+        controller.jquerySelectionForLabware().
+          find("input").
+          removeAttr('disabled').
+          focus();
+      });
   };
 
   var barcodeErrorCallback = function(errorText){
     return function(value, template, controller){
-      PubSub.publish('s2.status.error', this, {message: errorText});
+      PubSub.publish("error.status.s2", this, {message: errorText});
     };
   };
 
   var labwareCallback = function(value, template, controller){
     template.find("input").attr('disabled', true);
     template.find('.alert-error').addClass('hide');
-    controller.model.setLabwareFromBarcode(Util.pad(value))
-        .fail(function (error) {
-          PubSub.publish('s2.status.error', controller, error);
-        })
-        .then(login);
+
+    controller.labwareBCSubController.showProgress();
+
+    PromiseTracker(controller.model.setLabwareFromBarcode(value))
+      .fail(function (error) {
+        PubSub.publish("error.status.s2", controller, error);
+        controller.labwareBCSubController.hideProgress();
+      })
+      .afterThen(function(tracker) {
+        controller.labwareBCSubController.updateProgress(tracker.thens_called_pc());
+      })
+      .then(login)
+
     function login(model){
       if (model.isValid()){
         controller.owner.childDone(controller, "login", model);
@@ -88,8 +116,12 @@ define(['config'
       this.jquerySelection().html(_.template(defaultPagePartialHtml)({}));
       var errorCallback = barcodeErrorCallback('Barcode must be a 13 digit number.');
 
-      this.jquerySelectionForUser().append(this.bindReturnKey( this.userBCSubController.renderView(), userCallback, errorCallback ));
-      this.jquerySelectionForLabware().append(this.bindReturnKey( this.labwareBCSubController.renderView(), labwareCallback, errorCallback));
+      this.jquerySelectionForUser().append(
+        this.bindReturnKey(this.userBCSubController.renderView(),
+          userCallback, errorCallback, userBarcodeValidation));
+      this.jquerySelectionForLabware().append(
+        this.bindReturnKey(this.labwareBCSubController.renderView(),
+          labwareCallback, errorCallback, labwareBarcodeValidation));
 
       return this;
     },
@@ -100,4 +132,3 @@ define(['config'
 
   return DefaultController;
 });
-

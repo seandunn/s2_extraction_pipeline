@@ -2,7 +2,8 @@ define([ 'controllers/base_controller'
   , 'models/selection_page_model'
   , 'text!html_partials/_selection_page.html'
   , 'lib/pubsub'
-], function(BaseController, Model, selectionPagePartialHtml, PubSub) {
+  , 'lib/promise_tracker'
+], function(BaseController, Model, selectionPagePartialHtml, PubSub, PromiseTracker) {
   'use strict';
 
   var PageController = Object.create(BaseController);
@@ -21,6 +22,7 @@ define([ 'controllers/base_controller'
       this.owner = owner;
       return this;
     },
+
     setupController: function (setupData, jquerySelection) {
       var controller = this;
       this.jquerySelection = jquerySelection;
@@ -45,7 +47,7 @@ define([ 'controllers/base_controller'
               return model.changeRoleWithoutChangingBatch();
             })
             .fail(function (error) {
-              PubSub.publish('s2.status.error', controller, error);
+              PubSub.publish("error.status.s2", controller, error);
             })
             .then(function (model) {
               controller.owner.childDone(controller, "done", {batch:null,labware:null});
@@ -61,7 +63,7 @@ define([ 'controllers/base_controller'
                 return model.makeBatch()
               })
               .fail(function (error) {
-                PubSub.publish('s2.status.error', controller, error);
+                PubSub.publish("error.status.s2", controller, error);
               })
               .then(function (model) {
                 controller.owner.childDone(controller, "done", {batch: model.batch});
@@ -113,7 +115,7 @@ define([ 'controllers/base_controller'
 
             var jQueryForNthChild = function (childIndex) {
               return function () {
-                return controller.jquerySelection().find("li :eq(" + childIndex + ")");
+                return controller.jquerySelection().find(".labware-selection > li:eq(" + childIndex + ")");
               };
             };
             var controllerData = [];
@@ -162,17 +164,23 @@ define([ 'controllers/base_controller'
       var controller = this;
       // model should not talk using 'childDone' anymore
       if (action === "barcodeScanned") {
-        this.model
-        .then(function (model) {
-          return model.addTubeFromBarcode(data.BC);
-        })
-        .fail(function (error) {
-          PubSub.publish('s2.status.error', controller, error);
-        })
-        .then(function () {
-          controller.setupSubControllers();
-          controller.renderView();
-        });
+        child.barcodeInputController.showProgress();
+
+        PromiseTracker(this.model, {number_of_thens: 1})
+          .afterThen(function(tracking){
+            child.barcodeInputController.updateProgress(tracking.thens_called_pc());
+          })
+          .then(function (model) {
+            return model.addTubeFromBarcode(data.BC);
+          })
+          .fail(function (error) {
+            PubSub.publish("error.status.s2", controller, error);
+            child.barcodeInputController.hideProgress();
+          })
+          .then(function () {
+            controller.setupSubControllers();
+            controller.renderView();
+          });
       } else if (action === "removeLabware") {
         this.model
         .then(function (model) {
@@ -188,4 +196,3 @@ define([ 'controllers/base_controller'
 
   return PageController;
 });
-
