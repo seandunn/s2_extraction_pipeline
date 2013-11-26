@@ -44,15 +44,22 @@ define(['config'
             event.preventDefault();
 
             var value = event.currentTarget.value;
+            if (value.match(/\d{12}/))
+              {
+                value = Util.pad(value);
+              }
             var barcodeSelection = $(event.currentTarget);
-            setScannerTimeout(barcodeSelection);
+            //setScannerTimeout(barcodeSelection);
 
             validationCallback = validationCallback || function(barcode) { 
               return _.some(BarcodeChecker, function (validation) {
                 return validation(Util.pad(value));
               });
             };
-            (validationCallback(value)? callback : errorCallback)(value, element, thisController);        
+            (validationCallback(value)? callback : _.wrap(errorCallback, function(fun) {
+              setScannerTimeout(barcodeSelection);
+              return fun();
+            }))(value, element, thisController);        
           
           }
         };
