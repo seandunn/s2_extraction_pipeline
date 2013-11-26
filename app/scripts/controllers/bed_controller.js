@@ -27,9 +27,15 @@ define([
     this.component.view.on(this.component.events);
 
     this.component.view.on("done.bed-recording.s2", $.ignoresEvent(_.bind(function(view, bedBarcode, plateLabware) {
+      var value = plateLabware.labels.barcode.value;
+      if (value.match(/\d{12}/))
+      {
+        value = Util.pad(value);
+      }
+    
       var msg = {
       modelName: this.owner.labwareModel.expected_type.pluralize(),
-      BC:        plateLabware.labels.barcode.value
+      BC:        value
     };
       this.owner.updateModel(plateLabware);
 

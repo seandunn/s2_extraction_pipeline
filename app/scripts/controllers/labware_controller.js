@@ -152,6 +152,10 @@ define(["controllers/base_controller",
 
       if (this.barcodeInputController) {
         var labwareCallback = function(value, template, controller){
+          if (value.match(/\d{12}/))
+          {
+            value = Util.pad(value);
+          }
           controller.owner.childDone(controller, "barcodeScanned", {
             modelName: controller.labwareModel.expected_type.pluralize(),
             BC:        value
@@ -304,6 +308,10 @@ define(["controllers/base_controller",
         var value = event.currentTarget.value;
         var barcodeSelection = $(event.currentTarget);
         setScannedTimeout(barcodeSelection);
+        if (value.match(/\d{12}/))
+        {
+          value = Util.pad(value);
+        }        
         if (validationCallBack(value,barcodePrefixes)) {
           callback(value, element, controller);
           controller.onBarcodeScanned();
