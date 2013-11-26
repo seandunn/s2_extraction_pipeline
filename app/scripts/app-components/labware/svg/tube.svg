@@ -11,6 +11,7 @@
    version="1.1"
    width="264"
    height="141"
+   class="tube"
 >
   <metadata
      id="metadata3402">
@@ -302,7 +303,7 @@
   </g>
   <g
      transform="matrix(1.2501593,0,0,1.024456,-171.1693,-34.091622)"
-     id="aliquot"
+     class="aliquot"
      style="stroke:none">
     <desc
        id="desc4156">The aliquot liquid describing the full/empty state.</desc>
@@ -472,39 +473,39 @@
      style="display:none" />
   <path
      d="m 8.03157,25.656334 -2.825,1.175 17.775,42.250006 -17.775,42.225 2.825,1.2 16.625,-39.475 16.625,39.475 2.825,-1.2 -17.775,-42.225 17.775,-42.250006 -2.825,-1.175 -16.625,39.475006 -16.625,-39.475006 z"
-     id="unused"
+     class="unused"
      style="stroke-width:0.32456377;display:none" />
   <text
-     id="volume"
+     class="volume"
      style="display:none">
     <tspan
        x="68.758698"
        y="19.984566"
-       id="tspan4079">Volume:</tspan>
+       id="tspan4079">Volume:<tspan class="value"></tspan></tspan>
     <tspan
        x="110.7587"
        y="19.984566"
        id="tspan4081" />
   </text>
   <text
-     id="type"
+     class="type"
      style="display:none">
     <tspan
        x="68.758698"
        y="57.489433"
-       id="tspan4084">Type:</tspan>
+       id="tspan4084">Type:<tspan class="value"></tspan></tspan>
     <tspan
        x="110.7587"
        y="57.489433"
        id="tspan4086" />
   </text>
   <text
-     id="barcode"
+     class="barcode"
      style="display:none">
     <tspan
        x="68.758698"
        y="95"
-       id="tspan4089">Barcode:</tspan>
+       id="tspan4089">Barcode:<tspan class="value"></tspan></tspan>
     <tspan
        x="110.7587"
        y="95"
