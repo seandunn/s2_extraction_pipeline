@@ -55,6 +55,11 @@ define(['config'
 
     controller.labwareBCSubController.showProgress();
 
+    if (value.match(/\d{12}/))
+    {
+      value = Util.pad(value);
+    }
+    
     PromiseTracker(controller.model.setLabwareFromBarcode(value))
       .fail(function (error) {
         PubSub.publish("error.status.s2", controller, error);

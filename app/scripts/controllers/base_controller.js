@@ -44,6 +44,10 @@ define(['config'
             event.preventDefault();
 
             var value = event.currentTarget.value;
+            if (value.match(/\d{12}/))
+              {
+                value = Util.pad(value);
+              }
             var barcodeSelection = $(event.currentTarget);
             setScannerTimeout(barcodeSelection);
 
