@@ -1521,7 +1521,7 @@
           },
           "output": [
             {
-              "role": "samples.qc.nx_nanodrop.working_dilution_rna.nanodrop",
+              "role": "samples.qc.gel.fx_rna",
               "aliquotType": "RNA",
               "purpose": "stock",
               "model": "plates",
