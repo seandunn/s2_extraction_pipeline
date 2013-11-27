@@ -1,19 +1,19 @@
 define([
   "underscore"
 ], function() {
-  "use strict";
+  'use strict';
 
   var printerTypes = {
     1: {
-      name: "96 Well Plate Printer",
+      name: '96 Well Plate Printer',
       canPrint: _.partial(_.contains, ["plate", "tube_rack"])
     },
     2: {
-      name: "Tube Printer",
+      name: 'Tube Printer',
       canPrint: _.partial(_.contains, ["tube", "spin_column", "filter_paper"])
     },
     3: {
-      name: "Rack Printer",
+      name: 'Rack Printer',
       canPrint: _.partial(_.contains, ["tube_rack"])
     }
   };
@@ -23,18 +23,18 @@ define([
     return {
       name:         name,
       type:         type,
-      friendlyName: name + " " + details.name,
+      friendlyName: name + ' ' + details.name,
       canPrint:     details.canPrint
     };
   }
 
   return {
     // Configure the API to S2
-    apiUrl: "SERVER_NAME",
-    mergeServiceUrl: "SERVER_NAME/manifest-merge-service/",
+    apiUrl: 'http://psd2f.internal.sanger.ac.uk:8000/',
+    mergeServiceUrl: 'http://psd2g.internal.sanger.ac.uk:8100/manifest-merge-service/',
 
     // No touching! Release branch value as it's picked up by the deployment script
-    release: "development_branch",
+    release: 'development_branch',
 
     verboseLevel: "NONE", // DEBUG, WARNING, ERROR, NONE
 
@@ -42,22 +42,19 @@ define([
 
     ajax: function(options) {
       return $.ajax(options)
-      .then(function(result) {
-        return {responseText:result};
-      })
-      .fail(function(error){
-        throw "AJAX response error: "+ error.responseText;
-      });
+          .then(function(result) {
+            return {responseText:result};
+          })
+          .fail(function(error){
+            throw "AJAX response error: "+ error.responseText;
+          })
     },
 
     // Configure the print service
-    printServiceUrl: "SERVER_NAME/printers/legacy/soap",
-
+    printServiceUrl: 'http://psd2f.internal.sanger.ac.uk:8000/printers/legacy/soap',
     printers: [
-      printer("g216bc", 2),
-      printer("g214bc", 1),
-      printer("e367bc", 2),
-      printer("d304bc", 1)
+      printer('e367bc', 2),
+      printer('d304bc', 1)
     ],
 
     messageTimeout: 5000,
@@ -68,7 +65,8 @@ define([
 
     // This is for logging only not for authentication or authorisation.
     UserData: {
-      "0000000000001": "Test_User_1"
+      "0000000000001": "TEST_USER_1",
+      "0000000000002": "TEST_USER_2"
     }
   };
 

@@ -133,7 +133,7 @@ define([
 
     // Config input display labware
     process.components[0].view.on(_.pick(process.components[0].events, "display.labware.s2"));    
-    process.components[0].view.trigger("display.labware.s2", [context.input.labware]);
+    process.components[0].view.trigger("display.labware.s2", [StandardRepresenter(context.input.labware)]);
     
     return {
       view: $html,
