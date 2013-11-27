@@ -48,8 +48,8 @@ define([
       view.empty().append(document.importNode(picker(labware), true));
 
       // Ensure the tube is filled, and that an unused marker is displayed if necessary.
-      view.find("svg #aliquot").attr('class', cssForType(labware.type));
-      view.find("svg #unused")[labware.tracked === false ? 'show' : 'hide']();
+      view.find("svg .aliquot").attr('class', cssForType(labware.type));
+      view.find("svg .unused")[labware.tracked === false ? 'show' : 'hide']();
 
       // Display the extraneous data
       _.chain(labware)
@@ -62,7 +62,7 @@ define([
   };
 
   function displayValueIfSet(view, value, field) {
-    var element = view.find("svg #" + field);
+    var element = view.find("svg ." + field);
     if (_.isUndefined(value)) {
       element.hide();
     } else {
