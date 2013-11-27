@@ -64,7 +64,7 @@ define([
         events: {
           "activate.s2": html.eventTrigger("present.labware.s2", context.labware)
         }
-      })
+      });
     }
 
     // Now return the view, along with any compose event handlers.

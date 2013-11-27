@@ -4,8 +4,9 @@ define([
   "text!app-components/lysing/_output.html",
   "text!app-components/lysing/_print.html",
 
-  "app-components/linear-process/linear-process",
+  "app-components/linear-process/switchable-linear-process",
   "app-components/labware/scanning",
+  "app-components/labware/display",
   "app-components/labelling/printing",
   "labware/standard_mappers",
   "mapper/operations",
@@ -13,15 +14,45 @@ define([
   // Added to the global namespace
   "lib/underscore_extensions",
   "lib/jquery_extensions"
-], function(view, inputView, outputView, printView, LinearProcess, LabwareScanner, LabelPrinting, StandardRepresenter, Operations) {
+], function(view, inputView, outputView, printView, LinearProcess, LabwareScanner, LabwareDisplay, LabelPrinting, StandardRepresenter, Operations) {
   "use strict";
 
+  
   var template        = _.compose($, _.template(view));
   var printTemplate   = _.compose($, _.template(printView));
 
-  var InputComponent  = new LabwareComponent(_.compose($, _.template(inputView)));
-  var OutputComponent = new LabwareComponent(_.compose($, _.template(outputView)));
+  var InputComponent  = skipComponent(templateComponent(LabwareDisplay, _.compose($, _.template(inputView))));
+  var OutputComponent = templateComponent(LabwareScanner, _.compose($, _.template(outputView)));
 
+  function skipComponent(builder) {
+    return function(context) {
+      var component = builder(context);
+      // This event needs to be added after the events of the component itself.
+      component.events["activate.s2"] = component.events["activate.s2"] || function() {}; 
+      component.events["activate.s2"] = $.stopsPropagation(_.wrap(component.events["activate.s2"], function(func) {
+        var value = func.apply(this, Array.prototype.slice.call(arguments, 1));
+        component.view.trigger("skip.s2", component.view);
+        return value;
+      }));
+      /*component.view.on("activate.s2", function() {
+        component.view.trigger("skip.s2", component.view);
+      });*/
+      return component;
+    };
+  }
+  
+  function templateComponent(builder, template, context) {
+    return function(context) {
+      var html      = template(context);
+      var component = builder(context);
+      html.append(component.view);
+      return {
+        view: html,
+        events: component.events
+      };
+    };
+  }
+  
   return function(context) {
     var $html   = template(context);
     var error   = _.partial(_.bind($html.trigger, $html), "error.status.s2");
@@ -53,6 +84,9 @@ define([
     // the tube barcode, then scan that tube to confirm the correct value, which will signal the
     // completion of the transfer.
     var process = new LinearProcess({
+      focusClass: "focus-box",
+      blurClass: "disabled-box",
+      skipClass: "skipped-box",
       components:[{
         constructor: InputComponent,
         context:_.extend({root: context.root, representer: StandardRepresenter}, context.input)
@@ -97,10 +131,13 @@ define([
       });
     })));
 
-
+    // Config input display labware
+    process.components[0].view.on(_.pick(process.components[0].events, "display.labware.s2"));    
+    process.components[0].view.trigger("display.labware.s2", [StandardRepresenter(context.input.labware)]);
+    
     return {
       view: $html,
-      events: process.events
+      events: _.omit(process.events, "display.labware.s2")
     };
   };
 
@@ -141,18 +178,6 @@ define([
     }
   }
 
-  function LabwareComponent(template) {
-    return function(context) {
-      var html      = template(context);
-      var component = new LabwareScanner(context);
-      html.append(component.view);
-      return {
-        view: html,
-        events: component.events
-      };
-    };
-  }
-
   function PrintComponent(context) {
     var eventsToBindToUs = ["labels.print.s2", "filter.print.s2"];
 
@@ -183,6 +208,12 @@ define([
         });
       });
     })));
+    
+    $printHtml.on("labels.print.s2", function() {
+      // When labels have been printed (at least once) then we are ready to
+      // continue process
+      $printHtml.trigger("done.s2");
+    });
 
     return {
       view:   $printHtml,
