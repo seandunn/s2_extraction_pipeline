@@ -116,6 +116,9 @@ define([ "config", "app-components/imager/imager", /*"models/connected"*/ "model
         view.on("uploaded.request.imager.s2", _.partial(function(file, event, data) {
           file.image = window.btoa(data.content);
           file.dataType = "BASE64";
+          view.on("done.s2", function() {
+            configButtons("done");            
+          });
         }, dataParams.out_of_bounds));
         
         view.on("upload.request.imager.s2", _.partial(function(dataParams, model, uuid) {
