@@ -37,14 +37,10 @@ define([ "app-components/linear-process/linear-process",
         PubSub.publish("error.status.s2", this, {message: 'Incorrect bed verification.'});        
       });
     
-    _.extend(obj.events,
-      { "scanned.robot.s2" : $.ignoresEvent(_.partial(function(promise, previous, robot) {
-        if (!!previous) {
-          previous.call(this, robot);
-        }
-        promise.resolve(robot);
-      }, robotScannedPromise, obj.events["scanned.robot.s2"]))
-      });
+    $(document.body).on("scanned.robot.s2", _.partial(function(promise, event, robot) {
+      promise.resolve(robot);
+    }, robotScannedPromise));
+    
     return obj;
   };
 });

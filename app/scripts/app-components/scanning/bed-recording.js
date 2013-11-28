@@ -50,12 +50,14 @@ define([ "text!app-components/scanning/_bed-recording.html",
     if (context.cssClass) {
       html.addClass(context.cssClass);
     }
+
+    $(document.body).on("scanned.robot.s2", _.partial(function(promise, event, robot) {
+      promise.resolve(robot);
+    }, robotScannedPromise));
+
     return (
       { view : html, events : _.extend(
-        {  "reset.bed-recording.s2": function() {},
-           "scanned.robot.s2": _.partial(function(promise, robot) {
-            promise.resolve(robot);
-          }, robotScannedPromise)
+        {  "reset.bed-recording.s2": function() {}           
         }, component.events)
       });
   };
