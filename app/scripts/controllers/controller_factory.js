@@ -1,6 +1,7 @@
 define([
   // The top level controllers (typically these get re-used)
   'controllers/row_controller',
+  'controllers/row_bed_controller',
   'controllers/step_controller',
   'controllers/scan_barcode_controller',
   'controllers/labware_controller',
@@ -8,7 +9,7 @@ define([
 
   // Controllers that add extra behaviour, for some reason
   'controllers/kit_controller',
-  'controllers/bed_controller',
+  'controllers/robot_controller',
   'controllers/rack_scan_controller',
   'controllers/selection_page_controller',
   'default/default_controller',
@@ -18,7 +19,8 @@ define([
 
   // Component wrapping controllers
   'app-components/labware/display_controller_wrapper',
-  'app-components/lysing/lysing_controller_wrapper'
+  'app-components/lysing/lysing_controller_wrapper',
+  'app-components/imager/imager_controller'
 ], function() {
   'use strict';
 

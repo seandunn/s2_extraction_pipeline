@@ -15,8 +15,9 @@ define([
       var view = this;
 
       _.each(model.buttons, function(buttonDetails) {
-        parent.find('.'+buttonDetails.action+'Button').on('click', function() {
+        parent.find('.'+buttonDetails.action+'Button').on('click', function(event) {
           view.owner.childDone(view, buttonDetails.action, view.selector().find('.printer-select').val());
+          event.preventDefault();
         });
       });
     },

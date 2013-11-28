@@ -52,7 +52,7 @@ define([ 'controllers/base_controller'
             .then(function (model) {
               controller.owner.childDone(controller, "done", {batch:null,labware:null});
             });
-        }
+        };
       } else {
         return function (e) {
           if (!controller.batchCreated) {
@@ -60,7 +60,7 @@ define([ 'controllers/base_controller'
             controller.jquerySelection().find("button.btn").attr("disabled", "disabled");
             controller.model
               .then(function (model) {
-                return model.makeBatch()
+                return model.makeBatch();
               })
               .fail(function (error) {
                 PubSub.publish("error.status.s2", controller, error);
@@ -69,7 +69,7 @@ define([ 'controllers/base_controller'
                 controller.owner.childDone(controller, "done", {batch: model.batch});
               });
           }
-        }
+        };
       }
     },
 
@@ -152,7 +152,7 @@ define([ 'controllers/base_controller'
               controller.setupController(config, jQueryForNthChild(index));
             }).value();
 
-          })
+          });
     },
 
     release:function () {
@@ -189,7 +189,7 @@ define([ 'controllers/base_controller'
         .then(function () {
           controller.setupSubControllers();
           controller.renderView();
-        })
+        });
       }
     }
   });
