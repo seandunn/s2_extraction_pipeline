@@ -1,4 +1,4 @@
-define([ "app-components/linear-process/linear-process", "app-components/labware/display", "labware/standard_mappers",
+define([ "app-components/linear-process/switchable-linear-process", "app-components/labware/display", "labware/standard_mappers",
     "app-components/imager/button", "app-components/imager/fileSelector",
 ], function(linearProcess, labwareDisplay, representer, button, fileSelector) {
   "use strict";
