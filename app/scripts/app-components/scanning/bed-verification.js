@@ -34,7 +34,8 @@ define([ "app-components/linear-process/linear-process",
         obj.view.trigger("scanned.bed-verification.s2", arguments);
         PubSub.publish("message.status.s2", this, {message: 'Bed verification correct.'});
       }, function() {
-        PubSub.publish("error.status.s2", this, {message: 'Incorrect bed verification.'});        
+        PubSub.publish("error.status.s2", this, {message: 'Incorrect bed verification.'});
+        obj.view.trigger("reset.s2");
       });
     
     $(document.body).on("scanned.robot.s2", _.partial(function(promise, event, robot) {

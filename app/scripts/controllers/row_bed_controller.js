@@ -89,7 +89,7 @@
     },
     setupControllerWithBedVerification: function() {
       var controller = this;
-      
+      $(".robot input").prop("value", "");
       var bedRecordingInfo = this.controllers.map(function(value, pos, list) {
           if ((pos % 2)===0) 
             return [value, list[pos+1]];
@@ -146,6 +146,8 @@
       var arrow = "<div class='transferArrow span1 offset1'><span >&rarr;</span></div>";
       $(arrow).insertAfter($(".left", controller.jquerySelection())[0]);
 
+      this.linearProcessLabwares.view.on("reset.s2", _.bind(this.setupControllerWithBedVerification, this));
+      
       // Enable linear process if robot scanned
       controller.owner.owner.activeController = this.owner;
       controller.jquerySelection().on(_.omit(this.linearProcessLabwares.events, "scanned.robot.s2"));
