@@ -1,7 +1,7 @@
-define([ "config", "app-components/imager/imager", /*"models/connected"*/ "models/selection_page_model" , "lib/pubsub", 'mapper/operations'//"models/selection_page_model"
-], function(appConfig, imager, Model, PubSub, Operations) {
+define([ "config", "app-components/imager/imager", "models/selection_page_model" , "lib/pubsub", 'mapper/operations', "text!app-components/imager/header.html"
+], function(appConfig, imager, Model, PubSub, Operations, template) {
   "use strict";
-  
+    
   return (
     { register : function(callback) {
       return callback("imager", imagerController);
@@ -18,12 +18,12 @@ define([ "config", "app-components/imager/imager", /*"models/connected"*/ "model
       "done": function() {
         buttons.prop("disabled", false);
         $(buttons[0]).prop("disabled", true);
-        $(buttons[1]).prop("disabled", true);        
+        $(buttons[1]).prop("disabled", true);
       },
       "default": function() {
         buttons.prop("disabled", true);
         $(buttons[0]).prop("disabled", false);
-        $(buttons[1]).prop("disabled", false);                
+        $(buttons[1]).prop("disabled", false);
       }
     };
     var methodDefault = renderButtons["default"];
@@ -43,8 +43,15 @@ define([ "config", "app-components/imager/imager", /*"models/connected"*/ "model
         this.owner = owner;
         var component = imager({labware: config.initialLabware});
         var view = selector();
-        view.html($('<div class="filename"><span class="filename"></span></div>'));
+        var text = "<div class=\"row\" >";
+        text += "<div class=\"span9\">";
+        text += "<h3 id=\"process-title\" >"+ config.processTitle + "</h3>";
+        text += "</div>";
+        text += "</div >";
+        view.html(text);
         view.append(component.view);
+        
+        view.append($('<div class="filename"><span class="filename"></span></div>'));
         view.on(component.events);
         this.component = component;
         
