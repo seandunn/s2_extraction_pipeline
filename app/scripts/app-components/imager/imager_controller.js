@@ -1,7 +1,6 @@
-define([ "config", "app-components/imager/imager", "models/selection_page_model" , "lib/pubsub", 'mapper/operations', "text!app-components/imager/header.html"
+define([ "config", "app-components/imager/imager", "models/selection_page_model" , "lib/pubsub", "mapper/operations", "text!app-components/imager/header.html"
 ], function(appConfig, imager, Model, PubSub, Operations, template) {
   "use strict";
-    
   return (
     { register : function(callback) {
       return callback("imager", imagerController);
@@ -43,12 +42,7 @@ define([ "config", "app-components/imager/imager", "models/selection_page_model"
         this.owner = owner;
         var component = imager({labware: config.initialLabware});
         var view = selector();
-        var text = "<div class=\"row\" >";
-        text += "<div class=\"span9\">";
-        text += "<h3 id=\"process-title\" >"+ config.processTitle + "</h3>";
-        text += "</div>";
-        text += "</div >";
-        view.html(text);
+        view.html(_.template(template, {templateData: { config: config} }));
         view.append(component.view);
         
         view.append($('<div class="filename"><span class="filename"></span></div>'));

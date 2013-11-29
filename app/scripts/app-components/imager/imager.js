@@ -14,7 +14,6 @@ define([ "app-components/linear-process/switchable-linear-process", "app-compone
       ]});
     
     var labware = labwareDisplay({});
-    //;linear.view.append(labware.view);
     linear.view.on(labware.events);
     linear.view.on("login.imager.s2", function() {
       window.location.href=window.location.href;
