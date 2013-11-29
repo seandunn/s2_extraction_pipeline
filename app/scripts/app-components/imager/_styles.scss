@@ -1,9 +1,24 @@
 input.btn.imager {
   opacity: 0; 
-  margin-left: -70px; 
   width: 5em;
 }
 
 .btn.imager {
   cursor: pointer;
+}
+
+.linear-process button.select {
+  margin-right: -65px;
+}
+
+.linear-process input.imager {
+  padding: 0 0;
+}
+
+button.imager {
+  margin-right: 5px;
+}
+
+div.imager {
+margin-top: 1.5em;
 }

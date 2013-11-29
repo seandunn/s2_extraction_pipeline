@@ -14,11 +14,20 @@ define([ "app-components/linear-process/switchable-linear-process", "app-compone
       ]});
     
     var labware = labwareDisplay({});
-    linear.view.append(labware.view);
     linear.view.on(labware.events);
+    linear.view.on("login.imager.s2", function() {
+      window.location.href=window.location.href;
+    });
     
     linear.view.trigger(LABWARE_DISPLAY, representer(context.labware));
-        
-    return linear;
+    linear.view.addClass("imager");
+    var html = labware.view;
+    html.append(linear.view);
+    var component = {
+      view: html,
+      events: linear.events
+    };
+    
+    return component;
   };
 });
