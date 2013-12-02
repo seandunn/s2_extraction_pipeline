@@ -89,7 +89,11 @@ define([
         return model.inputs.then(function(inputs) {
           model.owner.rowControllers = _.chain(inputs).map(function (input, index) {
             input = reset ? undefined : input;
-            var rowController = model.owner.controllerFactory.create("row_controller", model.owner);
+            var rowController =
+              model.owner.controllerFactory
+              .create(
+                (model.config.rowBehaviour === "bedVerification" || model.config.rowBehaviour === "bedRecording")?
+                  "row_bed_controller" : "row_controller", model.owner);
             rowController.setupController(model.getRowModel(root,index, input), selectorFunction(model.owner, index));
             return rowController;
           })

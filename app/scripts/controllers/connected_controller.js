@@ -128,7 +128,6 @@ define([
     },
 
     modelDone: function(child, action, data) {
-
       if (action === 'outputsReady') {
         this.model.ready = true;
         this.setupSubControllers(true);
@@ -138,6 +137,7 @@ define([
 
         PubSub.publish("message.status.s2", this, {message: 'Barcode labels printed'});
         PubSub.publish("printing_finished.step_controller.s2", this);
+        PubSub.publish("printing_finished.barcodePrintSuccess", this);
         this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
 
       } else if (action === "barcodePrintFailure") {
@@ -212,7 +212,6 @@ define([
 
     next:  function(child, action, data){
       var controller = this;
-
       this.model.behaviours.done[action](
         function(){ controller.owner.childDone(controller, 'done') },
         function(){ eventHandler.call(controller, child, action, data); }

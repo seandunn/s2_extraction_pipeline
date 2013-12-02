@@ -80,6 +80,6 @@ define([
   }
 
   function cssForType(type) {
-    return _.isUndefined(type) ? "empty" : type.replace(/[^\w-]+/g, "_").toLowerCase();
+    return (_.isString(type))? type.replace(/[^\w-]+/g, "_").toLowerCase() : "empty";
   }
 });

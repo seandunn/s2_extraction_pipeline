@@ -68,12 +68,10 @@ define(["controllers/base_controller",
       this.childDone(this.labwareModel, "resourceUpdated", {});
       return this;
     },
-    getComponentInterface: function() {
-      return (_.isUndefined(this.bedController))? {view: "", events: {}} : this.bedController.getComponentInterface();
-    },
     setupSubControllers: function () {
+      var type;
       if (!this.resourceController) {
-        var type = this.labwareModel.expected_type;
+        type = this.labwareModel.expected_type;
       }
       if (this.labwareModel.resource) {
         type = this.labwareModel.resource.resourceType;
@@ -86,10 +84,6 @@ define(["controllers/base_controller",
         }
         if (!this.barcodeInputController && this.labwareModel.display_barcode && !this.isSpecial()) {
           this.barcodeInputController = this.controllerFactory.create("scan_barcode_controller", this);
-        }
-        if (!this.bedController && (this.labwareModel.bedTracking === true))
-        {
-          this.bedController = this.controllerFactory.create("bed_controller", this);
         }
         this.setupSubModel();
       }
@@ -116,12 +110,6 @@ define(["controllers/base_controller",
           return that.jquerySelection().find("div.barcodeScanner");
         });
       }
-      if (this.bedController) {
-        this.bedController.init(data[this.labwareModel.expected_type], function() {
-          that.jquerySelection().find("div.linear-process").trigger("activate");
-          return that.jquerySelection().find("div.bed");
-        });
-      }
     },
 
     renderView: function () {
@@ -130,28 +118,16 @@ define(["controllers/base_controller",
 
       this.view.renderView(this.model);
 
-      if (this.bedController) {
-        this.jquerySelection().append(this.bedController.renderView());
-        /**
-         * TODO
-         * These lines comes from setupSubcontroller. REFACTOR
-         * Begin
-         */
-        this.resourceController = this.controllerFactory.createLabwareSubController(this, this.labwareModel.expected_type);
-        this.labwareModel.displayResource(_.bind(function() {
-            return this.jquerySelection().find("div.resource");
-        }, this));
-         /**
-          * End
-          */
-      }
-
       if (this.resourceController) {
         this.resourceController.renderView();
       }
 
       if (this.barcodeInputController) {
         var labwareCallback = function(value, template, controller){
+          if (value.match(/\d{12}/))
+          {
+            value = Util.pad(value);
+          }
           controller.owner.childDone(controller, "barcodeScanned", {
             modelName: controller.labwareModel.expected_type.pluralize(),
             BC:        value
@@ -304,6 +280,10 @@ define(["controllers/base_controller",
         var value = event.currentTarget.value;
         var barcodeSelection = $(event.currentTarget);
         setScannedTimeout(barcodeSelection);
+        if (value.match(/\d{12}/))
+        {
+          value = Util.pad(value);
+        }        
         if (validationCallBack(value,barcodePrefixes)) {
           callback(value, element, controller);
           controller.onBarcodeScanned();

@@ -34,7 +34,9 @@ define([
 
   function UnspecifiedLabwarePresenter(view, labware) {
     if (_.isUndefined(labware)) return;
-    var display = Presenters[labware.resourceType];
+    var type = labware.resourceType || (labware.resource && labware.resource.resourceType) ||
+      labware.expected_type;
+    var display = Presenters[type];
     display(view, labware);
   }
 });

@@ -54,6 +54,21 @@ define([
         return f.apply(this, _.drop(arguments, 1));
       };
     }),
+    
+    ignoresChildrenEvent: function(possibleParent, f) {
+      function isChildren(dom, possibleParent, iteration) {
+        iteration = (iteration || 0) + 1;
+        return ((dom.parentNode === possibleParent) ||
+        (possibleParent === document.body) || ((dom.parentNode !== document.body) &&
+        (iteration >= 0) && (iteration < 10) && (isChildren(
+          dom.parentNode, possibleParent, iteration))));
+      }
+      return function(event) {
+        var value = (!isChildren(event.target, possibleParent)) ? f.apply(this,
+          arguments) : false;
+        return value;
+      };      
+    },
 
     // Wraps the given handler to prevent the event from propagating up the DOM tree.
     stopsPropagation: handlesEvents(function(f) {

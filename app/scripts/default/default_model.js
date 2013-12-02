@@ -26,7 +26,7 @@ define([
           })
           .then(function (order) {
             return order.batchFor(function (item) {
-              return item.uuid === defaultModel.labware.uuid;
+              return item.uuid === defaultModel.labware.uuid && item.status==="done";
             });
           })
           .then(function (batch) {
