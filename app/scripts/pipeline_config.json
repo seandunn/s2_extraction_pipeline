@@ -102,7 +102,7 @@
       "capacity": 4,
       "input":        {
         "role":"samples.qc.gel.fx_rna",
-        "model":"tube_racks"
+        "model":"plates"
       },
       "output": [{
         "role": "samples.qc.gel.fx_rna.batched"
@@ -1559,7 +1559,7 @@
         "rowBehaviour":  "bedVerification",
         "input": {
           "role":  "samples.qc.gel.fx_rna.batched",
-          "model": "tube_racks",
+          "model": "plates",
           "title": "Working Dillution Rack",
           "bedTracking": true
         },
