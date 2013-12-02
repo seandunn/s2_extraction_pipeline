@@ -102,7 +102,7 @@
       "capacity": 4,
       "input":        {
         "role":"samples.qc.gel.fx_rna",
-        "model":"tube_racks"
+        "model":"plates"
       },
       "output": [{
         "role": "samples.qc.gel.fx_rna.batched"
@@ -1537,7 +1537,6 @@
       "controllerName": "step_controller",
       "printerType": 2,
       "defaultPrinter":"d304bc",
-      "printerType": 1,
       "buttons": [{ "action": "print", "title": "Print labels", "alwaysEnabled": true },
                   { "action": "start", "title": "Begin FX" },
                   { "action": "end",   "title": "Finished NX" },
@@ -1559,7 +1558,7 @@
         "rowBehaviour":  "bedVerification",
         "input": {
           "role":  "samples.qc.gel.fx_rna.batched",
-          "model": "tube_racks",
+          "model": "plates",
           "title": "Working Dillution Rack",
           "bedTracking": true
         },
@@ -1601,7 +1600,7 @@
         "rowBehaviour":  "bedRecording",
         "input": {
           "role":  "samples.qc.gel.ebase_rna.batched",
-          "model": "tube_racks",
+          "model": "gels",
           "title": "Gel",
           "bedTracking": true
         },
@@ -1609,7 +1608,7 @@
           "role": "samples.qc.gel.imager",
           "aliquotType":  "RNA",
           "purpose":     "stock",
-          "model":       "tube_racks",
+          "model":       "gels",
           "title":      "Gel",
           "not_batched":true
         }]
@@ -1636,12 +1635,12 @@
       }, 
       "input": {
         "role":  "samples.qc.gel.imager",
-        "model": "tube_racks",
+        "model": "gels",
         "title": "Gel"
       },
       "output": [{
         "role":  "samples.qc.gel.imager.done",
-        "model": "tube_racks",
+        "model": "gels",
         "aliquotType":  "RNA",
         "title": "Gel"
       }]
