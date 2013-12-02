@@ -2,7 +2,7 @@
   "name": "s2_extraction_pipeline",
   "version": "0.0.0",
   "dependencies": {
-    "jquery": "~1.9.1",
+    "jquery": "~1.10.2",
     "requirejs": "~2.1.4",
     "requirejs-domready": "~2.0.1",
     "S2Mapper": "https://github.com/sanger/S2Mapper.git#development",
