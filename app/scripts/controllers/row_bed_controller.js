@@ -254,13 +254,13 @@
       
       this.controllers = _.chain(this.rowModel.labwares).pairs().sort().map(function(nameToDetails) {
         var name = nameToDetails[0], details = nameToDetails[1];
-        //var subController = controller.controllerFactory.create('labware_controller', controller);
         var subController = controller.controllerFactory.create('labware', controller);
-        subController.setupController(details, function() { return controller.jquerySelection().find('.' + name); });
+        subController.setupController(details.resource, function() { return controller.jquerySelection().find('.' + name); });
         return subController;
       });
 
       this.currentView.renderView();
+      $(document.body).addClass("gel");
       this[(this.owner.config.rowBehaviour==="bedRecording")?"setupControllerWithBedRecording":"setupControllerWithBedVerification"]();
    },
 
