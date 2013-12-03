@@ -49,6 +49,7 @@ module.exports = function (grunt) {
                     '<%= yeoman.app %>/*.html',
                     '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
                     '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
+                    '{.tmp,<%= yeoman.app %>}/scripts/app-components/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
                     '<%= yeoman.test %>/spec/{,*}*.js'
                 ]
@@ -313,8 +314,7 @@ module.exports = function (grunt) {
         },
         concurrent: {
             server: [
-                'compass',
-                'coffee:dist'
+                'compass'
             ],
             test: [
                 'coffee'
@@ -374,8 +374,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('testAll', [
-        'test',
-        'cucumberjs'
+        'test'
     ]);
 
     grunt.registerTask('build', [

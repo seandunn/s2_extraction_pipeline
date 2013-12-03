@@ -1,4 +1,6 @@
-define([], function () {
+define([
+  "jquery"
+], function () {
   "use strict";
 
   // Allows the tests to wait for UI element to appear.
@@ -55,7 +57,7 @@ define([], function () {
     },
 
     aPressReturnEvent: function () {
-      return jQuery.Event("keypress", {which: 13});
+      return jQuery.Event("keydown", {which: 13});
     }
   };
 });
