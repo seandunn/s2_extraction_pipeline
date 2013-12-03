@@ -33,6 +33,5 @@ require([
 ], function ($, _, App, ControllerFactory) {
   "use strict";
 
-  var theApp = new App(new ControllerFactory());
+  new App(new ControllerFactory());
 });
-
