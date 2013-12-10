@@ -1,0 +1,26 @@
+span.option {
+    font-style: italic;
+}
+
+.header-gel-scoring-table {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.gel-scoring-selection {
+  margin-top: 15px;
+}
+
+.gel-scoring-selection td {
+    vertical-align: middle; 
+ }
+ 
+.hidden {
+	display: none;
+}
+
+select.gel-scoring-cell {
+	font-size: 9pt;
+	width: 8em;
+	height: 2em;
+}

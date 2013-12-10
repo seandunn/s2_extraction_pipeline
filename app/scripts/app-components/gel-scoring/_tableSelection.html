@@ -1,0 +1,14 @@
+<tbody>
+  <% _.each(resourcesList, function(resource) { %>
+   <tr><td><%= resource.barcode %></td> 
+       <td>
+         <% if (resource.isScored) %>
+           <span class="label label-primary">Scored</span>
+         <% else %>
+           <span class="label label-warning">Unscored</span>
+         <% %>         
+       </td>
+      <td> <button type="button" class="btn">Select</button></td> 
+    </tr>
+  <% }) %>
+</tbody>    
