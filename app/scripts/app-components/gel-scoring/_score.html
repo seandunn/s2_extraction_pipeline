@@ -1,16 +1,16 @@
 <div class="gel-scoring-view table-responsive">
     <input class="barcode" type="text" value="<%= barcode %>" />
-  <input id="gel-scoring-download" type="button" value="Download image" />
+  <input data-action-s2="download" type="button" value="Download image" />
   <table class="table-bordered table-condensed">
     <tbody>
     <tr><td></td>
-        <% _.each(xLabels, function(label) { %> 
-            <td> <%= label+1 %> </td> 
+        <% _.each(xLabels, function(labelx) { %> 
+            <td> <%= labelx+1 %> </td> 
         <% }) %></tr>
-        <% _.each(yLabels, function(label) { %> 
-            <tr><td> <%= label %> </td> 
-                <% _.times(xLabels.length, function() { %>
-                  <td>
+        <% _.each(yLabels, function(labely) { %> 
+            <tr><td> <%= labely %> </td> 
+                <% _.times(xLabels.length, function(pos) { %>
+                  <td data-position-s2="<%= labely %><%= xLabels[pos]+1 %>">
                     <select class="gel-scoring-cell">
                         <option name="score" value="pass">Pass</option>
                         <option name="score" value="fail">Fail</option>
@@ -23,7 +23,7 @@
         <%  }) %>
     </tbody>
   </table>
-  <input id="gel-scoring-save" type="button" value="Save" />
+  <input data-action-s2="save" type="button" value="Save" />
   <br />
   <br />
   <br />
