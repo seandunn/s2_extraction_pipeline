@@ -167,5 +167,14 @@ define([
         });
       });
     });
+
+    describe("Utility", function() {
+      describe("Reverse range", function() {
+        it("will return an array of reversed numbers", function() {
+          expect(_.reverseRange(5)).to.deep.equal([4,3,2,1,0]);
+        })
+      });
+    });
+
   });
 });

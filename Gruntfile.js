@@ -74,6 +74,7 @@ module.exports = function (grunt) {
             },
             test: {
                 options: {
+                    port: 9001,
                     middleware: function (connect) {
                         return [
                             lrSnippet,
@@ -98,7 +99,7 @@ module.exports = function (grunt) {
                 path: 'http://localhost:<%= connect.options.port %>/index.html'
             },
             test: {
-                path: 'http://localhost:<%= connect.options.port %>/test/index.html'
+                path: 'http://localhost:<%= connect.test.options.port %>/test/index.html'
             }
         },
         clean: {
@@ -129,7 +130,7 @@ module.exports = function (grunt) {
             all: {
                 options: {
                     run: false,
-                    urls: ['http://localhost:<%= connect.options.port %>/test/index.html'],
+                    urls: ['http://localhost:<%= connect.test.options.port %>/test/index.html'],
                     reporter: 'Nyan'
                 }
             }
@@ -355,7 +356,10 @@ module.exports = function (grunt) {
         }
 
         if (target === 'test') {
-            return grunt.task.run(['clean:server', 'connect:test', 'open:test', 'watch']);
+            return grunt.task.run([
+                'open:test',
+                'connect:test:keepalive'
+            ]);
         }
 
         grunt.task.run([

@@ -26,7 +26,9 @@ define([], function() {
         builder:   _.partial(row, "Barcode", "Barcode", "barcode"),
         searcher:  searchUsingEAN13
       };
-    }
+    },
+
+    vial: function() { return {}; }
   };
 
   function row(barcodeColumn, labelColumn, resourceLabel, row) {
