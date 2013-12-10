@@ -35,7 +35,7 @@ define([
           sanger_sample_id_core: "bar"
         }
       },
-
+      
       validation: validations.nonEmptyString(validations.optional, "GENDER")
     }
   };

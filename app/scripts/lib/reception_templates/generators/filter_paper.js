@@ -14,8 +14,8 @@ define([
   // Filter papers are pre-barcoded, but we'll still generate barcodes and pretend they are labelled with these.
   // When the manifest is returned we'll attach the barcode that was specified, which may well be the pre-barcoded
   // one.  Even though there are two locations on the filter paper, they contain the same sample.
-  function prepare(model, preRegisterSamples, preRegisterBarcodes, numberOfLabwares, callback) {
-    var numberOfSamples  = numberOfLabwares;
+  function prepare(model, preRegisterSamples, preRegisterBarcodes, details, callback) {
+    var numberOfSamples  = details.number_of_labwares;
     var registerSamples  = _.partial(preRegisterSamples, numberOfSamples);
     var registerBarcodes = _.partial(preRegisterBarcodes, numberOfSamples, model);
 

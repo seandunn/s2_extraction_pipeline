@@ -11,9 +11,9 @@ define([
     }
   };
 
-  function prepare(model, preRegisterSamples, preRegisterBarcodes, numberOfLabwares, callback) {
-    var numberOfSamples   = numberOfLabwares * 96;
-    var numberOfBarcodes  = numberOfLabwares;
+  function prepare(model, preRegisterSamples, preRegisterBarcodes, details, callback) {
+    var numberOfSamples   = details.number_of_labwares * 96;
+    var numberOfBarcodes  = details.number_of_labwares;
 
     var registerSamples  = _.partial(preRegisterSamples, numberOfSamples);
     var registerBarcodes = _.partial(preRegisterBarcodes, numberOfBarcodes, model);

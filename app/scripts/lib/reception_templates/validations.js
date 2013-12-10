@@ -15,6 +15,7 @@ define([
     // of the validation.
     optional:   pushError,
     mandatory:  forceError
+
   };
 
   function pushError(message, object) {
@@ -28,9 +29,11 @@ define([
 
   function validation(predicate, error) {
     return function(object) {
-      if (!predicate.apply(this, arguments)) error(object);
+      if (!predicate.apply(this, arguments)) {
+        error(object);
+      }
       return object;
-    }
+    };
   }
 
   function validatePresenceOf(error, field) {
