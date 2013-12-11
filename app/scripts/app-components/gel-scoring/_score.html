@@ -1,6 +1,13 @@
+<div class="modal fade"  id="scoreModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+ 
+ <div class="modal-header"><h3 class="modal-title">Select the score for gel:</h3></div>
+ <div class="modal-body">
+
 <div class="gel-scoring-view table-responsive">
-    <input class="barcode" type="text" value="<%= barcode %>" disabled/>
-  <input data-action-s2="download" type="button" value="Download image" />
+    <span class="label-barcode">Gel barcode:</span><input class="barcode" type="text" value="<%= barcode %>" disabled/>
+  <input class="header-button btn btn-default" data-action-s2="download" type="button" value="Download image" />
   <table class="table-bordered table-condensed">
     <tbody>
     <tr><td></td>
@@ -23,9 +30,12 @@
         <%  }) %>
     </tbody>
   </table>
-  <input data-action-s2="save" type="button" value="Save" />
-  <br />
-  <br />
-  <br />
-  <br />
+  
+</div>
+</div>
+
+<div class="modal-footer"><input class="btn btn-default footer-button" data-action-s2="save" type="button" value="Save" /></div>
+
+</div>
+</div>
 </div>

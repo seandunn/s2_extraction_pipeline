@@ -15,6 +15,8 @@ define([
     var selection = new GelScoreSelection(context);
     view.append(selection.view);
     
+    view.on(selection.events);
+    
     var scoring = new GelScoring(context);
     view.append(scoring.view);
     
@@ -27,6 +29,6 @@ define([
       events: {
       }
     };
-  }
+  };
 });
   

@@ -26,7 +26,6 @@ define([
 
 
   function renderScoringResource(view, resource) {
-    view.html("Loading...");
     getRoot().then(function(root) {
       root.findGelImageByGel(resource.uuid).then(function(gelImage){
         view.html("");
@@ -39,9 +38,9 @@ define([
           yLabels: _.times(resource.number_of_rows, function(n) { return String.fromCharCode("A".charCodeAt(0)+n); })
         });
         view.append(scoringHtml);
-        
         $("[data-action-s2=download]").click(_.partial(download, view, gelImage, resource));
         $("[data-action-s2=save]").click(_.partial(save, view, gelImage, resource));
+        $('#scoreModal').modal('show');        
       });
     });
   }
@@ -72,13 +71,23 @@ define([
       }).object().value()
     };
     gelImage.score(data).then(function() {
+      view.trigger("change-scored.selection.s2");
       // After scoring, we can change the role to scored
-      changeRole(gel);
+      changeRole(gel, view).then(function() {
+        $('#scoreModal').modal('hide');
+      });
     });
   }
   
-  function changeRole(resource) {
+  function changeRole(resource, view) {
     return resource.order().then(function(orderObj) {
+      var Deferred = $.Deferred();
+      if (!_.find(orderObj.items[ROLE_UNSCORED], function(item) { 
+        return (item.uuid===resource.uuid && item.status==="done"); 
+        })) {
+        return false;
+      }
+      
       return {
         input: {
           order: orderObj,
@@ -92,9 +101,13 @@ define([
         }
       };
    }).then(function(data) {
-     return Operations.stateManagement().start({ updates: [data]}).then(function() {
-       return Operations.stateManagement().complete({ updates: [data]});
-     });
+     if (data) {
+       view.trigger("success.status.s2", ["Created new score for gel"]);
+       return Operations.stateManagement().start({ updates: [data]}).then(function() {
+         return Operations.stateManagement().complete({ updates: [data]});
+       });
+     }
+     view.trigger("success.status.s2", ["Updated score for gel"]);
    });
    
   }
