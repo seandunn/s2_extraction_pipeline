@@ -9,18 +9,22 @@ define([ "config", "app-components/imager/imager", "models/selection_page_model"
   
   function configButtons(status) {
     var buttons = $("button.imager");
+    var inputs = $("input.imager");
     var renderButtons = {
       "in_progress": function() {
         buttons.prop("disabled", true);
+        inputs.prop("disabled", true);
         $(buttons[0]).prop("disabled", false);
       },
       "done": function() {
         buttons.prop("disabled", false);
+        inputs.prop("disabled", false);
         $(buttons[0]).prop("disabled", true);
         $(buttons[1]).prop("disabled", true);
       },
       "default": function() {
         buttons.prop("disabled", true);
+        inputs.prop("disabled", true);
         $(buttons[0]).prop("disabled", false);
         $(buttons[1]).prop("disabled", false);
       }
@@ -45,7 +49,7 @@ define([ "config", "app-components/imager/imager", "models/selection_page_model"
         view.html(_.template(template, { config: config}));
         view.append(component.view);
         
-        view.append($('<div class="filename"><span class="filename"></span></div>'));
+        view.append($('<div><span class="filename"></span></div>'));
         view.on(component.events);
         this.component = component;
         
@@ -117,8 +121,11 @@ define([ "config", "app-components/imager/imager", "models/selection_page_model"
         view.on("uploaded.request.imager.s2", _.partial(function(file, event, data) {
           // Encoding from: 
           // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Base64_encoding_and_decoding>
-          file.image = window.btoa(unescape(encodeURIComponent(data.content)));
-          file.image = window.btoa("testing");
+          file.filename=data.name;
+          file.image = data.content.substring(data.content.indexOf(",")+1);
+          //file.image = window.btoa(unescape(encodeURIComponent(data.content)));
+          //file.filename=data.
+          //file.image = window.btoa("testing");
           
           view.on("done.s2", function() {
             configButtons("done");            
@@ -139,7 +146,9 @@ define([ "config", "app-components/imager/imager", "models/selection_page_model"
               data : JSON.stringify(dataParams),
               method : "POST"
             }).then(function() {
-              PubSub.publish("message.status.s2", this, {message: 'Uploaded file'});
+              view.trigger("success.status.s2",['Uploaded file']);
+            }, function() {
+              view.trigger("error.status.s2", [arguments[2]]);
             });
         }, dataParams, this.model, uuid));
         

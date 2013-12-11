@@ -27,4 +27,13 @@ margin-top: 1.5em;
 div.resource {
 	height: 15em;
 }
+.linear-process.imager { text-align: center; }
+
+button.imager {
+	z-index: 1001;
+}
+
+.filename {
+  float: right;	
+}
 }

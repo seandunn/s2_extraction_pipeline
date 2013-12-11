@@ -20,7 +20,7 @@ define(["text!app-components/imager/_fileSelector.html"
       var data = _.clone(file);
       var reader       = new FileReader();
       reader.onload    = function(event) {
-        $(".filename").text(file.name);
+        $(".filename").text("File: " + file.name);
       };
       reader.onloadend = function(event) {
         if (event.target.readyState === FileReader.DONE) {
@@ -31,16 +31,16 @@ define(["text!app-components/imager/_fileSelector.html"
           html.trigger("done.s2");
         }
       };
-      reader.readAsText(file, 'UTF-8');
+      reader.readAsDataURL(file, 'UTF-8');
     }
     
-    html.attr("disabled", true);
+    //html.attr("disabled", true);
     
     return {
       view: html,
       events: {
-        "activate.s2": $.haltsEvent($.ignoresEvent(_.partial(_.bind(html.attr, html), "disabled", false))),
-        "deactivate.s2": $.haltsEvent($.ignoresEvent(_.partial(_.bind(html.attr, html), "disabled", true)))
+        "activate.s2": $.haltsEvent($.ignoresEvent(_.partial(_.bind(html.attr, html), "disabled", false)))
+        //"deactivate.s2": $.haltsEvent($.ignoresEvent(_.partial(_.bind(html.attr, html), "disabled", true)))
       }
     };
   };

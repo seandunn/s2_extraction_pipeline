@@ -41,17 +41,18 @@ define([
         $("[data-action-s2=download]").click(_.partial(download, view, gelImage, resource));
         $("[data-action-s2=save]").click(_.partial(save, view, gelImage, resource));
         $('#scoreModal').modal('show');        
+      }, function() {
+        view.trigger("error.status.s2", ["Couldn't find a gel image for this gel"]);
       });
     });
   }
   
   function download(view, gelImage, gel) {
     // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Base64_encoding_and_decoding>
-    var fileContent = decodeURIComponent(escape(window.atob( gelImage.image )));
+    var fileContent = gelImage.image;
     var anchor = window.document.createElement('a');
-    anchor.href = window.URL.createObjectURL(new Blob([fileContent], 
-      {type: 'application/octet-stream;charset=utf-8;base64'}));
-    anchor.download = gel.labels.barcode.value+'.jpg';
+    anchor.href = "data:application/octet-stream;base64,"+fileContent;
+    anchor.download = gelImage.filename;
 
     // Append anchor to body.
     document.body.appendChild(anchor);
