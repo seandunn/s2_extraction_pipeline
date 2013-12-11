@@ -17,7 +17,6 @@ define(["text!app-components/imager/_button.html"], function(buttonTemplate) {
       view: html,
       events: {
         "activate.s2": $.haltsEvent(function() {})
-        //"deactivate.s2": $.ignoresEvent(_.partial(_.bind(html.attr, html), "disabled", true))
       }
     });
   };

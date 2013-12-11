@@ -22,8 +22,6 @@ define([
     
     view.on(scoring.events);
     
-    //scoring.view.on(selection.events);
-    
     return {
       view:   view,
       events: {

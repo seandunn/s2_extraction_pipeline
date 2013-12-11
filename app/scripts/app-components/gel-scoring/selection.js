@@ -8,7 +8,7 @@ define([
 ], function (partialSelection, partialTable, BarcodeScanner) {
   "use strict";
  var ROLE_SCORED = "samples.qc.gel.imager.done.scored", 
-   ROLE_UNSCORED = "samples.qc.gel.imager.done";
+     ROLE_UNSCORED = "samples.qc.gel.imager.done";
   var template = _.template(partialSelection), 
       templateTableSelection = _.template(partialTable);
 
@@ -27,7 +27,6 @@ define([
       $("input[value=unscored]").prop("checked", "true");
     }
     $(".tableSelection", html).trigger("start_process.busybox.s2");
-    //$(".tableSelection", html).html("Loading...");
     context.getS2Root().then(_.partial(function(searchRole, root) {
       root.findByRole(searchRole).then(function() {
         $(".tableSelection", html).trigger("end_process.busybox.s2");
