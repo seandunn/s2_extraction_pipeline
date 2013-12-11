@@ -29,8 +29,7 @@ require([
   "underscore",
   "app",
   "controllers/controller_factory",
-  "lib/bootstrap-shim",
-  "bootstrap/bootstrap-modal"  
+  "lib/bootstrap-shim"
 ], function ($, _, App, ControllerFactory) {
   "use strict";
 

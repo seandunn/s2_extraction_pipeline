@@ -2,6 +2,7 @@ define([
   "text!app-components/gel-scoring/_score.html",
   "mapper/operations",
   // Code added to global namespace after this point
+  "bootstrap/bootstrap-modal",
   "lib/underscore_extensions",
   "lib/jquery_extensions"
 ], function (partialScoring, Operations) {
