@@ -42,7 +42,7 @@ define([ "config", "app-components/imager/imager", "models/selection_page_model"
         this.owner = owner;
         var component = imager({labware: config.initialLabware});
         var view = selector();
-        view.html(_.template(template, {templateData: { config: config} }));
+        view.html(_.template(template, { config: config}));
         view.append(component.view);
         
         view.append($('<div class="filename"><span class="filename"></span></div>'));
@@ -110,22 +110,26 @@ define([ "config", "app-components/imager/imager", "models/selection_page_model"
         });
         
         var dataParams = {
-          out_of_bounds: {
+          gel_image: {
             image: ""
           }
         };
         view.on("uploaded.request.imager.s2", _.partial(function(file, event, data) {
-          file.image = window.btoa(data.content);
-          file.dataType = "BASE64";
+          // Encoding from: 
+          // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Base64_encoding_and_decoding>
+          file.image = window.btoa(unescape(encodeURIComponent(data.content)));
+          file.image = window.btoa("testing");
+          
           view.on("done.s2", function() {
             configButtons("done");            
           });
-        }, dataParams.out_of_bounds));
+        }, dataParams.gel_image));
         
         view.on("upload.request.imager.s2", _.partial(function(dataParams, model, uuid) {
           // This must be moved to S2 Mapper
-          var url = appConfig.apiUrl + "lims-laboratory";
-          var promiseQuery = $.ajax(url+"/"+uuid,
+          var url = appConfig.apiUrl + "lims-quality";
+          dataParams.gel_image.gel_uuid = uuid;
+          var promiseQuery = $.ajax(url+"/gel_images",
             {
               headers :
               {
@@ -133,7 +137,7 @@ define([ "config", "app-components/imager/imager", "models/selection_page_model"
                 "Content-Type" : "application/json; charset=utf-8"
               }, 
               data : JSON.stringify(dataParams),
-              method : "PUT"
+              method : "POST"
             }).then(function() {
               PubSub.publish("message.status.s2", this, {message: 'Uploaded file'});
             });

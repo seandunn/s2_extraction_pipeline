@@ -1,3 +1,4 @@
+.samples-qc-gel-imager,.samples-qc-gel-imager-done {
 input.btn.imager {
   opacity: 0; 
   width: 5em;
@@ -21,4 +22,9 @@ button.imager {
 
 div.imager {
 margin-top: 1.5em;
+}
+
+div.resource {
+	height: 15em;
+}
 }

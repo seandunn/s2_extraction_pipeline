@@ -15,6 +15,10 @@ span.option {
     vertical-align: middle; 
  }
  
+ .gel-scoring-selection button {
+ float: right;
+ }
+ 
 .hidden {
 	display: none;
 }
@@ -23,4 +27,8 @@ select.gel-scoring-cell {
 	font-size: 9pt;
 	width: 8em;
 	height: 2em;
+}
+
+.header-gel-scoring-table label{
+    float: right;
 }

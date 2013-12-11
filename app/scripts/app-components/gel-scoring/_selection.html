@@ -4,14 +4,12 @@
 <div class="panel panel-default">
   <!-- Default panel contents -->
   <div class="panel-heading">
-    <p class="panel-title header-gel-scoring-table"> Select a gel from this table:</p>
+    <p class="panel-title header-gel-scoring-table"> Select a gel from this table:
+          <label class="radio-inline"><input type="radio" name="scoredChange" value="unscored" checked="true">Unscored</label>     
+         <label class="radio-inline"><input type="radio" name="scoredChange" value="scored">Scored</label>
+        </p>
   </div>
 
-  <!-- Table -->
-  <table class="table table-striped table-hover">
-    <thead>
-    <tr><th>Gel Barcode</th><th>Score</th><th></th>
-    </thead>
-  </table>
+    <div class="tableSelection"></div>
 </div>
 </div>

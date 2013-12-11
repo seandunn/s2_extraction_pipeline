@@ -1,5 +1,5 @@
 <div class="gel-scoring-view table-responsive">
-    <input class="barcode" type="text" value="<%= barcode %>" />
+    <input class="barcode" type="text" value="<%= barcode %>" disabled/>
   <input data-action-s2="download" type="button" value="Download image" />
   <table class="table-bordered table-condensed">
     <tbody>
@@ -12,10 +12,10 @@
                 <% _.times(xLabels.length, function(pos) { %>
                   <td data-position-s2="<%= labely %><%= xLabels[pos]+1 %>">
                     <select class="gel-scoring-cell">
-                        <option name="score" value="pass">Pass</option>
-                        <option name="score" value="fail">Fail</option>
-                        <option name="score" value="degraded">Degraded</option>
-                        <option name="score" value="partial">Partial</option>
+                        <option name="score" value="pass" <%= getSelectValue('pass', labely+(xLabels[pos]+1)) %> >Pass</option>
+                        <option name="score" value="fail" <%= getSelectValue('fail', labely+(xLabels[pos]+1)) %> >Fail</option>
+                        <option name="score" value="degraded" <%= getSelectValue('degraded', labely+(xLabels[pos]+1)) %> >Degraded</option>
+                        <option name="score" value="partially degraded" <%= getSelectValue('partially degraded', labely+(xLabels[pos]+1)) %> >Partial</option>
                     </select>
                   </td>
                 <% }) %> 
