@@ -129,7 +129,7 @@ define([
 
         it("will hide the custom fields when a template without custom fields is selected", function() {
           $dom.find("select#xls-templates").val("test2").change();
-          $dom.find("select#xls-templates").val("test1").change();
+          $dom.find("select#xls-templates").val("test").change();
 
           var $customFieldDiv = $dom.find("#custom-fields > *");
           expect($customFieldDiv.size()).to.equal(0);          

@@ -20,8 +20,8 @@
   <% if (_.contains(_.pluck(templateData.buttons, 'action'), 'print')) { %>
   <label for="printer-select">Current Printer:</label>
   <select class="printer-select" name="printer-select">
-    <% _.each (templateData.printerList, function (printer) { %>
-    <option value="<%- printer.name %>"><%- printer.friendlyName %></option>
+    <% _.each (templateData.printerList, function (printer, pos) { %>
+    <option value="<%- printer.name %>" <%= (templateData.defaultPrinter===printer.name)?'selected':'' %> ><%- printer.friendlyName %></option>
     <% }); %>
   </select>
   <% } %>
