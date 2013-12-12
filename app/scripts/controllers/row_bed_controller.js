@@ -1,6 +1,6 @@
- define([
-  "lib/pubsub", 
-  "views/row_view" , "app-components/linear-process/linear-process",
+ define(["lib/pubsub", 
+  "views/row_view", 
+  "app-components/linear-process/linear-process",
   "app-components/labware/display_controller_wrapper",
   "app-components/scanning/bed-verification" , "app-components/scanning/bed-recording", "controllers/base_controller"
 ], function (PubSub, View, linearProcess, labwareControllerWrapper, bedVerification, bedRecording, BaseController) {
@@ -28,6 +28,21 @@
    * }
    *};
    */
+  var robotConfigFX = [{
+    "barcode":  "0000000000001",
+    "beds": [
+        [{ "barcode": "0000000000001" }, { "barcode": "0000000000002" }],
+        [{ "barcode": "0000000000003" }, { "barcode": "0000000000004" }]
+    ]
+  }];
+  var robotConfigeBase= {
+    "barcode":  "0000000000002",
+    "beds": [
+      [{ "barcode": "0000000000001" }], 
+      [{ "barcode": "0000000000002" }]
+      ]
+  };
+  
   function findRootPromise(controller) {
     var iterations = 0;
     while (iterations <20) {
@@ -95,34 +110,12 @@
             return [value, list[pos+1]];
       }).compact().reduce(function(memo, p) { 
         var component = bedVerification({
+          bedsConfig: robotConfigFX,
           fetch: _.partial(function(rootPromise, barcode) {
             return rootPromise.then(function(root) {
               return root.findByLabEan13(barcode);
             });
-          }, findRootPromise(controller)),
-            validation: function() {
-              var robot = arguments[0];
-              var bedRecords = _.map(Array.prototype.slice.call(arguments, 1), function(list) {
-                list=_.drop(list, 2); 
-                return ({
-                  bed: list[0][2],
-                  plate: list[1][2]
-                });
-              });
-              var defer = new $.Deferred();
-              if (_.some(robot.beds, function(bedPair) {
-                return (bedPair[0].barcode === bedRecords[0].bed && bedPair[1].barcode === bedRecords[1].bed); 
-              })) {
-                defer.resolve({
-                  robot: robot.barcode,
-                  verified: bedRecords
-                });
-              }
-              else {
-                defer.reject();
-              }
-              return defer;
-            }
+          }, findRootPromise(controller))
         });
         
         var promise = $.Deferred();
@@ -146,7 +139,11 @@
       var arrow = "<div class='transferArrow span1 offset1'><span >&rarr;</span></div>";
       $(arrow).insertAfter($(".left", controller.jquerySelection())[0]);
 
-      this.linearProcessLabwares.view.on("reset.s2", _.bind(this.setupControllerWithBedVerification, this));
+      this.linearProcessLabwares.view.on("reset.s2", function() {
+        setTimeout(function() {
+          window.location.href = window.location.href;
+        }, 3000);
+      });
       
       // Enable linear process if robot scanned
       controller.owner.owner.activeController = this.owner;
@@ -184,6 +181,7 @@
           }
         else {
           component = bedRecording({
+            robotConfig: robotConfigeBase,
             fetch: _.partial(function(rootPromise, barcode) {
               return rootPromise.then(function(root) {
                 return root.findByLabEan13(barcode);

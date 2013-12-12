@@ -1545,7 +1545,8 @@
       ],
       "processTitle":  "RNA QC - Gel FX",
       "controllers": [{
-        "controllerName": "robot_controller"
+        "controllerName": "robot_controller",
+        "group": "fx"
       },
       {
         "controllerName":   "connected_controller",
@@ -1580,7 +1581,6 @@
     {
       "accepts":       [ "samples.qc_gel.ebase.rna.batched" ],
       "controllerName": "step_controller",
-      "printerType": 1,
       "defaultPrinter":"d304bc",
       "printerType": 1,
       "buttons": [{ "action": "start", "title": "Begin E-Base" },
@@ -1588,7 +1588,8 @@
       ],
       "processTitle":  "RNA QC - Gel E-Base",
       "controllers": [{
-        "controllerName": "robot_controller"
+        "controllerName": "robot_controller",
+        "group": "ebase"
       },
       {
         "controllerName":   "connected_controller",

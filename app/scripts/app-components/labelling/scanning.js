@@ -31,6 +31,7 @@ define([
 
     barcode.enterHandler(function() {
       var padded = _.string.lpad(barcode.val(), context.length || 13, "0");
+      barcode.val(padded);
       (validation(padded) ? success : invalid)(padded);
     });
 
