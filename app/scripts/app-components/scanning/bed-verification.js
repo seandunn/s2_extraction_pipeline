@@ -28,8 +28,34 @@ define([ "app-components/linear-process/linear-process",
       return promise;
     });
 
+    function validation() {
+      var robot = _.find(context.bedsConfig, function(robot) {
+        return robot.barcode === $(".robot input").prop("value");
+      });
+      var bedRecords = _.map(Array.prototype.slice.call(arguments, 1), function(list) {
+        list=_.drop(list, 2); 
+        return ({
+          bed: list[0][2],
+          plate: list[1][2]
+        });
+      });
+      var defer = new $.Deferred();
+      if (_.some(robot.beds, function(bedPair) {
+        return (bedPair[0].barcode === bedRecords[0].bed && bedPair[1].barcode === bedRecords[1].bed); 
+      })) {
+        defer.resolve({
+          robot: robot,
+          verified: bedRecords
+        });
+      }
+      else {
+        defer.reject();
+      }
+      return defer;
+    }
+    
     $.when.apply(undefined, [ robotScannedPromise
-    ].concat(bedVerificationPromises)).then(context.validation).then(
+    ].concat(bedVerificationPromises)).then(context.validation || validation).then(
       function() {
         obj.view.trigger("scanned.bed-verification.s2", arguments);
         PubSub.publish("message.status.s2", this, {message: 'Bed verification correct.'});

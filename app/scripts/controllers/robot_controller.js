@@ -1,7 +1,8 @@
-define([ "controllers/base_controller", "models/robot_model",
+define([ "text!/config/robots/groups.json","controllers/base_controller", "models/robot_model",
     "app-components/scanning/robot", "lib/pubsub"
-], function(Base, Model, robotInput, PubSub) {
+], function(robotGroupsText, Base, Model, robotInput, PubSub) {
   "use strict";
+  var robotGroups = JSON.parse(robotGroupsText);
   var Controller = Object.create(Base);
   _.extend(Controller,
     { register : function(callback) {
@@ -24,7 +25,9 @@ define([ "controllers/base_controller", "models/robot_model",
         return model.setupModel(setupData);
       }).then(_.bind(function(model) {
         if (!model.batch.robot) {
-          this.robotInputComponent = robotInput();
+          this.robotInputComponent = robotInput({
+            robotGroup: robotGroups[model.config.group]
+          });
           this.getComponentInterface().view.append(this.robotInputComponent.view);
           this.getComponentInterface().view.on(this.robotInputComponent.events);
           this.getComponentInterface().view.on("scanned.robot.s2", $.ignoresEvent(_.partial(function(controller, robot) {
