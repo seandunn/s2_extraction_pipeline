@@ -128,6 +128,13 @@ define([ 'config'
 
     nextWorkflow(this.model).
       then(function(workflowConfig){
+        if (workflowConfig)
+          {
+            var roles = workflowConfig.accepts;
+            _.each(roles, function(role) {
+              $(document.body).addClass(role.replace(/\./g, "-"));
+            });
+          }
       $.extend(workflowConfig, {initialLabware: application.model.labware});
       return application.controllerFactory.create(workflowConfig && workflowConfig.controllerName, application, workflowConfig);
     }).then(function(nextController){

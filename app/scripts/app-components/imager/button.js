@@ -11,18 +11,12 @@ define(["text!app-components/imager/_button.html"], function(buttonTemplate) {
       if (context.action) {
         html.trigger(context.action);
       }
-      if (!context.notDisable) {
-        html.attr("disabled", true);
-      }
     });
-    
-    html.attr("disabled", true);
-    
+        
     return ({
       view: html,
       events: {
-        "activate.s2": $.haltsEvent(function() {}),
-        "deactivate.s2": $.ignoresEvent(_.partial(_.bind(html.attr, html), "disabled", true))
+        "activate.s2": $.haltsEvent(function() {})
       }
     });
   };

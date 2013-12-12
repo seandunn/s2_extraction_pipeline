@@ -49,6 +49,7 @@ module.exports = function (grunt) {
                     '<%= yeoman.app %>/*.html',
                     '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
                     '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
+                    '{.tmp,<%= yeoman.app %>}/scripts/app-components/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
                     '<%= yeoman.test %>/spec/{,*}*.js'
                 ]
@@ -73,6 +74,7 @@ module.exports = function (grunt) {
             },
             test: {
                 options: {
+                    port: 9001,
                     middleware: function (connect) {
                         return [
                             lrSnippet,
@@ -97,7 +99,7 @@ module.exports = function (grunt) {
                 path: 'http://localhost:<%= connect.options.port %>/index.html'
             },
             test: {
-                path: 'http://localhost:<%= connect.options.port %>/test/index.html'
+                path: 'http://localhost:<%= connect.test.options.port %>/test/index.html'
             }
         },
         clean: {
@@ -128,7 +130,7 @@ module.exports = function (grunt) {
             all: {
                 options: {
                     run: false,
-                    urls: ['http://localhost:<%= connect.options.port %>/test/index.html'],
+                    urls: ['http://localhost:<%= connect.test.options.port %>/test/index.html'],
                     reporter: 'Nyan'
                 }
             }
@@ -313,8 +315,7 @@ module.exports = function (grunt) {
         },
         concurrent: {
             server: [
-                'compass',
-                'coffee:dist'
+                'compass'
             ],
             test: [
                 'coffee'
@@ -355,7 +356,10 @@ module.exports = function (grunt) {
         }
 
         if (target === 'test') {
-            return grunt.task.run(['clean:server', 'connect:test', 'open:test', 'watch']);
+            return grunt.task.run([
+                'open:test',
+                'connect:test:keepalive'
+            ]);
         }
 
         grunt.task.run([
@@ -374,8 +378,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('testAll', [
-        'test',
-        'cucumberjs'
+        'test'
     ]);
 
     grunt.registerTask('build', [

@@ -7,7 +7,8 @@ define([
   'reception_templates/cgap_lysed',
   'reception_templates/hmdmc_lysed',
   'reception_templates/general_plate',
-  'reception_templates/filter_paper'
+  'reception_templates/filter_paper',
+  'reception_templates/blood_manifest'
 ], function (Generators, Readers) {
   'use strict';
 

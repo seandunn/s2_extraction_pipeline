@@ -67,10 +67,11 @@
    "samples.extraction.racking.fluidx_tube_rna",
 
    "samples.rack.stock.rna",
-   "samples.qc.gel.imager",
-   "samples.qc.gel.fx_rna",
-   "samples.qc.gel.fx_rna.batched",
-   "samples.qc.gel.ebase_rna.batched",
+   "samples.qc_gel.imager.rna",
+   "samples.qc_gel.imager.rna.done",
+   "samples.qc_gel.fx.rna",
+   "samples.qc_gel.fx.rna.batched",
+   "samples.qc_gel.ebase.rna.batched",
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna.batched",
    "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna",
    "samples.qc.nx_nanodrop.working_dilution_rna"
@@ -95,17 +96,17 @@
       ]
     },
     {
-      "accepts": ["samples.qc.gel.fx_rna"],
+      "accepts": ["samples.qc_gel.fx.rna"],
       "controllerName":"selection_page_controller",
       "processTitle": "RNA QC - Gel FX",
       "buttonTitle": "Continue",
       "capacity": 4,
       "input":        {
-        "role":"samples.qc.gel.fx_rna",
+        "role":"samples.qc_gel.fx.rna",
         "model":"plates"
       },
       "output": [{
-        "role": "samples.qc.gel.fx_rna.batched"
+        "role": "samples.qc_gel.fx.rna.batched"
       }]
     },
     {
@@ -1521,7 +1522,7 @@
           },
           "output": [
             {
-              "role": "samples.qc.gel.fx_rna",
+              "role": "samples.qc_gel.fx.rna",
               "aliquotType": "RNA",
               "purpose": "stock",
               "model": "plates",
@@ -1533,9 +1534,9 @@
     },
     
     {
-      "accepts":       [ "samples.qc.gel.fx_rna.batched" ],
+      "accepts":       [ "samples.qc_gel.fx.rna.batched" ],
       "controllerName": "step_controller",
-      "printerType": 2,
+      "printerType": 1,
       "defaultPrinter":"d304bc",
       "buttons": [{ "action": "print", "title": "Print labels", "alwaysEnabled": true },
                   { "action": "start", "title": "Begin FX" },
@@ -1557,13 +1558,13 @@
         },
         "rowBehaviour":  "bedVerification",
         "input": {
-          "role":  "samples.qc.gel.fx_rna.batched",
+          "role":  "samples.qc_gel.fx.rna.batched",
           "model": "plates",
           "title": "Working Dillution Rack",
           "bedTracking": true
         },
         "output": [{
-          "role": "samples.qc.gel.ebase_rna.batched",
+          "role": "samples.qc_gel.ebase.rna.batched",
           "aliquotType":  "RNA",
           "purpose":     "stock",
           "model":       "gels",
@@ -1577,9 +1578,9 @@
       }]
     },
     {
-      "accepts":       [ "samples.qc.gel.ebase_rna.batched" ],
+      "accepts":       [ "samples.qc_gel.ebase.rna.batched" ],
       "controllerName": "step_controller",
-      "printerType": 2,
+      "printerType": 1,
       "defaultPrinter":"d304bc",
       "printerType": 1,
       "buttons": [{ "action": "start", "title": "Begin E-Base" },
@@ -1599,13 +1600,13 @@
         },
         "rowBehaviour":  "bedRecording",
         "input": {
-          "role":  "samples.qc.gel.ebase_rna.batched",
+          "role":  "samples.qc_gel.ebase.rna.batched",
           "model": "gels",
           "title": "Gel",
           "bedTracking": true
         },
         "output": [{
-          "role": "samples.qc.gel.imager",
+          "role": "samples.qc_gel.imager.rna",
           "aliquotType":  "RNA",
           "purpose":     "stock",
           "model":       "gels",
@@ -1616,9 +1617,8 @@
     },
  
     {
-      "accepts":       [ "samples.qc.gel.imager" ],
+      "accepts":       [ "samples.qc_gel.imager.rna" ],
       "controllerName": "imager",
-      "printerType": 2,
       "defaultPrinter":"d304bc",
       "processTitle":  "RNA QC - Gel Imager",
       "printerType": 1,
@@ -1634,21 +1634,20 @@
         "done": "next"
       }, 
       "input": {
-        "role":  "samples.qc.gel.imager",
+        "role":  "samples.qc_gel.imager.rna",
         "model": "gels",
         "title": "Gel"
       },
       "output": [{
-        "role":  "samples.qc.gel.imager.done",
+        "role":  "samples.qc_gel.imager.rna.done",
         "model": "gels",
         "aliquotType":  "RNA",
         "title": "Gel"
       }]
     },
     {
-      "accepts":       [ "samples.qc.gel.imager.done" ],
+      "accepts":       [ "samples.qc_gel.imager.rna.done" ],
       "controllerName": "imager",
-      "printerType": 2,
       "defaultPrinter":"d304bc",
       "processTitle":  "RNA QC - Gel Imager",
       "printerType": 1,
@@ -1664,13 +1663,13 @@
         "done": "next"
       }, 
       "input": {
-        "role":  "samples.qc.gel.imager.done",
-        "model": "tube_racks",
+        "role":  "samples.qc_gel.imager.rna.done",
+        "model": "gels",
         "title": "Gel"
       },
       "output": [{
-        "role":  "samples.qc.gel.imager.done",
-        "model": "tube_racks",
+        "role":  "samples.qc_gel.imager.rna.done",
+        "model": "gels",
         "aliquotType":  "RNA",
         "title": "Gel"
       }]

@@ -1,8 +1,8 @@
 define([
-  'models/base_page_model'
-  , 'mapper/operations'
+  "models/base_page_model",
+  "mapper/operations"
 ], function (BasePageModel, Operations) {
-  'use strict';
+  "use strict";
 
   var SelectionPageModel = Object.create(BasePageModel);
 
@@ -40,7 +40,9 @@ define([
         this.cache.push(setupData.labware);
         this.inputs = $.Deferred().resolve([setupData.labware]).promise();
         deferred.resolve(thisModel);
-      } else throw "This model should not be created without either a batch or scanned labware";
+      } else {
+        throw "This model should not be created without either a batch or scanned labware";
+      }
 
       return deferred.promise();
     },
@@ -124,7 +126,7 @@ define([
                 itemsByOrderUUID[order.uuid] = itemsByOrderUUID[order.uuid] || { order:order, items: []};
                 var labware = _.find(order.items[thisModel.config.input.role], function(labware) { return labware.status === "done" && labware.uuid === input.uuid; } );
                 itemsByOrderUUID[order.uuid].items.push(labware);
-              })
+              });
           }));
         })
         .fail(function(){
@@ -169,13 +171,14 @@ define([
       return deferred.promise();
     },
 
-    makeBatch:function () {
+    makeBatch: function () {
       var thisModel = this;
       var deferred = $.Deferred();
       var batchBySideEffect;
       var addingRoles = {updates:[]};
       var changingRoles = {updates:[]};
       var root;
+      
       this.owner.getS2Root()
           .then(function (result) {
             root = result;
@@ -232,7 +235,7 @@ define([
       return $.when.apply(null,
           _.chain(items)
               .filter(function (item) {
-                return item.role === that.config.input.role && item.status === 'done';
+                return item.role === that.config.input.role && item.status === "done";
               })
               .map(function (item) {
                 return that.cache.fetchResourcePromiseFromUUID(item.uuid)
@@ -262,11 +265,11 @@ define([
   function contentsAreEqual (context, result) {
     if (context.model.config.output[0].aliquotType !== context.input.aliquots[0].type) {
       // check if correct type
-      var msg = "You can only add '"
+      var msg = "You can only add \""
           + context.model.config.output[0].aliquotType
-          + "' inputs into this batch. The scanned barcode corresponds to a '"
+          + "\" inputs into this batch. The scanned barcode corresponds to a \""
           + context.input.aliquots[0].type
-          + "' input.";
+          + "\" input.";
       return context.deferred.reject({message: msg, previous_error: null});
     } else {
       return result;
@@ -276,7 +279,7 @@ define([
   function labwareUniqueInBatch(context, result) {
     if (_.some(result, function (input) { return input.uuid === context.input.uuid; })) {
       // check if not already there
-      return context.deferred.reject({message: 'You cannot add the same tube twice.', previous_error: null});
+      return context.deferred.reject({message: "You cannot add the same tube twice.", previous_error: null});
     } else {
       return result;
     }

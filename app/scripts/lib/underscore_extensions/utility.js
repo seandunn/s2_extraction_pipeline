@@ -86,6 +86,10 @@ define([], function() {
 
         return memo;
       }, {});
+    },
+
+    reverseRange: function(n) {
+      return _.reverse(_.range(n));
     }
   };
 

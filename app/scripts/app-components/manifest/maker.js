@@ -1,14 +1,16 @@
 define([
   "text!app-components/manifest/_maker.html",
+  "text!app-components/manifest/_custom_field.html",
   "app-components/labelling/printing",
 
   // Global namespace updates
   "lib/jquery_extensions",
   "components/filesaver/filesaver"
-], function (componentPartialHtml, LabelPrinter) {
+], function (componentPartialHtml, customFieldPartial, LabelPrinter) {
   'use strict';
 
-  var viewTemplate = _.compose($, _.template(componentPartialHtml));
+  var viewTemplate        = _.compose($, _.template(componentPartialHtml)),
+      customFieldTemplate = _.template(customFieldPartial);
 
   return function(context) {
     var view = createHtml(
@@ -37,10 +39,11 @@ define([
     var success = _.partial(message, "success");
 
     // Handle the manifest generation
-    var generate    = html.find("#generateManifest");
-    var sampleCount = html.find("#number-of-sample");
-    var studiesList = html.find("#studies");
-    var form        = html.find("form .template-selection-box").find("input,select");
+    var generate      = html.find("#generateManifest");
+    var sampleCount   = html.find("#number-of-sample");
+    var studiesList   = html.find("#studies");
+    var form          = html.find("form .template-selection-box").find("input,select");
+    var $customFields = html.find("#custom-fields");
 
     generate.lockingClick(_.partial(checkSamples, process(html, generateManifest)));
     sampleCount.enterHandler(_.bind(generate.click, generate));
@@ -48,11 +51,12 @@ define([
     // When someone changes the template we need to change the view!
     var templatePicker    = html.find("#xls-templates");
     var prefixes          = html.find("#samplePrefixes");
-    var dependsOnTemplate = function(f) { return _.compose(f, _.partial(selectedTemplate, context.templates)); };
+    var dependsOnTemplate = function(fn) { return _.compose(fn, _.partial(selectedTemplate, context.templates)); };
 
     templatePicker.change(dependsOnTemplate(_.partial(updateSampleTypeSelection, prefixes)));
     templatePicker.change(dependsOnTemplate(_.partial(updateStudiesSelection, studiesList)));
     templatePicker.change(dependsOnTemplate(_.partial(updatePrinters, html)));
+    templatePicker.change(dependsOnTemplate(_.partial(updateCustomFields, $customFields)));
     templatePicker.change();
 
     // When someone clicks the download button we need to download the manifest.  When the manifest
@@ -82,24 +86,28 @@ define([
 
     return html;
 
-    function checkSamples(f, button) {
-      var numberOfSamples = parseInt(sampleCount.val());
+    function checkSamples(fn, button) {
+      var numberOfSamples = parseInt(sampleCount.val(), 10),
+          template        = context.templates[templatePicker.val()],
+          study           = template.studies[studiesList.val()];
+
       if (_.isNaN(numberOfSamples)) {
         button.prop("disabled", false);
         error("The number of samples is not valid.");
       } else if (numberOfSamples < 1) {
         button.prop("disabled", false);
         error("You can only register 1 or more samples!");
+      } else if (!customFieldsAreValid(html, template)) {
+        button.prop("disabled", false);
+        error("There is an issue with one of the custom fields!");
       } else {
-        var template = context.templates[templatePicker.val()];
-        var study    = template.studies[studiesList.val()];
-        return f(button, {
+        return fn(button, _.extend({}, {
           number_of_labwares:    numberOfSamples,
           template:              template,
           sanger_sample_id_core: study.sanger_sample_id_core,
           sample_type:           prefixes.val(),
           defaults:              study.defaults
-        });
+        }, getCustomFieldValues(html, template)));
       }
     }
 
@@ -112,6 +120,33 @@ define([
 
         return success("Samples generated and manifest saved. Barcodes ready for printing.");
       });
+    }
+
+    function getCustomFieldValues(html, template) {
+      return _.reduce(template.custom_fields, function(memo, field) {
+        memo[field.id] = parseInt(html.find("#" + field.id).val(), 10);
+        return memo;
+      }, {});
+    }
+
+    function customFieldsAreValid(html, template) {
+      if (_.isEmpty(template.custom_fields)) return true;
+
+      // For each custom field call its validation method (if it has one)
+      // Returns true if all the validation passes
+      return _.chain(template.custom_fields)
+        .map(function(customField) {
+          return [customField.id, customField.validation || false];
+        })
+        .every(function(arr) {
+          if (arr[1] === false) {
+            return true;
+          }
+
+          var val = parseInt(html.find("#"+arr[0]).val(), 10);
+          return arr[1](val);
+        })
+        .value();
     }
   }
 
@@ -169,6 +204,16 @@ define([
     }]);
   }
 
+  function updateCustomFields($customFieldsDiv, template) {
+    $customFieldsDiv.empty();
+
+    if (template.custom_fields && !_.isEmpty(template.custom_fields)) {
+      _.each(template.custom_fields, function(fieldValues) {
+        $customFieldsDiv.append(customFieldTemplate(fieldValues));
+      });
+    }
+  }
+
   function downloadManifest(source, button) {
     saveAs(source.data("manifest"), "manifest.xls");
     button.prop("disabled", false);
@@ -183,7 +228,7 @@ define([
     return template.generator.prepare(
       preRegisterSamples,
       preRegisterBarcodes,
-      details.number_of_labwares,
+      details,
       function(registerSamples, registerBarcodes, placeSamples, labeller) {
         // We know, up front, how many samples are being created and therefore how many barcodes
         // we're going to need at the end of the process.  Hence, we can perform the bulk sample
