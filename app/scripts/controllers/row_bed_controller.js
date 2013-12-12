@@ -1,12 +1,9 @@
- define([
-  "text!/config/robots/gel-fx/0000000000001.json",
-  "text!/config/robots/gel-ebase/0000000000002.json",
-  "lib/pubsub", 
+ define(["lib/pubsub", 
   "views/row_view", 
   "app-components/linear-process/linear-process",
   "app-components/labware/display_controller_wrapper",
   "app-components/scanning/bed-verification" , "app-components/scanning/bed-recording", "controllers/base_controller"
-], function (robotConfigFXJson, robotConfigeBaseJson, PubSub, View, linearProcess, labwareControllerWrapper, bedVerification, bedRecording, BaseController) {
+], function (PubSub, View, linearProcess, labwareControllerWrapper, bedVerification, bedRecording, BaseController) {
   "use strict";
 
   /* Sample model input:
@@ -31,7 +28,20 @@
    * }
    *};
    */
-  
+  var robotConfigFXJson = [{
+    "barcode":  "0000000000001",
+    "beds": [
+        [{ "barcode": "0000000000001" }, { "barcode": "0000000000002" }],
+        [{ "barcode": "0000000000003" }, { "barcode": "0000000000004" }]
+    ]
+  }];
+  var robotConfigeBaseJson= {
+    "barcode":  "0000000000002",
+    "beds": [
+      [{ "barcode": "0000000000001" }], 
+      [{ "barcode": "0000000000002" }]
+      ]
+  };
   var robotConfigFX = JSON.parse(robotConfigFXJson), 
       robotConfigeBase = JSON.parse(robotConfigeBaseJson);
   
