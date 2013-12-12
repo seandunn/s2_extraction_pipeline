@@ -7,8 +7,8 @@ define([
   "lib/jquery_extensions"
 ], function (partialSelection, partialTable, BarcodeScanner) {
   "use strict";
- var ROLE_SCORED = "samples.qc.gel.imager.done.scored", 
-     ROLE_UNSCORED = "samples.qc.gel.imager.done";
+  var ROLE_SCORED = "samples.qc_gel.imager.rna.done.scored", 
+      ROLE_UNSCORED = "samples.qc_gel.imager.rna.done";
   var template = _.template(partialSelection), 
       templateTableSelection = _.template(partialTable);
 

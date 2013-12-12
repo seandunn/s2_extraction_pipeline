@@ -1578,7 +1578,7 @@
       }]
     },
     {
-      "accepts":       [ "samples.qc_gel.fx.rna.batched" ],
+      "accepts":       [ "samples.qc_gel.ebase.rna.batched" ],
       "controllerName": "step_controller",
       "printerType": 1,
       "defaultPrinter":"d304bc",
@@ -1600,7 +1600,7 @@
         },
         "rowBehaviour":  "bedRecording",
         "input": {
-          "role":  "samples.qc_gel.fx.rna.batched",
+          "role":  "samples.qc_gel.ebase.rna.batched",
           "model": "gels",
           "title": "Gel",
           "bedTracking": true

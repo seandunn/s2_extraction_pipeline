@@ -8,17 +8,18 @@ define([
 ], function (partialScoring, Operations) {
   "use strict";
 
-  var ROLE_SCORED = "samples.qc.gel.imager.done.scored", 
-      ROLE_UNSCORED = "samples.qc.gel.imager.done";
+  var ROLE_SCORED = "samples.qc_gel.imager.rna.done.scored", 
+      ROLE_UNSCORED = "samples.qc_gel.imager.rna.done";
   
   var templateScore = _.template(partialScoring);
   var getRoot;
   
   return function(context) {
     var view  = $("<div id='scoring-resource'></div>");
+    $(document.body).append(view);
     getRoot = context.getS2Root;
     return {
-      view:   view,
+      view:   $("<div></div>"),
       events: {
         "selected-gel.gel-scoring-selection.s2": $.ignoresEvent(_.partial(renderScoringResource, view))
       }
