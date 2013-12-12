@@ -28,22 +28,20 @@
    * }
    *};
    */
-  var robotConfigFXJson = [{
+  var robotConfigFX = [{
     "barcode":  "0000000000001",
     "beds": [
         [{ "barcode": "0000000000001" }, { "barcode": "0000000000002" }],
         [{ "barcode": "0000000000003" }, { "barcode": "0000000000004" }]
     ]
   }];
-  var robotConfigeBaseJson= {
+  var robotConfigeBase= {
     "barcode":  "0000000000002",
     "beds": [
       [{ "barcode": "0000000000001" }], 
       [{ "barcode": "0000000000002" }]
       ]
   };
-  var robotConfigFX = JSON.parse(robotConfigFXJson), 
-      robotConfigeBase = JSON.parse(robotConfigeBaseJson);
   
   function findRootPromise(controller) {
     var iterations = 0;
