@@ -1567,7 +1567,7 @@
         "output": [{
           "role": "samples.qc_gel.ebase.rna.batched",
           "aliquotType":  "RNA",
-          "purpose":     "stock",
+          "purpose":     "gel plate",
           "model":       "gels",
           "title":      "Gel",
           "attributes":  {
@@ -1609,7 +1609,7 @@
         "output": [{
           "role": "samples.qc_gel.imager.rna",
           "aliquotType":  "RNA",
-          "purpose":     "stock",
+          "purpose":     "gel plate",
           "model":       "gels",
           "title":      "Gel",
           "not_batched":true
