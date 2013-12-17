@@ -2,11 +2,12 @@ define([
   "text!app-components/manifest/_maker.html",
   "text!app-components/manifest/_custom_field.html",
   "app-components/labelling/printing",
+  "lib/reception_templates",
 
   // Global namespace updates
   "lib/jquery_extensions",
   "components/filesaver/filesaver"
-], function (componentPartialHtml, customFieldPartial, LabelPrinter) {
+], function (componentPartialHtml, customFieldPartial, LabelPrinter, ReceptionTemplates) {
   'use strict';
 
   var viewTemplate        = _.compose($, _.template(componentPartialHtml)),
@@ -31,7 +32,7 @@ define([
 
   function createHtml(context, generateSamples) {
     var html = viewTemplate({
-      templates: context.templates
+      templates: ReceptionTemplates
     });
 
     var message = function(type, message) { html.trigger(type + ".status.s2", message); };
@@ -51,7 +52,7 @@ define([
     // When someone changes the template we need to change the view!
     var templatePicker    = html.find("#xls-templates");
     var prefixes          = html.find("#samplePrefixes");
-    var dependsOnTemplate = function(fn) { return _.compose(fn, _.partial(selectedTemplate, context.templates)); };
+    var dependsOnTemplate = function(fn) { return _.compose(fn, _.partial(selectedTemplate, ReceptionTemplates)); };
 
     templatePicker.change(dependsOnTemplate(_.partial(updateSampleTypeSelection, prefixes)));
     templatePicker.change(dependsOnTemplate(_.partial(updateStudiesSelection, studiesList)));
@@ -88,7 +89,7 @@ define([
 
     function checkSamples(fn, button) {
       var numberOfSamples = parseInt(sampleCount.val(), 10),
-          template        = context.templates[templatePicker.val()],
+          template        = ReceptionTemplates[templatePicker.val()],
           study           = template.studies[studiesList.val()];
 
       if (_.isNaN(numberOfSamples)) {
