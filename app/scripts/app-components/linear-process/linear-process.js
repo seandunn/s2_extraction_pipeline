@@ -18,8 +18,8 @@ define([
     // Build and attach any components that are present in the context.  This handles the
     // non-dynamic situations.
     var components = _.map(context.components, _.partial(buildComponent, context));
-    _.each(components, _.partial(attachComponent, html));
-
+    _.each(components, _.partial(attachComponent, html));    
+    
     // Dynamic components deal with attaching components by registering a callback.
     context.dynamic(function(component) {
       components.push(component);
@@ -27,14 +27,38 @@ define([
       html.trigger("deactivate.s2");
     });
 
+    html.on("reset.s2", $.ignoresChildrenEvent(html[0], _.partial(initialiseProcessChain, html, components)));
+    
+    // Creates a multiplexer of the event handlers of components when they ask to pass by an event
+    // to upper level. This is needed as the linear process doesn't send the event handlers from
+    // its components to upper levels.
+    var eventHandlers = _.chain(components).
+    pluck("events").map(function(obj) {
+      return _.omit(obj, ["activate.s2", "deactivate.s2"]);
+    }).reduce(function(memo, node) {
+      //debugger;
+      return _.reduce(_.keys(node), function(memo, key) {
+        if (_.isUndefined(memo[key])) {
+          memo[key]=node[key];
+        } else {
+          memo[key] = _.wrap(memo[key], _.partial(function(actualHandler, previousHandler) {
+            actualHandler.apply(this, arguments);
+            return previousHandler.apply(this, arguments);
+          }, node[key]));
+        }
+        //memo[key].push(node[key]);
+        return memo;
+      }, memo);
+    }, {}).extend({
+      "activate.s2" : /* Not execute process chain if I receive the event from a child */
+        $.ignoresChildrenEvent(html[0], _.partial(initialiseProcessChain, html, components)),
+      "focus": function() { components[0].view.focus(); }
+    }).value();
+
     return {
       components: components,
       view: html,
-      events: $.stopsPropagation({
-        "activate.s2" : /* Not execute process chain if I receive the event from a child */
-          $.ignoresChildrenEvent(html[0], _.partial(initialiseProcessChain, html, components)),
-        "focus": function() { components[0].view.focus(); }
-      })
+      events: eventHandlers
     };
   };
 

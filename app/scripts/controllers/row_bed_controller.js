@@ -102,7 +102,7 @@
     hideEditable: function() {
       
     },
-    setupControllerWithBedVerification: function() {
+    setupControllerWithBedVerification: function(inputModel) {
       var controller = this;
       $(".robot input").prop("value", "");
       var bedRecordingInfo = this.controllers.map(function(value, pos, list) {
@@ -111,6 +111,19 @@
       }).compact().reduce(function(memo, p) { 
         var component = bedVerification({
           bedsConfig: robotConfigFX,
+          recordingValidation: _.partial(function(inputModel, pos) {
+            debugger;
+            var args = Array.prototype.slice.call(arguments, 2);
+            var plateInfo = args[1];
+            var resource = plateInfo[2];
+            var defer = $.Deferred();
+            if (resource.resourceType===inputModel["labware"+(pos+1)].expected_type) {
+              defer.resolve(args);
+            } else {
+              defer.reject();
+            }
+            return defer; 
+          }, inputModel),
           fetch: _.partial(function(rootPromise, barcode) {
             return rootPromise.then(function(root) {
               return root.findByLabEan13(barcode);
@@ -139,7 +152,7 @@
       var arrow = "<div class='transferArrow span1 offset1'><span >&rarr;</span></div>";
       $(arrow).insertAfter($(".left", controller.jquerySelection())[0]);
 
-      this.linearProcessLabwares.view.on("reset.s2", function() {
+      this.linearProcessLabwares.view.on("error.bed-verification.s2", function() {
         setTimeout(function() {
           window.location.href = window.location.href;
         }, 3000);
@@ -170,7 +183,7 @@
     },
 
     
-    setupControllerWithBedRecording: function() {
+    setupControllerWithBedRecording: function(inputModel) {
       var controller = this;
       var bedRecordingInfo = this.controllers.reduce(function(memo, p) { 
         var component;
@@ -259,7 +272,7 @@
 
       this.currentView.renderView();
       $(document.body).addClass("gel");
-      this[(this.owner.config.rowBehaviour==="bedRecording")?"setupControllerWithBedRecording":"setupControllerWithBedVerification"]();
+      this[(this.owner.config.rowBehaviour==="bedRecording")?"setupControllerWithBedRecording":"setupControllerWithBedVerification"](input_model);
    },
 
 

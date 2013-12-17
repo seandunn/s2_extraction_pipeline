@@ -12,8 +12,8 @@ define([ "app-components/linear-process/linear-process",
     }
     var componentsList=[];
     var obj = linearProcess({
-      components: [{ constructor: _.partial(buildBedRecording, _.extend({cssClass: "left"}, context), componentsList) },
-                   { constructor: _.partial(buildBedRecording, _.extend({cssClass: "right"}, context), componentsList) } ]
+      components: [{ constructor: _.partial(buildBedRecording, _.extend({cssClass: "left", position: 0}, context), componentsList) },
+                   { constructor: _.partial(buildBedRecording, _.extend({cssClass: "right", position: 1}, context), componentsList) } ]
     });
 
     $("input", obj.view).prop("disabled", "true");
@@ -61,7 +61,7 @@ define([ "app-components/linear-process/linear-process",
         PubSub.publish("message.status.s2", this, {message: 'Bed verification correct.'});
       }, function() {
         PubSub.publish("error.status.s2", this, {message: 'Incorrect bed verification.'});
-        obj.view.trigger("reset.s2");
+        obj.view.trigger("error.bed-verification.s2");
       });
     
     $(document.body).on("scanned.robot.s2", _.partial(function(promise, event, robot) {

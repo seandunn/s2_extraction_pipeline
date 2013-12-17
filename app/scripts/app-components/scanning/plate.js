@@ -10,6 +10,7 @@ define([ "text!app-components/scanning/_plate.html",
   var PLATE_SCANNED = "scanned.plate.s2";
   var DONE = "done.s2";
   var PLATE_SCANNED_ERROR = "error.scanned.plate.s2";
+  var RESET_EVENT = "reset.s2";
   
   return function(context) {
     var html = $(_.template(plateTemplate)());
@@ -20,6 +21,7 @@ define([ "text!app-components/scanning/_plate.html",
       });
     obj.view.append(html);
     obj.view.on(labware.events);
+    obj.view.on(RESET_EVENT);
     obj.view.on(SCANNED_BARCODE, $.ignoresEvent(function(barcode) {
       context.fetch(barcode).then(function(labware) {
         obj.view.trigger(LABWARE_DISPLAY, representer(labware));

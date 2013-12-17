@@ -38,15 +38,24 @@ define([ "text!app-components/scanning/_bed-recording.html",
       }, deferred));
       return deferred;
     }, html)).value().concat(robotScannedPromise);
+
+    var validation = _.identity;
     
-   
-    
-    $.when.apply(undefined, promisesBedRecordingDone).then(
+    $.when.apply(undefined, promisesBedRecordingDone).then(_.partial(context.recordingValidation || validation, context.position)).then(
       function(bedBarcode, plateResource, robotResource) {
         html.trigger("scanned.bed-recording.s2", [ html, bedBarcode, plateResource 
         ]);
         html.trigger(DONE, html);
-      });
+      }, _.partial(function(component) {
+        component.view.trigger("reset.s2");
+      }, component));
+    
+    html.on(DONE, function(event) {
+      /* We should stop any done event (for avoiding linear process to continue) */
+      $.stopsPropagation(event);
+      return false;
+    });
+    
     if (context.cssClass) {
       html.addClass(context.cssClass);
     }
