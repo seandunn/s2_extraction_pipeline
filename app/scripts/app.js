@@ -6,7 +6,6 @@ define([ 'config'
   , 'lib/pubsub'
 
   , 'models/base_page_model'
-  , 'lib/reception_templates'
 
   // TODO: These will move with the configuration
   , 'app-components/reception/reception'
@@ -16,7 +15,7 @@ define([ 'config'
   nextWorkflow,
   S2Root,
   BusyBox, alerts, PubSub,
-  BasePageModel, ReceptionTemplates,
+  BasePageModel,
   Reception, LabActivities
 ) {
   'use strict';
@@ -57,8 +56,6 @@ define([ 'config'
     if (!_.isUndefined(activate)) {
       var component = activate.constructor({
         app:       app,
-
-        templates: ReceptionTemplates,
 
         printers:  app.config.printers,
 
