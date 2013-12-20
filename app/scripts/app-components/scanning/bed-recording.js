@@ -1,5 +1,6 @@
 define([ "text!app-components/scanning/_bed-recording.html",
          "app-components/linear-process/linear-process",
+         //"app-components/linear-process/linear",
          "app-components/scanning/bed",
          "app-components/scanning/plate",
     "lib/jquery_extensions"
@@ -33,28 +34,22 @@ define([ "text!app-components/scanning/_bed-recording.html",
     var promisesBedRecordingDone = _.chain([ BED_SCANNED, PLATE_SCANNED
     ]).map(_.partial(function(view, eventName) {
       var deferred = $.Deferred();
-      view.on(eventName, _.partial(function(deferred) {
-        deferred.resolve(arguments);
+      view.on(eventName, _.partial(function(deferred, event, data) {
+        deferred.resolve(data);
       }, deferred));
       return deferred;
     }, html)).value().concat(robotScannedPromise);
 
-    var validation = _.identity;
+    var validation = function() {return arguments;};
     
-    $.when.apply(undefined, promisesBedRecordingDone).then(_.partial(context.recordingValidation || validation, context.position)).then(
-      function(bedBarcode, plateResource, robotResource) {
-        html.trigger("scanned.bed-recording.s2", [ html, bedBarcode, plateResource 
-        ]);
+    $.when.apply(this, promisesBedRecordingDone).then(context.recordingValidation || validation).then(
+      function(values) {
+        var bedBarcode = values[0], plateResource = values[1], robotBarcode = values[2];
+        html.trigger("scanned.bed-recording.s2", [ html, robotBarcode, bedBarcode, plateResource ]);
         html.trigger(DONE, html);
       }, _.partial(function(component) {
-        component.view.trigger("reset.s2");
+        component.components[1].view.trigger("reset.s2");
       }, component));
-    
-    html.on(DONE, function(event) {
-      /* We should stop any done event (for avoiding linear process to continue) */
-      $.stopsPropagation(event);
-      return false;
-    });
     
     if (context.cssClass) {
       html.addClass(context.cssClass);
@@ -65,9 +60,8 @@ define([ "text!app-components/scanning/_bed-recording.html",
     }, robotScannedPromise));
 
     return (
-      { view : html, events : _.extend(
-        {  "reset.bed-recording.s2": function() {}           
-        }, component.events)
+      { view : html, 
+    	  events : component.events
       });
   };
 });

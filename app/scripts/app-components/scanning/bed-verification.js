@@ -12,8 +12,16 @@ define([ "app-components/linear-process/linear-process",
     }
     var componentsList=[];
     var obj = linearProcess({
-      components: [{ constructor: _.partial(buildBedRecording, _.extend({cssClass: "left", position: 0}, context), componentsList) },
-                   { constructor: _.partial(buildBedRecording, _.extend({cssClass: "right", position: 1}, context), componentsList) } ]
+      components: [{ constructor: _.partial(buildBedRecording, _.extend({
+        cssClass: "left", 
+        position: 0, 
+        plateValidation: context.plateValidations[0]
+      }, context), componentsList) },
+      { constructor: _.partial(buildBedRecording, _.extend({
+        cssClass: "right", 
+        position: 1, 
+        plateValidation: context.plateValidations[1]
+      }, context), componentsList) } ]
     });
 
     $("input", obj.view).prop("disabled", "true");
@@ -35,8 +43,8 @@ define([ "app-components/linear-process/linear-process",
       var bedRecords = _.map(Array.prototype.slice.call(arguments, 1), function(list) {
         list=_.drop(list, 2); 
         return ({
-          bed: list[0][2],
-          plate: list[1][2]
+          bed: list[0],
+          plate: list[1]
         });
       });
       var defer = new $.Deferred();

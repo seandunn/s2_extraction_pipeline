@@ -108,22 +108,28 @@
       var bedRecordingInfo = this.controllers.map(function(value, pos, list) {
           if ((pos % 2)===0) 
             return [value, list[pos+1]];
-      }).compact().reduce(function(memo, p) { 
+      }).compact().reduce(function(memo, p) {
+        
+        function plateLabwareValidation(labwareInputModel, labware) {
+          var defer = $.Deferred();
+          if (labware.resourceType === labwareInputModel.expected_type) {
+            defer.resolve(labware);
+          } else {
+            defer.reject();
+            PubSub.publish("error.status.s2", undefined, 
+              {message: ["Expected a '", 
+                         labwareInputModel.expected_type, 
+                         "' barcode but scanned a '",
+                         labware.resourceType,
+              "'"].join('')});
+          }
+          return defer;
+        }
+        
         var component = bedVerification({
           bedsConfig: robotConfigFX,
-          recordingValidation: _.partial(function(inputModel, pos) {
-            debugger;
-            var args = Array.prototype.slice.call(arguments, 2);
-            var plateInfo = args[1];
-            var resource = plateInfo[2];
-            var defer = $.Deferred();
-            if (resource.resourceType===inputModel["labware"+(pos+1)].expected_type) {
-              defer.resolve(args);
-            } else {
-              defer.reject();
-            }
-            return defer; 
-          }, inputModel),
+          plateValidations: [_.partial(plateLabwareValidation, inputModel.labware1),
+                             _.partial(plateLabwareValidation, inputModel.labware2)],
           fetch: _.partial(function(rootPromise, barcode) {
             return rootPromise.then(function(root) {
               return root.findByLabEan13(barcode);
@@ -147,6 +153,9 @@
       }, this));
       
       // Config view
+      
+      
+      
       controller.jquerySelection().html("");
       controller.jquerySelection().append(this.linearProcessLabwares.view);
       var arrow = "<div class='transferArrow span1 offset1'><span >&rarr;</span></div>";
@@ -177,6 +186,8 @@
       
       
       $(document.body).on("scanned.robot.s2", _.partial(startMyRow, controller));
+      
+      //$(".robot input").prop("disabled", false).focus();
       
       // When bed verification checked for the linear process
       controller.jquerySelection().on("scanned.bed-verification.s2", $.ignoresEvent(_.partial(enableProcessButtons, controller, {buttons: [{action: "start"}]})));      
@@ -231,7 +242,22 @@
           return _.extend(p, {isComplete: _.partial(_.identity, true)});
           }));
       $.when.call(this, bedRecordingInfo.promises[0]).then($.ignoresEvent(_.partial(function(controller, data, view) {
-        var promisesData = _.map(Array.prototype.slice.call(arguments, 3), function(list) { return _.drop(list, 2)[0];});
+        var promisesData = Array.prototype.slice.call(arguments, 3);
+        var robotBarcode = promisesData[0];
+        var records = _.chain(promisesData).drop(1).reduce(function(memo, value) {
+          if ((this.pos % 2)===0)
+            {
+              memo[0].push(value);
+            }
+          else
+            {
+              memo[1].push(value);
+            }
+          this.pos += 1;
+          return memo;
+        }, [[], []], {pos:0}).value()[1];
+        //records = _.zip(records[0], records[1]);
+        
         controller.editableControllers = _.partial(function(robotBarcode, records) {
           // in bedRecording connected we need to have at least one input and one output per each row
           return _.chain(records).map(function(record) { 
@@ -240,7 +266,7 @@
               labwareModel: { resource: record}};}).reduce(function(memo, node) {
               return memo.concat([node, _.clone(node)]);
             }, []);
-        }, promisesData[0], [promisesData[1]]);
+        }, robotBarcode, records);
         controller.owner.childDone(controller, "completed", data);
         PubSub.publish("enable_buttons.step_controller.s2", controller.owner, data);
       }, controller, {buttons: [{action: "start"}]}))); 

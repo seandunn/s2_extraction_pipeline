@@ -27,14 +27,14 @@ define([
       html.trigger("deactivate.s2");
     });
 
-    html.on("reset.s2", $.ignoresChildrenEvent(html[0], _.partial(initialiseProcessChain, html, components)));
+    //html.on("reset.s2", $.ignoresChildrenEvent(html[0], _.partial(initialiseProcessChain, html, components)));
     
     // Creates a multiplexer of the event handlers of components when they ask to pass by an event
     // to upper level. This is needed as the linear process doesn't send the event handlers from
     // its components to upper levels.
     var eventHandlers = _.chain(components).
     pluck("events").map(function(obj) {
-      return _.omit(obj, ["activate.s2", "deactivate.s2"]);
+      return _.omit(obj, ["activate.s2", "deactivate.s2", "reset.s2"]);
     }).reduce(function(memo, node) {
       //debugger;
       return _.reduce(_.keys(node), function(memo, key) {
@@ -42,14 +42,25 @@ define([
           memo[key]=node[key];
         } else {
           memo[key] = _.wrap(memo[key], _.partial(function(actualHandler, previousHandler) {
-            actualHandler.apply(this, arguments);
-            return previousHandler.apply(this, arguments);
+            var args = Array.prototype.slice.call(arguments, 2);
+            actualHandler.apply(this, args);
+            return previousHandler.apply(this, args);
           }, node[key]));
         }
         //memo[key].push(node[key]);
         return memo;
       }, memo);
     }, {}).extend({
+      "reset.s2": $.ignoresChildrenEvent(html[0], _.partial(function(initialiseProcessChain, html, components) {
+        event.stopPropagation();
+        for (var i=0; i<components.length; i++) {
+          components[i].view.trigger("reset.s2");
+        }
+        //_.each(components, function(component) { component.view.trigger("reset.s2");});
+        initialiseProcessChain(html, components);
+        //components[0].view.focus();
+        return false;
+      }, initialiseProcessChain, html, components)),
       "activate.s2" : /* Not execute process chain if I receive the event from a child */
         $.ignoresChildrenEvent(html[0], _.partial(initialiseProcessChain, html, components)),
       "focus": function() { components[0].view.focus(); }
