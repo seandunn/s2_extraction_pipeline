@@ -22,7 +22,7 @@ define([
     var error   = function(message) { html.trigger("error.status.s2", message); };
 
     var tabs    = html.find(".tab-content");
-    var choices = html.find("#choice");
+    var choices = html.find(".choices");
     var home = html.find(".processes");
 
     // The user needs to scan themselves in before doing anything
@@ -48,8 +48,7 @@ define([
     // Attach each of the components into the view.
     _.chain(context.components)
      .map(_.partial(buildComponent, context))
-     .map(_.partial(attachComponent, html, choices, tabs))
-     .value();
+     .each(_.partial(attachComponent, html, choices, tabs))
 
     return html;
   }
@@ -72,9 +71,15 @@ define([
   }
 
   // Builds the component using the given configuration in the specified context.
+  // A typical component config looks like:-
+  // {label: "Re-racking", id: "re-racking", constructor: Reracking},
   function buildComponent(context, config) {
+    var componentContext = _.omit(context, "components");
+
+    _.extend(componentContext, config);
+
     return _.extend({
-      component: config.constructor(config.context || context)
+      component: config.constructor(componentContext)
     }, config);
   }
 
