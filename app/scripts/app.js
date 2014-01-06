@@ -21,8 +21,8 @@ define([ 'config'
   'use strict';
 
   var ComponentConfig = [
-    { name: "reception",  selector: ".sample-reception",     constructor: Reception     },
-    { name: "re-racking", selector: ".extraction-reracking", constructor: LabActivities }
+    { name: "reception",  selector: "#lab-management",     constructor: Reception     },
+    { name: "re-racking", selector: "#lab-activities", constructor: LabActivities }
   ];
 
   var App = function (theControllerFactory) {
@@ -30,6 +30,7 @@ define([ 'config'
     app.config = config;
     app.controllerFactory = theControllerFactory;
     _.templateSettings.variable = 'templateData';
+
 
     $('#server-url').text(config.apiUrl);
     $('#release').text(config.release);
@@ -43,20 +44,22 @@ define([ 'config'
 
     // Ensure that messages are properly picked up & dispatched
     // TODO: die, eat-flaming-death!
-    var html = $("#content");
+    var html = $(".s2-page");
     _.map(["error", "success", "info"], function(type) {
       html.on(type +".status.s2", function(event, message) {
         PubSub.publish(type + ".status.s2", app, {message: message});
       });
     });
 
-    var activate = _.find(ComponentConfig, function(config) {
+    // Change this to a filter
+    var components = _.filter(ComponentConfig, function(config) {
       return html.is(config.selector);
     });
-    if (!_.isUndefined(activate)) {
-      var component = activate.constructor({
-        app:       app,
 
+    _.map(components, function(config){
+
+      var component = config.constructor({
+        app:       app,
         printers:  app.config.printers,
 
         findUser: function(barcode) {
@@ -69,24 +72,34 @@ define([ 'config'
         resetS2Root: _.bind(app.resetS2Root, app),
         getS2Root:   _.bind(app.getS2Root, app)
       });
-      html.append(component.view).on(component.events);
+
+      html
+      .filter(config.selector)
+      .append(component.view)
+      .on(component.events);
 
       alerts.setupPlaceholder(function() {
         return $("#alertContainer");
       });
       app.addEventHandlers();
-    } else {
-      // Handle the non-components
-      // TODO: Move these to be components!
-      if (html.is('.sample-extraction')) {
-        // ToDo #content exists at this point we should pass it directly not a function
-        app.jquerySelection = _.constant(html);
-        app.addEventHandlers();
-        app.setupController();
-      } else {
-        console.log('#content control class missing from web page.')
-      }
+    });
+
+    var $sampleExtraction = html.filter("#pipeline");
+    app.jquerySelection = _.constant($sampleExtraction);
+    app.addEventHandlers();
+    app.setupController();
+
+    // Handle deep-linking to pages such as lab-managment
+    var url = document.location.toString();
+
+    if (url.match('#')) {
+      $('#page-nav a[href=#'+url.split('#')[1]+']').tab('show') ;
     }
+
+    // Change hash for page-reload
+    $('#page-nav a').on('shown', function (e) {
+      window.location.hash = e.target.hash;
+    });
   };
 
   App.prototype.addEventHandlers = function(){
@@ -117,6 +130,7 @@ define([ 'config'
   App.prototype.updateModel = function (model) {
     var application = this;
     this.model = $.extend(this.model, model);
+    $('#page-nav a[href="#pipeline"]').tab('show');
 
     if (this.currentPageController) {
       this.currentPageController.release();
@@ -125,15 +139,15 @@ define([ 'config'
 
     nextWorkflow(this.model).
       then(function(workflowConfig){
-        if (workflowConfig)
-          {
-            var roles = workflowConfig.accepts;
-            _.each(roles, function(role) {
-              $(document.body).addClass(role.replace(/\./g, "-"));
-            });
-          }
-      $.extend(workflowConfig, {initialLabware: application.model.labware});
-      return application.controllerFactory.create(workflowConfig && workflowConfig.controllerName, application, workflowConfig);
+      if (workflowConfig)
+        {
+          var roles = workflowConfig.accepts;
+          _.each(roles, function(role) {
+            $(document.body).addClass(role.replace(/\./g, "-"));
+          });
+        }
+        $.extend(workflowConfig, {initialLabware: application.model.labware});
+        return application.controllerFactory.create(workflowConfig && workflowConfig.controllerName, application, workflowConfig);
     }).then(function(nextController){
       application.currentPageController = nextController;
       application.currentPageController.setupController(application.model, application.jquerySelection);

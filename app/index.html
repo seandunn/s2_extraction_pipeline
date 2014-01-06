@@ -11,34 +11,38 @@
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
 
+  <!-- This should really be moved to an name spaced module... -->
+  <script type="text/javascript" src="http://public.tableausoftware.com/javascripts/api/tableau_v8.js"></script>
 </head>
 <body>
   <header class="container">
-    <div class="row page-title">
-      <div class="span3">
-        <img id="sanger-logo" src="images/sanger-logo.png"/>
-      </div>
-      <div class="span6 offset3">
-        <h1 id="title-text" class="pull-right">S2 Samples Pipeline</h1>
-      </div>
+  <div class="row page-title">
+    <div class="span3">
+      <img id="sanger-logo" src="images/sanger-logo.png"/>
     </div>
+    <div class="span6 offset3">
+      <h1 id="title-text" class="pull-right">S2 Samples Pipeline</h1>
+    </div>
+  </div>
 
-    <div class="row">
-      <div class="span4 offset8">
-      <ul class="nav nav-pills pull-right" role="menu" aria-labelledby="dLabel">
-        <li class="active"><a href="#">Pipeline</a></li>
-        <li><a href="lab_activities.html">Lab Activities</a></li>
+  <div class="row">
+    <div class="span5 offset7">
+      <ul id="page-nav" class="nav nav-pills pull-right">
+        <li><a href="#pipeline" data-toggle="pill">Pipeline</a></li>
+        <li><a href="#lab-activities" data-toggle="pill">Lab Activities</a></li>
+        <li><a href="#lab-management" data-toggle="pill">Lab Management</a></li>
       </ul>
-      </div>
     </div>
+  </div>
 
   </header>
 
   <div id="alertContainer" class="container"></div>
-  <div id="content" class="sample-extraction container"></div>
-  <br/>
-  <br/>
-  <br/>
+  <div class="tab-content">
+    <div id="pipeline" class="s2-page container tab-pane fade active in"></div>
+    <div id="lab-activities" class="s2-page container tab-pane fade in"></div>
+    <div id="lab-management" class="s2-page container tab-pane fade in"></div>
+  </div>
 
   <p class="navbar navbar-fixed-bottom muted">Release: <span id="release">unknown</span> - S2 Server: <span id="server-url">unknown</span></p>
 
