@@ -50,8 +50,10 @@ define([
           .setLabwareFromBarcode(ean13)
           .then(function(model){
             // owner in this case is app.js
-            model.owner.childDone(undefined, "done", model);
+            model.owner.childDone("Inbox Component", "done", model);
           });
+
+
         });
       }
     };
