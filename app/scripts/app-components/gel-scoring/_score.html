@@ -3,11 +3,13 @@
     <div class="modal-content">
  
  <div class="modal-header"><h3 class="modal-title">Select the score for gel:</h3></div>
+ <div class="modal-body-header">
+     <span class="label-barcode">Gel barcode:</span><input class="barcode" type="text" value="<%= barcode %>" disabled/>
+  <input class="header-button btn btn-default" data-action-s2="download" type="button" value="Download image" />
+ </div>
  <div class="modal-body">
 
 <div class="gel-scoring-view table-responsive">
-    <span class="label-barcode">Gel barcode:</span><input class="barcode" type="text" value="<%= barcode %>" disabled/>
-  <input class="header-button btn btn-default" data-action-s2="download" type="button" value="Download image" />
   <table class="table-bordered table-condensed">
     <tbody>
     <tr><td></td>
@@ -17,7 +19,7 @@
         <% _.each(yLabels, function(labely) { %> 
             <tr><td> <%= labely %> </td> 
                 <% _.times(xLabels.length, function(pos) { %>
-                  <td data-position-s2="<%= labely %><%= xLabels[pos]+1 %>">
+                  <td data-position-s2="<%= labely %><%= xLabels[pos]+1 %>" class="<%= (windows[labely+(xLabels[pos]+1)].length>0)? 'sample': 'nosample' %>">
                     <select class="gel-scoring-cell">
                         <option name="score" value="pass" <%= getSelectValue('pass', labely+(xLabels[pos]+1)) %> >Pass</option>
                         <option name="score" value="fail" <%= getSelectValue('fail', labely+(xLabels[pos]+1)) %> >Fail</option>

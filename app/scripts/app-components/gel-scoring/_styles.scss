@@ -45,6 +45,13 @@ select.gel-scoring-cell {
 
 .gel-scoring-view .header-button { float: right;}
 
+.gel-scoring-view td.nosample select {
+	display: none;
+}
+
+.gel-scoring-view td.sample {
+    
+}
 
 #scoreModal .modal-body { max-height: 420px; }
 
@@ -69,4 +76,17 @@ body .modal-backdrop, .modal-backdrop.fade.in {
 
 .tableSelection {
 	min-height: 400px;
+}
+
+.modal-body-header .header-button {
+	float: right;
+}
+
+.modal-body-header {
+	margin: 1em 1em 0em 1em;
+}
+
+.modal-body-header .label-barcode {
+	margin-right: 1em;
+	font-size: 16px;
 }

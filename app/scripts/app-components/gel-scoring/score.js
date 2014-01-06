@@ -35,11 +35,22 @@ define([
           getSelectValue: _.partial(function(gelImage, value, label) {
             return gelImage.scores[label]===value? "selected" : "";
           }, gelImage),
+          windows: resource.windows,
           barcode: resource.labels.barcode.value,
           xLabels: _.times(resource.number_of_columns, _.identity),
           yLabels: _.times(resource.number_of_rows, function(n) { return String.fromCharCode("A".charCodeAt(0)+n); })
         });
         view.append(scoringHtml);
+        
+        // Hides all windows without samples inside
+        /*var sampleWindowKeys = _.filter(_.keys(resource.windows), function(windowKey) { 
+          return (resource.windows[windowKey].length>0);
+        });
+        _.forEach($("td[data-position-s2]", view), function(node) {
+          if (_.indexOf(sampleWindowKeys, $(node).attr("data-position-s2")) < 0) {
+            $("select", node).addClass("hidden");
+          }
+        });*/
         $("[data-action-s2=download]").click(_.partial(download, view, gelImage, resource));
         $("[data-action-s2=save]").click(_.partial(save, view, gelImage, resource));
         $('#scoreModal').modal('show');        
