@@ -42,15 +42,6 @@ define([
         });
         view.append(scoringHtml);
         
-        // Hides all windows without samples inside
-        /*var sampleWindowKeys = _.filter(_.keys(resource.windows), function(windowKey) { 
-          return (resource.windows[windowKey].length>0);
-        });
-        _.forEach($("td[data-position-s2]", view), function(node) {
-          if (_.indexOf(sampleWindowKeys, $(node).attr("data-position-s2")) < 0) {
-            $("select", node).addClass("hidden");
-          }
-        });*/
         $("[data-action-s2=download]").click(_.partial(download, view, gelImage, resource));
         $("[data-action-s2=save]").click(_.partial(save, view, gelImage, resource));
         $('#scoreModal').modal('show');        
@@ -85,10 +76,10 @@ define([
       }).object().value()
     };
     gelImage.score(data).then(function() {
-      view.trigger("change-scored.selection.s2");
-      // After scoring, we can change the role to scored
+      // After scoring, we can change the role to scored      
       changeRole(gel, view).then(function() {
-        $('#scoreModal').modal('hide');
+        $('#scoreModal').modal('hide');        
+        view.trigger("change-scored.selection.s2", ROLE_SCORED);
       });
     });
   }
