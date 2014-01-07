@@ -102,15 +102,34 @@
     hideEditable: function() {
       
     },
-    setupControllerWithBedVerification: function() {
+    setupControllerWithBedVerification: function(inputModel) {
       var controller = this;
       $(".robot input").prop("value", "");
       var bedRecordingInfo = this.controllers.map(function(value, pos, list) {
           if ((pos % 2)===0) 
             return [value, list[pos+1]];
-      }).compact().reduce(function(memo, p) { 
+      }).compact().reduce(function(memo, p) {
+        
+        function plateLabwareValidation(labwareInputModel, labware) {
+          var defer = $.Deferred();
+          if (labware.resourceType === labwareInputModel.expected_type) {
+            defer.resolve(labware);
+          } else {
+            defer.reject();
+            PubSub.publish("error.status.s2", undefined, 
+              {message: ["Expected a '", 
+                         labwareInputModel.expected_type, 
+                         "' barcode but scanned a '",
+                         labware.resourceType,
+              "'"].join('')});
+          }
+          return defer;
+        }
+        
         var component = bedVerification({
           bedsConfig: robotConfigFX,
+          plateValidations: [_.partial(plateLabwareValidation, inputModel.labware1),
+                             _.partial(plateLabwareValidation, inputModel.labware2)],
           fetch: _.partial(function(rootPromise, barcode) {
             return rootPromise.then(function(root) {
               return root.findByLabEan13(barcode);
@@ -134,12 +153,15 @@
       }, this));
       
       // Config view
+      
+      
+      
       controller.jquerySelection().html("");
       controller.jquerySelection().append(this.linearProcessLabwares.view);
       var arrow = "<div class='transferArrow span1 offset1'><span >&rarr;</span></div>";
       $(arrow).insertAfter($(".left", controller.jquerySelection())[0]);
 
-      this.linearProcessLabwares.view.on("reset.s2", function() {
+      this.linearProcessLabwares.view.on("error.bed-verification.s2", function() {
         setTimeout(function() {
           window.location.href = window.location.href;
         }, 3000);
@@ -170,7 +192,7 @@
     },
 
     
-    setupControllerWithBedRecording: function() {
+    setupControllerWithBedRecording: function(inputModel) {
       var controller = this;
       var bedRecordingInfo = this.controllers.reduce(function(memo, p) { 
         var component;
@@ -218,7 +240,21 @@
           return _.extend(p, {isComplete: _.partial(_.identity, true)});
           }));
       $.when.call(this, bedRecordingInfo.promises[0]).then($.ignoresEvent(_.partial(function(controller, data, view) {
-        var promisesData = _.map(Array.prototype.slice.call(arguments, 3), function(list) { return _.drop(list, 2)[0];});
+        var promisesData = Array.prototype.slice.call(arguments, 3);
+        var robotBarcode = promisesData[0];
+        var records = _.chain(promisesData).drop(1).reduce(function(memo, value) {
+          if ((this.pos % 2)===0)
+            {
+              memo[0].push(value);
+            }
+          else
+            {
+              memo[1].push(value);
+            }
+          this.pos += 1;
+          return memo;
+        }, [[], []], {pos:0}).value()[1];
+        
         controller.editableControllers = _.partial(function(robotBarcode, records) {
           // in bedRecording connected we need to have at least one input and one output per each row
           return _.chain(records).map(function(record) { 
@@ -227,7 +263,7 @@
               labwareModel: { resource: record}};}).reduce(function(memo, node) {
               return memo.concat([node, _.clone(node)]);
             }, []);
-        }, promisesData[0], [promisesData[1]]);
+        }, robotBarcode, records);
         controller.owner.childDone(controller, "completed", data);
         PubSub.publish("enable_buttons.step_controller.s2", controller.owner, data);
       }, controller, {buttons: [{action: "start"}]}))); 
@@ -259,7 +295,7 @@
 
       this.currentView.renderView();
       $(document.body).addClass("gel");
-      this[(this.owner.config.rowBehaviour==="bedRecording")?"setupControllerWithBedRecording":"setupControllerWithBedVerification"]();
+      this[(this.owner.config.rowBehaviour==="bedRecording")?"setupControllerWithBedRecording":"setupControllerWithBedVerification"](input_model);
    },
 
 

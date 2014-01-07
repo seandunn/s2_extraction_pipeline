@@ -35,11 +35,13 @@ define([
           getSelectValue: _.partial(function(gelImage, value, label) {
             return gelImage.scores[label]===value? "selected" : "";
           }, gelImage),
+          windows: resource.windows,
           barcode: resource.labels.barcode.value,
           xLabels: _.times(resource.number_of_columns, _.identity),
           yLabels: _.times(resource.number_of_rows, function(n) { return String.fromCharCode("A".charCodeAt(0)+n); })
         });
         view.append(scoringHtml);
+        
         $("[data-action-s2=download]").click(_.partial(download, view, gelImage, resource));
         $("[data-action-s2=save]").click(_.partial(save, view, gelImage, resource));
         $('#scoreModal').modal('show');        
@@ -74,10 +76,10 @@ define([
       }).object().value()
     };
     gelImage.score(data).then(function() {
-      view.trigger("change-scored.selection.s2");
-      // After scoring, we can change the role to scored
+      // After scoring, we can change the role to scored      
       changeRole(gel, view).then(function() {
-        $('#scoreModal').modal('hide');
+        $('#scoreModal').modal('hide');        
+        view.trigger("change-scored.selection.s2", ROLE_SCORED);
       });
     });
   }
