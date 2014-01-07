@@ -27,8 +27,6 @@ define([
       html.trigger("deactivate.s2");
     });
 
-    //html.on("reset.s2", $.ignoresChildrenEvent(html[0], _.partial(initialiseProcessChain, html, components)));
-    
     // Creates a multiplexer of the event handlers of components when they ask to pass by an event
     // to upper level. This is needed as the linear process doesn't send the event handlers from
     // its components to upper levels.
@@ -36,7 +34,6 @@ define([
     pluck("events").map(function(obj) {
       return _.omit(obj, ["activate.s2", "deactivate.s2", "reset.s2"]);
     }).reduce(function(memo, node) {
-      //debugger;
       return _.reduce(_.keys(node), function(memo, key) {
         if (_.isUndefined(memo[key])) {
           memo[key]=node[key];
@@ -47,7 +44,6 @@ define([
             return previousHandler.apply(this, args);
           }, node[key]));
         }
-        //memo[key].push(node[key]);
         return memo;
       }, memo);
     }, {}).extend({
@@ -56,9 +52,7 @@ define([
         for (var i=0; i<components.length; i++) {
           components[i].view.trigger("reset.s2");
         }
-        //_.each(components, function(component) { component.view.trigger("reset.s2");});
         initialiseProcessChain(html, components);
-        //components[0].view.focus();
         return false;
       }, initialiseProcessChain, html, components)),
       "activate.s2" : /* Not execute process chain if I receive the event from a child */

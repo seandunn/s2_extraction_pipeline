@@ -1,6 +1,5 @@
 define([ "text!app-components/scanning/_bed-recording.html",
          "app-components/linear-process/linear-process",
-         //"app-components/linear-process/linear",
          "app-components/scanning/bed",
          "app-components/scanning/plate",
     "lib/jquery_extensions"

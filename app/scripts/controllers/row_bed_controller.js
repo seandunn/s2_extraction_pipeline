@@ -187,8 +187,6 @@
       
       $(document.body).on("scanned.robot.s2", _.partial(startMyRow, controller));
       
-      //$(".robot input").prop("disabled", false).focus();
-      
       // When bed verification checked for the linear process
       controller.jquerySelection().on("scanned.bed-verification.s2", $.ignoresEvent(_.partial(enableProcessButtons, controller, {buttons: [{action: "start"}]})));      
     },
@@ -256,7 +254,6 @@
           this.pos += 1;
           return memo;
         }, [[], []], {pos:0}).value()[1];
-        //records = _.zip(records[0], records[1]);
         
         controller.editableControllers = _.partial(function(robotBarcode, records) {
           // in bedRecording connected we need to have at least one input and one output per each row
