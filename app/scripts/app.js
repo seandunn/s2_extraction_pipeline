@@ -4,11 +4,10 @@ define([ 'config'
   , 'extra_components/busy_box'
   , 'alerts'
   , 'lib/pubsub'
-
   , 'models/base_page_model'
 
   // TODO: These will move with the configuration
-  , 'app-components/reception/reception'
+  , 'app-components/lab-management/lab-management'
   , 'app-components/lab-activities/lab-activities'
 ], function(
   config,
@@ -16,14 +15,15 @@ define([ 'config'
   S2Root,
   BusyBox, alerts, PubSub,
   BasePageModel,
-  Reception, LabActivities
+  LabMangement, LabActivities
 ) {
   'use strict';
 
   var ComponentConfig = [
-    { name: "reception",  selector: "#lab-management",     constructor: Reception     },
-    { name: "re-racking", selector: "#lab-activities", constructor: LabActivities }
+    { name: "Lab Mangement",  selector: "#lab-management", constructor: LabMangement     },
+    { name: "Lab Activities", selector: "#lab-activities", constructor: LabActivities }
   ];
+
 
   var App = function (theControllerFactory) {
     var app = this;
@@ -44,21 +44,44 @@ define([ 'config'
 
     // Ensure that messages are properly picked up & dispatched
     // TODO: die, eat-flaming-death!
-    var html = $(".s2-page");
-    _.map(["error", "success", "info"], function(type) {
-      html.on(type +".status.s2", function(event, message) {
+    _.each(["error", "success", "info"], function(type) {
+      $("body").on(type +".status.s2", function(event, message) {
         PubSub.publish(type + ".status.s2", app, {message: message});
       });
     });
 
-    // Change this to a filter
-    var components = _.filter(ComponentConfig, function(config) {
-      return html.is(config.selector);
+    _.each(ComponentConfig, function(config){
+      var component = createComponent(config);
+
+      $(config.selector)
+      .append($('<h2>').text(config.name))
+      .append(component.view)
+      .on(component.events);
+
+      alerts.setupPlaceholder(function() {
+        return $("#alertContainer");
+      });
     });
 
-    _.map(components, function(config){
+    app.jquerySelection = _.constant($("#pipeline"));
+    app.addEventHandlers();
+    app.setupController();
 
-      var component = config.constructor({
+    // Handle deep-linking to pages such as lab-managment
+    var url = document.location.toString();
+
+    if (url.match('#')) {
+      $('#page-nav a[href=#'+url.split('#')[1]+']').tab('show') ;
+    }
+
+    // Change location hash for page-reload
+    $('#page-nav').on('shown','a', function (e) {
+      window.location.hash = e.target.hash;
+    });
+
+
+    function createComponent(config){
+      return config.constructor({
         app:       app,
         printers:  app.config.printers,
 
@@ -70,36 +93,9 @@ define([ 'config'
         },
 
         resetS2Root: _.bind(app.resetS2Root, app),
-        getS2Root:   _.bind(app.getS2Root, app)
+        getS2Root:   _.bind(app.getS2Root, app),
       });
-
-      html
-      .filter(config.selector)
-      .append(component.view)
-      .on(component.events);
-
-      alerts.setupPlaceholder(function() {
-        return $("#alertContainer");
-      });
-      app.addEventHandlers();
-    });
-
-    var $sampleExtraction = html.filter("#pipeline");
-    app.jquerySelection = _.constant($sampleExtraction);
-    app.addEventHandlers();
-    app.setupController();
-
-    // Handle deep-linking to pages such as lab-managment
-    var url = document.location.toString();
-
-    if (url.match('#')) {
-      $('#page-nav a[href=#'+url.split('#')[1]+']').tab('show') ;
     }
-
-    // Change hash for page-reload
-    $('#page-nav a').on('shown', function (e) {
-      window.location.hash = e.target.hash;
-    });
   };
 
   App.prototype.addEventHandlers = function(){

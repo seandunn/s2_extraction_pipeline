@@ -28,7 +28,7 @@
   <div class="row">
     <div class="span5 offset7">
       <ul id="page-nav" class="nav nav-pills pull-right">
-        <li><a href="#pipeline" data-toggle="pill">Pipeline</a></li>
+        <li class="active"><a href="#pipeline" data-toggle="pill">Pipeline</a></li>
         <li><a href="#lab-activities" data-toggle="pill">Lab Activities</a></li>
         <li><a href="#lab-management" data-toggle="pill">Lab Management</a></li>
       </ul>
@@ -38,10 +38,11 @@
   </header>
 
   <div id="alertContainer" class="container"></div>
-  <div class="tab-content">
+
+  <div id="page-content" class="tab-content">
     <div id="pipeline" class="s2-page container tab-pane fade active in"></div>
-    <div id="lab-activities" class="s2-page container tab-pane fade in"></div>
-    <div id="lab-management" class="s2-page container tab-pane fade in"></div>
+    <div id="lab-activities" class="s2-page container tab-pane fade"></div>
+    <div id="lab-management" class="s2-page container tab-pane fade"></div>
   </div>
 
   <p class="navbar navbar-fixed-bottom muted">Release: <span id="release">unknown</span> - S2 Server: <span id="server-url">unknown</span></p>
