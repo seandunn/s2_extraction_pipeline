@@ -1,12 +1,13 @@
 define([
     'text!app-components/manifest/_reader.html'
   , 'text!app-components/manifest/_row.html'
-  , 'lib/file_handling/manifests'
+  , 'lib/file_handling/manifests'  
   , 'app-components/dropzone/dropzone'
+  , 'lib/reception_templates'
 
   // Loaded in the global namespace after this comment
   , 'lib/jquery_extensions'
-], function (componentPartialHtml, sampleRowPartial, CSVParser, DropZone) {
+], function (componentPartialHtml, sampleRowPartial, CSVParser, DropZone, ReceptionTemplates) {
   'use strict';
 
   var viewTemplate = _.compose($, _.template(componentPartialHtml));
@@ -261,7 +262,8 @@ define([
     }
 
     var templateName       = dataAsArray[2][0]; // always A3 !!
-    manifest.template = context.templates[templateName];
+
+    manifest.template = ReceptionTemplates[templateName];
     if (_.isUndefined(manifest.template)) {
       manifest.errors.push("Could not find the corresponding template!");
       return resolver();
