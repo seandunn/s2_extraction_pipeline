@@ -15,11 +15,13 @@ define([ "app-components/linear-process/linear-process",
       components: [{ constructor: _.partial(buildBedRecording, _.extend({
         cssClass: "left", 
         position: 0, 
+        recordingValidation: function() {return arguments;},
         plateValidation: context.plateValidations[0]
       }, context), componentsList) },
       { constructor: _.partial(buildBedRecording, _.extend({
         cssClass: "right", 
         position: 1, 
+        recordingValidation: function() {return arguments;},
         plateValidation: context.plateValidations[1]
       }, context), componentsList) } ]
     });

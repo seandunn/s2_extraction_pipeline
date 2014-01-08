@@ -35,13 +35,13 @@
         [{ "barcode": "0000000000003" }, { "barcode": "0000000000004" }]
     ]
   }];
-  var robotConfigeBase= {
+  var robotConfigeBase= [{
     "barcode":  "0000000000002",
     "beds": [
       [{ "barcode": "0000000000001" }], 
       [{ "barcode": "0000000000002" }]
       ]
-  };
+  }];
   
   function findRootPromise(controller) {
     var iterations = 0;
@@ -203,7 +203,7 @@
           }
         else {
           component = bedRecording({
-            robotConfig: robotConfigeBase,
+            bedsConfig: robotConfigeBase,
             fetch: _.partial(function(rootPromise, barcode) {
               return rootPromise.then(function(root) {
                 return root.findByLabEan13(barcode);
@@ -239,34 +239,20 @@
         _.chain(bedRecordingInfo.components).map(function(p) { 
           return _.extend(p, {isComplete: _.partial(_.identity, true)});
           }));
-      $.when.call(this, bedRecordingInfo.promises[0]).then($.ignoresEvent(_.partial(function(controller, data, view) {
-        var promisesData = Array.prototype.slice.call(arguments, 3);
-        var robotBarcode = promisesData[0];
-        var records = _.chain(promisesData).drop(1).reduce(function(memo, value) {
-          if ((this.pos % 2)===0)
-            {
-              memo[0].push(value);
-            }
-          else
-            {
-              memo[1].push(value);
-            }
-          this.pos += 1;
-          return memo;
-        }, [[], []], {pos:0}).value()[1];
+      $.when.call(this, bedRecordingInfo.promises[0]).then(_.partial(function(controller, data, event, verification) {
         
-        controller.editableControllers = _.partial(function(robotBarcode, records) {
+        controller.editableControllers = _.partial(function(verification) {
           // in bedRecording connected we need to have at least one input and one output per each row
-          return _.chain(records).map(function(record) { 
+          return _.chain(verification.verified).map(function(record) { 
             return {
               isComplete: _.partial(_.identity, true),
-              labwareModel: { resource: record}};}).reduce(function(memo, node) {
+              labwareModel: { resource: record.plate}};}).reduce(function(memo, node) {
               return memo.concat([node, _.clone(node)]);
             }, []);
-        }, robotBarcode, records);
+        }, verification);
         controller.owner.childDone(controller, "completed", data);
         PubSub.publish("enable_buttons.step_controller.s2", controller.owner, data);
-      }, controller, {buttons: [{action: "start"}]}))); 
+      }, controller, {buttons: [{action: "start"}]})); 
       
       
       $('.endButton').on('click', function() {
@@ -275,6 +261,7 @@
         }, 1000);
       });
     },
+    
     setupController:function (input_model, jquerySelection) {
       var controller = this;
       this.jquerySelection = jquerySelection;
