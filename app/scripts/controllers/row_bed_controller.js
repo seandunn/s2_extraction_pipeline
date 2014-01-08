@@ -35,13 +35,13 @@
         [{ "barcode": "0000000000003" }, { "barcode": "0000000000004" }]
     ]
   }];
-  var robotConfigeBase= {
+  var robotConfigeBase= [{
     "barcode":  "0000000000002",
     "beds": [
       [{ "barcode": "0000000000001" }], 
       [{ "barcode": "0000000000002" }]
       ]
-  };
+  }];
   
   function findRootPromise(controller) {
     var iterations = 0;
@@ -102,15 +102,34 @@
     hideEditable: function() {
       
     },
-    setupControllerWithBedVerification: function() {
+    setupControllerWithBedVerification: function(inputModel) {
       var controller = this;
       $(".robot input").prop("value", "");
       var bedRecordingInfo = this.controllers.map(function(value, pos, list) {
           if ((pos % 2)===0) 
             return [value, list[pos+1]];
-      }).compact().reduce(function(memo, p) { 
+      }).compact().reduce(function(memo, p) {
+        
+        function plateLabwareValidation(labwareInputModel, labware) {
+          var defer = $.Deferred();
+          if (labware.resourceType === labwareInputModel.expected_type) {
+            defer.resolve(labware);
+          } else {
+            defer.reject();
+            PubSub.publish("error.status.s2", undefined, 
+              {message: ["Expected a '", 
+                         labwareInputModel.expected_type, 
+                         "' barcode but scanned a '",
+                         labware.resourceType,
+              "'"].join('')});
+          }
+          return defer;
+        }
+        
         var component = bedVerification({
           bedsConfig: robotConfigFX,
+          plateValidations: [_.partial(plateLabwareValidation, inputModel.labware1),
+                             _.partial(plateLabwareValidation, inputModel.labware2)],
           fetch: _.partial(function(rootPromise, barcode) {
             return rootPromise.then(function(root) {
               return root.findByLabEan13(barcode);
@@ -134,12 +153,15 @@
       }, this));
       
       // Config view
+      
+      
+      
       controller.jquerySelection().html("");
       controller.jquerySelection().append(this.linearProcessLabwares.view);
       var arrow = "<div class='transferArrow span1 offset1'><span >&rarr;</span></div>";
       $(arrow).insertAfter($(".left", controller.jquerySelection())[0]);
 
-      this.linearProcessLabwares.view.on("reset.s2", function() {
+      this.linearProcessLabwares.view.on("error.bed-verification.s2", function() {
         setTimeout(function() {
           window.location.href = window.location.href;
         }, 3000);
@@ -170,7 +192,7 @@
     },
 
     
-    setupControllerWithBedRecording: function() {
+    setupControllerWithBedRecording: function(inputModel) {
       var controller = this;
       var bedRecordingInfo = this.controllers.reduce(function(memo, p) { 
         var component;
@@ -181,7 +203,7 @@
           }
         else {
           component = bedRecording({
-            robotConfig: robotConfigeBase,
+            bedsConfig: robotConfigeBase,
             fetch: _.partial(function(rootPromise, barcode) {
               return rootPromise.then(function(root) {
                 return root.findByLabEan13(barcode);
@@ -217,20 +239,20 @@
         _.chain(bedRecordingInfo.components).map(function(p) { 
           return _.extend(p, {isComplete: _.partial(_.identity, true)});
           }));
-      $.when.call(this, bedRecordingInfo.promises[0]).then($.ignoresEvent(_.partial(function(controller, data, view) {
-        var promisesData = _.map(Array.prototype.slice.call(arguments, 3), function(list) { return _.drop(list, 2)[0];});
-        controller.editableControllers = _.partial(function(robotBarcode, records) {
+      $.when.call(this, bedRecordingInfo.promises[0]).then(_.partial(function(controller, data, event, verification) {
+        
+        controller.editableControllers = _.partial(function(verification) {
           // in bedRecording connected we need to have at least one input and one output per each row
-          return _.chain(records).map(function(record) { 
+          return _.chain(verification.verified).map(function(record) { 
             return {
               isComplete: _.partial(_.identity, true),
-              labwareModel: { resource: record}};}).reduce(function(memo, node) {
+              labwareModel: { resource: record.plate}};}).reduce(function(memo, node) {
               return memo.concat([node, _.clone(node)]);
             }, []);
-        }, promisesData[0], [promisesData[1]]);
+        }, verification);
         controller.owner.childDone(controller, "completed", data);
         PubSub.publish("enable_buttons.step_controller.s2", controller.owner, data);
-      }, controller, {buttons: [{action: "start"}]}))); 
+      }, controller, {buttons: [{action: "start"}]})); 
       
       
       $('.endButton').on('click', function() {
@@ -239,6 +261,7 @@
         }, 1000);
       });
     },
+    
     setupController:function (input_model, jquerySelection) {
       var controller = this;
       this.jquerySelection = jquerySelection;
@@ -259,7 +282,7 @@
 
       this.currentView.renderView();
       $(document.body).addClass("gel");
-      this[(this.owner.config.rowBehaviour==="bedRecording")?"setupControllerWithBedRecording":"setupControllerWithBedVerification"]();
+      this[(this.owner.config.rowBehaviour==="bedRecording")?"setupControllerWithBedRecording":"setupControllerWithBedVerification"](input_model);
    },
 
 

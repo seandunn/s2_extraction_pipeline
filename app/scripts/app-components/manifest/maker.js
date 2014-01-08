@@ -2,11 +2,12 @@ define([
   "text!app-components/manifest/_maker.html",
   "text!app-components/manifest/_custom_field.html",
   "app-components/labelling/printing",
+  "lib/reception_templates",
 
   // Global namespace updates
   "lib/jquery_extensions",
   "components/filesaver/filesaver"
-], function (componentPartialHtml, customFieldPartial, LabelPrinter) {
+], function (componentPartialHtml, customFieldPartial, LabelPrinter, ReceptionTemplates) {
   'use strict';
 
   var viewTemplate        = _.compose($, _.template(componentPartialHtml)),
@@ -30,38 +31,39 @@ define([
   };
 
   function createHtml(context, generateSamples) {
-    var html = viewTemplate({
-      templates: context.templates
-    });
+    var $html          = viewTemplate({
+          templates: ReceptionTemplates
+        }),
+        message       = function(type, message) { $html.trigger(type + ".status.s2", message); },
+        error         = _.partial(message, "error"),
+        success       = _.partial(message, "success"),
 
-    var message = function(type, message) { html.trigger(type + ".status.s2", message); };
-    var error   = _.partial(message, "error");
-    var success = _.partial(message, "success");
+        // Select all the required elements
+        $generate     = $html.find("#generateManifest"),
+        $sampleCount  = $html.find("#number-of-sample"),
+        $studiesList  = $html.find("#studies"),
+        $form         = $html.find("form .template-selection-box").find("input,select"),
+        $customFields = $html.find("#custom-fields");
 
-    // Handle the manifest generation
-    var generate      = html.find("#generateManifest");
-    var sampleCount   = html.find("#number-of-sample");
-    var studiesList   = html.find("#studies");
-    var form          = html.find("form .template-selection-box").find("input,select");
-    var $customFields = html.find("#custom-fields");
-
-    generate.lockingClick(_.partial(checkSamples, process(html, generateManifest)));
-    sampleCount.enterHandler(_.bind(generate.click, generate));
+    $generate.lockingClick(_.partial(checkSamples, process($html, generateManifest)));
+    $sampleCount.enterHandler(_.bind($generate.click, $generate));
 
     // When someone changes the template we need to change the view!
-    var templatePicker    = html.find("#xls-templates");
-    var prefixes          = html.find("#samplePrefixes");
-    var dependsOnTemplate = function(fn) { return _.compose(fn, _.partial(selectedTemplate, context.templates)); };
+    var templatePicker    = $html.find("#xls-templates"),
+        prefixes          = $html.find("#samplePrefixes"),
+        dependsOnTemplate = function(fn) {
+          return _.compose(fn, _.partial(selectedTemplate, ReceptionTemplates));
+        };
 
     templatePicker.change(dependsOnTemplate(_.partial(updateSampleTypeSelection, prefixes)));
-    templatePicker.change(dependsOnTemplate(_.partial(updateStudiesSelection, studiesList)));
-    templatePicker.change(dependsOnTemplate(_.partial(updatePrinters, html)));
+    templatePicker.change(dependsOnTemplate(_.partial(updateStudiesSelection, $studiesList)));
+    templatePicker.change(dependsOnTemplate(_.partial(updatePrinters, $html)));
     templatePicker.change(dependsOnTemplate(_.partial(updateCustomFields, $customFields)));
     templatePicker.change();
 
     // When someone clicks the download button we need to download the manifest.  When the manifest
     // becomes downloadable then the button becomes visible and enabled.
-    var download = html.find("#downloadManifest");
+    var download = $html.find("#downloadManifest");
     var downloadHelper = download.dataHelper("manifest");
     download.lockingClick(_.partial(downloadManifest, download));
     download.hide();
@@ -72,24 +74,24 @@ define([
       user:     context.user
     });
     var printAreaHelper = labelPrinter.view.dataHelper("resources");
-    html.on("trigger.print.s2", $.ignoresEvent(_.partial(printLabels, html, labelPrinter.view)));
-    html.find("#printer-div").append(labelPrinter.view);
-    html.on(labelPrinter.events);
+    $html.on("trigger.print.s2", $.ignoresEvent(_.partial(printLabels, $html, labelPrinter.view)));
+    $html.find("#printer-div").append(labelPrinter.view);
+    $html.on(labelPrinter.events);
     labelPrinter.view.hide();
 
     // Bind in a reset function that we can call
-    html.reset = function() {
+    $html.reset = function() {
       printAreaHelper.reset();
       downloadHelper.reset();
-      form.prop("disabled", false);
+      $form.prop("disabled", false);
     };
 
-    return html;
+    return $html;
 
     function checkSamples(fn, button) {
-      var numberOfSamples = parseInt(sampleCount.val(), 10),
-          template        = context.templates[templatePicker.val()],
-          study           = template.studies[studiesList.val()];
+      var numberOfSamples = parseInt($sampleCount.val(), 10),
+          template        = ReceptionTemplates[templatePicker.val()],
+          study           = template.studies[$studiesList.val()];
 
       if (_.isNaN(numberOfSamples)) {
         button.prop("disabled", false);
@@ -97,7 +99,7 @@ define([
       } else if (numberOfSamples < 1) {
         button.prop("disabled", false);
         error("You can only register 1 or more samples!");
-      } else if (!customFieldsAreValid(html, template)) {
+      } else if (!customFieldsAreValid($html, template)) {
         button.prop("disabled", false);
         error("There is an issue with one of the custom fields!");
       } else {
@@ -107,12 +109,12 @@ define([
           sanger_sample_id_core: study.sanger_sample_id_core,
           sample_type:           prefixes.val(),
           defaults:              study.defaults
-        }, getCustomFieldValues(html, template)));
+        }, getCustomFieldValues($html, template)));
       }
     }
 
     function generateManifest(button, details) {
-      form.prop("disabled", true);
+      $form.prop("disabled", true);
       button.hide();
       return generateSamples(details).then(function(model) {
         printAreaHelper.resources(model.labwareOutputs);
@@ -122,14 +124,14 @@ define([
       });
     }
 
-    function getCustomFieldValues(html, template) {
+    function getCustomFieldValues($html, template) {
       return _.reduce(template.custom_fields, function(memo, field) {
-        memo[field.id] = parseInt(html.find("#" + field.id).val(), 10);
+        memo[field.id] = parseInt($html.find("#" + field.id).val(), 10);
         return memo;
       }, {});
     }
 
-    function customFieldsAreValid(html, template) {
+    function customFieldsAreValid($html, template) {
       if (_.isEmpty(template.custom_fields)) return true;
 
       // For each custom field call its validation method (if it has one)
@@ -143,7 +145,7 @@ define([
             return true;
           }
 
-          var val = parseInt(html.find("#"+arr[0]).val(), 10);
+          var val = parseInt($html.find("#"+arr[0]).val(), 10);
           return arr[1](val);
         })
         .value();
@@ -153,7 +155,7 @@ define([
   // We have to remap the resources so that they look like they are printable.  What we have within
   // our data is the original label data, but what we need is what it would have looked like
   // *after* labelling.
-  function printLabels(html, source, printer) {
+  function printLabels($html, source, printer) {
     var labels = _.map(source.data("resources"), function(resource) {
       return _.extend({
         template:           resource.resourceType,
@@ -168,14 +170,20 @@ define([
       ));
     });
 
-    html.trigger("labels.print.s2", [printer, labels]);
+    $html.trigger("labels.print.s2", [printer, labels]);
   }
   function ean13(labels) {
-    return _.isUndefined(labels.ean13) ? undefined : {ean13: labels.ean13};
+    return _.isUndefined(labels.ean13) ? undefined : { ean13: labels.ean13 };
   }
+
   function sanger(labels) {
-    return _.isUndefined(labels.sanger) ? undefined : {sanger: labels.sanger.prefix+labels.sanger.number+labels.sanger.suffix};
+    return _.isUndefined(labels.sanger) ? undefined : { sanger: createSangerLabel(labels) };
   }
+
+  function createSangerLabel(labels) {
+    return labels.sanger.prefix + labels.sanger.number + labels.sanger.suffix;
+  }
+
   function identifier(labels) {
     return _.isUndefined(labels.identifier) ? undefined : {identifier: labels.identifier};
   }
@@ -302,9 +310,7 @@ define([
     }).then(function(xls) {
       // Encode the data in such a way that we get a multi-part MIME body, otherwise all we
       // get is form data which doesn't work with the manifest merge service.
-      var form = new FormData();
-      form.append("template",         xls);
-      form.append("manifest-details", new Blob([csv], {type:"text/csv"}));
+      var form = createForm(xls, csv);
 
       return $.binaryAjax({
         type: "POST",
@@ -314,17 +320,36 @@ define([
     }).fail(_.constant("Unable to generate the manifest"));
   }
 
+  function createForm(xls, csv) {
+    var form = new FormData();
+    form.append("template", xls);
+    form.append("manifest-details", new Blob([csv], {type:"text/csv"}));
+    return form;
+  }
+
   function createResources(helper, root, manifest) {
     return helper(function(model, sampleFor, prepareRequest) {
-      var sampleBarcodes =
-        _.chain(manifest)
-         .map(function(r) { return [r[0].uuid, r[1]]; })
-         .object()
-         .value();
+
+      var sampleBarcodes = _.chain(manifest)
+                            .map(function(r) {
+                              return {
+                                uuid: r[0].uuid,
+                                labels: r[1]
+                              }
+                            })
+                            .value();
 
       var builder = _.compose(
         function(resource) {
-          resource.labels = sampleBarcodes[sampleFor(resource).uuid];
+          
+          function matcher(barcode) {
+            return barcode.uuid === sampleFor(resource).uuid;
+          }
+          
+          resource.labels = _.find(sampleBarcodes, matcher).labels;
+
+          sampleBarcodes = _.rejectFirst(sampleBarcodes, matcher);
+
           return resource;
         },
         function(raw) {

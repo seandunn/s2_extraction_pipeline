@@ -14,13 +14,17 @@ define([
     
     var selection = new GelScoreSelection(context);
     view.append(selection.view);
-    
-    view.on(selection.events);
+
     
     var scoring = new GelScoring(context);
     view.append(scoring.view);
     
     view.on(scoring.events);
+    
+    // I need to update the selection table whenever a scoring is performed in any gel, but I
+    // fire this update event from a float element that in the future will be relocated 
+    // into the top level of DOM tree. 
+    $(document.body).on(selection.events);    
     
     return {
       view:   view,

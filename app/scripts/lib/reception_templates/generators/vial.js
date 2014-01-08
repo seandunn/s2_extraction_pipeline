@@ -19,16 +19,15 @@ define([], function() {
     var placeSamples     = function(samples, barcodes, type) { 
       var barcodesPerSample = barcodes.length / samples.length;
 
-      return _.reduce(samples, function(memo, sample) {
-        var sampleArr = [sample];
-        
-        _.times(barcodesPerSample, function() { sampleArr.push(barcodes.shift()); });
-
-        sampleArr.push(type);
-        memo.push(sampleArr);
-
-        return memo;
-      }, []);
+      return _.chain(samples)
+        .reduce(function(memo, sample) {
+          _.times(barcodesPerSample, function() {
+            memo.push(sample);
+          });
+          return memo;
+        }, [])
+        .zip(barcodes, _.repeat(type, barcodes.length))
+        .value();
     };
 
     return callback(registerSamples, registerBarcodes, placeSamples, labelForBarcode);
@@ -53,49 +52,33 @@ define([], function() {
   }
 
   function createManifest(mappers, rows, extras) {
-    var headers = createHeaders(extractBarcodes(rows[0]).length);
+    var headers = ["Tube Barcode", "Sanger Barcode", "Sanger Sample ID", "SAMPLE TYPE"],
+        table = _.reduce(rows, rowHandler, []);
 
-    var table = _.map(rows, rowHandler);
     table.unshift(headers.concat(_.keys(extras)));
 
     return table;
 
-    function rowHandler(rowData) {
+    function rowHandler(memo, rowData) {
       var sample   = _.first(rowData),
           type     = _.last(rowData),
-          barcodes = barcoder(extractBarcodes(rowData));
+          barcodes = barcoder(rowData[1]);
 
-      return barcodes.concat([
-          sample.sanger_sample_id,
-          type
-        ]).concat(
-           _.map(extras, _.partial(fieldValue, sample))
-        );
+      memo.push([barcodes.ean13, barcodes.sangerBarcode, sample.sanger_sample_id, type]
+              .concat(_.map(extras, _.partial(fieldValue, sample))));
+      return memo;
     }
 
-    function extractBarcodes(rowData) {
-      return _.initial(_.rest(rowData));
-    }
-
-    function barcoder(barcodes) {
-      return _.reduce(barcodes, function(memo, barcode) {
-        memo.push(barcode.ean13,
-          barcode.sanger.prefix + barcode.sanger.number + barcode.sanger.suffix);
-        return memo;
-      }, []);
+    function barcoder(barcode) {
+      return {
+        ean13: barcode.ean13,
+        sangerBarcode: barcode.sanger.prefix + barcode.sanger.number + barcode.sanger.suffix
+      };
     }
 
     function fieldValue(sample, f, header) {
       var mapper = mappers[header] || _.identity;
       return mapper(f(sample));
-    }
-
-    function createHeaders(numberOfBarcodes) {
-      return _.reduce(_.reverseRange(numberOfBarcodes), function(memo, n) {
-        memo.unshift("Sanger Barcode " + (n+1));
-        memo.unshift("Tube Barcode " + (n+1));
-        return memo;
-      }, ["Sanger Sample ID", "SAMPLE TYPE"]);
     }
   }
 

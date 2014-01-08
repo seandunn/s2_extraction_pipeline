@@ -12,8 +12,18 @@ define([ "app-components/linear-process/linear-process",
     }
     var componentsList=[];
     var obj = linearProcess({
-      components: [{ constructor: _.partial(buildBedRecording, _.extend({cssClass: "left"}, context), componentsList) },
-                   { constructor: _.partial(buildBedRecording, _.extend({cssClass: "right"}, context), componentsList) } ]
+      components: [{ constructor: _.partial(buildBedRecording, _.extend({
+        cssClass: "left", 
+        position: 0, 
+        recordingValidation: function() {return arguments;},
+        plateValidation: context.plateValidations[0]
+      }, context), componentsList) },
+      { constructor: _.partial(buildBedRecording, _.extend({
+        cssClass: "right", 
+        position: 1, 
+        recordingValidation: function() {return arguments;},
+        plateValidation: context.plateValidations[1]
+      }, context), componentsList) } ]
     });
 
     $("input", obj.view).prop("disabled", "true");
@@ -29,16 +39,20 @@ define([ "app-components/linear-process/linear-process",
     });
 
     function validation() {
-      var robot = _.find(context.bedsConfig, function(robot) {
-        return robot.barcode === $(".robot input").prop("value");
-      });
+      var robotBarcode = arguments[0]; 
       var bedRecords = _.map(Array.prototype.slice.call(arguments, 1), function(list) {
         list=_.drop(list, 2); 
         return ({
-          bed: list[0][2],
-          plate: list[1][2]
+          robot: list[0],
+          bed: list[1],
+          plate: list[2]
         });
       });
+      
+      var robot = _.find(context.bedsConfig, function(robot) {
+        return robot.barcode === robotBarcode;
+      });
+      
       var defer = new $.Deferred();
       if (_.some(robot.beds, function(bedPair) {
         return (bedPair[0].barcode === bedRecords[0].bed && bedPair[1].barcode === bedRecords[1].bed); 
@@ -61,10 +75,10 @@ define([ "app-components/linear-process/linear-process",
         PubSub.publish("message.status.s2", this, {message: 'Bed verification correct.'});
       }, function() {
         PubSub.publish("error.status.s2", this, {message: 'Incorrect bed verification.'});
-        obj.view.trigger("reset.s2");
+        obj.view.trigger("error.bed-verification.s2");
       });
     
-    $(document.body).on("scanned.robot.s2", _.partial(function(promise, event, robot) {
+    $(document.body).on(context.robotScannedEvent || "scanned.robot.s2", _.partial(function(promise, event, robot) {
       promise.resolve(robot);
     }, robotScannedPromise));
     

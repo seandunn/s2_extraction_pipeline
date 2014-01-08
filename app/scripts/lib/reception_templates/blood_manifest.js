@@ -1,6 +1,6 @@
 define([
-  "text!reception_templates/filter_paper/updates.json",
-  "text!reception_templates/filter_paper/display.json",
+  "text!reception_templates/blood_manifest/updates.json",
+  "text!reception_templates/blood_manifest/display.json",
   "lib/reception_templates/validations"
 ], function(updates, display, validations) {
   "use strict";
@@ -14,7 +14,9 @@ define([
         header_line_number: 8
       },
 
-      model: "vial",
+      model: "tube",
+
+      generator: "vial",
 
       templates: {
         updates: JSON.parse(updates),
@@ -46,7 +48,7 @@ define([
           id: "viles_per_sample",
           initial_value: "2",
           validation: function(val) {
-            if (!_.isNumber(val)) {
+            if (_.isNaN(val) || !_.isNumber(val)) {
               return false;
             }
 
@@ -61,7 +63,7 @@ define([
 
       extras: {},
 
-      validation: validations.nonEmptyString(validations.mandatory, "Barcode"),
+      validation: validations.nonEmptyString(validations.mandatory, "Tube Barcode"),
       emptyRow:   function(row) { return row[2]; }
     }
   };

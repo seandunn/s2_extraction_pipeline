@@ -48,6 +48,7 @@ define([
       name: "scanning.labelling.s2",
       view: html,
       events:{
+        "reset.s2": _.bind(html.reset, html),
         "reset_view.reception.s2": _.bind(html.reset, html),
         "activate.s2": $.haltsEvent($.ignoresEvent(_.partial(_.bind(barcode.prop, barcode), "disabled", false))),
         "deactivate.s2": _.wrap(function(func) {

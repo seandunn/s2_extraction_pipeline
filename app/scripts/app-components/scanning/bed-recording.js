@@ -30,23 +30,53 @@ define([ "text!app-components/scanning/_bed-recording.html",
 
     $("input", html).prop("disabled", "true");
     
-    var promisesBedRecordingDone = _.chain([ BED_SCANNED, PLATE_SCANNED
+    var promisesBedRecordingDone = ([robotScannedPromise]).concat(_.chain([ BED_SCANNED, PLATE_SCANNED
     ]).map(_.partial(function(view, eventName) {
       var deferred = $.Deferred();
-      view.on(eventName, _.partial(function(deferred) {
-        deferred.resolve(arguments);
+      view.on(eventName, _.partial(function(deferred, event, data) {
+        deferred.resolve(data);
       }, deferred));
       return deferred;
-    }, html)).value().concat(robotScannedPromise);
-    
-   
-    
-    $.when.apply(undefined, promisesBedRecordingDone).then(
-      function(bedBarcode, plateResource, robotResource) {
-        html.trigger("scanned.bed-recording.s2", [ html, bedBarcode, plateResource 
-        ]);
-        html.trigger(DONE, html);
+    }, html)).value());
+
+    function validateBedBelongsToRobot(bed, robot) {
+      return _.some(robot.beds, function(bedPair) {
+        return (bedPair[0].barcode === bed); 
+      });      
+    }
+
+    // Default validation: it will check that the bed barcode is defined for the
+    // robot selected in its robot config data object.    
+    function validation(robotBarcode, bed, plate) {
+      var bedRecords = [{
+        robot: robotBarcode,
+        bed: bed,
+        plate: plate
+      }];
+      var robot = _.find(context.bedsConfig, function(robot) {
+        return robot.barcode === robotBarcode;
       });
+      
+      var defer = new $.Deferred();
+      if (validateBedBelongsToRobot(bed, robot)) {
+        defer.resolve({
+          robot: robot,
+          verified: bedRecords
+        });
+      } else {
+        defer.reject();
+      }
+      return defer.promise();
+    }
+        
+    $.when.apply(this, promisesBedRecordingDone).then(context.recordingValidation || validation).then(
+      function() {
+        html.trigger("scanned.bed-recording.s2", arguments);
+        html.trigger(DONE, html);
+      }, _.partial(function(component) {
+        component.components[1].view.trigger("reset.s2");
+      }, component));
+    
     if (context.cssClass) {
       html.addClass(context.cssClass);
     }
@@ -56,9 +86,8 @@ define([ "text!app-components/scanning/_bed-recording.html",
     }, robotScannedPromise));
 
     return (
-      { view : html, events : _.extend(
-        {  "reset.bed-recording.s2": function() {}           
-        }, component.events)
+      { view : html,
+        events : component.events
       });
   };
 });

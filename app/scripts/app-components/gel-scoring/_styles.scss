@@ -39,14 +39,18 @@ select.gel-scoring-cell {
 
 .gel-scoring-view {
 	width: 100%;
+	overflow-x: auto;
 }
 
 .gel-scoring-view .label-barcode { font-size: 13pt;   margin-right: 1em;}
 
-.gel-scoring-view .header-button { float: right;}
+.gel-scoring-view .header-button { float: right; height: 1.5em;}
 
+.gel-scoring-view td.nosample select {
+	display: none;
+}
 
-#scoreModal .modal-body { max-height: 420px; }
+#scoreModal .modal-body { max-height: 420px; clear: both;}
 
 body .modal-backdrop, .modal-backdrop.fade.in {
 	opacity: 0.6;
@@ -56,7 +60,7 @@ body .modal-backdrop, .modal-backdrop.fade.in {
 	margin-left: auto;
 	margin-right: auto;
 	left: 5%;
-	overflow: scroll;
+	overflow-y: auto;
 }
 
 #scoreModal .modal-footer {
@@ -69,4 +73,17 @@ body .modal-backdrop, .modal-backdrop.fade.in {
 
 .tableSelection {
 	min-height: 400px;
+}
+
+.modal-body-header .header-button {
+	float: right;
+}
+
+.modal-body-header {
+	margin: 1em 1em 0em 1em;
+}
+
+.modal-body-header .label-barcode {
+	margin-right: 1em;
+	font-size: 16px;
 }
