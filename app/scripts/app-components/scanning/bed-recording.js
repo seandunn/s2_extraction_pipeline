@@ -39,8 +39,7 @@ define([ "text!app-components/scanning/_bed-recording.html",
       return deferred;
     }, html)).value());
 
-    
-    function validation(robotBarcode, bed, plate) {
+    function validateBedBelongsToRobot(robotBarcode, bed, plate) {
       var bedRecords = [{
         robot: robotBarcode,
         bed: bed,
@@ -64,6 +63,10 @@ define([ "text!app-components/scanning/_bed-recording.html",
       }
       return defer;
     }
+    
+    // Default validation: it will check that the bed barcode is defined for the
+    // robot selected in its robot config data object.
+    var validation = validateBedPairForRobot;    
         
     $.when.apply(this, promisesBedRecordingDone).then(context.recordingValidation || validation).then(
       function() {
