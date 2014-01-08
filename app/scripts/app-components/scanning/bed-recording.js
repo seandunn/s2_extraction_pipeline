@@ -39,7 +39,15 @@ define([ "text!app-components/scanning/_bed-recording.html",
       return deferred;
     }, html)).value());
 
-    function validateBedBelongsToRobot(robotBarcode, bed, plate) {
+    function validateBedBelongsToRobot(bed, robot) {
+      return _.some(robot.beds, function(bedPair) {
+        return (bedPair[0].barcode === bed); 
+      });      
+    }
+
+    // Default validation: it will check that the bed barcode is defined for the
+    // robot selected in its robot config data object.    
+    function validation(robotBarcode, bed, plate) {
       var bedRecords = [{
         robot: robotBarcode,
         bed: bed,
@@ -50,23 +58,16 @@ define([ "text!app-components/scanning/_bed-recording.html",
       });
       
       var defer = new $.Deferred();
-      if (_.some(robot.beds, function(bedPair) {
-        return (bedPair[0].barcode === bed); 
-      })) {
+      if (validateBedBelongsToRobot(bed, robot)) {
         defer.resolve({
           robot: robot,
           verified: bedRecords
         });
-      }
-      else {
+      } else {
         defer.reject();
       }
       return defer.promise();
     }
-    
-    // Default validation: it will check that the bed barcode is defined for the
-    // robot selected in its robot config data object.
-    var validation = validateBedBelongsToRobot;    
         
     $.when.apply(this, promisesBedRecordingDone).then(context.recordingValidation || validation).then(
       function() {
