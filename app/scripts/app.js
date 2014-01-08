@@ -45,7 +45,7 @@ define([ 'config'
     // Ensure that messages are properly picked up & dispatched
     // TODO: die, eat-flaming-death!
     _.each(["error", "success", "info"], function(type) {
-      $("body").on(type +".status.s2", function(event, message) {
+      $("#page-content").on(type +".status.s2", function(event, message) {
         PubSub.publish(type + ".status.s2", app, {message: message});
       });
     });
@@ -58,23 +58,20 @@ define([ 'config'
       .append(component.view)
       .on(component.events);
 
-      alerts.setupPlaceholder(function() {
-        return $("#alertContainer");
-      });
     });
 
     app.jquerySelection = _.constant($("#pipeline"));
     app.addEventHandlers();
     app.setupController();
 
-    // Handle deep-linking to pages such as lab-managment
+    // Handle deep-linking to pages such as lab-management
     var url = document.location.toString();
 
     if (url.match('#')) {
-      $('#page-nav a[href=#'+url.split('#')[1]+']').tab('show') ;
+      $('#page-nav a[href=#'+url.split('#')[1]+']').tab('show');
     }
 
-    // Change location hash for page-reload
+    // Change location hash to match the clicked nav tab
     $('#page-nav').on('shown','a', function (e) {
       window.location.hash = e.target.hash;
     });
@@ -85,9 +82,9 @@ define([ 'config'
         app:       app,
         printers:  app.config.printers,
 
-        findUser: function(barcode) {
+        findUser: function(barcode, accessList) {
           var deferred = $.Deferred();
-          var user = app.config.UserData[barcode];
+          var user = app.config[accessList || "UserData"][barcode];
           deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);
           return deferred.promise();
         },

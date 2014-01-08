@@ -6,10 +6,10 @@ define([
 
   // Globally included stuff added after this comment
   "lib/jquery_extensions"
-], function (receptionView, componentView, choiceView, barcodeScanner) {
+], function (processChoicePartial, componentView, choiceView, barcodeScanner) {
   "use strict";
 
-  var reception          = _.compose($, _.template(receptionView));
+  var $processChoiceTemplate = _.compose($, _.template(processChoicePartial));
   var componentContainer = _.compose($, _.template(componentView));
   var componentChoice    = _.compose($, _.template(choiceView));
 
@@ -18,44 +18,45 @@ define([
       user: $.Deferred()
     }, externalContext);
 
-    var html    = reception(context);
-    var error   = function(message) { html.trigger("error.status.s2", message); };
+    var $html    = $processChoiceTemplate(context);
+    var error   = function(message) { $html.trigger("error.status.s2", message); };
 
-    var tabs    = html.find(".tab-content");
-    var choices = html.find(".choices");
-    var home = html.find(".processes");
+    var $tabs    = $html.find(".tab-content");
+    var $choices = $html.find(".choices");
+    var $home = $html.find(".processes");
 
     // The user needs to scan themselves in before doing anything
     var userComponent = barcodeScanner({
       label: "Scan your barcode"
     });
 
-    var userView = html.find(".user-validation");
+    var userView = $html.find(".user-validation");
     userView.append(userComponent.view);
-    html.on(userComponent.events);
+    $html.on(userComponent.events);
 
-    html.on(
+    $html.on(
       "scanned.barcode.s2",
       $.haltsEvent(
         $.ignoresEvent(
-          _.partial(connect, context, _.partial(swap, userView, home), error)
+          _.partial(connect, context, _.partial(swap, userView, $home), error)
         )
       )
     );
 
-    html.on("error.barcode.s2", $.ignoresEvent(error));
+    $html.on("error.barcode.s2", $.ignoresEvent(error));
 
     // Attach each of the components into the view.
     _.chain(context.components)
      .map(_.partial(buildComponent, context))
-     .each(_.partial(attachComponent, html, choices, tabs))
+     .each(_.partial(attachComponent, $html, $choices, $tabs))
 
-    return html;
+    return $html;
   }
 
   // Deals with connecting the user with the specified barcode to the system.
   function connect(context, success, error, barcode) {
-    context.findUser(barcode).then(
+    context.findUser(barcode, context.accessList)
+    .then(
       signalUserAndAttach,
       _.partial(error, "User barcode is unrecognised")
     )
@@ -85,19 +86,19 @@ define([
 
 
   // Attaches the given component to the specified HTML using the configuration.
-  function attachComponent(html, choices, tabs, componentConfig) {
-    var container = componentContainer(componentConfig);
-    container.append(componentConfig.component.view);
-    tabs.append(container);
+  function attachComponent(html, $choices, $tabs, componentConfig) {
+    var $container = componentContainer(componentConfig);
+    $container.append(componentConfig.component.view);
+    $tabs.append($container);
 
     var choice = componentChoice(componentConfig);
-    choices.append(choice);
+    $choices.append(choice);
 
     html.on(componentConfig.component.events);
     html.trigger("activate.s2");
 
     return _.extend({
-      element: container,
+      element: $container,
       choice:  choice
     }, componentConfig);
   }
