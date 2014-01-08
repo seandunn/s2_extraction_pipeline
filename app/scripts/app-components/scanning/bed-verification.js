@@ -41,11 +41,11 @@ define([ "app-components/linear-process/linear-process",
     function validation() {
       var robotBarcode = arguments[0]; 
       var bedRecords = _.map(Array.prototype.slice.call(arguments, 1), function(list) {
-        list=_.drop(list, 2); 
+        var data = list[1];
         return ({
-          robot: list[0],
-          bed: list[1],
-          plate: list[2]
+          robot: data[0],
+          bed: data[1],
+          plate: data[2]
         });
       });
       
