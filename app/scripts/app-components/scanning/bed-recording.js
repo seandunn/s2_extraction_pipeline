@@ -61,7 +61,7 @@ define([ "text!app-components/scanning/_bed-recording.html",
       else {
         defer.reject();
       }
-      return defer;
+      return defer.promise();
     }
     
     // Default validation: it will check that the bed barcode is defined for the
