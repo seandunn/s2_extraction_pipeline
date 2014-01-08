@@ -162,6 +162,7 @@
       $(arrow).insertAfter($(".left", controller.jquerySelection())[0]);
 
       this.linearProcessLabwares.view.on("error.bed-verification.s2", function() {
+        $("input,button").attr("disabled", true);
         setTimeout(function() {
           window.location.href = window.location.href;
         }, 3000);
@@ -230,6 +231,13 @@
       $(".robot input").prop("disabled", false).focus();
       
       $(document.body).addClass("bed-recording");
+      
+      linear.view.on("error.bed-recording.s2", function() {
+        $("input,button").attr("disabled", true);
+        setTimeout(function() {
+          window.location.href = window.location.href;
+        }, 3000);
+      });      
       
       // When robot scanned, enable linear process
       $(document.body).on("scanned.robot.s2", _.partial(startMyRow, controller));

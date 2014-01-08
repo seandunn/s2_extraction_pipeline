@@ -2,8 +2,9 @@ define([ "text!app-components/scanning/_bed-recording.html",
          "app-components/linear-process/linear-process",
          "app-components/scanning/bed",
          "app-components/scanning/plate",
+         "lib/pubsub",
     "lib/jquery_extensions"
-], function(bedRecordingTemplate, linearProcess, bed, plate) {
+], function(bedRecordingTemplate, linearProcess, bed, plate, PubSub) {
   "use strict";
   /* Listens down */
   var PLATE_SCANNED = "scanned.plate.s2";
@@ -73,9 +74,11 @@ define([ "text!app-components/scanning/_bed-recording.html",
       function() {
         html.trigger("scanned.bed-recording.s2", arguments);
         html.trigger(DONE, html);
-      }, _.partial(function(component) {
-        component.components[1].view.trigger("reset.s2");
-      }, component));
+        PubSub.publish("message.status.s2", this, {message: 'Bed recording correct.'});
+      }, function() {
+        PubSub.publish("error.status.s2", this, {message: 'Incorrect bed recording.'});        
+        html.trigger("error.bed-recording.s2");
+      });
     
     if (context.cssClass) {
       html.addClass(context.cssClass);
