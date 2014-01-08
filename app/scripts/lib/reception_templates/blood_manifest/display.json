@@ -36,6 +36,13 @@
     }
   },
   {
+    "lysed": {
+      "columnName":   "Lysed?",
+      "type":         "boolean",
+      "friendlyName": "Lysed?"
+    }
+  },
+  {
     "process": {
       "columnName": "_PROCESS",
       "friendlyName": "Workflow",

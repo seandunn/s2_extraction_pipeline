@@ -14,7 +14,7 @@ define([], function() {
 
     plate: function() {
       return {
-        extractor: plateLikeExtractor('wells'),
+        extractor: plateLikeExtractor("wells"),
         builder:   _.partial(row, "Plate Barcode", "Plate Barcode", "barcode"),
         searcher:  searchUsingEAN13
       };
@@ -28,7 +28,7 @@ define([], function() {
       };
     },
 
-    vial: function() { return {}; }
+    vial: function() { return {} }
   };
 
   function row(barcodeColumn, labelColumn, resourceLabel, row) {

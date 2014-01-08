@@ -71,8 +71,8 @@ define([
       json_template:         JsonTemplater(createWrapper, templateTransform(template.templates.updates)),
       json_template_display: JsonTemplater(displayWrapper, displayTransform(template.templates.display)),
       validation:            template.validation || _.identity,
-      generator:             Generators[template.model](template, fieldMappers(template.templates.updates)),
-      reader:                Readers[template.model](template),
+      generator:             Generators[template.generator || template.model](template, fieldMappers(template.templates.updates)),
+      reader:                Readers[template.reader || template.model](template),
       emptyRow:              template.emptyRow || _.first
     });
   }

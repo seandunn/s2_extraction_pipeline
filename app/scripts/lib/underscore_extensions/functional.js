@@ -23,6 +23,24 @@ define([], function() {
       );
     },
 
+    rejectFirst: function(list, iterator, context) {
+      var found = false;
+
+      return _.reject(list, function(listItem) {
+        if (found === true) {
+          return false;
+        } else {
+          var result = iterator(listItem);
+          if (result === true) {
+            found = true;
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }, context);
+    },
+
     // Turns the given function into a function that will map f across the argument passed
     mapper: function(f) {
       return function(array) {
