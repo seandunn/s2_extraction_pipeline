@@ -19,7 +19,8 @@ define([
       var model = Object.create(DefaultPageModel).init(context.app);
 
       var placeholderDiv = html.find(".tableau-viz")[0];
-      var url = "https://globalreporting.internal.sanger.ac.uk/t/dna/views/S2Test/Dashboard1";
+      var url = "https://globalreporting.internal.sanger.ac.uk/t/dna/views/S2Test/Sheet1";
+      var workbook, activeSheet;
 
       var options = {
           width: placeholderDiv.offsetWidth,
@@ -27,10 +28,16 @@ define([
           hideTabs: true,
           hideToolbar: true,
           onFirstInteractive: function () {
-            // workbook = viz.getWorkbook();
-            // activeSheet = workbook.getActiveSheet();
+            workbook = viz.getWorkbook();
+            activeSheet = workbook.getActiveSheet();
+            window.sheet = activeSheet
+
+            // activeSheet.applyFilterAsync(
+            //   "cellular_material_lysed",
+            //   0,
+            //   tableauSoftware.FilterUpdateType.REPLACE);
           }
-        };
+      };
 
       var viz = new tableauSoftware.Viz(placeholderDiv, url, options);
 
