@@ -66,7 +66,7 @@ define([ "text!app-components/scanning/_bed-recording.html",
     
     // Default validation: it will check that the bed barcode is defined for the
     // robot selected in its robot config data object.
-    var validation = validateBedPairForRobot;    
+    var validation = validateBedBelongsToRobot;    
         
     $.when.apply(this, promisesBedRecordingDone).then(context.recordingValidation || validation).then(
       function() {
