@@ -4,11 +4,10 @@ define([ 'config'
   , 'extra_components/busy_box'
   , 'alerts'
   , 'lib/pubsub'
-
   , 'models/base_page_model'
 
   // TODO: These will move with the configuration
-  , 'app-components/reception/reception'
+  , 'app-components/lab-management/lab-management'
   , 'app-components/lab-activities/lab-activities'
 ], function(
   config,
@@ -16,20 +15,22 @@ define([ 'config'
   S2Root,
   BusyBox, alerts, PubSub,
   BasePageModel,
-  Reception, LabActivities
+  LabMangement, LabActivities
 ) {
   'use strict';
 
   var ComponentConfig = [
-    { name: "reception",  selector: ".sample-reception",     constructor: Reception     },
-    { name: "re-racking", selector: ".extraction-reracking", constructor: LabActivities }
+    { name: "Lab Mangement",  selector: "#lab-management", constructor: LabMangement     },
+    { name: "Lab Activities", selector: "#lab-activities", constructor: LabActivities }
   ];
+
 
   var App = function (theControllerFactory) {
     var app = this;
     app.config = config;
     app.controllerFactory = theControllerFactory;
     _.templateSettings.variable = 'templateData';
+
 
     $('#server-url').text(config.apiUrl);
     $('#release').text(config.release);
@@ -43,49 +44,54 @@ define([ 'config'
 
     // Ensure that messages are properly picked up & dispatched
     // TODO: die, eat-flaming-death!
-    var html = $("#content");
-    _.map(["error", "success", "info"], function(type) {
-      html.on(type +".status.s2", function(event, message) {
+    _.each(["error", "success", "info"], function(type) {
+      $("#page-content").on(type +".status.s2", function(event, message) {
         PubSub.publish(type + ".status.s2", app, {message: message});
       });
     });
 
-    var activate = _.find(ComponentConfig, function(config) {
-      return html.is(config.selector);
-    });
-    if (!_.isUndefined(activate)) {
-      var component = activate.constructor({
-        app:       app,
+    _.each(ComponentConfig, function(config){
+      var component = createComponent(config);
 
+      $(config.selector)
+      .append($('<h2>').text(config.name))
+      .append(component.view)
+      .on(component.events);
+
+    });
+
+    app.jquerySelection = _.constant($("#pipeline"));
+    app.addEventHandlers();
+    app.setupController();
+
+    // Handle deep-linking to pages such as lab-management
+    var url = document.location.toString();
+
+    if (url.match('#')) {
+      $('#page-nav a[href=#'+url.split('#')[1]+']').tab('show');
+    }
+
+    // Change location hash to match the clicked nav tab
+    $('#page-nav').on('shown','a', function (e) {
+      window.location.hash = e.target.hash;
+    });
+
+
+    function createComponent(config){
+      return config.constructor({
+        app:       app,
         printers:  app.config.printers,
 
-        findUser: function(barcode) {
+        findUser: function(barcode, accessList) {
           var deferred = $.Deferred();
-          var user = app.config.UserData[barcode];
+          var user = app.config[accessList || "UserData"][barcode];
           deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);
           return deferred.promise();
         },
 
         resetS2Root: _.bind(app.resetS2Root, app),
-        getS2Root:   _.bind(app.getS2Root, app)
+        getS2Root:   _.bind(app.getS2Root, app),
       });
-      html.append(component.view).on(component.events);
-
-      alerts.setupPlaceholder(function() {
-        return $("#alertContainer");
-      });
-      app.addEventHandlers();
-    } else {
-      // Handle the non-components
-      // TODO: Move these to be components!
-      if (html.is('.sample-extraction')) {
-        // ToDo #content exists at this point we should pass it directly not a function
-        app.jquerySelection = _.constant(html);
-        app.addEventHandlers();
-        app.setupController();
-      } else {
-        console.log('#content control class missing from web page.')
-      }
     }
   };
 
@@ -117,6 +123,7 @@ define([ 'config'
   App.prototype.updateModel = function (model) {
     var application = this;
     this.model = $.extend(this.model, model);
+    $('#page-nav a[href="#pipeline"]').tab('show');
 
     if (this.currentPageController) {
       this.currentPageController.release();
@@ -125,15 +132,15 @@ define([ 'config'
 
     nextWorkflow(this.model).
       then(function(workflowConfig){
-        if (workflowConfig)
-          {
-            var roles = workflowConfig.accepts;
-            _.each(roles, function(role) {
-              $(document.body).addClass(role.replace(/\./g, "-"));
-            });
-          }
-      $.extend(workflowConfig, {initialLabware: application.model.labware});
-      return application.controllerFactory.create(workflowConfig && workflowConfig.controllerName, application, workflowConfig);
+      if (workflowConfig)
+        {
+          var roles = workflowConfig.accepts;
+          _.each(roles, function(role) {
+            $(document.body).addClass(role.replace(/\./g, "-"));
+          });
+        }
+        $.extend(workflowConfig, {initialLabware: application.model.labware});
+        return application.controllerFactory.create(workflowConfig && workflowConfig.controllerName, application, workflowConfig);
     }).then(function(nextController){
       application.currentPageController = nextController;
       application.currentPageController.setupController(application.model, application.jquerySelection);

@@ -1,0 +1,24 @@
+define([
+  "app-components/process-choice/process-choice",
+  "app-components/manifest/maker",
+  "app-components/manifest/reader",
+  "app-components/inbox/inbox"
+], function(ProcessChoice, ManifestMaker, ManifestReader, Inbox) {
+  "use strict";
+
+  return function (context) {
+    return new ProcessChoice(_.extend({
+      accessList: "Management",
+      components: [
+        { label: "Create a Manifest", id: "maker",  constructor: ManifestMaker  },
+        { label: "Read a Manifest",   id: "reader", constructor: ManifestReader },
+        {
+          label:        "Unlysed Sample Inbox",
+          id:           "unlysed-inbox",
+          constructor:  Inbox,
+        }
+
+      ]
+    }, context));
+  };
+});

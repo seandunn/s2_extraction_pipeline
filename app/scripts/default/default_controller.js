@@ -72,7 +72,7 @@ define(['config'
 
     function login(model){
       if (model.isValid()){
-        controller.owner.childDone(controller, "login", model);
+        controller.owner.childDone(controller, "done", model);
       } else {
         barcodeErrorCallback("Labware not found on system.")(undefined, template);
       }

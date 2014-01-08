@@ -16,28 +16,35 @@ define([
     setLabwareFromBarcode: function (barcode) {
       var defaultModel = this;
       var deferred = $.Deferred();
-      this.cache.fetchResourcePromiseFromBarcode(barcode)
-          .fail(function(){
-            return deferred.reject({message:"Couldn't find any labware with a '"+barcode+"' barcode!"});
-          })
-          .then(function (labware) {
-            defaultModel.labware = labware;
-            return labware.order();
-          })
-          .then(function (order) {
-            return order.batchFor(function (item) {
-              return item.uuid === defaultModel.labware.uuid && item.status==="done";
-            });
-          })
-          .then(function (batch) {
-            defaultModel.batch = batch;
-            return deferred.resolve(defaultModel);
-          })
-          .fail(function () {
-            // we resolve the promise because we already have a labware
-            // we simply didn't find a batch associated.
-            return deferred.resolve(defaultModel);
-          });
+
+      defaultModel
+      .cache
+      .fetchResourcePromiseFromBarcode(barcode)
+
+      .then(function (labware) {
+        defaultModel.labware = labware;
+        return labware.order();
+      },
+      function () {
+        return deferred.reject({message:"Couldn't find any labware with a '"+barcode+"' barcode!"});
+      })
+
+      .then(function (order) {
+        return order.batchFor(function (item) {
+          return item.uuid === defaultModel.labware.uuid && item.status==="done";
+        });
+      })
+
+      .then(function (batch) {
+        defaultModel.batch = batch;
+        return deferred.resolve(defaultModel);
+      },
+      function () {
+        // we resolve the promise because we already have a labware
+        // we simply didn't find a batch associated.
+        return deferred.resolve(defaultModel);
+      });
+
       return deferred.promise();
     },
 
