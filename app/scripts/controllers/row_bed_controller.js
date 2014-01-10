@@ -70,6 +70,11 @@
       }
   }
   
+  function reloadToIndex() {
+    var ref = window.location.href;
+    ref = ref.replace(/#.*/, "");
+    window.location.href = ref;
+  }
 
   //TODO: check this declaration is ok
   var RowModel = Object.create(Object.prototype);
@@ -171,11 +176,7 @@
 
       this.linearProcessLabwares.view.on("error.bed-verification.s2", function() {
         $("input,button").attr("disabled", true);
-        setTimeout(function() {
-          var ref = window.location.href;
-          ref = ref.replace(/#.*/, "");
-          window.location.href = ref;
-        }, 3000);
+        setTimeout(reloadToIndex, 3000);
       });
       
       // Enable linear process if robot scanned
@@ -244,11 +245,7 @@
       
       linear.view.on("error.bed-recording.s2", function() {
         $("input,button").attr("disabled", true);
-        setTimeout(function() {
-          var ref = window.location.href;
-          ref = ref.replace(/#.*/, "");
-          window.location.href = ref;
-        }, 3000);
+        setTimeout(reloadToIndex, 3000);
       });      
       
       // When robot scanned, enable linear process
