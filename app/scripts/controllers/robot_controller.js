@@ -2,7 +2,7 @@ define(["controllers/base_controller", "models/robot_model",
     "app-components/scanning/robot", "lib/pubsub"
 ], function(Base, Model, robotInput, PubSub) {
   "use strict";
-  var robotGroups = {"ebase": ["0000000000002"], "fx": ["0000000000001"]};
+  var robotGroups = {"ebase": ["0000000000002"], "fx": ["0000000000001"], "nx": ["0000000000003"]};
   var Controller = Object.create(Base);
   _.extend(Controller,
     { register : function(callback) {
