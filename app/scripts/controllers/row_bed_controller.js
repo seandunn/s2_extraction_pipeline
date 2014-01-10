@@ -28,14 +28,22 @@
    * }
    *};
    */
-  var robotConfigFX = [{
+  var robotsConfig = [{
+    // FX Robot (bed verification)
     "barcode":  "0000000000001",
     "beds": [
         [{ "barcode": "0000000000001" }, { "barcode": "0000000000002" }],
         [{ "barcode": "0000000000003" }, { "barcode": "0000000000004" }]
     ]
-  }];
-  var robotConfigeBase= [{
+  },{
+    // NX Robot (bed verification)
+    "barcode":  "0000000000003",
+    "beds": [
+        [{ "barcode": "0000000000001" }, { "barcode": "0000000000002" }],
+        [{ "barcode": "0000000000003" }, { "barcode": "0000000000004" }]
+    ]
+  },{
+    // eBase Robot (bed recording)
     "barcode":  "0000000000002",
     "beds": [
       [{ "barcode": "0000000000001" }], 
@@ -127,7 +135,7 @@
         }
         
         var component = bedVerification({
-          bedsConfig: robotConfigFX,
+          bedsConfig: robotsConfig,
           plateValidations: [_.partial(plateLabwareValidation, inputModel.labware1),
                              _.partial(plateLabwareValidation, inputModel.labware2)],
           fetch: _.partial(function(rootPromise, barcode) {
@@ -164,7 +172,9 @@
       this.linearProcessLabwares.view.on("error.bed-verification.s2", function() {
         $("input,button").attr("disabled", true);
         setTimeout(function() {
-          window.location.href = window.location.href;
+          var ref = window.location.href;
+          ref = ref.replace(/#.*/, "");
+          window.location.href = ref;
         }, 3000);
       });
       
@@ -204,7 +214,7 @@
           }
         else {
           component = bedRecording({
-            bedsConfig: robotConfigeBase,
+            bedsConfig: robotsConfig,
             fetch: _.partial(function(rootPromise, barcode) {
               return rootPromise.then(function(root) {
                 return root.findByLabEan13(barcode);
@@ -235,7 +245,9 @@
       linear.view.on("error.bed-recording.s2", function() {
         $("input,button").attr("disabled", true);
         setTimeout(function() {
-          window.location.href = window.location.href;
+          var ref = window.location.href;
+          ref = ref.replace(/#.*/, "");
+          window.location.href = ref;
         }, 3000);
       });      
       
