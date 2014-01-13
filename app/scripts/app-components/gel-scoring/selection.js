@@ -17,7 +17,13 @@ define([
 
     return {
       view:   view,
-      events: {  "change-scored.selection.s2": $.ignoresEvent(_.partial(renderTable, context, view)) }
+      events: {  "change-scored.selection.s2": $.ignoresEvent(_.partial(renderTable, context, view)),
+        "shown": function(e){
+          if (e.target.getAttribute("href") === "#"+context.id) {
+            renderTable(context, view);
+          }
+        }
+        }
     };
   };
   
@@ -78,8 +84,8 @@ define([
       });
       return false;
     });
-    html.on(barcodeScanner.events);    
-    renderTable(context, html);
+    html.on(barcodeScanner.events);
+    
     return html;
   }
 });
