@@ -21,13 +21,13 @@
     "samples.extraction.manual_rna_only.input_tube_rnap.batched",
 
     "samples.extraction.manual_dna_and_rna.spin_column_rna",
-    "samples.extraction.manual_rna_only.spin_column_rna",
+    "samples.extraction.manual_rna_only.spin_column_rna"
 
   ],
 
   "workflows": [
     {
-      "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_nap.awaiting_reception" ],
+      "accepts": "samples.extraction.manual_dna_and_rna.input_tube_nap.awaiting_reception",
       "controllerName":"selection_page_controller",
       "processTitle": "Receive Tubes - Manual DNA and RNA Extraction",
       "capacity": 96,
@@ -46,7 +46,7 @@
 
 
     {
-    "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_nap" ],
+    "accepts": "samples.extraction.manual_dna_and_rna.input_tube_nap",
     "controllerName":"selection_page_controller",
     "processTitle": "Manual DNA and RNA Extraction",
     "input":        {
@@ -62,7 +62,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_nap.batched" ],
+    "accepts": "samples.extraction.manual_dna_and_rna.input_tube_nap.batched",
     "processTitle":  "Manual DNA and RNA Binding",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -110,7 +110,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap" ],
+    "accepts": "samples.extraction.manual_dna_and_rna.byproduct_tube_rnap",
     "processTitle":  "Manual DNA and RNA Collection Tube Transfer",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -149,7 +149,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.manual_dna_and_rna.input_tube_rnap.batched" ],
+    "accepts": "samples.extraction.manual_dna_and_rna.input_tube_rnap.batched",
     "processTitle":  "Manual DNA and RNA Binding, Input tube RNA+P",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -192,7 +192,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.manual_dna_and_rna.spin_column_dna" ],
+    "accepts": "samples.extraction.manual_dna_and_rna.spin_column_dna",
     "processTitle":  "Manual Extraction Spin Column DNA Transfer",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -233,7 +233,7 @@
 
 
   {
-    "accepts": [ "samples.extraction.manual_rna_only.input_tube_rnap.batched" ],
+    "accepts": "samples.extraction.manual_rna_only.input_tube_rnap.batched",
     "processTitle":  "Manual RNA Only Binding, Input tube RNA+P",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -276,7 +276,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.manual_dna_and_rna.spin_column_rna" ],
+    "accepts": "samples.extraction.manual_dna_and_rna.spin_column_rna",
     "processTitle":  "Manual Extraction Spin Column RNA Transfer",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -317,7 +317,7 @@
 
 
   {
-    "accepts": [ "samples.extraction.manual_rna_only.spin_column_rna" ],
+    "accepts": "samples.extraction.manual_rna_only.spin_column_rna",
     "processTitle":  "Manual Extraction Spin Column RNA Transfer",
     "controllerName": "step_controller",
     "printerType": 2,
@@ -356,7 +356,7 @@
   },
 
     {
-      "accepts": [ "samples.extraction.manual_dna_only.input_tube_dnap.awaiting_reception" ],
+      "accepts": "samples.extraction.manual_dna_only.input_tube_dnap.awaiting_reception",
       "controllerName":"selection_page_controller",
       "processTitle": "Receive Tubes - Manual DNA Only Extraction",
       "capacity": 96,
@@ -376,7 +376,7 @@
 
 
     {
-    "accepts": [ "samples.extraction.manual_dna_only.input_tube_dnap" ],
+    "accepts": "samples.extraction.manual_dna_only.input_tube_dnap",
     "controllerName":"selection_page_controller",
     "processTitle": "Manual DNA Only Extraction",
     "input":        {
@@ -392,7 +392,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.manual_dna_only.input_tube_dnap.batched" ],
+    "accepts": "samples.extraction.manual_dna_only.input_tube_dnap.batched",
     "processTitle":  "Manual DNA Only Binding",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -435,7 +435,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.manual_dna_only.spin_column_dna" ],
+    "accepts": "samples.extraction.manual_dna_only.spin_column_dna",
     "processTitle":  "Manual Extraction Spin Column DNA Transfer",
     "controllerName": "step_controller",
     "printerType": 2,
@@ -475,7 +475,7 @@
 
 
     {
-      "accepts": [ "samples.extraction.manual_rna_only.input_tube_rnap.awaiting_reception" ],
+      "accepts": "samples.extraction.manual_rna_only.input_tube_rnap.awaiting_reception",
       "controllerName":"selection_page_controller",
       "processTitle": "Receive Tubes - Manual RNA Only Extraction",
       "capacity": 96,
@@ -496,7 +496,7 @@
 
 
   {
-    "accepts": [ "samples.extraction.manual_rna_only.input_tube_rnap" ],
+    "accepts": "samples.extraction.manual_rna_only.input_tube_rnap",
     "controllerName":"selection_page_controller",
     "processTitle": "Manual RNA Only Extraction",
     "input":        {
@@ -509,7 +509,7 @@
       "aliquotType":"NA+P"
     }
     ]
-  },
+  }
 
   ]
 
