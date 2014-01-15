@@ -28,28 +28,8 @@
    * }
    *};
    */
-  var robotsConfig = [{
-    // FX Robot (bed verification)
-    "barcode":  "0000000000001",
-    "beds": [
-        [{ "barcode": "0000000000001" }, { "barcode": "0000000000002" }],
-        [{ "barcode": "0000000000003" }, { "barcode": "0000000000004" }]
-    ]
-  },{
-    // NX Robot (bed verification)
-    "barcode":  "0000000000003",
-    "beds": [
-        [{ "barcode": "0000000000001" }, { "barcode": "0000000000002" }],
-        [{ "barcode": "0000000000003" }, { "barcode": "0000000000004" }]
-    ]
-  },{
-    // eBase Robot (bed recording)
-    "barcode":  "0000000000002",
-    "beds": [
-      [{ "barcode": "0000000000001" }], 
-      [{ "barcode": "0000000000002" }]
-      ]
-  }];
+  var robotsConfig = [];
+  
   
   function findRootPromise(controller) {
     var iterations = 0;
@@ -110,6 +90,9 @@
     init:function (owner, controllerFactory) {
       this.controllerFactory = controllerFactory;
       this.owner = owner;
+      if (robotsConfig.length===0) {
+        robotsConfig = robotsConfig.concat(this.getAppConfig().Robots);        
+      }
       return this;
     },
     hideEditable: function() {
@@ -160,30 +143,34 @@
       
       this.linearProcessLabwares = bedRecordingInfo.components[0];
 
-      PubSub.subscribe("printing_finished.barcodePrintSuccess", _.bind(function() {
-        // Enable the robot
-        $(".robot input").prop("disabled", false).focus();
-      }, this));
       
       // Config view
-      
-      
       
       controller.jquerySelection().html("");
       controller.jquerySelection().append(this.linearProcessLabwares.view);
       var arrow = "<div class='transferArrow span1 offset1'><span >&rarr;</span></div>";
       $(arrow).insertAfter($(".left", controller.jquerySelection())[0]);
 
-      this.linearProcessLabwares.view.on("error.bed-verification.s2", function() {
+      this.linearProcessLabwares.view.on("error.bed-verification.s2", _.bind(function() {
         $("input,button").attr("disabled", true);
-        setTimeout(reloadToIndex, 3000);
-      });
+        $("input").val("");
+        controller.jquerySelection().html("");
+        this.setupControllerWithBedVerification(inputModel);
+        $(".robot input").prop("disabled", false).focus();
+        $("button.nextButton").on("click", function(e) {
+          e.preventDefault();
+          reloadToIndex();
+          return false;
+        });
+
+        //setTimeout(reloadToIndex, 3000);
+      }, this));
       
       // Enable linear process if robot scanned
       controller.owner.owner.activeController = this.owner;
       controller.jquerySelection().on(_.omit(this.linearProcessLabwares.events, "scanned.robot.s2"));
       $(document.body).on(_.pick(this.linearProcessLabwares.events, "scanned.robot.s2"));
-      PubSub.publish("enable_buttons.step_controller.s2", controller.owner, {buttons: [{action: "print"}]});
+
             
       function enableProcessButtons(controller, data, verification) {
         controller.editableControllers = _.partial(function(verification) {
@@ -196,11 +183,13 @@
         PubSub.publish("enable_buttons.step_controller.s2", controller.owner, data);
       }
       
-      
+      //PubSub.subscribe("done_clicked.step_controller.s2", reloadToIndex);
       $(document.body).on("scanned.robot.s2", _.partial(startMyRow, controller));
       
       // When bed verification checked for the linear process
-      controller.jquerySelection().on("scanned.bed-verification.s2", $.ignoresEvent(_.partial(enableProcessButtons, controller, {buttons: [{action: "start"}]})));      
+      controller.jquerySelection().on("scanned.bed-verification.s2", $.ignoresEvent(_.partial(enableProcessButtons, controller, {buttons: [{action: "start"}]})));
+      
+      //$('.endButton').on('click', setTimeout(reloadToIndex, 2000));
     },
 
     
@@ -239,17 +228,26 @@
       controller.jquerySelection().append(linear.view);
       controller.jquerySelection().on(_.omit(linear.events, "scanned.robot.s2"));
       $(document.body).on(_.pick(linear.events, "scanned.robot.s2"));
-      $(".robot input").prop("disabled", false).focus();
       
       $(document.body).addClass("bed-recording");
       
-      linear.view.on("error.bed-recording.s2", function() {
+      linear.view.on("error.bed-recording.s2", _.bind(function() {
         $("input,button").attr("disabled", true);
-        setTimeout(reloadToIndex, 3000);
-      });      
+        $("input").val("");
+        controller.jquerySelection().html("");
+        this.setupControllerWithBedRecording(inputModel);
+        $(".robot input").prop("disabled", false).focus();
+        $("button.nextButton").on("click", function(e) {
+          e.preventDefault();
+          reloadToIndex();
+          return false;
+        });
+        //setTimeout(reloadToIndex, 3000);
+      }, this));      
       
       // When robot scanned, enable linear process
       $(document.body).on("scanned.robot.s2", _.partial(startMyRow, controller));
+      //PubSub.subscribe("done_clicked.step_controller.s2", reloadToIndex);
       
       // Modify editable controllers for using wrapper labware controller
       controller.editableControllers = _.partial(_.identity, 
@@ -272,11 +270,7 @@
       }, controller, {buttons: [{action: "start"}]})); 
       
       
-      $('.endButton').on('click', function() {
-        setTimeout(function() {
-          window.location.reload(true);
-        }, 1000);
-      });
+      //$('.endButton').on('click', setTimeout(reloadToIndex, 2000));
     },
     
     setupController:function (input_model, jquerySelection) {
@@ -299,7 +293,22 @@
 
       this.currentView.renderView();
       $(document.body).addClass("gel");
-      this[(this.owner.config.rowBehaviour==="bedRecording")?"setupControllerWithBedRecording":"setupControllerWithBedVerification"](input_model);
+      if (this.owner.config.rowBehaviour==="bedRecording") {
+        this.setupControllerWithBedRecording(input_model);
+        $(".robot input").prop("disabled", false).focus();
+      } else {
+        PubSub.subscribe("printing_finished.barcodePrintSuccess", _.bind(function() {
+          // Enable the robot
+          $(".robot input").prop("disabled", false).focus();
+        }, this));
+        PubSub.publish("enable_buttons.step_controller.s2", this.owner, {buttons: [{action: "print"}]});        
+        this.setupControllerWithBedVerification(input_model);
+      }
+      $("button.nextButton").on("click", function(e) {
+        e.preventDefault();
+        reloadToIndex();
+        return false;
+      });      
    },
 
 
