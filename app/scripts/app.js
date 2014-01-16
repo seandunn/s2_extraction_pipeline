@@ -67,7 +67,7 @@ define([ 'config'
     // Handle deep-linking to pages such as lab-management
     var url = document.location.toString();
 
-    if (url.match('#')) {
+    if ((url.match('#')) && (!_.isUndefined(app.config.login))) {
       $('#page-nav a[href=#'+url.split('#')[1]+']').tab('show');
     }
 
