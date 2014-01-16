@@ -82,6 +82,15 @@ define([ "app-components/linear-process/linear-process",
       promise.resolve(robot);
     }, robotScannedPromise));
     
+    obj.toObj = function() {
+      return [ obj.components[0].toObj(), obj.components[1].toObj()];
+    };
+    
+    obj.fromObj = function(data) {
+      obj.components[0].fromObj(data[0]);
+      obj.components[1].fromObj(data[1]);
+    };
+    
     return obj;
   };
 });

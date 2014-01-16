@@ -24,22 +24,36 @@ define(["controllers/base_controller", "models/robot_model",
       controller.model.then(function(model) {
         return model.setupModel(setupData);
       }).then(_.bind(function(model) {
-        if (!model.batch.robot) {
-          this.robotInputComponent = robotInput({
-            robotGroup: robotGroups[model.config.group]
-          });
-          this.getComponentInterface().view.append(this.robotInputComponent.view);
-          this.getComponentInterface().view.on(this.robotInputComponent.events);
-          this.getComponentInterface().view.on("scanned.robot.s2", $.ignoresEvent(_.partial(function(controller, robot) {
-            controller.model.then(function(model) {
-              model.batch.update({process: JSON.stringify(robot)});
-              PubSub.publish("next_process.step_controller.s2", controller,
-                { batch : model.batch
+        this.robotInputComponent = robotInput({
+          robotGroup: robotGroups[model.config.group]
+        });
+        this.getComponentInterface().view.append(this.robotInputComponent.view);
+        
+          this.getComponentInterface().view.on(this.robotInputComponent.events);  
+          $(document.body).on("startedRobotProcess.s2", _.bind(function(event, data) {
+            this.model.then(_.bind(function(model) {
+              var processList = JSON.parse(model.batch.process);
+              if (!processList) {
+                processList = [];
+              }
+              if (!(_.find(processList, function(robotNode) { 
+                return robotNode.robotBarcode === this.robotInputComponent.getBarcode(); 
+              }))) {
+                processList.push({
+                  robotBarcode: this.robotInputComponent.getBarcode(),
+                  bedsConfig: data
                 });
-            });
-          }, this)));
-          //this.getComponentInterface().view.on("done.s2", _.partial(this.next, this));
-        }
+              }
+              model.batch.update({process: JSON.stringify(processList) });
+              PubSub.publish("next_process.step_controller.s2", this,
+                { batch : model.batch });
+            }, this));
+          }, this));
+        
+        /*else {
+          this.robotInputComponent.setBarcode(JSON.parse(model.batch.process).robotBarcode);
+          this.robotInputComponent.disable();
+        }*/
       }, this));
      
       return controller;

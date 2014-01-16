@@ -19,7 +19,10 @@ define([
       label: undefined
     }, context));
 
+    
+    var paddedBarcode;
     var success = function(padded) {
+      paddedBarcode=padded;
       html.trigger("scanned.barcode.s2", [padded]);
     };
     var invalid = function(padded) {
@@ -55,6 +58,15 @@ define([
           return func();
         }, $.haltsEvent($.ignoresEvent(_.partial(_.bind(barcode.prop, barcode), "disabled", true)))),
         "focus": $.haltsEvent($.ignoresEvent(_.bind(barcode.focus, barcode)))
+      },
+      setBarcode: function(brc) {
+        barcode.val(brc);
+      },
+      getBarcode: function() {
+        return paddedBarcode;
+      },
+      disable: function() {
+        barcode.attr("disabled", true);
       }
     };
   };

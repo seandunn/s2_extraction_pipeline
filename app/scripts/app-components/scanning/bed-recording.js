@@ -88,9 +88,19 @@ define([ "text!app-components/scanning/_bed-recording.html",
       promise.resolve(robot);
     }, robotScannedPromise));
 
+    var bedObj = component.components[0],
+      plateObj = component.components[1];
     return (
       { view : html,
-        events : component.events
+        events : component.events,
+        toObj : function() {
+          return [ plateObj.getBarcode(), bedObj.getBarcode()];
+        },
+        fromObj: function(data) {
+          plateObj.setBarcode(data[0]);          
+          bedObj.setBarcode(data[1]);
+          plateObj.view.trigger("scanned.barcode.s2", data[0]);
+        }
       });
   };
 });
