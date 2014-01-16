@@ -20,7 +20,7 @@ define([ 'config'
   'use strict';
 
   var ComponentConfig = [
-    { name: "Lab Mangement",  selector: "#lab-management", constructor: LabMangement     },
+    { name: "Lab Management",  selector: "#lab-management", constructor: LabMangement     },
     { name: "Lab Activities", selector: "#lab-activities", constructor: LabActivities }
   ];
 
@@ -85,6 +85,8 @@ define([ 'config'
         findUser: function(barcode, accessList) {
           var deferred = $.Deferred();
           var user = app.config[accessList || "UserData"][barcode];
+          app.config.login = user;
+          $(document.body).addClass("login-success");
           deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);
           return deferred.promise();
         },

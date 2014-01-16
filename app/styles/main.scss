@@ -1,5 +1,27 @@
 $iconSpritePath: "../images/glyphicons-halflings.png";
 $iconWhiteSpritePath: "../images/glyphicons-halflings-white.png";
 
+#page-nav {
+  display: none;
+}
+
+.labware_barcode, .labware_barcode_header {
+  display: none;
+}
+
+.login-success {
+  #page-nav {
+    display: block;
+  }
+  .user_barcode, .user_barcode_header {
+    display: none;
+  }
+  .labware_barcode, .labware_barcode_header {
+    display: block;
+  }  
+    
+}
+
+
 @import 'sass-bootstrap/lib/bootstrap';
 @import "pipeline";
