@@ -5,7 +5,7 @@ $iconWhiteSpritePath: "../images/glyphicons-halflings-white.png";
   display: none;
 }
 
-.labware_barcode, .labware_barcode_header {
+.labware-barcode, .labware-barcode-header {
   display: none;
 }
 
@@ -13,10 +13,10 @@ $iconWhiteSpritePath: "../images/glyphicons-halflings-white.png";
   #page-nav {
     display: block;
   }
-  .user_barcode, .user_barcode_header {
+  .user-barcode, .user-barcode-header {
     display: none;
   }
-  .labware_barcode, .labware_barcode_header {
+  .labware-barcode, .labware-barcode-header {
     display: block;
   }  
     
