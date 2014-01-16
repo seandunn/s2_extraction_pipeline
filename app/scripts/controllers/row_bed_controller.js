@@ -98,6 +98,26 @@
     hideEditable: function() {
       
     },
+    loadFromProcess: function(inputModel, component) {
+      var barcode1 = inputModel.labware1.resource.rawJson[inputModel.labware1.expected_type].labels.barcode.value,
+          barcode2 = inputModel.labware2.resource.rawJson[inputModel.labware2.expected_type].labels.barcode.value,
+          bed1 = inputModel.process.bedsConfig[barcode1],
+          bed2 = inputModel.process.bedsConfig[barcode2];
+      
+      if (_.all([bed1, bed2, barcode1, barcode2])) {
+        markAsCompletedRow(this, {buttons: [{action: "start"}]}, {verified: [{
+          robot: inputModel.process.robotBarcode,
+            bed: bed1,
+              plate: inputModel.labware1.resource
+        }, {
+          robot: inputModel.process.robotBarcode,
+          bed: bed2,
+            plate: inputModel.labware2.resource          
+        }]});
+        $(".robot input").prop("value", inputModel.process.robotBarcode);
+        component.fromObj([[barcode1, bed1], [barcode2, bed2]]);
+      }
+    },
     setupControllerWithBedVerification: function(inputModel) {
       var controller = this;
       $(".robot input").prop("value", "");
@@ -142,6 +162,8 @@
       }, {promises: [], components: []}).value();
       
       this.linearProcessLabwares = bedRecordingInfo.components[0];
+      
+      this.loadFromProcess(inputModel, this.linearProcessLabwares);
 
       
       // Config view
@@ -171,14 +193,17 @@
       controller.jquerySelection().on(_.omit(this.linearProcessLabwares.events, "scanned.robot.s2"));
       $(document.body).on(_.pick(this.linearProcessLabwares.events, "scanned.robot.s2"));
 
-            
-      function enableProcessButtons(controller, data, verification) {
+      function markAsCompletedRow(controller, data, verification) {
         controller.editableControllers = _.partial(function(verification) {
           return _.chain(verification.verified).map(function(record) { return {
             isComplete: _.partial(_.identity, true),
             labwareModel: { resource: record.plate}};
             });
         }, verification);
+        //
+      }      
+      function enableProcessButtons(controller, data, verification) {
+        markAsCompletedRow(controller, data, verification);
         controller.owner.childDone(controller, "completed", data);
         PubSub.publish("enable_buttons.step_controller.s2", controller.owner, data);
       }
@@ -189,6 +214,10 @@
       // When bed verification checked for the linear process
       controller.jquerySelection().on("scanned.bed-verification.s2", $.ignoresEvent(_.partial(enableProcessButtons, controller, {buttons: [{action: "start"}]})));
       
+      PubSub.subscribe("start_clicked.step_controller.s2", _.bind(function() {
+        var data = _.object(this.linearProcessLabwares.toObj());
+        $(document.body).trigger("startedRobotProcess.s2", data);
+      }, this));
       //$('.endButton').on('click', setTimeout(reloadToIndex, 2000));
     },
 
@@ -255,7 +284,6 @@
           return _.extend(p, {isComplete: _.partial(_.identity, true)});
           }));
       $.when.call(this, bedRecordingInfo.promises[0]).then(_.partial(function(controller, data, event, verification) {
-        
         controller.editableControllers = _.partial(function(verification) {
           // in bedRecording connected we need to have at least one input and one output per each row
           return _.chain(verification.verified).map(function(record) { 
@@ -268,8 +296,11 @@
         controller.owner.childDone(controller, "completed", data);
         PubSub.publish("enable_buttons.step_controller.s2", controller.owner, data);
       }, controller, {buttons: [{action: "start"}]})); 
-      
-      
+      this.linearProcessLabwares = linear;
+      PubSub.subscribe("start_clicked.step_controller.s2", _.bind(function() {
+        var data = _.object(this.linearProcessLabwares.toObj());
+        $(document.body).trigger("startedRobotProcess.s2", data);
+      }, this));
       //$('.endButton').on('click', setTimeout(reloadToIndex, 2000));
     },
     

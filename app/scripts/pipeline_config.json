@@ -1590,7 +1590,8 @@
       "defaultPrinter":"d304bc",
       "printerType": 1,
       "buttons": [{ "action": "start", "title": "Begin E-Base" },
-                  { "action": "end",   "title": "Finished E-Base" }
+                  { "action": "end",   "title": "Finished E-Base" },
+                  {"action": "next",   "title": "Done"}
       ],
       "processTitle":  "RNA QC - Gel E-Base",
       "controllers": [{
@@ -1603,7 +1604,7 @@
           "start": "start",
           "operate": "start",
           "complete": "end",
-          "done": "end"
+          "done": "next"
         },
         "rowBehaviour":  "bedRecording",
         "input": {
