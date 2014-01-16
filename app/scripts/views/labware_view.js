@@ -27,8 +27,8 @@ define(['text!html_partials/_labware.html'], function (labwarePartialHtml) {
      */
     return function () {
       if (owner) {
-        var userbarcode = $(".user_barcode input").val();
-        var tube_barcode = $(".labware_barcode input").val();
+        var userbarcode = $(".user-barcode input").val();
+        var tube_barcode = $(".labware-barcode input").val();
 
         owner.childDone(view , "login",{ userBC:userbarcode, labwareBC:tube_barcode });
       }

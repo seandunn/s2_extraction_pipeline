@@ -103,11 +103,11 @@ define(['config'
       this.labwareBCSubController = this.controllerFactory.create('scan_barcode_controller', this).init({type:"tube"});
 
       this.jquerySelectionForUser = function () {
-        return that.jquerySelection().find(".user_barcode");
+        return that.jquerySelection().find(".user-barcode");
       };
 
       this.jquerySelectionForLabware = function () {
-        return that.jquerySelection().find(".labware_barcode");
+        return that.jquerySelection().find(".labware-barcode");
       };
 
       this.renderView();
