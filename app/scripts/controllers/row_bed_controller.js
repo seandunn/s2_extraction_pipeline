@@ -55,6 +55,32 @@
     ref = ref.replace(/#.*/, "");
     window.location.href = ref;
   }
+  
+  function markAsCompletedRow(controller, data, verification) {
+    controller.editableControllers = _.partial(function(verification) {
+      return _.chain(verification.verified).map(function(record) { return {
+        isComplete: _.partial(_.identity, true),
+        labwareModel: { resource: record.plate}};
+        });
+    }, verification);
+    //
+  } 
+  
+  function markAsCompletedRowBR(controller, data, verification) {
+    controller.editableControllers = _.partial(function(verification) {
+      // in bedRecording connected we need to have at least one input and one output per each row
+      return _.chain(verification.verified).map(function(record) { 
+        return {
+          isComplete: _.partial(_.identity, true),
+          labwareModel: { resource: record.plate}};}).reduce(function(memo, node) {
+          return memo.concat([node, _.clone(node)]);
+        }, []);
+    }, verification);
+  } 
+  
+  
+  
+  
 
   //TODO: check this declaration is ok
   var RowModel = Object.create(Object.prototype);
@@ -98,110 +124,138 @@
     hideEditable: function() {
       
     },
-    loadFromProcess: function(inputModel, component) {
-      var barcode1 = inputModel.labware1.resource.rawJson[inputModel.labware1.expected_type].labels.barcode.value,
-          barcode2 = inputModel.labware2.resource.rawJson[inputModel.labware2.expected_type].labels.barcode.value,
+    /*
+     * typeLoad: true: bedVerification, false: bedRecording
+     */
+    loadFromProcess: function(inputModel, component, typeLoadBedVerification) {
+      var plate1 = inputModel.labware1.resource,
+          plate2 = inputModel.labware2.resource,
+          barcode1 = plate1.rawJson[inputModel.labware1.expected_type].labels.barcode.value,
+          barcode2,
           bed1 = inputModel.process.bedsConfig[barcode1],
-          bed2 = inputModel.process.bedsConfig[barcode2];
+          bed2;
       
+      if (plate2) {
+        barcode2 = plate2.rawJson[inputModel.labware2.expected_type].labels.barcode.value;
+        bed2 = inputModel.process.bedsConfig[barcode2];
+      }
+      if (typeLoadBedVerification) {
       if (_.all([bed1, bed2, barcode1, barcode2])) {
         markAsCompletedRow(this, {buttons: [{action: "start"}]}, {verified: [{
           robot: inputModel.process.robotBarcode,
             bed: bed1,
-              plate: inputModel.labware1.resource
+              plate: plate1
         }, {
           robot: inputModel.process.robotBarcode,
           bed: bed2,
-            plate: inputModel.labware2.resource          
+            plate: plate2          
         }]});
         $(".robot input").prop("value", inputModel.process.robotBarcode);
         component.fromObj([[barcode1, bed1], [barcode2, bed2]]);
+        return true;
       }
+      }
+      else {
+        if (_.all([bed1, barcode1])) {
+
+          
+          markAsCompletedRowBR(this, {buttons: [{action: "start"}]}, {verified: [{
+            robot: inputModel.process.robotBarcode,
+              bed: bed1,
+                plate: plate1
+          }]});
+          $(".robot input").prop("value", inputModel.process.robotBarcode);
+          component.fromObj([barcode1, bed1]);
+          PubSub.publish("enable_buttons.step_controller.s2", controller.owner, {buttons: [{action: "end"}]});          
+          return true;
+        } else {
+          controller.editableControllers = _.partial(_.identity, 
+            _.chain(bedRecordingInfo.components).map(function(p) { 
+              return _.extend(p, {isComplete: _.partial(_.identity, true)});
+            }));
+        }
+      }
+      return false;
+    },
+    getBedVerificationInfo: function() {
+      return this.controllers.map(function(value, pos, list) {
+        if ((pos % 2)===0) 
+          return [value, list[pos+1]];
+    }).compact().reduce(_.bind(function(memo, p) {
+      
+      function plateLabwareValidation(labwareInputModel, labware) {
+        var defer = $.Deferred();
+        if (labware.resourceType === labwareInputModel.expected_type) {
+          defer.resolve(labware);
+        } else {
+          defer.reject();
+          PubSub.publish("error.status.s2", undefined, 
+            {message: ["Expected a '", 
+                       labwareInputModel.expected_type, 
+                       "' barcode but scanned a '",
+                       labware.resourceType,
+            "'"].join('')});
+        }
+        return defer;
+      }
+      
+      var component = bedVerification({
+        bedsConfig: robotsConfig,
+        plateValidations: [_.partial(plateLabwareValidation, inputModel.labware1),
+                           _.partial(plateLabwareValidation, inputModel.labware2)],
+        fetch: _.partial(function(rootPromise, barcode) {
+          return rootPromise.then(function(root) {
+            return root.findByLabEan13(barcode);
+          });
+        }, findRootPromise(this))
+      });
+      
+      var promise = $.Deferred();
+      component.view.on("scanned.bed-recording.s2", _.bind(promise.resolve, promise));
+      
+      memo.promises.push(promise);
+      memo.components.push(component);
+      return memo;
+    }, this), {promises: [], components: []}).value();
+    },
+    renderBedVerification: function() {
+      this.jquerySelection().html("");
+      this.jquerySelection().append(this.linearProcessLabwares.view);
+      var arrow = "<div class='transferArrow span1 offset1'><span >&rarr;</span></div>";
+      $(arrow).insertAfter($(".left", controller.jquerySelection())[0]);
+      
+    },
+    onErrorBedVerification: function() {
+      $("input,button").attr("disabled", true);
+      $("input").val("");
+      controller.jquerySelection().html("");
+      this.setupControllerWithBedVerification(inputModel);
+      $(".robot input").prop("disabled", false).focus();
+      $("button.nextButton").on("click", function(e) {
+        e.preventDefault();
+        reloadToIndex();
+        return false;
+      });
+
+      //setTimeout(reloadToIndex, 3000);
     },
     setupControllerWithBedVerification: function(inputModel) {
       var controller = this;
       $(".robot input").prop("value", "");
-      var bedRecordingInfo = this.controllers.map(function(value, pos, list) {
-          if ((pos % 2)===0) 
-            return [value, list[pos+1]];
-      }).compact().reduce(function(memo, p) {
-        
-        function plateLabwareValidation(labwareInputModel, labware) {
-          var defer = $.Deferred();
-          if (labware.resourceType === labwareInputModel.expected_type) {
-            defer.resolve(labware);
-          } else {
-            defer.reject();
-            PubSub.publish("error.status.s2", undefined, 
-              {message: ["Expected a '", 
-                         labwareInputModel.expected_type, 
-                         "' barcode but scanned a '",
-                         labware.resourceType,
-              "'"].join('')});
-          }
-          return defer;
-        }
-        
-        var component = bedVerification({
-          bedsConfig: robotsConfig,
-          plateValidations: [_.partial(plateLabwareValidation, inputModel.labware1),
-                             _.partial(plateLabwareValidation, inputModel.labware2)],
-          fetch: _.partial(function(rootPromise, barcode) {
-            return rootPromise.then(function(root) {
-              return root.findByLabEan13(barcode);
-            });
-          }, findRootPromise(controller))
-        });
-        
-        var promise = $.Deferred();
-        component.view.on("scanned.bed-recording.s2", _.bind(promise.resolve, promise));
-        
-        memo.promises.push(promise);
-        memo.components.push(component);
-        return memo;
-      }, {promises: [], components: []}).value();
-      
+      var bedRecordingInfo = getBedVerificationInfo();
       this.linearProcessLabwares = bedRecordingInfo.components[0];
-      
-      this.loadFromProcess(inputModel, this.linearProcessLabwares);
+      var loadedProcess = this.loadFromProcess(inputModel, this.linearProcessLabwares, true);
 
-      
       // Config view
-      
-      controller.jquerySelection().html("");
-      controller.jquerySelection().append(this.linearProcessLabwares.view);
-      var arrow = "<div class='transferArrow span1 offset1'><span >&rarr;</span></div>";
-      $(arrow).insertAfter($(".left", controller.jquerySelection())[0]);
+      this.renderBedVerification();
 
-      this.linearProcessLabwares.view.on("error.bed-verification.s2", _.bind(function() {
-        $("input,button").attr("disabled", true);
-        $("input").val("");
-        controller.jquerySelection().html("");
-        this.setupControllerWithBedVerification(inputModel);
-        $(".robot input").prop("disabled", false).focus();
-        $("button.nextButton").on("click", function(e) {
-          e.preventDefault();
-          reloadToIndex();
-          return false;
-        });
-
-        //setTimeout(reloadToIndex, 3000);
-      }, this));
+      this.linearProcessLabwares.view.on("error.bed-verification.s2", _.bind(this.onErrorBedVerification, this));
       
       // Enable linear process if robot scanned
       controller.owner.owner.activeController = this.owner;
       controller.jquerySelection().on(_.omit(this.linearProcessLabwares.events, "scanned.robot.s2"));
       $(document.body).on(_.pick(this.linearProcessLabwares.events, "scanned.robot.s2"));
 
-      function markAsCompletedRow(controller, data, verification) {
-        controller.editableControllers = _.partial(function(verification) {
-          return _.chain(verification.verified).map(function(record) { return {
-            isComplete: _.partial(_.identity, true),
-            labwareModel: { resource: record.plate}};
-            });
-        }, verification);
-        //
-      }      
       function enableProcessButtons(controller, data, verification) {
         markAsCompletedRow(controller, data, verification);
         controller.owner.childDone(controller, "completed", data);
@@ -213,7 +267,7 @@
       
       // When bed verification checked for the linear process
       controller.jquerySelection().on("scanned.bed-verification.s2", $.ignoresEvent(_.partial(enableProcessButtons, controller, {buttons: [{action: "start"}]})));
-      
+            
       PubSub.subscribe("start_clicked.step_controller.s2", _.bind(function() {
         var data = _.object(this.linearProcessLabwares.toObj());
         $(document.body).trigger("startedRobotProcess.s2", data);
@@ -221,10 +275,8 @@
       //$('.endButton').on('click', setTimeout(reloadToIndex, 2000));
     },
 
-    
-    setupControllerWithBedRecording: function(inputModel) {
-      var controller = this;
-      var bedRecordingInfo = this.controllers.reduce(function(memo, p) { 
+    getBedRecordingInfo: function() {
+      return this.controllers.reduce(_.bind(function(memo, p) { 
         var component;
         p.renderView();        
         if (_.has(p, "bedController"))
@@ -238,7 +290,7 @@
               return rootPromise.then(function(root) {
                 return root.findByLabEan13(barcode);
               });
-            }, findRootPromise(controller))
+            }, findRootPromise(this))
           });
         }
         var promise = $.Deferred();
@@ -249,53 +301,56 @@
         memo.promises.push(promise);
         memo.components.push(component);
         return memo;
-      }, {promises: [], components: []}).value();
+      }, this), {promises: [], components: []}).value();      
+    },
+    onErrorBedRecording: function() {
+      $("input,button").attr("disabled", true);
+      $("input").val("");
+      controller.jquerySelection().html("");
+      this.setupControllerWithBedRecording(inputModel);
+      $(".robot input").prop("disabled", false).focus();
+      $("button.nextButton").on("click", function(e) {
+        e.preventDefault();
+        reloadToIndex();
+        return false;
+      });
+      },
+    renderBedRecording: function() {
+      this.jquerySelection().append(this.linear.view);
+      this.jquerySelection().on(_.omit(this.linear.events, "scanned.robot.s2"));
+      $(document.body).on(_.pick(this.linear.events, "scanned.robot.s2"));      
+      $(".robot input").prop("disabled", false);
+    },
+    setupControllerWithBedRecording: function(inputModel) {
+      var controller = this;
+      var bedRecordingInfo = this.getBedRecordingInfo();
+      var linear = this.linearProcessLabwares = this.linear = bedRecordingInfo.components[0]; 
       
-      var linear = bedRecordingInfo.components[0]; 
-      
+      var loadedProcess = this.loadFromProcess(inputModel, this.linearProcessLabwares, false);
       // Configs view
-      controller.jquerySelection().append(linear.view);
-      controller.jquerySelection().on(_.omit(linear.events, "scanned.robot.s2"));
-      $(document.body).on(_.pick(linear.events, "scanned.robot.s2"));
+      this.renderBedRecording();
       
       $(document.body).addClass("bed-recording");
       
-      linear.view.on("error.bed-recording.s2", _.bind(function() {
-        $("input,button").attr("disabled", true);
-        $("input").val("");
-        controller.jquerySelection().html("");
-        this.setupControllerWithBedRecording(inputModel);
-        $(".robot input").prop("disabled", false).focus();
-        $("button.nextButton").on("click", function(e) {
-          e.preventDefault();
-          reloadToIndex();
-          return false;
-        });
-        //setTimeout(reloadToIndex, 3000);
-      }, this));      
-      
+      this.linear.view.on("error.bed-recording.s2", _.bind(this.onErrorBedRecording, this));
+      controller.owner.owner.activeController = this.owner;
       // When robot scanned, enable linear process
       $(document.body).on("scanned.robot.s2", _.partial(startMyRow, controller));
       //PubSub.subscribe("done_clicked.step_controller.s2", reloadToIndex);
+
       
-      // Modify editable controllers for using wrapper labware controller
-      controller.editableControllers = _.partial(_.identity, 
-        _.chain(bedRecordingInfo.components).map(function(p) { 
-          return _.extend(p, {isComplete: _.partial(_.identity, true)});
-          }));
       $.when.call(this, bedRecordingInfo.promises[0]).then(_.partial(function(controller, data, event, verification) {
-        controller.editableControllers = _.partial(function(verification) {
-          // in bedRecording connected we need to have at least one input and one output per each row
-          return _.chain(verification.verified).map(function(record) { 
-            return {
-              isComplete: _.partial(_.identity, true),
-              labwareModel: { resource: record.plate}};}).reduce(function(memo, node) {
-              return memo.concat([node, _.clone(node)]);
-            }, []);
-        }, verification);
+        markAsCompletedRowBR(controller, data, verification);
         controller.owner.childDone(controller, "completed", data);
         PubSub.publish("enable_buttons.step_controller.s2", controller.owner, data);
-      }, controller, {buttons: [{action: "start"}]})); 
+      }, controller, {buttons: [{action: "start"}]}));
+      
+
+      /*controller.jquerySelection().on("scanned.bed-recording.s2", _.partial(function(controller, data, event, verification) {
+        markAsCompletedRowBR(controller, data, verification);
+        controller.owner.childDone(controller, "completed", data);
+        PubSub.publish("enable_buttons.step_controller.s2", controller.owner, data);
+      }, controller, {buttons: [{action: "start"}]}));*/
       this.linearProcessLabwares = linear;
       PubSub.subscribe("start_clicked.step_controller.s2", _.bind(function() {
         var data = _.object(this.linearProcessLabwares.toObj());
@@ -326,7 +381,6 @@
       $(document.body).addClass("gel");
       if (this.owner.config.rowBehaviour==="bedRecording") {
         this.setupControllerWithBedRecording(input_model);
-        $(".robot input").prop("disabled", false).focus();
       } else {
         PubSub.subscribe("printing_finished.barcodePrintSuccess", _.bind(function() {
           // Enable the robot
