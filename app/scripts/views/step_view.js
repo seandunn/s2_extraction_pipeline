@@ -16,8 +16,8 @@ define([
 
       _.each(model.buttons, function(buttonDetails) {
         parent.find('.'+buttonDetails.action+'Button').on('click', function(event) {
+          event.preventDefault();          
           view.owner.childDone(view, buttonDetails.action, view.selector().find('.printer-select').val());
-          event.preventDefault();
         });
       });
     },
