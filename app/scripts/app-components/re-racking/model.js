@@ -249,7 +249,7 @@ define([
         updateMessage[thisModel.outputRack.uuid] = { event: "start" };
 
         return updateAllOrders(
-          _.map(ordersByUuid, function(order) { return [order, updateMessage]; })
+          _.map(ordersByUuid, function(order) { return [order, updateMessage]; }), thisModel.contentType
         );
       })
 
@@ -282,7 +282,7 @@ define([
             return [ordersByUuid[orderUuid],updateMessage];
           });
 
-          return updateAllOrders(orderUpdatePairs);
+          return updateAllOrders(orderUpdatePairs, thisModel.contentType);
       })
 
       .then(function(){
@@ -292,12 +292,18 @@ define([
 
 
 
-      function updateAllOrders(orderUpdatePairs) {
+      function updateAllOrders(orderUpdatePairs, contentType) {
+        if (contentType === undefined) {
+          throw "Content type must be defined for rack update messages.";
+        };
+
         return $.when.apply(null, _.map(orderUpdatePairs, function(pair) {
           var order         = pair[0];
           var eventMessages = pair[1];
 
-          return order.update({items:{"samples.rack.stock.rna": eventMessages}});
+          var updateMessage = {items:{}};
+          updateMessage.items["samples.rack.stock."+contentType.toLowerCase()] = eventMessages;
+          return order.update(updateMessage);
         }));
       }
     },
