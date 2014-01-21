@@ -97,9 +97,16 @@ define([ "text!app-components/scanning/_bed-recording.html",
           return [ plateObj.getBarcode(), bedObj.getBarcode()];
         },
         fromObj: function(data) {
-          plateObj.setBarcode(data[0]);          
-          bedObj.setBarcode(data[1]);
-          plateObj.view.trigger("scanned.barcode.s2", data[0]);
+          plateObj.setBarcode(data[0]);
+          if (data[1]) {
+            bedObj.setBarcode(data[1]);
+            plateObj.view.trigger("scanned.barcode.s2", data[0]);
+          } else {
+            if (data[0]) {
+              plateObj.renderDisplay(data[0]);
+              this.view.addClass("labware-without-bed");
+            }
+          }
         }
       });
   };

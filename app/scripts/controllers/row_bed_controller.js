@@ -63,7 +63,7 @@
         labwareModel: { resource: record.plate}};
         });
     }, verification);
-    //
+    controller.owner.childDone(controller, "completed", data);
   } 
   
   function markAsCompletedRowBR(controller, data, verification) {
@@ -98,6 +98,7 @@
       this.labwares     = inputModel;
       delete this.labwares.rowNum;
       delete this.labwares.enabled;
+      delete this.labwares.process;
     },
     setResource:function (value) {
       this.resource = value;
@@ -127,31 +128,73 @@
     /*
      * typeLoad: true: bedVerification, false: bedRecording
      */
-    loadFromProcess: function(inputModel, component, typeLoadBedVerification) {
+    loadFromInputs: function(processList, inputModel, component, typeLoadBedVerification) {
+      var process = "1";
+      var plate1 = inputModel.labware1.resource;
+      if (!plate1) { return false; }
+      var plate2 = inputModel.labware2.resource;
+      var barcode1 = plate1.rawJson[inputModel.labware1.expected_type].labels.barcode.value;
+      var barcode2;
+      if (plate2) {
+        barcode2 = plate2.rawJson[inputModel.labware2.expected_type].labels.barcode.value;
+      } else {
+        return false;
+      }
+      if (typeLoadBedVerification) {
+        component.fromObj([[barcode1, null], [barcode2, null]]);
+        markAsCompletedRow(this, {buttons: [{action: "start"}]}, {verified: [{
+          robot: process,
+            bed: null,
+              plate: plate1
+        }, {
+          robot: process,
+          bed: null,
+            plate: plate2
+        }]});
+        $(".robot input").prop("value", process);
+        //component.fromObj([[barcode1, bed1], [barcode2, bed2]], true);
+      } else {
+        markAsCompletedRowBR(this, {buttons: [{action: "start"}]}, {verified: [{
+          robot: process,
+            bed: null,
+              plate: plate1
+        }]});
+        $(".robot input").prop("value", process);
+        $(".robot input").prop("disabled", true);
+        component.fromObj([barcode1, null]);
+        PubSub.publish("enable_buttons.step_controller.s2", this.owner, {buttons: [{action: "end"}]});
+      }
+      return true;
+    },
+    loadFromProcess: function(processList, inputModel, component, typeLoadBedVerification) {
+      var process = _.find(processList, function(node) { return node.selected;});
+      if (!process) {
+        return false;
+      }
       var plate1 = inputModel.labware1.resource,
           plate2 = inputModel.labware2.resource,
           barcode1 = plate1.rawJson[inputModel.labware1.expected_type].labels.barcode.value,
           barcode2,
-          bed1 = inputModel.process.bedsConfig[barcode1],
+          bed1 = process.bedsConfig[barcode1],
           bed2;
       
       if (plate2) {
         barcode2 = plate2.rawJson[inputModel.labware2.expected_type].labels.barcode.value;
-        bed2 = inputModel.process.bedsConfig[barcode2];
+        bed2 = process.bedsConfig[barcode2];
       }
       if (typeLoadBedVerification) {
       if (_.all([bed1, bed2, barcode1, barcode2])) {
         markAsCompletedRow(this, {buttons: [{action: "start"}]}, {verified: [{
-          robot: inputModel.process.robotBarcode,
+          robot: process.robotBarcode,
             bed: bed1,
               plate: plate1
         }, {
-          robot: inputModel.process.robotBarcode,
+          robot: process.robotBarcode,
           bed: bed2,
             plate: plate2          
         }]});
-        $(".robot input").prop("value", inputModel.process.robotBarcode);
-        component.fromObj([[barcode1, bed1], [barcode2, bed2]]);
+        $(".robot input").prop("value", process.robotBarcode);
+        component.fromObj([[barcode1, bed1], [barcode2, bed2]], true);
         return true;
       }
       }
@@ -160,24 +203,20 @@
 
           
           markAsCompletedRowBR(this, {buttons: [{action: "start"}]}, {verified: [{
-            robot: inputModel.process.robotBarcode,
+            robot: process.robotBarcode,
               bed: bed1,
                 plate: plate1
           }]});
-          $(".robot input").prop("value", inputModel.process.robotBarcode);
+          $(".robot input").prop("value", process.robotBarcode);
+          $(".robot input").prop("disabled", true);
           component.fromObj([barcode1, bed1]);
-          PubSub.publish("enable_buttons.step_controller.s2", controller.owner, {buttons: [{action: "end"}]});          
+          PubSub.publish("enable_buttons.step_controller.s2", this.owner, {buttons: [{action: "end"}]});          
           return true;
-        } else {
-          controller.editableControllers = _.partial(_.identity, 
-            _.chain(bedRecordingInfo.components).map(function(p) { 
-              return _.extend(p, {isComplete: _.partial(_.identity, true)});
-            }));
         }
       }
       return false;
     },
-    getBedVerificationInfo: function() {
+    getBedVerificationInfo: function(inputModel) {
       return this.controllers.map(function(value, pos, list) {
         if ((pos % 2)===0) 
           return [value, list[pos+1]];
@@ -222,13 +261,13 @@
       this.jquerySelection().html("");
       this.jquerySelection().append(this.linearProcessLabwares.view);
       var arrow = "<div class='transferArrow span1 offset1'><span >&rarr;</span></div>";
-      $(arrow).insertAfter($(".left", controller.jquerySelection())[0]);
+      $(arrow).insertAfter($(".left", this.jquerySelection())[0]);
       
     },
-    onErrorBedVerification: function() {
+    onErrorBedVerification: function(inputModel) {
       $("input,button").attr("disabled", true);
       $("input").val("");
-      controller.jquerySelection().html("");
+      this.jquerySelection().html("");
       this.setupControllerWithBedVerification(inputModel);
       $(".robot input").prop("disabled", false).focus();
       $("button.nextButton").on("click", function(e) {
@@ -242,39 +281,54 @@
     setupControllerWithBedVerification: function(inputModel) {
       var controller = this;
       $(".robot input").prop("value", "");
-      var bedRecordingInfo = getBedVerificationInfo();
+      var bedRecordingInfo = this.getBedVerificationInfo(inputModel);
       this.linearProcessLabwares = bedRecordingInfo.components[0];
-      var loadedProcess = this.loadFromProcess(inputModel, this.linearProcessLabwares, true);
+      var loadedProcess;
+      var loadedProcess = this.loadFromInputs(inputModel.labware1.process, inputModel, this.linearProcessLabwares, true);
+      if (!loadedProcess) {
+        this.editableControllers = _.partial(_.identity, 
+          _.chain(bedRecordingInfo.components).map(function(p) { 
+            return _.extend(p, {isComplete: _.partial(_.identity, true)});
+          }));
+      }
 
       // Config view
       this.renderBedVerification();
 
-      this.linearProcessLabwares.view.on("error.bed-verification.s2", _.bind(this.onErrorBedVerification, this));
+      this.linearProcessLabwares.view.on("error.bed-verification.s2", _.bind(_.partial(this.onErrorBedVerification, inputModel), this));
       
       // Enable linear process if robot scanned
       controller.owner.owner.activeController = this.owner;
       controller.jquerySelection().on(_.omit(this.linearProcessLabwares.events, "scanned.robot.s2"));
       $(document.body).on(_.pick(this.linearProcessLabwares.events, "scanned.robot.s2"));
 
-      function enableProcessButtons(controller, data, verification) {
-        markAsCompletedRow(controller, data, verification);
-        controller.owner.childDone(controller, "completed", data);
-        PubSub.publish("enable_buttons.step_controller.s2", controller.owner, data);
-      }
-      
       //PubSub.subscribe("done_clicked.step_controller.s2", reloadToIndex);
       $(document.body).on("scanned.robot.s2", _.partial(startMyRow, controller));
       
+      // Sends the promise to the robot
+      if (!this.promiseWhenFinish) {
+        this.promiseWhenFinish = $.Deferred();      
+        $(document.body).trigger("setup.row-controller.s2", this.promiseWhenFinish);        
+      }
       // When bed verification checked for the linear process
-      controller.jquerySelection().on("scanned.bed-verification.s2", $.ignoresEvent(_.partial(enableProcessButtons, controller, {buttons: [{action: "start"}]})));
+      controller.jquerySelection().on("scanned.bed-verification.s2", $.ignoresEvent(_.partial(function(controller, data, promise, verification) {
+        if ($.contains(document, controller.linearProcessLabwares.view[0])) {
+          markAsCompletedRow(controller, data, verification);
+          promise.resolve(_.object(controller.linearProcessLabwares.toObj()));          
+        }
+      }, controller, {buttons: [{action: "start"}]}, this.promiseWhenFinish)));
             
-      PubSub.subscribe("start_clicked.step_controller.s2", _.bind(function() {
-        var data = _.object(this.linearProcessLabwares.toObj());
-        $(document.body).trigger("startedRobotProcess.s2", data);
+      PubSub.subscribe("end_clicked.step_controller.s2", _.bind(function() {
+        $(document.body).trigger("endRobotProcess.s2");
       }, this));
+      
+      this.onSetup(this);
       //$('.endButton').on('click', setTimeout(reloadToIndex, 2000));
     },
 
+    onSetup: function(obj) {
+    },    
+    
     getBedRecordingInfo: function() {
       return this.controllers.reduce(_.bind(function(memo, p) { 
         var component;
@@ -306,7 +360,7 @@
     onErrorBedRecording: function() {
       $("input,button").attr("disabled", true);
       $("input").val("");
-      controller.jquerySelection().html("");
+      this.jquerySelection().html("");
       this.setupControllerWithBedRecording(inputModel);
       $(".robot input").prop("disabled", false).focus();
       $("button.nextButton").on("click", function(e) {
@@ -319,14 +373,15 @@
       this.jquerySelection().append(this.linear.view);
       this.jquerySelection().on(_.omit(this.linear.events, "scanned.robot.s2"));
       $(document.body).on(_.pick(this.linear.events, "scanned.robot.s2"));      
-      $(".robot input").prop("disabled", false);
+      //
     },
     setupControllerWithBedRecording: function(inputModel) {
+      $(".robot input").prop("disabled", false);
       var controller = this;
       var bedRecordingInfo = this.getBedRecordingInfo();
       var linear = this.linearProcessLabwares = this.linear = bedRecordingInfo.components[0]; 
       
-      var loadedProcess = this.loadFromProcess(inputModel, this.linearProcessLabwares, false);
+      var loadedProcess = this.loadFromInputs(inputModel.labware1.process, inputModel, this.linearProcessLabwares, false);
       // Configs view
       this.renderBedRecording();
       
@@ -353,8 +408,11 @@
       }, controller, {buttons: [{action: "start"}]}));*/
       this.linearProcessLabwares = linear;
       PubSub.subscribe("start_clicked.step_controller.s2", _.bind(function() {
-        var data = _.object(this.linearProcessLabwares.toObj());
+        var data = _.object([this.linearProcessLabwares.toObj()]);
         $(document.body).trigger("startedRobotProcess.s2", data);
+      }, this));
+      PubSub.subscribe("end_clicked.step_controller.s2", _.bind(function() {
+        $(document.body).trigger("endRobotProcess.s2");
       }, this));
       //$('.endButton').on('click', setTimeout(reloadToIndex, 2000));
     },
@@ -426,6 +484,9 @@
       var nextInput = this.editableControllers()
         .find(function(p) { return !p.isComplete(); })
         .value();
+      if (nextInput) {
+        nextInput.barcodeFocus();
+      }      
     },
 
     childDone:function (child, action, data) {
