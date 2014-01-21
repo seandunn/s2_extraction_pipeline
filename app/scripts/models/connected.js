@@ -109,7 +109,8 @@ define([
     },
 
     getRowModel: function (root,rowNum, input) {
-      var process = this.batch.rawJson.batch.process? JSON.parse(this.batch.rawJson.batch.process) : undefined;
+      //var process = this.batch.rawJson.batch.process? JSON.parse(this.batch.rawJson.batch.process) : undefined;
+      var process =  this.batch.rawJson.batch.process? this.batch.rawJson.batch.process : undefined;
       var model = this, previous = this.previous && this.ready;
       var hasResourceForThisRow = false;
       if (model.started){
@@ -130,6 +131,7 @@ define([
 
         rowModel[name] = {
           input:           false,
+          process: process,          
           resource:        resource,
           expected_type:   details.model.singularize(),
           barcodePrefixes: details.barcodePrefixes,
@@ -143,9 +145,9 @@ define([
       }, {
         rowNum: rowNum,
         enabled: previous,
-        process: process,
         labware1: {
           input:           true,
+          process: process,          
           resource:        input,
           expected_type:   model.config.input.model.singularize(),
           display_remove:  previous,

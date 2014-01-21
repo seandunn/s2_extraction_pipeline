@@ -40,3 +40,9 @@ ol.labware-selection div.resource {
     padding-top: 19px;
     padding-left: 30px;
 }
+
+.labware-without-bed {
+	input,span {
+	   display: none !important;
+    }
+}
