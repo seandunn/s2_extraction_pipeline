@@ -87,7 +87,9 @@ define([
           });
         }
 
-        return activeRoles[0];
+        thisModel.activeRole = activeRoles[0];
+
+        return thisModel.activeRole;
       })
 
       .then(function validateRackContents(rackRole) {
@@ -109,7 +111,7 @@ define([
         if (contentTypesInNewRack.length > 2) {
           // is the rack homogeneous (sanity check) ?
           // DNA + Solvent or RNA + Solvent
-          var message = "The content of the rack is not homogenous. It contains " +
+          var message = "The contents of the rack are not homogenous. It contains " +
             contentTypesInNewRack.join(" & ") +
             " aliquots. Please check the rack content.";
           deferred.reject({message: message});
@@ -302,7 +304,7 @@ define([
           var eventMessages = pair[1];
 
           var updateMessage = {items:{}};
-          updateMessage.items["samples.rack.stock."+contentType.toLowerCase()] = eventMessages;
+          updateMessage.items[thisModel.activeRole] = eventMessages;
           return order.update(updateMessage);
         }));
       }
