@@ -168,11 +168,11 @@ define([
       return [location, _.isEmpty(tube.aliquots) ? "empty" : "full"];
     }
 
-    return _.build("tube_rack", {
+    return {
       resourceType:  rack.resourceType,
       barcode:       rack.labels.barcode.value,
       locations:     _.chain(rack.tubes).map(tubeToCss).object().value()
-    });
+    };
   }
 
   // RE-RACKING FUNCTIONS
