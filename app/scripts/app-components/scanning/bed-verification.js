@@ -14,13 +14,15 @@ define([ "app-components/linear-process/linear-process",
     var obj = linearProcess({
       components: [{ constructor: _.partial(buildBedRecording, _.extend({
         cssClass: "left", 
-        position: 0, 
+        position: 0,
+        notMessage: true,
         recordingValidation: function() {return arguments;},
         plateValidation: context.plateValidations[0]
       }, context), componentsList) },
       { constructor: _.partial(buildBedRecording, _.extend({
         cssClass: "right", 
         position: 1, 
+        notMessage: true,
         recordingValidation: function() {return arguments;},
         plateValidation: context.plateValidations[1]
       }, context), componentsList) } ]
