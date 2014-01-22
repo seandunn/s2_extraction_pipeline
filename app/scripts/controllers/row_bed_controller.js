@@ -128,19 +128,21 @@
     /*
      * typeLoad: true: bedVerification, false: bedRecording
      */
-    loadFromInputs: function(processList, inputModel, component, typeLoadBedVerification) {
-      var process = "1";
+    loadFromInputs: function(process, inputModel, component, typeLoadBedVerification) {
+      if (!process) {
+        return false;
+      }
       var plate1 = inputModel.labware1.resource;
       if (!plate1) { return false; }
       var plate2 = inputModel.labware2.resource;
       var barcode1 = plate1.rawJson[inputModel.labware1.expected_type].labels.barcode.value;
       var barcode2;
-      if (plate2) {
-        barcode2 = plate2.rawJson[inputModel.labware2.expected_type].labels.barcode.value;
-      } else {
-        return false;
-      }
       if (typeLoadBedVerification) {
+        if (plate2) {
+          barcode2 = plate2.rawJson[inputModel.labware2.expected_type].labels.barcode.value;
+        } else {
+          return false;
+        }        
         component.fromObj([[barcode1, null], [barcode2, null]]);
         markAsCompletedRow(this, {buttons: [{action: "start"}]}, {verified: [{
           robot: process,
@@ -162,8 +164,9 @@
         $(".robot input").prop("value", process);
         $(".robot input").prop("disabled", true);
         component.fromObj([barcode1, null]);
-        PubSub.publish("enable_buttons.step_controller.s2", this.owner, {buttons: [{action: "end"}]});
       }
+      PubSub.publish("disable_buttons.step_controller.s2", this.owner, {buttons: [{action: "start"}]});
+      PubSub.publish("enable_buttons.step_controller.s2", this.owner, {buttons: [{action: "end"}]});      
       return true;
     },
     loadFromProcess: function(processList, inputModel, component, typeLoadBedVerification) {
@@ -484,7 +487,7 @@
       var nextInput = this.editableControllers()
         .find(function(p) { return !p.isComplete(); })
         .value();
-      if (nextInput) {
+      if (nextInput && nextInput.barcodeFocus) {
         nextInput.barcodeFocus();
       }      
     },

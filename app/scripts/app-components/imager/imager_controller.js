@@ -7,32 +7,6 @@ define([ "config", "app-components/imager/imager", "models/selection_page_model"
     }
     });
   
-  function configButtons(status) {
-    var buttons = $("button.imager");
-    var inputs = $("input.imager");
-    var renderButtons = {
-      "in_progress": function() {
-        buttons.prop("disabled", true);
-        inputs.prop("disabled", true);
-        $(buttons[1]).prop("disabled", false);
-      },
-      "done": function() {
-        buttons.prop("disabled", false);
-        inputs.prop("disabled", false);
-        $(buttons[0]).prop("disabled", true);
-        $(buttons[1]).prop("disabled", true);
-      },
-      "default": function() {
-        buttons.prop("disabled", true);
-        inputs.prop("disabled", true);
-        $(buttons[0]).prop("disabled", false);
-        $(buttons[1]).prop("disabled", false);
-      }
-    };
-    var methodDefault = renderButtons["default"];
-    var method = (status && renderButtons[status]) || methodDefault;
-    return method();
-  }
   
   function imagerController(owner, factory, config) {
     var uuid = config.initialLabware.uuid;
@@ -133,7 +107,8 @@ define([ "config", "app-components/imager/imager", "models/selection_page_model"
           var item = _.find(orderObj.items[role], function(node) {
             return node.uuid===config.initialLabware.uuid;
           });
-          configButtons(item && item.status);
+          component.setStatus(item && item.status);
+          //configButtons(item && item.status, component);
         });
         
         this.focus();

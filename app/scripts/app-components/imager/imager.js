@@ -11,20 +11,24 @@ define([ "app-components/linear-process/switchable-linear-process", "app-compone
         "onBegin": function() {
           beginBut.disable(); 
           endBut.enable();
+          doneBut.disable();
           return arguments;
         },
         "onEnd": function() {
           endBut.disable(); 
           fileSelector.enable();
+          doneBut.disable();
           return arguments;          
         },
         "onSelectedFile": function() {
           uploadBut.enable();
+          doneBut.disable();
           return arguments;          
         },
         "onUploadedFile": function() {
           fileSelector.disable();
           uploadBut.disable();
+          doneBut.enable();
           return arguments;          
         },
         "onDone": function() {
@@ -32,6 +36,37 @@ define([ "app-components/linear-process/switchable-linear-process", "app-compone
           ref = ref.replace(/#.*/, "");
           window.location.href = ref;          
         }
+      },
+      setStatus: function(status) {
+        function configButtons(status) {
+          var renderButtons = {
+            "in_progress": function() {
+              beginBut.disable(); 
+              endBut.enable(); 
+              fileSelector.disable();
+              uploadBut.disable();
+              doneBut.disable();
+            },
+            "done": function() {
+              beginBut.disable(); 
+              endBut.disable(); 
+              fileSelector.enable();
+              uploadBut.disable();
+              doneBut.disable();
+            },
+            "default": function() {
+              beginBut.enable(); 
+              endBut.disable(); 
+              fileSelector.disable();
+              uploadBut.disable();
+              doneBut.disable();
+            }
+          };
+          var methodDefault = renderButtons["default"];
+          var method = (status && renderButtons[status]) || methodDefault;
+          return method();
+        }        
+      configButtons(status);
       }
     };
     
@@ -48,7 +83,7 @@ define([ "app-components/linear-process/switchable-linear-process", "app-compone
       uploadBut = new Button({ text : "Upload"});
       doneBut = new Button({ text : "Done"});
       labware = labwareDisplay({});
-      
+
       labware.view.append(_.pluck([beginBut, endBut, 
                                    fileSelector, uploadBut, 
                                    doneBut], "view"));
