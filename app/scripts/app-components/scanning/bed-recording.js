@@ -74,7 +74,9 @@ define([ "text!app-components/scanning/_bed-recording.html",
       function() {
         html.trigger("scanned.bed-recording.s2", arguments);
         html.trigger(DONE, html);
-        PubSub.publish("message.status.s2", this, {message: 'Bed recording correct.'});
+        if (!context.notMessage) {
+          PubSub.publish("message.status.s2", this, {message: 'Bed recording correct.'});
+        }
       }, function() {
         PubSub.publish("error.status.s2", this, {message: 'Incorrect bed recording.'});        
         html.trigger("error.bed-recording.s2");
