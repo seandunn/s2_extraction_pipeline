@@ -298,7 +298,8 @@
       // Config view
       this.renderBedVerification();
 
-      this.linearProcessLabwares.view.on("error.bed-verification.s2", _.bind(_.partial(this.onErrorBedVerification, inputModel), this));
+      //this.linearProcessLabwares.view.on("error.bed-verification.s2", _.bind(_.partial(this.onErrorBedVerification, inputModel), this));
+      $(document.body).on("error.bed-verification.s2", _.bind(_.partial(this.onErrorBedVerification, inputModel), this));
       
       // Enable linear process if robot scanned
       controller.owner.owner.activeController = this.owner;
@@ -360,7 +361,7 @@
         return memo;
       }, this), {promises: [], components: []}).value();      
     },
-    onErrorBedRecording: function() {
+    onErrorBedRecording: function(inputModel) {
       $("input,button").attr("disabled", true);
       $("input").val("");
       this.jquerySelection().html("");
@@ -390,7 +391,7 @@
       
       $(document.body).addClass("bed-recording");
       
-      this.linear.view.on("error.bed-recording.s2", _.bind(this.onErrorBedRecording, this));
+      $(document.body).on("error.bed-recording.s2", _.bind(_.partial(this.onErrorBedRecording, inputModel), this));
       controller.owner.owner.activeController = this.owner;
       // When robot scanned, enable linear process
       $(document.body).on("scanned.robot.s2", _.partial(startMyRow, controller));
