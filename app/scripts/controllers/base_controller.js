@@ -7,6 +7,7 @@ define(['config'
   var BaseController = Object.create(null);
 
   $.extend(BaseController, {
+    getAppConfig: function() { return appConfig; },
     // This should be registered with model not controller
     getS2Root: function(user) { return this.owner.getS2Root(user); },
 

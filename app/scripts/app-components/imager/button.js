@@ -2,22 +2,24 @@ define(["text!app-components/imager/_button.html"], function(buttonTemplate) {
   "use strict";
   
   return function(context) {
-    var html = $(_.template(buttonTemplate, context));
-    
-    html.html(context.text);
-    
-    html.on("click", function() {
-      html.trigger("done.s2");
-      if (context.action) {
-        html.trigger(context.action);
-      }
-    });
-        
-    return ({
-      view: html,
+    var instance = {
+      view: $(_.template(buttonTemplate, context)),
       events: {
-        "activate.s2": $.haltsEvent(function() {})
-      }
-    });
+        "onClicked": _.identity
+      },
+      enable: function() {
+        this.view.attr("disabled", false);
+      },
+      disable: function() {
+        this.view.attr("disabled", true);
+      }      
+    };
+    
+    instance.view.on("click", _.bind(function(e) {
+      e.preventDefault();
+      instance.events.onClicked();
+    }, instance));
+    
+    return instance;
   };
 });

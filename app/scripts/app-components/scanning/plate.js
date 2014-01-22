@@ -32,6 +32,12 @@ define([ "text!app-components/scanning/_plate.html",
       PubSub.publish("error.status.s2", undefined, {message: ["Barcode '",barcode,"' not found"].join('')});
     };
     
+    obj.renderDisplay = function(barcode) {
+      context.fetch(barcode).then(function(labware) {
+        obj.view.trigger(LABWARE_DISPLAY, representer(labware));
+      });
+    };
+    
     obj.view.on(SCANNED_BARCODE, $.ignoresEvent(function(barcode) {
       context.fetch(barcode).then(validation, _.partial(notFound, barcode)).then(function(labware) {
         obj.view.trigger(LABWARE_DISPLAY, representer(labware));
