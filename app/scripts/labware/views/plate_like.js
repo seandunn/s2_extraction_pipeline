@@ -12,7 +12,7 @@ define([], function() {
 
       // Display the information related to the individual locations
       _.each(labware.locations, function(value, location) {
-        container.find("svg #" + location).attr("class", cssForType(value));
+        container.find("svg ." + location).attr("class", cssForType(value));
       });
 
       // Display any extraneous data
@@ -24,7 +24,7 @@ define([], function() {
       return this;
 
       function displayValueIfSet(value, field) {
-        var element = container.find("svg #" + field);
+        var element = container.find("svg ." + field);
         if (_.isUndefined(value)) {
           element.hide();
         } else {
