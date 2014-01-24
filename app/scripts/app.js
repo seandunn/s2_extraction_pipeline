@@ -1,20 +1,26 @@
-define([ 'config'
-  , 'workflow_engine'
-  , 'mapper/s2_root'
-  , 'extra_components/busy_box'
-  , 'alerts'
-  , 'lib/pubsub'
-  , 'models/base_page_model'
+define([
+  "config",
+  "workflow_engine",
+  "mapper/s2_root",
+  "extra_components/busy_box",
+  "alerts",
+  "lib/pubsub",
+  "models/base_page_model",
+  "app-components/labelling/scanning",
 
   // TODO: These will move with the configuration
-  , 'app-components/lab-management/lab-management'
-  , 'app-components/lab-activities/lab-activities'
+  "app-components/lab-management/lab-management",
+  "app-components/lab-activities/lab-activities",
+
+  // Globally included stuff added after this comment
+  "lib/jquery_extensions"
 ], function(
   config,
   nextWorkflow,
   S2Root,
   BusyBox, alerts, PubSub,
   BasePageModel,
+  barcodeScanner,
   LabMangement, LabActivities
 ) {
   'use strict';
@@ -27,6 +33,7 @@ define([ 'config'
 
   var App = function (theControllerFactory) {
     var app = this;
+    window.app = this;
     app.config = config;
     app.controllerFactory = theControllerFactory;
     _.templateSettings.variable = 'templateData';
@@ -67,29 +74,82 @@ define([ 'config'
     // Handle deep-linking to pages such as lab-management
     var url = document.location.toString();
 
-    if ((url.match('#')) && (!_.isUndefined(app.config.login))) {
-      $('#page-nav a[href=#'+url.split('#')[1]+']').tab('show');
-    }
-
     // Change location hash to match the clicked nav tab
     $('#page-nav').on('shown','a', function (e) {
       window.location.hash = e.target.hash;
     });
 
+    //// New login stuff...
+    var $loggingPage = $("#logging-page");
+
+    var error   = function(message) { $loggingPage.trigger("error.status.s2", message); };
+
+    // The user needs to scan themselves in before doing anything
+    var userComponent = barcodeScanner({
+      label: "User Barcode"
+    });
+
+    $loggingPage.append(userComponent.view);
+    $loggingPage.on(userComponent.events);
+    $loggingPage.on(
+      "scanned.barcode.s2",
+      $.haltsEvent(
+        $.ignoresEvent(
+          _.partial(connect, swap, error)
+      )
+      )
+    );
+
+    $loggingPage.on("error.barcode.s2", $.ignoresEvent(error));
+
+    // Hides the outgoing component and shows the incoming one.
+    function swap(outgoing, incoming) {
+      $('#page-nav a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+      });
+
+      if (url.match('#')) {
+        $('#page-nav a[href=#'+url.split('#')[1]+']').tab('show') ;
+      } else {
+        $('#page-nav a[href="#pipeline"]').tab('show');
+      }
+
+    }
+
+
+    // Deals with connecting the user with the specified barcode to the system.
+    function connect(success, error, barcode) {
+      return findUser(barcode)
+      .then(
+        signalUserAndAttach,
+        _.partial(error, "User barcode is unrecognised")
+      )
+      .then(
+        _.partial(success, "Connected to system!"),
+        _.partial(error, "There was an issue connecting to the system with that user barcode.")
+      );
+
+      function signalUserAndAttach(user) {
+        return app.getS2Root(user);
+      }
+    }
+
+    function findUser(barcode, accessList) {
+      var deferred = $.Deferred();
+      var user = app.config[accessList || "UserData"][barcode];
+      app.config.login = user;
+      deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);
+      return deferred.promise();
+    }
+
+
+    //     /////
 
     function createComponent(config){
       return config.constructor({
         app:       app,
         printers:  app.config.printers,
-
-        findUser: function(barcode, accessList) {
-          var deferred = $.Deferred();
-          var user = app.config[accessList || "UserData"][barcode];
-          app.config.login = user;
-          $(document.body).addClass("login-success");
-          deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);
-          return deferred.promise();
-        },
 
         resetS2Root: _.bind(app.resetS2Root, app),
         getS2Root:   _.bind(app.getS2Root, app),
@@ -125,7 +185,7 @@ define([ 'config'
   App.prototype.updateModel = function (model) {
     var application = this;
     this.model = $.extend(this.model, model);
-    $('#page-nav a[href="#pipeline"]').tab('show');
+    // $('#page-nav a[href="#pipeline"]').tab('show');
 
     if (this.currentPageController) {
       this.currentPageController.release();

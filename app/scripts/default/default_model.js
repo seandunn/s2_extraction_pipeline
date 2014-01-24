@@ -53,7 +53,6 @@ define([
       var deferred = $.Deferred();
       if (config.UserData[barcode]){
         config.login = this.user = config.UserData[barcode];
-        $(document.body).addClass("login-success");
         this.owner.getS2Root(this.user);
         deferred.resolve(this);
       } else {

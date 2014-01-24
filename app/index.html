@@ -11,8 +11,6 @@
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
 
-  <!-- This should really be moved to an name spaced module... -->
-  <script type="text/javascript" src="http://public.tableausoftware.com/javascripts/api/tableau_v8.js"></script>
 </head>
 <body>
   <header class="container">
@@ -26,11 +24,12 @@
   </div>
 
   <div class="row">
-    <div class="span5 offset7">
+    <div class="span6 offset6">
       <ul id="page-nav" class="nav nav-pills pull-right">
-        <li class="active"><a href="#pipeline" data-toggle="pill">Pipeline</a></li>
-        <li><a href="#lab-activities" data-toggle="pill">Lab Activities</a></li>
-        <li><a href="#lab-management" data-toggle="pill">Lab Management</a></li>
+        <li><a href="#pipeline" >Pipeline</a></li>
+        <li><a href="#lab-activities" >Lab Activities</a></li>
+        <li><a href="#lab-management" >Lab Management</a></li>
+        <li class="active"><a href="#logging-page" >Log Out</a></li>
       </ul>
     </div>
   </div>
@@ -39,8 +38,17 @@
 
   <div id="alertContainer" class="container"></div>
 
+
   <div id="page-content" class="tab-content">
-    <div id="pipeline" class="s2-page container tab-pane fade active in"></div>
+    <div id="logging-page" class="s2-page container tab-pane fade active in">
+      <div class="component">
+        <h2>User Logging</h2>
+        <div class="row">
+          <div class="user-validation span12"></div>
+        </div>
+      </div>
+    </div>
+    <div id="pipeline" class="s2-page container tab-pane fade"></div>
     <div id="lab-activities" class="s2-page container tab-pane fade"></div>
     <div id="lab-management" class="s2-page container tab-pane fade"></div>
   </div>
@@ -50,5 +58,8 @@
   <!-- build:js scripts/amd-app.js -->
   <script data-main="scripts/main" src="components/requirejs/require.js"></script>
   <!-- endbuild -->
+
+  <!-- This should really be moved to an name spaced module... -->
+  <script type="text/javascript" src="http://public.tableausoftware.com/javascripts/api/tableau_v8.js"></script>
 </body>
 </html>

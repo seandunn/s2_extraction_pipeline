@@ -9,16 +9,12 @@ define(['config'
 ], function (config, BaseController, defaultPagePartialHtml, Model, Util, PubSub, BarcodeChecker, PromiseTracker) {
   'use strict';
 
-  function userBarcodeValidation(barcode)
-  {
-    return true;
+  function userBarcodeValidation(barcode) { return true; }
+
+  function labwareBarcodeValidation(barcode) {
+    return _.some(BarcodeChecker, function (validation) { return validation(barcode);});
   }
-  
-  function labwareBarcodeValidation(barcode)
-  {
-    return _.some(BarcodeChecker, function (validation) { return validation(barcode);});    
-  }
-  
+
   var userCallback = function(value, template, controller){
     var barcode = Util.pad(value);
 
@@ -103,7 +99,7 @@ define(['config'
       this.labwareBCSubController = this.controllerFactory.create('scan_barcode_controller', this).init({type:"tube"});
 
       this.jquerySelectionForUser = function () {
-        return that.jquerySelection().find(".user-barcode");
+        return $(".user-barcode");
       };
 
       this.jquerySelectionForLabware = function () {
@@ -124,6 +120,7 @@ define(['config'
       this.jquerySelectionForUser().append(
         this.bindReturnKey(this.userBCSubController.renderView(),
           userCallback, errorCallback, userBarcodeValidation));
+
       this.jquerySelectionForLabware().append(
         this.bindReturnKey(this.labwareBCSubController.renderView(),
           labwareCallback, errorCallback, labwareBarcodeValidation));
