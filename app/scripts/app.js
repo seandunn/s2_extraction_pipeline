@@ -91,48 +91,47 @@ define([
 
     $loggingPage.append(userComponent.view);
     $loggingPage.on(userComponent.events);
-    $loggingPage.on(
-      "scanned.barcode.s2",
-      $.haltsEvent(
-        $.ignoresEvent(
-          _.partial(connect, swap, error)
-      )
-      )
-    );
+    $loggingPage.on("scanned.barcode.s2", connect);
 
     $loggingPage.on("error.barcode.s2", $.ignoresEvent(error));
 
     // Hides the outgoing component and shows the incoming one.
     function swap(outgoing, incoming) {
-      $('#page-nav a').click(function (e) {
+      $('#page-nav').on('click', 'a', function (e) {
         e.preventDefault();
         $(this).tab('show');
       });
 
-      if (url.match('#')) {
-        $('#page-nav a[href=#'+url.split('#')[1]+']').tab('show') ;
+      $('#user-email').removeClass('hide').find('span').text(app.config.login);
+      $('#page-nav li').removeClass("disabled");
+
+      var pageRef = url.match(/#.*$/);
+      if (pageRef && pageRef[0] !== "#logging-page") {
+        $('#page-nav a[href='+pageRef[0]+']').tab('show') ;
       } else {
         $('#page-nav a[href="#pipeline"]').tab('show');
       }
-
     }
 
 
     // Deals with connecting the user with the specified barcode to the system.
-    function connect(success, error, barcode) {
-      return findUser(barcode)
+    function connect(e, userBarcode) {
+      e.stopPropagation();
+      $(event.target).find('input').attr('disabled',true)
+
+      return findUser(userBarcode)
       .then(
         signalUserAndAttach,
         _.partial(error, "User barcode is unrecognised")
       )
       .then(
-        _.partial(success, "Connected to system!"),
+        _.partial(swap, "Connected to system!"),
         _.partial(error, "There was an issue connecting to the system with that user barcode.")
       );
+    }
 
-      function signalUserAndAttach(user) {
-        return app.getS2Root(user);
-      }
+    function signalUserAndAttach(user) {
+      return app.getS2Root(user);
     }
 
     function findUser(barcode, accessList) {

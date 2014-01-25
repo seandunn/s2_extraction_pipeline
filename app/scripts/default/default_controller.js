@@ -1,11 +1,11 @@
-define(['config'
-  , 'controllers/base_controller'
-  , 'text!html_partials/_default_page.html'
-  , 'default/default_model'
-  , 'lib/util'
-  , 'lib/pubsub'
-  , 'lib/barcode_checker'
-  , 'lib/promise_tracker'
+define(["config"
+  , "controllers/base_controller"
+  , "text!html_partials/_default_page.html"
+  , "default/default_model"
+  , "lib/util"
+  , "lib/pubsub"
+  , "lib/barcode_checker"
+  , "lib/promise_tracker"
 ], function (config, BaseController, defaultPagePartialHtml, Model, Util, PubSub, BarcodeChecker, PromiseTracker) {
   'use strict';
 
@@ -21,7 +21,7 @@ define(['config'
   };
 
   var labwareCallback = function(value, template, controller){
-    template.find("input").attr('disabled', true);
+    template.find("input").attr("disabled", true);
     template.find('.alert-error').addClass('hide');
 
     controller.labwareBCSubController.showProgress();
@@ -54,7 +54,7 @@ define(['config'
 
   $.extend(DefaultController, {
     register:function (callback) {
-      callback('default', function (owner, factory, initData) {
+      callback("default", function (owner, factory, initData) {
         return Object.create(DefaultController).init(owner, factory, initData);
       });
     },
@@ -70,14 +70,14 @@ define(['config'
       this.setupPlaceholder(jquerySelection);
       this.model = Object.create(Model).init(this);
 
-      this.labwareBCSubController = this.controllerFactory.create('scan_barcode_controller', this).init({type:"tube"});
+      this.labwareBCSubController = this.controllerFactory.create("scan_barcode_controller", this).init({type:"tube"});
 
       this.jquerySelectionForLabware = function () {
         return that.jquerySelection().find(".labware-barcode");
       };
 
       this.renderView();
-      this.jquerySelectionForLabware().find("input").focus(); //.attr('disabled', true);
+      this.jquerySelectionForLabware().find("input").focus();
 
       return this;
     },
