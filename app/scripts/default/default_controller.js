@@ -9,35 +9,10 @@ define(['config'
 ], function (config, BaseController, defaultPagePartialHtml, Model, Util, PubSub, BarcodeChecker, PromiseTracker) {
   'use strict';
 
-  function userBarcodeValidation(barcode) { return true; }
 
   function labwareBarcodeValidation(barcode) {
     return _.some(BarcodeChecker, function (validation) { return validation(barcode);});
   }
-
-  var userCallback = function(value, template, controller){
-    var barcode = Util.pad(value);
-
-    controller.userBCSubController.showProgress();
-
-    PromiseTracker(controller.model.setUserFromBarcode(barcode))
-      .fail(function (error) {
-        PubSub.publish("error.status.s2", controller, error);
-        controller.userBCSubController.hideProgress();
-      })
-      .afterThen(function(tracker) {
-        controller.userBCSubController.updateProgress(tracker.thens_called_pc());
-      })
-      .then(function(){
-        template.find("input").val(barcode);
-        template.find("input").attr('disabled', true);
-
-        controller.jquerySelectionForLabware().
-          find("input").
-          removeAttr('disabled').
-          focus();
-      });
-  };
 
   var barcodeErrorCallback = function(errorText){
     return function(value, template, controller){
@@ -95,20 +70,14 @@ define(['config'
       this.setupPlaceholder(jquerySelection);
       this.model = Object.create(Model).init(this);
 
-      this.userBCSubController = this.controllerFactory.create('scan_barcode_controller', this).init({type:"user"});
       this.labwareBCSubController = this.controllerFactory.create('scan_barcode_controller', this).init({type:"tube"});
-
-      this.jquerySelectionForUser = function () {
-        return $(".user-barcode");
-      };
 
       this.jquerySelectionForLabware = function () {
         return that.jquerySelection().find(".labware-barcode");
       };
 
       this.renderView();
-      this.jquerySelectionForUser().find("input").removeAttr('disabled').focus();
-      this.jquerySelectionForLabware().find("input").attr('disabled', true);
+      this.jquerySelectionForLabware().find("input").focus(); //.attr('disabled', true);
 
       return this;
     },
@@ -116,10 +85,6 @@ define(['config'
     renderView: function () {
       this.jquerySelection().html(_.template(defaultPagePartialHtml)({}));
       var errorCallback = barcodeErrorCallback('Barcode must be a 13 digit number.');
-
-      this.jquerySelectionForUser().append(
-        this.bindReturnKey(this.userBCSubController.renderView(),
-          userCallback, errorCallback, userBarcodeValidation));
 
       this.jquerySelectionForLabware().append(
         this.bindReturnKey(this.labwareBCSubController.renderView(),
