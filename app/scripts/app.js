@@ -86,7 +86,8 @@ define([
 
     // The user needs to scan themselves in before doing anything
     var userComponent = barcodeScanner({
-      label: "User Barcode"
+      label: "User",
+      icon: "icon-user"
     });
 
     $loggingPage.append(userComponent.view);
@@ -96,14 +97,30 @@ define([
     $loggingPage.on("error.barcode.s2", $.ignoresEvent(error));
 
     // Hides the outgoing component and shows the incoming one.
-    function swap(outgoing, incoming) {
+    function showPage(user) {
       $('#page-nav').on('click', 'a', function (e) {
         e.preventDefault();
         $(this).tab('show');
       });
 
-      $('#user-email').removeClass('hide').find('span').text(app.config.login);
-      $('#page-nav li').removeClass("disabled");
+      $('#user-email')
+      .addClass('in')
+      .find('.email')
+      .text(user.email);
+
+      var pipelineElements = _.map(
+        user.pages,
+        function filterPipelines(pipeline){
+          return "a[href=#"+pipeline+"]";
+      })
+      .join(", ");
+
+      $('#page-nav li a')
+      .not(pipelineElements)
+      .parent()
+      .remove();
+
+      $('#logging-bar').addClass('in');
 
       var pageRef = url.match(/#.*$/);
       if (pageRef && pageRef[0] !== "#logging-page") {
@@ -121,23 +138,17 @@ define([
 
       return findUser(userBarcode)
       .then(
-        signalUserAndAttach,
+        showPage,
         _.partial(error, "User barcode is unrecognised")
-      )
-      .then(
-        _.partial(swap, "Connected to system!"),
-        _.partial(error, "There was an issue connecting to the system with that user barcode.")
       );
-    }
-
-    function signalUserAndAttach(user) {
-      return app.getS2Root(user);
     }
 
     function findUser(barcode, accessList) {
       var deferred = $.Deferred();
-      var user = app.config[accessList || "UserData"][barcode];
-      app.config.login = user;
+      var user = app.config.UserData[barcode];
+      user.pages = (user.pages || []).concat(app.config.defaultPages);
+
+      app.config.login = user.email;
       deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);
       return deferred.promise();
     }

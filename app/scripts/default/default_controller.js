@@ -70,7 +70,7 @@ define(["config"
       this.setupPlaceholder(jquerySelection);
       this.model = Object.create(Model).init(this);
 
-      this.labwareBCSubController = this.controllerFactory.create("scan_barcode_controller", this).init({type:"tube"});
+      this.labwareBCSubController = this.controllerFactory.create("scan_barcode_controller", this).init({type:"Labware"});
 
       this.jquerySelectionForLabware = function () {
         return that.jquerySelection().find(".labware-barcode");
