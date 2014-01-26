@@ -1,20 +1,26 @@
-define([ 'config'
-  , 'workflow_engine'
-  , 'mapper/s2_root'
-  , 'extra_components/busy_box'
-  , 'alerts'
-  , 'lib/pubsub'
-  , 'models/base_page_model'
+define([
+  "config",
+  "workflow_engine",
+  "mapper/s2_root",
+  "extra_components/busy_box",
+  "alerts",
+  "lib/pubsub",
+  "models/base_page_model",
+  "app-components/labelling/scanning",
 
   // TODO: These will move with the configuration
-  , 'app-components/lab-management/lab-management'
-  , 'app-components/lab-activities/lab-activities'
+  "app-components/lab-management/lab-management",
+  "app-components/lab-activities/lab-activities",
+
+  // Globally included stuff added after this comment
+  "lib/jquery_extensions"
 ], function(
   config,
   nextWorkflow,
   S2Root,
   BusyBox, alerts, PubSub,
   BasePageModel,
+  barcodeScanner,
   LabMangement, LabActivities
 ) {
   'use strict';
@@ -27,6 +33,7 @@ define([ 'config'
 
   var App = function (theControllerFactory) {
     var app = this;
+    window.app = this;
     app.config = config;
     app.controllerFactory = theControllerFactory;
     _.templateSettings.variable = 'templateData';
@@ -67,29 +74,92 @@ define([ 'config'
     // Handle deep-linking to pages such as lab-management
     var url = document.location.toString();
 
-    if ((url.match('#')) && (!_.isUndefined(app.config.login))) {
-      $('#page-nav a[href=#'+url.split('#')[1]+']').tab('show');
-    }
-
     // Change location hash to match the clicked nav tab
     $('#page-nav').on('shown','a', function (e) {
       window.location.hash = e.target.hash;
     });
 
+    //// New login stuff...
+    var $loggingPage = $("#logging-page");
+
+    var error   = function(message) { $loggingPage.trigger("error.status.s2", message); };
+
+    // The user needs to scan themselves in before doing anything
+    var userComponent = barcodeScanner({
+      label: "User",
+      icon: "icon-user"
+    });
+
+    $loggingPage.append(userComponent.view);
+    $loggingPage.on(userComponent.events);
+    $loggingPage.on("scanned.barcode.s2", connect);
+
+    $loggingPage.on("error.barcode.s2", $.ignoresEvent(error));
+
+    // Hides the outgoing component and shows the incoming one.
+    function showPage(user) {
+      $('#page-nav').on('click', 'a', function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+      });
+
+      $('#user-email')
+      .addClass('in')
+      .find('.email')
+      .text(user.email);
+
+      var pipelineElements = _.map(
+        user.pages,
+        function filterPipelines(pipeline){
+          return "a[href=#"+pipeline+"]";
+      })
+      .join(", ");
+
+      $('#page-nav li a')
+      .not(pipelineElements)
+      .parent()
+      .remove();
+
+      $('#logging-bar').addClass('in');
+
+      var pageRef = url.match(/#.*$/);
+      if (pageRef && pageRef[0] !== "#logging-page") {
+        $('#page-nav a[href='+pageRef[0]+']').tab('show') ;
+      } else {
+        $('#page-nav a[href="#pipeline"]').tab('show');
+      }
+    }
+
+
+    // Deals with connecting the user with the specified barcode to the system.
+    function connect(e, userBarcode) {
+      e.stopPropagation();
+      $(event.target).find('input').attr('disabled',true)
+
+      return findUser(userBarcode)
+      .then(
+        showPage,
+        _.partial(error, "User barcode is unrecognised")
+      );
+    }
+
+    function findUser(barcode, accessList) {
+      var deferred = $.Deferred();
+      var user = app.config.UserData[barcode];
+      user.pages = (user.pages || []).concat(app.config.defaultPages);
+
+      app.config.login = user.email;
+      deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);
+      return deferred.promise();
+    }
+
+
+    //     /////
 
     function createComponent(config){
       return config.constructor({
         app:       app,
         printers:  app.config.printers,
-
-        findUser: function(barcode, accessList) {
-          var deferred = $.Deferred();
-          var user = app.config[accessList || "UserData"][barcode];
-          app.config.login = user;
-          $(document.body).addClass("login-success");
-          deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);
-          return deferred.promise();
-        },
 
         resetS2Root: _.bind(app.resetS2Root, app),
         getS2Root:   _.bind(app.getS2Root, app),
@@ -125,7 +195,7 @@ define([ 'config'
   App.prototype.updateModel = function (model) {
     var application = this;
     this.model = $.extend(this.model, model);
-    $('#page-nav a[href="#pipeline"]').tab('show');
+    // $('#page-nav a[href="#pipeline"]').tab('show');
 
     if (this.currentPageController) {
       this.currentPageController.release();
