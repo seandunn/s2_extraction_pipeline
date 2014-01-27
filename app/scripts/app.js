@@ -146,11 +146,14 @@ define([
     function findUser(barcode, accessList) {
       var deferred = $.Deferred();
       var user = app.config.UserData[barcode];
-      user.pages = (user.pages || []).concat(app.config.defaultPages);
 
-      app.config.login = user.email;
-      deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);
-      return deferred.promise();
+      if (user === undefined){
+        return deferred.reject().promise();
+      } else {
+        user.pages = (user.pages || []).concat(app.config.defaultPages);
+        app.config.login = user.email;
+        return deferred.resolve(user).promise();
+      }
     }
 
 
