@@ -26,11 +26,10 @@ define(["config"
 
     controller.labwareBCSubController.showProgress();
 
-    if (value.match(/\d{12}/))
-    {
+    if (value.match(/\d{12}/)) {
       value = Util.pad(value);
     }
-    
+
     PromiseTracker(controller.model.setLabwareFromBarcode(value))
       .fail(function (error) {
         PubSub.publish("error.status.s2", controller, error);
@@ -42,8 +41,8 @@ define(["config"
       .then(login)
 
     function login(model){
-      if (model.isValid()){
-        controller.owner.childDone(controller, "done", model);
+      if (model.labware !== undefined){
+        controller.owner.updateModel(model);
       } else {
         barcodeErrorCallback("Labware not found on system.")(undefined, template);
       }

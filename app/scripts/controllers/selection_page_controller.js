@@ -50,7 +50,7 @@ define([ 'controllers/base_controller'
               PubSub.publish("error.status.s2", controller, error);
             })
             .then(function (model) {
-              controller.owner.childDone(controller, "done", {batch:null,labware:null});
+              controller.owner.updateModel({batch:null,labware:null});
             });
         };
       } else {
@@ -66,7 +66,7 @@ define([ 'controllers/base_controller'
                 PubSub.publish("error.status.s2", controller, error);
               })
               .then(function (model) {
-                controller.owner.childDone(controller, "done", {batch: model.batch});
+                controller.owner.updateModel({batch: model.batch});
               });
           }
         };

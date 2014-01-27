@@ -228,6 +228,7 @@ define([
   // "I'm a monster..."  ChildDone methods should be replaced with DOM events where possible.
   // This will probably be the last one to go.
   App.prototype.childDone = function (child, action, data) {
+    /* throw("Deprecated. Use application.updateModel instead.\n So controller.owner.childDone(foo, action, data) becomes controller.owner.updateModel(data).") */
     console.log("A child of App (", child, ") said it has done the following action '" + action + "' with data :", data);
 
     var application = this;

@@ -46,23 +46,6 @@ define([
       });
 
       return deferred.promise();
-    },
-
-    setUserFromBarcode: function (barcode) {
-      var defaultModel = this;
-      var deferred = $.Deferred();
-      if (config.UserData[barcode]){
-        config.login = this.user = config.UserData[barcode];
-        this.owner.getS2Root(this.user);
-        deferred.resolve(this);
-      } else {
-        deferred.reject({message:"User barcode not recognised."});
-      }
-      return deferred.promise();
-    },
-
-    isValid: function(){
-      return this.user && this.labware;
     }
 
   });

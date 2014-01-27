@@ -48,7 +48,6 @@ define([ 'text!pipeline_config.json' ], function (pipelineJSON) {
   var nextWorkflow = function(model) {
     var itemsPromise;
 
-    if (!model.user) return $.Deferred().resolve().promise();
     if (!model.batch && !model.labware) return $.Deferred().resolve().promise();
     if (!model.batch) {
       itemsPromise = model.labware.order().then(function(order) {
