@@ -74,7 +74,9 @@ define([ "text!app-components/scanning/_bed-recording.html",
       function() {
         html.trigger("scanned.bed-recording.s2", arguments);
         html.trigger(DONE, html);
-        PubSub.publish("message.status.s2", this, {message: 'Bed recording correct.'});
+        if (!context.notMessage) {
+          PubSub.publish("message.status.s2", this, {message: 'Bed recording correct.'});
+        }
       }, function() {
         PubSub.publish("error.status.s2", this, {message: 'Incorrect bed recording.'});        
         html.trigger("error.bed-recording.s2");
@@ -88,9 +90,26 @@ define([ "text!app-components/scanning/_bed-recording.html",
       promise.resolve(robot);
     }, robotScannedPromise));
 
+    var bedObj = component.components[0],
+      plateObj = component.components[1];
     return (
       { view : html,
-        events : component.events
+        events : component.events,
+        toObj : function() {
+          return [ plateObj.getBarcode(), bedObj.getBarcode()];
+        },
+        fromObj: function(data) {
+          plateObj.setBarcode(data[0]);
+          if (data[1]) {
+            bedObj.setBarcode(data[1]);
+            plateObj.view.trigger("scanned.barcode.s2", data[0]);
+          } else {
+            if (data[0]) {
+              plateObj.renderDisplay(data[0]);
+              this.view.addClass("labware-without-bed");
+            }
+          }
+        }
       });
   };
 });

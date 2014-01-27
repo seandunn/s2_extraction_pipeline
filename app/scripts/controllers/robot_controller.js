@@ -2,7 +2,7 @@ define(["controllers/base_controller", "models/robot_model",
     "app-components/scanning/robot", "lib/pubsub"
 ], function(Base, Model, robotInput, PubSub) {
   "use strict";
-  var robotGroups = {"ebase": ["0000000000002"], "fx": ["0000000000001"]};
+  var robotGroups = {"ebase": ["0000000000002"], "fx": ["0000000000001", "0000000010468"], "nx": ["0000000000003"]};
   var Controller = Object.create(Base);
   _.extend(Controller,
     { register : function(callback) {
@@ -16,30 +16,42 @@ define(["controllers/base_controller", "models/robot_model",
       this.config = config;
       this.controllerFactory = factory;
       this.model = Object.create(Model).init(this, config);
+      this._rowPromises = [];
       return this;
+    }, onEndProcess: function() {
+      this.model.then(_.bind(function(model) {
+        model.batch.update({process: ''});
+        PubSub.publish("next_process.step_controller.s2", this,
+          { batch : model.batch });        
+      }, this));
+      PubSub.publish("disable_buttons.step_controller.s2", this.owner, {buttons: [{action: "print"}]});      
+    }, onBeginProcess: function() {
+      this.model.then(_.bind(function(model) {
+        model.batch.update({process: this.robotInputComponent.getBarcode()});
+        PubSub.publish("next_process.step_controller.s2", this,
+          { batch : model.batch });        
+      }, this));
+      PubSub.publish("disable_buttons.step_controller.s2", this.owner, {buttons: [{action: "print"}]});
     }, setupController : function(setupData, selector) {
       var controller = this;
+      
+      PubSub.subscribe("printing_started.step_controller.s2", _.bind(function() {
+        this._waitingPromises = null;
+        this._promises = [];
+      }, this));
+      
       controller.selector = selector;
       this.component = { view: controller.selector(), events: {} };
       controller.model.then(function(model) {
         return model.setupModel(setupData);
       }).then(_.bind(function(model) {
-        if (!model.batch.robot) {
-          this.robotInputComponent = robotInput({
-            robotGroup: robotGroups[model.config.group]
-          });
-          this.getComponentInterface().view.append(this.robotInputComponent.view);
-          this.getComponentInterface().view.on(this.robotInputComponent.events);
-          this.getComponentInterface().view.on("scanned.robot.s2", $.ignoresEvent(_.partial(function(controller, robot) {
-            controller.model.then(function(model) {
-              model.batch.update({process: JSON.stringify(robot)});
-              PubSub.publish("next_process.step_controller.s2", controller,
-                { batch : model.batch
-                });
-            });
-          }, this)));
-          //this.getComponentInterface().view.on("done.s2", _.partial(this.next, this));
-        }
+        this.robotInputComponent = robotInput({
+          robotGroup: robotGroups[model.config.group]
+        });
+        this.getComponentInterface().view.append(this.robotInputComponent.view);
+        this.getComponentInterface().view.on(this.robotInputComponent.events);  
+        PubSub.subscribe("start_clicked.step_controller.s2", _.bind(this.onBeginProcess, this));
+        PubSub.subscribe("end_clicked.step_controller.s2", _.bind(this.onEndProcess, this));
       }, this));
      
       return controller;

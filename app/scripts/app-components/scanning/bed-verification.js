@@ -14,13 +14,15 @@ define([ "app-components/linear-process/linear-process",
     var obj = linearProcess({
       components: [{ constructor: _.partial(buildBedRecording, _.extend({
         cssClass: "left", 
-        position: 0, 
+        position: 0,
+        notMessage: true,
         recordingValidation: function() {return arguments;},
         plateValidation: context.plateValidations[0]
       }, context), componentsList) },
       { constructor: _.partial(buildBedRecording, _.extend({
         cssClass: "right", 
         position: 1, 
+        notMessage: true,
         recordingValidation: function() {return arguments;},
         plateValidation: context.plateValidations[1]
       }, context), componentsList) } ]
@@ -81,6 +83,15 @@ define([ "app-components/linear-process/linear-process",
     $(document.body).on(context.robotScannedEvent || "scanned.robot.s2", _.partial(function(promise, event, robot) {
       promise.resolve(robot);
     }, robotScannedPromise));
+    
+    obj.toObj = function() {
+      return [ obj.components[0].toObj(), obj.components[1].toObj()];
+    };
+    
+    obj.fromObj = function(data) {
+      obj.components[0].fromObj(data[0]);
+      obj.components[1].fromObj(data[1]);
+    };
     
     return obj;
   };
