@@ -7,6 +7,7 @@ require.config({
 
   paths:{
     jquery:               "../components/jquery/jquery.min",
+    jquery_cookie:        "../components/jquery-cookie/jquery.cookie",
     underscore:           "../components/underscore/underscore-min",
     underscore_string:    "../components/underscore.string/lib/underscore.string",
     bootstrap:            "../components/sass-bootstrap/js",

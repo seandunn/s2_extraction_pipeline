@@ -11,6 +11,7 @@ define([
   // TODO: These will move with the configuration
   "app-components/lab-management/lab-management",
   "app-components/lab-activities/lab-activities",
+  "jquery_cookie",
 
   // Globally included stuff added after this comment
   "lib/jquery_extensions"
@@ -21,7 +22,8 @@ define([
   BusyBox, alerts, PubSub,
   BasePageModel,
   barcodeScanner,
-  LabMangement, LabActivities
+  LabMangement, LabActivities,
+  Cookie
 ) {
   'use strict';
 
@@ -152,6 +154,7 @@ define([
       } else {
         user.pages = (user.pages || []).concat(app.config.defaultPages);
         app.config.login = user.email;
+        app.config.disablePrinting = $.cookie("disablePrinting") || user.disablePrinting;
         return deferred.resolve(user).promise();
       }
     }
