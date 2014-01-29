@@ -223,8 +223,22 @@ define([
   }
 
   function downloadManifest(source, button) {
-    saveAs(source.data("manifest"), "manifest.xls");
-    button.prop("disabled", false);
+    if (navigator.userAgent.indexOf('Safari') != -1) {
+      var manifestAnchor = $("#manifest-anchor");
+      var reader = new FileReader();
+      reader.addEventListener("loadend", function() {
+        // Currently HTML5 Anchor download attribute is ignored by Safari browsers, so
+        // there is no way to make Safari force a filename if it is not performed with 
+        // right-button and "Save link as".
+        var dataURL=reader.result;
+        var anchor = manifestAnchor.attr("href", dataURL).attr("download", "manifest.xls");
+        manifestAnchor[0].click();
+      });
+      reader.readAsDataURL(source.data("manifest"));
+    } else {
+      saveAs(source.data("manifest"), "manifest.xls");
+    }
+    button.prop("disabled", false);    
   }
 
   function GenerateSamples(context, root, details) {
