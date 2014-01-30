@@ -1,0 +1,8 @@
+<select id="<%= templateData.id || "" %>">
+  <% if(templateData.label) { %>
+    <option value=""><%= templateData.label %>:</option>
+  <% } %> 
+  <% _.each(templateData.options, function(option) { %>
+  <option value="<%= option.value %>"><%= option.text %></option>
+  <% }); %>
+</select>
