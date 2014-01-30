@@ -28,6 +28,10 @@ define([
       this.cache.resolve([]);
     },
 
+    fetchResource: function() {
+      return this.cache.fetchResourcePromiseFromUUID(this.uuid);
+    },
+
     printBarcodes:function(collection, printerName) {
       var that = this;
 

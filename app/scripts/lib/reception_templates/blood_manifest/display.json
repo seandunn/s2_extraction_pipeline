@@ -48,9 +48,8 @@
       "friendlyName": "Workflow",
       "type":       "select",
         "options": [
-          "DNA & RNA Manual",
-          "DNA & RNA QIAcube",
-          "Micro RNA QIAcube"
+          "Bio Robot Lysing & Extraction",
+          "Send to New Location"
         ],
       "default":    "DNA & RNA QIAcube"
     }
