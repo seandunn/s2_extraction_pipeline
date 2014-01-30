@@ -37,6 +37,7 @@ define([
     var app = this;
     window.app = this;
     app.config = config;
+    app.config.userPromise = new $.Deferred();
     app.controllerFactory = theControllerFactory;
     _.templateSettings.variable = 'templateData';
 
@@ -134,8 +135,8 @@ define([
 
 
     // Deals with connecting the user with the specified barcode to the system.
-    function connect(e, userBarcode) {
-      e.stopPropagation();
+    function connect(event, userBarcode) {
+      event.stopPropagation();
       $(event.target).find('input').attr('disabled',true)
 
       return findUser(userBarcode)
@@ -149,24 +150,31 @@ define([
       var deferred = $.Deferred();
       var user = app.config.UserData[barcode];
 
-      if (user === undefined){
+      if (user === undefined) {
         return deferred.reject().promise();
       } else {
         user.pages = (user.pages || []).concat(app.config.defaultPages);
         app.config.login = user.email;
-        app.config.disablePrinting = $.cookie("disablePrinting") || user.disablePrinting;
+        app.config.userPromise.resolve(user.email);
+        var disablePrintingCookieValue = ($.cookie("disablePrinting") === "true");
+        app.config.disablePrinting = (_.isUndefined(disablePrintingCookieValue)) ? 
+          user.disablePrinting : disablePrintingCookieValue;
         return deferred.resolve(user).promise();
       }
     }
 
-
     //     /////
-
+    function buildUserDefer(app) {
+      var defer = new $.Deferred();
+      defer.resolve(userDefer);
+      return defer;      
+    }
+    
     function createComponent(config){
       return config.constructor({
         app:       app,
         printers:  app.config.printers,
-
+        user:      app.config.userPromise,
         resetS2Root: _.bind(app.resetS2Root, app),
         getS2Root:   _.bind(app.getS2Root, app),
       });
