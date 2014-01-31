@@ -56,7 +56,8 @@ define([
 
     // Build a barcode scanner component and hook it up.
     var barcodeScanner = BarcodeScanner({
-      label: "Scan rack barcode",
+      label: "Rack",
+      icon: "icon-barcode"
     });
     html.find("#barcodeReader").append(barcodeScanner.view);
     html.on(barcodeScanner.events);
