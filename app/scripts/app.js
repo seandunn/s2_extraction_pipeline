@@ -80,6 +80,7 @@ define([
     // Change location hash to match the clicked nav tab
     $('#page-nav').on('shown','a', function (e) {
       window.location.hash = e.target.hash;
+      alerts.clear();
     });
 
     //// New login stuff...
@@ -135,9 +136,8 @@ define([
 
 
     // Deals with connecting the user with the specified barcode to the system.
-    function connect(event, userBarcode) {
-      event.stopPropagation();
-      $(event.target).find('input').attr('disabled',true)
+    function connect(e, userBarcode) {
+      e.stopPropagation();
 
       return findUser(userBarcode)
       .then(
@@ -209,7 +209,6 @@ define([
   App.prototype.updateModel = function (model) {
     var application = this;
     this.model = $.extend(this.model, model);
-    // $('#page-nav a[href="#pipeline"]').tab('show');
 
     if (this.currentPageController) {
       this.currentPageController.release();

@@ -16,10 +16,9 @@ define([
     var html = template(context);
 
     initializeViz = function initializeViz() {
-      var model = Object.create(DefaultPageModel).init(context.app);
+      var defaultModel = Object.create(DefaultPageModel).init(context.app);
 
       var placeholderDiv = html.find(".tableau-viz")[0];
-      var url = "https://globalreporting.internal.sanger.ac.uk/t/dna/views/S2Test/Sheet1";
       var workbook, activeSheet;
 
       var options = {
@@ -32,14 +31,14 @@ define([
             activeSheet = workbook.getActiveSheet();
             window.sheet = activeSheet
 
-            // activeSheet.applyFilterAsync(
-            //   "cellular_material_lysed",
-            //   0,
-            //   tableauSoftware.FilterUpdateType.REPLACE);
+            activeSheet.applyFilterAsync(
+              "step",
+              context.filterByRoles,
+              tableauSoftware.FilterUpdateType.REPLACE);
           }
       };
 
-      var viz = new tableauSoftware.Viz(placeholderDiv, url, options);
+      var viz = new tableauSoftware.Viz(placeholderDiv, context.inboxUrl, options);
 
       viz.addEventListener(tableauSoftware.TableauEventName.MARKS_SELECTION, onMarksSelection);
 
@@ -49,19 +48,20 @@ define([
 
       // When a Tableau mark has been clicked we run the following...
       function reportSelectedMarks(marks) {
-        context.user.then(function(user){
-          model.user = user;
-          var ean13 = marks[0].$0.$1.$1._ean13_barcode.value;
+        var ean13 = marks[0].$0.$1.$1._ean13_barcode.value;
 
-          model
-          .setLabwareFromBarcode(ean13)
-          .then(function(model){
-            // owner in this case is app.js
-            model.owner.childDone("Inbox Component", "done", model);
-          });
-
-
+        defaultModel
+        .setLabwareFromBarcode(ean13)
+        .then(function(defaultModel){
+          // owner in this case is app.js
+          defaultModel.owner.updateModel(defaultModel);
+        })
+        .then(function(){
+          // TODO: Add proper event listener.
+          $('#page-nav a[href="#pipeline"]').tab('show');
         });
+
+
       }
     };
 
@@ -71,8 +71,17 @@ define([
   return function(context) {
     var view = createHtml(context),
     events = {
-      "shown": function(){ initializeViz(); }
+      "shown": function(e){
+        // This is a bit hacky but we check the href of the target tab. If it
+        // matches this inbox then we initialise Tableau.  This stops Tableau
+        // being called unnecessarily.
+        if (e.target.getAttribute("href") === "#"+context.id){
+          initializeViz();
+        }
+      }
+
     };
+
 
     return {
       view:   view,
