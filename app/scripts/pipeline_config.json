@@ -78,7 +78,9 @@
    "samples.qc.nx_nanodrop.working_dilution_rna",
 
    "samples.shipping.blood_!na.awaiting_shipping",
-   "samples.shipping.blood_!na.awaiting_shipping.batched"
+   "samples.shipping.blood_!na.awaiting_shipping.batched",
+
+   "samples.extraction.lysing.blood"
   ],
 
   "workflows":[
@@ -114,6 +116,20 @@
           "not_batched":true
         }
       ]
+    },
+    {
+      "accepts": ["samples.extraction.lysing.blood"],
+      "controllerName":"selection_page_controller",
+      "processTitle": "Blood Lysing",
+      "buttonTitle": "Lyse",
+      "capacity": 96,
+      "input": {
+        "role":"samples.extraction.lysing.blood",
+        "model":"tubes"
+      },
+      "output": [{
+        "role": "samples.extraction.qiacube_dna_and_rna.input_tube_nap"
+      }]
     },
     {
       "accepts": ["samples.qc_gel.fx.rna"],
