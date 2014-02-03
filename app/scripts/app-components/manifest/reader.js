@@ -219,7 +219,38 @@ define([
       return memo;
     }
 
+    function groupProcesses(memo, sample) {
+      var processName = sample["_PROCESS"],
+          uuid;
+
+      if (!memo[processName]) {
+        memo[processName] = [];
+      }
+
+      uuid = manifest.getSampleBySangerBarcode(sample["Tube Barcode"]).resource.uuid;
+
+      memo[processName].push(uuid);
+
+      return memo;
+    }
+
+    function createExtractionProcess(samples) {
+      return _.reduce(samples, groupProcesses, {});
+    }
+
+    function groupExtractionProcesses(memo, samples, sampleId) {
+      var extractionProcess = createExtractionProcess(samples),
+          retSample = _.first(samples);
+
+      retSample["_PROCESS"] = extractionProcess;
+      memo[sampleId] = retSample;
+
+      return memo;
+    }
+
     var samplesFromGUI = _.chain(dataFromGUI)
+                          .groupBy("SANGER SAMPLE ID")
+                          .reduce(groupExtractionProcesses, {})
                           .map(_.compose(_.removeUndefinedKeys, manifest.template.json_template))
                           .reduce(indexBySangerId, {})
                           .value();

@@ -111,6 +111,10 @@ define([
               .value();
     },
 
+    getSampleBySangerBarcode: function(sangerBarcode) {
+      return _.findWhere(this.details, { barcode: sangerBarcode });
+    },
+
     getSamples: function() {
       return _.chain(this.details)
               .pluck("row")

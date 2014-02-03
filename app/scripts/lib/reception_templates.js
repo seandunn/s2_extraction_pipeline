@@ -95,7 +95,7 @@ define([
   }
 
   // Recurses down the structure passed looking for the columnName definitions.  This builds a
-  // mapping from the header in the manifest to a function that converts a raw value to it's typed
+  // mapping from the header in the manifest to a function that converts a raw value to its typed
   // representation in the manifest.
   function fieldMappers(json) {
     return _.reduce(json, function(memo, value, field) {
