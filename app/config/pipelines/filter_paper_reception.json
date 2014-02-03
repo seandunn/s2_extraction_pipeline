@@ -1,0 +1,41 @@
+{
+  "role_priority": [
+    "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception",
+    "samples.extraction.lysing_dna_and_rna.filter_paper"
+  ],
+  "workflows": [
+    {
+    "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception" ],
+    "controllerName":"selection_page_controller",
+    "processTitle": "Receive Unlysed Filter Papers",
+    "capacity": 50,
+    "input":        {
+      "role":"samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception",
+      "model":"filter_papers"
+    },
+    "output":       [
+      {
+      "role":       "samples.extraction.lysing_dna_and_rna.filter_paper",
+      "title": "Filter Paper",
+      "not_batched":true
+    }
+    ]
+  },
+  {
+    "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper" ],
+    "controllerName":"lysing",
+    "processTitle": "Filter Paper Lysing",
+    "capacity": 1,
+    "input":        {
+      "role":"samples.extraction.lysing_dna_and_rna.filter_paper",
+      "model":"filter_papers"
+    },
+    "output":       [
+      {
+      "role":       "samples.extraction.bio_robot_dna_and_rna.input_tube_nap",
+      "model": "tubes"
+    }
+    ]
+  }
+  ]
+}

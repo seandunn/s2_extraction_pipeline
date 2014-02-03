@@ -1,0 +1,76 @@
+{
+  "role_priority": [
+    "samples.extraction.lysing.blood.awaiting_reception",
+    "samples.shipping.blood_!na.awaiting_shipping",
+    "samples.shipping.blood_!na.awaiting_shipping.batched",
+
+    "samples.extraction.lysing.blood"
+  ],
+  "workflows": [
+    {
+      "accepts": [ "samples.extraction.lysing.blood.awaiting_reception" ],
+      "controllerName":"selection_page_controller",
+      "processTitle": "Receive Tubes - Blood Lysing",
+      "capacity": 96,
+      "input":        {
+        "role":"samples.extraction.lysing.blood.awaiting_reception",
+        "model":"tubes"
+      },
+      "output": [
+        {
+          "role":       "samples.extraction.lysing.blood",
+          "not_batched":true
+        }
+      ]
+    },
+    {
+      "accepts": ["samples.extraction.lysing.blood"],
+      "controllerName":"selection_page_controller",
+      "processTitle": "Blood Lysing",
+      "buttonTitle": "Lyse",
+      "capacity": 96,
+      "input": {
+        "role":"samples.extraction.lysing.blood",
+        "model":"tubes"
+      },
+      "output": [{
+        "role": "samples.extraction.qiacube_dna_and_rna.input_tube_nap"
+      }]
+    },
+
+    {
+      "accepts": [ "samples.shipping.blood_!na.awaiting_shipping" ],
+      "controllerName":"selection_page_controller",
+      "processTitle": "Sample Shipping - Batching",
+      "input": {
+        "role":  "samples.shipping.blood_!na.awaiting_shipping",
+        "model": "tubes"
+      },
+      "output": [
+        {
+          "role": "samples.shipping.blood_!na.awaiting_shipping.batched",
+          "model": "tubes"
+        }
+      ]
+    },
+    {
+      "accepts": [ "samples.shipping.blood_!na.awaiting_shipping.batched" ],
+      "processTitle":  "Sample Shipping",
+      "controllerName": "step_controller",
+      "output": [{
+        "role": "samples.shipping_blood_!na.shipped"
+      }],
+      "buttons": [
+        { "action": "ship", "title": "Ship Samples"},
+        { "action": "next", "title": "Done" }
+      ],
+      "controllers": [{
+        "controllerName": "location_controller",
+        "output": [{
+          "role": "samples.shipping.blood_!na.shipped"
+        }]
+      }]
+    }
+
+  ]
+}

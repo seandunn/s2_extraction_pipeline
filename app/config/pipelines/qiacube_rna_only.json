@@ -1,0 +1,146 @@
+{
+  "role_priority": [
+    "samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception",
+    "samples.extraction.qiacube_rna_only.input_tube_rnap",
+    "samples.extraction.qiacube_rna_only.input_tube_rnap.batched",
+
+    "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed",
+
+    "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched"
+  ],
+
+  "workflows": [
+    {
+    "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.batched" ],
+    "processTitle":  "Automated RNA Only Extraction (QIAcube)",
+    "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
+    "printerType": 2,
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "start", "title": "Loading QIAcube" },
+      { "action": "end",   "title": "Unloading QIAcube" },
+      { "action": "next",  "title": "Done" }
+    ],
+    "controllers": [
+      {
+      "controllerName": "kit_controller",
+      "kitType":       "RNA"
+    }, {
+      "controllerName":   "connected_controller",
+      "behaviours": {
+        "start": "start",
+        "operate": "start",
+        "complete": "end",
+        "done": "transfer",
+        "outputs": "print"
+      },
+      "input":         {
+        "role": "samples.extraction.qiacube_rna_only.input_tube_rnap.batched",
+        "model":"tubes",
+        "title": "Eppendorf Input Tube"
+      },
+      "output":        [
+        {
+        "role":       "samples.extraction.retubing.eppendorf_tube_rna",
+        "aliquotType":"RNA",
+        "purpose":    "stock",
+        "model":      "tubes",
+        "title":      "Eppendorf Extracted RNA Tube",
+        "not_batched": false
+      }, {
+        "model": "tube",
+        "tracked": false
+      }
+      ]
+    }
+    ]
+  },
+
+    {
+      "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception" ],
+      "controllerName":"selection_page_controller",
+      "processTitle": "Receive Tubes - Automated RNA Only Extraction (QIAcube)",
+      "capacity": 96,
+      "input":        {
+        "role":"samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception",
+        "model":"tubes"
+      },
+      "output":       [
+        {
+          "role":       "samples.extraction.qiacube_rna_only.input_tube_rnap",
+          "aliquotType":"RNA+P",
+          "not_batched":true
+        }
+      ]
+    },
+
+  {
+    "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap" ],
+    "controllerName":  "selection_page_controller",
+    "processTitle":   "Automated RNA Only Extraction (QIAcube)",
+    "input":        {
+      "role":   "samples.extraction.qiacube_rna_only.input_tube_rnap",
+      "model":  "tubes"
+    },
+    "output":  [
+      {
+        "role":         "samples.extraction.qiacube_rna_only.input_tube_rnap.batched",
+        "aliquotType":  "RNA+P"
+      }
+    ]
+  },
+
+  {
+    "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed" ],
+    "controllerName":  "selection_page_controller",
+    "processTitle":   "Retubing for RNA only Extraction",
+    "input":        {
+      "role":   "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed",
+      "model":  "tubes"
+    },
+    "output":  [
+      {
+        "role":         "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched",
+        "aliquotType":  "RNA+P"
+      }
+    ]
+  },
+
+  {
+    "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched" ],
+    "processTitle":  "Retubing for RNA only Extraction",
+    "defaultPrinter":"g216bc",
+    "controllerName": "step_controller",
+    "printerType": 2,
+    "buttons": [
+      { "action": "print", "title": "Print tube labels" },
+      { "action": "next",  "title": "Done" }
+    ],
+    "controllers": [
+      {
+      "controllerName":   "connected_controller",
+      "behaviours": {
+        "start":     "row",
+        "operate":   "row",
+        "complete":  "row",
+        "done":      "next",
+        "outputs": "print"
+      },
+      "input":         {
+        "role": "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched",
+        "model":"tubes"
+      },
+      "output":        [
+        {
+        "role":       "samples.extraction.qiacube_rna_only.input_tube_rnap",
+        "aliquotType":"RNA+P",
+        "purpose":    "stock",
+        "model":      "tubes"
+      }
+      ]
+    }
+    ]
+  }
+  ]
+}

@@ -1,0 +1,86 @@
+
+{
+  "role_priority": [
+   "samples.extraction.retubing.eppendorf_tube_dna",
+   "samples.extraction.racking.fluidx_tube_dna"
+  ],
+  "workflows": [
+  {
+    "accepts": [ "samples.extraction.retubing.eppendorf_tube_dna" ],
+    "defaultPrinter": "g216bc",
+    "controllerName": "step_controller",
+    "printerType": 2,
+    "buttons": [
+      { "action": "print", "title": "Start transfers" },
+      { "action": "next",  "title": "Done" }
+    ],
+    "processTitle":   "Post DNA Extraction Racking - 2D Tube Transfer",
+    "controllers": [
+      {
+        "controllerName": "connected_controller",
+        "behaviours": {
+          "start":    "row",
+          "operate":  "row",
+          "complete": "row",
+          "done":     "next",
+          "home":     "never",
+          "outputs":  "never"
+        },
+        "cache": {
+          "outputs": "singular(createifnotfound)"
+        },
+        "input": {
+          "role":       "samples.extraction.retubing.eppendorf_tube_dna",
+          "model":      "tubes",
+          "title":      "Eppendorf Extracted DNA Tube",
+          "validation": "1D_tube"
+        },
+        "output": [
+          {
+            "role":       "samples.extraction.racking.fluidx_tube_dna",
+            "aliquotType":"DNA",
+            "model":      "tubes",
+            "title":      "2D Extracted DNA Tube",
+            "validation": "2D_tube",
+            "not_batched": true
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "accepts": [ "samples.extraction.racking.fluidx_tube_dna" ],
+    "controllerName": "step_controller",
+    "defaultPrinter": "d304bc",
+    "printerType": 1,
+    "buttons": [
+      { "action": "print", "title": "Accept rack layout" },
+      { "action": "next",  "title": "Done" }
+    ],
+    "processTitle":   "Post DNA Extraction Racking - Rack Scanning",
+    "controllers": [
+      {
+        "controllerName": "rack_scan_controller",
+        "defaultPrinter": "d304bc",
+        "printerType": 1,
+        "model": "RackScanModel",
+        "input": {
+          "role":  "samples.extraction.racking.fluidx_tube_dna",
+          "model": "tubes",
+          "title": "2D Extracted DNA Tube"
+        },
+        "output": [
+          {
+            "role": "samples.rack.stock.dna",
+            "aliquotType": "DNA",
+            "purpose": "stock",
+            "model": "tube_racks",
+            "title": "Tube Rack"
+          }
+        ]
+      }
+    ]
+  }
+  ]
+}
