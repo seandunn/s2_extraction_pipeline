@@ -220,13 +220,16 @@ define([
     }
 
     function groupProcesses(memo, sample) {
-      var processName = sample["_PROCESS"];
+      var processName = sample["_PROCESS"],
+          uuid;
 
       if (!memo[processName]) {
         memo[processName] = [];
       }
 
-      memo[processName].push(sample["Tube Barcode"].toString());
+      uuid = manifest.getSampleBySangerBarcode(sample["Tube Barcode"]).resource.uuid;
+
+      memo[processName].push(uuid);
 
       return memo;
     }
