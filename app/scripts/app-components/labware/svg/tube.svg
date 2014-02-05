@@ -481,7 +481,7 @@
     <tspan
        x="68.758698"
        y="19.984566"
-       id="tspan4079">Volume:<tspan class="value"></tspan></tspan>
+       id="tspan4079">Volume: <tspan class="value"></tspan></tspan>
     <tspan
        x="110.7587"
        y="19.984566"
@@ -493,7 +493,7 @@
     <tspan
        x="68.758698"
        y="57.489433"
-       id="tspan4084">Type:<tspan class="value"></tspan></tspan>
+       id="tspan4084">Type: <tspan class="value"></tspan></tspan>
     <tspan
        x="110.7587"
        y="57.489433"
@@ -505,7 +505,7 @@
     <tspan
        x="68.758698"
        y="95"
-       id="tspan4089">Barcode:<tspan class="value"></tspan></tspan>
+       id="tspan4089">Barcode: <tspan class="value"></tspan></tspan>
     <tspan
        x="110.7587"
        y="95"
