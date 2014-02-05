@@ -1,0 +1,26 @@
+{
+  "title": "Example Schema",
+  "type": "object",
+  "properties": {
+    "role_priority": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^.*\\..*\\..*$"
+      },
+      "uniqueItems": true
+    },
+
+    "workflows": {
+      "type": "array",
+      "items": {
+        "type": "object"
+
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "required": ["role_priority", "workflows"]
+}

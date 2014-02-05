@@ -12,3 +12,4 @@ app/components
 /node_modules
 .tmp/**
 app/scripts/config.js
+app/scripts/pipeline_config.json

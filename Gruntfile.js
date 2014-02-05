@@ -133,7 +133,7 @@ module.exports = function (grunt) {
         },
         pipeline: {
           files: ['<%= yeoman.app %>/config/pipelines/*.json'],
-          outFile: '<%= yeoman.app %>/scripts/pipeline_config.json.new',
+          outFile: '<%= yeoman.app %>/scripts/pipeline_config.json',
           schemaPath: '<%= yeoman.app %>/scripts/lib/pipeline_config_schema.json'
         },
         compass: {
@@ -414,12 +414,13 @@ module.exports = function (grunt) {
     grunt.registerTask('pipeline', 'Verify and compile pipeline configs', function(){
       grunt.log.subhead("Parsing pipeline configs...");
       var JaySchema = require('jayschema');
-      var js = new JaySchema(JaySchema.loaders.http);     // we provide the HTTP loader here
+      var js = new JaySchema();
 
       var options = grunt.config.get(this.name);
 
       grunt.log.writeflags(options);
       var schema = grunt.file.readJSON(options.schemaPath);
+
       var filePath = options.files;
 
       var files = grunt.file.expand(filePath);
@@ -428,18 +429,32 @@ module.exports = function (grunt) {
 
       for(var i in files){
         configFile = grunt.file.readJSON(files[i]);
-        errs       = js.validate(configFile, schema);
 
-        grunt.log.error('running')
-        if (errs) { grunt.log.errorlns(errs); }
+        grunt.log.writeln('Processing '+files[i]);
+
+        errs       = js.validate(configFile, schema);
+        if (errs.length > 0) {
+          errs.map(function(schemaError){
+            grunt.log.errorlns('instanceContext: ' + schemaError.instanceContext);
+            grunt.log.errorlns('resolutionScope: ' + schemaError.resolutionScope);
+            grunt.log.errorlns('constaintName: '   + schemaError.constaintName);
+            grunt.log.errorlns('constaintValue: '  + schemaError.constaintValue);
+            grunt.log.errorlns('testedValue: '     + schemaError.testedValue);
+            grunt.log.writeln();
+            grunt.log.writeln();
+          });
+
+          grunt.fail.warn('Failed to parse piepline file: '+ files[i]);
+        }
         else {
           pipelineConfig.role_priority = pipelineConfig.role_priority.concat(configFile.role_priority);
           pipelineConfig.workflows     = pipelineConfig.workflows.concat(configFile.workflows);
-          grunt.log.ok(files[i]+' validated OK.');
+          grunt.log.ok('...validated OK.');
         }
 
       }
 
+      grunt.log.ok('Writing combined pipeline_config to: '+options.outFile);
       grunt.file.write(options.outFile, JSON.stringify(pipelineConfig));
 
     });
