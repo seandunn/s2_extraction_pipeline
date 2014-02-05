@@ -21,8 +21,7 @@ require.config({
     mapper_testjson:      "../components/S2Mapper/test/json",
     config:               "config",
     reception_templates:  "lib/reception_templates",
-    images:               "../images",
-    pipeline_configs:     "../config/pipelines"
+    images:               "../images"
   }
 });
 

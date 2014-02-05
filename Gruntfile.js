@@ -133,7 +133,7 @@ module.exports = function (grunt) {
         },
         pipeline: {
           files: ['<%= yeoman.app %>/config/pipelines/*.json'],
-          outFile: '<%= yeoman.app %>/scripts/pipeline_config.json',
+          outFile: '<%= yeoman.app %>/scripts/pipeline_config-DO_NOT_DIRECTLY_EDIT.json',
           schemaPath: '<%= yeoman.app %>/scripts/lib/pipeline_config_schema.json'
         },
         compass: {

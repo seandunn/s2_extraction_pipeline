@@ -13,3 +13,4 @@ app/components
 .tmp/**
 app/scripts/config.js
 app/scripts/pipeline_config.json
+app/scripts/pipeline_config-DO_NOT_DIRECTLY_EDIT.json

@@ -1,4 +1,4 @@
-define([ 'text!pipeline_config.json' ], function (pipelineJSON) {
+define([ 'text!pipeline_config-DO_NOT_DIRECTLY_EDIT.json' ], function (pipelineJSON) {
 
   var pipelineConfig = JSON.parse(pipelineJSON);
 
