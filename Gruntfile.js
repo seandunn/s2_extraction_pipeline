@@ -27,7 +27,10 @@ module.exports = function (grunt) {
         yeoman: yeomanConfig,
         watch: {
             pipeline: {
-              files: ['<%= yeoman.app %>/config/pipelines/{,*/}*.json'],
+              files: [
+                '<%= yeoman.app %>/config/pipelines/{,*/}*.json',
+                '<%= yeoman.app %>/scripts/lib/pipeline_config_schema.json'
+              ],
               tasks: ['pipeline']
             },
             compass: {
