@@ -14,7 +14,7 @@
 
   "workflows": [
     {
-      "accepts": [ "samples.extraction.qiacube_micro_rna.input_tube_nap.awaiting_reception" ],
+      "accepts":  "samples.extraction.qiacube_micro_rna.input_tube_nap.awaiting_reception" ,
       "controllerName":"selection_page_controller",
       "processTitle": "Receive Tubes - &#181;RNA Extraction (QIAcube)",
       "capacity": 96,
@@ -33,7 +33,7 @@
     },
 
   {
-    "accepts": [ "samples.extraction.qiacube_micro_rna.input_tube_nap" ],
+    "accepts":  "samples.extraction.qiacube_micro_rna.input_tube_nap" ,
     "controllerName":"selection_page_controller",
     "processTitle": "Automated &#181;RNA Extraction (QIAcube)",
     "input":        {
@@ -49,7 +49,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube_micro_rna.input_tube_nap.batched" ],
+    "accepts":  "samples.extraction.qiacube_micro_rna.input_tube_nap.batched" ,
     "processTitle":  "Automated &#181;RNA Extraction (QIAcube)",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -98,7 +98,7 @@
 
 
   {
-    "accepts": [ "samples.extraction.qiacube_micro_rna.byproduct_tube_rnap" ],
+    "accepts":  "samples.extraction.qiacube_micro_rna.byproduct_tube_rnap" ,
     "processTitle":  "Automated &#181;RNA Extraction (QIAcube) Rotor Adapter Transfer",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -136,7 +136,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube_micro_rna.input_tube_rnap.batched" ],
+    "accepts":  "samples.extraction.qiacube_micro_rna.input_tube_rnap.batched" ,
     "processTitle":  "Automated &#181;RNA Extraction (QIAcube)",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",

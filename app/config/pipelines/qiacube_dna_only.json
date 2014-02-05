@@ -12,7 +12,7 @@
 
   "workflows": [
     {
-      "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception" ],
+      "accepts":  "samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception" ,
       "controllerName":"selection_page_controller",
       "processTitle": "Receive Tubes - Automated DNA Only Extraction (QIAcube)",
       "capacity": 96,
@@ -31,7 +31,7 @@
     },
 
   {
-    "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap" ],
+    "accepts":  "samples.extraction.qiacube_dna_only.input_tube_dnap" ,
     "controllerName":"selection_page_controller",
     "processTitle": "Automated DNA Only Extraction (QIAcube)",
     "input":        {
@@ -47,7 +47,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.batched" ],
+    "accepts":  "samples.extraction.qiacube_dna_only.input_tube_dnap.batched" ,
     "processTitle":  "Automated DNA Only Extraction (QIAcube)",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -94,7 +94,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed" ],
+    "accepts":  "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed" ,
     "controllerName":  "selection_page_controller",
     "processTitle":   "Retubing for DNA only Extraction",
     "input":        {
@@ -110,7 +110,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed.batched" ],
+    "accepts":  "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed.batched" ,
     "processTitle":  "Retubing for DNA only Extraction",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",

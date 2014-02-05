@@ -6,7 +6,7 @@
   ],
   "workflows": [
   {
-    "accepts": [ "samples.extraction.retubing.eppendorf_tube_dna" ],
+    "accepts":  "samples.extraction.retubing.eppendorf_tube_dna" ,
     "defaultPrinter": "g216bc",
     "controllerName": "step_controller",
     "printerType": 2,
@@ -50,7 +50,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.racking.fluidx_tube_dna" ],
+    "accepts":  "samples.extraction.racking.fluidx_tube_dna" ,
     "controllerName": "step_controller",
     "defaultPrinter": "d304bc",
     "printerType": 1,

@@ -15,7 +15,7 @@
   "workflows": [
 
     {
-      "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception" ],
+      "accepts":  "samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception" ,
       "controllerName":"selection_page_controller",
       "processTitle": "Receive Tubes - Automated DNA and RNA Extraction (QIAcube)",
       "capacity": 96,
@@ -34,7 +34,7 @@
     },
 
   {
-    "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_nap" ],
+    "accepts":  "samples.extraction.qiacube_dna_and_rna.input_tube_nap" ,
     "controllerName":"selection_page_controller",
     "processTitle": "Automated DNA and RNA Extraction (QIAcube)",
     "input":        {
@@ -50,7 +50,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_nap.batched" ],
+    "accepts":  "samples.extraction.qiacube_dna_and_rna.input_tube_nap.batched" ,
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -103,7 +103,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube_dna_and_rna.byproduct_tube_rnap" ],
+    "accepts":  "samples.extraction.qiacube_dna_and_rna.byproduct_tube_rnap" ,
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube) Rotor Adapter Transfer",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -141,7 +141,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_rnap.batched" ],
+    "accepts":  "samples.extraction.qiacube_dna_and_rna.input_tube_rnap.batched" ,
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -188,7 +188,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed" ],
+    "accepts":  "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed" ,
     "controllerName":  "selection_page_controller",
     "processTitle":   "DNA and RNA Retubing",
     "input":        {
@@ -204,7 +204,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed.batched" ],
+    "accepts":  "samples.extraction.qiacube_dna_and_rna.input_tube_dnap.to_be_retubed.batched" ,
     "processTitle":  "DNA and RNA Re-Tubing",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",

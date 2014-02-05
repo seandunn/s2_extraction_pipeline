@@ -5,7 +5,7 @@
   ],
   "workflows": [
     {
-    "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception" ],
+    "accepts":  "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception" ,
     "controllerName":"selection_page_controller",
     "processTitle": "Receive Unlysed Filter Papers",
     "capacity": 50,
@@ -22,7 +22,7 @@
     ]
   },
   {
-    "accepts": [ "samples.extraction.lysing_dna_and_rna.filter_paper" ],
+    "accepts":  "samples.extraction.lysing_dna_and_rna.filter_paper" ,
     "controllerName":"lysing",
     "processTitle": "Filter Paper Lysing",
     "capacity": 1,

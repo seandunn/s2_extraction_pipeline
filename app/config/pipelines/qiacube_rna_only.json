@@ -11,7 +11,7 @@
 
   "workflows": [
     {
-    "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.batched" ],
+    "accepts":  "samples.extraction.qiacube_rna_only.input_tube_rnap.batched" ,
     "processTitle":  "Automated RNA Only Extraction (QIAcube)",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -58,7 +58,7 @@
   },
 
     {
-      "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception" ],
+      "accepts":  "samples.extraction.qiacube_rna_only.input_tube_rnap.awaiting_reception" ,
       "controllerName":"selection_page_controller",
       "processTitle": "Receive Tubes - Automated RNA Only Extraction (QIAcube)",
       "capacity": 96,
@@ -76,7 +76,7 @@
     },
 
   {
-    "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap" ],
+    "accepts":  "samples.extraction.qiacube_rna_only.input_tube_rnap" ,
     "controllerName":  "selection_page_controller",
     "processTitle":   "Automated RNA Only Extraction (QIAcube)",
     "input":        {
@@ -92,7 +92,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed" ],
+    "accepts":  "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed" ,
     "controllerName":  "selection_page_controller",
     "processTitle":   "Retubing for RNA only Extraction",
     "input":        {
@@ -108,7 +108,7 @@
   },
 
   {
-    "accepts": [ "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched" ],
+    "accepts":  "samples.extraction.qiacube_rna_only.input_tube_rnap.to_be_retubed.batched" ,
     "processTitle":  "Retubing for RNA only Extraction",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",

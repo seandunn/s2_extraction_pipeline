@@ -9,7 +9,7 @@
 
   "workflows": [
   {
-    "accepts":       [ "samples.rack.stock.rna" ],
+    "accepts":        "samples.rack.stock.rna" ,
     "controllerName": "step_controller",
     "defaultPrinter": "d304bc",
     "printerType": 1,
@@ -54,7 +54,7 @@
   },
 
   {
-    "accepts": [ "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna" ],
+    "accepts":  "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna" ,
     "controllerName":"selection_page_controller",
     "processTitle": "Batching for Working Dilution",
     "capacity": 4,
@@ -70,7 +70,7 @@
     ]
   },
   {
-    "accepts":       [ "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna.batched" ],
+    "accepts":        "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna.batched" ,
     "controllerName": "step_controller",
     "defaultPrinter":"d304bc",
     "printerType": 1,
@@ -118,7 +118,7 @@
     },
 
     {
-      "accepts": [ "samples.qc.nx_nanodrop.working_dilution_rna" ],
+      "accepts":  "samples.qc.nx_nanodrop.working_dilution_rna" ,
       "controllerName": "step_controller",
       "defaultPrinter": "d304bc",
       "printerType": 1,

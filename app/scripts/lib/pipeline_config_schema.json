@@ -15,7 +15,10 @@
     "workflows": {
       "type": "array",
       "items": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "accepts": { "type": "string" }
+        }
 
       },
       "minItems": 1,

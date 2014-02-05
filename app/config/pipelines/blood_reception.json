@@ -8,7 +8,7 @@
   ],
   "workflows": [
     {
-      "accepts": [ "samples.extraction.lysing.blood.awaiting_reception" ],
+      "accepts":  "samples.extraction.lysing.blood.awaiting_reception" ,
       "controllerName":"selection_page_controller",
       "processTitle": "Receive Tubes - Blood Lysing",
       "capacity": 96,
@@ -24,7 +24,7 @@
       ]
     },
     {
-      "accepts": ["samples.extraction.lysing.blood"],
+      "accepts": "samples.extraction.lysing.blood",
       "controllerName":"selection_page_controller",
       "processTitle": "Blood Lysing",
       "buttonTitle": "Lyse",
@@ -39,7 +39,7 @@
     },
 
     {
-      "accepts": [ "samples.shipping.blood_!na.awaiting_shipping" ],
+      "accepts":  "samples.shipping.blood_!na.awaiting_shipping" ,
       "controllerName":"selection_page_controller",
       "processTitle": "Sample Shipping - Batching",
       "input": {
@@ -54,7 +54,7 @@
       ]
     },
     {
-      "accepts": [ "samples.shipping.blood_!na.awaiting_shipping.batched" ],
+      "accepts":  "samples.shipping.blood_!na.awaiting_shipping.batched" ,
       "processTitle":  "Sample Shipping",
       "controllerName": "step_controller",
       "output": [{
