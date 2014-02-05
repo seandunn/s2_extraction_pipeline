@@ -250,7 +250,7 @@
       controller.jquerySelection().on("scanned.bed-verification.s2", $.ignoresEvent(_.bind(_.partial(function(controller, data, verification) {
         if ($.contains(document, controller.linearProcessLabwares.view[0])) {
           markAsCompletedRow(controller, data, verification);
-          if (this.rowModel.rowNum === 3) {
+          if (this.rowModel.rowNum === (this.owner.rowControllers.length-1)) {
             PubSub.publish("enable_buttons.step_controller.s2", this.owner, {buttons: [{action: "start"}]});      
           } else {
             PubSub.publish("disable_buttons.step_controller.s2", this.owner, {buttons: [{action: "start"}]});            
@@ -325,7 +325,7 @@
       $.when.call(this, bedRecordingInfo.promises[0]).then(_.bind(_.partial(function(controller, data, event, verification) {
         markAsCompletedRowBR(controller, data, verification);
         controller.owner.childDone(controller, "completed", data);
-        if (this.rowModel.rowNum === 3) {
+        if (this.rowModel.rowNum === (this.owner.rowControllers.length-1)) {
           PubSub.publish("enable_buttons.step_controller.s2", this.owner, {buttons: [{action: "start"}]});      
         } else {
           PubSub.publish("disable_buttons.step_controller.s2", this.owner, {buttons: [{action: "start"}]});            
