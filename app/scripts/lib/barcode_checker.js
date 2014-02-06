@@ -16,7 +16,7 @@ define(['config'], function (config) {
           return (/^\d{12,13}$/.exec(barcode) !== null) && checkPrefix(barcode, barcodePrefixes);
         },
         is2DTubeBarcodeValid: function (barcode, barcodePrefixes) {
-          return /FR\d{8}/.exec(barcode) !== null && checkPrefix(barcode, barcodePrefixes);
+          return /^FR\d{8}$/.exec(barcode) !== null && checkPrefix(barcode, barcodePrefixes);
         },
         isKitBarcodeValid: function (barcode, barcodePrefixes) {
           return /^\d{22}$/.exec(barcode) !== null && checkPrefix(barcode, barcodePrefixes);
