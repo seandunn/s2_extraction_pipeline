@@ -16,8 +16,13 @@
       "type": "array",
       "items": {
         "type": "object",
+        "uniqueItems": true,
         "properties": {
-          "accepts": { "type": "string" }
+          "accepts": {
+            "type": "string",
+            "required": true
+
+          }
         }
 
       },

@@ -457,8 +457,27 @@ module.exports = function (grunt) {
 
       }
 
-      grunt.log.ok('Writing combined pipeline_config to: '+options.outFile);
-      grunt.file.write(options.outFile, JSON.stringify(pipelineConfig));
+      grunt.log.writeln('Validating combined pipeline config file...');
+      errs = js.validate(configFile, schema);
+
+      if (errs.length > 0) {
+        errs.map(function(schemaError){
+          grunt.log.errorlns('instanceContext: ' + schemaError.instanceContext);
+          grunt.log.errorlns('resolutionScope: ' + schemaError.resolutionScope);
+          grunt.log.errorlns('constaintName: '   + schemaError.constaintName);
+          grunt.log.errorlns('constaintValue: '  + schemaError.constaintValue);
+          grunt.log.errorlns('testedValue: '     + schemaError.testedValue);
+          grunt.log.writeln();
+          grunt.log.writeln();
+        });
+
+        grunt.fail.warn('Validation failed');
+      }
+      else {
+        grunt.log.ok('...validated OK.');
+        grunt.log.ok('Writing combined pipeline_config to: '+options.outFile);
+        grunt.file.write(options.outFile, JSON.stringify(pipelineConfig));
+      }
 
     });
 

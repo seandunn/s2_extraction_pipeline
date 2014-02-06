@@ -35,7 +35,8 @@ define([ 'text!pipeline_config-DO_NOT_DIRECTLY_EDIT.json' ], function (pipelineJ
       foundWorkflows.push(pipelineConfig.unknownRole);
     }
 
-    if (foundWorkflows.length > 1) throw "More than 1 workflow active. I've made a terrible mistake!";
+    // I've made a terrible mistake!
+    if (foundWorkflows.length > 1) throw "More than 1 workflow active. Please contact administrator.";
 
     return foundWorkflows[0];
   };
