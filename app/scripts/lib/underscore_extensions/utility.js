@@ -87,6 +87,10 @@ define([], function() {
         return memo;
       }, {});
     },
+    // removes ONLY undefined values, not false
+    removeUndefinedValues: function(list) {
+      return _.reduce(list, function(memo, val) { if (!_.isUndefined(val)) { memo.push(val); }; return memo; }, []);      
+    },
 
     reverseRange: function(n) {
       return _.reverse(_.range(n));
@@ -116,7 +120,14 @@ define([], function() {
     if (_.isObject(sourceValue) && _.isObject(targetValue)) {
       value = deepMergeTwoObjects(targetValue, sourceValue);
     } else {
-      value = sourceValue || targetValue;
+      // If any of them is undefined, we could have problems with
+      // trivalued logic (true, undefined and false), so we drop
+      // any undefined value from list. 
+      value = _.chain([sourceValue, targetValue])
+      .removeUndefinedValues()
+      .reduce(function(memo, val) { 
+        return (memo || val);
+      }, undefined).value();
     }
     return [key,value];
   }
