@@ -43,7 +43,14 @@ define([
           friendly_name: "QC2Hip",
           sanger_sample_id_core: "QC2Hip"
         },
-
+        QC1Ibd: {
+          friendly_name: "QC1Ibd",
+          sanger_sample_id_core: "QC1Ibd"          
+        },
+        QC2Ibd: {
+          friendly_name: "QC2Ibd",
+          sanger_sample_id_core: "QC2Ibd"
+        },
         "ESDM_pathogen_challenge": {
           friendly_name:          "ESDM_pathogen_challenge",
           sanger_sample_id_core:  "ESDM_pathogen_challenge"
@@ -52,7 +59,13 @@ define([
         SBC: {
           friendly_name: "Skin Biopsy Collection",
           sanger_sample_id_core: "SBC"
+        },
+
+        Th2diff: {
+          friendly_name: "Th2diff",
+          sanger_sample_id_core: "Th2diff"
         }
+
       },
 
       validation: validations.nonEmptyString(validations.optional, "GENDER")

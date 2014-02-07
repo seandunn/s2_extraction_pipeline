@@ -104,17 +104,16 @@ define([
 
   // FILE UPLOAD FUNCTIONS
   function outputRackRepresentation(model) {
-    var movements =
-      _.chain(model.tubeMoves.moves)
+    var movements = _.chain(model.tubeMoves.moves)
        .pluck("target_location")
        .reduce(function(memo, location){memo[location] = "full"; return memo;}, {})
        .value();
 
-    return _.build("tube_rack", {
-      resourceType: "tube_rack",
-      barcode:      model.outputRack.labels.barcode.value,
-      locations:    movements
-    });
+    return {
+     resourceType: "tube_rack",
+     barcode:      model.outputRack.labels.barcode.value,
+     locations:    movements
+    };
   }
 
   function presentRack(html, factory, representation) {
@@ -129,19 +128,19 @@ define([
   // LABEL PRINTING FUNCTIONS
   function onPrintLabels(html, model, printer) {
     return model.createOutputRack()
-                .then(function(rack) {
-                  html.trigger("labels.print.s2", [printer, [rack]]);
-                  return rack;
-                });
+    .then(function(rack) {
+      html.trigger("labels.print.s2", [printer, [rack]]);
+      return rack;
+    });
   }
 
   // INPUT RACK HANDLING FUNCTIONS
   function addRackCallback(html, factory, model, rackList, barcode) {
     return model.addRack(barcode)
-                .then(
-                  _.partial(buildRackList, html, factory, rackList),
-                  _.partial(structuredError, html, "Unable to add rack")
-                );
+    .then(
+      _.partial(buildRackList, html, factory, rackList),
+      _.partial(structuredError, html, "Unable to add rack")
+    );
   }
 
   function buildRackList(html, factory, rackList, model) {
@@ -168,11 +167,11 @@ define([
       return [location, _.isEmpty(tube.aliquots) ? "empty" : "full"];
     }
 
-    return _.build("tube_rack", {
+    return {
       resourceType:  rack.resourceType,
       barcode:       rack.labels.barcode.value,
       locations:     _.chain(rack.tubes).map(tubeToCss).object().value()
-    });
+    };
   }
 
   // RE-RACKING FUNCTIONS
@@ -182,10 +181,10 @@ define([
 
   function onReracking(html, model, button) {
     return model.rerack()
-                .then(function () {
-                  button.hide();
-                  html.trigger("complete.reracking.s2");
-                }, _.partial(structuredError, html, "Could not re-rack"));
+    .then(function () {
+      button.hide();
+      html.trigger("complete.reracking.s2");
+    }, _.partial(structuredError, html, "Could not re-rack"));
   }
 
   function structuredError(html, prefix, error) {
