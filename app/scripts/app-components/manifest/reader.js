@@ -320,7 +320,7 @@ define([
     var updates = _.map(samples, function(o){
       var update = {};
 
-      update.sample = _.extend(
+      update.sample = _.deepMerge(
         _.removeUndefinedKeys(o.sample),
         samplesFromGUI[o.sample.sanger_sample_id]
       );
