@@ -306,6 +306,7 @@ module.exports = function (grunt) {
             ],
             dist: [
                 // 'coffee',
+              'pipeline',
                 'compass',
                 'imagemin',
                 // 'svgmin',
