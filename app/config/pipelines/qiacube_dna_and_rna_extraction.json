@@ -56,7 +56,7 @@
     "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
-      { "action": "print", "title": "Print tube labels" },
+      { "action": "print", "title": "Print labels", "icon": "icon-print" },
       { "action": "start", "title": "Loading QIAcube" },
       { "action": "end",   "title": "Unloading QIAcube" },
       { "action": "next",  "title": "Done" }
@@ -109,7 +109,7 @@
     "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
-      { "action": "print", "title": "Print tube labels" },
+      { "action": "print", "title": "Print labels", "icon": "icon-print" },
       { "action": "next",  "title": "Done" }
     ],
     "controllers": [
@@ -147,7 +147,7 @@
     "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
-      { "action": "print", "title": "Print tube labels" },
+      { "action": "print", "title": "Print labels", "icon": "icon-print" },
       { "action": "start", "title": "Loading QIAcube" },
       { "action": "end",   "title": "Unloading QIAcube" },
       { "action": "next",  "title": "Done" }
@@ -210,7 +210,7 @@
     "controllerName": "step_controller",
     "printerType": 2,
     "buttons": [
-      { "action": "print", "title": "Print tube labels" },
+      { "action": "print", "title": "Print labels", "icon": "icon-print" },
       { "action": "next",  "title": "Done" }
     ],
     "controllers": [
