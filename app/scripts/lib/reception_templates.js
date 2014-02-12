@@ -5,6 +5,7 @@ define([
 
   // Add new templates after this comment and they will be automatically loaded
   'reception_templates/cgap_lysed',
+  'reception_templates/cgap_lysed_alt',
   'reception_templates/hmdmc_lysed',
   'reception_templates/general_plate',
   'reception_templates/filter_paper',
