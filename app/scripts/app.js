@@ -156,9 +156,7 @@ define([
         user.pages = (user.pages || []).concat(app.config.defaultPages);
         app.config.login = user.email;
         app.config.userPromise.resolve(user.email);
-        var disablePrintingCookieValue = ($.cookie("disablePrinting") === "true");
-        app.config.disablePrinting = (_.isUndefined(disablePrintingCookieValue)) ? 
-          user.disablePrinting : disablePrintingCookieValue;
+        app.config.disablePrinting = ($.cookie("disablePrinting") === "true");
         return deferred.resolve(user).promise();
       }
     }
@@ -167,14 +165,13 @@ define([
     function buildUserDefer(app) {
       var defer = new $.Deferred();
       defer.resolve(userDefer);
-      return defer;      
+      return defer;
     }
-    
+
     function createComponent(config){
       return config.constructor({
         app:       app,
         printers:  app.config.printers,
-        user:      app.config.userPromise,
         resetS2Root: _.bind(app.resetS2Root, app),
         getS2Root:   _.bind(app.getS2Root, app),
       });

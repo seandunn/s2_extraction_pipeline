@@ -23,7 +23,7 @@
   </select>
   <% } %>
   <% _.each (templateData.buttons, function (buttonsDetails) { %>
-  <button class="btn <%- buttonsDetails.action %>Button" disabled="disabled"><%- buttonsDetails.title %></button>
+  <button class="btn <%- buttonsDetails.action %>Button" disabled="disabled"><i class="<%= buttonsDetails.icon %>"></i> <%- buttonsDetails.title %></button>
   <% }); %>
     </form>
   </div>

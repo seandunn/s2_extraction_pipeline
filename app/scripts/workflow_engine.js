@@ -1,4 +1,4 @@
-define([ 'text!pipeline_config.json' ], function (pipelineJSON) {
+define([ 'text!pipeline_config-DO_NOT_DIRECTLY_EDIT.json' ], function (pipelineJSON) {
 
   var pipelineConfig = JSON.parse(pipelineJSON);
 
@@ -17,12 +17,6 @@ define([ 'text!pipeline_config.json' ], function (pipelineJSON) {
     }
   }
 
-  function byRole(activeRole){
-    return function(workflow){
-      return _.find(workflow.accepts, function(role){ return role === activeRole; });
-    };
-  }
-
   var getMatchingRoleDataFromItems = function (items) {
     var items = itemFilterOnStatus(items, 'done');
     if (items.length === 0){
@@ -32,14 +26,17 @@ define([ 'text!pipeline_config.json' ], function (pipelineJSON) {
 
     var activeRole     = _.chain(pipelineConfig.role_priority).find(firstMatchingRoleOnItems(items)).value();
 
-    var foundWorkflows = pipelineConfig.workflows.filter(byRole(activeRole));
+    var foundWorkflows = pipelineConfig.workflows.filter(function(workflow) {
+      return workflow.accepts === activeRole;
+    });
 
     // no controller to deal with this role -> summary page
     if(foundWorkflows.length < 1){
       foundWorkflows.push(pipelineConfig.unknownRole);
     }
 
-    if (foundWorkflows.length > 1) throw "More than 1 workflow active. I've made a terrible mistake!";
+    // I've made a terrible mistake!
+    if (foundWorkflows.length > 1) throw "More than 1 workflow active. Please contact administrator.";
 
     return foundWorkflows[0];
   };
