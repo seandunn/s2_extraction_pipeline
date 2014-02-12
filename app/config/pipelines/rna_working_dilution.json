@@ -56,7 +56,7 @@
   {
     "accepts":  "samples.qc.nx_nanodrop.volume_checked_stock_rack_rna" ,
     "controllerName":"selection_page_controller",
-    "processTitle": "Batching for Working Dilution",
+    "processTitle": "Batching for RNA NX Working Dilution",
     "capacity": 4,
     "input":        {
       "role":"samples.qc.nx_nanodrop.volume_checked_stock_rack_rna",

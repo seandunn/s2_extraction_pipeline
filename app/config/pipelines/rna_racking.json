@@ -1,54 +1,10 @@
 {
   "role_priority": [
-    "samples.extraction.retubing.eppendorf_tube_rna",
     "samples.extraction.racking.fluidx_tube_rna"
 
   ],
   "workflows": [
-  {
-    "accepts":  "samples.extraction.retubing.eppendorf_tube_rna" ,
-    "defaultPrinter": "g216bc",
-    "controllerName": "step_controller",
-    "printerType": 2,
-    "buttons": [
-      { "action": "print", "title": "Start transfers" },
-      { "action": "next",  "title": "Done" }
-    ],
-    "processTitle":   "Post RNA Extraction Racking - 2D Tube Transfer",
-    "controllers": [
-      {
-        "controllerName": "connected_controller",
-        "behaviours": {
-          "start":    "row",
-          "operate":  "row",
-          "complete": "row",
-          "done":     "next",
-          "outputs":  "never"
-        },
-        "cache": {
-          "outputs": "singular(createifnotfound)"
-        },
-        "input": {
-          "role":  "samples.extraction.retubing.eppendorf_tube_rna",
-          "model": "tubes",
-          "title": "Eppendorf Extracted RNA Tube",
-          "validation": "1D_tube"
-        },
-        "output": [
-          {
-            "role":        "samples.extraction.racking.fluidx_tube_rna",
-            "aliquotType": "RNA",
-            "model":       "tubes",
-            "title":       "2D Extracted RNA Tube",
-            "validation":  "2D_tube",
-            "not_batched": true
-          }
-        ]
-      }
-    ]
-  },
-
-  {
+   {
     "accepts":  "samples.extraction.racking.fluidx_tube_rna" ,
     "controllerName": "step_controller",
     "defaultPrinter": "d304bc",

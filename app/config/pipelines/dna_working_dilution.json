@@ -54,7 +54,7 @@
   {
     "accepts":  "samples.qc.volume_checked_stock_rack_dna" ,
     "controllerName":"selection_page_controller",
-    "processTitle": "Batching for Working Dilution",
+    "processTitle": "Batching for DNA NX Working Dilution",
     "capacity": 4,
     "input":        {
       "role":"samples.qc.volume_checked_stock_rack_dna",
