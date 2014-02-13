@@ -21,6 +21,12 @@ define([ 'text!pipeline_config-DO_NOT_DIRECTLY_EDIT.json' ], function (pipelineJ
     var items = itemFilterOnStatus(items, 'done');
     if (items.length === 0){
       // no 'done' role <=> spent batch
+      setTimeout(function() {
+        //TODO: Reloads page if batch spent. This should be properly managed with error message.
+        // A better solution could be avoiding the lost of user credentials at the end of a pipeline.
+        var href = window.location.href;
+        window.location.href = href;
+      }, 3000);
       return pipelineConfig['spentBatch'];
     }
 
