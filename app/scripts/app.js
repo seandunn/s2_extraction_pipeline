@@ -203,6 +203,21 @@ define([
     return this;
   };
 
+  function resetTagRolesInBody() {
+    var classNames = document.body.className.split(" ");
+    // Removes previous classes from body
+    _.each(_.filter(classNames, function(className) { 
+      return className.match(/^ROLE\-/)
+    }), function(role) {
+      $(document.body).removeClass(role);
+    });    
+  }
+  
+  function tagRoleInBody(role) {
+    // Add new class
+    $(document.body).addClass("ROLE-"+role.replace(/\./g, "-"));
+  }
+  
   App.prototype.updateModel = function (model) {
     var application = this;
     this.model = $.extend(this.model, model);
@@ -217,9 +232,11 @@ define([
       if (workflowConfig)
         {
           var roles = workflowConfig.accepts;
-          _.each(roles, function(role) {
-            $(document.body).addClass(role.replace(/\./g, "-"));
-          });
+          if (!_.isArray(roles)) {
+            roles = [roles];
+          }
+          resetTagRolesInBody();
+          _.each(roles, tagRoleInBody);
         }
         $.extend(workflowConfig, {initialLabware: application.model.labware});
         return application.controllerFactory.create(workflowConfig && workflowConfig.controllerName, application, workflowConfig);
@@ -231,6 +248,7 @@ define([
 
     return this;
   };
+  
 
   // "I'm a monster..."  ChildDone methods should be replaced with DOM events where possible.
   // This will probably be the last one to go.
