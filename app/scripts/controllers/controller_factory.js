@@ -1,28 +1,29 @@
 define([
   // The top level controllers (typically these get re-used)
-  'controllers/row_controller',
-  'controllers/row_bed_controller',
-  'controllers/step_controller',
-  'controllers/scan_barcode_controller',
-  'controllers/labware_controller',
-  'controllers/connected_controller',
+  "controllers/row_controller",
+  "controllers/row_bed_controller",
+  "controllers/step_controller",
+  "controllers/scan_barcode_controller",
+  "controllers/labware_controller",
+  "controllers/connected_controller",
 
   // Controllers that add extra behaviour, for some reason
-  'controllers/kit_controller',
-  'controllers/robot_controller',
-  'controllers/rack_scan_controller',
-  'controllers/selection_page_controller',
-  'default/default_controller',
-  'controllers/volume_control_controller',
-  'controllers/summary_page_controller',
-  'controllers/file_generator_controller',
+  "controllers/kit_controller",
+  "controllers/robot_controller",
+  "controllers/rack_scan_controller",
+  "controllers/selection_page_controller",
+  "default/default_controller",
+  "controllers/volume_control_controller",
+  "controllers/summary_page_controller",
+  "controllers/file_generator_controller",
+  "controllers/location_controller",
 
   // Component wrapping controllers
-  'app-components/labware/display_controller_wrapper',
-  'app-components/lysing/lysing_controller_wrapper',
-  'app-components/imager/imager_controller'
+  "app-components/labware/display_controller_wrapper",
+  "app-components/lysing/lysing_controller_wrapper",
+  "app-components/imager/imager_controller"
 ], function() {
-  'use strict';
+  "use strict";
 
   var ControllerFactory = function () {
     /* Construct an instance of ControllerFactory

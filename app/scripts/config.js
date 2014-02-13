@@ -66,10 +66,25 @@ define([
       callback();
     },
 
-    // This is for logging only not for authentication or authorisation.
+    // This is for logging only not for proper authentication
+
+    defaultPages: [
+      "pipeline",
+      "lab-activities"
+    ],
+
+    // Add an exclusive pages as an attribute list on each user.
     UserData: {
-      "0000000000001": "Test_User_1"
+      "0000000000001": {
+        email: "Test_User_1",
+        pages: [ "lab-management" ]
+      },
+
+      "0000000000002": {
+        email: "Test_User_2",
+      }
     }
+
   };
 
 });

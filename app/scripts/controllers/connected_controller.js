@@ -231,7 +231,7 @@ define([
       that.model.behaviours.done[action](function() {
         that.owner.childDone(that, "done", {
           batch: that.model.batch,
-          user: that.model.user
+          user: that.owner.config.login
         });
       });
     }

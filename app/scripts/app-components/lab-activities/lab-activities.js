@@ -1,8 +1,7 @@
 define([
   "app-components/process-choice/process-choice",
   "app-components/re-racking/re-racking",
-  "app-components/gel-scoring/gel-scoring"
-], function(ProcessChoice, Reracking, GelScoring) {
+  "app-components/gel-scoring/gel-scoring"], function(ProcessChoice, Reracking, GelScoring) {
   "use strict";
 
   return function(context) {

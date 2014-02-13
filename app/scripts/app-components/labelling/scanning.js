@@ -16,7 +16,8 @@ define([
   
   return function (context) {
     var html  = template(_.extend({
-      label: undefined
+      label: undefined,
+      icon: undefined
     }, context));
 
     

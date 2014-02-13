@@ -1,0 +1,41 @@
+
+{
+  "role_priority": [
+   "samples.extraction.racking.fluidx_tube_dna"
+  ],
+  "workflows": [
+  {
+    "accepts":  "samples.extraction.racking.fluidx_tube_dna" ,
+    "controllerName": "step_controller",
+    "defaultPrinter": "d304bc",
+    "printerType": 1,
+    "buttons": [
+      { "action": "print", "title": "Accept rack layout" },
+      { "action": "next",  "title": "Done" }
+    ],
+    "processTitle":   "Post DNA Extraction Racking - Rack Scanning",
+    "controllers": [
+      {
+        "controllerName": "rack_scan_controller",
+        "defaultPrinter": "d304bc",
+        "printerType": 1,
+        "model": "RackScanModel",
+        "input": {
+          "role":  "samples.extraction.racking.fluidx_tube_dna",
+          "model": "tubes",
+          "title": "2D Extracted DNA Tube"
+        },
+        "output": [
+          {
+            "role": "samples.rack.stock.dna",
+            "aliquotType": "DNA",
+            "purpose": "stock",
+            "model": "tube_racks",
+            "title": "Tube Rack"
+          }
+        ]
+      }
+    ]
+  }
+  ]
+}

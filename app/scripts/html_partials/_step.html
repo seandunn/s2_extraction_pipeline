@@ -3,9 +3,6 @@
   <h3 id="process-title" ><%- templateData.processTitle %></h3>
   </div>
 
-  <div class="span3 offset3">
-    <h4 class="pull-right">User: <%- templateData.user %></h4>
-  </div>
 </div>
 
 <div id="step1" class="step-row row "></div>
@@ -26,7 +23,7 @@
   </select>
   <% } %>
   <% _.each (templateData.buttons, function (buttonsDetails) { %>
-  <button class="btn <%- buttonsDetails.action %>Button" disabled="disabled"><%- buttonsDetails.title %></button>
+  <button class="btn <%- buttonsDetails.action %>Button" disabled="disabled"><i class="<%= buttonsDetails.icon %>"></i> <%- buttonsDetails.title %></button>
   <% }); %>
     </form>
   </div>

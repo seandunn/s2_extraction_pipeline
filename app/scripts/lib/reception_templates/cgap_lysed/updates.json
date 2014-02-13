@@ -17,7 +17,7 @@
       "type":       "float"
     },
     "date_of_sample_collection": {
-      "columnName": "DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)",
+      "columnName": "DATE OF SAMPLE COLLECTION (yyyy-mm-dd only)",
       "type":       "string"
     },
     "is_sample_a_control":       {

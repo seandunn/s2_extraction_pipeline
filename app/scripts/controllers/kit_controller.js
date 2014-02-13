@@ -96,7 +96,12 @@ define([
           if(!model.batch.kit){
             controller.selector().html(_.template(kitPartialHtml)({}));
             controller.barcodeController = controller.controllerFactory.create('scan_barcode_controller', controller);
-            controller.barcodeController.init({ type: 'Kit' });
+
+            controller.barcodeController.init({
+              type: 'Kit',
+              icon: 'icon-tint'
+            });
+
             controller.selector()
                 .find('.barcode')
                 .append(controller.bindReturnKey( controller.barcodeController.renderView(), kitScannedCallback(controller), kitScannedErrorCallback(controller)('Barcode must be a 22 digit number.'), validationOnReturnKeyCallback(controller) ));
