@@ -22,7 +22,7 @@ define([
 
       this.config = config;
       this.config.buttons = this.config.buttons || [
-        {action: "print", title: "Print labels"  },
+        {action: "print", title: "Print labels", icon: "icon-print"  },
         {action: "start", title: "Start process" },
         {action: "end",   title: "End process"   },
         {action: "next",  title: "Next"          }

@@ -26,13 +26,12 @@ module.exports = function (grunt) {
     grunt.initConfig({
         yeoman: yeomanConfig,
         watch: {
-            coffee: {
-                files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
-                tasks: ['coffee:dist']
-            },
-            coffeeTest: {
-                files: ['test/spec/{,*/}*.coffee'],
-                tasks: ['coffee:test']
+            pipeline: {
+              files: [
+                '<%= yeoman.app %>/config/pipelines/{,*/}*.json',
+                '<%= yeoman.app %>/scripts/lib/pipeline_config_schema.json'
+              ],
+              tasks: ['pipeline']
             },
             compass: {
                 files: [
@@ -135,25 +134,10 @@ module.exports = function (grunt) {
                 }
             }
         },
-        coffee: {
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= yeoman.app %>/scripts',
-                    src: '{,*/}*.coffee',
-                    dest: '.tmp/scripts',
-                    ext: '.js'
-                }]
-            },
-            test: {
-                files: [{
-                    expand: true,
-                    cwd: 'test/spec',
-                    src: '{,*/}*.coffee',
-                    dest: '.tmp/spec',
-                    ext: '.js'
-                }]
-            }
+        pipeline: {
+          files: ['<%= yeoman.app %>/config/pipelines/*.json'],
+          outFile: '<%= yeoman.app %>/scripts/pipeline_config-DO_NOT_DIRECTLY_EDIT.json',
+          schemaPath: '<%= yeoman.app %>/scripts/lib/pipeline_config_schema.json'
         },
         compass: {
             options: {
@@ -318,10 +302,11 @@ module.exports = function (grunt) {
                 'compass'
             ],
             test: [
-                'coffee'
+                // 'coffee'
             ],
             dist: [
-                'coffee',
+                // 'coffee',
+              'pipeline',
                 'compass',
                 'imagemin',
                 // 'svgmin',
@@ -407,7 +392,7 @@ module.exports = function (grunt) {
             new_component = [new_path, name+".js"].join("/"),
             blueprint_component = [new_path, config.blueprintComponentName].join("/"),
             filesCreated = 0;
-        
+
         if (grunt.file.isDir(new_path)) {
             grunt.fail.fatal("Directory " + new_path + " already exists!");
         }
@@ -430,9 +415,76 @@ module.exports = function (grunt) {
         grunt.log.ok(filesCreated + " files created in " + new_path).ok();
     });
 
+    grunt.registerTask('pipeline', 'Verify and compile pipeline configs', function(){
+      grunt.log.subhead("Parsing pipeline configs...");
+      var JaySchema = require('jayschema');
+      var js = new JaySchema();
+
+      var options = grunt.config.get(this.name);
+
+      grunt.log.writeflags(options);
+      var schema = grunt.file.readJSON(options.schemaPath);
+
+      var filePath = options.files;
+
+      var files = grunt.file.expand(filePath);
+      var pipelineConfig = { role_priority: [], workflows: [] };
+      var configFile, errs;
+
+      for(var i in files){
+        configFile = grunt.file.readJSON(files[i]);
+
+        grunt.log.writeln('Processing '+files[i]);
+
+        errs       = js.validate(configFile, schema);
+        if (errs.length > 0) {
+          errs.map(function(schemaError){
+            grunt.log.errorlns('instanceContext: ' + schemaError.instanceContext);
+            grunt.log.errorlns('resolutionScope: ' + schemaError.resolutionScope);
+            grunt.log.errorlns('constaintName: '   + schemaError.constaintName);
+            grunt.log.errorlns('constaintValue: '  + schemaError.constaintValue);
+            grunt.log.errorlns('testedValue: '     + schemaError.testedValue);
+            grunt.log.writeln();
+            grunt.log.writeln();
+          });
+
+          grunt.fail.warn('Failed to parse piepline file: '+ files[i]);
+        }
+        else {
+          pipelineConfig.role_priority = pipelineConfig.role_priority.concat(configFile.role_priority);
+          pipelineConfig.workflows     = pipelineConfig.workflows.concat(configFile.workflows);
+          grunt.log.ok('...validated OK.');
+        }
+
+      }
+
+      grunt.log.writeln('Validating combined pipeline config file...');
+      errs = js.validate(configFile, schema);
+
+      if (errs.length > 0) {
+        errs.map(function(schemaError){
+          grunt.log.errorlns('instanceContext: ' + schemaError.instanceContext);
+          grunt.log.errorlns('resolutionScope: ' + schemaError.resolutionScope);
+          grunt.log.errorlns('constaintName: '   + schemaError.constaintName);
+          grunt.log.errorlns('constaintValue: '  + schemaError.constaintValue);
+          grunt.log.errorlns('testedValue: '     + schemaError.testedValue);
+          grunt.log.writeln();
+          grunt.log.writeln();
+        });
+
+        grunt.fail.warn('Validation failed');
+      }
+      else {
+        grunt.log.ok('...validated OK.');
+        grunt.log.ok('Writing combined pipeline_config to: '+options.outFile);
+        grunt.file.write(options.outFile, JSON.stringify(pipelineConfig));
+      }
+
+    });
+
     grunt.registerTask('default', [
-        'jshint',
-        'test',
-        'build'
+      'jshint',
+      'test',
+      'build'
     ]);
 };

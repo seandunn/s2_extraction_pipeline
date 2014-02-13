@@ -5,6 +5,7 @@ define([
 
   // Add new templates after this comment and they will be automatically loaded
   'reception_templates/cgap_lysed',
+  'reception_templates/cgap_lysed_alt',
   'reception_templates/hmdmc_lysed',
   'reception_templates/general_plate',
   'reception_templates/filter_paper',
@@ -95,7 +96,7 @@ define([
   }
 
   // Recurses down the structure passed looking for the columnName definitions.  This builds a
-  // mapping from the header in the manifest to a function that converts a raw value to it's typed
+  // mapping from the header in the manifest to a function that converts a raw value to its typed
   // representation in the manifest.
   function fieldMappers(json) {
     return _.reduce(json, function(memo, value, field) {

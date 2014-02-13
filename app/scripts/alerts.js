@@ -28,12 +28,12 @@ define(['config',
     },
 
     appendView:function (templateData) {
-      var element = $(_.template(alertsPartialHtml)(templateData));
+      var $element = $(_.template(alertsPartialHtml)(templateData));
       setTimeout(function () {
-        element.detach();
+        $element.alert("close")
       }, config.messageTimeout);
 
-      element.appendTo(this.alertElement());
+      $element.appendTo(this.alertElement());
     },
 
     addMessage:function (messageType, message) {

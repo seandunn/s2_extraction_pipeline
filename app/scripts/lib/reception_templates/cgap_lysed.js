@@ -59,7 +59,13 @@ define([
         SBC: {
           friendly_name: "Skin Biopsy Collection",
           sanger_sample_id_core: "SBC"
+        },
+
+        Th2diff: {
+          friendly_name: "Th2diff",
+          sanger_sample_id_core: "Th2diff"
         }
+
       },
 
       validation: validations.nonEmptyString(validations.optional, "GENDER")

@@ -1,10 +1,11 @@
 define([
   "text!app-components/labelling/_printing.html",
   "mapper_services/print",
+  "config",
 
   // Global namespace requires
   "lib/jquery_extensions"
-], function(view, PrintService) {
+], function(view, PrintService, config) {
   "use strict";
 
   var template = _.compose($, _.template(view));
@@ -61,7 +62,7 @@ define([
         return printer.name === details.name;
       });
 
-      return context.user.then(function(user) {
+      return config.userPromise.then(function(user) {
         return printer.print(
           _.invoke(printables, "returnPrintDetails"),
           {user:user}
