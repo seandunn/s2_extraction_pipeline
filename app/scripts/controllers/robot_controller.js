@@ -1,8 +1,15 @@
-define(["controllers/base_controller", "models/robot_model",
+define(["config", "controllers/base_controller", "models/robot_model",
     "app-components/scanning/robot", "lib/pubsub"
-], function(Base, Model, robotInput, PubSub) {
+], function(config, Base, Model, robotInput, PubSub) {
   "use strict";
-  var robotGroups = {"ebase": ["0000000000002"], "fx": ["0000000000001", "0000000010468"], "nx": ["0000000000003"]};
+  //var robotGroups = {"ebase": ["0000000000002"], "fx": ["0000000000001", "0000000010468"], "nx": ["0000000000003"]};
+  var robotGroups=_.reduce(config.Robots, function(memo, robot) {
+    if (_.isUndefined(memo[robot.robotType])) {
+      memo[robot.robotType] = [];
+    }
+    memo[robot.robotType].push(robot.barcode);
+    return memo;
+  }, {});
   var Controller = Object.create(Base);
   _.extend(Controller,
     { register : function(callback) {
