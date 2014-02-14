@@ -2,8 +2,10 @@ define([
   "app-components/process-choice/process-choice",
   "app-components/manifest/maker",
   "app-components/manifest/reader",
-  "app-components/inbox/inbox"
-], function(ProcessChoice, ManifestMaker, ManifestReader, Inbox) {
+  "app-components/inbox/inbox",
+  "app-components/pipeline-graph/pipeline-graph"
+
+], function(ProcessChoice, ManifestMaker, ManifestReader, Inbox, PipelineGraph) {
   "use strict";
 
   return function (context) {
@@ -24,7 +26,9 @@ define([
             "samples.shipping.blood_!na.awaiting_shipping",
             "samples.shipping.blood_!na.awaiting_shipping.batched"
           ]
-        }
+        },
+        {label: "Pipeline Graph", id: "pipeline-graph", constructor: PipelineGraph}
+
 
       ]
     }, context));

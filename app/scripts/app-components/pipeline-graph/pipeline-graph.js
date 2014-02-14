@@ -1,10 +1,10 @@
 define([
   "text!app-components/pipeline-graph/_component.html",
-  "text!pipeline_config.json",
+  "text!pipeline_config-DO_NOT_DIRECTLY_EDIT.json",
 
   // Global config
   "d3"
-], function(graphPartial, pipelineConfig){
+], function(graphPartial, pipelineConfig, d3){
   "use strict";
 
   var pipelineJSON = JSON.parse(pipelineConfig);
