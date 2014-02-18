@@ -78,7 +78,6 @@ define([
 
     setUser: function(user) {
       this.user = user;
-      this.owner.childDone(this, "userAdded");
     },
 
     setupInputControllers: function(reset) {
@@ -222,7 +221,7 @@ define([
                   output[details.title] = state.labware;
                   return state.labware;
                 }, function() {
-                  model.owner.childDone(model, "failed", {});
+                  model.emit("failed", {})
                 });
 
               })
@@ -281,15 +280,15 @@ define([
               model.outputs.resolve(outputsCreated).then(function(outputs) {
                 model.printBarcodes(labels, printer);
               });
-              model.owner.childDone(model, "outputsReady", labels);
+              model.emit("outputsReady", labels);
             }).fail(function() {
-              model.owner.childDone(model, "failed", {});
+              model.emit("failed", {})
             });
           });
         });
       }, function() {
         model.outputs.resolve([]);
-        model.owner.childDone(model, "outputsReady", {});
+        model.emit("outputsReady", {});
       });
     }, // end of createOutputs
 
@@ -421,12 +420,13 @@ define([
       .then(function(operation) {
         // STEP 5: Override the behaviour of the operation so that we do the correct things
         var doNothing = function() { };
-        _.each(["start","operate","complete"], function(event) {
+        var eventNames = ["startOperation","operateOperation","completeOperation"];
+        _.each(["start","operate","complete"], function(event, pos) {
           model.behaviours[event][happeningAt](function() {
             var handler = operation[event];
             operation[event] = function() {
               return handler.apply(this, arguments).then(function() {
-                model.owner.childDone(model,event+"Operation",{});
+                model.emit(eventNames[pos], {});
               });
             };
           }, function() {
@@ -437,9 +437,9 @@ define([
       }).then(function(operation) {
         // STEP 6: Finally perform the operation and report the final completion
         operation.operation().then(function () {
-          model.owner.childDone(model, "successfulOperation", controllers);
+          model.emit("successfulOperation", controllers);
         }).fail(function() {
-          model.owner.childDone(model, "failedOperation", {});
+          model.emit("failedOperation", {});
         });
       });
     }

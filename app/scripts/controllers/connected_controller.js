@@ -22,8 +22,11 @@ define([
       this.rowControllers    = [];
       this.controllerFactory = controllerFactory;
       this.template         = _.template(Template);
+      
       return this;
     },
+    
+   
 
     setupController:function (input_model, jquerySelection) {
       this.jquerySelection = jquerySelection;
@@ -40,9 +43,27 @@ define([
             thisController.jquerySelection().html(thisController.template({nbRow:12}));
             thisController.setupSubControllers();
           });
+      this.attachHandlers();
       return this;
     },
+    
+    attachHandlers: function() {
+      this.model.addListeners({
+        "outputsReady": _.bind(this.resetSubControllers, this),
+        "successfulOperation": _.bind(this.operateOnNextRowUnset, this),
+        "startOperation": _.bind(this.transferStarted, this),
+        "completeOperation": _.bind(this.transferCompleted, this),
+        "barcodePrintSuccess": _.bind(this.barcodePrintSuccess, this),
+        "barcodePrintFailure": _.bind(this.barcodePrintFailure, this)
+      });
+    },
 
+    resetSubControllers: function() {
+      this.model.ready = true;
+      this.setupSubControllers(true);
+      PubSub.publish("printing_finished.step_controller.s2", this);
+    },
+    
     setupSubControllers: function(reset) {
       var thisController = this;
       this.model.setupInputControllers(reset)
@@ -86,8 +107,6 @@ define([
     childDone:function (child, action, data) {
       if (child === this.currentView) {
         this.currentViewDone(child, action, data);
-      } else if (child === this.model) {
-        this.modelDone(child, action, data);
       } else {
         this.unknownDone(child, action, data);
       }
@@ -126,67 +145,58 @@ define([
         }
       }
     },
+    
+    transferStarted: function() {
+      this.model.started = true;
+      PubSub.publish("message.status.s2", this, {message: 'Transfer started'});
+      this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
+      this.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
+    },
+    
+    transferCompleted: function() {
+      PubSub.publish("message.status.s2", this, {message: 'Transfer completed'});
+      this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
+      if (this.checkPageComplete()) {
+        this.owner.childDone(this, "enableBtn", {buttons:[{action:"next"}]});
+      }
 
-    modelDone: function(child, action, data) {
-      if (action === 'outputsReady') {
-        this.model.ready = true;
-        this.setupSubControllers(true);
-        PubSub.publish("printing_finished.step_controller.s2", this);
+      var that = this;
+      this.model.behaviours.done.transfer(function() {
+        that.owner.childDone(that, "done", { batch:that.model.batch });
+      });
+    },
+    
+    barcodePrintSuccess: function() {
+      PubSub.publish("message.status.s2", this, {message: 'Barcode labels printed'});
+      PubSub.publish("printing_finished.step_controller.s2", this);
+      PubSub.publish("printing_finished.barcodePrintSuccess", this);
+      this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
+    },
+    barcodePrintFailure: function() {
+      PubSub.publish("error.status.s2", this, {message: 'Barcode labels could not be printed'});
+      PubSub.publish("printing_finished.step_controller.s2", this);
+      this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});      
+    },
+    operateOnNextRowUnset: function(successfulRowControllers) {
+      // locks the rowControllers which have successfully completed their operations
+      _.each(successfulRowControllers, function(controller){
+        controller.lockRow();
+      });
 
-      } else if (action === "barcodePrintSuccess") {
-
-        PubSub.publish("message.status.s2", this, {message: 'Barcode labels printed'});
-        PubSub.publish("printing_finished.step_controller.s2", this);
-        PubSub.publish("printing_finished.barcodePrintSuccess", this);
-        this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
-
-      } else if (action === "barcodePrintFailure") {
-
-        PubSub.publish("error.status.s2", this, {message: 'Barcode labels could not be printed'});
-        PubSub.publish("printing_finished.step_controller.s2", this);
-        this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
-
-      } else if (action === "startOperation") {
-
-        this.model.started = true;
-        PubSub.publish("message.status.s2", this, {message: 'Transfer started'});
-        this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
-        this.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
-
-      } else if (action === "completeOperation") {
-
-        PubSub.publish("message.status.s2", this, {message: 'Transfer completed'});
-        this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
-        if (this.checkPageComplete()) {
-          this.owner.childDone(this, "enableBtn", {buttons:[{action:"next"}]});
+      // find the index of the last rowController which has successfully completed its operations
+      var lastIndex = -1;
+      _.each(this.rowControllers,function(rowController, index){
+        if (_.contains(successfulRowControllers,rowController)){
+          lastIndex = lastIndex < index ? index : lastIndex;
         }
-
-        var that = this;
-        this.model.behaviours.done.transfer(function() {
-          that.owner.childDone(that, "done", { batch:that.model.batch });
-        });
-
-      } else if (action === "successfulOperation") {
-        // locks the rowControllers which have successfully completed their operations
-        _.each(data, function(controller){
-          controller.lockRow();
-        });
-
-        // find the index of the last rowController which has successfully completed its operations
-        var lastIndex = -1;
-        _.each(this.rowControllers,function(rowController, index){
-          if (_.contains(data,rowController)){
-            lastIndex = lastIndex < index ? index : lastIndex;
-          }
-        });
-        // if there is at least one controller after...
-        if (lastIndex+1 < this.rowControllers.length){
-          // we unlock it
-          this.rowControllers[lastIndex+1].unlockRow();
-        }
+      });
+      // if there is at least one controller after...
+      if (lastIndex+1 < this.rowControllers.length){
+        // we unlock it
+        this.rowControllers[lastIndex+1].unlockRow();
       }
     },
-
+    
     readyToCreateOutputs: function() {
       return !this.model.started;
     },
