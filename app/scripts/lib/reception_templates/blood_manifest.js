@@ -26,7 +26,7 @@ define([
       sample_types: {
         "Blood - Unlysed": {
           sample: "Blood",
-          aliquot: "!NA",
+          aliquot: "blood",
           defaults: {cellular_material:{lysed: false}}
         }
       },
