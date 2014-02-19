@@ -7,16 +7,6 @@ define([
   'use strict';
 
   var BasePageModel = new EventEmitter();
-
-  var previousEmit = BasePageModel.emit;
-  
-  BasePageModel.emit = function() {
-    var eventName = arguments[0];
-    var data = Array.prototype.slice(1);
-    console.log("Sending event \"" + eventName + "\" with:");
-    console.dir(data);
-    return previousEmit.apply(this, arguments);
-  }
   
   _.extend(BasePageModel, {
     initialiseCaching: function() {
