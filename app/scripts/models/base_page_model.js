@@ -1,12 +1,13 @@
 define([
+        "event_emitter",
   'mapper_services/print',
   'connected/caching'
-], function (PrintService, Cache) {
+], function (EventEmitter, PrintService, Cache) {
 
   'use strict';
 
-  var BasePageModel = Object.create(null);
-
+  var BasePageModel = new EventEmitter();
+  
   _.extend(BasePageModel, {
     initialiseCaching: function() {
       var model = this;
@@ -45,15 +46,9 @@ define([
       return printer.print(printItems, {
         user: this.user
       }).done(function() {
-        //TODO: remove guard code when childDone has been removed
-        if(that.owner && that.owner.childDone){
-          that.owner.childDone(that, 'barcodePrintSuccess', {});
-        }
+        that.emit('barcodePrintSuccess', {});
       }).fail(function() {
-        //TODO: remove guard code when childDone has been removed
-        if(that.owner && that.owner.childDone){
-          that.owner.childDone(that, 'barcodePrintFailure', {});
-        }
+        that.emit('barcodePrintFailure', {});
       });
     }
   });
