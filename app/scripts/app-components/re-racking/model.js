@@ -231,9 +231,11 @@ define([
 
       return $.when.apply(null, orderPromisesByRack)
       .then(function(){
-
+        // FIX:
+        var promises = (!_.isArray(arguments[0]))? [arguments] : arguments;
+        // END
         racksPerOrderUuid = _
-        .reduce(arguments, function(memo, rackOrders){
+        .reduce(promises, function(memo, rackOrders){
           var rack   = _.head(rackOrders);
           var orders = _.chain(rackOrders).rest().flatten().value();
 
