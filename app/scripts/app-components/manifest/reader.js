@@ -227,7 +227,7 @@ define([
         memo[processName] = [];
       }
 
-      uuid = manifest.getSampleBySangerBarcode(sample["Tube Barcode"]).resource.uuid;
+      uuid = manifest.getSampleBySangerBarcode(sample).resource.uuid;
 
       memo[processName].push(uuid);
 
