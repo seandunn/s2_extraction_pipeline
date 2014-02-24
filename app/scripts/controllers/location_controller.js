@@ -5,7 +5,8 @@ define([
   "models/location_model",
   "views/location_view",
   "lib/pubsub",
-  "mapper/operations"
+  "mapper/operations",
+  "lib/underscore_extensions"
 ], function(BaseController, LocationCollection, ItemCollection, LocationModel, LocationView, PubSub, Operations) {
     
   var LocationController = function(owner) {
@@ -18,7 +19,7 @@ define([
     this._setRole();
   }
 
-  LocationController.prototype.addListeners = function() {};
+  LocationController.prototype.addListeners = _.ignore;
     
   LocationController.prototype.setupController = function(args, selector) {
     this.user     = args["user"];
@@ -76,7 +77,7 @@ define([
   }
 
   LocationController.prototype._setRole = function() {
-    this.role = this.config.accepts;
+    this.role = _.first(this.config.accepts);
   }
 
   LocationController.prototype.onChange = function(optionValue) {
@@ -93,7 +94,7 @@ define([
   }
 
   LocationController.prototype._disableBtn = function(btnAction) {
-    this.owner.disableBtn(btnAction);
+    this.owner.disableBtn(btnAction)
   }
 
   LocationController.prototype._callChildDone = function(action, data) {
@@ -135,7 +136,7 @@ define([
         input: {
           order: order,
           resource: resource,
-          role: config.accepts
+          role: _.first(config.accepts)
         },
         output: {
           order: order,

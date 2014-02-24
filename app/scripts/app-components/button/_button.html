@@ -1,0 +1,14 @@
+<% if (action == "print") { %>
+  <label for="printer-select">Current Printer:</label>
+  <select class="printer-select" name="printer-select">
+    <% _.each (printerList, function (printer, pos) { %>
+      <option value="<%= printer.name %>" <% (defaultPrinter===printer.name) ? "selected" : "" %> >
+        <%= printer.friendlyName %>
+      </option>
+    <% }); %>
+  </select>
+<% } %>
+<button class="btn <%= action %>Button" disabled="disabled">
+    <i class="<%= icon %>"></i> 
+  <%= title %>
+</button>

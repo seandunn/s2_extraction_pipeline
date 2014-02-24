@@ -21,7 +21,7 @@ require.config({
     mapper_services:      "../components/S2Mapper/app/scripts/services",
     mapper_test:          "../components/S2Mapper/test",
     mapper_testjson:      "../components/S2Mapper/test/json",
-    event_emitter:      "../components/eventEmitter/EventEmitter",
+    event_emitter:        "../components/eventEmitter/EventEmitter",
     config:               "config",
     reception_templates:  "lib/reception_templates",
     images:               "../images",

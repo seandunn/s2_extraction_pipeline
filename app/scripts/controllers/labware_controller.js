@@ -4,35 +4,9 @@ define(["controllers/base_controller",
   "lib/barcode_checker",
   "lib/util",
   "labware/presenter",
-  "event_emitter"
-], function (BaseController, LabwareView, PubSub, BarcodeChecker, Util, LabwarePresenter, EventEmitter) {
+  "models/labware_model"
+], function (BaseController, LabwareView, PubSub, BarcodeChecker, Util, LabwarePresenter, LabwareModel) {
   "use strict";
-
-  var LabwareModel = new EventEmitter();
-
-  _.extend(LabwareModel, LabwarePresenter, {
-    init: function (owner, setupData) {
-      this.owner = owner;
-      $.extend(this, setupData);
-
-      return this;
-    },
-    setResource: function(resource, presenter) {
-      this.presentResource = presenter;
-      this.resource        = resource;
-      this.emit("resourceUpdated");
-    },
-    displayResource: function(resourceSelector) {
-      var resourceController = this.owner.resourceController,
-          resource           = this.resource;
-
-      resourceController.setupController(this.presentResource(resource), resourceSelector);
-    },
-
-    displayLabware: function() {
-      return this.display_labware === undefined ? true : this.display_labware;
-    }
-  });
 
   var LabwareController = Object.create(BaseController);
 
@@ -256,7 +230,6 @@ define(["controllers/base_controller",
       barcodeSelection.val("");
     }, 250);
   }
-
   
   function validationOnReturnKeyCallback (controller, type, barcodePrefixes) {
     var validation = (type === "2D_tube")? BarcodeChecker.is2DTubeBarcodeValid : 
