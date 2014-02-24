@@ -111,7 +111,20 @@ define([
               .value();
     },
 
-    getSampleBySangerBarcode: function(sangerBarcode) {
+    _getBarcodeField: function() {
+      // Ugggghhhhhhhh
+      return _.chain(this.template.templates.display)
+        .filter(function(fields) {
+          return !_.isUndefined(fields.barcode);
+        })
+        .first()
+        .value()
+        .barcode
+        .columnName;
+    },
+
+    getSampleBySangerBarcode: function(sample) {
+      var sangerBarcode = sample[this._getBarcodeField()]
       return _.findWhere(this.details, { barcode: sangerBarcode });
     },
 
