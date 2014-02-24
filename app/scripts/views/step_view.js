@@ -1,6 +1,6 @@
 define([
-  'text!html_partials/_step.html'
-], function(partial) {
+  'text!html_partials/_step.html', "event_emitter"
+], function(partial, EventEmitter) {
   var View = function(owner, selector) {
     this.owner    = owner;
     this.selector = selector;
@@ -8,18 +8,22 @@ define([
     return this;
   };
 
-  _.extend(View.prototype, {
+  _.extend(View.prototype, EventEmitter.prototype, {
     renderView: function(model) {
       var parent = this.selector().empty().off().append(this.template(model));
 
       var view = this;
 
       _.each(model.buttons, function(buttonDetails) {
-        parent.find('.'+buttonDetails.action+'Button').on('click', function(event) {
-          event.preventDefault();          
-          view.owner.childDone(view, buttonDetails.action, view.selector().find('.printer-select').val());
-        });
-      });
+        parent.find('.'+buttonDetails.action+'Button').on('click', _.bind(function(event) {
+          event.preventDefault();
+          this.emit("clickButton", buttonDetails.action);
+        }, this));
+      }, this);
+    },
+    
+    getPrinterSelected: function() {
+      return this.selector().find('.printer-select').val();
     },
 
     showButton:function(action){
@@ -29,7 +33,16 @@ define([
     hideButton:function(action){
       this.setButtonVisible(action, false);
     },
-
+    toggleWaitingPage: function(enable) {
+      if (enable) {
+        this.selector().find('.component').trigger("start_process.busybox.s2");
+      } else {
+        this.selector().find('.component').trigger("end_process.busybox.s2");
+      }
+    },
+    release: function() {
+      this.selector().empty().off();
+    },
     setButtonVisible:function(action, visible){
       if (visible)
         getButtonSelectionByAction(this.selector(),action).show();

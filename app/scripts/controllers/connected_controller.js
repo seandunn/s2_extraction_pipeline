@@ -53,21 +53,31 @@ define([
         "successfulOperation": _.bind(this.operateOnNextRowUnset, this),
         "startOperation": _.bind(this.transferStarted, this),
         "completeOperation": _.bind(this.transferCompleted, this),
-        "barcodePrintSuccess": _.bind(this.barcodePrintSuccess, this),
-        "barcodePrintFailure": _.bind(this.barcodePrintFailure, this)
+        "barcodePrintSuccess": _.bind(this.owner.onBarcodePrintSuccess, this.owner),
+        "barcodePrintFailure": _.bind(this.owner.onBarcodePrintFailure, this.owner),
+        "inputRemoved": _.bind(this.onInputRemoved, this),
+        "outputRemoved": _.bind(this.onOutputRemoved, this)
       });
     },
+    
+    onBarcodePrintSuccess: function() {
+      return this.owner.onBarcodePrintSuccess.apply(this, arguments);
+    },
+    
+    onBarcodePrintFailure: function() {
+      return this.owner.onBarcodePrintFailure.apply(this, arguments);
+    },    
 
     resetSubControllers: function() {
       this.model.ready = true;
       this.setupSubControllers(true);
-      PubSub.publish("printing_finished.step_controller.s2", this);
+      this.emit("printingFinished");
     },
     
     setupSubControllers: function(reset) {
       var thisController = this;
       this.model.setupInputControllers(reset)
-          .then(function(){
+          .then(_.bind(function(){
             var currentController = _.find(thisController.rowControllers, function (controller) {
               return !controller.isRowComplete();
             });
@@ -83,10 +93,9 @@ define([
               currentController.unlockRow();
             }
             if(thisController.model.started){
-              thisController.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
-              thisController.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
+              this.emit("renderStartedProcess"); 
             }
-          });
+          }, this));
       return this;
     },
     
@@ -126,57 +135,40 @@ define([
         }).done(function() {
           controller.focus();
         });
-      } else if (action === 'inputRemoved') {
-        this.model.inputs.push(data.resource);
-        controller.owner.childDone(controller, "disableBtn", {buttons:[{action:"start"}]});
-      } else if (action === 'outputRemoved') {
-        this.model.outputs.push(data.resource);
-        controller.owner.childDone(controller, "disableBtn", {buttons:[{action:"start"}]});
       } else if (action === 'completed') {
-        this.rowDone(child, action, data);
-      }
-    },
-
-    rowDone: function(child, action, data) {
-      if (action === 'completed') {
         this.model.operate('row', [child]);
         if (this.checkPageComplete()) {
-          this.owner.childDone(this, "enableBtn", {buttons:[{action:"start"}]});
+          this.emit("renderCompleteRowDone");
         }
       }
     },
-    
+    onInputRemoved: function() {
+      this.model.inputs.push(data.resource);
+      this.emit("inputRemoved");
+    },
+    onOutputRemoved: function() {
+      this.model.outputs.push(data.resource);
+      this.emit("outputRemoved");
+    },
     transferStarted: function() {
-      this.model.started = true;
-      PubSub.publish("message.status.s2", this, {message: 'Transfer started'});
-      this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
-      this.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
+      if (_.isUndefined(this.model.started)) {
+        this.model.started = true;
+        this.emit("processBegin")
+      }
+      this.emit("transferStarted");
     },
     
     transferCompleted: function() {
-      PubSub.publish("message.status.s2", this, {message: 'Transfer completed'});
-      this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
+      this.model.behaviours.done.transfer(_.bind(function() {
+        this.owner.childDone(this, "done", { batch:this.model.batch });
+      }, this));
+      
+      this.emit("transferCompleted");      
       if (this.checkPageComplete()) {
-        this.owner.childDone(this, "enableBtn", {buttons:[{action:"next"}]});
+        this.emit("processFinished");        
       }
-
-      var that = this;
-      this.model.behaviours.done.transfer(function() {
-        that.owner.childDone(that, "done", { batch:that.model.batch });
-      });
     },
     
-    barcodePrintSuccess: function() {
-      PubSub.publish("message.status.s2", this, {message: 'Barcode labels printed'});
-      PubSub.publish("printing_finished.step_controller.s2", this);
-      PubSub.publish("printing_finished.barcodePrintSuccess", this);
-      this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
-    },
-    barcodePrintFailure: function() {
-      PubSub.publish("error.status.s2", this, {message: 'Barcode labels could not be printed'});
-      PubSub.publish("printing_finished.step_controller.s2", this);
-      this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});      
-    },
     operateOnNextRowUnset: function(successfulRowControllers) {
       // locks the rowControllers which have successfully completed their operations
       _.each(successfulRowControllers, function(controller){
@@ -201,49 +193,48 @@ define([
       return !this.model.started;
     },
 
-    currentViewDone: function(child, action, data) {
+    currentViewDone: function() {
     },
 
     initialController: function() {
       this.model.previous = true;
-      this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
+      this.emit("printReady");
     },
 
-    previousDone: function(child, action, data) {
+    previousDone: function() {
       this.model.previous = true;
     },
 
-    print: function(child, action, data) {
+    print: function() {
       if (this.readyToCreateOutputs()) {
-        PubSub.publish("printing_started.step_controller.s2", this);
-        this.model.createOutputs(data);
+        this.emit("printingStarted");
+        this.model.createOutputs(this.owner.getPrinterSelected());
       }
     },
 
-    next:  function(child, action, data){
+    next:  function(){
       var controller = this;
-      this.model.behaviours.done[action](
-        function(){ controller.owner.childDone(controller, 'done') },
-        function(){ eventHandler.call(controller, child, action, data); }
+      this.model.behaviours.done.next(
+        function(){ controller.owner.childDone(controller, 'done'); },
+        _.bind(actionOperation, this, "next")
       )
     },
 
-    start: eventHandler,
+    start: _.partial(actionOperation, "start"),
 
-    end:   eventHandler
+    end:   _.partial(actionOperation, "end")
   });
   return Controller;
 
-  function eventHandler(child, action, data) {
+  function actionOperation(action) {
     if (this.checkPageComplete()) {
-      var that = this;
-      that.model.operate(action, that.rowControllers);
-      that.model.behaviours.done[action](function() {
-        that.owner.childDone(that, "done", {
-          batch: that.model.batch,
-          user: that.owner.config.login
+      this.model.operate(action, this.rowControllers);
+      this.model.behaviours.done[action](_.bind(function() {
+        this.owner.childDone(this, "done", {
+          batch: this.model.batch,
+          user: this.owner.config.login
         });
-      });
+      }, this));
     }
   }
 });

@@ -45,10 +45,27 @@ define([
         batch: this.model.batch && this.model.batch.uuid,
         user: this.model.user
       });
+      
+      this.view.on("fileLoaded", _.bind(this.onFileLoaded, this));
 
       this.labwareController.renderView();
-
       this.labwareController.updateModel(this.model.rack);
+    },
+    
+    onFileLoaded: function(contents) {
+      this.model.analyseFileContent(contents).then(_.bind(function(scanModel){
+        this.view.updateToValidatedFile();
+
+        PubSub.publish("message.status.s2", this, {message: "File validated."});
+
+        // We update the labware view but we've already translated it, so force the display to
+        // be the identity, rather than the default mapping.
+        this.labwareController.updateModel(scanModel.rack, _.identity);
+
+        this.emit("validatedFile");
+      }, this), function (errorMessage) {
+        PubSub.publish("error.status.s2", this, errorMessage);
+      });
     },
 
     setupSubControllers: function () {
@@ -74,10 +91,10 @@ define([
     },
 
     initialController: function () {
-      this.owner.childDone(this, "disableBtn", {});
+      //this.owner.childDone(this, "disableBtn", {});
     },
     previousDone: function() {
-      this.owner.childDone(this, "disableBtn", {});
+      //this.owner.childDone(this, "disableBtn", {});
     },
 
     childDone: function (child, action, data) {
@@ -93,32 +110,36 @@ define([
       var printer        = $(".printer-select").val();
 
       this.model.fire(printer).fail(function(error){
-        PubSub.publish("error.status.s2", thisController, { message: error });
+        PubSub.publish("error.status.s2", thisController, error);
       }).then(function(){
         thisController.view.disableDropZone();
 
-        thisController.owner.childDone(this, "disableBtn", {
+        thisController.emit("processBegin");
+        thisController.emit("processFinished");
+        /*thisController.owner.childDone(this, "disableBtn", {
           buttons: [{action: "print"}]
         });
 
         thisController.owner.childDone(this, "enableBtn", {
           buttons: [{action: "next"}]
-        });
+        });*/
 
         PubSub.publish("message.status.s2", thisController, { message: "Rack registered." });
       });
     },
 
     end: function(){
-      var thisController = this;
-      this.model.save().then(function(message){
-        thisController.view.disableDropZone();
-        thisController.owner.childDone(thisController, "disableBtn", {buttons: [{action: "end"}]});
-        thisController.owner.childDone(thisController, "enableBtn", {buttons: [{action: "next"}]});
-        PubSub.publish("message.status.s2", thisController, {message:message})
-      },
+      this.model.save().then(_.bind(function(message){
+        this.view.disableDropZone();
+        this.emit("transferCompleted");
+        this.emit("processFinished");
+        /*thisController.owner.childDone(thisController, "disableBtn", {buttons: [{action: "end"}]});
+        thisController.owner.childDone(thisController, "enableBtn", {buttons: [{action: "next"}]});*/
+        PubSub.publish("message.status.s2", this, {message:message})
+      }, this),
       function(errorMessage){
         $("body").trigger("error.status.s2", errorMessage);
+        PubSub.publish("error.status.s2", this, {message:message})
       });
     },
 

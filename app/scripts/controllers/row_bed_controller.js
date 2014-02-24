@@ -358,6 +358,7 @@
       if (this.owner.config.rowBehaviour==="bedRecording") {
         this.setupControllerWithBedRecording(input_model);
       } else {
+        // onBarcodePrintSuccess
         PubSub.subscribe("printing_finished.barcodePrintSuccess", _.bind(function() {
           // Enable the robot
           $(".robot input").prop("disabled", false).focus();

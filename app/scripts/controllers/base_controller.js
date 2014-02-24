@@ -1,11 +1,15 @@
-define(['config'
-, 'lib/barcode_checker'
-, 'lib/util'
-], function (appConfig, BarcodeChecker, Util) {
-  'use strict';
+define(["config","event_emitter","lib/barcode_checker","lib/util"], 
+  function (appConfig, EventEmitter, BarcodeChecker, Util) {
+  "use strict";
 
-  var BaseController = Object.create(null);
+  var BaseController = new EventEmitter();
 
+  var oldEmit = BaseController.emit;
+  BaseController.emit = function() {
+    console.log(arguments[0]);
+    return oldEmit.apply(this, arguments);
+  };
+  
   $.extend(BaseController, {
     getAppConfig: function() { return appConfig; },
     // This should be registered with model not controller
