@@ -5,12 +5,13 @@
     "samples.shipping.blood_!na.awaiting_shipping.batched",
 
     "samples.extraction.lysing.blood",
+    "samples.extraction.prelysing.blood",
     "samples.extraction.prelysing.blood.batched"
   ],
   "workflows": [{
     "accepts":  "samples.extraction.lysing.blood.awaiting_reception" ,
     "controllerName":"selection_page_controller",
-    "processTitle": "Receive Tubes - Batch for Prelysing transfer",
+    "processTitle": "Receive Tubes",
     "capacity": 96,
     "input":        {
       "role":"samples.extraction.lysing.blood.awaiting_reception",
@@ -18,11 +19,28 @@
     },
     "output": [
                {
-                 "role":       "samples.extraction.prelysing.blood.batched",
-                 "aliquotType":"blood"
+                 "role":       "samples.extraction.prelysing.blood",
+                 "aliquotType":"blood",
+                 "not_batched":true
                }
                ]
-    },                
+    },
+    {
+      "accepts":  "samples.extraction.prelysing.blood" ,
+      "controllerName":"selection_page_controller",
+      "processTitle": "Batch for Prelysing transfer",
+      "capacity": 96,
+      "input":        {
+        "role":"samples.extraction.prelysing.blood",
+        "model":"tubes"
+      },
+      "output": [
+                 {
+                   "role":       "samples.extraction.prelysing.blood.batched",
+                   "aliquotType":"blood"
+                 }
+                 ]
+    },
     {
       "accepts":        "samples.extraction.prelysing.blood.batched" ,
       "controllerName": "step_controller",
