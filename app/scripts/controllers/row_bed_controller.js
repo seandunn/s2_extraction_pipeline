@@ -182,11 +182,26 @@
         }
         return defer;
       }
-      
+      function bedValidation(bedList, barcode) {        
+        var defer = $.Deferred();
+        var pos = _.indexOf(bedList, barcode);
+        if (pos>=0) {
+          // We remove the barcode so it cannot be used as a valid bed in future
+          bedList.splice(pos, 1);
+          defer.resolve(barcode);
+        } else {
+          defer.reject();
+          PubSub.publish("error.status.s2", undefined, 
+            {message: ["Incorrect bed barcode"].join('')});
+        }
+        return defer;
+      }
       var component = bedVerification({
         bedsConfig: robotsConfig,
-        plateValidations: [_.partial(plateLabwareValidation, inputModel.labware1),
-                           _.partial(plateLabwareValidation, inputModel.labware2)],
+        plateValidations: [/* left  */ _.partial(plateLabwareValidation, inputModel.labware1),
+                           /* right */ _.partial(plateLabwareValidation, inputModel.labware2)],
+        bedValidations: [/* left  */ _.partial(bedValidation),
+                         /* right */ _.partial(bedValidation)],
         fetch: _.partial(function(rootPromise, barcode) {
           return rootPromise.then(function(root) {
             return root.findByLabEan13(barcode);
@@ -329,7 +344,7 @@
           PubSub.publish("enable_buttons.step_controller.s2", this.owner, {buttons: [{action: "start"}]});      
         } else {
           PubSub.publish("disable_buttons.step_controller.s2", this.owner, {buttons: [{action: "start"}]});            
-        }        
+        }
       }, controller, {buttons: [{action: "start"}]}), this));
       
       this.linearProcessLabwares = linear;
@@ -358,11 +373,6 @@
       if (this.owner.config.rowBehaviour==="bedRecording") {
         this.setupControllerWithBedRecording(input_model);
       } else {
-        // onBarcodePrintSuccess
-        PubSub.subscribe("printing_finished.barcodePrintSuccess", _.bind(function() {
-          // Enable the robot
-          $(".robot input").prop("disabled", false).focus();
-        }, this));
         PubSub.publish("enable_buttons.step_controller.s2", this.owner, {buttons: [{action: "print"}]});        
         this.setupControllerWithBedVerification(input_model);
       }

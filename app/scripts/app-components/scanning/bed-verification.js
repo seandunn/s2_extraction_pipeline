@@ -17,6 +17,7 @@ define([ "app-components/linear-process/linear-process",
         position: 0,
         notMessage: true,
         recordingValidation: function() {return arguments;},
+        bedValidation: context.bedValidations[0],
         plateValidation: context.plateValidations[0]
       }, context), componentsList) },
       { constructor: _.partial(buildBedRecording, _.extend({
@@ -24,6 +25,7 @@ define([ "app-components/linear-process/linear-process",
         position: 1, 
         notMessage: true,
         recordingValidation: function() {return arguments;},
+        bedValidation: context.bedValidations[1],
         plateValidation: context.plateValidations[1]
       }, context), componentsList) } ]
     });
@@ -41,7 +43,7 @@ define([ "app-components/linear-process/linear-process",
     });
 
     function validation() {
-      var robotBarcode = arguments[0]; 
+      var robot = arguments[0]; 
       var bedRecords = _.map(Array.prototype.slice.call(arguments, 1), function(list) {
         var data = list[1];
         return ({
@@ -51,24 +53,20 @@ define([ "app-components/linear-process/linear-process",
         });
       });
       
-      var robot = _.find(context.bedsConfig, function(robot) {
-        return robot.barcode === robotBarcode;
-      });
-      
       var defer = new $.Deferred();
-      if (_.some(robot.beds, function(bedPair) {
-        return (bedPair[0].barcode === bedRecords[0].bed && bedPair[1].barcode === bedRecords[1].bed); 
-      })) {
-        defer.resolve({
-          robot: robot,
-          verified: bedRecords
-        });
-      }
-      else {
-        defer.reject();
-      }
+      
+      // All verification has been delegated to bed recording component
+      defer.resolve({
+        robot: robot,
+        verified: bedRecords
+      });
+
       return defer;
     }
+    
+    obj.view.on("error.bed-recording.s2", function() {
+      obj.view.trigger("error.bed-verification.s2");
+    });
     
     $.when.apply(undefined, [ robotScannedPromise
     ].concat(bedVerificationPromises)).then(context.validation || validation).then(
