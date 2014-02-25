@@ -4,9 +4,9 @@
     "samples.shipping.blood_!na.awaiting_shipping",
     "samples.shipping.blood_!na.awaiting_shipping.batched",
 
-    "samples.extraction.lysing.blood",
     "samples.extraction.prelysing.blood",
-    "samples.extraction.prelysing.blood.batched"
+    "samples.extraction.prelysing.blood.batched",
+    "samples.extraction.lysing.blood"    
   ],
   "workflows": [{
     "accepts":  "samples.extraction.lysing.blood.awaiting_reception" ,
