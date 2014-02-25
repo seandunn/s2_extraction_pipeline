@@ -63,7 +63,12 @@ define([
       this.owner = owner;
       return this;
     },
-
+    onStartOperation: function() {
+      
+    },
+    onCompleteOperation: function() {
+      
+    },
     setupController:function (input_model, jquerySelection) {
       var controller = this;
       this.jquerySelection = jquerySelection;

@@ -29,7 +29,8 @@ define([
 
       return getTubesOnRack(model, locationsSortedByBarcode)
         .fail(function (error) {
-          model.owner.childDone(model, "error", error.message);
+          return error.message;
+          //model.owner.childDone(model, "error", error.message);
         })
         .then(function (inputTubes) {
           model.inputs = $.Deferred().resolve(inputTubes).promise();
@@ -103,9 +104,10 @@ define([
         .then(function (result) {
           rack = result;
           return model.inputs;
-        }).fail(function () {
+        }).fail(function (errorObj) {
+          var errorMsg = JSON.parse(errorObj.responseText).general.join("\n");
           deferred.reject({
-            message: "Couldn't load the input tubes! Contact the administrator of the system."
+            message: errorMsg || "Couldn't load the input tubes! Contact the administrator of the system."
           });
         }).then(function (result) {
           inputs = result;
