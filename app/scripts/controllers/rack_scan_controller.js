@@ -91,10 +91,8 @@ define([
     },
 
     initialController: function () {
-      //this.owner.childDone(this, "disableBtn", {});
     },
     previousDone: function() {
-      //this.owner.childDone(this, "disableBtn", {});
     },
 
     childDone: function (child, action, data) {
@@ -116,13 +114,6 @@ define([
 
         thisController.emit("processBegin");
         thisController.emit("processFinished");
-        /*thisController.owner.childDone(this, "disableBtn", {
-          buttons: [{action: "print"}]
-        });
-
-        thisController.owner.childDone(this, "enableBtn", {
-          buttons: [{action: "next"}]
-        });*/
 
         PubSub.publish("message.status.s2", thisController, { message: "Rack registered." });
       });
@@ -133,8 +124,6 @@ define([
         this.view.disableDropZone();
         this.emit("transferCompleted");
         this.emit("processFinished");
-        /*thisController.owner.childDone(thisController, "disableBtn", {buttons: [{action: "end"}]});
-        thisController.owner.childDone(thisController, "enableBtn", {buttons: [{action: "next"}]});*/
         PubSub.publish("message.status.s2", this, {message:message})
       }, this),
       function(errorMessage){

@@ -4,12 +4,6 @@ define(["config","event_emitter","lib/barcode_checker","lib/util"],
 
   var BaseController = new EventEmitter();
 
-  var oldEmit = BaseController.emit;
-  BaseController.emit = function() {
-    console.log(arguments[0]);
-    return oldEmit.apply(this, arguments);
-  };
-  
   $.extend(BaseController, {
     getAppConfig: function() { return appConfig; },
     // This should be registered with model not controller
