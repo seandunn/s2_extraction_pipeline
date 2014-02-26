@@ -1,6 +1,6 @@
 {
   "role_priority": [
-    "samples.extraction.lysing.blood.awaiting_reception",
+    "samples.extraction.lysing.prelysing.blood.awaiting_reception",
     "samples.shipping.blood_!na.awaiting_shipping",
     "samples.shipping.blood_!na.awaiting_shipping.batched",
 
@@ -9,12 +9,12 @@
     "samples.extraction.lysing.blood"    
   ],
   "workflows": [{
-    "accepts":  "samples.extraction.lysing.blood.awaiting_reception" ,
+    "accepts":  "samples.extraction.lysing.prelysing.blood.awaiting_reception",
     "controllerName":"selection_page_controller",
     "processTitle": "Receive Tubes",
     "capacity": 96,
     "input":        {
-      "role":"samples.extraction.lysing.blood.awaiting_reception",
+      "role":"samples.extraction.lysing.prelysing.blood.awaiting_reception",
       "model":"tubes"
     },
     "output": [
