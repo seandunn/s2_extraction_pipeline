@@ -4,8 +4,8 @@
     "samples.shipping.blood_!na.awaiting_shipping",
     "samples.shipping.blood_!na.awaiting_shipping.batched",
 
-    "samples.extraction.prelysing.blood",
-    "samples.extraction.prelysing.blood.batched",
+    "samples.extraction.lysing.prelysing.blood",
+    "samples.extraction.lysing.prelysing.blood.batched",
     "samples.extraction.lysing.blood"    
   ],
   "workflows": [{
@@ -19,30 +19,30 @@
     },
     "output": [
                {
-                 "role":       "samples.extraction.prelysing.blood",
+                 "role":       "samples.extraction.lysing.prelysing.blood",
                  "aliquotType":"blood",
                  "not_batched":true
                }
                ]
     },
     {
-      "accepts":  "samples.extraction.prelysing.blood" ,
+      "accepts":  "samples.extraction.lysing.prelysing.blood" ,
       "controllerName":"selection_page_controller",
       "processTitle": "Batch for Prelysing transfer",
       "capacity": 96,
       "input":        {
-        "role":"samples.extraction.prelysing.blood",
+        "role":"samples.extraction.lysing.prelysing.blood",
         "model":"tubes"
       },
       "output": [
                  {
-                   "role":       "samples.extraction.prelysing.blood.batched",
+                   "role":       "samples.extraction.lysing.prelysing.blood.batched",
                    "aliquotType":"blood"
                  }
                  ]
     },
     {
-      "accepts":        "samples.extraction.prelysing.blood.batched" ,
+      "accepts":        "samples.extraction.lysing.prelysing.blood.batched" ,
       "controllerName": "step_controller",
       "printerType": 2,
       "buttons": [{ "action": "print", "title": "Print labels" },
@@ -59,7 +59,7 @@
           "outputs": "print"
         },
         "input": {
-          "role":  "samples.extraction.prelysing.blood.batched",
+          "role":  "samples.extraction.lysing.prelysing.blood.batched",
           "model": "tubes",
           "title": "Blood tube",
           "aliquotType": "blood"
