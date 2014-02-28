@@ -7,6 +7,52 @@ define([ "app-components/linear-process/linear-process",
   
   return function(context) {
 
+    
+    function labwareValidation(labwareInputModel, position, labware) {
+      var defer = $.Deferred();
+      var validLabwareBarcodesList = _.map(labwareInputModel.allInputs, function(input) {
+        return input.labels.barcode.value;
+        });
+      if (labware.resourceType === labwareInputModel.expected_type) {
+        if ((position===0) && (_.indexOf(validLabwareBarcodesList, labware.labels.barcode.value) < 0)) {
+          defer.reject("The scanned labware was not included in the current batch, so it cannot be used as input.");
+        }
+        else {
+          defer.resolve(labware);
+        }
+      } else {
+        defer.reject(["Expected a '", 
+                      labwareInputModel.expected_type, 
+                      "' barcode but scanned a '",
+                      labware.resourceType,
+           "' instead"].join(''));
+      }
+      return defer;
+    }
+    
+    function bedValidation(barcode) {        
+      var defer = $.Deferred();
+      robotScannedPromise.then(function(robot) {
+        var validBedsList = robot.getValidBeds();
+        var pos = _.indexOf(validBedsList, barcode);
+        if (pos>=0) {
+          defer.resolve(barcode);
+        } else {
+          defer.reject();
+          PubSub.publish("error.status.s2", undefined, 
+            {message: ["Incorrect bed barcode"].join('')});
+        }
+      });
+      return defer;
+    }
+    
+    context.plateValidations = context.plateValidations || 
+        [ _.partial(labwareValidation, context.model.labware1, 0),
+          _.partial(labwareValidation, context.model.labware2, 1)];
+    
+    context.bedValidations = context.bedValidations || [ bedValidation, bedValidation];
+    
+    
     function buildBedRecording(context, list) {
       return list[list.push(bedRecording(context))-1];
     }
@@ -15,6 +61,7 @@ define([ "app-components/linear-process/linear-process",
       components: [{ constructor: _.partial(buildBedRecording, _.extend({
         cssClass: "left", 
         position: 0,
+        model: context.model.labware1,
         notMessage: true,
         recordingValidation: function() {return arguments;},
         bedValidation: context.bedValidations[0],
@@ -23,6 +70,7 @@ define([ "app-components/linear-process/linear-process",
       { constructor: _.partial(buildBedRecording, _.extend({
         cssClass: "right", 
         position: 1, 
+        model: context.model.labware2,
         notMessage: true,
         recordingValidation: function() {return arguments;},
         bedValidation: context.bedValidations[1],

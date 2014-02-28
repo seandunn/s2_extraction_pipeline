@@ -21,11 +21,14 @@ define([ "text!app-components/scanning/_bed-recording.html",
   
   return function(context) {
     var html = $(_.template(bedRecordingTemplate)());
+    var labResource = context.model["labware"+(context.position+1)];
     var component = linearProcess(
       { components : [
         { constructor : _.partial(bed, context),
         },
-        { constructor : _.partial(plate, context)
+        { constructor : _.partial(plate, _.extend(context, {
+          labware:    labResource.resource || labResource
+          }))
         }
       ]
       });
@@ -93,13 +96,19 @@ define([ "text!app-components/scanning/_bed-recording.html",
     if (context.cssClass) {
       html.addClass(context.cssClass);
     }
-
+    
     $(document.body).on("scanned.robot.s2", _.partial(function(promise, event, robot) {
       promise.resolve(robot);
     }, robotScannedPromise));
 
     var bedObj = component.components[0],
       plateObj = component.components[1];
+
+    // Should be solved
+      //if (context.position === 0) {
+        //obj.view.trigger(LABWARE_DISPLAY, representer(labware));
+      //}
+    
     return (
       { view : html,
         events : component.events,

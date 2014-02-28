@@ -31,18 +31,6 @@
   var robotsConfig = [];
   
   
-  function findRootPromise(controller) {
-    var iterations = 0;
-    while (iterations <20) {
-      if (controller.rootPromise) {
-        return controller.rootPromise;
-      }
-      controller = controller.owner;
-      iterations++;
-    }
-    throw new Error("Infinite loop while finding root promise");
-  }
-
   function startMyRow(controller) {
     if (controller.jquerySelection().hasClass("row0"))
       {
@@ -167,46 +155,8 @@
           return [value, list[pos+1]];
     }).compact().reduce(_.bind(function(memo, p) {
       
-      function plateLabwareValidation(labwareInputModel, labware) {
-        var defer = $.Deferred();
-        if (labware.resourceType === labwareInputModel.expected_type) {
-          defer.resolve(labware);
-        } else {
-          defer.reject();
-          PubSub.publish("error.status.s2", undefined, 
-            {message: ["Expected a '", 
-                       labwareInputModel.expected_type, 
-                       "' barcode but scanned a '",
-                       labware.resourceType,
-            "'"].join('')});
-        }
-        return defer;
-      }
-      function bedValidation(bedList, barcode) {        
-        var defer = $.Deferred();
-        var pos = _.indexOf(bedList, barcode);
-        if (pos>=0) {
-          // We remove the barcode so it cannot be used as a valid bed in future
-          bedList.splice(pos, 1);
-          defer.resolve(barcode);
-        } else {
-          defer.reject();
-          PubSub.publish("error.status.s2", undefined, 
-            {message: ["Incorrect bed barcode"].join('')});
-        }
-        return defer;
-      }
       var component = bedVerification({
-        bedsConfig: robotsConfig,
-        plateValidations: [/* left  */ _.partial(plateLabwareValidation, inputModel.labware1),
-                           /* right */ _.partial(plateLabwareValidation, inputModel.labware2)],
-        bedValidations: [/* left  */ _.partial(bedValidation),
-                         /* right */ _.partial(bedValidation)],
-        fetch: _.partial(function(rootPromise, barcode) {
-          return rootPromise.then(function(root) {
-            return root.findByLabEan13(barcode);
-          });
-        }, findRootPromise(this))
+        model: inputModel
       });
       
       var promise = $.Deferred();
@@ -284,14 +234,7 @@
             component = p.bedController.component;
           }
         else {
-          component = bedRecording({
-            bedsConfig: robotsConfig,
-            fetch: _.partial(function(rootPromise, barcode) {
-              return rootPromise.then(function(root) {
-                return root.findByLabEan13(barcode);
-              });
-            }, findRootPromise(this))
-          });
+          component = bedRecording();
         }
         var promise = $.Deferred();
         component.view.on("scanned.bed-recording.s2", _.bind(promise.resolve, promise));
