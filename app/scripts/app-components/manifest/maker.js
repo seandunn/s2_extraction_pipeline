@@ -3,11 +3,11 @@ define([
   "text!app-components/manifest/_custom_field.html",
   "app-components/labelling/printing",
   "lib/reception_templates",
+  "file_saver",
 
   // Global namespace updates
-  "lib/jquery_extensions",
-  "components/filesaver/filesaver"
-], function (componentPartialHtml, customFieldPartial, LabelPrinter, ReceptionTemplates) {
+  "lib/jquery_extensions"
+], function (componentPartialHtml, customFieldPartial, LabelPrinter, ReceptionTemplates, saveAs) {
   'use strict';
 
   var viewTemplate        = _.compose($, _.template(componentPartialHtml)),

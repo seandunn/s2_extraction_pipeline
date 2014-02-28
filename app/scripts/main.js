@@ -1,6 +1,8 @@
 require.config({
   shim:{
-
+    file_saver: {
+      exports: "saveAs"
+    }
   },
 
   baseUrl: "scripts",
@@ -22,7 +24,8 @@ require.config({
     event_emitter:      "../components/eventEmitter/EventEmitter",
     config:               "config",
     reception_templates:  "lib/reception_templates",
-    images:               "../images"
+    images:               "../images",
+    file_saver:           "../components/FileSaver/FileSaver"
   }
 });
 
