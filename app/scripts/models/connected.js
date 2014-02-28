@@ -59,7 +59,8 @@ define([
             deferred.reject({message: "Couldn't load the batch resource"});
           })
           .then(function () {
-            return setupOutputs(thisModel);
+            // TODO: This must be changed again to setupOutputs() as soon as possible
+            return setupOutputs__WITH_ORDERS(thisModel);
           })
           .fail(function () {
             deferred.reject({message: "Couldn't load the batch resource (Impossible to read outputs)"});
@@ -93,7 +94,7 @@ define([
               .create(
                 (model.config.rowBehaviour === "bedVerification" || model.config.rowBehaviour === "bedRecording")?
                   "row_bed_controller" : "row_controller", model.owner);
-            rowController.setupController(model.getRowModel(root,index, input), selectorFunction(model.owner, index));
+            rowController.setupController(model.getRowModel(root,index, input, inputs), selectorFunction(model.owner, index));
             return rowController;
           })
           .value();
@@ -107,7 +108,7 @@ define([
       }
     },
 
-    getRowModel: function (root,rowNum, input) {
+    getRowModel: function (root,rowNum, input, allInputs) {
       //var process = this.batch.rawJson.batch.process? JSON.parse(this.batch.rawJson.batch.process) : undefined;
       var process =  this.batch.rawJson.batch.process? this.batch.rawJson.batch.process : undefined;
       var model = this, previous = this.previous && this.ready;
@@ -130,6 +131,7 @@ define([
 
         rowModel[name] = {
           input:           false,
+          allInputs:       allInputs,
           process: process,          
           resource:        resource,
           expected_type:   details.model.singularize(),
@@ -145,6 +147,7 @@ define([
         rowNum: rowNum,
         enabled: previous,
         labware1: {
+          allInputs:       allInputs,
           input:           true,
           process: process,          
           resource:        input,
@@ -492,5 +495,59 @@ define([
     });
   }
 
-
+  
+  // TODO: If in any step 1  I have a batch of labware (Group A) that is being transferred to another group 
+  // of labware, (Group B), I can't know if I am in the middle of the transferring task (in_progress) when 
+  // I'm in any step in which I break the batch in the outputs  (Group B). This is because in order to know 
+  // if I am currently processing something, I obtain all items from the current batch that have status 
+  // in_progress, but if my outputs are not in the same batch, and so I will not obtain anything 
+  // (see setupOutputs()).
+  // 
+  // This is an incorrect workaround for this behaviour, as this can't be solved correctly without changing
+  // server side code.
+  function setupOutputs__WITH_ORDERS(model) {
+    var promisesItems = function(items) {
+      var deferred = $.Deferred();
+      var reLoadedOutputs = [];
+      $.when.apply(null, _.chain(items)
+                   .filter(function (item) {
+                     return item.status === "in_progress";
+                   })
+                   .filter(function (item) {
+                     return _.reduce(model.config.output,function(memo, output){
+                       return memo || (item.role === output.role);
+                     },false);
+                   })
+                   .map(function (item) {
+                     return model.cache.fetchResourcePromiseFromUUID(item.uuid).then(function (resource) {
+                       reLoadedOutputs.push(resource);
+                     });
+                   }).value())
+                   .then(function () {
+                     return deferred.resolve(reLoadedOutputs);
+                   })
+                   .fail(function(){
+                     deferred.reject({message:"Couldn't load the output resources!"});
+                   });
+                   return deferred.promise();
+    };
+    
+    return model.batch.orders.then(function(orders) {
+      return $.when.apply(null, _.map(orders, function(order) {
+        return order.items;
+      })).then(function() {
+        return promisesItems(_.flatten(_.reduce(arguments, function(memo, value) {
+          for (var key in value) {
+            if (_.isUndefined(memo[key])) {
+              memo[key]=[];
+            }
+            memo[key]=memo[key].concat(value[key]);
+          }
+          return memo;
+        }, {})));
+      });
+    });
+  }
+  
+  
 });
