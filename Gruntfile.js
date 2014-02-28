@@ -129,8 +129,7 @@ module.exports = function (grunt) {
             all: {
                 options: {
                     run: false,
-                    urls: ['http://localhost:<%= connect.test.options.port %>/test/index.html'],
-                    reporter: 'Nyan'
+                    urls: ['http://localhost:<%= connect.test.options.port %>/test/index.html']
                 }
             }
         },

@@ -1,6 +1,9 @@
 /* global requirejs, mocha */
 requirejs.config({
-  shim:{
+  shim: {
+    file_saver: {
+      exports: "saveAs"
+    }
   },
 
   baseUrl:"../app/scripts",
@@ -27,7 +30,9 @@ requirejs.config({
     underscore:           "../components/underscore/underscore-min",
     underscore_string:    "../components/underscore.string/lib/underscore.string",
     bootstrap:            "../components/sass-bootstrap/js",
-    components:           "../components"
+    components:           "../components",
+    event_emitter:        "../components/eventEmitter/EventEmitter",
+    file_saver:           "../components/FileSaver/FileSaver"
   }
 });
 
