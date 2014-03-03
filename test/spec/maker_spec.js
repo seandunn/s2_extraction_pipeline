@@ -203,17 +203,7 @@ define([
           },
           resources: _.ignore
         },
-        sample_types: {
-          "Blood - Unlysed": {
-            sample: "Blood",
-            aliquot: "blood",
-            defaults: {
-              cellular_material: {
-                lysed: false
-              }
-            }
-          }
-        },
+        sample_types: {},
         custom_fields: []
       }
     };
@@ -223,17 +213,7 @@ define([
     return {
       test2: {
         friendly_name: "Test manifest 2",
-        sample_types: {
-          "Blood - Unlysed": {
-            sample: "Blood",
-            aliquot: "blood",
-            defaults: {
-              cellular_material: {
-                lysed: false
-              }
-            }
-          }
-        },
+        sample_types: {},
         studies: {},
         custom_fields: []
       }
