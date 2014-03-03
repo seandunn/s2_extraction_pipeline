@@ -326,6 +326,13 @@ define([
         .chain(controllers)
         .reduce(function(memo, controller) {
           controller.handleResources(function(source) {
+            var isSameInputToOutput = false;
+            if ((source === arguments[1]) && (arguments.length===2)) {
+              // If we are trying to transfer to the same resource, we assume that it is not a transfer,
+              // but a change of role. This will only be accepted if there is only one input and one
+              // output.
+              isSameInputToOutput = true;
+            }
 
             var transferDetails = _
             .chain(arguments)
@@ -352,6 +359,11 @@ define([
             })
             .value();
 
+            if (isSameInputToOutput) {
+              memo.push(transferDetails);
+              return;
+            }
+            
             if (source.transferBehaviour ==="plateLike") {
               // If we are using something plateLike then prepare multiple transfers
               // for each well, tube or window (this will overwrite the original
@@ -410,8 +422,10 @@ define([
         var destination = transferDetails[0].output.resource;
         var transfer    = transferType(source, destination);
 
-
-
+        if (source === destination) {
+          return Operations.stateManagement(transferDetails);
+        }
+        
         return Operations.betweenLabware(
           transfer,
           _.map(transferDetails, function(details) {
