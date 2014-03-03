@@ -46,7 +46,7 @@ define([
 
         it("will render a reception form with one custom field", function() {
           var $customFieldDiv = $dom.find("#custom-fields > div");
-          
+
           expect($customFieldDiv.size()).to.equal(1);
           
           testCustomFieldDiv($customFieldDiv, {
@@ -187,7 +187,6 @@ define([
     return {
       test: {
         friendly_name: "Test manifest",
-        sample_types: {},
         studies: {
           Foo: {
             friendly_name: "The really important foo study",
@@ -204,6 +203,17 @@ define([
           },
           resources: _.ignore
         },
+        sample_types: {
+          "Blood - Unlysed": {
+            sample: "Blood",
+            aliquot: "blood",
+            defaults: {
+              cellular_material: {
+                lysed: false
+              }
+            }
+          }
+        },
         custom_fields: []
       }
     };
@@ -213,7 +223,17 @@ define([
     return {
       test2: {
         friendly_name: "Test manifest 2",
-        sample_types: {},
+        sample_types: {
+          "Blood - Unlysed": {
+            sample: "Blood",
+            aliquot: "blood",
+            defaults: {
+              cellular_material: {
+                lysed: false
+              }
+            }
+          }
+        },
         studies: {},
         custom_fields: []
       }
