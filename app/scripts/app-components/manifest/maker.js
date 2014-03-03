@@ -31,8 +31,9 @@ define([
   };
 
   function createHtml(context, generateSamples) {
-    var $html          = viewTemplate({
-          templates: ReceptionTemplates
+    var templates     = context.templates || ReceptionTemplates,
+        $html         = viewTemplate({
+          templates: templates
         }),
         message       = function(type, message) { $html.trigger(type + ".status.s2", message); },
         error         = _.partial(message, "error"),
@@ -45,14 +46,14 @@ define([
         $form         = $html.find("form .template-selection-box").find("input,select"),
         $customFields = $html.find("#custom-fields");
 
-    $generate.lockingClick(_.partial(checkSamples, process($html, generateManifest)));
+    $generate.lockingClick(_.partial(checkSamples, process($html, generateManifest), templates));
     $sampleCount.enterHandler(_.bind($generate.click, $generate));
 
     // When someone changes the template we need to change the view!
     var templatePicker    = $html.find("#xls-templates"),
         prefixes          = $html.find("#samplePrefixes"),
         dependsOnTemplate = function(fn) {
-          return _.compose(fn, _.partial(selectedTemplate, ReceptionTemplates));
+          return _.compose(fn, _.partial(selectedTemplate, templates));
         };
 
     templatePicker.change(dependsOnTemplate(_.partial(updateSampleTypeSelection, prefixes)));
@@ -88,9 +89,9 @@ define([
 
     return $html;
 
-    function checkSamples(fn, button) {
+    function checkSamples(fn, templates, button) {
       var numberOfSamples = parseInt($sampleCount.val(), 10),
-          template        = ReceptionTemplates[templatePicker.val()],
+          template        = templates[templatePicker.val()],
           study           = template.studies[$studiesList.val()];
 
       if (_.isNaN(numberOfSamples)) {
