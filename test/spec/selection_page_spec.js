@@ -218,10 +218,6 @@ define([
           expect($title.get(0).innerHTML).to.equal("Manual DNA and RNA Extraction");
         });
 
-        it("has a user barcode display section", function () {
-          expect(fakeContent().find("h4.pull-right").length).to.equal(1);
-        });
-
         describe("and has another tube added", function () {
 
           beforeEach(function () {

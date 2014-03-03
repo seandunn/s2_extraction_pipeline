@@ -334,7 +334,7 @@
       {
         "description": "Get tube1",
         "method":      "get",
-        "url":         "/lims-laboratory/tube1UUID",
+        "url":         "lims-laboratory/tube1UUID",
         "response":    {
           "tube": {
             "actions":    {
@@ -450,7 +450,7 @@
       {
         "description": "Get the tube2",
         "method":      "get",
-        "url":         "/lims-laboratory/searchFortube2UUID",
+        "url":         "lims-laboratory/searchFortube2UUID",
         "response":    {
           "tube": {
             "actions":    {
@@ -525,7 +525,7 @@
       {
         "description": "Find the order by tube uuid 2",
         "method":      "get",
-        "url":         "/searchForOrderByTube2",
+        "url":         "searchForOrderByTube2",
         "response":    {
           "search": {
             "actions": {
@@ -598,7 +598,7 @@
       {
         "description": "Get the tube3",
         "method":      "get",
-        "url":         "/tube3UUID/page=1",
+        "url":         "tube3UUID/page=1",
         "response":    {
           "size":  1,
           "tubes": [
@@ -712,7 +712,7 @@
       {
         "description": "Get the tube4",
         "method":      "get",
-        "url":         "/lims-laboratory/searchFortube4UUID",
+        "url":         "lims-laboratory/searchFortube4UUID",
         "response":    {
           "tube": {
             "actions":    {
@@ -755,7 +755,7 @@
       {
         "description": "Find the order by tube uuid (4)",
         "method":      "post",
-        "url":         "/lims-laboratory/searches",
+        "url":         "lims-laboratory/searches",
         "request":     {
           "search": {
             "user":        "username",
@@ -782,7 +782,7 @@
       {
         "description": "Find the order by tube uuid",
         "method":      "get",
-        "url":         "/searchForOrderByTube4",
+        "url":         "searchForOrderByTube4",
         "response":    {
           "search": {
             "actions": {
@@ -797,7 +797,7 @@
       {
         "description": "Get the search results (order)",
         "method":      "get",
-        "url":         "/searchForOrderByTube4/page=1",
+        "url":         "searchForOrderByTube4/page=1",
         "response":    {
           "actions": {
             "read":  "http://localhost:9292/orders/page=1",
@@ -921,7 +921,7 @@
       {
         "description": "Get the tube5",
         "method":      "get",
-        "url":         "/lims-laboratory/searchFortube5UUID",
+        "url":         "lims-laboratory/searchFortube5UUID",
         "response":    {
           "tube": {
             "actions":    {
@@ -992,7 +992,7 @@
       {
         "description": "Find the order by tube uuid",
         "method":      "get",
-        "url":         "/searchForOrderByTube5",
+        "url":         "searchForOrderByTube5",
         "response":    {
           "search": {
             "actions": {
