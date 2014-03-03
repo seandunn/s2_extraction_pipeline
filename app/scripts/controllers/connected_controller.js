@@ -31,18 +31,17 @@ define([
     setupController:function (input_model, jquerySelection) {
       this.jquerySelection = jquerySelection;
       // send busy message
-      var thisController = this;
-      thisController.jquerySelection().trigger("start_process.busybox.s2");
+      this.jquerySelection().trigger("start_process.busybox.s2");
       this.model.setBatch(input_model.batch)
-          .then(function(){
-            thisController.jquerySelection().trigger("end_process.busybox.s2");
-          }).fail(function(error){
-            PubSub.publish("error.status.s2", thisController, error);
-            thisController.jquerySelection().trigger("end_process.busybox.s2");
-          }).then(function(){
-            thisController.jquerySelection().html(thisController.template({nbRow:12}));
-            thisController.setupSubControllers();
-          });
+          .then(_.bind(function(){
+            this.jquerySelection().trigger("end_process.busybox.s2");
+          }, this)).fail(_.bind(function(error){
+            PubSub.publish("error.status.s2", this, error);
+            this.jquerySelection().trigger("end_process.busybox.s2");
+          }, this)).then(_.bind(function(){
+            this.jquerySelection().html(this.template({nbRow:12}));
+            this.setupSubControllers();
+          }, this));
       this.attachHandlers();
       return this;
     },
@@ -56,8 +55,16 @@ define([
         "barcodePrintSuccess": _.bind(this.owner.onBarcodePrintSuccess, this.owner),
         "barcodePrintFailure": _.bind(this.owner.onBarcodePrintFailure, this.owner),
         "inputRemoved": _.bind(this.onInputRemoved, this),
-        "outputRemoved": _.bind(this.onOutputRemoved, this)
+        "outputRemoved": _.bind(this.onOutputRemoved, this),
+        "completedRow": _.bind(this.onCompletedRow, this)
       });
+    },
+    
+    onCompletedRow: function(childController) {
+      this.model.operate('row', [childController]);
+      if (this.checkPageComplete()) {
+        this.emit("renderCompleteRowDone");
+      }
     },
     
     onBarcodePrintSuccess: function() {
@@ -135,11 +142,6 @@ define([
         }).done(function() {
           controller.focus();
         });
-      } else if (action === 'completed') {
-        this.model.operate('row', [child]);
-        if (this.checkPageComplete()) {
-          this.emit("renderCompleteRowDone");
-        }
       }
     },
     onInputRemoved: function() {

@@ -55,15 +55,20 @@
   } 
   
   function markAsCompletedRowBR(controller, data, verification) {
-    controller.editableControllers = _.partial(function(verification) {
+    var robot = verification[0];
+    var bedBarcode = verification[1];
+    var labware = verification[2];
+    
+    controller.editableControllers = function() {
       // in bedRecording connected we need to have at least one input and one output per each row
-      return _.chain(verification.verified).map(function(record) { 
-        return {
-          isComplete: _.partial(_.identity, true),
-          labwareModel: { resource: record.plate}};}).reduce(function(memo, node) {
-          return memo.concat([node, _.clone(node)]);
-        }, []);
-    }, verification);
+      var record = {
+      isComplete: _.partial(_.identity, true),
+      labwareModel: { resource: labware}};
+      var list = [];
+      list.push(record);
+      list.push(record);
+      return(_.chain(list));
+    };
   } 
 
   //TODO: check this declaration is ok
@@ -225,7 +230,7 @@
       PubSub.publish("disable_buttons.step_controller.s2", this.owner, {buttons: [{action: "start"}]});
     },
     
-    getBedRecordingInfo: function() {
+    getBedRecordingInfo: function(inputModel) {
       return this.controllers.reduce(_.bind(function(memo, p) { 
         var component;
         p.renderView();        
@@ -234,7 +239,11 @@
             component = p.bedController.component;
           }
         else {
-          component = bedRecording();
+          component = bedRecording({
+            model: inputModel,
+            position: 0,
+            recordingValidation: function() {return arguments;}
+          });
         }
         var promise = $.Deferred();
         component.view.on("scanned.bed-recording.s2", _.bind(promise.resolve, promise));
@@ -266,7 +275,7 @@
     setupControllerWithBedRecording: function(inputModel) {
       $(".robot input").prop("disabled", false);
       var controller = this;
-      var bedRecordingInfo = this.getBedRecordingInfo();
+      var bedRecordingInfo = this.getBedRecordingInfo(inputModel);
       var linear = this.linearProcessLabwares = this.linear = bedRecordingInfo.components[0]; 
       
       var loadedProcess = this.loadFromInputs(inputModel.labware1.process, inputModel, this.linearProcessLabwares, false);
@@ -282,7 +291,8 @@
       
       $.when.call(this, bedRecordingInfo.promises[0]).then(_.bind(_.partial(function(controller, data, event, verification) {
         markAsCompletedRowBR(controller, data, verification);
-        controller.owner.childDone(controller, "completed", data);
+        this.emit("completedRow");
+        //controller.owner.childDone(controller, "completed", data);
         if (this.rowModel.rowNum === (this.owner.rowControllers.length-1)) {
           PubSub.publish("enable_buttons.step_controller.s2", this.owner, {buttons: [{action: "start"}]});      
         } else {
@@ -308,6 +318,11 @@
         var name = nameToDetails[0], details = nameToDetails[1];
         var subController = controller.controllerFactory.create('labware', controller);
         subController.setupController(details.resource, function() { return controller.jquerySelection().find('.' + name); });
+        /*subController.on("resourceUpdated", _.bind(function() {
+          if (this.isRowComplete() && (child === this.editableControllers().last().value())) {
+            this.emit("completedRow");
+          }
+        }, this));*/
         return subController;
       });
 
@@ -367,10 +382,6 @@
       
       if (action == "tube rendered") {
         this.owner.childDone(this, "tubeFinished", data);
-      } else if (action === 'resourceUpdated') {
-        if (this.isRowComplete() && (child === this.editableControllers().last().value())) {
-          this.owner.childDone(this, "completed", data);
-        }
       } else if (action == "labwareRendered") {
         this.setLabwareVisibility();
       } else if (action === 'removeLabware') {

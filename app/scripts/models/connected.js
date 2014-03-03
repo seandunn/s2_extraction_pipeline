@@ -84,10 +84,10 @@ define([
     setupInputControllers: function(reset) {
       var model = this;
       return this.owner.getS2Root()
-      .then(function(root){
+      .then(_.bind(function(root){
         // Becareful! inputs is not a promise!
-        return model.inputs.then(function(inputs) {
-          model.owner.rowControllers = _.chain(inputs).map(function (input, index) {
+        return model.inputs.then(_.bind(function(inputs) {
+          model.owner.rowControllers = _.chain(inputs).map(_.bind(function (input, index) {
             input = reset ? undefined : input;
             var rowController =
               model.owner.controllerFactory
@@ -95,11 +95,16 @@ define([
                 (model.config.rowBehaviour === "bedVerification" || model.config.rowBehaviour === "bedRecording")?
                   "row_bed_controller" : "row_controller", model.owner);
             rowController.setupController(model.getRowModel(root,index, input, inputs), selectorFunction(model.owner, index));
+            // This functionality (setupInputControllers) has been incorrectly placed in the
+            // model. This must go out of here.
+            rowController.on("completedRow", _.bind(function() {
+              this.emit("completedRow", rowController);
+            }, this));            
             return rowController;
-          })
+          }, this))
           .value();
-        });
-      });
+        }, this));
+      }, this));
 
       function selectorFunction(controller, row) {
         return function() {

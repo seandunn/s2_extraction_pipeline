@@ -79,12 +79,17 @@ define([
       this.currentView = new View(this, this.jquerySelection());
 
       // NOTE: sort() call is needed here to ensure labware1,labware2,labware3... ordering
-      this.controllers = _.chain(this.rowModel.labwares).pairs().sort().map(function(nameToDetails) {
+      this.controllers = _.chain(this.rowModel.labwares).pairs().sort().map(_.bind(function(nameToDetails) {
         var name = nameToDetails[0], details = nameToDetails[1];
         var subController = controller.controllerFactory.create('labware_controller', controller);
         subController.setupController(details, function() { return controller.jquerySelection().find('.' + name); });
+        subController.on("resourceUpdated", _.bind(function(subController) {
+          if (this.isRowComplete() && (subController === this.editableControllers().last().value())) {
+            this.emit("completedRow", this);
+          }
+        }, this, subController));        
         return subController;
-      });
+      }, this));
 
       this.currentView.renderView();
       this.controllers.each(function(p) { p.renderView(); });
@@ -131,10 +136,6 @@ define([
 
       if (action == "tube rendered") {
         this.owner.childDone(this, "tubeFinished", data);
-      } else if (action === 'resourceUpdated') {
-        if (this.isRowComplete() && (child === this.editableControllers().last().value())) {
-          this.owner.childDone(this, "completed", data);
-        }
       } else if (action == "labwareRendered") {
         this.setLabwareVisibility();
       } else if (action === 'removeLabware') {
@@ -149,7 +150,6 @@ define([
       } else if (action === "barcodeScanned") {
         var eventPrefix = child.labwareModel.input ? 'input' : 'output';
         this.owner.childDone(this, eventPrefix+'BarcodeScanned', data);
-        this.focus();
       }
     },
 
