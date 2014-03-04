@@ -51,7 +51,7 @@
         labwareModel: { resource: record.plate}};
         });
     }, verification);
-    controller.owner.childDone(controller, "completed", data);
+    this.emit("completedRow");
   } 
   
   function markAsCompletedRowBR(controller, data, verification) {
@@ -219,7 +219,7 @@
       // When bed verification checked for the linear process
       controller.jquerySelection().on("scanned.bed-verification.s2", $.ignoresEvent(_.bind(_.partial(function(controller, data, verification) {
         if ($.contains(document, controller.linearProcessLabwares.view[0])) {
-          markAsCompletedRow(controller, data, verification);
+          markAsCompletedRow.call(this, controller, data, verification);
           if (this.rowModel.rowNum === (this.owner.rowControllers.length-1)) {
             PubSub.publish("enable_buttons.step_controller.s2", this.owner, {buttons: [{action: "start"}]});      
           } else {
