@@ -423,7 +423,18 @@ define([
         var transfer    = transferType(source, destination);
 
         if (source === destination) {
-          return Operations.stateManagement(transferDetails);
+          // There will not be a transfer, only a change of role
+          // in the operations
+          return $.extend(Operations.betweenLabware(null, _.map(transferDetails, function(details) {
+            return function(operations) {
+              operations.push(details);
+              return $.Deferred().resolve();
+            };
+          })), {
+            operate: function() {
+              return (new $.Deferred()).resolve(true).promise();
+            }
+          });
         }
         
         return Operations.betweenLabware(
