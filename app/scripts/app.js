@@ -49,7 +49,7 @@ define([
         });
       });
     };
-    app.sendEvent = function(event, barcode, role, orderUUID) {
+    app.sendEvent = function(orderUUID, barcode, event, role) {
       this.config.login = "admin@sanger.ac.uk";
       this.fetchLabware(barcode).then(function(labware) {
         return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
@@ -70,11 +70,12 @@ define([
     
     app.showOrdersUUID = function(barcode) {
       this.config.login = "admin@sanger.ac.uk";
-      S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
-        root.findByLabEan13(barcode).then(function(labware) {
-          labware.orders().then(function(orders) {
-            _.each(orders, function(order) {
-              console.dir(order);
+      return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+        return root.findByLabEan13(barcode).then(function(labware) {
+          return labware.orders().then(function(orders) {
+            return _.map(orders, function(order) {
+              order.sendEvent = _.bind(app.sendEvent, app, order.uuid, barcode);
+              return order;
             });
           });
         })
