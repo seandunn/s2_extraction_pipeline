@@ -11,6 +11,7 @@ define([
   // TODO: These will move with the configuration
   "app-components/lab-management/lab-management",
   "app-components/lab-activities/lab-activities",
+  "app-components/admin/admin",
   "jquery_cookie",
 
   // Globally included stuff added after this comment
@@ -22,14 +23,15 @@ define([
   BusyBox, alerts, PubSub,
   BasePageModel,
   barcodeScanner,
-  LabMangement, LabActivities,
+  LabMangement, LabActivities,Admin,
   Cookie
 ) {
   'use strict';
 
   var ComponentConfig = [
     { name: "Lab Management",  selector: "#lab-management", constructor: LabMangement     },
-    { name: "Lab Activities", selector: "#lab-activities", constructor: LabActivities }
+    { name: "Lab Activities", selector: "#lab-activities", constructor: LabActivities },
+    { name: "Admin", selector: "#admin", constructor: Admin }
   ];
 
 
