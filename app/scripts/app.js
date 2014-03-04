@@ -41,6 +41,80 @@ define([
     app.controllerFactory = theControllerFactory;
     _.templateSettings.variable = 'templateData';
 
+    app.fetchLabware = function(barcode) {
+      this.config.login = "admin@sanger.ac.uk";
+      return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+        return root.findByLabEan13(barcode).then(function(labware) {
+          return labware;
+        });
+      });
+    };
+    app.sendEvent = function(event, barcode, role, orderUUID) {
+      this.config.login = "admin@sanger.ac.uk";
+      this.fetchLabware(barcode).then(function(labware) {
+        return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+          var json = "{ \"items\":{ \"" + role + "\": { \"" + labware.uuid + "\": { \"event\": \"" + event + "\" }}}}";
+          root.retrieve({
+            uuid: orderUUID,
+            sendAction: "update",
+            data: JSON.parse(json)
+          });
+        });
+        /* $.ajax({
+          url: "http://psd2g.internal.sanger.ac.uk:8000/lims-laboratory/"+orderUUID,
+          method: "PUT",
+          content: "{ \"items\":{ " + role + ": { " + labware.uuid + ": { \"event\": " + event + " }}}}"
+        });*/        
+      });
+    };
+    
+    app.showOrdersUUID = function(barcode) {
+      this.config.login = "admin@sanger.ac.uk";
+      S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+        root.findByLabEan13(barcode).then(function(labware) {
+          labware.orders().then(function(orders) {
+            _.each(orders, function(order) {
+              console.dir(order);
+            });
+          });
+        })
+      })      
+    };
+    
+    app.createKit = function(barcode) {
+      return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+        return root.retrieve({
+          url: config.apiUrl + "/lims-support/kits",
+          sendAction: "create",
+          data: {
+            "kit": {
+              "process": "DNA & RNA extraction",
+              "aliquot_type": "DNA & RNA",
+              "expires": "2014-05-01",
+              "amount": 10
+            }
+          }
+        }).then(function(kit) {
+          return root.retrieve({
+            url: config.apiUrl + "/lims-support/labellables",
+            sendAction: "create",
+            data:           { 
+              "labellable": {
+                "name": kit.uuid,
+                "type": "resource",
+                "labels": {
+                  "barcode": {
+                    "value": barcode,
+                    "type": "code128-c-barcode"
+                  }
+                }
+              }
+            }
+          });
+        });
+      });
+    };
+    
 
     $('#server-url').text(config.apiUrl);
     $('#release').text(config.release);
