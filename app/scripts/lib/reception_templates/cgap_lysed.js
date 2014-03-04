@@ -51,6 +51,10 @@ define([
           friendly_name: "QC2Ibd",
           sanger_sample_id_core: "QC2Ibd"
         },
+        CGaPSSV: {
+          friendly_name: "CGaP Validation",
+          sanger_sample_id_core: "CGaPSSV"
+        },        
         "ESDM_pathogen_challenge": {
           friendly_name:          "ESDM_pathogen_challenge",
           sanger_sample_id_core:  "ESDM_pathogen_challenge"
