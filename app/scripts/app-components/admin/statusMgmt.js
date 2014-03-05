@@ -59,7 +59,7 @@ define([
           });
           //_.reduce(order.items, function(item) {}, []);
         }).flatten().value();
-        obj.view.html(template({ items: rows}));
+        obj.view.html(template({ title: barcode, items: rows}));
         _.each(rows, function(row) {
           $("."+row.className+" button").on("click", _.partial(function(row) {
             row.sendEvent($("."+row.className+" select").val(), row.role);
