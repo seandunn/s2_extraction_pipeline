@@ -86,17 +86,17 @@ define([
       })      
     };
     
-    app.createKit = function(barcode) {
+    app.createKit = function(barcode, process, aliquot, expires, amount) {
       return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
         return root.retrieve({
           url: config.apiUrl + "/lims-support/kits",
           sendAction: "create",
           data: {
             "kit": {
-              "process": "DNA & RNA extraction",
-              "aliquot_type": "DNA & RNA",
-              "expires": "2014-05-01",
-              "amount": 10
+              "process": process || "DNA & RNA extraction",
+              "aliquot_type": aliquot || "DNA & RNA",
+              "expires": expires || "2014-05-01",
+              "amount": amount || 10
             }
           }
         }).then(function(kit) {
