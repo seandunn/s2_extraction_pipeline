@@ -1,6 +1,7 @@
 define([
   "text!app-components/admin/_statusMgmt.html",
-], function (partialStatus) {
+  "app-components/labelling/scanning"
+], function (partialStatus, barcodeScanner) {
   "use strict";
 
   var template= _.template(partialStatus);
@@ -18,6 +19,24 @@ define([
 
     function _render(barcode) {
       var obj = this;
+      
+      
+      // The user needs to scan themselves in before doing anything
+      var itemComponent = barcodeScanner({
+        label: "Item",
+        icon: "icon-barcode"
+      });
+      var $div = obj.view;
+      $div.append(itemComponent.view);
+      $div.on(itemComponent.events);
+      $div.on("scanned.barcode.s2", _.bind(function(event, barcode) {
+        loadTable.call(this, barcode);
+      }, obj));
+
+      if (barcode) {
+        loadTable(barcode);
+      }
+      function loadTable(barcode) {
     app.fetchLabware(barcode).then(function(labware) {
       app.showOrdersUUID(barcode).then(function(orders) {
         var pos = -1;
@@ -50,7 +69,9 @@ define([
       });      
     });
     }
-    obj.render("2070003483672");
+    }
+    obj.render();
+    //obj.render("2070003483672");
     return obj;
   };
 });
