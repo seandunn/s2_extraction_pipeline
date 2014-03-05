@@ -1,7 +1,6 @@
 define([
   "app-components/process-choice/process-choice",
-  "app-components/admin/statusMgmt",
-  "app-components/gel-scoring/gel-scoring"], function(ProcessChoice, StatusMgmt) {
+  "app-components/admin/statusMgmt"], function(ProcessChoice, StatusMgmt) {
   "use strict";
 
   return function(context) {

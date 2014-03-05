@@ -56,7 +56,7 @@ define([
       this.fetchLabware(barcode).then(function(labware) {
         return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
           var json = "{ \"items\":{ \"" + role + "\": { \"" + labware.uuid + "\": { \"event\": \"" + event + "\" }}}}";
-          root.retrieve({
+          return root.retrieve({
             uuid: orderUUID,
             sendAction: "update",
             data: JSON.parse(json)
@@ -67,6 +67,8 @@ define([
           method: "PUT",
           content: "{ \"items\":{ " + role + ": { " + labware.uuid + ": { \"event\": " + event + " }}}}"
         });*/        
+      }, function() {
+        console.log(arguments);
       });
     };
     

@@ -1,9 +1,21 @@
 <div>
-<table>
-<% _.each(items, function(item) { %> 
-<tr>
-<td><%= role %></td><td><%= status %></td><td><%= batch %></td><td><%= order %></td>
+  <table class="table table-striped table-hover">
+    <thead>
+    <tr><th>Event</th><th>Action</th><th>Role</th><th>Status</th><th>Batch</th><th>Order</th>
+    </thead>
+<tbody>
+<% _.each(items, function(item, pos) { %> 
+<tr class="item-<%= pos %>">
+<td><select>
+<option>reset</option>
+<option>start</option>
+<option>complete</option>
+<option>unuse</option>
+</select></td>
+<td><button>Send</button></td>
+<td><%= item.role %></td><td><%= item.status %></td><td><%= item.batch %></td><td><%= item.order %></td>
 </tr>
 <% }) %>
+</tbody>
 </table>
 </div>
