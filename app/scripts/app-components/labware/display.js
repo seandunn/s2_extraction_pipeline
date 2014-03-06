@@ -34,8 +34,11 @@ define([
 
   function UnspecifiedLabwarePresenter(view, labware) {
     if (_.isUndefined(labware)) return;
-    var type = labware.resourceType || (labware.resource && labware.resource.resourceType) ||
-      labware.expected_type;
+    var type = labware.resourceType || (labware.resource && labware.resource.resourceType);
+    if (!type) {
+      type = labware.expected_type;
+      labware=null;
+    }
     var display = Presenters[type];
     display(view, labware);
   }

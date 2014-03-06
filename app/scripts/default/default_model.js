@@ -40,8 +40,10 @@ define([
         return deferred.resolve(defaultModel);
       },
       function () {
+        // We reset the batch from the previous value it had on the model and
         // we resolve the promise because we already have a labware
-        // we simply didn't find a batch associated.
+        // we simply didn't find a batch associated.        
+        defaultModel.batch = null; 
         return deferred.resolve(defaultModel);
       });
 

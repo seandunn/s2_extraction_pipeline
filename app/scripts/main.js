@@ -1,6 +1,8 @@
 require.config({
   shim:{
-
+    file_saver: {
+      exports: "saveAs"
+    }
   },
 
   baseUrl: "scripts",
@@ -19,9 +21,11 @@ require.config({
     mapper_services:      "../components/S2Mapper/app/scripts/services",
     mapper_test:          "../components/S2Mapper/test",
     mapper_testjson:      "../components/S2Mapper/test/json",
+    event_emitter:      "../components/eventEmitter/EventEmitter",
     config:               "config",
     reception_templates:  "lib/reception_templates",
-    images:               "../images"
+    images:               "../images",
+    file_saver:           "../components/FileSaver/FileSaver"
   }
 });
 

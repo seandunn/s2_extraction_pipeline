@@ -143,7 +143,7 @@ define([
         it("sends an error message if the tube has already been entered", function (done) {
           
           PubSub.subscribe("error.status.s2", function (event, source, eventData) {
-            expect(eventData.message).to.equal("You cannot add the same tube twice.");
+            expect(eventData.message).to.equal("You cannot add the same labware twice.");
             done();
           });
 
@@ -170,7 +170,7 @@ define([
         it("sends an error message if the tube has the wrong role", function (done) {
           
           PubSub.subscribe("error.status.s2", function (event, source, eventData) {
-            expect(eventData.message).to.equal("This tube cannot be added to the current batch, because it does not have the correct role.");
+            expect(eventData.message).to.equal("This labware cannot be added to the current batch, because it does not have the correct role.");
             done();
           });
 
@@ -216,10 +216,6 @@ define([
         it("displays the process title", function () {
           var $title = fakeContent().find("#process-title");
           expect($title.get(0).innerHTML).to.equal("Manual DNA and RNA Extraction");
-        });
-
-        it("has a user barcode display section", function () {
-          expect(fakeContent().find("h4.pull-right").length).to.equal(1);
         });
 
         describe("and has another tube added", function () {

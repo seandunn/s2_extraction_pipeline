@@ -1,24 +1,29 @@
-define([ "models/base_page_model"
-], function(BasePageModel) {
+define([ "models/base_page_model", "config"
+], function(BasePageModel, AppConfig) {
   "use strict";
+  
   var Model = Object.create(BasePageModel);
-  $.extend(Model,
-    { init : function(owner, config) {
+  $.extend(Model, { 
+    init : function(owner, config) {
       this.owner = owner;
       this.config = config;
       this.robotSaved = false;
-      this.kit =
-        { valid : false
-        };
+
+            
       this.initialiseCaching();
       return $.Deferred().resolve(this).promise();
-    }, setupModel : function(setupData) {
+    },
+    getRobotType: function() {
+      return this.config.group;
+    },
+    
+    setupModel : function(setupData) {
       this.cache.push(setupData.batch);
       this.batch = setupData.batch;
       return $.Deferred().resolve(this).promise();
-    }, validateRobot : function(robotType) {
-      return (this.config.robotType === robotType);
-    }, setRobotFromBarcode : function(robotBarcode) {
+    },
+
+    setRobotFromBarcode : function(robotBarcode) {
       var deferred = $.Deferred();
       var thisModel = this;
 
@@ -26,6 +31,7 @@ define([ "models/base_page_model"
         if (thisModel.batch.robot === robotBarcode) {
           thisModel.robotSaved = true;
           thisModel.robot.barcode = robotBarcode;
+          this.setSelectedRobot(robotBarcode);
           return deferred.resolve(thisModel);
         } else {
           return deferred.reject(
@@ -42,11 +48,12 @@ define([ "models/base_page_model"
         }).then(function() {
           thisModel.robotSaved = true;
           thisModel.robot.barcode = robotBarcode;
+          this.setSelectedRobot(robotBarcode);
           deferred.resolve(thisModel);
         });
       }
       return deferred.promise();
     }
-    });
+  });
   return Model;
 });

@@ -9,12 +9,14 @@
     <div id="mocha"></div>
     <script src="lib/mocha/mocha.js"></script>
     <script>
+        
         mocha.setup({
             ui: 'bdd',
             ignoreLeaks: false,
             bail: false,
             globals: ['WUIE_delays']
         });
+            
     </script>
     
     <!-- assertion framework -->

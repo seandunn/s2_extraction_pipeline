@@ -1,43 +1,94 @@
 {
   "role_priority": [
-    "samples.extraction.lysing.blood.awaiting_reception",
+    "samples.extraction.lysing.prelysing.blood.awaiting_reception",
     "samples.shipping.blood_!na.awaiting_shipping",
     "samples.shipping.blood_!na.awaiting_shipping.batched",
 
-    "samples.extraction.lysing.blood"
+    "samples.extraction.lysing.prelysing.blood",
+    "samples.extraction.lysing.prelysing.blood.batched",
+    "samples.extraction.lysing.blood"    
   ],
-  "workflows": [
+  "workflows": [{
+    "accepts":  "samples.extraction.lysing.prelysing.blood.awaiting_reception",
+    "controllerName":"selection_page_controller",
+    "processTitle": "Receive Tubes",
+    "capacity": 96,
+    "input":        {
+      "role":"samples.extraction.lysing.prelysing.blood.awaiting_reception",
+      "model":"tubes"
+    },
+    "output": [
+               {
+                 "role":       "samples.extraction.lysing.prelysing.blood",
+                 "aliquotType":"blood",
+                 "not_batched":true
+               }
+               ]
+    },
     {
-      "accepts":  "samples.extraction.lysing.blood.awaiting_reception" ,
+      "accepts":  "samples.extraction.lysing.prelysing.blood" ,
       "controllerName":"selection_page_controller",
-      "processTitle": "Receive Tubes - Blood Lysing",
+      "processTitle": "Batch for Prelysing transfer",
       "capacity": 96,
       "input":        {
-        "role":"samples.extraction.lysing.blood.awaiting_reception",
+        "role":"samples.extraction.lysing.prelysing.blood",
+        "model":"tubes"
+      },
+      "output": [
+                 {
+                   "role":       "samples.extraction.lysing.prelysing.blood.batched",
+                   "aliquotType":"blood"
+                 }
+                 ]
+    },
+    {
+      "accepts":        "samples.extraction.lysing.prelysing.blood.batched" ,
+      "controllerName": "step_controller",
+      "printerType": 2,
+      "buttons": [{ "action": "print", "title": "Print labels" },
+                  { "action": "next", "title": "Next" }
+      ],
+      "processTitle":  "Prelysing transfer",
+      "controllers": [{
+        "controllerName":   "connected_controller",
+        "behaviours": {
+          "start": "row",
+          "operate": "row",
+          "complete": "row",
+          "done": "next",
+          "outputs": "print"
+        },
+        "input": {
+          "role":  "samples.extraction.lysing.prelysing.blood.batched",
+          "model": "tubes",
+          "title": "Blood tube",
+          "aliquotType": "blood"
+        },
+        "output": [{
+          "role": "samples.extraction.lysing.blood",
+          "model":      "tubes",
+          "purpose":     "stock",
+          "title":      "Blood tube",
+          "aliquotType": "blood",
+          "not_batched":true
+        }]
+      }]
+    },
+    {
+      "accepts":  "samples.extraction.lysing.blood" ,
+      "controllerName":"selection_page_controller",
+      "processTitle": "Receive Tubes - Batch for Blood Lysing",
+      "capacity": 96,
+      "input":        {
+        "role":"samples.extraction.lysing.blood",
         "model":"tubes"
       },
       "output": [
         {
-          "role":       "samples.extraction.lysing.blood",
-          "not_batched":true
+          "role":       "samples.extraction.qiacube_dna_only.input_tube_dnap.batched"
         }
       ]
     },
-    {
-      "accepts": "samples.extraction.lysing.blood",
-      "controllerName":"selection_page_controller",
-      "processTitle": "Blood Lysing",
-      "buttonTitle": "Lyse",
-      "capacity": 96,
-      "input": {
-        "role":"samples.extraction.lysing.blood",
-        "model":"tubes"
-      },
-      "output": [{
-        "role": "samples.extraction.qiacube_dna_and_rna.input_tube_nap"
-      }]
-    },
-
     {
       "accepts":  "samples.shipping.blood_!na.awaiting_shipping" ,
       "controllerName":"selection_page_controller",
@@ -71,6 +122,5 @@
         }]
       }]
     }
-
   ]
 }

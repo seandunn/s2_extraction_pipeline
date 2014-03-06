@@ -155,7 +155,10 @@ define([
       } else {
         user.pages = (user.pages || []).concat(app.config.defaultPages);
         app.config.login = user.email;
-        app.config.userPromise.resolve(user.email);
+        app.config.userPromise.then(function() {
+          app.config.rootPromise = app.getS2Root(user);
+        });
+        app.config.userPromise.resolve(user.email);        
         app.config.disablePrinting = ($.cookie("disablePrinting") === "true");
         return deferred.resolve(user).promise();
       }

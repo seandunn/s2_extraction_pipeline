@@ -1,7 +1,7 @@
 define([ "text!app-components/scanning/_plate.html",
     "app-components/labelling/scanning", "app-components/labware/display",
-    "labware/standard_mappers", "lib/pubsub", "lib/jquery_extensions"
-], function(plateTemplate, labwareScanner, labwareDisplay, representer, PubSub) {
+    "labware/standard_mappers", "lib/pubsub", "config", "lib/jquery_extensions"
+], function(plateTemplate, labwareScanner, labwareDisplay, representer, PubSub, AppConfig) {
   "use strict";
   /* Listens */
   var SCANNED_BARCODE = "scanned.barcode.s2";
@@ -31,23 +31,33 @@ define([ "text!app-components/scanning/_plate.html",
     var notFound = function(barcode) {
       PubSub.publish("error.status.s2", undefined, {message: ["Barcode '",barcode,"' not found"].join('')});
     };
+
+    var fetch = function(barcode) {
+      return AppConfig.rootPromise.then(function(root) {
+        return root.findByLabEan13(barcode);
+      });
+    };
+    
+    obj.view.trigger("display.labware.s2", representer(context.labware));
+
     
     obj.renderDisplay = function(barcode) {
-      context.fetch(barcode).then(function(labware) {
+      fetch(barcode).then(function(labware) {
         obj.view.trigger(LABWARE_DISPLAY, representer(labware));
       });
     };
     
     obj.view.on(SCANNED_BARCODE, $.ignoresEvent(function(barcode) {
-      context.fetch(barcode).then(validation, _.partial(notFound, barcode)).then(function(labware) {
+      fetch(barcode).then(validation, _.partial(notFound, barcode)).then(function(labware) {
         obj.view.trigger(LABWARE_DISPLAY, representer(labware));
         return labware;
       }).then(function(labware) {
         obj.view.trigger(PLATE_SCANNED, labware);
         obj.view.trigger(DONE, obj.view);
         return true;
-      }).fail(function() { 
+      }).fail(function(msg) { 
         $('input', obj.view).val('');
+        PubSub.publish("error.status.s2", undefined, {message: msg});
         });
     }));
     return obj;

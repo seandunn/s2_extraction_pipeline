@@ -4,10 +4,12 @@ define(["controllers/base_controller",
   "lib/barcode_checker",
   "lib/util",
   "labware/presenter",
-], function (BaseController, LabwareView, PubSub, BarcodeChecker, Util, LabwarePresenter) {
+  "event_emitter"
+], function (BaseController, LabwareView, PubSub, BarcodeChecker, Util, LabwarePresenter, EventEmitter) {
   "use strict";
 
-  var LabwareModel = Object.create(null);
+  var LabwareModel = new EventEmitter();
+
   _.extend(LabwareModel, LabwarePresenter, {
     init: function (owner, setupData) {
       this.owner = owner;
@@ -15,7 +17,11 @@ define(["controllers/base_controller",
 
       return this;
     },
-
+    setResource: function(resource, presenter) {
+      this.presentResource = presenter;
+      this.resource        = resource;
+      this.emit("resourceUpdated");
+    },
     displayResource: function(resourceSelector) {
       var resourceController = this.owner.resourceController,
           resource           = this.resource;
@@ -47,6 +53,12 @@ define(["controllers/base_controller",
       this.setupPlaceholder(jquerySelection);
       this.labwareModel = Object.create(LabwareModel).init(this, setupData);
 
+      this.labwareModel.on("resourceUpdated", _.bind(function() {
+          this.setupView();
+          this.renderView();
+          this.emit("resourceUpdated");
+      }, this));
+      
       this.setupView();
       this.setupSubControllers();
       return this;
@@ -63,9 +75,7 @@ define(["controllers/base_controller",
     },
 
     updateModel: function (newResource, presentationHandler) {
-      this.labwareModel.presentResource = presentationHandler || LabwarePresenter.presentResource;
-      this.labwareModel.resource        = newResource;
-      this.childDone(this.labwareModel, "resourceUpdated", {});
+      this.labwareModel.setResource(newResource, presentationHandler || LabwarePresenter.presentResource)
       return this;
     },
     setupSubControllers: function () {
@@ -200,14 +210,6 @@ define(["controllers/base_controller",
           modelName: this.labwareModel.expected_type.pluralize(),
           BC:        data.barcode
         });
-      }
-    },
-
-    modelDone: function(child, action, data) {
-      if (action === "resourceUpdated") {
-        this.setupView();
-        this.renderView();
-        this.owner.childDone(this, "resourceUpdated", {});
       }
     },
 
