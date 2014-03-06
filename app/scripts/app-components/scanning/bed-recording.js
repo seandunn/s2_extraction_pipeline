@@ -49,7 +49,7 @@ define([ "text!app-components/scanning/_bed-recording.html",
     }, promisesBedRecordingDone[1]));
     html.on(PLATE_SCANNED, _.partial(function(promise, event, labware) {
       robotScannedPromise.then(function(robot) {
-        if (robot.hasScannedLabwareBarcodeBefore(labware.labels.barcode.value)) {
+        if (robot.hasNotScannedLabwareBarcodeBefore(labware.labels.barcode.value)) {
           promise.resolve(labware);
         } else {
           promise.reject("This labware has been scanned before.");

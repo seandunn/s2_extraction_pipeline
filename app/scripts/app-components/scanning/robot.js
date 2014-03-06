@@ -39,7 +39,7 @@ define([ "app-components/labelling/scanning", "lib/pubsub", "config", "lib/jquer
       },
       // For a robot, a labware is valid if it has never been scanned before for this
       // robot
-      hasScannedLabwareBarcodeBefore: function(labwareBarcode) {
+      hasNotScannedLabwareBarcodeBefore: function(labwareBarcode) {
         return (_.indexOf(this._labwareScannedList, labwareBarcode) < 0);
       },
       // Returns true if the bed barcode provided is valid for the selected robot

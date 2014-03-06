@@ -15,18 +15,14 @@ define([ "models/base_page_model", "config"
     },
     getRobotType: function() {
       return this.config.group;
-      //return this.robotGroups[this.config.group];      
     },
     
     setupModel : function(setupData) {
-      
       this.cache.push(setupData.batch);
       this.batch = setupData.batch;
       return $.Deferred().resolve(this).promise();
     },
-    /*validateRobot : function(robotType) {
-      return (this.config.robotType === robotType);
-    },*/
+
     setRobotFromBarcode : function(robotBarcode) {
       var deferred = $.Deferred();
       var thisModel = this;

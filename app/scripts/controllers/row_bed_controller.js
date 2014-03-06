@@ -130,7 +130,7 @@
           return false;
         }        
         component.fromObj([[barcode1, null], [barcode2, null]]);
-        markAsCompletedRow(this, {buttons: [{action: "start"}]}, {verified: [{
+        markAsCompletedRow.call(this, this, {buttons: [{action: "start"}]}, {verified: [{
           robot: process,
             bed: null,
               plate: plate1
@@ -141,11 +141,7 @@
         }]});
         $(".robot input").prop("value", process);
       } else {
-        markAsCompletedRowBR(this, {buttons: [{action: "start"}]}, {verified: [{
-          robot: process,
-            bed: null,
-              plate: plate1
-        }]});
+        markAsCompletedRowBR(this, {buttons: [{action: "start"}]}, [process, null, plate1]);
         $(".robot input").prop("value", process);
         $(".robot input").prop("disabled", true);
         component.fromObj([barcode1, null]);
@@ -318,11 +314,6 @@
         var name = nameToDetails[0], details = nameToDetails[1];
         var subController = controller.controllerFactory.create('labware', controller);
         subController.setupController(details.resource, function() { return controller.jquerySelection().find('.' + name); });
-        /*subController.on("resourceUpdated", _.bind(function() {
-          if (this.isRowComplete() && (child === this.editableControllers().last().value())) {
-            this.emit("completedRow");
-          }
-        }, this));*/
         return subController;
       });
 
