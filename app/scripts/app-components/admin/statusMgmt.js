@@ -10,28 +10,28 @@ define([
     function hashCode(s){
       return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
     }
-    var html = $("<div></div>"); //  = template(context);
+    var html = $("<div><div id='barcode-scanner'></div><div id='table-events'></div></div>"); //  = template(context);
     var obj = {
       view:   html,
       events: {},
       render: _render
     };
 
+    // The user needs to scan themselves in before doing anything
+    var itemComponent = barcodeScanner({
+      label: "Item",
+      icon: "icon-barcode"
+    });
+    var $div = obj.view;
+    $("#barcode-scanner", $div).html(itemComponent.view)
+    $div.on(itemComponent.events);
+    $div.on("scanned.barcode.s2", _.bind(function(event, barcode) {
+      _render.call(this, barcode);
+    }, obj));    
+
     function _render(barcode) {
       var obj = this;
       
-      
-      // The user needs to scan themselves in before doing anything
-      var itemComponent = barcodeScanner({
-        label: "Item",
-        icon: "icon-barcode"
-      });
-      var $div = obj.view;
-      $div.append(itemComponent.view);
-      $div.on(itemComponent.events);
-      $div.on("scanned.barcode.s2", _.bind(function(event, barcode) {
-        loadTable.call(this, barcode);
-      }, obj));
 
       if (barcode) {
         loadTable(barcode);
@@ -59,7 +59,8 @@ define([
           });
           //_.reduce(order.items, function(item) {}, []);
         }).flatten().value();
-        obj.view.html(template({ title: barcode, items: rows}));
+        
+        $("#table-events", obj.view).html(template({ title: barcode, items: rows}));
         _.each(rows, function(row) {
           $("."+row.className+" button").on("click", _.partial(function(row) {
             row.sendEvent($("."+row.className+" select").val(), row.role);
