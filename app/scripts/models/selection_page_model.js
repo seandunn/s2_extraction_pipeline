@@ -279,7 +279,7 @@ define([
   function labwareUniqueInBatch(context, result) {
     if (_.some(result, function (input) { return input.uuid === context.input.uuid; })) {
       // check if not already there
-      return context.deferred.reject({message: "You cannot add the same tube twice.", previous_error: null});
+      return context.deferred.reject({message: "You cannot add the same labware twice.", previous_error: null});
     } else {
       return result;
     }
@@ -294,7 +294,7 @@ define([
           ( "done" === item.status);
       })).some().value();
       if (!newTubeHasCorrectRole) {
-        return context.deferred.reject({message: "This tube cannot be added to the current batch, because it does not have the correct role."});
+        return context.deferred.reject({message: "This labware cannot be added to the current batch, because it does not have the correct role."});
       } else {
         return result;
       }                

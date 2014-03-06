@@ -20,6 +20,8 @@ define([
       icon: undefined
     }, context));
 
+    var barcode    = html.find("input[type=text]");
+    var validation = context.validation || lengthValidation(context.acceptable);
     
     var paddedBarcode;
     var success = function(padded) {
@@ -29,9 +31,6 @@ define([
     var invalid = function(padded) {
       html.trigger("error.status.s2", "Unacceptable barcode '" + padded);
     };
-
-    var barcode    = html.find("input[type=text]");
-    var validation = context.validation || lengthValidation(context.acceptable);
 
     barcode.enterHandler(_.partial(function(barcode) {
       // Do not perform actions if this node is out of dom

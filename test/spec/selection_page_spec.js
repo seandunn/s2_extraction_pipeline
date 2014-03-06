@@ -143,7 +143,7 @@ define([
         it("sends an error message if the tube has already been entered", function (done) {
           
           PubSub.subscribe("error.status.s2", function (event, source, eventData) {
-            expect(eventData.message).to.equal("You cannot add the same tube twice.");
+            expect(eventData.message).to.equal("You cannot add the same labware twice.");
             done();
           });
 
@@ -170,7 +170,7 @@ define([
         it("sends an error message if the tube has the wrong role", function (done) {
           
           PubSub.subscribe("error.status.s2", function (event, source, eventData) {
-            expect(eventData.message).to.equal("This tube cannot be added to the current batch, because it does not have the correct role.");
+            expect(eventData.message).to.equal("This labware cannot be added to the current batch, because it does not have the correct role.");
             done();
           });
 
