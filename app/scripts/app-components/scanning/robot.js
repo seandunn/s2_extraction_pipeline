@@ -69,7 +69,7 @@ define([ "app-components/labelling/scanning", "lib/pubsub", "config", "lib/jquer
         return (_.indexOf(ROBOT_GROUPS[this.robotType], barcode) >= 0);
       },
       markLabwareBarcodeAsUsed: function(labwareBarcode) {
-        if (this.hasScannedLabwareBarcodeBefore(labwareBarcode)) {
+        if (this.hasNotScannedLabwareBarcodeBefore(labwareBarcode)) {
           this._labwareScannedList.push(labwareBarcode);
         }
       },
