@@ -51,6 +51,15 @@ define([
           friendly_name: "QC2Ibd",
           sanger_sample_id_core: "QC2Ibd"
         },
+        QC1Hmgp: {
+          friendly_name: "QC1Hmgp",
+          sanger_sample_id_core: "QC1Hmgp"          
+        },
+        QC2Hmgp: {
+          friendly_name: "QC2Hmgp",
+          sanger_sample_id_core: "QC2Hmgp"
+        },
+        
         CGaPSSV: {
           friendly_name: "CGaP Validation",
           sanger_sample_id_core: "CGaPSSV"
