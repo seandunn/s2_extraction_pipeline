@@ -17,6 +17,8 @@ define([
     var a = "change";
     this._setRole();
   }
+
+  LocationController.prototype.addListeners = function() {};
     
   LocationController.prototype.setupController = function(args, selector) {
     this.user     = args["user"];
@@ -74,7 +76,7 @@ define([
   }
 
   LocationController.prototype._setRole = function() {
-    this.role = _.first(this.config.accepts);
+    this.role = this.config.accepts;
   }
 
   LocationController.prototype.onChange = function(optionValue) {
@@ -87,11 +89,11 @@ define([
   }
 
   LocationController.prototype._enableBtn = function(btnAction) {
-    this._callChildDone("enableBtn", { buttons: [{ action: btnAction }] });
+    this.owner.enableBtn(btnAction);
   }
 
   LocationController.prototype._disableBtn = function(btnAction) {
-    this._callChildDone("disableBtn", { buttons: [{ action: btnAction }] });
+    this.owner.disableBtn(btnAction);
   }
 
   LocationController.prototype._callChildDone = function(action, data) {
@@ -133,7 +135,7 @@ define([
         input: {
           order: order,
           resource: resource,
-          role: _.first(config.accepts)
+          role: config.accepts
         },
         output: {
           order: order,
