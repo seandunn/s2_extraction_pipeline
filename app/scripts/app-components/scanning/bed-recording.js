@@ -47,10 +47,37 @@ define([ "text!app-components/scanning/_bed-recording.html",
         }
       });
     }, promisesBedRecordingDone[1]));
+    
+    function labwareValidation(labwareInputModel, position, labware) {
+      var defer = $.Deferred();
+      var validLabwareBarcodesList = _.map(labwareInputModel.allInputs, function(input) {
+        return input.labels.barcode.value;
+        });
+      if (labware.resourceType === labwareInputModel.expected_type) {
+        if ((position===0) && (_.indexOf(validLabwareBarcodesList, labware.labels.barcode.value) < 0)) {
+          defer.reject("The scanned labware was not included in the current batch, so it cannot be used as input.");
+        }
+        else {
+          defer.resolve(labware);
+        }
+      } else {
+        defer.reject(["Expected a '", 
+                      labwareInputModel.expected_type, 
+                      "' barcode but scanned a '",
+                      labware.resourceType,
+           "' instead"].join(''));
+      }
+      return defer;
+    }
+
     html.on(PLATE_SCANNED, _.partial(function(promise, event, labware) {
       robotScannedPromise.then(function(robot) {
         if (robot.hasNotScannedLabwareBarcodeBefore(labware.labels.barcode.value)) {
-          promise.resolve(labware);
+          labwareValidation(labResource, context.position, labware).then(function() {
+            promise.resolve(labware);
+          }, function(msg) {
+            promise.reject(msg);
+          });
         } else {
           promise.reject("This labware has been scanned before.");
         }
