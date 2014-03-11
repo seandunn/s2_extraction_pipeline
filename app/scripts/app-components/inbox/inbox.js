@@ -10,35 +10,28 @@ define([
 
   var template = _.compose($, _.template(htmlPartial));
 
-  var initializeViz;
+  var initializeViz, workbook, activeSheet, applyFilters;
 
   function createHtml(context) {
     var html = template(context);
 
     initializeViz = function initializeViz() {
       var defaultModel = Object.create(DefaultPageModel).init(context.app);
-
+      var viz;
       var placeholderDiv = html.find(".tableau-viz")[0];
-      var workbook, activeSheet;
-
+      
       var options = {
-          width: placeholderDiv.offsetWidth,
-          height: placeholderDiv.offsetHeight,
+          width: 710,
+          height: 500,
           hideTabs: true,
           hideToolbar: true,
-          onFirstInteractive: function () {
+          onFirstInteractive: function(e) {
             workbook = viz.getWorkbook();
             activeSheet = workbook.getActiveSheet();
-            window.sheet = activeSheet
-
-            activeSheet.applyFilterAsync(
-              "step",
-              context.filterByRoles,
-              tableauSoftware.FilterUpdateType.REPLACE);
           }
       };
 
-      var viz = new tableauSoftware.Viz(placeholderDiv, context.inboxUrl, options);
+      viz = new tableauSoftware.Viz(placeholderDiv, context.inboxUrl, options);
 
       viz.addEventListener(tableauSoftware.TableauEventName.MARKS_SELECTION, onMarksSelection);
 
@@ -60,10 +53,15 @@ define([
           // TODO: Add proper event listener.
           $('#page-nav a[href="#pipeline"]').tab('show');
         });
-
-
       }
     };
+
+    applyFilters = function applyFilters() {
+      activeSheet.applyFilterAsync(
+          "step",
+          context.filterByRoles,
+          tableauSoftware.FilterUpdateType.REPLACE);
+    }
 
     return html;
   }
@@ -76,12 +74,12 @@ define([
         // matches this inbox then we initialise Tableau.  This stops Tableau
         // being called unnecessarily.
         if (e.target.getAttribute("href") === "#"+context.id){
-          initializeViz();
+          applyFilters();
         }
       }
-
     };
 
+    initializeViz();
 
     return {
       view:   view,
