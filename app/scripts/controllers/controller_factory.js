@@ -21,7 +21,8 @@ define([
   // Component wrapping controllers
   "app-components/labware/display_controller_wrapper",
   "app-components/lysing/lysing_controller_wrapper",
-  "app-components/imager/imager_controller"
+  "app-components/imager/imager_controller",
+  "app-components/manual-racking/manual-racking-controller"
 ], function() {
   "use strict";
 

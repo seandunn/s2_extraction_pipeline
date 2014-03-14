@@ -104,19 +104,22 @@ define([
     },
 
     print: function(){
-      var thisController = this;
-      var printer        = $(".printer-select").val();
+      var thisController = this,
+          printer        = $(".printer-select").val();
 
-      this.model.fire(printer).fail(function(error){
-        PubSub.publish("error.status.s2", thisController, error);
-      }).then(function(){
-        thisController.view.disableDropZone();
+      this.emit("processBegin");
 
-        thisController.emit("processBegin");
-        thisController.emit("processFinished");
-
-        PubSub.publish("message.status.s2", thisController, { message: "Rack registered." });
-      });
+      this.model.fire(printer)
+        .fail(function(error){
+          PubSub.publish("error.status.s2", thisController, error);
+        })
+        .then(function(){
+          thisController.view.disableDropZone();
+          PubSub.publish("message.status.s2", thisController, { message: "Rack registered." });
+        })
+        .always(function() {
+          thisController.emit("processFinished");
+        });
     },
 
     end: function(){
