@@ -21,7 +21,7 @@ define([
 
   // This is a mixin for classes that wish to do labware presentation.
   return function(resource) {
-    var presenter = resourceTypeToLabwareDataMappers[resource.resourceType] || _.identity;
+    var presenter = (resource && resource.resourceType && resourceTypeToLabwareDataMappers[resource.resourceType]) || _.identity;
     return presenter(resource);
   };
 
@@ -59,15 +59,20 @@ define([
     fields.unshift(barcodeLookup);
 
     // Fields that are not already functions are turned into the appropriate picker so that we can
-    // then use a collapser to build oour final object.
+    // then use a collapser to build oour final object
     var pickers   = _.map(fields, function(field) { return _.isFunction(field) ? field : _.picker(field) });
     var collapser = _.collapser(pickers);
 
     return function(labware) {
-      return collapser(
+      var resourcePresented = collapser(
         (labware.tracked === false) ? {} : detailsHelper(labware),
         labware
       );
+      resourcePresented.attributes = {
+        number_of_rows: labware.number_of_rows,
+        number_of_columns: labware.number_of_columns
+      };
+      return resourcePresented;
     };
   }
 

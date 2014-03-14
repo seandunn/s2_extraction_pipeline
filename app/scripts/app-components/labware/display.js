@@ -1,11 +1,12 @@
 define([
   "text!app-components/labware/_display.html",
+  "labware/presenter",  
   'app-components/labware/plate_like',
   'app-components/labware/tube_like',
 
   // Global namespace requirements
   "lib/jquery_extensions"
-], function(View) {
+], function(View, LabwarePresenter) {
   'use strict';
 
   var template = _.compose($, _.template(View));
@@ -40,6 +41,6 @@ define([
       labware=null;
     }
     var display = Presenters[type];
-    display(view, labware);
+    display(view, LabwarePresenter.presentResource(labware));
   }
 });

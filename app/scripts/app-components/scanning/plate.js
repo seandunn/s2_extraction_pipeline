@@ -38,7 +38,8 @@ define([ "text!app-components/scanning/_plate.html",
       });
     };
     
-    obj.view.trigger("display.labware.s2", representer(context.labware));
+    //obj.view.trigger("display.labware.s2", representer(context.labware));
+    obj.view.trigger("display.labware.s2", context.labware);
 
     
     obj.renderDisplay = function(barcode) {
@@ -49,7 +50,7 @@ define([ "text!app-components/scanning/_plate.html",
     
     obj.view.on(SCANNED_BARCODE, $.ignoresEvent(function(barcode) {
       fetch(barcode).then(validation, _.partial(notFound, barcode)).then(function(labware) {
-        obj.view.trigger(LABWARE_DISPLAY, representer(labware));
+        obj.view.trigger(LABWARE_DISPLAY, labware);
         return labware;
       }).then(function(labware) {
         obj.view.trigger(PLATE_SCANNED, labware);

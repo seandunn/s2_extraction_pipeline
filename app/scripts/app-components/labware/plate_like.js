@@ -76,7 +76,16 @@ define([
   }
 
   function rackSvgPicker(labware) {
-    return rackSvg["" + (labware.attributes.number_of_rows * labware.attributes.number_of_columns)] || rackSvg["96"];
+    var selectedRack;
+    if ((!_.isUndefined(labware.attributes)) && 
+      ((!_.isUndefined(labware.attributes.number_of_rows)) && 
+        (!_.isUndefined(labware.attributes.number_of_columns)))) {
+      
+      selectedRack = rackSvg["" + (labware.attributes.number_of_rows * labware.attributes.number_of_columns)];
+    } else  {
+      selectedRack = rackSvg["96"];
+    }
+    return selectedRack;
   }
 
   function displayValueIfSet(view, value, field) {
