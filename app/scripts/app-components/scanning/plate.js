@@ -43,7 +43,7 @@ define([ "text!app-components/scanning/_plate.html",
     
     obj.renderDisplay = function(barcode) {
       fetch(barcode).then(function(labware) {
-        obj.view.trigger(LABWARE_DISPLAY, representer(labware));
+        obj.view.trigger(LABWARE_DISPLAY, labware);
       });
     };
     

@@ -108,6 +108,7 @@ define([ "app-components/labelling/scanning", "lib/pubsub", "config", "lib/jquer
           $("input", this.view).prop("disabled", "true");
           return true;
         } else {
+          $('input', this.view).val('');
           PubSub.publish("error.status.s2", this, {message: 'Incorrect robot barcode.'});
         }
       }, this)));

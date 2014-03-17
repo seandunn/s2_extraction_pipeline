@@ -77,9 +77,10 @@ define([
 
   function rackSvgPicker(labware) {
     var selectedRack;
-    if (!_.any([labware.attributes, 
+
+    if (labware.attributes && (!_.any([
                 labware.attributes.number_of_rows, 
-                labware.attributes.number_of_columns], _.isUndefined)) {
+                labware.attributes.number_of_columns], _.isUndefined))) {
       selectedRack = rackSvg["" + (labware.attributes.number_of_rows * labware.attributes.number_of_columns)];
     } else  {
       selectedRack = rackSvg["96"];
