@@ -61,7 +61,7 @@ define([ "config",
   var allRacksFullExceptTheLast = {
     checkMethod: function(labwareInputModel, position, labware) {
       var numRacks = _.keys(labwareInputModel).length;
-      return ((position===(numRacks-1)) || (labware.tubes.length===(labware.number_of_rows*labware.number_of_columns)));
+      return ((position===(numRacks-1)) || (_.keys(labware.tubes).length===(labware.number_of_rows*labware.number_of_columns)));
     },
     errorMessage: function(labwareInputModel, position, labware) {
       return ["The rack in position ", (position+1), " must be totally full"].join('');
@@ -74,9 +74,16 @@ define([ "config",
         model: bedVerificationModel,
         labwareValidations: [allRacksFullExceptTheLast]
       });
-      $("#step2").append(this._bedVerification.view).on(this._bedVerification.events).on("scanned.bed-verification.s2", _.bind(function() {
-        this.emit("bedVerificationValidated", arguments);
-      }, this));
+      $("#step2").append(this._bedVerification.view)
+        .on(this._bedVerification.events)
+        .on("scanned.bed-verification.s2", _.bind(function() {
+          this.emit("bedVerificationValidated", arguments);
+        }, this))
+        .on("error.bed-verification.s2", _.once(_.bind(function() {
+          this._bedVerification.view.html("");
+          this._bedVerification.resetRobot();
+          this.renderInputs(inputs);
+        }, this)));
       this.emit("render");
     }, this));
   };
@@ -139,9 +146,17 @@ define([ "config",
     setupController: function(setupData, selector) {
       this._view.setSelector(selector);
       
-      this.model.setBatch(setupData.batch);
-      
-      this._inputsModel.loadBatch(setupData.batch, setupData.initialLabware);
+      this.model.setBatch(setupData.batch).then(_.bind(function() {
+        this._inputsModel.loadBatch(setupData.batch, setupData.initialLabware).then(_.bind(function() {
+          if (this.model.started) {
+            this.model.inputs.then(_.bind(function(plates) {
+              this._outputsCreated = this.model.reLoadedOutputs;            
+              this._plates = plates;
+              this.emit("processBegin");            
+            }, this));          
+          }          
+        }, this));
+      }, this))
     },    
     initialController: function() {
       // on first focus
@@ -152,8 +167,14 @@ define([ "config",
       this._inputsModel.on("inputsCompleted", _.bind(this.emit, this, "completedRow"));
       
       this._view.on("bedVerificationValidated", _.bind(this.onBedVerification, this));
+      this._view.on("render", _.bind(this.onRender, this));
       
       $(document.body).on("scanned.robot.s2", _.bind(this.onScannedRobot, this));      
+    },
+    onRender: function() {
+      if (!this.model.started) {
+        this._view.startScanning();
+      }      
     },
     onBedVerification: function(args) {
       var bedVerification = args[1];
@@ -161,16 +182,8 @@ define([ "config",
       this.emit("printReady");
     },
     onScannedRobot: function(robot) {
-      if (!this._onceStartScanning) {
-        this._onceStartScanning = _.once(_.bind(this._view.startScanning, this._view));
-      }
-      if (!this._view._bedVerification) {
-        this._view.on("render", this._onceStartScanning);
-      } else {
-        this._onceStartScanning();        
-      }
+      this._scannedRobot = robot;
     },
-    
     onInputsLoaded: function() {
       this._view.renderInputs(this._inputsModel);
     },

@@ -126,7 +126,7 @@ define([ "text!app-components/scanning/_bed-recording.html",
     if (context.cssClass) {
       html.addClass(context.cssClass);
     }
-    
+    html.addClass("bed-recording");
 
     var bedObj = component.components[0],
       plateObj = component.components[1];

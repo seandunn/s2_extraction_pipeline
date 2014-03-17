@@ -58,7 +58,7 @@ define([ "app-components/labelling/scanning", "lib/pubsub", "config", "lib/jquer
         } else {
           return (_.chain(this._selectedRobot.beds)
           .map(function(node) {
-            return _.pluck(node, "barcode");
+            return _.pluck(_.compact(node), "barcode");
           })
           .flatten()
           .indexOf(bedBarcode)

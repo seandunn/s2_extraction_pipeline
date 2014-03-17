@@ -46,6 +46,7 @@
     {
       "accepts": "samples.extraction.lysing.prelysing.blood.batched",
       "controllerName": "step_controller",
+      "capacity": 96,
       "printerType": 2,
       "buttons": [
         {

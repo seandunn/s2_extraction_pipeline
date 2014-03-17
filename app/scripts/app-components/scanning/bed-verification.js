@@ -60,14 +60,10 @@ define([ "app-components/linear-process/linear-process",
     function bedValidation(barcode) {        
       var defer = $.Deferred();
       robotScannedPromise.then(function(robot) {
-        var validBedsList = robot.getValidBeds();
-        var pos = _.indexOf(validBedsList, barcode);
-        if (pos>=0) {
+        if (robot.isValidBedBarcode(barcode)) {
           defer.resolve(barcode);
         } else {
-          defer.reject();
-          PubSub.publish("error.status.s2", undefined, 
-            {message: ["Incorrect bed barcode"].join('')});
+          defer.reject("Incorrect bed barcode");
         }
       });
       return defer;
@@ -145,7 +141,7 @@ define([ "app-components/linear-process/linear-process",
 
       return defer;
     }
-    
+    obj.view.addClass("bed-verification");
     obj.view.on("error.bed-recording.s2", function() {
       obj.view.trigger("error.bed-verification.s2");
     });
@@ -159,6 +155,12 @@ define([ "app-components/linear-process/linear-process",
         PubSub.publish("error.status.s2", this, {message: 'Incorrect bed verification.'});
         obj.view.trigger("error.bed-verification.s2");
       });
+    
+    obj.resetRobot = function() {
+      robotScannedPromise.then(function(robot) {
+        robot.resetSelectedRobot();
+      });
+    };
     
     obj.toObj = function() {
       return _.pluck(obj.components, "toObj");
