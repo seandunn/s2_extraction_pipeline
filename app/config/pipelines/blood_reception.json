@@ -5,7 +5,9 @@
     "samples.extraction.lysing.prelysing.blood.awaiting_reception",
     "samples.extraction.lysing.prelysing.blood",
     "samples.extraction.lysing.prelysing.blood.batched",
-    "samples.extraction.lysing.blood"
+    "samples.extraction.lysing.blood",
+    "samples.extraction.rack.bio_robot_dna_and_rna",
+    "samples.extraction.lysing.blood.biorobot.batched"
   ],
   "workflows": [
     {
@@ -74,7 +76,7 @@
           },
           "output": [
             {
-              "role": "samples.extraction.lysing.blood",
+              "role": "samples.extraction.bio_robot_dna_and_rna.input_tube_nap",
               "model": "tubes",
               "purpose": "stock",
               "title": "Blood tube",
@@ -85,24 +87,72 @@
         }
       ]
     },
+    
     {
-      "accepts": "samples.extraction.lysing.blood",
+      "accepts": "samples.extraction.rack.bio_robot_dna_and_rna",
       "controllerName": "selection_page_controller",
       "processTitle": "Receive Tubes - Batch for Blood Lysing",
-      "capacity": 96,
+      "capacity": 4,
       "input": {
-        "role": "samples.extraction.lysing.blood",
-        "model": "tubes"
+        "role": "samples.extraction.rack.bio_robot_dna_and_rna",
+        "model": "tube_racks",
+        "attributes":  {
+          "number_of_rows": 6,
+          "number_of_columns": 4
+        }        
       },
       "output": [
         {
-          "role": "samples.extraction.qiacube_dna_only.input_tube_dnap.batched"
+          "role":       "samples.extraction.lysing.blood.biorobot.batched"
         }
       ]
     },
     {
-      "accepts": "samples.shipping.blood_!na.awaiting_shipping",
-      "controllerName": "selection_page_controller",
+      "accepts":        "samples.extraction.lysing.blood.biorobot.batched" ,
+      "controllerName": "steplinear_controller",
+      "printerType": 1,
+      "defaultPrinter":"d304bc",
+      "buttons": [{ "action": "print", "title": "Print Destination Plate Barcode", "alwaysEnabled": true },
+                  { "action": "start", "title": "Start Biorobot" },
+                  { "action": "end",   "title": "Finish Biorobot" },
+                  { "action": "next",  "title": "Done" }
+      ],
+      "processTitle":  "Biorobot - Blood Lysing and Extraction",
+      "controllers": [
+      {
+        "controllerName": "robot_controller",
+        "group": "biorobot",
+        "barcode": "BIOROBOT"
+      },      
+      {
+        "controllerName":   "linear_controller",
+        "behaviours": {
+          "start": "start",
+          "operate": "start",
+          "complete": "end",
+          "done": "next",
+          "outputs": "print"
+        },
+        "rowBehaviour":  "bedVerification",
+        "input": {
+          "role":  "samples.extraction.lysing.blood.biorobot.batched",
+          "model": "tube_racks",
+          "title": "Tube rack",
+          "bedTracking": true
+        },
+        "output": [{
+          "role": "samples.extraction.lysing.blood.biorobot.lysed",
+          "aliquotType":  "blood",
+          "purpose":     "stock",
+          "model":       "plates",
+          "title":      "Plate",
+          "bedTracking": true
+        }]
+      }]
+    },
+    {
+      "accepts":  "samples.shipping.blood_!na.awaiting_shipping" ,
+      "controllerName":"selection_page_controller",
       "processTitle": "Sample Shipping - Batching",
       "input": {
         "role": "samples.shipping.blood_!na.awaiting_shipping",

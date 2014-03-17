@@ -52,7 +52,7 @@
             <tspan x="23" y="276">D</tspan>
         </text>
         <text class="barcode" sketch:type="MSTextLayer" font-family="Arial" font-size="21" font-weight="bold" fill="#000000">
-            <tspan x="34" y="338">Barcode: </tspan>
+            <tspan x="34" y="338">Barcode:</tspan><tspan class="value"></tspan>
         </text>
         <g id="Group" sketch:type="MSLayerGroup" transform="translate(63.000000, 56.000000)" stroke="#000000" stroke-opacity="0.202205882" fill="#26211D" fill-opacity="0.636374081">
             <circle class="D6" sketch:type="MSShapeGroup" cx="381.5" cy="209.5" r="24.5"></circle>

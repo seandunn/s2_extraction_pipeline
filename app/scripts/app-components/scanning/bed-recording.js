@@ -17,6 +17,9 @@ define([ "text!app-components/scanning/_bed-recording.html",
   var DONE = "done.s2";
   var robotScannedPromise = $.Deferred();
 
+  $(document.body).on("scanned.robot.s2", _.partial(function(promise, event, robot) {
+    promise.resolve(robot);
+  }, robotScannedPromise));
   
   
   return function(context) {
@@ -124,9 +127,6 @@ define([ "text!app-components/scanning/_bed-recording.html",
       html.addClass(context.cssClass);
     }
     
-    $(document.body).on("scanned.robot.s2", _.partial(function(promise, event, robot) {
-      promise.resolve(robot);
-    }, robotScannedPromise));
 
     var bedObj = component.components[0],
       plateObj = component.components[1];

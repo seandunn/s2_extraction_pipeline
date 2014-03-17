@@ -88,7 +88,7 @@ define([ "app-components/linear-process/switchable-linear-process", "app-compone
                                    fileSelector, uploadBut, 
                                    doneBut], "view"));
       labware.view.on(labware.events);
-      labware.view.trigger(LABWARE_DISPLAY, representer(context.labware));
+      labware.view.trigger(LABWARE_DISPLAY, context.labware);
       labware.view.addClass("imager");
       
       instance.view = labware.view;

@@ -182,6 +182,7 @@ define([
   }
 
   ManualRacking.prototype._triggerDone = function() {
+    
     this.context.owner.childDone(this, "done", {});
   }
   

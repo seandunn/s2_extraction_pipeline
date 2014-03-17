@@ -25,9 +25,8 @@ define([
 
   RackingBehaviour.prototype.setBarcode = function(barcode) {
     this.barcode = barcode;
-    var $tSpan = this.labware.view.find("svg .barcode tspan");
-    var bcText = $tSpan.text();
-    $tSpan.text(bcText + " " + this.barcode);
+    var $tSpan = this.labware.view.find("svg .barcode tspan.value");
+    $tSpan.text(this.barcode);
   }
 
   RackingBehaviour.prototype.setResource = function(resource) {
