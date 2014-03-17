@@ -126,6 +126,23 @@ define([ "config",
         return instance;
       });
     },
+    init: function(owner, factory, config) {
+      PrintController.init.call(this, owner, factory, config);
+      compose(this, PrintController);
+      compose(this, ProcessController);
+        
+      this._inputsModel = new Inputs();
+      this._view = new View(config);
+      
+      this.attachHandlers();
+    },
+    setupController: function(setupData, selector) {
+      this._view.setSelector(selector);
+      
+      this.model.setBatch(setupData.batch);
+      
+      this._inputsModel.loadBatch(setupData.batch, setupData.initialLabware);
+    },    
     initialController: function() {
       // on first focus
     },
@@ -159,25 +176,7 @@ define([ "config",
     },
     onInputScanned: function() {
       
-    },
-    
-    
-    init: function(owner, factory, config) {
-      PrintController.init.call(this, owner, factory, config);
-      compose(this, PrintController);
-      compose(this, ProcessController);
-        
-      this._inputsModel = new Inputs();
-      this._view = new View(config);
-      
-      this.attachHandlers();
-    },
-    setupController: function(setupData, selector) {
-      this._view.setSelector(selector);
-      
-      this.model.setBatch(setupData.batch);
-      
-      this._inputsModel.loadBatch(setupData.batch, setupData.initialLabware);
     }
+    
   });
 });

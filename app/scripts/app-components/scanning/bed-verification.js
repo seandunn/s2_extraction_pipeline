@@ -90,7 +90,7 @@ define([ "app-components/linear-process/linear-process",
     function buildBedRecordingList(context) {
       var list=[];
     
-      for (var i=0; (i<context.maxBeds); i++) {
+      _.times(context.maxBeds, function(i) {
         list.push({ 
           constructor: _.partial(bedRecording, _.extend({
             cssClass: ((i%2)===0)?"left":"right", 
@@ -101,8 +101,9 @@ define([ "app-components/linear-process/linear-process",
             bedValidation: context.bedValidations[i],
             plateValidation: (context.plateValidations && context.plateValidations[i]) || _.identity
           }, context))
-        });
-      }
+        });        
+      });
+      
       return list;
     }
     
