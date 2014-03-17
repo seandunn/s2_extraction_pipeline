@@ -17,7 +17,6 @@ define([
       this.model.behaviours.done.next(_.bind(
         function(){ 
           this.emit("controllerDone", this);
-          //controller.owner.childDone(controller, 'done'); 
           }, this),
         _.bind(actionOperation, this, "next")
       )

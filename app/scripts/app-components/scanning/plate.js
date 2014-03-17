@@ -38,7 +38,6 @@ define([ "text!app-components/scanning/_plate.html",
       });
     };
     
-    //obj.view.trigger("display.labware.s2", representer(context.labware));
     obj.view.trigger("display.labware.s2", context.labware);
 
     

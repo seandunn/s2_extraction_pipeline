@@ -77,6 +77,7 @@ define([ "config",
       $("#step2").append(this._bedVerification.view).on(this._bedVerification.events).on("scanned.bed-verification.s2", _.bind(function() {
         this.emit("bedVerificationValidated", arguments);
       }, this));
+      this.emit("render");
     }, this));
   };
   
@@ -119,11 +120,7 @@ define([ "config",
   var Controller = Object.create(Base);
   return $.extend(Controller, {
     register : function(callback) {
-      console.log("register call");
-      console.dir(arguments);
       callback("linear_controller", function() {
-        console.log("callback");
-        console.dir(arguments);
         var instance = Object.create(Controller);
         Controller.init.apply(instance, arguments);
         return instance;
@@ -142,13 +139,19 @@ define([ "config",
       $(document.body).on("scanned.robot.s2", _.bind(this.onScannedRobot, this));      
     },
     onBedVerification: function(args) {
-      //this.emit("controllerDone", this);
       var bedVerification = args[1];
       this._plates = _.pluck(bedVerification.verified, "plate");
       this.emit("printReady");
     },
     onScannedRobot: function(robot) {
-      this._view.startScanning();
+      if (!this._onceStartScanning) {
+        this._onceStartScanning = _.once(_.bind(this._view.startScanning, this._view));
+      }
+      if (!this._view._bedVerification) {
+        this._view.on("render", this._onceStartScanning);
+      } else {
+        this._onceStartScanning();        
+      }
     },
     
     onInputsLoaded: function() {
@@ -164,9 +167,6 @@ define([ "config",
       compose(this, PrintController);
       compose(this, ProcessController);
         
-      console.log("init");
-      console.dir(arguments);
-      
       this._inputsModel = new Inputs();
       this._view = new View(config);
       

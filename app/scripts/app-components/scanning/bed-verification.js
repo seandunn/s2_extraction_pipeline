@@ -5,6 +5,11 @@ define([ "app-components/linear-process/linear-process",
 
   var robotScannedPromise = $.Deferred();
   
+  $(document.body).on("scanned.robot.s2", _.partial(function(promise, event, robot) {
+    promise.resolve(robot);
+  }, robotScannedPromise));
+  
+  
   return function(context) {
     
     /**
@@ -51,28 +56,6 @@ define([ "app-components/linear-process/linear-process",
       }
       return defer;
     }
-    
-    /*function labwareValidation(labwareInputModel, position, labware) {
-      var defer = $.Deferred();
-      var validLabwareBarcodesList = _.map(labwareInputModel.allInputs, function(input) {
-        return input.labels.barcode.value;
-        });
-      if (labware.resourceType === labwareInputModel.expected_type) {
-        if ((position===0) && (_.indexOf(validLabwareBarcodesList, labware.labels.barcode.value) < 0)) {
-          defer.reject("The scanned labware was not included in the current batch, so it cannot be used as input.");
-        }
-        else {
-          defer.resolve(labware);
-        }
-      } else {
-        defer.reject(["Expected a '", 
-                      labwareInputModel.expected_type, 
-                      "' barcode but scanned a '",
-                      labware.resourceType,
-           "' instead"].join(''));
-      }
-      return defer;
-    }*/
     
     function bedValidation(barcode) {        
       var defer = $.Deferred();
@@ -175,10 +158,6 @@ define([ "app-components/linear-process/linear-process",
         PubSub.publish("error.status.s2", this, {message: 'Incorrect bed verification.'});
         obj.view.trigger("error.bed-verification.s2");
       });
-    
-    $(document.body).on(context.robotScannedEvent || "scanned.robot.s2", _.partial(function(promise, event, robot) {
-      promise.resolve(robot);
-    }, robotScannedPromise));
     
     obj.toObj = function() {
       return _.pluck(obj.components, "toObj");

@@ -59,14 +59,6 @@ define(["config", "controllers/base_controller", "models/robot_model",
         PubSub.subscribe("start_clicked.step_controller.s2", _.bind(this.onBeginProcess, this));
         PubSub.subscribe("end_clicked.step_controller.s2", _.bind(this.onEndProcess, this));
         
-        if (this.config.barcode) {
-          $(this.robotInputComponent.view).hide();
-          
-          setTimeout(_.bind(function() {
-            this.robotInputComponent.view.trigger("scanned.barcode.s2", this.config.barcode);
-            this.emit("controllerDone", this);
-          }, this), 3000);
-        }
         
       }, this));
      
@@ -76,6 +68,12 @@ define(["config", "controllers/base_controller", "models/robot_model",
       return this.component;
     }, 
     focus: function() {
+      if (this.config.barcode) {
+        $(this.robotInputComponent.view).hide();
+        this.robotInputComponent.view.trigger("scanned.barcode.s2", this.config.barcode);
+        this.emit("controllerDone", this);
+      }
+      
       var controller = this;
       controller.model.then(function(model) {
         if (model.batch.robot) {
