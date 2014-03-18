@@ -379,8 +379,8 @@ define([
                 var destination = _.drop(arguments, 1)[0];
                 var destinationKeys = [];
                 var letter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
-                for (var i=0; i<destination.number_of_rows; i++) {
-                  for (var j=0; j<destination.number_of_columns; j++) {
+                for (var j=0; j<destination.number_of_columns; j++) {
+                  for (var i=0; i<destination.number_of_rows; i++) {
                     destinationKeys.push(letter[i]+(j+1));
                   }
                 }
