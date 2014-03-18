@@ -32,13 +32,9 @@ define([
       },
 
       studies: {
-        Foo: {
-          friendly_name: "Foo study",
-          sanger_sample_id_core: "foo"
-        },
-        Bar: {
-          friendly_name: "Bar study",
-          sanger_sample_id_core: "bar"
+        SIGhum: {
+          friendly_name: "SIGhum",
+          sanger_sample_id_core: "SIGhum"
         }
       },
 
