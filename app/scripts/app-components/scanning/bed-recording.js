@@ -25,6 +25,21 @@ define([ "text!app-components/scanning/_bed-recording.html",
   return function(context) {
     var html = $(_.template(bedRecordingTemplate)());
     var labResource = context.model["labware"+(context.position+1)];
+    
+    function bedValidation(barcode) {        
+      var defer = $.Deferred();
+      robotScannedPromise.then(function(robot) {
+        if (robot.isValidBedBarcode(barcode)) {
+          defer.resolve(barcode);
+        } else {
+          defer.reject("Incorrect bed barcode");
+        }
+      });
+      return defer;
+    }
+    
+    
+    context.bedValidation = context.bedValidation || bedValidation;
     var component = linearProcess(
       { components : [
         { constructor : _.partial(bed, context),
@@ -40,6 +55,9 @@ define([ "text!app-components/scanning/_bed-recording.html",
     $("input", html).prop("disabled", "true");
     
     var promisesBedRecordingDone = ([robotScannedPromise]).concat([$.Deferred(), $.Deferred()]);
+    
+    
+
     
     html.on(BED_SCANNED, _.partial(function(promise, event, bedBarcode) {
       robotScannedPromise.then(function(robot) {
@@ -126,7 +144,7 @@ define([ "text!app-components/scanning/_bed-recording.html",
     if (context.cssClass) {
       html.addClass(context.cssClass);
     }
-    
+    html.addClass("bed-recording");
 
     var bedObj = component.components[0],
       plateObj = component.components[1];

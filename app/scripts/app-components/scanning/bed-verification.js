@@ -35,6 +35,7 @@ define([ "app-components/linear-process/linear-process",
           return (labware.resourceType === labwareInputModel.expected_type);
         },
         errorMessage: function(labwareInputModel, position, labware) {
+          labwareInputModel = labwareInputModel["labware"+(position+1)];
           return ["Expected a '", 
                   labwareInputModel.expected_type, 
                   "' barcode but scanned a '",
@@ -60,14 +61,10 @@ define([ "app-components/linear-process/linear-process",
     function bedValidation(barcode) {        
       var defer = $.Deferred();
       robotScannedPromise.then(function(robot) {
-        var validBedsList = robot.getValidBeds();
-        var pos = _.indexOf(validBedsList, barcode);
-        if (pos>=0) {
+        if (robot.isValidBedBarcode(barcode)) {
           defer.resolve(barcode);
         } else {
-          defer.reject();
-          PubSub.publish("error.status.s2", undefined, 
-            {message: ["Incorrect bed barcode"].join('')});
+          defer.reject("Incorrect bed barcode");
         }
       });
       return defer;
@@ -145,7 +142,7 @@ define([ "app-components/linear-process/linear-process",
 
       return defer;
     }
-    
+    obj.view.addClass("bed-verification");
     obj.view.on("error.bed-recording.s2", function() {
       obj.view.trigger("error.bed-verification.s2");
     });
@@ -160,12 +157,18 @@ define([ "app-components/linear-process/linear-process",
         obj.view.trigger("error.bed-verification.s2");
       });
     
+    obj.resetRobot = function() {
+      robotScannedPromise.then(function(robot) {
+        robot.resetSelectedRobot();
+      });
+    };
+    
     obj.toObj = function() {
       return _.pluck(obj.components, "toObj");
     };
     
     obj.fromObj = function(data) {
-      _.map(_.zip(data,obj.components), function(pair) {
+      _.map(_.zip(obj.components, data), function(pair) {
         return pair[0].fromObj(pair[1]);
       });
     };
