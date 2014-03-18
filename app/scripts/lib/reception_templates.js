@@ -8,7 +8,8 @@ define([
   'reception_templates/cgap_lysed_alt',
   'reception_templates/hmdmc_lysed',
   'reception_templates/general_plate',
-  'reception_templates/filter_paper'
+  'reception_templates/filter_paper',
+  'reception_templates/blood_manifest'
 ], function (Generators, Readers) {
   'use strict';
 
@@ -71,8 +72,8 @@ define([
       json_template:         JsonTemplater(createWrapper, templateTransform(template.templates.updates)),
       json_template_display: JsonTemplater(displayWrapper, displayTransform(template.templates.display)),
       validation:            template.validation || _.identity,
-      generator:             Generators[template.model](template, fieldMappers(template.templates.updates)),
-      reader:                Readers[template.model](template),
+      generator:             Generators[template.generator || template.model](template, fieldMappers(template.templates.updates)),
+      reader:                Readers[template.reader || template.model](template),
       emptyRow:              template.emptyRow || _.first
     });
   }
@@ -95,7 +96,7 @@ define([
   }
 
   // Recurses down the structure passed looking for the columnName definitions.  This builds a
-  // mapping from the header in the manifest to a function that converts a raw value to it's typed
+  // mapping from the header in the manifest to a function that converts a raw value to its typed
   // representation in the manifest.
   function fieldMappers(json) {
     return _.reduce(json, function(memo, value, field) {

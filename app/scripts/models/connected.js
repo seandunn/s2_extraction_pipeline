@@ -59,7 +59,8 @@ define([
             deferred.reject({message: "Couldn't load the batch resource"});
           })
           .then(function () {
-            return setupOutputs(thisModel);
+            // TODO: This must be changed again to setupOutputs() as soon as possible
+            return setupOutputs__WITH_ORDERS(thisModel);
           })
           .fail(function () {
             deferred.reject({message: "Couldn't load the batch resource (Impossible to read outputs)"});
@@ -78,24 +79,32 @@ define([
 
     setUser: function(user) {
       this.user = user;
-      this.owner.childDone(this, "userAdded");
     },
 
     setupInputControllers: function(reset) {
       var model = this;
       return this.owner.getS2Root()
-      .then(function(root){
+      .then(_.bind(function(root){
         // Becareful! inputs is not a promise!
-        return model.inputs.then(function(inputs) {
-          model.owner.rowControllers = _.chain(inputs).map(function (input, index) {
+        return model.inputs.then(_.bind(function(inputs) {
+          model.owner.rowControllers = _.chain(inputs).map(_.bind(function (input, index) {
             input = reset ? undefined : input;
-            var rowController = model.owner.controllerFactory.create("row_controller", model.owner);
-            rowController.setupController(model.getRowModel(root,index, input), selectorFunction(model.owner, index));
+            var rowController =
+              model.owner.controllerFactory
+              .create(
+                (model.config.rowBehaviour === "bedVerification" || model.config.rowBehaviour === "bedRecording")?
+                  "row_bed_controller" : "row_controller", model.owner);
+            rowController.setupController(model.getRowModel(root,index, input, inputs), selectorFunction(model.owner, index));
+            // This functionality (setupInputControllers) has been incorrectly placed in the
+            // model. This must go out of here.
+            rowController.on("completedRow", _.bind(function() {
+              this.emit("completedRow", rowController);
+            }, this));            
             return rowController;
-          })
+          }, this))
           .value();
-        });
-      });
+        }, this));
+      }, this));
 
       function selectorFunction(controller, row) {
         return function() {
@@ -104,7 +113,9 @@ define([
       }
     },
 
-    getRowModel: function (root,rowNum, input) {
+    getRowModel: function (root,rowNum, input, allInputs) {
+      //var process = this.batch.rawJson.batch.process? JSON.parse(this.batch.rawJson.batch.process) : undefined;
+      var process =  this.batch.rawJson.batch.process? this.batch.rawJson.batch.process : undefined;
       var model = this, previous = this.previous && this.ready;
       var hasResourceForThisRow = false;
       if (model.started){
@@ -125,6 +136,8 @@ define([
 
         rowModel[name] = {
           input:           false,
+          allInputs:       allInputs,
+          process: process,          
           resource:        resource,
           expected_type:   details.model.singularize(),
           barcodePrefixes: details.barcodePrefixes,
@@ -138,9 +151,10 @@ define([
       }, {
         rowNum: rowNum,
         enabled: previous,
-
         labware1: {
+          allInputs:       allInputs,
           input:           true,
+          process: process,          
           resource:        input,
           expected_type:   model.config.input.model.singularize(),
           display_remove:  previous,
@@ -215,7 +229,7 @@ define([
                   output[details.title] = state.labware;
                   return state.labware;
                 }, function() {
-                  model.owner.childDone(model, "failed", {});
+                  model.emit("failed", {})
                 });
 
               })
@@ -274,15 +288,15 @@ define([
               model.outputs.resolve(outputsCreated).then(function(outputs) {
                 model.printBarcodes(labels, printer);
               });
-              model.owner.childDone(model, "outputsReady", labels);
+              model.emit("outputsReady", labels);
             }).fail(function() {
-              model.owner.childDone(model, "failed", {});
+              model.emit("failed", {})
             });
           });
         });
       }, function() {
         model.outputs.resolve([]);
-        model.owner.childDone(model, "outputsReady", {});
+        model.emit("outputsReady", {});
       });
     }, // end of createOutputs
 
@@ -312,6 +326,13 @@ define([
         .chain(controllers)
         .reduce(function(memo, controller) {
           controller.handleResources(function(source) {
+            var isSameInputToOutput = false;
+            if ((source === arguments[1]) && (arguments.length===2)) {
+              // If we are trying to transfer to the same resource, we assume that it is not a transfer,
+              // but a change of role. This will only be accepted if there is only one input and one
+              // output.
+              isSameInputToOutput = true;
+            }
 
             var transferDetails = _
             .chain(arguments)
@@ -338,6 +359,11 @@ define([
             })
             .value();
 
+            if (isSameInputToOutput) {
+              memo.push(transferDetails);
+              return;
+            }
+            
             if (source.transferBehaviour ==="plateLike") {
               // If we are using something plateLike then prepare multiple transfers
               // for each well, tube or window (this will overwrite the original
@@ -396,8 +422,21 @@ define([
         var destination = transferDetails[0].output.resource;
         var transfer    = transferType(source, destination);
 
-
-
+        if (source === destination) {
+          // There will not be a transfer, only a change of role
+          // in the operations
+          return $.extend(Operations.betweenLabware(null, _.map(transferDetails, function(details) {
+            return function(operations) {
+              operations.push(details);
+              return $.Deferred().resolve();
+            };
+          })), {
+            operate: function() {
+              return (new $.Deferred()).resolve(true).promise();
+            }
+          });
+        }
+        
         return Operations.betweenLabware(
           transfer,
           _.map(transferDetails, function(details) {
@@ -414,12 +453,13 @@ define([
       .then(function(operation) {
         // STEP 5: Override the behaviour of the operation so that we do the correct things
         var doNothing = function() { };
-        _.each(["start","operate","complete"], function(event) {
+        var eventNames = ["startOperation","operateOperation","completeOperation"];
+        _.each(["start","operate","complete"], function(event, pos) {
           model.behaviours[event][happeningAt](function() {
             var handler = operation[event];
             operation[event] = function() {
               return handler.apply(this, arguments).then(function() {
-                model.owner.childDone(model,event+"Operation",{});
+                model.emit(eventNames[pos], {});
               });
             };
           }, function() {
@@ -430,9 +470,9 @@ define([
       }).then(function(operation) {
         // STEP 6: Finally perform the operation and report the final completion
         operation.operation().then(function () {
-          model.owner.childDone(model, "successfulOperation", controllers);
+          model.emit("successfulOperation", controllers);
         }).fail(function() {
-          model.owner.childDone(model, "failedOperation", {});
+          model.emit("failedOperation", {});
         });
       });
     }
@@ -485,5 +525,59 @@ define([
     });
   }
 
-
+  
+  // TODO: If in any step 1  I have a batch of labware (Group A) that is being transferred to another group 
+  // of labware, (Group B), I can't know if I am in the middle of the transferring task (in_progress) when 
+  // I'm in any step in which I break the batch in the outputs  (Group B). This is because in order to know 
+  // if I am currently processing something, I obtain all items from the current batch that have status 
+  // in_progress, but if my outputs are not in the same batch, and so I will not obtain anything 
+  // (see setupOutputs()).
+  // 
+  // This is an incorrect workaround for this behaviour, as this can't be solved correctly without changing
+  // server side code.
+  function setupOutputs__WITH_ORDERS(model) {
+    var promisesItems = function(items) {
+      var deferred = $.Deferred();
+      var reLoadedOutputs = [];
+      $.when.apply(null, _.chain(items)
+                   .filter(function (item) {
+                     return item.status === "in_progress";
+                   })
+                   .filter(function (item) {
+                     return _.reduce(model.config.output,function(memo, output){
+                       return memo || (item.role === output.role);
+                     },false);
+                   })
+                   .map(function (item) {
+                     return model.cache.fetchResourcePromiseFromUUID(item.uuid).then(function (resource) {
+                       reLoadedOutputs.push(resource);
+                     });
+                   }).value())
+                   .then(function () {
+                     return deferred.resolve(reLoadedOutputs);
+                   })
+                   .fail(function(){
+                     deferred.reject({message:"Couldn't load the output resources!"});
+                   });
+                   return deferred.promise();
+    };
+    
+    return model.batch.orders.then(function(orders) {
+      return $.when.apply(null, _.map(orders, function(order) {
+        return order.items;
+      })).then(function() {
+        return promisesItems(_.flatten(_.reduce(arguments, function(memo, value) {
+          for (var key in value) {
+            if (_.isUndefined(memo[key])) {
+              memo[key]=[];
+            }
+            memo[key]=memo[key].concat(value[key]);
+          }
+          return memo;
+        }, {})));
+      });
+    });
+  }
+  
+  
 });

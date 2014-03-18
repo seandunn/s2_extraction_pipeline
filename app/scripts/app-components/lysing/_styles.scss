@@ -1,0 +1,15 @@
+.focus-box {
+    border-width: 1px;
+    border-color: #ddd;
+    border-style: solid;
+    border-radius: 12px 12px 12px 12px;
+    padding: 1em 0 1em 3em;
+    margin: 1em 0 1em 0;
+}
+
+.disabled-box h2 {
+    opacity: 0.5;
+}
+
+.skipped-box h2 {
+}

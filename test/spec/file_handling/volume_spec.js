@@ -13,7 +13,7 @@ define([
           result = Volume.from(data);
           expected = {
             rack_barcode: "1220214083760",
-            array: [
+            tubes: [
               ["A1",0.8960],
               ["B1",0.5985],
               ["C1",23.3150]

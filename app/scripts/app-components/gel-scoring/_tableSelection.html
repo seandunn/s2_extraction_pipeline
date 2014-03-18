@@ -1,0 +1,19 @@
+  <table class="table table-striped table-hover">
+    <thead>
+    <tr><th>Gel Barcode</th><th>Score</th><th></th>
+    </thead>
+<tbody>
+  <% _.each(resourcesList, function(resource) { %>
+   <tr><td><%= resource.barcode %></td> 
+       <td>
+         <% if (resource.isScored) %>
+           <span class="label label-primary">Scored</span>
+         <% else %>
+           <span class="label label-warning">Unscored</span>
+         <% %>         
+       </td>
+      <td> <button type="button" class="btn" data-toggle="modal">Select</button></td> 
+    </tr>
+  <% }) %>
+</tbody>    
+  </table>

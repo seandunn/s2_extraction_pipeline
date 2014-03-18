@@ -18,8 +18,8 @@ define([
     // Build and attach any components that are present in the context.  This handles the
     // non-dynamic situations.
     var components = _.map(context.components, _.partial(buildComponent, context));
-    _.each(components, _.partial(attachComponent, html));
-
+    _.each(components, _.partial(attachComponent, html));    
+    
     // Dynamic components deal with attaching components by registering a callback.
     context.dynamic(function(component) {
       components.push(component);
@@ -27,13 +27,43 @@ define([
       html.trigger("deactivate.s2");
     });
 
+    // Creates a multiplexer of the event handlers of components when they ask to pass by an event
+    // to upper level. This is needed as the linear process doesn't send the event handlers from
+    // its components to upper levels.
+    var eventHandlers = _.chain(components).
+    pluck("events").map(function(obj) {
+      return _.omit(obj, ["activate.s2", "deactivate.s2", "reset.s2"]);
+    }).reduce(function(memo, node) {
+      return _.reduce(_.keys(node), function(memo, key) {
+        if (_.isUndefined(memo[key])) {
+          memo[key]=node[key];
+        } else {
+          memo[key] = _.wrap(memo[key], _.partial(function(actualHandler, previousHandler) {
+            var args = Array.prototype.slice.call(arguments, 2);
+            actualHandler.apply(this, args);
+            return previousHandler.apply(this, args);
+          }, node[key]));
+        }
+        return memo;
+      }, memo);
+    }, {}).extend({
+      "reset.s2": $.ignoresChildrenEvent(html[0], _.partial(function(initialiseProcessChain, html, components) {
+        event.stopPropagation();
+        for (var i=0; i<components.length; i++) {
+          components[i].view.trigger("reset.s2");
+        }
+        initialiseProcessChain(html, components);
+        return false;
+      }, initialiseProcessChain, html, components)),
+      "activate.s2" : /* Not execute process chain if I receive the event from a child */
+        $.ignoresChildrenEvent(html[0], _.partial(initialiseProcessChain, html, components)),
+      "focus": function() { components[0].view.focus(); }
+    }).value();
+
     return {
+      components: components,
       view: html,
-      events: $.stopsPropagation({
-        "activate.s2":   $.ignoresEvent(_.partial(initialiseProcessChain, html, components)),
-        "deactivate.s2": _.partial(deactivate, html),
-        "focus":         function() { components[0].view.focus(); }
-      })
+      events: eventHandlers
     };
   };
 
@@ -81,14 +111,14 @@ define([
       });
       details.skip();
     }));
-
+    
     setActiveComponent(components[0], html);
   }
 
   function buildTransition(html, pair) {
     // Determine the from and to transitions
     var from = function() { pair[0].view.trigger("deactivate.s2"); };
-    var to   = function() { html.trigger("done.s2", html); }
+    var to   = function() { html.trigger("done.s2", html); };
     if (!_.isUndefined(pair[1])) to = function() { pair[1].view.trigger("activate.s2").focus(); };
 
     // By default we want our transition to be the next in the sequence.
@@ -117,19 +147,25 @@ define([
     // Skipping ourselves is simple: call our transition!  We have to rely on the transition here
     // being our transition!
     function skip(transition) {
+      var output = transition();
       us = function() {
-        return transition();
+        return output;
       };
     }
   }
 
   function createDoneHandler(html, doneHandler) {
     return function(event, doneView) {
+      // If I triggered this done event
       if (html[0] === doneView) return true;
+      // After the last transition, the linear process will trigger a done event to
+      // upper level
+      doneHandler = doneHandler || function() {};
       doneHandler = doneHandler(event, doneView);
       return false;
     };
   }
+  
   function stopsEvent(f) {
     return $.stopsPropagation($.ignoresEvent(f));
   }
@@ -147,7 +183,7 @@ define([
   function buildComponent(context, config) {
     return config.constructor(_.extend({}, context, config.context || {}));
   }
-
+  
   // Attaches the given component to the specified HTML using the
   // configuration.
   function attachComponent(html, component) {

@@ -1,36 +1,46 @@
-define([ 'config'
-  , 'workflow_engine'
-  , 'mapper/s2_root'
-  , 'extra_components/busy_box'
-  , 'alerts'
-  , 'lib/pubsub'
-
-  , 'models/base_page_model'
-  , 'lib/reception_templates'
+define([
+  "config",
+  "workflow_engine",
+  "mapper/s2_root",
+  "extra_components/busy_box",
+  "alerts",
+  "lib/pubsub",
+  "models/base_page_model",
+  "app-components/labelling/scanning",
 
   // TODO: These will move with the configuration
-  , 'app-components/reception/reception'
-  , 'app-components/lab-activities/lab-activities'
+  "app-components/lab-management/lab-management",
+  "app-components/lab-activities/lab-activities",
+  "jquery_cookie",
+
+  // Globally included stuff added after this comment
+  "lib/jquery_extensions"
 ], function(
   config,
   nextWorkflow,
   S2Root,
   BusyBox, alerts, PubSub,
-  BasePageModel, ReceptionTemplates,
-  Reception, LabActivities
+  BasePageModel,
+  barcodeScanner,
+  LabMangement, LabActivities,
+  Cookie
 ) {
   'use strict';
 
   var ComponentConfig = [
-    { name: "reception",  selector: ".sample-reception",     constructor: Reception     },
-    { name: "re-racking", selector: ".extraction-reracking", constructor: LabActivities }
+    { name: "Lab Management",  selector: "#lab-management", constructor: LabMangement     },
+    { name: "Lab Activities", selector: "#lab-activities", constructor: LabActivities }
   ];
+
 
   var App = function (theControllerFactory) {
     var app = this;
+    window.app = this;
     app.config = config;
+    app.config.userPromise = new $.Deferred();
     app.controllerFactory = theControllerFactory;
     _.templateSettings.variable = 'templateData';
+
 
     $('#server-url').text(config.apiUrl);
     $('#release').text(config.release);
@@ -44,51 +54,130 @@ define([ 'config'
 
     // Ensure that messages are properly picked up & dispatched
     // TODO: die, eat-flaming-death!
-    var html = $("#content");
-    _.map(["error", "success", "info"], function(type) {
-      html.on(type +".status.s2", function(event, message) {
+    _.each(["error", "success", "info"], function(type) {
+      $("#page-content").on(type +".status.s2", function(event, message) {
         PubSub.publish(type + ".status.s2", app, {message: message});
       });
     });
 
-    var activate = _.find(ComponentConfig, function(config) {
-      return html.is(config.selector);
+    _.each(ComponentConfig, function(config){
+      var component = createComponent(config);
+
+      $(config.selector)
+      .append($('<h2>').text(config.name))
+      .append(component.view)
+      .on(component.events);
+
     });
-    if (!_.isUndefined(activate)) {
-      var component = activate.constructor({
-        app:       app,
 
-        templates: ReceptionTemplates,
+    app.jquerySelection = _.constant($("#pipeline"));
+    app.addEventHandlers();
+    app.setupController();
 
-        printers:  app.config.printers,
+    // Handle deep-linking to pages such as lab-management
+    var url = document.location.toString();
 
-        findUser: function(barcode) {
-          var deferred = $.Deferred();
-          var user = app.config.UserData[barcode];
-          deferred[_.isUndefined(user) ? 'reject' : 'resolve'](user);
-          return deferred.promise();
-        },
+    // Change location hash to match the clicked nav tab
+    $('#page-nav').on('shown','a', function (e) {
+      window.location.hash = e.target.hash;
+      alerts.clear();
+    });
 
-        resetS2Root: _.bind(app.resetS2Root, app),
-        getS2Root:   _.bind(app.getS2Root, app)
+    //// New login stuff...
+    var $loggingPage = $("#logging-page");
+
+    var error   = function(message) { $loggingPage.trigger("error.status.s2", message); };
+
+    // The user needs to scan themselves in before doing anything
+    var userComponent = barcodeScanner({
+      label: "User",
+      icon: "icon-user"
+    });
+
+    $loggingPage.append(userComponent.view);
+    $loggingPage.on(userComponent.events);
+    $loggingPage.on("scanned.barcode.s2", connect);
+
+    $loggingPage.on("error.barcode.s2", $.ignoresEvent(error));
+
+    // Hides the outgoing component and shows the incoming one.
+    function showPage(user) {
+      $('#page-nav').on('click', 'a', function (e) {
+        e.preventDefault();
+        $(this).tab('show');
       });
-      html.append(component.view).on(component.events);
 
-      alerts.setupPlaceholder(function() {
-        return $("#alertContainer");
-      });
-      app.addEventHandlers();
-    } else {
-      // Handle the non-components
-      // TODO: Move these to be components!
-      if (html.is('.sample-extraction')) {
-        // ToDo #content exists at this point we should pass it directly not a function
-        app.jquerySelection = _.constant(html);
-        app.addEventHandlers();
-        app.setupController();
+      $('#user-email')
+      .addClass('in')
+      .find('.email')
+      .text(user.email);
+
+      var pipelineElements = _.map(
+        user.pages,
+        function filterPipelines(pipeline){
+          return "a[href=#"+pipeline+"]";
+      })
+      .join(", ");
+
+      $('#page-nav li a')
+      .not(pipelineElements)
+      .parent()
+      .remove();
+
+      $('#logging-bar').addClass('in');
+
+      var pageRef = url.match(/#.*$/);
+      if (pageRef && pageRef[0] !== "#logging-page") {
+        $('#page-nav a[href='+pageRef[0]+']').tab('show') ;
       } else {
-        console.log('#content control class missing from web page.')
+        $('#page-nav a[href="#pipeline"]').tab('show');
       }
+    }
+
+
+    // Deals with connecting the user with the specified barcode to the system.
+    function connect(e, userBarcode) {
+      e.stopPropagation();
+
+      return findUser(userBarcode)
+      .then(
+        showPage,
+        _.partial(error, "User barcode is unrecognised")
+      );
+    }
+
+    function findUser(barcode, accessList) {
+      var deferred = $.Deferred();
+      var user = app.config.UserData[barcode];
+
+      if (user === undefined) {
+        return deferred.reject().promise();
+      } else {
+        user.pages = (user.pages || []).concat(app.config.defaultPages);
+        app.config.login = user.email;
+        app.config.userPromise.then(function() {
+          app.config.rootPromise = app.getS2Root(user);
+        });
+        app.config.userPromise.resolve(user.email);        
+        app.config.disablePrinting = ($.cookie("disablePrinting") === "true");
+        return deferred.resolve(user).promise();
+      }
+    }
+
+    //     /////
+    function buildUserDefer(app) {
+      var defer = new $.Deferred();
+      defer.resolve(userDefer);
+      return defer;
+    }
+
+    function createComponent(config){
+      return config.constructor({
+        app:       app,
+        printers:  app.config.printers,
+        resetS2Root: _.bind(app.resetS2Root, app),
+        getS2Root:   _.bind(app.getS2Root, app),
+      });
     }
   };
 
@@ -117,6 +206,21 @@ define([ 'config'
     return this;
   };
 
+  function resetTagRolesInBody() {
+    var classNames = document.body.className.split(" ");
+    // Removes previous classes from body
+    _.each(_.filter(classNames, function(className) { 
+      return className.match(/^ROLE\-/)
+    }), function(role) {
+      $(document.body).removeClass(role);
+    });    
+  }
+  
+  function tagRoleInBody(role) {
+    // Add new class
+    $(document.body).addClass("ROLE-"+role.replace(/\./g, "-"));
+  }
+  
   App.prototype.updateModel = function (model) {
     var application = this;
     this.model = $.extend(this.model, model);
@@ -128,8 +232,17 @@ define([ 'config'
 
     nextWorkflow(this.model).
       then(function(workflowConfig){
-      $.extend(workflowConfig, {initialLabware: application.model.labware});
-      return application.controllerFactory.create(workflowConfig && workflowConfig.controllerName, application, workflowConfig);
+      if (workflowConfig)
+        {
+          var roles = workflowConfig.accepts;
+          if (!_.isArray(roles)) {
+            roles = [roles];
+          }
+          resetTagRolesInBody();
+          _.each(roles, tagRoleInBody);
+        }
+        $.extend(workflowConfig, {initialLabware: application.model.labware});
+        return application.controllerFactory.create(workflowConfig && workflowConfig.controllerName, application, workflowConfig);
     }).then(function(nextController){
       application.currentPageController = nextController;
       application.currentPageController.setupController(application.model, application.jquerySelection);
@@ -138,10 +251,12 @@ define([ 'config'
 
     return this;
   };
+  
 
   // "I'm a monster..."  ChildDone methods should be replaced with DOM events where possible.
   // This will probably be the last one to go.
   App.prototype.childDone = function (child, action, data) {
+    /* throw("Deprecated. Use application.updateModel instead.\n So controller.owner.childDone(foo, action, data) becomes controller.owner.updateModel(data).") */
     console.log("A child of App (", child, ") said it has done the following action '" + action + "' with data :", data);
 
     var application = this;

@@ -59,7 +59,7 @@ define([
   }
 
   function stopEvents(f) {
-    return function() {
+    return function(event) {
       event.stopPropagation();
       event.preventDefault();
       return f.apply(this, arguments);

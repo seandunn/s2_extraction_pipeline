@@ -1,0 +1,156 @@
+{
+  "role_priority": [
+   "samples.rack.stock.dna",
+   "samples.qc.volume_checked_stock_rack_dna.batched",
+   "samples.qc.volume_checked_stock_rack_dna"
+  ],
+
+  "workflows": [
+  {
+    "accepts":        "samples.rack.stock.dna" ,
+    "controllerName": "step_controller",
+    "defaultPrinter": "d304bc",
+    "printerType": 1,
+    "buttons":       [
+      {
+        "action": "end",
+        "title":  "Save volumes"
+      },
+      {
+        "action": "next",
+        "title":  "Done"
+      }
+    ],
+    "processTitle":  "DNA Volume checking",
+    "controllers":    [
+      {
+        "controllerName": "rack_scan_controller",
+        "model":          "VolumeCheckModel",
+        "thresholds": [
+          [ 0.00, "error" ],
+          [ 0.10, "empty" ],
+          [ 0.50, "very-poor" ],
+          [ 0.75, "poor" ],
+          [ 1.00, "good" ],
+          [ 1.25, "very good" ],
+          [ null, "excellent" ]
+        ],
+        "input":          {
+          "role":  "samples.rack.stock.dna",
+          "model": "tube_racks"
+        },
+        "output":         [
+          {
+            "role":        "samples.qc.volume_checked_stock_rack_dna",
+            "aliquotType": "DNA",
+            "purpose":     "stock",
+            "model":       "tube_racks"
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "accepts":  "samples.qc.volume_checked_stock_rack_dna" ,
+    "controllerName":"selection_page_controller",
+    "processTitle": "Batching for DNA NX Working Dilution",
+    "capacity": 4,
+    "input":        {
+      "role":"samples.qc.volume_checked_stock_rack_dna",
+      "model":"tube_racks"
+    },
+    "output":       [
+      {
+        "role":       "samples.qc.volume_checked_stock_rack_dna.batched",
+        "not_batched":false
+      }
+    ]
+  },
+  {
+    "accepts":        "samples.qc.volume_checked_stock_rack_dna.batched" ,
+    "controllerName": "step_controller",
+    "defaultPrinter":"d304bc",
+    "printerType": 1,
+    "buttons":       [
+      { "action": "print", "title": "Print Plate Labels" },
+      { "action": "start", "title": "Start NX" },
+      { "action": "end",   "title": "Stop NX" },
+      { "action": "next",  "title": "Done" }
+    ],
+    "processTitle":  "NX DNA Working Dilution",
+    "controllers":    [{
+      "controllerName": "robot_controller",
+      "group": "nx"
+      },
+      {
+      "controllerName": "connected_controller",
+      "behaviours": {
+        "start": "start",
+        "operate": "start",
+        "complete": "end",
+        "done": "transfer",
+        "outputs": "print"
+      },
+      "rowBehaviour":  "bedVerification",
+      "input":         {
+        "role": "samples.qc.volume_checked_stock_rack_dna.batched",
+        "model":"tube_racks",
+        "title": "Volume Checked DNA Rack",
+        "bedTracking": true
+      },
+      "output":        [
+        {
+        "role":       "samples.qc.nx_working_dilution_dna",
+        "aliquotType":"DNA",
+        "purpose":    "Working Dilution",
+        "model":      "plates",
+        "title":      "DNA Working Dilution",
+        "bedTracking": true,
+        "attributes":  {
+          "number_of_rows": 8,
+          "number_of_columns": 12
+        },
+        "not_batched": true
+        }]}]
+    },
+
+    {
+      "accepts":  "samples.qc.nx_working_dilution_dna" ,
+      "controllerName": "step_controller",
+      "defaultPrinter": "d304bc",
+      "printerType": 1,
+      "buttons": [
+        { "action": "end",  "title": "Save results" },
+        { "action": "next", "title": "Done" }
+      ],
+      "processTitle":   "NanoDrop",
+      "controllers": [
+        {
+          "controllerName": "file_generator_controller",
+          "format": "NanoDrop"
+        },
+        {
+          "controllerName": "rack_scan_controller",
+          "defaultPrinter": "d304bc",
+          "printerType": 1,
+          "model": "NanoDropModel",
+          "input": {
+            "role":  "samples.qc.nx_working_dilution_dna",
+            "model": "plates",
+            "title": "Working Dilution"
+          },
+          "output": [
+            {
+              "role": "samples.qc_gel.fx.dna",
+              "aliquotType": "DNA",
+              "purpose": "stock",
+              "model": "plates",
+              "title": "Working Dilution"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

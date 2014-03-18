@@ -1,0 +1,89 @@
+span.option {
+    font-style: italic;
+}
+
+.header-gel-scoring-table {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.gel-scoring-selection {
+  margin-top: 15px;
+}
+
+.gel-scoring-selection td {
+    vertical-align: middle; 
+ }
+ 
+ .gel-scoring-selection button {
+ float: right;
+ }
+ 
+ .gel-scoring-selection input[type=radio] {
+  margin: 0px 8px 0;
+ }
+ 
+.hidden {
+	display: none;
+}
+
+select.gel-scoring-cell {
+	font-size: 9pt;
+	width: 8em;
+	height: 2em;
+}
+
+.header-gel-scoring-table label{
+    float: right;
+}
+
+.gel-scoring-view {
+	width: 100%;
+	overflow-x: auto;
+}
+
+.gel-scoring-view .label-barcode { font-size: 13pt;   margin-right: 1em;}
+
+.gel-scoring-view .header-button { float: right; height: 1.5em;}
+
+.gel-scoring-view td.nosample select {
+	display: none;
+}
+
+#scoreModal .modal-body { max-height: 420px; clear: both;}
+
+body .modal-backdrop, .modal-backdrop.fade.in {
+	opacity: 0.6;
+}
+#scoreModal.modal {
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+	left: 5%;
+	overflow-y: auto;
+}
+
+#scoreModal .modal-footer {
+	text-align: center;
+}
+
+#gel-scoring {
+	min-height: 400px;
+}
+
+.tableSelection {
+	min-height: 400px;
+}
+
+.modal-body-header .header-button {
+	float: right;
+}
+
+.modal-body-header {
+	margin: 1em 1em 0em 1em;
+}
+
+.modal-body-header .label-barcode {
+	margin-right: 1em;
+	font-size: 16px;
+}

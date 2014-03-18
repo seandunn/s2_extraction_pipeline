@@ -23,3 +23,14 @@ It responds to the following events:
 It expects the sub-components to respond to the following events:
 * `activate.s2` when the component is made active;
 * `deactivate.s2` when the component is made inactive.
+
+# Switchable Linear Process
+
+A wrapper over LinearProcess that adds the functionality of toggling CSS 
+class on components for tagging the diferent status of the component inside the 
+linear process. The context could contain any of these parameters:
+
+* `focusClass` CSS class that will representa that a component receives focus event.
+* `blurClass` CSS class for a component receiving blur event
+* `skipClass` CSS class that will be added whenever a component inside the linear 
+process is skipped (see `skip.s2` event of LinearProcess).

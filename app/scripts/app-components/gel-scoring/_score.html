@@ -1,0 +1,43 @@
+<div class="modal fade"  id="scoreModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+ 
+ <div class="modal-header"><h3 class="modal-title">Select the score for gel:</h3></div>
+ <div class="modal-body-header">
+     <span class="label-barcode">Gel barcode:</span><input class="barcode" type="text" value="<%= barcode %>" disabled/>
+  <input class="header-button btn btn-default" data-action-s2="download" type="button" value="Download image" />
+ </div>
+ <div class="modal-body">
+
+<div class="gel-scoring-view table-responsive">
+  <table class="table-bordered table-condensed">
+    <tbody>
+    <tr><td></td>
+        <% _.each(xLabels, function(labelx) { %> 
+            <td> <%= labelx+1 %> </td> 
+        <% }) %></tr>
+        <% _.each(yLabels, function(labely) { %> 
+            <tr><td> <%= labely %> </td> 
+                <% _.times(xLabels.length, function(pos) { %>
+                  <td data-position-s2="<%= labely %><%= xLabels[pos]+1 %>" class="<%= (windows[labely+(xLabels[pos]+1)].length>0)? 'sample': 'nosample' %>">
+                    <select class="gel-scoring-cell">
+                        <option name="score" value="pass" <%= getSelectValue('pass', labely+(xLabels[pos]+1)) %> >Pass</option>
+                        <option name="score" value="fail" <%= getSelectValue('fail', labely+(xLabels[pos]+1)) %> >Fail</option>
+                        <option name="score" value="degraded" <%= getSelectValue('degraded', labely+(xLabels[pos]+1)) %> >Degraded</option>
+                        <option name="score" value="partially degraded" <%= getSelectValue('partially degraded', labely+(xLabels[pos]+1)) %> >Partial</option>
+                    </select>
+                  </td>
+                <% }) %> 
+            </tr>
+        <%  }) %>
+    </tbody>
+  </table>
+  
+</div>
+</div>
+
+<div class="modal-footer"><input class="btn btn-default footer-button" data-action-s2="save" type="button" value="Save" /></div>
+
+</div>
+</div>
+</div>
