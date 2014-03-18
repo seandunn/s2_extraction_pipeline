@@ -162,6 +162,7 @@ define([ "config",
       // on first focus
     },
     attachHandlers: function() {
+      this.on("printedBarcode", _.bind(this.onPrintedBarcode, this));
       this._inputsModel.on("inputsLoaded", _.bind(this.onInputsLoaded, this));
       this._inputsModel.on("inputScanned", _.bind(this.onInputScanned, this));
       this._inputsModel.on("inputsCompleted", _.bind(this.emit, this, "completedRow"));
@@ -173,13 +174,17 @@ define([ "config",
     },
     onRender: function() {
       if (!this.model.started) {
-        this._view.startScanning();
+        // Print
+        this.emit("printReady");
       }      
+    },
+    onPrintedBarcode: function() {
+      this._view.startScanning();      
     },
     onBedVerification: function(args) {
       var bedVerification = args[1];
       this._plates = _.pluck(bedVerification.verified, "plate");
-      this.emit("printReady");
+      this.emit("renderCompleteRowDone");
     },
     onScannedRobot: function(robot) {
       this._scannedRobot = robot;

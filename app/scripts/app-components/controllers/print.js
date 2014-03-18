@@ -31,7 +31,7 @@ define([
         "outputsReady": _.bind(function() {
           this.model.outputs.then(_.bind(function(outputs) {
             this._outputsCreated = outputs;
-            this.emit("renderCompleteRowDone");
+            this.emit("printedBarcode");
           }, this));
         }, this)
       });
