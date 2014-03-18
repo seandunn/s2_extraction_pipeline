@@ -69,7 +69,7 @@ define([ "config",
   };
   
   View.prototype.renderInputs = function(inputs) {
-    inputs.getBedVerificationModel().then(_.bind(function(bedVerificationModel) {
+    return inputs.getBedVerificationModel().then(_.bind(function(bedVerificationModel) {
       this._bedVerification = new BedVerification({
         model: bedVerificationModel,
         labwareValidations: [allRacksFullExceptTheLast]
@@ -82,7 +82,10 @@ define([ "config",
         .on("error.bed-verification.s2", _.once(_.bind(function() {
           this._bedVerification.view.html("");
           this._bedVerification.resetRobot();
-          this.renderInputs(inputs);
+          this.renderInputs(inputs).then(_.bind(function() {
+            $("button.printButton").attr("disabled", true);
+            this.startScanning();
+          }, this));
         }, this)));
       this.emit("render");
     }, this));
