@@ -5,7 +5,8 @@ define([
   "models/location_model",
   "views/location_view",
   "lib/pubsub",
-  "mapper/operations"
+  "mapper/operations",
+  "lib/underscore_extensions"
 ], function(BaseController, LocationCollection, ItemCollection, LocationModel, LocationView, PubSub, Operations) {
     
   var LocationController = function(owner) {

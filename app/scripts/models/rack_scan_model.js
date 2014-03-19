@@ -30,7 +30,6 @@ define([
       return getTubesOnRack(model, locationsSortedByBarcode)
         .fail(function (error) {
           return error.message;
-          //model.owner.childDone(model, "error", error.message);
         })
         .then(function (inputTubes) {
           model.inputs = $.Deferred().resolve(inputTubes).promise();
@@ -61,29 +60,34 @@ define([
     },
 
     createOutputs: function(printer) {
-      var model = this;
-      var root;
-      return model.owner.getS2Root().then(function(result) {
-        root = result;
-        return Operations.registerLabware(
-          root[model.config.output[0].model],
-          model.config.output[0].aliquotType,
-          model.config.output[0].purpose,
-          {
-            number_of_rows:     8,
-            number_of_columns:  12,
-            tubes:              model.preparedTransferData
-          });
-      }).then(function (state) {
-        model.cache.push(state.labware);
-        model.owner.childDone(model, 'outputsReady', {});
-        return state.labware;
-      }).then(function(rack){
-        model.printBarcodes([rack], printer);
-        return rack;
-      }).fail(function () {
-        $('body').trigger("error.status.s2", "Impossible to create the rack.");
-      });
+      var model = this,
+          root;
+
+      return model.owner.getS2Root()
+        .then(function(result) {
+          root = result;
+          return Operations.registerLabware(
+            root[model.config.output[0].model],
+            model.config.output[0].aliquotType,
+            model.config.output[0].purpose,
+            {
+              number_of_rows:     8,
+              number_of_columns:  12,
+              tubes:              model.preparedTransferData
+            });
+        })
+        .then(function (state) {
+          model.cache.push(state.labware);
+          model.owner.childDone(model, 'outputsReady', {});
+          return state.labware;
+        })
+        .then(function(rack){
+          model.printBarcodes([rack], printer);
+          return rack;
+        })
+        .fail(function () {
+          $('body').trigger("error.status.s2", "Unable to create the rack.");
+        });
     },
 
     fire: function(printer) {
@@ -153,8 +157,9 @@ define([
   });
 
   function getTubesOnRack(model, locationsSortedByBarcode) {
-    var inputBarcodes = _.keys(locationsSortedByBarcode);
-    var searchDeferred = $.Deferred();
+    var inputBarcodes = _.keys(locationsSortedByBarcode),
+        searchDeferred = $.Deferred();
+
     model.owner.getS2Root()
       .then(function (root) {
           return root.tubes.searchByBarcode().ean13(inputBarcodes).all();
@@ -176,6 +181,7 @@ define([
           }
           return searchDeferred.resolve(inputTubes);
       });
+
     return searchDeferred.promise();
   }
 

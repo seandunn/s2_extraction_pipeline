@@ -39,7 +39,9 @@ define([
             PubSub.publish("error.status.s2", this, error);
             this.jquerySelection().trigger("end_process.busybox.s2");
           }, this)).then(_.bind(function(){
-            this.jquerySelection().html(this.template({nbRow:12}));
+            // TODO:
+            // This 96 MUST be read from pipeline config
+            this.jquerySelection().html(this.template({nbRow:96}));
             this.setupSubControllers();
           }, this));
       this.attachHandlers();
@@ -216,8 +218,11 @@ define([
 
     next:  function(){
       var controller = this;
-      this.model.behaviours.done.next(
-        function(){ controller.owner.childDone(controller, 'done'); },
+      this.model.behaviours.done.next(_.bind(
+        function(){
+          this.emit("controllerDone", this);
+          controller.owner.childDone(controller, 'done');          
+          }, this),
         _.bind(actionOperation, this, "next")
       )
     },

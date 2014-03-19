@@ -44,7 +44,8 @@ requirejs([
   "spec/fake_user_spec",
   "spec/selection_page_model_spec",
   "spec/selection_page_spec",
-  "spec/util_spec"
+  "spec/util_spec",
+  "spec/racking_behaviour_spec"
 ], function () {
   "use strict";
   

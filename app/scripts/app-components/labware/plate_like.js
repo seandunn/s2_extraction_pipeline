@@ -2,12 +2,13 @@ define([
   "text!app-components/labware/svg/96_plate.svg",
   "text!app-components/labware/svg/384_plate.svg",
   "text!app-components/labware/svg/rack.svg",
+  "text!app-components/labware/svg/24_rack.svg",
   "text!app-components/labware/svg/96_gel.svg",
 
   // Global namespace requirements
   "lib/underscore_extensions",
   "lib/jquery_extensions"
-], function (plate96Image, plate384Image, rackImage, gelImage) {
+], function (plate96Image, plate384Image, rack96Image, rack24Image, gelImage) {
   "use strict";
 
   var parser     = new DOMParser();
@@ -26,7 +27,11 @@ define([
   };
 
   // RACK INFORMATION
-  var rackSvg = svgElement(rackImage);
+  var rackSvg = {
+    "24": svgElement(rack24Image),
+    "96": svgElement(rack96Image)
+  };
+
   var unknownRack = {
     barcode: undefined,
     locations: []
@@ -41,7 +46,7 @@ define([
 
   return {
     plate:        PlateLike(unknownPlate,       plateSvgPicker),
-    tube_rack:    PlateLike(unknownRack,        _.constant(rackSvg)),
+    tube_rack:    PlateLike(unknownRack,        rackSvgPicker),
     gel:          PlateLike(unknownGel,         _.constant(gelSvg))
   };
 
@@ -68,6 +73,19 @@ define([
 
       view.show();
     };
+  }
+
+  function rackSvgPicker(labware) {
+    var selectedRack;
+
+    if (labware.attributes && (!_.any([
+                labware.attributes.number_of_rows, 
+                labware.attributes.number_of_columns], _.isUndefined))) {
+      selectedRack = rackSvg["" + (labware.attributes.number_of_rows * labware.attributes.number_of_columns)];
+    } else  {
+      selectedRack = rackSvg["96"];
+    }
+    return selectedRack;
   }
 
   function displayValueIfSet(view, value, field) {
