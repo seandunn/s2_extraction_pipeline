@@ -386,9 +386,8 @@ define([
                 }
                 
                 var posDestination = _.indexOf(destinationKeys, beginPositionToPopulate);
-                transferDetails = _
-                .chain(source.tubes || source.windows || source.wells)
-                .keys()
+                transferDetails = _.chain(destinationKeys)
+                .intersection(_.keys(source.tubes || source.windows || source.wells))
                 .reduce(function(memo, location){
                   memo.push({
                     input:            transferDetails[0].input,
