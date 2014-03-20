@@ -33,6 +33,9 @@ define([
         return order.batchFor(function (item) {
           return item.uuid === defaultModel.labware.uuid && item.status==="done";
         });
+      }, 
+      function() {
+        return deferred.reject({message:"Couldn't find an order associated with the barcode '"+barcode+"'!"});
       })
 
       .then(function (batch) {
