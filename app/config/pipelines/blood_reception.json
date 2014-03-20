@@ -1,5 +1,6 @@
 {
   "role_priority": [
+    "samples.shipping.blood_!na.awaiting_shipping.reception",
     "samples.shipping.blood_!na.awaiting_shipping",
     "samples.shipping.blood_!na.awaiting_shipping.batched",
     "samples.extraction.lysing.prelysing.blood.awaiting_reception",
@@ -85,12 +86,28 @@
         }
       ]
     },
+    { 
+      "accepts": "samples.shipping.blood_!na.awaiting_shipping",
+      "controllerName":"selection_page_controller",
+      "processTitle": "Sample Shipping - Reception",
+      "input": {
+        "role": "samples.shipping.blood_!na.awaiting_shipping",
+        "model": "tubes"
+      },
+      "output": [
+        {
+          "role": "samples.shipping.blood_!na.awaiting_shipping.reception",
+          "model": "tubes",
+          "not_batched": true
+        }
+      ]
+    },
     {
-      "accepts":  "samples.shipping.blood_!na.awaiting_shipping" ,
+      "accepts":  "samples.shipping.blood_!na.awaiting_shipping.reception" ,
       "controllerName":"selection_page_controller",
       "processTitle": "Sample Shipping - Batching",
       "input": {
-        "role": "samples.shipping.blood_!na.awaiting_shipping",
+        "role": "samples.shipping.blood_!na.awaiting_shipping.reception",
         "model": "tubes"
       },
       "output": [
