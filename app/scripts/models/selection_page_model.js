@@ -12,11 +12,11 @@ define([
       this.inputs = $.Deferred();
       this.capacity = workflowConfig.capacity || 12;
       this.config = workflowConfig;
-      this.validators = [batchHasCapacity, labwareUniqueInBatch, labwareRoleIsEqual];
+      this.validators = [labwareTypeIsValid, batchHasCapacity, labwareUniqueInBatch, labwareRoleIsEqual];
 
       // Only add contentsAreEqual for tubes or spin columns
       if (this.config.output[0].aliquotType) {
-        this.validators.unshift(contentsAreEqual);
+        this.validators.push(contentsAreEqual);
       }
 
       this.initialiseCaching();
@@ -48,7 +48,7 @@ define([
     },
 
     addTube: function (newInput) {
-      var deferred = $.Deferred();
+      var deferred = new $.Deferred();
       var thisModel = this;
       
       var context = {
@@ -67,7 +67,7 @@ define([
         result.push(newInput);
         thisModel.inputs = $.Deferred().resolve(result).promise();
         return deferred.resolve(thisModel);
-      })
+      });
 
       return deferred.promise();
     },
@@ -262,6 +262,19 @@ define([
     }
   }
 
+  function labwareTypeIsValid (context, result) {
+    if (context.model.config.input.model !== context.input.resourceType.pluralize()) {
+      // check if correct type
+      var msg = "You can only add \""
+          + context.model.config.input.model
+          + "\" to this batch. The input was of type \""+ context.input.resourceType.singularize()+"\"";
+      return context.deferred.reject({message: msg, previous_error: null});
+    } else {
+      return result;
+    }
+  }
+
+  
   function contentsAreEqual (context, result) {
     if (context.model.config.output[0].aliquotType !== context.input.aliquots[0].type) {
       // check if correct type
