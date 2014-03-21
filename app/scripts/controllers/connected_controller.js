@@ -58,7 +58,9 @@ define([
         "barcodePrintFailure": _.bind(this.owner.onBarcodePrintFailure, this.owner),
         "inputRemoved": _.bind(this.onInputRemoved, this),
         "outputRemoved": _.bind(this.onOutputRemoved, this),
-        "completedRow": _.bind(this.onCompletedRow, this)
+        "completedRow": _.bind(this.onCompletedRow, this),
+        "inputBarcodeScanned": _.bind(this.onInputBarcodeScanned, this),
+        "outputBarcodeScanned": _.bind(this.onOutputBarcodeScanned, this)
       });
     },
     
@@ -130,22 +132,29 @@ define([
       }
     },
 
-    unknownDone:function (child, action, data) {
-      var originator = data.origin, controller = this;
-      if (action === 'inputBarcodeScanned') {
-        controller.model.inputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
-          controller.model.inputs.pull(resource);
-        }).done(function() {
-          controller.focus();
-        });
-      } else if (action === 'outputBarcodeScanned') {
-        controller.model.outputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
-          controller.model.outputs.pull(resource);
-        }).done(function() {
-          controller.focus();
-        });
-      }
+    onInputBarcodeScanned: function(controller, data) {
+      var originator = data.origin, controller = this, promise = data.promise;
+      
+      this.model.inputs.getByBarcode(originator, data.modelName, data.BC)
+      .then(promise.resolve, promise.reject)
+      .done(_.bind(function(resource) {
+        this.model.inputs.pull(resource);
+      }, this)).done(_.bind(function() {
+        this.focus();
+      }, this));      
     },
+    
+    onOutputBarcodeScanned: function(controller, data) {
+      var originator = data.origin, controller = this, promise = data.promise;
+      
+      this.model.outputs.getByBarcode(originator, data.modelName, data.BC)
+        .then(promise.resolve, promise.reject).done(_.bind(function(resource) {
+          this.model.outputs.pull(resource);
+        }, this)).done(_.bind(function() {
+          this.focus();
+        }, this));      
+    },
+    
     onInputRemoved: function() {
       this.model.inputs.push(data.resource);
       this.emit("inputRemoved");

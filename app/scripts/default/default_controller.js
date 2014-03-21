@@ -30,7 +30,7 @@ define(["config"
       value = Util.pad(value);
     }
 
-    PromiseTracker(controller.model.setLabwareFromBarcode(value))
+    return PromiseTracker(controller.model.setLabwareFromBarcode(value))
       .fail(function (error) {
         PubSub.publish("error.status.s2", controller, error);
         controller.labwareBCSubController.hideProgress();

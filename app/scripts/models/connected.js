@@ -97,9 +97,9 @@ define([
             rowController.setupController(model.getRowModel(root,index, input, inputs), selectorFunction(model.owner, index));
             // This functionality (setupInputControllers) has been incorrectly placed in the
             // model. This must go out of here.
-            rowController.on("completedRow", _.bind(function() {
-              this.emit("completedRow", rowController);
-            }, this));            
+            rowController.on("inputBarcodeScanned", _.bind(this.emit, this, "inputBarcodeScanned", rowController));
+            rowController.on("outputBarcodeScanned", _.bind(this.emit, this, "outputBarcodeScanned", rowController));
+            rowController.on("completedRow", _.bind(this.emit, this, "completedRow", rowController));
             return rowController;
           }, this))
           .value();
