@@ -4,6 +4,17 @@ header {
 
 #alertContainer {
   min-height: 4em;
+  
+  width: 100%;
+  .alert {
+    margin: 0.5em auto;
+    width: 80%;
+  }
+}
+
+.affix {
+  top: 0;
+  z-index: 1000;
 }
 
 ol.labware-selection {
