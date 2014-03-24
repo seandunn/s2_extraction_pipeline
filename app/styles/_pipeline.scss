@@ -12,6 +12,16 @@ header {
   }
 }
 
+.selection-button-footer {
+  position: fixed;
+  bottom: 0.5em;
+  width: 100%;
+  div {
+    width: 90%;
+    margin: 0 auto 0 auto;
+  }
+}
+
 .affix {
   top: 0;
   z-index: 1000;
