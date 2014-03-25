@@ -247,6 +247,9 @@ define([
       application.currentPageController = nextController;
       application.currentPageController.setupController(application.model, application.jquerySelection);
       delete application.model.labware;
+    }).fail(function(msg) {
+      PubSub.publish("error.status.s2", app, {message: msg});
+      $("input").attr("disabled", false).focus();
     });
 
     return this;
