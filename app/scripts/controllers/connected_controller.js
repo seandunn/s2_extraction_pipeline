@@ -226,14 +226,8 @@ define([
     },
 
     next:  function(){
-      var controller = this;
-      this.model.behaviours.done.next(_.bind(
-        function(){
-          this.emit("controllerDone", this);
-          controller.owner.childDone(controller, 'done');          
-          }, this),
-        _.bind(actionOperation, this, "next")
-      )
+      // TODO: This shouldn't make you login again
+      window.location.reload();
     },
 
     start: _.partial(actionOperation, "start"),
