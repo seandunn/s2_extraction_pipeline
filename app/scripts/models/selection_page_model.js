@@ -311,6 +311,8 @@ define([
       } else {
         return result;
       }                
+    }, function() {
+      return context.deferred.reject({message: "This labware cannot be added to the current batch, because it doesn't belong to any order."});
     })
   }
 });
