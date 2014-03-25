@@ -18,18 +18,38 @@ define(["config","event_emitter","lib/barcode_checker","lib/util"],
       
       function delayedEmptyInput(input) {
         setTimeout(function () {
-          $(input).val('').attr("disabled", false);
+          $(input).val('').attr("disabled", false).focus();
         }, 250);      
       }
       
       var input = $("input", element);
-      return element.on("keydown", input, _.bind(function(event) {
+      return element.on("keyup", input, _.bind(function(event) {
         if ((event.which === 13) || (event.which === 9)) {
           var value = input.val();
           if (validationCallback(value)) {
-            var promise = successCallback.call(this, value, element, this);
-            if (promise && !_.isUndefined(promise.fail)) {
-              promise.fail(_.partial(delayedEmptyInput, input));
+            $(input).val('').attr("disabled", true);
+            var processInput = _.bind(function() {
+              var promise = successCallback.call(this, value, element, this);
+              if (promise && !_.isUndefined(promise.fail)) {
+                this._promiseInProgress = promise;                
+                promise.then(_.bind(function() {
+                  this._promiseInProgress = null;
+                }, this), _.bind(function() {
+                  this._promiseInProgress = null;
+                  delayedEmptyInput(input);
+                }, this));
+              }
+            }, this)
+            /*
+             * As the workflow of this handler makes uses of promises, it could be possible that
+             * two promises executed in parallel validate the same piece of labware twice, inserting
+             * it twice in the interface too. To avoid this, we will not execute validation processes in
+             * parallel, as the validation is not an idempotent operation.
+             */
+            if (!!this._promiseInProgress) {
+              this._promiseInProgress.done(processInput);
+            } else {
+              processInput();
             }
           } else {
             errorCallback(value, element, this);
