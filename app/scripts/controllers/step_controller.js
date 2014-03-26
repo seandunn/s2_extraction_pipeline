@@ -168,7 +168,9 @@ define([
           "renderCompleteRowDone": _.bind(this.onRenderCompleteRow, this),
           "inputRemoved": _.bind(this.onInputRemoved, this),
           "outputRemoved": _.bind(this.onOutputRemoved, this),
-          "printReady": _.bind(this.onPrintReady, this)
+          "printReady": _.bind(this.onPrintReady, this),
+          //
+          "controllerDone": _.bind(this.emit, this, "controllerDone")
         });
         
         return subController;

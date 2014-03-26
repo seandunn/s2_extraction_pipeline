@@ -173,7 +173,11 @@ define([
     
     transferCompleted: function() {
       this.model.behaviours.done.transfer(_.bind(function() {
-        this.owner.childDone(this, "done", { batch:this.model.batch });
+        this.emit("controllerDone", {
+          batch: this.model.batch,
+          user: this.owner.config.login,
+          scanNewIfNotFound: true
+        });
       }, this));
       
       this.emit("transferCompleted");      
@@ -226,8 +230,13 @@ define([
     },
 
     next:  function(){
-      // TODO: This shouldn't make you login again
-      window.location.reload();
+      return actionOperation.call(this, "next");
+      if (_.all(_.pluck(this.config.output, "not_batched"), _.isUndefined)) {
+        return actionOperation.call(this, "next")
+      } else {
+        // TODO: This shouldn't make you login again
+        window.location.reload();
+      }
     },
 
     start: _.partial(actionOperation, "start"),
@@ -240,10 +249,11 @@ define([
     if (this.checkPageComplete()) {
       this.model.operate(action, this.rowControllers);
       this.model.behaviours.done[action](_.bind(function() {
-        this.owner.childDone(this, "done", {
+        this.emit("controllerDone", {
           batch: this.model.batch,
-          user: this.owner.config.login
-        });
+          user: this.owner.config.login,
+          scanNewIfNotFound: true
+        })
       }, this));
     }
   }
