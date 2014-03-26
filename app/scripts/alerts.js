@@ -6,8 +6,6 @@ define(['config',
 
   var alerts = Object.create(null);
 
-  var previousAlert = null;
-   
   $.extend(alerts, {
 
     setupPlaceholder:function (alertElement) {
