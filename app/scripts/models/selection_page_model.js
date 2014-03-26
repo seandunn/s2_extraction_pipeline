@@ -16,7 +16,7 @@ define([
 
       // Only add contentsAreEqual for tubes or spin columns
       if (this.config.output[0].aliquotType) {
-        this.validators.push(contentsAreEqual);
+        this.validators.unshift(contentsAreEqual);
       }
 
       this.initialiseCaching();
@@ -53,8 +53,7 @@ define([
       
       var context = {
         model: thisModel,
-        input: newInput,
-        deferred: deferred
+        input: newInput
       };
 
       _.reduce(this.validators, function(memo, validator) {
@@ -62,12 +61,13 @@ define([
       }, thisModel.inputs.fail(function () {
         return deferred.reject({message: "Couldn't send the search for the order", previous_error: null});
       })).then(function (result) {
-            
         // it is only now that we can add the tube....
         result.push(newInput);
         thisModel.inputs = $.Deferred().resolve(result).promise();
         return deferred.resolve(thisModel);
-      });
+      }, function(msg) {
+        deferred.reject({message: msg, previous_error: null});
+      }).promise();
 
       return deferred.promise();
     },
@@ -254,65 +254,69 @@ define([
   return SelectionPageModel;
 
   function batchHasCapacity(context, result) {
+    var deferred = new $.Deferred();
     if (result.length > context.model.capacity - 1) {
       // check if not full
-      return context.deferred.reject({message: "Only " + context.model.capacity + " orders can be selected", previous_error: null});
+      return deferred.reject("Only " + context.model.capacity + " orders can be selected");
     } else {
-      return result;
+      return deferred.resolve(result);
     }
   }
 
   function labwareTypeIsValid (context, result) {
+    var deferred = new $.Deferred();    
     if (context.model.config.input.model !== context.input.resourceType.pluralize()) {
       // check if correct type
-      var msg = "You can only add \""
+      return deferred.reject("You can only add \""
           + context.model.config.input.model
-          + "\" to this batch. The input was of type \""+ context.input.resourceType.singularize()+"\"";
-      return context.deferred.reject({message: msg, previous_error: null});
+          + "\" to this batch. The input was of type \""+ context.input.resourceType.singularize()+"\"");
     } else {
-      return result;
+      return deferred.resolve(result);
     }
   }
 
   
   function contentsAreEqual (context, result) {
+    var deferred = new $.Deferred();
     if (context.model.config.output[0].aliquotType !== context.input.aliquots[0].type) {
       // check if correct type
-      var msg = "You can only add \""
+      return deferred.reject("You can only add \""
           + context.model.config.output[0].aliquotType
           + "\" inputs into this batch. The scanned barcode corresponds to a \""
           + context.input.aliquots[0].type
-          + "\" input.";
-      return context.deferred.reject({message: msg, previous_error: null});
+          + "\" input.");
     } else {
-      return result;
+      return deferred.resolve(result);
     }
   }
 
   function labwareUniqueInBatch(context, result) {
+    var deferred = new $.Deferred();
     if (_.some(result, function (input) { return input.uuid === context.input.uuid; })) {
       // check if not already there
-      return context.deferred.reject({message: "You cannot add the same labware twice.", previous_error: null});
+      return deferred.reject("You cannot add the same labware twice.");
     } else {
-      return result;
+      return deferred.resolve(result);
     }
   }
 
   function labwareRoleIsEqual(context, result) {
     // check if correct role
-    return context.input.order().then(function(order) {
+    var deferred = new $.Deferred();
+    context.input.order().then(function(order) {
       var newTubeHasCorrectRole = _.chain(order.items.filter(function (item) {
         return (item.uuid === context.input.uuid) && 
           (context.model.config.input.role === item.role) && 
           ( "done" === item.status);
       })).some().value();
       if (!newTubeHasCorrectRole) {
-        return context.deferred.reject({message: "This labware cannot be added to the current batch, because it does not have the correct role."});
+        return deferred.reject("This labware cannot be added to the current batch, because it does not have the correct role.");
       } else {
-        return result;
-      }                
+        return deferred.resolve(result);
+      }
     }, function() {
-      return context.deferred.reject({message: "This labware cannot be added to the current batch, because it doesn't belong to any order."});
-    })
+      return deferred.reject("This labware cannot be added to the current batch, because it doesn't belong to any order.");
+    });
+    return deferred.promise();
   }
 });
