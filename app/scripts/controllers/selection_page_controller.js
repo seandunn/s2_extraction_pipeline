@@ -115,7 +115,7 @@ define([ 'controllers/base_controller'
 
             var jQueryForNthChild = _.bind(function (childIndex) {
               return _.bind(function () {
-                return controller.jquerySelection().find(".labware-selection > li:eq(" + childIndex + ")");
+                return this.jquerySelection().find(".labware-selection > li:eq(" + childIndex + ")");
               }, this);
             }, this);
             var controllerData = [];

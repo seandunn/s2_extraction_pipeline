@@ -35,11 +35,9 @@ define(["config"
     
     PromiseTracker(controller.model.setLabwareFromBarcode(value))
       .fail(function (error) {
-        console.log("error status s2");
         deferred.reject(null);
         PubSub.publish("error.status.s2", controller, error);
         controller.labwareBCSubController.hideProgress();
-        deferred.reject(null);        
       })
       .afterThen(function(tracker) {
         controller.labwareBCSubController.updateProgress(tracker.thens_called_pc());

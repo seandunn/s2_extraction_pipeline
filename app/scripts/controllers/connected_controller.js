@@ -231,12 +231,6 @@ define([
 
     next:  function(){
       return actionOperation.call(this, "next");
-      if (_.all(_.pluck(this.config.output, "not_batched"), _.isUndefined)) {
-        return actionOperation.call(this, "next")
-      } else {
-        // TODO: This shouldn't make you login again
-        window.location.reload();
-      }
     },
 
     start: _.partial(actionOperation, "start"),
