@@ -21,12 +21,7 @@ define([ 'text!pipeline_config-DO_NOT_DIRECTLY_EDIT.json' ], function (pipelineJ
     var items = itemFilterOnStatus(items, 'done');
     if (items.length === 0){
       // no 'done' role <=> spent batch
-      setTimeout(function() {
-        //TODO: Reloads page if batch spent. This should be properly managed with error message.
-        // A better solution could be avoiding the lost of user credentials at the end of a pipeline.
-        window.location.reload();
-      }, 3000);
-      return pipelineConfig['spentBatch'];
+      return new $.Deferred().reject("This labware is not in use anymore.");
     }
 
     var activeRole     = _.chain(pipelineConfig.role_priority).find(firstMatchingRoleOnItems(items)).value();
@@ -38,10 +33,13 @@ define([ 'text!pipeline_config-DO_NOT_DIRECTLY_EDIT.json' ], function (pipelineJ
     // no controller to deal with this role -> summary page
     if(foundWorkflows.length < 1){
       foundWorkflows.push(pipelineConfig.unknownRole);
+      return new $.Deferred().reject("The role selected ["+activeRole+"] was not defined in the actual workflows. Please contact administrator")
     }
 
     // I've made a terrible mistake!
-    if (foundWorkflows.length > 1) throw "More than 1 workflow active. Please contact administrator.";
+    if (foundWorkflows.length > 1) { 
+      return new $.Deferred().reject("More than 1 workflow active. Please contact administrator."); 
+    }
 
     return foundWorkflows[0];
   };

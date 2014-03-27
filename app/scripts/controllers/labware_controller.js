@@ -108,18 +108,23 @@ define(["controllers/base_controller",
 
       if (this.barcodeInputController) {
         var labwareCallback = function(value, template, controller){
+          var statusPromise = new $.Deferred();
           if (value.match(/\d{12}/))
           {
             value = Util.pad(value);
           }
-          controller.owner.childDone(controller, "barcodeScanned", {
+          this.emit("barcodeScanned", {
             modelName: controller.labwareModel.expected_type.pluralize(),
-            BC:        value
+            BC:        value,
+            typeBarcode:   controller.labwareModel.input ? 'input' : 'output',
+            origin: controller,
+            promise: statusPromise
           });
           PubSub.publish("barcode_scanned.labware.s2", controller, {
             modelName: controller.labwareModel.expected_type.pluralize(),
             BC:        value
           });
+          return statusPromise;
         };
         this.jquerySelection().append(
           this.bindReturnKey(this.barcodeInputController.renderView(),

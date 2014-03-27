@@ -27,15 +27,21 @@ define(['config',
       });
     },
 
-    appendView:function (templateData) {
+    appendView:function (templateData) {      
       var $element = $(_.template(alertsPartialHtml)(templateData));
+      
       setTimeout(function () {
         $element.alert("close")
       }, config.messageTimeout);
 
-      $element.appendTo(this.alertElement());
+      var node = this.alertElement();
+      $element.appendTo(node);
+      node.affix({
+        offset: {
+          top: 100
+        }
+      });
     },
-
     addMessage:function (messageType, message) {
       this.appendView({
         messageType:messageType,

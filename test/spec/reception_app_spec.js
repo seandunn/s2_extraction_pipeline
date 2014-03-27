@@ -30,7 +30,6 @@ define([
           
           var app = {
             getS2Root: function () {
-              debugger;
               if (this.rootPromise === undefined) {
                 this.rootPromise = S2Root.load({user: "username"});
               }

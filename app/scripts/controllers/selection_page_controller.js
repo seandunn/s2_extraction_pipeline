@@ -97,27 +97,26 @@ define([ 'controllers/base_controller'
     },
 
     setupSubControllers:function () {
-      var controller = this;
       var thisModel;
       this.controllers = [];
 
-      return controller.model
-          .then(function (model) {
+      return this.model
+          .then(_.bind(function (model) {
             thisModel = model;
-            _(thisModel.capacity).times(function () {
-              var subController = controller.controllerFactory.create('labware_controller', controller);
-              controller.controllers.push(subController);
-            });
+            _(thisModel.capacity).times(_.bind(function () {
+              var subController = this.controllerFactory.create('labware_controller', this);
+              this.controllers.push(subController);
+            }, this));
             return thisModel.inputs;
-          })
-          .then(function(inputs){
+          }, this))
+          .then(_.bind(function(inputs){
             var numTubes = inputs.length;
 
-            var jQueryForNthChild = function (childIndex) {
-              return function () {
-                return controller.jquerySelection().find(".labware-selection > li:eq(" + childIndex + ")");
-              };
-            };
+            var jQueryForNthChild = _.bind(function (childIndex) {
+              return _.bind(function () {
+                return this.jquerySelection().find(".labware-selection > li:eq(" + childIndex + ")");
+              }, this);
+            }, this);
             var controllerData = [];
             _.each(inputs, function (tube) {
               controllerData.push({
@@ -147,12 +146,36 @@ define([ 'controllers/base_controller'
               });
             }
 
-            _.chain(controller.controllers).zip(controllerData).each(function (pair, index) {
+            _.chain(this.controllers).zip(controllerData).each(_.bind(function (pair, index) {
               var controller = pair[0], config = pair[1];
               controller.setupController(config, jQueryForNthChild(index));
-            }).value();
+              controller.on("barcodeScanned", _.bind(this.onLabwareScanned, this, controller));
+            }, this)).value();
 
-          });
+          }, this));
+    },
+    
+    onLabwareScanned: function(labwareController, data) {
+      var promise = data.promise;
+      labwareController.barcodeInputController.showProgress();
+
+      PromiseTracker(this.model, {number_of_thens: 1})
+      .afterThen(function(tracking){
+        labwareController.barcodeInputController.updateProgress(tracking.thens_called_pc());
+      })
+      .then(function (model) {
+        return model.addTubeFromBarcode(data.BC);
+      })
+      .fail(_.bind(function (error) {
+        PubSub.publish("error.status.s2", this, error);
+        labwareController.barcodeInputController.hideProgress();
+        promise.reject(error);        
+      }, this))
+      .then(_.bind(function () {
+        this.setupSubControllers();
+        this.renderView();
+        promise.resolve();
+      }, this));      
     },
 
     release:function () {
@@ -163,25 +186,7 @@ define([ 'controllers/base_controller'
     childDone:function (child, action, data) {
       var controller = this;
       // model should not talk using 'childDone' anymore
-      if (action === "barcodeScanned") {
-        child.barcodeInputController.showProgress();
-
-        PromiseTracker(this.model, {number_of_thens: 1})
-          .afterThen(function(tracking){
-            child.barcodeInputController.updateProgress(tracking.thens_called_pc());
-          })
-          .then(function (model) {
-            return model.addTubeFromBarcode(data.BC);
-          })
-          .fail(function (error) {
-            PubSub.publish("error.status.s2", controller, error);
-            child.barcodeInputController.hideProgress();
-          })
-          .then(function () {
-            controller.setupSubControllers();
-            controller.renderView();
-          });
-      } else if (action === "removeLabware") {
+      if (action === "removeLabware") {
         this.model
         .then(function (model) {
           return model.removeTubeByUuid(data.resource.uuid);

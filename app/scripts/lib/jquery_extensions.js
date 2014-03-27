@@ -1,6 +1,7 @@
 define([
   "jquery",  // jquery will be in the global namespace
-  "lib/underscore_extensions"
+  "lib/underscore_extensions",
+  "bootstrap/bootstrap-affix"
 ], function() {
   "use strict";
 
