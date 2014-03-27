@@ -79,7 +79,12 @@ define([
       }
     };
 
-    initializeViz();
+    var retries = setInterval(function() {
+      if (!_.isUndefined(window.tableauSoftware)) {
+        clearInterval(retries);
+        initializeViz();
+      }
+    }, 500);
 
     return {
       view:   view,

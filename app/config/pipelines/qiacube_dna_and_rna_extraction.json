@@ -3,7 +3,8 @@
     "samples.extraction.qiacube_dna_and_rna.input_tube_nap.awaiting_reception",
 
     "samples.extraction.qiacube_dna_and_rna.input_tube_nap",
-    "samples.extraction.qiacube_dna_and_rna.input_tube_nap.batched",
+    "samples.extraction.qiacube_dna_and_rna.input_tube_blood",
+    "samples.extraction.qiacube_dna_and_rna.input_tube.batched",
     "samples.extraction.qiacube_dna_and_rna.byproduct_tube_rnap",
     "samples.extraction.qiacube_dna_and_rna.input_tube_rnap.batched",
 
@@ -44,14 +45,29 @@
     },
     "output":       [
       {
-      "role":       "samples.extraction.qiacube_dna_and_rna.input_tube_nap.batched",
+      "role":       "samples.extraction.qiacube_dna_and_rna.input_tube.batched",
       "aliquotType":"NA+P"
+    }
+    ]
+  },
+  {
+    "accepts":  "samples.extraction.qiacube_dna_and_rna.input_tube_blood" ,
+    "controllerName":"selection_page_controller",
+    "processTitle": "Automated DNA and RNA Extraction (QIAcube)",
+    "input":        {
+      "role":"samples.extraction.qiacube_dna_and_rna.input_tube_blood",
+      "model":"tubes"
+    },
+    "output":       [
+      {
+      "role":       "samples.extraction.qiacube_dna_and_rna.input_tube.batched",
+      "aliquotType":"blood"
     }
     ]
   },
 
   {
-    "accepts":  "samples.extraction.qiacube_dna_and_rna.input_tube_nap.batched" ,
+    "accepts":  "samples.extraction.qiacube_dna_and_rna.input_tube.batched" ,
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
     "defaultPrinter":"g216bc",
     "controllerName": "step_controller",
@@ -76,7 +92,7 @@
         "outputs": "print"
       },
       "input":         {
-        "role": "samples.extraction.qiacube_dna_and_rna.input_tube_nap.batched",
+        "role": "samples.extraction.qiacube_dna_and_rna.input_tube.batched",
         "model":"tubes",
         "title": "Eppendorf Input Tube"
       },

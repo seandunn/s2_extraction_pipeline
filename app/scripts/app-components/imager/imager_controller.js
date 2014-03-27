@@ -1,5 +1,5 @@
-define([ "config", "app-components/imager/imager", "models/selection_page_model" , "lib/pubsub", "mapper/operations", "text!app-components/imager/header.html", "app-components/imager/connect"
-], function(appConfig, imager, Model, PubSub, Operations, template, connect) {
+define([ "config",  "event_emitter", "app-components/imager/imager", "models/selection_page_model" , "lib/pubsub", "mapper/operations", "text!app-components/imager/header.html", "app-components/imager/connect"
+], function(appConfig, EventEmitter, imager, Model, PubSub, Operations, template, connect) {
   "use strict";
   return (
     { register : function(callback) {
@@ -7,11 +7,10 @@ define([ "config", "app-components/imager/imager", "models/selection_page_model"
     }
     });
   
-  
   function imagerController(owner, factory, config) {
     var uuid = config.initialLabware.uuid;
 
-    return { 
+    return $.extend({ 
       notBatched: true,
       getS2Root: _.constant(owner.rootPromise),
       beginImager: function() {
@@ -136,6 +135,6 @@ define([ "config", "app-components/imager/imager", "models/selection_page_model"
       focus: function() {
         //this.imagerView.view.trigger("activate.s2");
       }
-    };
+    }, new EventEmitter());
   }
 });

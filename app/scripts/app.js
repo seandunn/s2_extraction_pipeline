@@ -242,14 +242,30 @@ define([
           _.each(roles, tagRoleInBody);
         }
         $.extend(workflowConfig, {initialLabware: application.model.labware});
-        return application.controllerFactory.create(workflowConfig && workflowConfig.controllerName, application, workflowConfig);
+        var controller =  application.controllerFactory.create(workflowConfig && workflowConfig.controllerName, application, workflowConfig);
+        controller.on("controllerDone", function(data) {
+          application.updateModel(data);
+        });
+        return controller;
     }).then(function(nextController){
       application.currentPageController = nextController;
       application.currentPageController.setupController(application.model, application.jquerySelection);
       delete application.model.labware;
-    });
+    }).fail(_.bind(function(msg) {
+      if (!_.isUndefined(model.scanNewIfNotFound)) {
+        this.showLabwareScanningPage();
+      } else {
+        PubSub.publish("error.status.s2", app, {message: msg});
+        $("input").attr("disabled", false).focus();
+      }
+    }, this));
 
     return this;
+  };
+  
+  App.prototype.showLabwareScanningPage = function() {
+    this.controllerFactory.create(null, this, null)
+      .setupController(this.model, this.jquerySelection);    
   };
   
 
