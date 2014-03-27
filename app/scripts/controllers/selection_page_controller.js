@@ -97,7 +97,6 @@ define([ 'controllers/base_controller'
     },
 
     setupSubControllers:function () {
-      var controller = this;
       var thisModel;
       this.controllers = [];
 
@@ -105,7 +104,7 @@ define([ 'controllers/base_controller'
           .then(_.bind(function (model) {
             thisModel = model;
             _(thisModel.capacity).times(_.bind(function () {
-              var subController = this.controllerFactory.create('labware_controller', controller);
+              var subController = this.controllerFactory.create('labware_controller', this);
               this.controllers.push(subController);
             }, this));
             return thisModel.inputs;
