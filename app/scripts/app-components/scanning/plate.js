@@ -57,7 +57,9 @@ define([ "text!app-components/scanning/_plate.html",
         return true;
       }).fail(function(msg) { 
         $('input', obj.view).val('');
-        PubSub.publish("error.status.s2", undefined, {message: msg});
+        if (msg) {
+          PubSub.publish("error.status.s2", undefined, {message: msg});
+        }
         });
     }));
     return obj;
