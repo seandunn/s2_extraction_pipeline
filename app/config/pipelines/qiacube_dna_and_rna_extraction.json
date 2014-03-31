@@ -51,22 +51,6 @@
     ]
   },
   {
-    "accepts":  "samples.extraction.qiacube_dna_and_rna.input_tube_blood" ,
-    "controllerName":"selection_page_controller",
-    "processTitle": "Automated DNA and RNA Extraction (QIAcube)",
-    "input":        {
-      "role":"samples.extraction.qiacube_dna_and_rna.input_tube_blood",
-      "model":"tubes"
-    },
-    "output":       [
-      {
-      "role":       "samples.extraction.qiacube_dna_and_rna.input_tube.batched",
-      "aliquotType":"blood"
-    }
-    ]
-  },
-
-  {
     "accepts":  "samples.extraction.qiacube_dna_and_rna.input_tube.batched" ,
     "processTitle":  "Automated DNA and RNA Extraction (QIAcube)",
     "defaultPrinter":"g216bc",

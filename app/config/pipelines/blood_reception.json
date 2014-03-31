@@ -75,7 +75,7 @@
           },
           "output": [
             {
-              "role": "samples.extraction.qiacube_dna_and_rna.input_tube_blood",
+              "role": "samples.extraction.qiacube_dna_only.input_tube_dnap",
               "model": "tubes",
               "purpose": "stock",
               "title": "Blood tube",
