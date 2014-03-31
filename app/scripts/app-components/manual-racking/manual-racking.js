@@ -80,7 +80,7 @@ define([
       _.bind(this._enableRackingButtons, this)
     ]);
 
-    this.buttons.print.on("click", _.bind(this._createRackAndPrintBarcode, this));
+    this.buttons.print.view.filter("button").on("click", _.bind(this._createRackAndPrintBarcode, this));
     this.buttons.reset.on("click", _.bind(this._reset, this));
     this.buttons.accept.on("click", _.bind(this._saveTubesInRack, this));
     this.buttons.done.on("click", _.bind(this._triggerDone, this));
