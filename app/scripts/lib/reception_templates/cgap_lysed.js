@@ -59,6 +59,10 @@ define([
           friendly_name: "QC2Hmgp",
           sanger_sample_id_core: "QC2Hmgp"
         },
+        SIGhum: {
+          friendly_name: "SIGhum",
+          sanger_sample_id_core: "SIGhum"
+        },        
         
         CGaPSSV: {
           friendly_name: "CGaP Validation",
