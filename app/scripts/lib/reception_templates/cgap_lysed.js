@@ -7,7 +7,7 @@ define([
 
   return {
     cgap_lysed: {
-      friendly_name: "CGAP - unlysed",
+      friendly_name: "CGAP - lysed",
 
       // Details surrounding the manifest itself: the template file and the line on which the
       // headers can be found.
