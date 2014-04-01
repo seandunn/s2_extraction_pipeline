@@ -41,7 +41,7 @@ define([
 
       // When a Tableau mark has been clicked we run the following...
       function reportSelectedMarks(marks) {
-        var ean13 = marks[0].$0.$1.$1._ean13_barcode.value;
+        var ean13 = marks[0].$0.$1.$0[1].value;
 
         defaultModel
         .setLabwareFromBarcode(ean13)
@@ -58,9 +58,9 @@ define([
 
     applyFilters = function applyFilters() {
       activeSheet.applyFilterAsync(
-          "step",
+          "Step",
           context.filterByRoles,
-          tableauSoftware.FilterUpdateType.REPLACE);
+          tableauSoftware.FilterUpdateType.REMOVE);
     }
 
     return html;
