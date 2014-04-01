@@ -56,6 +56,13 @@ define([
       }
     };
 
+    applyFilters = function applyFilters() {
+      activeSheet.applyFilterAsync(
+          "Step",
+          context.filterByRoles,
+          tableauSoftware.FilterUpdateType.REMOVE);
+    }
+
     return html;
   }
 
@@ -66,6 +73,9 @@ define([
         // This is a bit hacky but we check the href of the target tab. If it
         // matches this inbox then we initialise Tableau.  This stops Tableau
         // being called unnecessarily.
+        if (e.target.getAttribute("href") === "#"+context.id){
+          applyFilters();
+        }
       }
     };
 

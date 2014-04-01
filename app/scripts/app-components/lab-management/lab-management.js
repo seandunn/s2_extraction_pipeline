@@ -16,7 +16,10 @@ define([
           label:         "Unlysed Sample Inbox",
           id:            "unlysed-inbox",
           constructor:   Inbox,
-          inboxUrl:      context.app.config.inboxUrl
+          inboxUrl:      context.app.config.inboxUrl,
+          filterByRoles: [
+            "samples.shipping.blood_!na.shipped"
+          ]
         }
 
       ]
