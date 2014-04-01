@@ -41,7 +41,7 @@ define([
 
       // When a Tableau mark has been clicked we run the following...
       function reportSelectedMarks(marks) {
-        var ean13 = marks[0].$0.$1.$1._ean13_barcode.value;
+        var ean13 = marks[0].$0.$1.$0[1].value;
 
         defaultModel
         .setLabwareFromBarcode(ean13)
@@ -56,13 +56,6 @@ define([
       }
     };
 
-    applyFilters = function applyFilters() {
-      activeSheet.applyFilterAsync(
-          "step",
-          context.filterByRoles,
-          tableauSoftware.FilterUpdateType.REPLACE);
-    }
-
     return html;
   }
 
@@ -73,9 +66,6 @@ define([
         // This is a bit hacky but we check the href of the target tab. If it
         // matches this inbox then we initialise Tableau.  This stops Tableau
         // being called unnecessarily.
-        if (e.target.getAttribute("href") === "#"+context.id){
-          applyFilters();
-        }
       }
     };
 

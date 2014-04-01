@@ -16,14 +16,7 @@ define([
           label:         "Unlysed Sample Inbox",
           id:            "unlysed-inbox",
           constructor:   Inbox,
-          inboxUrl:      context.app.config.inboxUrl,
-          filterByRoles: [
-            "samples.shipping.blood_!na.awaiting_shipping",
-            "samples.shipping.blood_!na.awaiting_shipping.batched",
-            "samples.extraction.lysing.prelysing.blood",
-            "samples.extraction.lysing.prelysing.blood.batched",
-            "samples.extraction.lysing.blood"
-          ]
+          inboxUrl:      context.app.config.inboxUrl
         }
 
       ]
