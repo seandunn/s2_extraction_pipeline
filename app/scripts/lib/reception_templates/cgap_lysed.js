@@ -62,7 +62,7 @@ define([
         SIGhum: {
           friendly_name: "SIGhum",
           sanger_sample_id_core: "SIGhum"
-        },        
+        },
         
         CGaPSSV: {
           friendly_name: "CGaP Validation",
