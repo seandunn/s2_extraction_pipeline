@@ -23,7 +23,7 @@ define([
         model:       config.output[0].model.singularize(),
         role:        config.output[0].role,
         aliquotType: "NA+P",
-        purpose:     "Stock"
+        purpose:     "stock"
       },
       printers: owner.config.printers
     });
