@@ -69,7 +69,7 @@
                   { "action": "end",   "title": "Finish Biorobot" },
                   { "action": "next",  "title": "Done" }
       ],
-      "processTitle":  "Biorobot - Blood Lysing and Extraction",
+      "processTitle":  "Biorobot - Blood Extraction",
       "controllers": [
       {
         "controllerName": "robot_controller",
