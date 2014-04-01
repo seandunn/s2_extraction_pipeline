@@ -94,7 +94,7 @@
         },
         "output": [{
           "role": "samples.extraction.lysing.blood.biorobot.lysed",
-          "aliquotType":  "blood",
+          "aliquotType":  "DNA",
           "purpose":     "stock",
           "model":       "plates",
           "title":      "Plate",

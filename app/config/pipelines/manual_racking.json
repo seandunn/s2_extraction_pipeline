@@ -36,8 +36,8 @@
       "output": [
         {
           "role": "samples.extraction.rack.bio_robot_dna_and_rna",
-          "aliquotType": "Blood",
-          "purpose": "do not know yet",
+          "aliquotType": "blood",
+          "purpose": "stock",
           "attributes": {
             "number_of_rows": 4,
             "number_of_columns": 6
