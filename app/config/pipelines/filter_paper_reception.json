@@ -67,7 +67,7 @@
       "buttons": [{ "action": "print", "title": "Print Destination Plate Barcode", "alwaysEnabled": true },
                   { "action": "start", "title": "Start Biorobot" },
                   { "action": "end",   "title": "Finish Biorobot" },
-                  { "action": "next",  "title": "Done" }
+                  { "action": "reload",  "title": "Done" }
       ],
       "processTitle":  "Biorobot - Blood Extraction",
       "controllers": [

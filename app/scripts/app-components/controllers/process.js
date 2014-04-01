@@ -15,6 +15,9 @@ define([], function() {
         _.bind(actionOperation, this, "next")
       )
     },
+    reload: function() {
+      window.location.reload();
+    },
     
     getRowsConnectedForOperations: function() {
       var output = this._outputsCreated[0];

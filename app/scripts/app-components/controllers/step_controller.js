@@ -120,7 +120,8 @@ define([
       this.disableBtn("end");
     },
     onProcessFinished: function() {
-      this.enableBtn("next");      
+      this.enableBtn("next");
+      this.enableBtn("reload");
     },
     onCompletedRow: function() {
       this.enableBtn("start");
