@@ -347,10 +347,21 @@ define([
   }
 
   function updateManifestDetails(root, manifest, resource) {
+    var padLeft13 = _.partial(function(padding, length, input) {
+      var result = input;
+      
+      var padLength = length - input.length;
+      for (var i = 0; i < padLength; i++) {
+        result = padding + result;
+      }
+      
+      return result;
+    }, "0", 13);
+        
     var details =
       _.chain(manifest.details)
         .filter(function(details) {
-          return details.label.value === resource.labels[details.label.column].value;
+          return padLeft13(details.label.value) === padLeft13(resource.labels[details.label.column].value);
         })
         .map(function(details) { details.resource = resource; return details; })
         .value();
@@ -370,6 +381,8 @@ define([
       );
     }
   }
+  
+  
 
   function sampleFromContainer(aliquots) {
     if (_.isEmpty(aliquots) || _.isUndefined(aliquots[0].sample)) {
