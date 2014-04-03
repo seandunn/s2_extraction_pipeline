@@ -2,6 +2,7 @@
   "role_priority": [
     "samples.extraction.qiacube_dna_only.input_tube_dnap.awaiting_reception",
     "samples.extraction.qiacube_dna_only.input_tube_dnap",
+    "samples.extraction.qiacube_dna_only.input_tube_blood",
     "samples.extraction.qiacube_dna_only.input_tube_dnap.batched",
     "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed",
     "samples.extraction.qiacube_dna_only.input_tube_dnap.to_be_retubed.batched"
@@ -37,6 +38,21 @@
         {
           "role": "samples.extraction.qiacube_dna_only.input_tube_dnap.batched",
           "aliquotType": "DNA+P"
+        }
+      ]
+    },
+    {
+      "accepts": "samples.extraction.qiacube_dna_only.input_tube_blood",
+      "controllerName": "selection_page_controller",
+      "processTitle": "Automated DNA Only Extraction (QIAcube)",
+      "input": {
+        "role": "samples.extraction.qiacube_dna_only.input_tube_blood",
+        "model": "tubes"
+      },
+      "output": [
+        {
+          "role": "samples.extraction.qiacube_dna_only.input_tube_dnap.batched",
+          "aliquotType": "blood"
         }
       ]
     },
