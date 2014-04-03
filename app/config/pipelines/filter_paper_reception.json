@@ -74,7 +74,7 @@
       {
         "controllerName": "robot_controller",
         "group": "biorobot",
-        "barcode": "BIOROBOT"
+        "barcode": "4880001006869"
       },      
       {
         "controllerName":   "linear_controller",
