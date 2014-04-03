@@ -59,6 +59,8 @@ define([ "config",
   }
   
   var allRacksFullExceptTheLast = {
+    // This validation is disabled  (not in labwareValidations list on bedVerification creation) 
+    // as it is not needed at now
     checkMethod: function(labwareInputModel, position, labware) {
       var numRacks = _.keys(labwareInputModel).length;
       return ((position===(numRacks-1)) || (_.keys(labware.tubes).length===(labware.number_of_rows*labware.number_of_columns)));
@@ -71,8 +73,7 @@ define([ "config",
   View.prototype.renderInputs = function(inputs) {
     return inputs.getBedVerificationModel().then(_.bind(function(bedVerificationModel) {
       this._bedVerification = new BedVerification({
-        model: bedVerificationModel,
-        labwareValidations: [allRacksFullExceptTheLast]
+        model: bedVerificationModel
       });
       $("#step2").append(this._bedVerification.view)
         .on(this._bedVerification.events)
