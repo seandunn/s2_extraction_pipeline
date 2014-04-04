@@ -1,7 +1,8 @@
 define([
   "lib/file_handling/manifests",
-  "lib/error"
-], function(CSV, Errors) {
+  "lib/error",
+  "lib/util"
+], function(CSV, Errors, Util) {
 
   "use strict";
 
@@ -125,7 +126,10 @@ define([
 
     getSampleBySangerBarcode: function(sample) {
       var sangerBarcode = sample[this._getBarcodeField()]
-      return _.findWhere(this.details, { barcode: sangerBarcode });
+      return _.find(this.details, function(detail) { 
+        return Util.pad(detail.barcode) === Util.pad(sangerBarcode);
+      });
+      //return _.findWhere(this.details, { barcode: sangerBarcode });
     },
 
     getSamples: function() {
