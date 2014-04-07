@@ -28,6 +28,7 @@ define([
           onFirstInteractive: function(e) {
             workbook = viz.getWorkbook();
             activeSheet = workbook.getActiveSheet();
+            applyFilters();
           }
       };
 
@@ -57,6 +58,8 @@ define([
     };
 
     applyFilters = function applyFilters() {
+      if (!activeSheet) return false;
+
       activeSheet.applyFilterAsync(
           "Step",
           context.filterByRoles,
