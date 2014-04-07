@@ -5,27 +5,55 @@ define([ "app-components/linear-process/linear-process",
 
   var robotScannedPromise = $.Deferred();
   
+  $(document.body).on("scanned.robot.s2", _.partial(function(promise, event, robot) {
+    promise.resolve(robot);
+  }, robotScannedPromise));
+  
+  
   return function(context) {
-
     
-    function labwareValidation(labwareInputModel, position, labware) {
-      var defer = $.Deferred();
-      var validLabwareBarcodesList = _.map(labwareInputModel.allInputs, function(input) {
-        return input.labels.barcode.value;
-        });
-      if (labware.resourceType === labwareInputModel.expected_type) {
-        if ((position===0) && (_.indexOf(validLabwareBarcodesList, labware.labels.barcode.value) < 0)) {
-          defer.reject("The scanned labware was not included in the current batch, so it cannot be used as input.");
+    /**
+     * This object contains all the checks that will be performed on a labware when it has been scanned
+     * before accepting it as a correct input.
+     */
+    var Validations = {
+      isInCurrentBatch: {
+        checkMethod: function(labwareInputModel, position, labware) {
+          labwareInputModel = labwareInputModel["labware"+(position+1)];
+          var validLabwareBarcodesList = _.map(labwareInputModel.allInputs, function(input) {
+            return input.labels.barcode.value;
+          });
+          return ((position!==0) || (_.indexOf(validLabwareBarcodesList, labware.labels.barcode.value) >= 0));
+        },
+        errorMessage: function(labwareInputModel, position, labware) {
+          return "The scanned labware was not included in the current batch, so it cannot be used as input.";
         }
-        else {
-          defer.resolve(labware);
+      },
+      isCorrectLabwareType: {
+        checkMethod: function(labwareInputModel, position, labware) {
+          labwareInputModel = labwareInputModel["labware"+(position+1)];
+          return (labware.resourceType === labwareInputModel.expected_type);
+        },
+        errorMessage: function(labwareInputModel, position, labware) {
+          labwareInputModel = labwareInputModel["labware"+(position+1)];
+          return ["Expected a '", 
+                  labwareInputModel.expected_type, 
+                  "' barcode but scanned a '",
+                  labware.resourceType,
+       "' instead"].join('');
         }
+      }
+    };
+        
+    function labwareValidation(/* fixed */ validations, labwareInputModel, position, labware) {
+      var defer = new $.Deferred();
+      var validationWithError = _.find(validations, function(validation) {
+        return (!validation.checkMethod(labwareInputModel, position, labware));
+      });
+      if (_.isUndefined(validationWithError)) {
+        defer.resolve(labware);
       } else {
-        defer.reject(["Expected a '", 
-                      labwareInputModel.expected_type, 
-                      "' barcode but scanned a '",
-                      labware.resourceType,
-           "' instead"].join(''));
+        defer.reject(validationWithError.errorMessage(labwareInputModel, position, labware));
       }
       return defer;
     }
@@ -33,55 +61,58 @@ define([ "app-components/linear-process/linear-process",
     function bedValidation(barcode) {        
       var defer = $.Deferred();
       robotScannedPromise.then(function(robot) {
-        var validBedsList = robot.getValidBeds();
-        var pos = _.indexOf(validBedsList, barcode);
-        if (pos>=0) {
+        if (robot.isValidBedBarcode(barcode)) {
           defer.resolve(barcode);
         } else {
-          defer.reject();
-          PubSub.publish("error.status.s2", undefined, 
-            {message: ["Incorrect bed barcode"].join('')});
+          defer.reject("Incorrect bed barcode");
         }
       });
       return defer;
     }
-    
-    context.plateValidations = context.plateValidations || 
-        [ _.partial(labwareValidation, context.model.labware1, 0),
-          _.partial(labwareValidation, context.model.labware2, 1)];
-    
-    context.bedValidations = context.bedValidations || [ bedValidation, bedValidation];
-    
-    
-    function buildBedRecording(context, list) {
-      return list[list.push(bedRecording(context))-1];
+
+    if (_.isUndefined(context)) {
+      context = {};
     }
-    var componentsList=[];
+    
+    context.labwareValidations = [Validations.isInCurrentBatch, 
+                                  Validations.isCorrectLabwareType].concat(context.labwareValidations || []);
+    context.plateValidations = context.plateValidations || _.chain(context.model).keys().sort().map(function(key, pos) {
+      return _.partial(labwareValidation, context.labwareValidations, context.model, pos);
+    }).value();
+    context.bedValidations = context.bedValidations || _.map(_.keys(context.model), function(key) {
+      return bedValidation;
+    });
+    context.maxBeds = context.maxBeds || context.plateValidations.length || 2;
+    
+    function buildBedRecordingList(context) {
+      var list=[];
+    
+      _.times(context.maxBeds, function(i) {
+        list.push({ 
+          constructor: _.partial(bedRecording, _.extend({
+            cssClass: ((i%2)===0)?"left":"right", 
+            position: i,
+            model: (context.model && context.model["labware" + (i + 1)]) || null,
+            notMessage: true,
+            recordingValidation: function() {return arguments;},
+            bedValidation: context.bedValidations[i],
+            plateValidation: (context.plateValidations && context.plateValidations[i]) || _.identity
+          }, context))
+        });        
+      });
+      
+      return list;
+    }
+    
+    var componentsList = buildBedRecordingList(context);
     var obj = linearProcess({
-      components: [{ constructor: _.partial(buildBedRecording, _.extend({
-        cssClass: "left", 
-        position: 0,
-        model: context.model.labware1,
-        notMessage: true,
-        recordingValidation: function() {return arguments;},
-        bedValidation: context.bedValidations[0],
-        plateValidation: context.plateValidations[0]
-      }, context), componentsList) },
-      { constructor: _.partial(buildBedRecording, _.extend({
-        cssClass: "right", 
-        position: 1, 
-        model: context.model.labware2,
-        notMessage: true,
-        recordingValidation: function() {return arguments;},
-        bedValidation: context.bedValidations[1],
-        plateValidation: context.plateValidations[1]
-      }, context), componentsList) } ]
+      components: componentsList
     });
 
     $("input", obj.view).prop("disabled", "true");
 
     var bedVerificationPromises =
-    _.map(componentsList, function(component) {
+    _.map(obj.components, function(component) {
       var promise = $.Deferred();
       component.view.on("scanned.bed-recording.s2", function(robot, bedBarcode,
         plateResource) {
@@ -111,7 +142,7 @@ define([ "app-components/linear-process/linear-process",
 
       return defer;
     }
-    
+    obj.view.addClass("bed-verification");
     obj.view.on("error.bed-recording.s2", function() {
       obj.view.trigger("error.bed-verification.s2");
     });
@@ -126,17 +157,20 @@ define([ "app-components/linear-process/linear-process",
         obj.view.trigger("error.bed-verification.s2");
       });
     
-    $(document.body).on(context.robotScannedEvent || "scanned.robot.s2", _.partial(function(promise, event, robot) {
-      promise.resolve(robot);
-    }, robotScannedPromise));
+    obj.resetRobot = function() {
+      robotScannedPromise.then(function(robot) {
+        robot.resetSelectedRobot();
+      });
+    };
     
     obj.toObj = function() {
-      return [ obj.components[0].toObj(), obj.components[1].toObj()];
+      return _.pluck(obj.components, "toObj");
     };
     
     obj.fromObj = function(data) {
-      obj.components[0].fromObj(data[0]);
-      obj.components[1].fromObj(data[1]);
+      _.map(_.zip(obj.components, data), function(pair) {
+        return pair[0].fromObj(pair[1]);
+      });
     };
     
     return obj;

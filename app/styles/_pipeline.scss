@@ -4,6 +4,28 @@ header {
 
 #alertContainer {
   min-height: 4em;
+  
+  width: 100%;
+  .alert {
+    margin: 0.5em auto;
+    width: 80%;
+  }
+}
+
+.selection-button-footer {
+  position: fixed;
+  bottom: 0.5em;
+  left: 0;
+  width: 100%;
+  div {
+    width: 90%;
+    margin: 0 auto 0 auto;
+  }
+}
+
+.affix {
+  top: 0;
+  z-index: 1000;
 }
 
 ol.labware-selection {

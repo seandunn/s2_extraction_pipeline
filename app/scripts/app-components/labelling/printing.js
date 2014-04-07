@@ -46,7 +46,8 @@ define([
         "filter.print.s2": _.bind(html.filter, view),
         "activate.s2":     $.stopsPropagation($.ignoresEvent(_.partial(disable, false, printer, button))),
         "deactivate.s2":   $.stopsPropagation($.ignoresEvent(_.partial(disable, true, printer, button)))
-      }
+      },
+      print: print
     };
 
     function disable(state) {

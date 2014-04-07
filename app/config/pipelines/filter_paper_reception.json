@@ -1,7 +1,10 @@
 {
   "role_priority": [
     "samples.extraction.lysing_dna_and_rna.filter_paper.awaiting_reception",
-    "samples.extraction.lysing_dna_and_rna.filter_paper"
+    "samples.extraction.lysing_dna_and_rna.filter_paper",
+    "samples.extraction.rack.bio_robot_dna_and_rna",
+    "samples.extraction.lysing.blood.biorobot.batched",
+    "samples.extraction.lysing.blood.biorobot.lysed"
   ],
   "workflows": [
     {
@@ -36,6 +39,68 @@
           "model": "tubes"
         }
       ]
-    }
+    },
+    {
+      "accepts": "samples.extraction.rack.bio_robot_dna_and_rna",
+      "controllerName": "selection_page_controller",
+      "processTitle": "Receive Tubes - Batch for Blood Lysing",
+      "capacity": 4,
+      "input": {
+        "role": "samples.extraction.rack.bio_robot_dna_and_rna",
+        "model": "tube_racks",
+        "attributes":  {
+          "number_of_rows": 6,
+          "number_of_columns": 4
+        }        
+      },
+      "output": [
+        {
+          "role":       "samples.extraction.lysing.blood.biorobot.batched"
+        }
+      ]
+    },
+    {
+      "accepts":        "samples.extraction.lysing.blood.biorobot.batched" ,
+      "controllerName": "steplinear_controller",
+      "printerType": 1,
+      "defaultPrinter":"d304bc",
+      "buttons": [{ "action": "print", "title": "Print Destination Plate Barcode", "alwaysEnabled": true },
+                  { "action": "start", "title": "Start Biorobot" },
+                  { "action": "end",   "title": "Finish Biorobot" },
+                  { "action": "reload",  "title": "Done" }
+      ],
+      "processTitle":  "Biorobot - Blood Extraction",
+      "controllers": [
+      {
+        "controllerName": "robot_controller",
+        "group": "biorobot",
+        "barcode": "4880001006869"
+      },      
+      {
+        "controllerName":   "linear_controller",
+        "behaviours": {
+          "start": "start",
+          "operate": "start",
+          "complete": "end",
+          "done": "next",
+          "outputs": "print"
+        },
+        "rowBehaviour":  "bedVerification",
+        "input": {
+          "role":  "samples.extraction.lysing.blood.biorobot.batched",
+          "model": "tube_racks",
+          "title": "Tube rack",
+          "bedTracking": true
+        },
+        "output": [{
+          "role": "samples.extraction.lysing.blood.biorobot.lysed",
+          "aliquotType":  "DNA",
+          "purpose":     "stock",
+          "model":       "plates",
+          "title":      "Plate",
+          "bedTracking": true
+        }]
+      }]
+    }    
   ]
 }

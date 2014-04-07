@@ -97,9 +97,9 @@ define([
             rowController.setupController(model.getRowModel(root,index, input, inputs), selectorFunction(model.owner, index));
             // This functionality (setupInputControllers) has been incorrectly placed in the
             // model. This must go out of here.
-            rowController.on("completedRow", _.bind(function() {
-              this.emit("completedRow", rowController);
-            }, this));            
+            rowController.on("inputBarcodeScanned", _.bind(this.emit, this, "inputBarcodeScanned", rowController));
+            rowController.on("outputBarcodeScanned", _.bind(this.emit, this, "outputBarcodeScanned", rowController));
+            rowController.on("completedRow", _.bind(this.emit, this, "completedRow", rowController));
             return rowController;
           }, this))
           .value();
@@ -189,7 +189,10 @@ define([
       }
     },
 
-    createOutputs: function(printer) {
+    /**
+     * isSharedOutput - True if the output is shared for all the inputs (only 1 group of labels)
+     */
+    createOutputs: function(printer, /* optional */ isSharedOutput) {
       var model = this;
       this.behaviours.outputs.print(function() {
 
@@ -198,7 +201,9 @@ define([
           model.inputs.then(function(inputs) {
             var labels = [];
             var outputsCreated = [];
-
+            if (isSharedOutput) {
+              inputs = [_.first(inputs)];
+            }
             var promises = _.chain(inputs)
             .map(function(input) {
               // For each input we have to create a number of outputs.  These outputs are effectively
@@ -300,11 +305,11 @@ define([
       });
     }, // end of createOutputs
 
-    operate: function(happeningAt, controllers) {
+    operate: function(happeningAt, controllers, /* optional */ beginPositionToPopulate) {
       var model = this;
       var s2root;
 
-      this.owner.getS2Root().then(function (result) {
+      return this.owner.getS2Root().then(function (result) {
         // STEP 1: We're going to need the root later!
         s2root = result;
         return result;
@@ -341,6 +346,7 @@ define([
               // if not_batch === true -> undefined
               // if not_batch === false -> model.batch.uuid
               // if not_batch === undefined -> model.batch.uuid
+              
               var batchUUID = (!model.config.output[index].not_batched) ? model.batch.uuid : undefined;
               return {
                 input: {
@@ -368,6 +374,39 @@ define([
               // If we are using something plateLike then prepare multiple transfers
               // for each well, tube or window (this will overwrite the original
               // transfer.
+              
+              if (beginPositionToPopulate) {
+                var destination = _.drop(arguments, 1)[0];
+                var destinationKeys = [];
+                var letter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
+                for (var j=0; j<destination.number_of_columns; j++) {
+                  for (var i=0; i<destination.number_of_rows; i++) {
+                    destinationKeys.push(letter[i]+(j+1));
+                  }
+                }
+                
+                var posDestination = _.indexOf(destinationKeys, beginPositionToPopulate);
+                transferDetails = _.chain(destinationKeys)
+                .intersection(_.keys(source.tubes || source.windows || source.wells))
+                .reduce(function(memo, location){
+                  memo.push({
+                    input:            transferDetails[0].input,
+                    output:           transferDetails[0].output,
+                    aliquot_type:     transferDetails[0].aliquot_type,
+                    source_location:  location,
+                    target_location:  destinationKeys[posDestination],
+                    amount:           2000 // 2000nl Currently only used by working
+                                            // dilution creation but needs to be
+                                            // moved to config file.
+                  });
+                  posDestination=posDestination+1;
+                  beginPositionToPopulate = destinationKeys[posDestination];                  
+                return memo;
+              }, [])
+              .value();
+                
+              } else {
+              
               transferDetails = _
               .chain(source.tubes || source.windows || source.wells)
               .keys()
@@ -386,7 +425,7 @@ define([
               return memo;
             }, [])
             .value();
-
+              }
             }
             memo.push(transferDetails);
           });
@@ -469,7 +508,7 @@ define([
         return operation;
       }).then(function(operation) {
         // STEP 6: Finally perform the operation and report the final completion
-        operation.operation().then(function () {
+        return operation.operation().then(function () {
           model.emit("successfulOperation", controllers);
         }).fail(function() {
           model.emit("failedOperation", {});

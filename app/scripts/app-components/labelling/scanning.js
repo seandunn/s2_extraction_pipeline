@@ -15,6 +15,7 @@ define([
   }
   
   return function (context) {
+    context = context || {};
     var html  = template(_.extend({
       label: undefined,
       icon: undefined
@@ -56,10 +57,10 @@ define([
       events:{
         "reset.s2": _.bind(html.reset, html),
         "reset_view.reception.s2": _.bind(html.reset, html),
-        "activate.s2": $.haltsEvent($.ignoresEvent(_.partial(_.bind(barcode.prop, barcode), "disabled", false))),
+        "activate.s2": $.haltsEvent($.ignoresEvent(_.bind(barcode.prop, barcode, "disabled", false))),
         "deactivate.s2": _.wrap(function(func) {
           return func();
-        }, $.haltsEvent($.ignoresEvent(_.partial(_.bind(barcode.prop, barcode), "disabled", true)))),
+        }, $.haltsEvent($.ignoresEvent(_.bind(barcode.prop, barcode, "disabled", true)))),
         "focus": $.haltsEvent($.ignoresEvent(_.bind(barcode.focus, barcode)))
       },
       setBarcode: function(brc) {
@@ -68,8 +69,14 @@ define([
       getBarcode: function() {
         return this.barcode;
       },
+      enable: function() {
+        barcode.attr("disabled", false);
+      },
       disable: function() {
         barcode.attr("disabled", true);
+      },
+      reset: function() {
+        barcode.val("").prop("disabled", false);
       }
     };
     

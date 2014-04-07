@@ -39,7 +39,9 @@ define([
             PubSub.publish("error.status.s2", this, error);
             this.jquerySelection().trigger("end_process.busybox.s2");
           }, this)).then(_.bind(function(){
-            this.jquerySelection().html(this.template({nbRow:12}));
+            // TODO:
+            // This 96 MUST be read from pipeline config
+            this.jquerySelection().html(this.template({nbRow:96}));
             this.setupSubControllers();
           }, this));
       this.attachHandlers();
@@ -56,7 +58,9 @@ define([
         "barcodePrintFailure": _.bind(this.owner.onBarcodePrintFailure, this.owner),
         "inputRemoved": _.bind(this.onInputRemoved, this),
         "outputRemoved": _.bind(this.onOutputRemoved, this),
-        "completedRow": _.bind(this.onCompletedRow, this)
+        "completedRow": _.bind(this.onCompletedRow, this),
+        "inputBarcodeScanned": _.bind(this.onInputBarcodeScanned, this),
+        "outputBarcodeScanned": _.bind(this.onOutputBarcodeScanned, this)
       });
     },
     
@@ -128,22 +132,29 @@ define([
       }
     },
 
-    unknownDone:function (child, action, data) {
-      var originator = data.origin, controller = this;
-      if (action === 'inputBarcodeScanned') {
-        controller.model.inputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
-          controller.model.inputs.pull(resource);
-        }).done(function() {
-          controller.focus();
-        });
-      } else if (action === 'outputBarcodeScanned') {
-        controller.model.outputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
-          controller.model.outputs.pull(resource);
-        }).done(function() {
-          controller.focus();
-        });
-      }
+    onInputBarcodeScanned: function(controller, data) {
+      var originator = data.origin, controller = this, promise = data.promise;
+      
+      this.model.inputs.getByBarcode(originator, data.modelName, data.BC)
+      .then(promise.resolve, promise.reject)
+      .done(_.bind(function(resource) {
+        this.model.inputs.pull(resource);
+      }, this)).done(_.bind(function() {
+        this.focus();
+      }, this));      
     },
+    
+    onOutputBarcodeScanned: function(controller, data) {
+      var originator = data.origin, controller = this, promise = data.promise;
+      
+      this.model.outputs.getByBarcode(originator, data.modelName, data.BC)
+        .then(promise.resolve, promise.reject).done(_.bind(function(resource) {
+          this.model.outputs.pull(resource);
+        }, this)).done(_.bind(function() {
+          this.focus();
+        }, this));      
+    },
+    
     onInputRemoved: function() {
       this.model.inputs.push(data.resource);
       this.emit("inputRemoved");
@@ -162,7 +173,11 @@ define([
     
     transferCompleted: function() {
       this.model.behaviours.done.transfer(_.bind(function() {
-        this.owner.childDone(this, "done", { batch:this.model.batch });
+        this.emit("controllerDone", {
+          batch: this.model.batch,
+          user: this.owner.config.login,
+          scanNewIfNotFound: true
+        });
       }, this));
       
       this.emit("transferCompleted");      
@@ -215,11 +230,7 @@ define([
     },
 
     next:  function(){
-      var controller = this;
-      this.model.behaviours.done.next(
-        function(){ controller.owner.childDone(controller, 'done'); },
-        _.bind(actionOperation, this, "next")
-      )
+      return actionOperation.call(this, "next");
     },
 
     start: _.partial(actionOperation, "start"),
@@ -232,10 +243,11 @@ define([
     if (this.checkPageComplete()) {
       this.model.operate(action, this.rowControllers);
       this.model.behaviours.done[action](_.bind(function() {
-        this.owner.childDone(this, "done", {
+        this.emit("controllerDone", {
           batch: this.model.batch,
-          user: this.owner.config.login
-        });
+          user: this.owner.config.login,
+          scanNewIfNotFound: true
+        })
       }, this));
     }
   }

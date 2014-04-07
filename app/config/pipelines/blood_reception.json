@@ -1,11 +1,11 @@
 {
   "role_priority": [
+    "samples.shipping.blood_!na.awaiting_shipping.awaiting_reception",
     "samples.shipping.blood_!na.awaiting_shipping",
     "samples.shipping.blood_!na.awaiting_shipping.batched",
     "samples.extraction.lysing.prelysing.blood.awaiting_reception",
     "samples.extraction.lysing.prelysing.blood",
-    "samples.extraction.lysing.prelysing.blood.batched",
-    "samples.extraction.lysing.blood"
+    "samples.extraction.lysing.prelysing.blood.batched"
   ],
   "workflows": [
     {
@@ -44,6 +44,7 @@
     {
       "accepts": "samples.extraction.lysing.prelysing.blood.batched",
       "controllerName": "step_controller",
+      "capacity": 96,
       "printerType": 2,
       "buttons": [
         {
@@ -74,7 +75,7 @@
           },
           "output": [
             {
-              "role": "samples.extraction.lysing.blood",
+              "role": "samples.extraction.qiacube_dna_only.input_tube_blood",
               "model": "tubes",
               "purpose": "stock",
               "title": "Blood tube",
@@ -85,24 +86,25 @@
         }
       ]
     },
-    {
-      "accepts": "samples.extraction.lysing.blood",
-      "controllerName": "selection_page_controller",
-      "processTitle": "Receive Tubes - Batch for Blood Lysing",
-      "capacity": 96,
+    { 
+      "accepts": "samples.shipping.blood_!na.awaiting_shipping.awaiting_reception",
+      "controllerName":"selection_page_controller",
+      "processTitle": "Sample Shipping - Reception",
       "input": {
-        "role": "samples.extraction.lysing.blood",
+        "role": "samples.shipping.blood_!na.awaiting_shipping.awaiting_reception",
         "model": "tubes"
       },
       "output": [
         {
-          "role": "samples.extraction.qiacube_dna_only.input_tube_dnap.batched"
+          "role": "samples.shipping.blood_!na.awaiting_shipping",
+          "model": "tubes",
+          "not_batched": true
         }
       ]
     },
     {
-      "accepts": "samples.shipping.blood_!na.awaiting_shipping",
-      "controllerName": "selection_page_controller",
+      "accepts":  "samples.shipping.blood_!na.awaiting_shipping" ,
+      "controllerName":"selection_page_controller",
       "processTitle": "Sample Shipping - Batching",
       "input": {
         "role": "samples.shipping.blood_!na.awaiting_shipping",

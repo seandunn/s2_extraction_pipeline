@@ -87,7 +87,8 @@ define([
           if (this.isRowComplete() && (subController === this.editableControllers().last().value())) {
             this.emit("completedRow", this);
           }
-        }, this, subController));        
+        }, this, subController));
+        subController.on("barcodeScanned", _.bind(this.onBarcodeScanned, this));
         return subController;
       }, this));
 
@@ -147,9 +148,14 @@ define([
         child.setupController(this.rowModel.labwares['labware' + (this.controllers.value().indexOf(child) + 1)], child.jquerySelection);
         child.renderView();
         this.owner.childDone(this, eventPrefix+'Removed', data);
-      } else if (action === "barcodeScanned") {
-        var eventPrefix = child.labwareModel.input ? 'input' : 'output';
-        this.owner.childDone(this, eventPrefix+'BarcodeScanned', data);
+      }
+    },
+    
+    onBarcodeScanned: function(data) {
+      if (data.typeBarcode==="input") {
+        this.emit("inputBarcodeScanned", data);
+      } else {
+        this.emit("outputBarcodeScanned", data);
       }
     },
 

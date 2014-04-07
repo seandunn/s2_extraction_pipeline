@@ -13,56 +13,50 @@ define(["config","event_emitter","lib/barcode_checker","lib/util"],
       this.jquerySelection = jquerySelection;
       return this;
     },
-
+    
     bindReturnKey: function (element, successCallback, errorCallback, validationCallback) {
-      var thisController = this;
-
-      function setScannerTimeout(barcodeSelection){
-        setTimeout(function () {
-          barcodeSelection.val('');
-        }, 250);
-      }
-
-      return element.on("keydown", "input", buildProcessKeyInput(element, successCallback, errorCallback) );
       
-      function buildProcessKeyInput(element, callback, errorCallback) {
-        return function(event)
-        {
-          var states = {
-            13: /* CR_KEY  */ processCompletedInput,
-            9:  /* TAB_KEY */ processCompletedInput
-          };
-          return (states[event.which] || doNothing)(event);
-          
-          function doNothing(event) { 
-            return;
-          }
-        
-          function processCompletedInput(event)
-          {
-            event.preventDefault();
-
-            var value = event.currentTarget.value;
-            if (value.match(/\d{12}/))
-              {
-                value = Util.pad(value);
-              }
-            var barcodeSelection = $(event.currentTarget);
-            //setScannerTimeout(barcodeSelection);
-
-            validationCallback = validationCallback || function(barcode) { 
-              return _.some(BarcodeChecker, function (validation) {
-                return validation(Util.pad(value));
-              });
-            };
-            (validationCallback(value)? callback : _.wrap(errorCallback, function(fun) {
-              setScannerTimeout(barcodeSelection);
-              return fun();
-            }))(value, element, thisController);        
-          
-          }
-        };
+      function delayedEmptyInput(input) {
+        setTimeout(function () {
+          $(input).val('').attr("disabled", false).focus();
+        }, 250);      
       }
+      
+      var input = $("input", element);
+      return element.on("keyup", input, _.bind(function(event) {
+        if ((event.which === 13) || (event.which === 9)) {
+          var value = input.val();
+          if (validationCallback(value)) {
+            $(input).val('').attr("disabled", true);
+            var processInput = _.bind(function() {
+              var promise = successCallback.call(this, value, element, this);
+              if (promise && !_.isUndefined(promise.fail)) {
+                this._promiseInProgress = promise;                
+                promise.then(_.bind(function() {
+                  this._promiseInProgress = null;
+                }, this), _.bind(function() {
+                  this._promiseInProgress = null;
+                  delayedEmptyInput(input);
+                }, this));
+              }
+            }, this)
+            /*
+             * As the workflow of this handler makes uses of promises, it could be possible that
+             * two promises executed in parallel validate the same piece of labware twice, inserting
+             * it twice in the interface too. To avoid this, we will not execute validation processes in
+             * parallel, as the validation is not an idempotent operation.
+             */
+            if (!!this._promiseInProgress) {
+              this._promiseInProgress.done(processInput);
+            } else {
+              processInput();
+            }
+          } else {
+            errorCallback(value, element, this);
+            delayedEmptyInput(input)
+          }
+        }
+      }, this));
     },
 
     printerList: function(workflowConfig) {

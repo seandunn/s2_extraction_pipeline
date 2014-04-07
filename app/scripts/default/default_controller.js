@@ -21,6 +21,8 @@ define(["config"
   };
 
   var labwareCallback = function(value, template, controller){
+    var deferred = new $.Deferred();
+    
     template.find("input").attr("disabled", true);
     template.find('.alert-error').addClass('hide');
 
@@ -29,17 +31,21 @@ define(["config"
     if (value.match(/\d{12}/)) {
       value = Util.pad(value);
     }
-
+    
+    
     PromiseTracker(controller.model.setLabwareFromBarcode(value))
       .fail(function (error) {
+        deferred.reject(null);
         PubSub.publish("error.status.s2", controller, error);
         controller.labwareBCSubController.hideProgress();
       })
       .afterThen(function(tracker) {
         controller.labwareBCSubController.updateProgress(tracker.thens_called_pc());
       })
-      .then(login)
+      .then(login).then(deferred.resolve, deferred.reject);
 
+    return deferred; 
+    
     function login(model){
       if (model.labware !== undefined){
         controller.owner.updateModel(model);

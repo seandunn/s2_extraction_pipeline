@@ -9,6 +9,7 @@ define([
 
   // Controllers that add extra behaviour, for some reason
   "controllers/kit_controller",
+  "controllers/linear_controller",
   "controllers/robot_controller",
   "controllers/rack_scan_controller",
   "controllers/selection_page_controller",
@@ -21,7 +22,9 @@ define([
   // Component wrapping controllers
   "app-components/labware/display_controller_wrapper",
   "app-components/lysing/lysing_controller_wrapper",
-  "app-components/imager/imager_controller"
+  "app-components/imager/imager_controller",
+  "app-components/manual-racking/manual-racking-controller",
+  "app-components/controllers/step_controller"
 ], function() {
   "use strict";
 

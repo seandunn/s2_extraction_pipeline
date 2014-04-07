@@ -1,0 +1,51 @@
+{
+  "role_priority": [
+    "samples.extraction.bio_robot_dna_and_rna.input_tube_nap"
+  ],
+  "workflows": [
+    {
+      "accepts": "samples.extraction.bio_robot_dna_and_rna.input_tube_nap",
+      "controllerName": "manual-racking",
+      "processTitle": "Biorobot - Racking",
+      "defaultPrinter": "d304bc",
+      "printerType": 1,
+      "buttons": [
+        {
+          "action": "print",
+          "title": "Print label",
+          "icon": "icon-print"
+        },
+        {
+          "action": "reset",
+          "title": "Reset"
+        },
+        {
+          "action": "accept",
+          "title": "Accept rack layout"
+        },
+        {
+          "action": "done",
+          "title": "Done"
+        }
+      ],
+      "input": {
+        "role": "samples.extraction.bio_robot_dna_and_rna.input_tube_nap",
+        "model": "tubes",
+        "title": "Filter Paper Tube"
+      },
+      "output": [
+        {
+          "role": "samples.extraction.rack.bio_robot_dna_and_rna",
+          "aliquotType": "blood",
+          "purpose": "stock",
+          "attributes": {
+            "number_of_rows": 4,
+            "number_of_columns": 6
+          },
+          "model": "tube_rack",
+          "title": "Tube Rack"
+        }
+      ]
+    }
+  ]
+}

@@ -57,7 +57,7 @@ define([
     },
 
     aPressReturnEvent: function () {
-      return jQuery.Event("keydown", {which: 13});
+      return jQuery.Event("keyup", {which: 13});
     }
   };
 });

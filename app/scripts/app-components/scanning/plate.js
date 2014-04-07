@@ -38,18 +38,18 @@ define([ "text!app-components/scanning/_plate.html",
       });
     };
     
-    obj.view.trigger("display.labware.s2", representer(context.labware));
+    obj.view.trigger("display.labware.s2", context.labware);
 
     
     obj.renderDisplay = function(barcode) {
       fetch(barcode).then(function(labware) {
-        obj.view.trigger(LABWARE_DISPLAY, representer(labware));
+        obj.view.trigger(LABWARE_DISPLAY, labware);
       });
     };
     
     obj.view.on(SCANNED_BARCODE, $.ignoresEvent(function(barcode) {
       fetch(barcode).then(validation, _.partial(notFound, barcode)).then(function(labware) {
-        obj.view.trigger(LABWARE_DISPLAY, representer(labware));
+        obj.view.trigger(LABWARE_DISPLAY, labware);
         return labware;
       }).then(function(labware) {
         obj.view.trigger(PLATE_SCANNED, labware);
@@ -57,7 +57,9 @@ define([ "text!app-components/scanning/_plate.html",
         return true;
       }).fail(function(msg) { 
         $('input', obj.view).val('');
-        PubSub.publish("error.status.s2", undefined, {message: msg});
+        if (msg) {
+          PubSub.publish("error.status.s2", undefined, {message: msg});
+        }
         });
     }));
     return obj;
