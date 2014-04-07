@@ -48,10 +48,10 @@
       "friendlyName": "Workflow",
       "type":       "select",
         "options": [
-          "Bio Robot Lysing & Extraction",
+          "QIAcube Lysing & Extraction",
           "Send to New Location"
         ],
-      "default":    "Bio Robot Lysing & Extraction"
+      "default":    "QIAcube Lysing & Extraction"
     }
   }
 ]
