@@ -156,9 +156,14 @@ define([
 
   function createDoneHandler(html, doneHandler) {
     return function(event, doneView) {
-      event.stopPropagation();
+      
       // If I triggered this done event
-      if (html[0] === doneView) return true;
+      if (html[0] === doneView) {
+        if (window._STOP_EVENT_LINEAR) {
+          event.stopPropagation();
+        }
+        return true;
+      }
       // After the last transition, the linear process will trigger a done event to
       // upper level
       doneHandler = doneHandler || function() {};

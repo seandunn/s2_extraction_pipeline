@@ -6,7 +6,7 @@ define([ "config",
          "app-components/scanning/bed-verification"], 
          function(config, EventEmitter, Base, PrintController, ProcessController, BedVerification) {
   /* Model */
-  
+    
   function Inputs() {
     $.extend(this, new EventEmitter());    
     this._events = ["inputLoaded", "inputsCompleted"];
@@ -102,6 +102,7 @@ define([ "config",
   };
   
   View.prototype.startScanning = function() {
+    window._STOP_EVENT_LINEAR = true;    
     this._bedVerification.view.trigger("activate");
   };
   
