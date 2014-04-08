@@ -17,7 +17,7 @@ define([ "text!app-components/scanning/_plate.html",
     var labware = labwareDisplay({});
     html.find(".labware").append(labware.view);
     var obj = labwareScanner(
-      { label : "Scan plate barcode"
+      { label : context.plateInputText || "Scan plate barcode"
       });
     obj.view.append(html);
     obj.view.on(labware.events);

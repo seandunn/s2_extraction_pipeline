@@ -45,10 +45,10 @@ requirejs([
   "spec/selection_page_model_spec",
   "spec/selection_page_spec",
   "spec/util_spec",
-  "spec/racking_behaviour_spec"
+  "spec/racking_behaviour_spec",
+  "spec/layouts/biorobot_spec"
 ], function () {
   "use strict";
-  
   _.templateSettings.variable = "templateData";
   
   mocha.run();
