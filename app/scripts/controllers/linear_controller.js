@@ -73,7 +73,8 @@ define([ "config",
   View.prototype.renderInputs = function(inputs) {
     return inputs.getBedVerificationModel().then(_.bind(function(bedVerificationModel) {
       this._bedVerification = new BedVerification({
-        model: bedVerificationModel
+        model: bedVerificationModel,
+        plateInputText: "Scan rack barcode"
       });
       $("#step2").append(this._bedVerification.view)
         .on(this._bedVerification.events)

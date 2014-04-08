@@ -43,7 +43,7 @@
     {
       "accepts": "samples.extraction.rack.bio_robot_dna_and_rna",
       "controllerName": "selection_page_controller",
-      "processTitle": "Receive Tubes - Batch for Blood Lysing",
+      "processTitle": "Batching for Biorobot",
       "capacity": 4,
       "input": {
         "role": "samples.extraction.rack.bio_robot_dna_and_rna",
