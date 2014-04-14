@@ -6,7 +6,7 @@ define([ "config",
          "app-components/scanning/bed-verification"], 
          function(config, EventEmitter, Base, PrintController, ProcessController, BedVerification) {
   /* Model */
-  
+    
   function Inputs() {
     $.extend(this, new EventEmitter());    
     this._events = ["inputLoaded", "inputsCompleted"];
@@ -73,7 +73,8 @@ define([ "config",
   View.prototype.renderInputs = function(inputs) {
     return inputs.getBedVerificationModel().then(_.bind(function(bedVerificationModel) {
       this._bedVerification = new BedVerification({
-        model: bedVerificationModel
+        model: bedVerificationModel,
+        plateInputText: "Scan rack barcode"
       });
       $("#step2").append(this._bedVerification.view)
         .on(this._bedVerification.events)
@@ -101,6 +102,7 @@ define([ "config",
   };
   
   View.prototype.startScanning = function() {
+    window._STOP_EVENT_LINEAR = true;    
     this._bedVerification.view.trigger("activate");
   };
   

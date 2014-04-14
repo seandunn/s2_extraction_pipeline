@@ -305,7 +305,7 @@ define([
       });
     }, // end of createOutputs
 
-    operate: function(happeningAt, controllers, /* optional */ beginPositionToPopulate) {
+    operate: function(happeningAt, controllers, /* optional */ layoutDistributionMethod) {
       var model = this;
       var s2root;
 
@@ -329,7 +329,7 @@ define([
 
         return _
         .chain(controllers)
-        .reduce(function(memo, controller) {
+        .reduce(function(memo, controller, posController) {
           controller.handleResources(function(source) {
             var isSameInputToOutput = false;
             if ((source === arguments[1]) && (arguments.length===2)) {
@@ -374,37 +374,25 @@ define([
               // If we are using something plateLike then prepare multiple transfers
               // for each well, tube or window (this will overwrite the original
               // transfer.
-              
-              if (beginPositionToPopulate) {
-                var destination = _.drop(arguments, 1)[0];
-                var destinationKeys = [];
-                var letter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
-                for (var j=0; j<destination.number_of_columns; j++) {
-                  for (var i=0; i<destination.number_of_rows; i++) {
-                    destinationKeys.push(letter[i]+(j+1));
-                  }
-                }
+              if (layoutDistributionMethod) {
+                transferDetails = _.chain(source.tubes || source.windows || source.wells).keys().reduce(function(memo, location){
+                  var targetDestinationLocation = layoutDistributionMethod(
+                    source, _.drop(arguments, 1), posController, location
+                  );
                 
-                var posDestination = _.indexOf(destinationKeys, beginPositionToPopulate);
-                transferDetails = _.chain(destinationKeys)
-                .intersection(_.keys(source.tubes || source.windows || source.wells))
-                .reduce(function(memo, location){
                   memo.push({
                     input:            transferDetails[0].input,
                     output:           transferDetails[0].output,
                     aliquot_type:     transferDetails[0].aliquot_type,
                     source_location:  location,
-                    target_location:  destinationKeys[posDestination],
+                    target_location:  targetDestinationLocation,
                     amount:           2000 // 2000nl Currently only used by working
                                             // dilution creation but needs to be
                                             // moved to config file.
                   });
-                  posDestination=posDestination+1;
-                  beginPositionToPopulate = destinationKeys[posDestination];                  
-                return memo;
-              }, [])
-              .value();
-                
+                  return memo;
+                }, []).value();
+               
               } else {
               
               transferDetails = _

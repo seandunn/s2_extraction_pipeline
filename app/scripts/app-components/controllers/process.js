@@ -1,4 +1,4 @@
-define([], function() {
+define(["app-components/layouts/biorobot"], function(biorobotLayout) {
   'use strict';
   
   return $.extend({}, {
@@ -31,8 +31,9 @@ define([], function() {
     }
   });
   
+  
   function actionOperation(action) {
-    this.model.operate(action, this.getRowsConnectedForOperations(), "A1").then(_.bind(function() {
+    this.model.operate(action, this.getRowsConnectedForOperations(), biorobotLayout.layoutDistribution).then(_.bind(function() {
       if (action==="start") {
         this.emit("processBegin");
         this.emit("transferStarted");
