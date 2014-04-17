@@ -32,9 +32,9 @@ define([
       },
 
       studies: {
-        SIGhum: {
-          friendly_name: "SIGhum",
-          sanger_sample_id_core: "SIGhum"
+        SIGhumbio: {
+          friendly_name: "SIGhumbio",
+          sanger_sample_id_core: "SIGhumbio"
         }
       },
 
