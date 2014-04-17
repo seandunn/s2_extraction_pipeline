@@ -59,11 +59,22 @@ define([
           friendly_name: "QC2Hmgp",
           sanger_sample_id_core: "QC2Hmgp"
         },
-        SIGhum: {
-          friendly_name: "SIGhum",
-          sanger_sample_id_core: "SIGhum"
+        SIGhumeb: {
+          friendly_name: "SIGhumeb",
+          sanger_sample_id_core: "SIGhumeb"
         },
-        
+        SIGhumqc: {
+          friendly_name: "SIGhumqc",
+          sanger_sample_id_core: "SIGhumqc"
+        },
+        SIGhumips: {
+          friendly_name: "SIGhumips",
+          sanger_sample_id_core: "SIGhumips"
+        },
+        SIGhumsc: {
+          friendly_name: "SIGhumsc",
+          sanger_sample_id_core: "SIGhumsc"
+        },        
         CGaPSSV: {
           friendly_name: "CGaP Validation",
           sanger_sample_id_core: "CGaPSSV"
