@@ -59,8 +59,23 @@ define([
             deferred.reject({message: "Couldn't load the batch resource"});
           })
           .then(function () {
-            // TODO: This must be changed again to setupOutputs() as soon as possible
-            return setupOutputs__WITH_ORDERS(thisModel);
+            // FIXME: 
+            // When the outputs are not in a batch (because maybe they need to be solved
+            // individually in next steps) we have the problem that we don't know to which inputs
+            // are they connected. At now we know the connection between inputs and outputs by using
+            // the batch that both belong (a really bad assumption).
+            // A possible solution/workaround could have been to add all outputs to the same batch as the inputs on
+            // start event, and then remove them from the batch on the End event. Unfortunately this can't be
+            // done with actual server side implementation (we can't change anything inside a batch).
+            // The actual solution is even worst. We get all the items with status "in_progress" from the order
+            // both belongs, and that are the items that we consider as outputs. Obviously this will collide with
+            // anything "in_progress" in the same order, and this cannot be solved.
+            // Seriously this needs to be changed.
+            if (thisModel.config.output[0].not_batched === true) {
+              return setupOutputs__WITH_ORDERS(thisModel);
+            } else {
+              return setupOutputs(thisModel);
+            }
           })
           .fail(function () {
             deferred.reject({message: "Couldn't load the batch resource (Impossible to read outputs)"});
