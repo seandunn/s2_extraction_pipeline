@@ -139,55 +139,42 @@ define([
       return deferred.promise();
     },
 
-    setFileContent: function (csvAsTxt) {
-      var targetsByBarcode = CSVParser.from(csvAsTxt);
-      var thisModel = this;
+    validateRackLayout: function(csvAsTxt) {
+      var deferred = new $.Deferred(),
+          inputTubeBarcodes,
+          targetsByBarcode;
 
-      var inputTubeBarcodes = _.chain(thisModel.inputRacks)
-      .pluck("tubes")
-      .map(function(tubes) { return _.values(tubes); })
-      .flatten()
-      .map(function(tube){ return tube.labels.barcode.value; })
-      .value();
+      try {
+        targetsByBarcode = CSVParser.from(csvAsTxt);
+      } catch (e) {
+        return deferred.reject("Could not read the rack layout file. Please re-check its contents");
+      }
+
+      inputTubeBarcodes = getTubeBarcodesFromRacks(this.inputRacks);
 
       if (_.difference(_.keys(targetsByBarcode), inputTubeBarcodes).length !== 0){
-        throw "Racking file contains a tube not in the input racks";
+        return deferred.reject("Racking file contains a tube not in the input racks");
       }
 
-      if (Object.keys(targetsByBarcode).length > thisModel.outputCapacity){
-        throw "Re-racking file includes " +
-          thisModel.targetsByBarcode.length +
+      if (_.keys(targetsByBarcode).length > this.outputCapacity){
+        deferred.reject("Re-racking file includes " +
+          this.targetsByBarcode.length +
           " and the target rack has only " +
-          thisModel.outputCapacity + " slots available.";
+          this.outputCapacity + " slots available.");
       }
 
-      var tubeCountByRackUuid = _.chain(thisModel.inputRacks)
-      .indexBy("uuid")
-      .reduce(function(memo, rack, rackUuid){
-        memo[rackUuid] = _.keys(rack.tubes).length;
-        return memo;
-      }, {})
-      .value();
+      return deferred.resolve(targetsByBarcode);
+    },
 
-      var sourceMoves = _.reduce(thisModel.inputRacks, function(memo, rack){
-        // This reduce produces source move JSON for all tubes potentially
-        // all the tubes in the input racks.
+    setupTubeTransfers: function (targetsByBarcode) {
+      var thisModel = this;
+      var tubeCountByRackUuid = tubeCountPerRack(this.inputRacks);
 
-        var rackTubes =  _.reduce(
-          rack.tubes,
-          function(tubesMemo, tube, sourceLocation){
-            tubesMemo[tube.labels.barcode.value] = {
-              "source_uuid":      rack.uuid,
-              "source_location":  sourceLocation,
-            };
-            return tubesMemo;
-          }, {});
+      // This reduce produces source move JSON for all tubes potentially
+      // all the tubes in the input racks.
+      var sourceMoves = _.reduce(this.inputRacks, mapBarcodeToSource, {});
 
-          _.extend(memo, rackTubes);
-          return memo;
-      }, {});
-
-      thisModel.tubeMoves = _.reduce(
+      this.tubeMoves = _.reduce(
         targetsByBarcode,
         function(memo, targetLocation, tubeBarcode){
           var move = sourceMoves[tubeBarcode];
@@ -201,7 +188,7 @@ define([
         }, { moves: [] });
 
         // Prepare a list of empty racks to "unuse" after the move.
-        thisModel.racksToEmpty = _.chain(thisModel.tubeMoves.moves)
+        this.racksToEmpty = _.chain(this.tubeMoves.moves)
         .groupBy("source_uuid")
         .reduce(function(memo, moves, rack){
           memo[rack] = moves.length;
@@ -216,7 +203,7 @@ define([
         }, [])
         .value();
 
-        return thisModel;
+      return this;
     },
 
     rerack: function () {
@@ -337,6 +324,35 @@ define([
     }
 
   });
+
+  function getTubeBarcodesFromRacks(racks) {
+    return _.chain(racks)
+      .pluck("tubes")
+      .map(function(tubes) { return _.values(tubes); })
+      .flatten()
+      .map(function(tube){ return tube.labels.barcode.value; })
+      .value();
+  }
+
+  function tubeCountPerRack(racks) {
+    return _.chain(racks)
+      .indexBy("uuid")
+      .reduce(function(memo, rack, rackUuid){
+        memo[rackUuid] = _.keys(rack.tubes).length;
+        return memo;
+      }, {})
+      .value();
+  }
+
+  function mapBarcodeToSource(memo, rack) {
+    return _.reduce(rack.tubes, function(tubesMemo, tube, sourceLocation) {
+      tubesMemo[tube.labels.barcode.value] = {
+        "source_uuid":      rack.uuid,
+        "source_location":  sourceLocation,
+      };
+      return _.extend(memo, tubesMemo);
+    }, {});
+  }
 
   return ReRackingModel;
 });
