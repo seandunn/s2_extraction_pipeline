@@ -95,7 +95,7 @@ define([
             "kit": {
               "process": process || "DNA & RNA extraction",
               "aliquot_type": aliquot || "DNA & RNA",
-              "expires": expires || "2014-05-01",
+              "expires": expires || "2015-05-01",
               "amount": amount || 10
             }
           }
