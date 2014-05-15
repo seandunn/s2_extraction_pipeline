@@ -53,7 +53,7 @@ define([
     };
     app.sendEvent = function(orderUUID, barcode, event, role) {
       this.config.login = "admin@sanger.ac.uk";
-      this.fetchLabware(barcode).then(function(labware) {
+      return this.fetchLabware(barcode).then(function(labware) {
         return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
           var json = "{ \"items\":{ \"" + role + "\": { \"" + labware.uuid + "\": { \"event\": \"" + event + "\" }}}}";
           return root.retrieve({
@@ -84,6 +84,12 @@ define([
           });
         })
       })      
+    };
+    
+    app.addRole = function(barcode, orderUuid, role) {
+      this.sendEvent(orderUuid, barcode, "start", role).then(_.bind(function() {
+        this.sendEvent(orderUuid, barcode, "complete", role)
+      }, this));
     };
     
     app.createKit = function(barcode, process, aliquot, expires, amount) {
