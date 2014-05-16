@@ -72,6 +72,27 @@ define([
       });
     };
     
+    app.assignBatch = function(orderUUID, barcode, batchUuid, role) {
+      this.config.login = "admin@sanger.ac.uk";
+      return this.fetchLabware(barcode).then(function(labware) {
+        return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+          var json = "{ \"items\":{ \"" + role + "\": { \"" + labware.uuid + "\": { \"batch_uuid\": \"" + batchUuid + "\" }}}}";
+          return root.retrieve({
+            uuid: orderUUID,
+            sendAction: "update",
+            data: JSON.parse(json)
+          });
+        });
+        /* $.ajax({
+          url: "http://psd2g.internal.sanger.ac.uk:8000/lims-laboratory/"+orderUUID,
+          method: "PUT",
+          content: "{ \"items\":{ " + role + ": { " + labware.uuid + ": { \"event\": " + event + " }}}}"
+        });*/        
+      }, function() {
+        console.log(arguments);
+      });      
+    }
+    
     app.showOrdersUUID = function(barcode) {
       this.config.login = "admin@sanger.ac.uk";
       return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
@@ -86,10 +107,44 @@ define([
       })      
     };
     
+    app.transferTube2Tube = function(barcodeSource, barcodeTarget, aliquotType) {
+      return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+        return $.when(root.findByLabEan13(barcodeSource), 
+          root.findByLabEan13(barcodeTarget)).then(function(source, target) {
+            return root.retrieve({
+              url: config.apiUrl + "/lims-laboratory/actions/transfer_tubes_to_tubes",
+              sendAction: "create",
+              data: {
+                "transfer_tubes_to_tubes": {
+                  "transfers": [{
+                    "fraction": 1.0,
+                    "aliquot_type": aliquotType,
+                    "source_uuid": source.uuid,
+                    "target_uuid": target.uuid
+                  }]
+                }
+              }
+            });
+          });
+      });
+    };
+    
     app.addRole = function(barcode, orderUuid, role) {
       this.sendEvent(orderUuid, barcode, "start", role).then(_.bind(function() {
         this.sendEvent(orderUuid, barcode, "complete", role)
       }, this));
+    };
+    app.createBatch = function() {
+      return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+        return root.retrieve({
+          url: config.apiUrl + "/lims-laboratory/batches",
+          sendAction: "create",
+          data: {
+            "batch": {
+            }
+          }
+        });
+      });
     };
     
     app.createKit = function(barcode, process, aliquot, expires, amount) {
