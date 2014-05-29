@@ -176,23 +176,43 @@ define([
       
       // This reduce produces source move JSON for all tubes potentially
       // all the tubes in the input racks.
-      var sourceMoves = _.reduce(this.inputRacks, _.bind(mapBarcodeToSource, this), {});
+      var sourceMoves = _.reduce(this.inputRacks, mapBarcodeToSource, {});
       
       this._ordersForMovedTubes = _.reduce(this.inputRacks, function(memo, rack) {
-        var tube = _.find(rack.tubes, function(tube) { 
-          return !_.isUndefined(targetsByBarcode[tube.labels.barcode.value]);
+        _.each(_.keys(targetsByBarcode), function(targetTubeBarcode) {
+          var tube = _.find(rack.tubes, function(tube) { 
+            return (targetTubeBarcode === tube.labels.barcode.value);
+          });
+          if (_.isUndefined(tube)) {
+            return memo;
+          }
+          // Saves the list of order promises that are going to be moved
+          if (_.isUndefined(memo[rack.uuid])) {
+            memo[rack.uuid]=[];
+          }
+          memo[rack.uuid] = memo[rack.uuid].concat(orderPromisesForTube(rack, tube));          
         });
-        if (_.isUndefined(tube)) {
-          return memo;
-        }
-        // Saves the list of order promises that are going to be moved
-        if (_.isUndefined(memo[rack.uuid])) {
-          memo[rack.uuid]=[];
-        }
-        memo[rack.uuid] = memo[rack.uuid].concat(orderPromisesForTube(rack, tube));
         return memo;
       }, {});
       
+      
+      this.buildRackOrderRoleChanges();
+      
+      this.tubeMoves = _.reduce(
+        targetsByBarcode,
+        function(memo, targetLocation, tubeBarcode){
+          var move = sourceMoves[tubeBarcode];
+          // These names are translated to JSON so need to be in snake_case.
+          move.target_uuid     = thisModel.outputRack.uuid;
+          move.target_location = targetLocation;
+
+          memo.moves.push(move);
+          return memo;
+        }, { moves: [] });
+
+      return this;
+    },
+    buildRackOrderRoleChanges: function() {
       this._oUuidToTubes = {};
       this._oUuidToMovedTubes = {};
       this._emptyRacksByOrder = {};
@@ -239,20 +259,6 @@ define([
           }, this));
         }, this));
       }, this));
-      
-      this.tubeMoves = _.reduce(
-        targetsByBarcode,
-        function(memo, targetLocation, tubeBarcode){
-          var move = sourceMoves[tubeBarcode];
-          // These names are translated to JSON so need to be in snake_case.
-          move.target_uuid     = thisModel.outputRack.uuid;
-          move.target_location = targetLocation;
-
-          memo.moves.push(move);
-          return memo;
-        }, { moves: [] });
-
-      return this;
     },
 
     rerack: function () {
@@ -392,13 +398,13 @@ define([
   }
 
   function mapBarcodeToSource(memo, rack) {
-    return _.reduce(rack.tubes, _.bind(function(tubesMemo, tube, sourceLocation) {
+    return _.reduce(rack.tubes, function(tubesMemo, tube, sourceLocation) {
       tubesMemo[tube.labels.barcode.value] = {
         "source_uuid":      rack.uuid,
         "source_location":  sourceLocation,
       };      
       return _.extend(memo, tubesMemo);
-    }, this), {});
+    }, {});
   }
   
   function orderPromisesForTube(rack, tube) {
