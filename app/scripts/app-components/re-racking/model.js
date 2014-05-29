@@ -196,7 +196,7 @@ define([
       }, {});
       
       
-      this.buildRackOrderRoleChanges();
+      this.buildRackOrderRoleChanges(targetsByBarcode);
       
       this.tubeMoves = _.reduce(
         targetsByBarcode,
@@ -212,7 +212,7 @@ define([
 
       return this;
     },
-    buildRackOrderRoleChanges: function() {
+    buildRackOrderRoleChanges: function(targetsByBarcode) {
       this._oUuidToTubes = {};
       this._oUuidToMovedTubes = {};
       this._emptyRacksByOrder = {};
