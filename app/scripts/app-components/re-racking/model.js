@@ -51,7 +51,8 @@ define([
       .fetchResourcePromiseFromBarcode(rackBarcode, "tube_racks")
       .then(function storeRack(returnedRack) {
         rack = returnedRack;
-        return rack.orders();
+        // We should only check the orders of the tubes inside my rack
+        return $.when.apply(this, rack.allOrdersFromTubes());
       }, function () {
         return deferred.reject({message:"Couldn't find the rack."});
       })
@@ -69,6 +70,7 @@ define([
         })
         .value();
 
+        // This should be only be applied with the roles of the tubes it contains
         if (_.some(activeRolesPerOrder, function(roles) { return roles.length === 0; })) {
           return deferred.reject({
             message: "A rack that's in use must have an activated role in all it's orders."
@@ -139,59 +141,67 @@ define([
       return deferred.promise();
     },
 
-    setFileContent: function (csvAsTxt) {
-      var targetsByBarcode = CSVParser.from(csvAsTxt);
-      var thisModel = this;
+    validateRackLayout: function(csvAsTxt) {
+      var deferred = new $.Deferred(),
+          inputTubeBarcodes,
+          targetsByBarcode;
 
-      var inputTubeBarcodes = _.chain(thisModel.inputRacks)
-      .pluck("tubes")
-      .map(function(tubes) { return _.values(tubes); })
-      .flatten()
-      .map(function(tube){ return tube.labels.barcode.value; })
-      .value();
+      try {
+        targetsByBarcode = CSVParser.from(csvAsTxt);
+      } catch (e) {
+        return deferred.reject("Could not read the rack layout file. Please re-check its contents");
+      }
+
+      inputTubeBarcodes = getTubeBarcodesFromRacks(this.inputRacks);
 
       if (_.difference(_.keys(targetsByBarcode), inputTubeBarcodes).length !== 0){
-        throw "Racking file contains a tube not in the input racks";
+        return deferred.reject("Racking file contains a tube not in the input racks");
       }
 
-      if (Object.keys(targetsByBarcode).length > thisModel.outputCapacity){
-        throw "Re-racking file includes " +
-          thisModel.targetsByBarcode.length +
+      if (_.keys(targetsByBarcode).length > this.outputCapacity){
+        deferred.reject("Re-racking file includes " +
+          this.targetsByBarcode.length +
           " and the target rack has only " +
-          thisModel.outputCapacity + " slots available.";
+          this.outputCapacity + " slots available.");
       }
 
-      var tubeCountByRackUuid = _.chain(thisModel.inputRacks)
-      .indexBy("uuid")
-      .reduce(function(memo, rack, rackUuid){
-        memo[rackUuid] = _.keys(rack.tubes).length;
+      return deferred.resolve(targetsByBarcode);
+    },
+
+    setupTubeTransfers: function (targetsByBarcode) {
+      var thisModel = this;
+      var tubeCountByRackUuid = tubeCountPerRack(this.inputRacks);
+
+      this._ordersForMovedTubes = {};
+      
+      // This reduce produces source move JSON for all tubes potentially
+      // all the tubes in the input racks.
+      var sourceMoves = _.reduce(this.inputRacks, mapBarcodeToSource, {});
+      
+      this._ordersForMovedTubes = _.reduce(this.inputRacks, function(memo, rack) {
+        _.each(_.keys(targetsByBarcode), function(targetTubeBarcode) {
+          var tube = _.find(rack.tubes, function(tube) { 
+            return (targetTubeBarcode === tube.labels.barcode.value);
+          });
+          if (_.isUndefined(tube)) {
+            return memo;
+          }
+          // Saves the list of order promises that are going to be moved
+          if (_.isUndefined(memo[rack.uuid])) {
+            memo[rack.uuid]=[];
+          }
+          memo[rack.uuid] = memo[rack.uuid].concat(orderPromisesForTube(rack, tube));          
+        });
         return memo;
-      }, {})
-      .value();
-
-      var sourceMoves = _.reduce(thisModel.inputRacks, function(memo, rack){
-        // This reduce produces source move JSON for all tubes potentially
-        // all the tubes in the input racks.
-
-        var rackTubes =  _.reduce(
-          rack.tubes,
-          function(tubesMemo, tube, sourceLocation){
-            tubesMemo[tube.labels.barcode.value] = {
-              "source_uuid":      rack.uuid,
-              "source_location":  sourceLocation,
-            };
-            return tubesMemo;
-          }, {});
-
-          _.extend(memo, rackTubes);
-          return memo;
       }, {});
-
-      thisModel.tubeMoves = _.reduce(
+      
+      
+      this.buildRackOrderRoleChanges(targetsByBarcode);
+      
+      this.tubeMoves = _.reduce(
         targetsByBarcode,
         function(memo, targetLocation, tubeBarcode){
           var move = sourceMoves[tubeBarcode];
-
           // These names are translated to JSON so need to be in snake_case.
           move.target_uuid     = thisModel.outputRack.uuid;
           move.target_location = targetLocation;
@@ -200,31 +210,63 @@ define([
           return memo;
         }, { moves: [] });
 
-        // Prepare a list of empty racks to "unuse" after the move.
-        thisModel.racksToEmpty = _.chain(thisModel.tubeMoves.moves)
-        .groupBy("source_uuid")
-        .reduce(function(memo, moves, rack){
-          memo[rack] = moves.length;
-          return memo;
-        }, {})
-        .reduce(function(memo, moveCount, rackUuid){
-          if (moveCount === tubeCountByRackUuid[rackUuid]) {
-            memo.push(rackUuid);
+      return this;
+    },
+    buildRackOrderRoleChanges: function(targetsByBarcode) {
+      this._oUuidToTubes = {};
+      this._oUuidToMovedTubes = {};
+      this._emptyRacksByOrder = {};
+      // Compares tubes moved with tubes in rack. If, for a particular order, both lists 
+      // are equal, then the rack can be unused for that order (as all tubes of that order
+      // will not be nomore inside the rack after the reracking)
+      _.each(this.inputRacks, _.bind(function(rack) {
+        // Orders for tubes has to be obtained by promise
+        $.when.apply(this, _.map(rack.tubes, _.bind(function(tube) {
+          if (_.isUndefined(tube)) {
+            return;
           }
-
-          return memo;
-        }, [])
-        .value();
-
-        return thisModel;
+          return orderPromisesForTube(rack, tube).then(_.bind(function(orders) {
+            // ... hope no one decided that a tube could be in more than one order
+            var order = _.first(orders);
+            // If th tube is going to be moved (targetsByBarcode)
+            if (!_.isUndefined(targetsByBarcode[tube.labels.barcode.value])) {
+              if (_.isUndefined(this._oUuidToMovedTubes[order.uuid])) {
+                this._oUuidToMovedTubes[order.uuid]=[];
+              }
+              // List of tubes moved by orderUuid (oUuidToMovedTubes)
+              this._oUuidToMovedTubes[order.uuid]= this._oUuidToMovedTubes[order.uuid].concat(tube);
+            }
+            // Any tube will be in this other list (oUuidToTubes)
+            if (_.isUndefined(this._oUuidToTubes[order.uuid])) {
+              this._oUuidToTubes[order.uuid]=[];
+            }
+            this._oUuidToTubes[order.uuid]= this._oUuidToTubes[order.uuid].concat(tube);            
+          }, this));
+          return this;
+        }, this))).then(_.bind(function() {
+          // When all orders has been obtained for all tubes in the rack (the list of moved tubes for
+          // an order in a rack equals the list of tubes of the rack for that order
+          _.each(_.pairs(this._oUuidToTubes), _.bind(function(pair) {
+            var orderUuid= pair[0];
+            var tubes = pair[1];
+            var rackUuid=rack.uuid;
+            if (_.difference(this._oUuidToTubes[orderUuid], this._oUuidToMovedTubes[orderUuid]).length === 0) {
+              if (_.isUndefined(this._emptyRacksByOrder[orderUuid])) {
+                this._emptyRacksByOrder[orderUuid] = [];
+              }
+              this._emptyRacksByOrder[orderUuid] =  this._emptyRacksByOrder[orderUuid].concat(rackUuid);
+            }
+          }, this));
+        }, this));
+      }, this));
     },
 
     rerack: function () {
       var thisModel = this;
 
-      var orderPromisesByRack = _.map(thisModel.inputRacks, function(rack){
-        return $.when.apply(null, [$.when(rack)].concat(rack.orders()));
-      });
+      var orderPromisesByRack = _.map(thisModel.inputRacks, _.bind(function(rack){
+        return $.when.apply(null, [$.when(rack)].concat(this._ordersForMovedTubes[rack.uuid]));
+      }, this));
 
       var ordersByUuid = {};
       var racksPerOrderUuid;
@@ -238,7 +280,6 @@ define([
         .reduce(promises, function(memo, rackOrders){
           var rack   = _.head(rackOrders);
           var orders = _.chain(rackOrders).rest().flatten().value();
-
           _.each(orders, function(order) {
             ordersByUuid[order.uuid] = order;
 
@@ -248,10 +289,8 @@ define([
           return memo;
         }, {});
 
-
         var updateMessage = {};
         updateMessage[thisModel.outputRack.uuid] = { event: "start" };
-
         return updateAllOrders(
           _.map(ordersByUuid, function(order) { return [order, updateMessage]; }), thisModel.contentType
         );
@@ -272,13 +311,14 @@ define([
           racksPerOrderUuid,
           function(racks, orderUuid){
             var updateMessage = _.reduce(racks, function(memo, rackUuid){
-              if (_.contains(thisModel.racksToEmpty, rackUuid)){
+              // We only want to unuse racks in an order if they no longer contain tubes for
+              // the order
+              if (_.contains(thisModel._emptyRacksByOrder[orderUuid], rackUuid)) {
                 memo[rackUuid] = {event: "unuse"};
               }
 
               return memo;
             }, {});
-
             updateMessage[thisModel.outputRack.uuid] = {
               event: "complete"
             };
@@ -337,6 +377,41 @@ define([
     }
 
   });
+
+  function getTubeBarcodesFromRacks(racks) {
+    return _.chain(racks)
+      .pluck("tubes")
+      .map(function(tubes) { return _.values(tubes); })
+      .flatten()
+      .map(function(tube){ return tube.labels.barcode.value; })
+      .value();
+  }
+
+  function tubeCountPerRack(racks) {
+    return _.chain(racks)
+      .indexBy("uuid")
+      .reduce(function(memo, rack, rackUuid){
+        memo[rackUuid] = _.keys(rack.tubes).length;
+        return memo;
+      }, {})
+      .value();
+  }
+
+  function mapBarcodeToSource(memo, rack) {
+    return _.reduce(rack.tubes, function(tubesMemo, tube, sourceLocation) {
+      tubesMemo[tube.labels.barcode.value] = {
+        "source_uuid":      rack.uuid,
+        "source_location":  sourceLocation,
+      };      
+      return _.extend(memo, tubesMemo);
+    }, {});
+  }
+  
+  function orderPromisesForTube(rack, tube) {
+    return rack.root.find(tube.uuid).then(function(labware) {
+      return labware.orders();
+    });
+  }
 
   return ReRackingModel;
 });

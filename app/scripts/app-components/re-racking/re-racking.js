@@ -43,15 +43,13 @@ define([
     html.find("#printer-area").append(labelPrinter.view);
     html.on(labelPrinter.events);
     html.on("trigger.print.s2", $.ignoresEvent(_.partial(onPrintLabels, html, model)));
-    labelPrinter.view.on("done.s2", function() { html.find("#racking-file-upload").collapse({parent: html}); });
 
     // Setup the re-racking buttons
     var startRerackingButton = html.find("#start-rerack-btn");
     var rerackButton         = html.find("#rerack-btn");
     startRerackingButton.click(_.partial(onStartReracking, html));
     rerackButton.click(process(html, _.partial(onReracking, html, model, rerackButton)));
-    labelPrinter.view.on("done.s2", $.ignoresEvent(_.partial(success, "The labels have been sent to the printer.")));
-    html.on("complete.reracking.s2", $.ignoresEvent(_.partial(success, "Re-racking completed.")));
+    html.on("complete.reracking.s2", $.ignoresEvent(_.partial(success, "Re-racking was successful. Please print the label for the new rack")));
     rerackButton.hide();
 
     // Build a barcode scanner component and hook it up.
@@ -72,13 +70,17 @@ define([
     // Build the dropzone component and attach it
     var dropzone = DropZone(this);
     html.find(".dropzone").append(dropzone.view).on(dropzone.events);
-    html.on("dropzone.file", process(html, $.ignoresEvent(_.compose(
-      function() { return $.Deferred().resolve(undefined); },
-      function() { rerackButton.show(); },
-      _.partial(presentRack, html, factory),
-      outputRackRepresentation,
-      _.bind(model.setFileContent, model)
-    ))));
+
+    html.on("dropzone.file", function(e, fileContent) {
+      html.trigger("start_process.busybox.s2");
+
+      model.validateRackLayout(fileContent)
+        .then(_.partial(createOutputRackAndSetupTransfers, html, factory, model, rerackButton))
+        .then(_.partial(success, "File validated"))
+        .fail(error)
+        .always(_.bind(html.trigger, html, "end_process.busybox.s2"));
+    });
+
     html.on("complete.reracking.s2", _.bind(dropzone.view.hide, dropzone.view));
 
     _.extend(html, {
@@ -104,6 +106,16 @@ define([
   }
 
   // FILE UPLOAD FUNCTIONS
+
+  function createOutputRackAndSetupTransfers(html, factory, model, rerackButton, targetsByBarcode) {
+    return model.createOutputRack()
+      .then(function() {
+        model.setupTubeTransfers(targetsByBarcode);
+        presentRack(html, factory, outputRackRepresentation(model));
+        rerackButton.show();
+      });
+  }
+
   function outputRackRepresentation(model) {
     var movements = _.chain(model.tubeMoves.moves)
        .pluck("target_location")
@@ -128,11 +140,8 @@ define([
 
   // LABEL PRINTING FUNCTIONS
   function onPrintLabels(html, model, printer) {
-    return model.createOutputRack()
-    .then(function(rack) {
-      html.trigger("labels.print.s2", [printer, [rack]]);
-      return rack;
-    });
+    html.trigger("labels.print.s2", [printer, [model.outputRack]]);
+    return model.outputRack;
   }
 
   // INPUT RACK HANDLING FUNCTIONS
@@ -177,7 +186,7 @@ define([
 
   // RE-RACKING FUNCTIONS
   function onStartReracking(html) {
-    html.find("#rack-labelling").collapse({parent: html});
+    html.find("#racking-file-upload").collapse();
   }
 
   function onReracking(html, model, button) {
@@ -185,6 +194,7 @@ define([
     .then(function () {
       button.hide();
       html.trigger("complete.reracking.s2");
+      html.find("#rack-labelling").collapse({ parent: '.accordion' });
     }, _.partial(structuredError, html, "Could not re-rack"));
   }
 
