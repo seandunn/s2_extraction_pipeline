@@ -68,13 +68,21 @@ define([
     html.find(".dropzone").append(dropzone.view).on(dropzone.events);
 
     html.on("dropzone.file", function(e, fileContent) {
+      function beforePrint() {
+        return onReracking(html,model)
+          .then(_.partial(success, "Re-racking was successful. Please print the label for the new rack"));
+      }
+      
       html.trigger("start_process.busybox.s2");
 
+      labelPrinter.beforePrint = beforePrint;
+      
       model.validateRackLayout(fileContent)
         .then(_.partial(createOutputRackAndSetupTransfers, html, factory, model))
         .then(_.partial(success, "File validated"))
-        .then(_.partial(onReracking, html, model))
-        .then(_.partial(success, "Re-racking was successful. Please print the label for the new rack"))
+        .then(function() {
+          html.find("#rack-labelling").collapse({ parent: '.accordion' });
+        })
         .fail(error)
         .always(_.bind(html.trigger, html, "end_process.busybox.s2"));
     });
@@ -186,9 +194,7 @@ define([
 
   function onReracking(html, model) {
     return model.rerack()
-    .then(function () {
-      html.find("#rack-labelling").collapse({ parent: '.accordion' });
-    }, _.partial(structuredError, html, "Could not re-rack"));
+    .fail(_.partial(structuredError, html, "Could not re-rack"));
   }
 
   function structuredError(html, prefix, error) {
