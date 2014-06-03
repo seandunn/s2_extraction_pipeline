@@ -27,18 +27,21 @@ define([
       html.trigger("error.status.s2", [message]);
     };
 
+    var obj = {};
     var button  = html.find("button");
-    button.lockingClick(function() {
-      var selected = _.find(context.printers, function(p) { return p.name === printer.val(); });
-      html.trigger("trigger.print.s2", [selected]);
-    });
+    button.lockingClick(_.bind(function() {
+      obj.beforePrint().then(function() {
+        var selected = _.find(context.printers, function(p) { return p.name === printer.val(); });
+        html.trigger("trigger.print.s2", [selected]);        
+      });
+    }, obj));
 
     _.extend(html, {
       print:  $.ignoresEvent(print),
       filter: $.ignoresEvent(filter)
     });
 
-    return {
+    _.extend(obj, {
       name: "printing.labelling.s2",
       view: html,
       events: {
@@ -47,9 +50,16 @@ define([
         "activate.s2":     $.stopsPropagation($.ignoresEvent(_.partial(disable, false, printer, button))),
         "deactivate.s2":   $.stopsPropagation($.ignoresEvent(_.partial(disable, true, printer, button)))
       },
+      beforePrint: function() {
+        var deferred = new $.Deferred();
+        deferred.resolve(true);
+        return deferred;
+      },
       print: print
-    };
+    });
 
+    return obj;
+    
     function disable(state) {
       _.chain(arguments)
        .drop(1)
