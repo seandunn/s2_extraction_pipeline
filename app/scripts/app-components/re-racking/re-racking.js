@@ -46,11 +46,7 @@ define([
 
     // Setup the re-racking buttons
     var startRerackingButton = html.find("#start-rerack-btn");
-    var rerackButton         = html.find("#rerack-btn");
     startRerackingButton.click(_.partial(onStartReracking, html));
-    rerackButton.click(process(html, _.partial(onReracking, html, model, rerackButton)));
-    html.on("complete.reracking.s2", $.ignoresEvent(_.partial(success, "Re-racking was successful. Please print the label for the new rack")));
-    rerackButton.hide();
 
     // Build a barcode scanner component and hook it up.
     var barcodeScanner = BarcodeScanner({
@@ -75,13 +71,13 @@ define([
       html.trigger("start_process.busybox.s2");
 
       model.validateRackLayout(fileContent)
-        .then(_.partial(createOutputRackAndSetupTransfers, html, factory, model, rerackButton))
+        .then(_.partial(createOutputRackAndSetupTransfers, html, factory, model))
         .then(_.partial(success, "File validated"))
+        .then(_.partial(onReracking, html, model))
+        .then(_.partial(success, "Re-racking was successful. Please print the label for the new rack"))
         .fail(error)
         .always(_.bind(html.trigger, html, "end_process.busybox.s2"));
     });
-
-    html.on("complete.reracking.s2", _.bind(dropzone.view.hide, dropzone.view));
 
     _.extend(html, {
       reset: function () {
@@ -107,12 +103,11 @@ define([
 
   // FILE UPLOAD FUNCTIONS
 
-  function createOutputRackAndSetupTransfers(html, factory, model, rerackButton, targetsByBarcode) {
+  function createOutputRackAndSetupTransfers(html, factory, model, targetsByBarcode) {
     return model.createOutputRack()
       .then(function() {
         model.setupTubeTransfers(targetsByBarcode);
         presentRack(html, factory, outputRackRepresentation(model));
-        rerackButton.show();
       });
   }
 
@@ -189,11 +184,9 @@ define([
     html.find("#racking-file-upload").collapse();
   }
 
-  function onReracking(html, model, button) {
+  function onReracking(html, model) {
     return model.rerack()
     .then(function () {
-      button.hide();
-      html.trigger("complete.reracking.s2");
       html.find("#rack-labelling").collapse({ parent: '.accordion' });
     }, _.partial(structuredError, html, "Could not re-rack"));
   }
