@@ -35,6 +35,10 @@ define([
         SIGhumbio: {
           friendly_name: "SIGhumbio",
           sanger_sample_id_core: "SIGhumbio"
+        },
+        HipSci_Blood_Collection: {
+          friendly_name: "HipSci Blood Collection",
+          sanger_sample_id_core: "HipSci_Blood_Collection"
         }
       },
 
