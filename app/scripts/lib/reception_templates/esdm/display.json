@@ -1,0 +1,52 @@
+[
+  {
+    "barcode": {
+      "columnName":   "Tube Barcode",
+      "friendlyName": "Tube Ean13 Barcode",
+      "type":         "barcode",
+      "format":       "ean13"
+    }
+  },
+  {
+    "sanger_sample_id": {
+      "columnName": "SANGER SAMPLE ID",
+      "friendlyName": "Sanger Sample ID",
+      "type":       "text"
+    }
+  },
+  {
+    "sample_type": {
+      "columnName": "SAMPLE TYPE",
+      "type":       "text",
+      "friendlyName": "Sample Type"
+    }
+  },
+  {
+    "gender": {
+      "columnName": "GENDER",
+      "friendlyName": "Gender",
+      "type": "text"
+    }
+  },
+  {
+    "is_sample_a_control":{
+      "columnName": "IS SAMPLE A CONTROL?",
+      "friendlyName": "Is Sample a Control?",
+      "type":       "boolean"
+    }
+  },
+  {
+    "process": {
+      "columnName": "_PROCESS",
+      "friendlyName": "Workflow",
+      "type":       "select",
+        "options": [
+          "DNA & RNA Manual",
+          "DNA & RNA QIAcube",
+          "Micro RNA QIAcube",
+          "DNA Only Extraction"
+        ],
+      "default":    "DNA & RNA QIAcube"
+    }
+  }
+]
