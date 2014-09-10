@@ -40,20 +40,6 @@
         "type":       "string"
       }
     },
-    "genotyping": {
-      "ethnicity": {
-        "columnName": "Ethnicity",
-        "type":       "string"
-      }
-    },
-    "disease_phenotype": {
-      "columnName": "Disease Phenotype",
-      "type":       "string"
-    },
-    "age_band": {
-      "columnName": "Age Band",
-      "type":       "string"
-    },
     "mother":                    {
       "columnName": "MOTHER (optional)",
       "type":       "string"
@@ -102,26 +88,14 @@
       "columnName": "SCIENTIFIC NAME",
       "type": "string"
     },
-    "cell_type": {
-      "columnName": "CELL STATE",
-      "type": "string"
-    },
-    "growth_condition": {
-      "columnName": "FATE",
-      "type": "string"
-    },
-    "time_point": {
-      "columnName": "PASSAGE NUMBER",
-      "type": "int"
-    },
-    "laboratory_barcode": {
-      "columnName": "LABORATORY BARCODE",
+
+    "common_name": {
+      "columnName": "COMMON NAME",
       "type": "string"
     },
 
-    
-    "common_name": {
-      "columnName": "COMMON NAME",
+    "sample_description": {
+      "columnName": "SAMPLE DESCRIPTION",
       "type": "string"
     }
   }
