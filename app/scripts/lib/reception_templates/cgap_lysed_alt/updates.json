@@ -114,11 +114,6 @@
       "columnName": "PASSAGE NUMBER",
       "type": "int"
     },
-    "laboratory_barcode": {
-      "columnName": "LABORATORY BARCODE",
-      "type": "string"
-    },
-
     
     "common_name": {
       "columnName": "COMMON NAME",
