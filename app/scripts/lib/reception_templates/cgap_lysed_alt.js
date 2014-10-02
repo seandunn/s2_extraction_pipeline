@@ -45,7 +45,7 @@ define([
         },
         QC1Ibd: {
           friendly_name: "QC1Ibd",
-          sanger_sample_id_core: "QC1Ibd"          
+          sanger_sample_id_core: "QC1Ibd"
         },
         QC2Ibd: {
           friendly_name: "QC2Ibd",
@@ -53,7 +53,7 @@ define([
         },
         QC1Hmgp: {
           friendly_name: "QC1Hmgp",
-          sanger_sample_id_core: "QC1Hmgp"          
+          sanger_sample_id_core: "QC1Hmgp"
         },
         QC2Hmgp: {
           friendly_name: "QC2Hmgp",
@@ -66,7 +66,7 @@ define([
         CGaPSSV: {
           friendly_name: "CGaP Validation",
           sanger_sample_id_core: "CGaPSSV"
-        },        
+        },
         "ESDM_pathogen_challenge": {
           friendly_name:          "ESDM_pathogen_challenge",
           sanger_sample_id_core:  "ESDM_pathogen_challenge"
@@ -80,7 +80,13 @@ define([
         Th2diff: {
           friendly_name: "Th2diff",
           sanger_sample_id_core: "Th2diff"
+        },
+
+        Ext_Test: {
+          friendly_name: "Ext_Test",
+          sanger_sample_id_core: "Ext_Test"
         }
+
       },
 
       validation: validations.nonEmptyString(validations.optional, "GENDER")
