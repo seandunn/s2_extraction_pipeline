@@ -7,6 +7,7 @@ define([
   'reception_templates/cgap_lysed',
   'reception_templates/cgap_lysed_alt',
   'reception_templates/hmdmc_lysed',
+  'reception_templates/esdm',
   'reception_templates/general_plate',
   'reception_templates/filter_paper',
   'reception_templates/blood_manifest'
