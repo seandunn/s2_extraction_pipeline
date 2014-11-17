@@ -79,6 +79,10 @@ define([
           friendly_name: "SIGhumgl",
           sanger_sample_id_core: "SIGhumgl"
         },
+        SIGkocp: {
+          friendly_name: "SIGkocp",
+          sanger_sample_id_core: "SIGkocp"
+        },
         CGaPSSV: {
           friendly_name: "CGaP Validation",
           sanger_sample_id_core: "CGaPSSV"
