@@ -20,7 +20,7 @@
       "output": [
         {
           "role": "samples.extraction.qiacube_dna_only.input_tube_dnap",
-          "aliquotType": "DNA+P",
+          "aliquotType": "NA+P",
           "title": "Input Tube",
           "not_batched": true
         }
@@ -37,7 +37,7 @@
       "output": [
         {
           "role": "samples.extraction.qiacube_dna_only.input_tube_dnap.batched",
-          "aliquotType": "DNA+P"
+          "aliquotType": "NA+P"
         }
       ]
     },
