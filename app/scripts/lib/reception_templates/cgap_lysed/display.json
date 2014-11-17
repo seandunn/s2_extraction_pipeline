@@ -44,7 +44,8 @@
           "DNA & RNA Manual",
           "DNA & RNA QIAcube",
           "Micro RNA QIAcube",
-          "DNA Only Extraction"
+          "DNA Only Extraction",
+          "RNA Only Extraction"
         ],
       "default": "DNA & RNA QIAcube"
     }
