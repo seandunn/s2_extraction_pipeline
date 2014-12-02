@@ -83,7 +83,7 @@
       "controllers": [
         {
           "controllerName": "kit_controller",
-          "kitType": "DNA"
+          "kitType": "DNA & RNA"
         },
         {
           "controllerName": "connected_controller",
