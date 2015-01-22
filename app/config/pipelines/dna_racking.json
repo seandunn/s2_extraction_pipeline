@@ -7,7 +7,7 @@
   {
     "accepts":  "samples.extraction.racking.fluidx_tube_dna" ,
     "controllerName": "step_controller",
-    "defaultPrinter": "d304bc",
+    "defaultPrinter": "k114bc",
     "printerType": 1,
     "buttons": [
       { "action": "print", "title": "Accept rack layout" },
@@ -17,7 +17,7 @@
     "controllers": [
       {
         "controllerName": "rack_scan_controller",
-        "defaultPrinter": "d304bc",
+        "defaultPrinter": "k114bc",
         "printerType": 1,
         "model": "RackScanModel",
         "input": {
