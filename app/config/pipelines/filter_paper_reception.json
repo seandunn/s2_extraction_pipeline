@@ -51,7 +51,7 @@
         "attributes":  {
           "number_of_rows": 6,
           "number_of_columns": 4
-        }        
+        }
       },
       "output": [
         {
@@ -63,7 +63,7 @@
       "accepts":        "samples.extraction.lysing.blood.biorobot.batched" ,
       "controllerName": "steplinear_controller",
       "printerType": 1,
-      "defaultPrinter":"d304bc",
+      "defaultPrinter":"k114bc",
       "buttons": [{ "action": "print", "title": "Print Destination Plate Barcode", "alwaysEnabled": true },
                   { "action": "start", "title": "Start Biorobot" },
                   { "action": "end",   "title": "Finish Biorobot" },
@@ -75,7 +75,7 @@
         "controllerName": "robot_controller",
         "group": "biorobot",
         "barcode": "4880001006869"
-      },      
+      },
       {
         "controllerName":   "linear_controller",
         "behaviours": {
@@ -101,6 +101,6 @@
           "bedTracking": true
         }]
       }]
-    }    
+    }
   ]
 }

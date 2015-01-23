@@ -25,7 +25,7 @@
     "controllers": [
       {
       "controllerName": "kit_controller",
-      "kitType":       "RNA"
+      "kitType":       "DNA & RNA"
     }, {
       "controllerName":   "connected_controller",
       "behaviours": {
@@ -69,7 +69,7 @@
       "output":       [
         {
           "role":       "samples.extraction.qiacube_rna_only.input_tube_rnap",
-          "aliquotType":"RNA+P",
+          "aliquotType":"NA+P",
           "not_batched":true
         }
       ]
@@ -86,7 +86,7 @@
     "output":  [
       {
         "role":         "samples.extraction.qiacube_rna_only.input_tube_rnap.batched",
-        "aliquotType":  "RNA+P"
+        "aliquotType":  "NA+P"
       }
     ]
   },
