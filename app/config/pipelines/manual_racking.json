@@ -7,7 +7,7 @@
       "accepts": "samples.extraction.bio_robot_dna_and_rna.input_tube_nap",
       "controllerName": "manual-racking",
       "processTitle": "Biorobot - Racking",
-      "defaultPrinter": "d304bc",
+      "defaultPrinter": "k114bc",
       "printerType": 1,
       "buttons": [
         {
