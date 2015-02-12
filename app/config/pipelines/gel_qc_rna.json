@@ -27,7 +27,7 @@
       "accepts":        "samples.qc_gel.fx.rna.batched" ,
       "controllerName": "step_controller",
       "printerType": 1,
-      "defaultPrinter":"d304bc",
+      "defaultPrinter":"k114bc",
       "buttons": [{ "action": "print", "title": "Print labels", "alwaysEnabled": true },
                   { "action": "start", "title": "Begin FX" },
                   { "action": "end",   "title": "Finished NX" },
@@ -71,7 +71,7 @@
     {
       "accepts":        "samples.qc_gel.ebase.rna.batched" ,
       "controllerName": "step_controller",
-      "defaultPrinter":"d304bc",
+      "defaultPrinter":"k114bc",
       "printerType": 1,
       "buttons": [{ "action": "start", "title": "Begin E-Base" },
                   { "action": "end",   "title": "Finished E-Base" },
@@ -107,11 +107,11 @@
         }]
       }]
     },
- 
+
     {
       "accepts":        "samples.qc_gel.imager.rna" ,
       "controllerName": "imager",
-      "defaultPrinter":"d304bc",
+      "defaultPrinter":"k114bc",
       "processTitle":  "RNA QC - Gel Imager",
       "printerType": 1,
       "buttons": [{ "action": "start", "title": "Begin Imager" },
@@ -124,7 +124,7 @@
         "operate": "start",
         "complete": "end",
         "done": "next"
-      }, 
+      },
       "input": {
         "role":  "samples.qc_gel.imager.rna",
         "model": "gels",
@@ -140,7 +140,7 @@
     {
       "accepts":        "samples.qc_gel.imager.rna.done" ,
       "controllerName": "imager",
-      "defaultPrinter":"d304bc",
+      "defaultPrinter":"k114bc",
       "processTitle":  "RNA QC - Gel Imager",
       "printerType": 1,
       "buttons": [{ "action": "start", "title": "Begin Imager" },
@@ -153,7 +153,7 @@
         "operate": "start",
         "complete": "end",
         "done": "next"
-      }, 
+      },
       "input": {
         "role":  "samples.qc_gel.imager.rna.done",
         "model": "gels",
