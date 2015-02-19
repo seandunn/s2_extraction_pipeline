@@ -66,12 +66,12 @@ define([
           url: "http://psd2g.internal.sanger.ac.uk:8000/lims-laboratory/"+orderUUID,
           method: "PUT",
           content: "{ \"items\":{ " + role + ": { " + labware.uuid + ": { \"event\": " + event + " }}}}"
-        });*/        
+        });*/
       }, function() {
         console.log(arguments);
       });
     };
-    
+
     app.assignBatch = function(orderUUID, barcode, batchUuid, role) {
       this.config.login = "admin@sanger.ac.uk";
       return this.fetchLabware(barcode).then(function(labware) {
@@ -87,12 +87,12 @@ define([
           url: "http://psd2g.internal.sanger.ac.uk:8000/lims-laboratory/"+orderUUID,
           method: "PUT",
           content: "{ \"items\":{ " + role + ": { " + labware.uuid + ": { \"event\": " + event + " }}}}"
-        });*/        
+        });*/
       }, function() {
         console.log(arguments);
-      });      
+      });
     }
-    
+
     app.showOrdersUUID = function(barcode) {
       this.config.login = "admin@sanger.ac.uk";
       return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
@@ -104,12 +104,12 @@ define([
             });
           });
         })
-      })      
+      })
     };
-    
+
     app.transferTube2Tube = function(barcodeSource, barcodeTarget, aliquotType) {
       return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
-        return $.when(root.findByLabEan13(barcodeSource), 
+        return $.when(root.findByLabEan13(barcodeSource),
           root.findByLabEan13(barcodeTarget)).then(function(source, target) {
             return root.retrieve({
               url: config.apiUrl + "/lims-laboratory/actions/transfer_tubes_to_tubes",
@@ -128,7 +128,7 @@ define([
           });
       });
     };
-    
+
     app.addRole = function(barcode, orderUuid, role) {
       this.sendEvent(orderUuid, barcode, "start", role).then(_.bind(function() {
         this.sendEvent(orderUuid, barcode, "complete", role)
@@ -146,7 +146,21 @@ define([
         });
       });
     };
-    
+
+    app.changeRole = function(barcode, oldRole, newRole) {
+      return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+        return root.findByLabEan13(barcode).then(function(labware) {
+          return labware.order().then(function(order) {
+            return app.sendEvent(order.uuid, barcode, "reset", oldRole).then(function() {
+              return app.sendEvent(order.uuid, barcode, "start", newRole).then(function() {
+                return app.sendEvent(order.uuid, barcode, "complete", newRole);
+              });
+            });
+          });
+        });
+      });
+    };
+
     app.createKit = function(barcode, process, aliquot, expires, amount) {
       return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
         return root.retrieve({
@@ -164,7 +178,7 @@ define([
           return root.retrieve({
             url: config.apiUrl + "/lims-support/labellables",
             sendAction: "create",
-            data:           { 
+            data:           {
               "labellable": {
                 "name": kit.uuid,
                 "type": "resource",
@@ -180,7 +194,7 @@ define([
         });
       });
     };
-    
+
 
     $('#server-url').text(config.apiUrl);
     $('#release').text(config.release);
@@ -298,7 +312,7 @@ define([
         app.config.userPromise.then(function() {
           app.config.rootPromise = app.getS2Root(user);
         });
-        app.config.userPromise.resolve(user.email);        
+        app.config.userPromise.resolve(user.email);
         app.config.disablePrinting = ($.cookie("disablePrinting") === "true");
         return deferred.resolve(user).promise();
       }
@@ -349,18 +363,18 @@ define([
   function resetTagRolesInBody() {
     var classNames = document.body.className.split(" ");
     // Removes previous classes from body
-    _.each(_.filter(classNames, function(className) { 
+    _.each(_.filter(classNames, function(className) {
       return className.match(/^ROLE\-/)
     }), function(role) {
       $(document.body).removeClass(role);
-    });    
+    });
   }
-  
+
   function tagRoleInBody(role) {
     // Add new class
     $(document.body).addClass("ROLE-"+role.replace(/\./g, "-"));
   }
-  
+
   App.prototype.updateModel = function (model) {
     var application = this;
     this.model = $.extend(this.model, model);
@@ -402,12 +416,12 @@ define([
 
     return this;
   };
-  
+
   App.prototype.showLabwareScanningPage = function() {
     this.controllerFactory.create(null, this, null)
-      .setupController(this.model, this.jquerySelection);    
+      .setupController(this.model, this.jquerySelection);
   };
-  
+
 
   // "I'm a monster..."  ChildDone methods should be replaced with DOM events where possible.
   // This will probably be the last one to go.
