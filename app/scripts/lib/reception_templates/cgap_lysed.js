@@ -86,6 +86,14 @@ define([
           friendly_name: "SIGkocp",
           sanger_sample_id_core: "SIGkocp"
         },
+        SIGkopc: {
+          friendly_name: "SIGkopc",
+          sanger_sample_id_core: "SIGkopc"
+        },
+        SIGkosc: {
+          friendly_name: "SIGkosc",
+          sanger_sample_id_core: "SIGkosc"
+        },
         SIGmut: {
           friendly_name: "SIGmut",
           sanger_sample_id_core: "SIGmut"
