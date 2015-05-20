@@ -12,7 +12,7 @@
     "FileSaver": "https://github.com/eligrey/FileSaver.js.git",
     "sass-bootstrap": "~2.3.2",
     "underscore": "latest",
-    "underscore.string": "latest",
+    "underscore.string": "~2.4.0",
     "eventEmitter": "~4.2.7"
   }
 }
