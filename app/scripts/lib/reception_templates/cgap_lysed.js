@@ -1,3 +1,6 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014,2015 Genome Research Ltd.
 define([
   "text!reception_templates/cgap_lysed/updates.json",
   "text!reception_templates/cgap_lysed/display.json",
@@ -35,6 +38,15 @@ define([
 
       // Studies that are supported by this manifest.
       studies: {
+        EBISC_C: {
+          friendly_name: "EBISC_C",
+          sanger_sample_id_core: "EBISC_C"
+        },
+        K9WBC: {
+          friendly_name: "K9WBC",
+          sanger_sample_id_core: "K9WBC"
+        },
+
         QC1Hip: {
           friendly_name: "QC1Hip",
           sanger_sample_id_core: "QC1Hip"
@@ -82,6 +94,18 @@ define([
         SIGkocp: {
           friendly_name: "SIGkocp",
           sanger_sample_id_core: "SIGkocp"
+        },
+        SIGkopc: {
+          friendly_name: "SIGkopc",
+          sanger_sample_id_core: "SIGkopc"
+        },
+        SIGkosc: {
+          friendly_name: "SIGkosc",
+          sanger_sample_id_core: "SIGkosc"
+        },
+        SIGmut: {
+          friendly_name: "SIGmut",
+          sanger_sample_id_core: "SIGmut"
         },
         CGaPSSV: {
           friendly_name: "CGaP Validation",

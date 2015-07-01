@@ -47,7 +47,7 @@
           "DNA Only Extraction",
           "RNA Only Extraction"
         ],
-      "default":    "DNA & RNA QIAcube"
+      "default": "DNA & RNA QIAcube"
     }
   }
 ]

@@ -10,7 +10,7 @@
   {
     "accepts":        "samples.rack.stock.dna" ,
     "controllerName": "step_controller",
-    "defaultPrinter": "d304bc",
+    "defaultPrinter": "k114bc",
     "printerType": 1,
     "buttons":       [
       {
@@ -71,7 +71,7 @@
   {
     "accepts":        "samples.qc.volume_checked_stock_rack_dna.batched" ,
     "controllerName": "step_controller",
-    "defaultPrinter":"d304bc",
+    "defaultPrinter":"k114bc",
     "printerType": 1,
     "buttons":       [
       { "action": "print", "title": "Print Plate Labels" },
@@ -119,7 +119,7 @@
     {
       "accepts":  "samples.qc.nx_working_dilution_dna" ,
       "controllerName": "step_controller",
-      "defaultPrinter": "d304bc",
+      "defaultPrinter": "k114bc",
       "printerType": 1,
       "buttons": [
         { "action": "end",  "title": "Save results" },
@@ -133,7 +133,7 @@
         },
         {
           "controllerName": "rack_scan_controller",
-          "defaultPrinter": "d304bc",
+          "defaultPrinter": "k114bc",
           "printerType": 1,
           "model": "NanoDropModel",
           "input": {

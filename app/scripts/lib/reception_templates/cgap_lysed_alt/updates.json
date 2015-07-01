@@ -112,7 +112,7 @@
     },
     "time_point": {
       "columnName": "PASSAGE NUMBER",
-      "type": "int"
+      "type": "string"
     },
     
     "common_name": {
