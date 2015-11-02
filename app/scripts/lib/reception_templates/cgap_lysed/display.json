@@ -45,7 +45,8 @@
           "DNA & RNA QIAcube",
           "Micro RNA QIAcube",
           "DNA Only Extraction",
-          "RNA Only Extraction"
+          "RNA Only Extraction",
+          "DNA Purification"
         ],
       "default": "DNA & RNA QIAcube"
     }
