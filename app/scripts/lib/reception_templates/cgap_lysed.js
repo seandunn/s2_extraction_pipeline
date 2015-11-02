@@ -38,6 +38,14 @@ define([
 
       // Studies that are supported by this manifest.
       studies: {
+        "3421STDY": {
+          friendly_name: "3421STDY",
+          sanger_sample_id_core: "3421STDY"
+        },
+        EBISC_C: {
+          friendly_name: "EBISC_C",
+          sanger_sample_id_core: "EBISC_C"
+        },
         K9WBC: {
           friendly_name: "K9WBC",
           sanger_sample_id_core: "K9WBC"
@@ -89,6 +97,14 @@ define([
         SIGkocp: {
           friendly_name: "SIGkocp",
           sanger_sample_id_core: "SIGkocp"
+        },
+        SIGkopc: {
+          friendly_name: "SIGkopc",
+          sanger_sample_id_core: "SIGkopc"
+        },
+        SIGkosc: {
+          friendly_name: "SIGkosc",
+          sanger_sample_id_core: "SIGkosc"
         },
         SIGmut: {
           friendly_name: "SIGmut",
