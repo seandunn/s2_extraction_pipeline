@@ -5,7 +5,8 @@
     "samples.purification.qiacube_dna_only.input_tube_blood",
     "samples.purification.qiacube_dna_only.input_tube_dnap.batched",
     "samples.purification.qiacube_dna_only.input_tube_dnap.to_be_retubed",
-    "samples.purification.qiacube_dna_only.input_tube_dnap.to_be_retubed.batched"
+    "samples.purification.qiacube_dna_only.input_tube_dnap.to_be_retubed.batched",
+    "samples.purification.retubing.eppendorf_tube_dna"
   ],
   "workflows": [
     {
