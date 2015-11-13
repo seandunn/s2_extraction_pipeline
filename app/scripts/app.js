@@ -14,6 +14,7 @@ define([
   // TODO: These will move with the configuration
   "app-components/lab-management/lab-management",
   "app-components/lab-activities/lab-activities",
+  "app-components/admin/admin",
   "jquery_cookie",
 
   // Globally included stuff added after this comment
@@ -25,14 +26,15 @@ define([
   BusyBox, alerts, PubSub,
   BasePageModel,
   barcodeScanner,
-  LabMangement, LabActivities,
+  LabMangement, LabActivities,Admin,
   Cookie
 ) {
   'use strict';
 
   var ComponentConfig = [
     { name: "Lab Management",  selector: "#lab-management", constructor: LabMangement     },
-    { name: "Lab Activities", selector: "#lab-activities", constructor: LabActivities }
+    { name: "Lab Activities", selector: "#lab-activities", constructor: LabActivities },
+    { name: "Admin", selector: "#admin", constructor: Admin }
   ];
 
 
@@ -43,6 +45,158 @@ define([
     app.config.userPromise = new $.Deferred();
     app.controllerFactory = theControllerFactory;
     _.templateSettings.variable = 'templateData';
+
+    app.fetchLabware = function(barcode) {
+      this.config.login = "admin@sanger.ac.uk";
+      return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+        return root.findByLabEan13(barcode).then(function(labware) {
+          return labware;
+        });
+      });
+    };
+    app.sendEvent = function(orderUUID, barcode, event, role) {
+      this.config.login = "admin@sanger.ac.uk";
+      return this.fetchLabware(barcode).then(function(labware) {
+        return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+          var json = "{ \"items\":{ \"" + role + "\": { \"" + labware.uuid + "\": { \"event\": \"" + event + "\" }}}}";
+          return root.retrieve({
+            uuid: orderUUID,
+            sendAction: "update",
+            data: JSON.parse(json)
+          });
+        });
+        /* $.ajax({
+          url: "http://psd2g.internal.sanger.ac.uk:8000/lims-laboratory/"+orderUUID,
+          method: "PUT",
+          content: "{ \"items\":{ " + role + ": { " + labware.uuid + ": { \"event\": " + event + " }}}}"
+        });*/
+      }, function() {
+        console.log(arguments);
+      });
+    };
+
+    app.assignBatch = function(orderUUID, barcode, batchUuid, role) {
+      this.config.login = "admin@sanger.ac.uk";
+      return this.fetchLabware(barcode).then(function(labware) {
+        return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+          var json = "{ \"items\":{ \"" + role + "\": { \"" + labware.uuid + "\": { \"batch_uuid\": \"" + batchUuid + "\" }}}}";
+          return root.retrieve({
+            uuid: orderUUID,
+            sendAction: "update",
+            data: JSON.parse(json)
+          });
+        });
+        /* $.ajax({
+          url: "http://psd2g.internal.sanger.ac.uk:8000/lims-laboratory/"+orderUUID,
+          method: "PUT",
+          content: "{ \"items\":{ " + role + ": { " + labware.uuid + ": { \"event\": " + event + " }}}}"
+        });*/
+      }, function() {
+        console.log(arguments);
+      });
+    }
+
+    app.showOrdersUUID = function(barcode) {
+      this.config.login = "admin@sanger.ac.uk";
+      return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+        return root.findByLabEan13(barcode).then(function(labware) {
+          return labware.orders().then(function(orders) {
+            return _.map(orders, function(order) {
+              order.sendEvent = _.bind(app.sendEvent, app, order.uuid, barcode);
+              return order;
+            });
+          });
+        })
+      })
+    };
+
+    app.transferTube2Tube = function(barcodeSource, barcodeTarget, aliquotType) {
+      return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+        return $.when(root.findByLabEan13(barcodeSource),
+          root.findByLabEan13(barcodeTarget)).then(function(source, target) {
+            return root.retrieve({
+              url: config.apiUrl + "/lims-laboratory/actions/transfer_tubes_to_tubes",
+              sendAction: "create",
+              data: {
+                "transfer_tubes_to_tubes": {
+                  "transfers": [{
+                    "fraction": 1.0,
+                    "aliquot_type": aliquotType,
+                    "source_uuid": source.uuid,
+                    "target_uuid": target.uuid
+                  }]
+                }
+              }
+            });
+          });
+      });
+    };
+
+    app.addRole = function(barcode, orderUuid, role) {
+      this.sendEvent(orderUuid, barcode, "start", role).then(_.bind(function() {
+        this.sendEvent(orderUuid, barcode, "complete", role)
+      }, this));
+    };
+    app.createBatch = function() {
+      return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+        return root.retrieve({
+          url: config.apiUrl + "/lims-laboratory/batches",
+          sendAction: "create",
+          data: {
+            "batch": {
+            }
+          }
+        });
+      });
+    };
+
+    app.changeRole = function(barcode, oldRole, newRole) {
+      return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+        return root.findByLabEan13(barcode).then(function(labware) {
+          return labware.order().then(function(order) {
+            return app.sendEvent(order.uuid, barcode, "reset", oldRole).then(function() {
+              return app.sendEvent(order.uuid, barcode, "start", newRole).then(function() {
+                return app.sendEvent(order.uuid, barcode, "complete", newRole);
+              });
+            });
+          });
+        });
+      });
+    };
+
+    app.createKit = function(barcode, process, aliquot, expires, amount) {
+      return S2Root.load({user: { email: "admin@sanger.ac.uk"}}).then(function(root) {
+        return root.retrieve({
+          url: config.apiUrl + "/lims-support/kits",
+          sendAction: "create",
+          data: {
+            "kit": {
+              "process": process || "DNA & RNA extraction",
+              "aliquot_type": aliquot || "DNA & RNA",
+              "expires": expires || "2015-05-01",
+              "amount": amount || 10
+            }
+          }
+        }).then(function(kit) {
+          return root.retrieve({
+            url: config.apiUrl + "/lims-support/labellables",
+            sendAction: "create",
+            data:           {
+              "labellable": {
+                "name": kit.uuid,
+                "type": "resource",
+                "labels": {
+                  "barcode": {
+                    "value": barcode,
+                    "type": "code128-c-barcode"
+                  }
+                }
+              }
+            }
+          });
+        });
+      });
+    };
 
 
     $('#server-url').text(config.apiUrl);
@@ -161,7 +315,7 @@ define([
         app.config.userPromise.then(function() {
           app.config.rootPromise = app.getS2Root(user);
         });
-        app.config.userPromise.resolve(user.email);        
+        app.config.userPromise.resolve(user.email);
         app.config.disablePrinting = ($.cookie("disablePrinting") === "true");
         return deferred.resolve(user).promise();
       }
@@ -212,18 +366,18 @@ define([
   function resetTagRolesInBody() {
     var classNames = document.body.className.split(" ");
     // Removes previous classes from body
-    _.each(_.filter(classNames, function(className) { 
+    _.each(_.filter(classNames, function(className) {
       return className.match(/^ROLE\-/)
     }), function(role) {
       $(document.body).removeClass(role);
-    });    
+    });
   }
-  
+
   function tagRoleInBody(role) {
     // Add new class
     $(document.body).addClass("ROLE-"+role.replace(/\./g, "-"));
   }
-  
+
   App.prototype.updateModel = function (model) {
     var application = this;
     this.model = $.extend(this.model, model);
@@ -265,12 +419,12 @@ define([
 
     return this;
   };
-  
+
   App.prototype.showLabwareScanningPage = function() {
     this.controllerFactory.create(null, this, null)
-      .setupController(this.model, this.jquerySelection);    
+      .setupController(this.model, this.jquerySelection);
   };
-  
+
 
   // "I'm a monster..."  ChildDone methods should be replaced with DOM events where possible.
   // This will probably be the last one to go.

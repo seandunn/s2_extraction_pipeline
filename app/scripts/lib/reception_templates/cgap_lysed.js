@@ -38,6 +38,10 @@ define([
 
       // Studies that are supported by this manifest.
       studies: {
+        "3980STDY": {
+          friendly_name: "3980STDY",
+          sanger_sample_id_core: "3980STDY"
+        },
         "3421STDY": {
           friendly_name: "3421STDY",
           sanger_sample_id_core: "3421STDY"
@@ -50,7 +54,6 @@ define([
           friendly_name: "K9WBC",
           sanger_sample_id_core: "K9WBC"
         },
-
         QC1Hip: {
           friendly_name: "QC1Hip",
           sanger_sample_id_core: "QC1Hip"
