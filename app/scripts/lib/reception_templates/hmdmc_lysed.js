@@ -27,10 +27,15 @@ define([
       sample_types: {
         "Tissue Non-Tumour": {sample: "Tissue Non-Tumour", aliquot: "!NA"},
         "Tissue Tumour":     {sample: "Tissue Tumour",     aliquot: "!NA"},
-        "Blood":             {sample: "Blood",             aliquot: "!NA"}
+        "Blood":             {sample: "Blood",             aliquot: "!NA"},
+        "Cells":             {sample: "Cells",             aliquot: "NA+P"}
       },
 
       studies: {
+        "fibroblast": {
+          friendly_name: "Fibroblast Collection",
+          sanger_sample_id_core: "fibroblast"
+        },
         "13-058": {
           friendly_name: "Skin Biopsy Collection (HMDMC 13-058)",
           sanger_sample_id_core: "SBC_13-058",
