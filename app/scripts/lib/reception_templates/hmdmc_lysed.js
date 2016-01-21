@@ -28,7 +28,7 @@ define([
         "Tissue Non-Tumour": {sample: "Tissue Non-Tumour", aliquot: "!NA"},
         "Tissue Tumour":     {sample: "Tissue Tumour",     aliquot: "!NA"},
         "Blood":             {sample: "Blood",             aliquot: "!NA"},
-        "Cells":             {sample: "Cells",             aliquot: "NA+P"}
+        "Cells":             {sample: "Cells",             aliquot: "!NA"}
       },
 
       studies: {
