@@ -36,7 +36,7 @@ define([
           friendly_name: "Fibroblast Collection",
           sanger_sample_id_core: "fibroblast",
           defaults: {
-            hmdmc_number: null
+            hmdmc_number: ""
           }
         },
         "13-058": {
