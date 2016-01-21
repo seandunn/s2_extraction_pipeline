@@ -34,7 +34,10 @@ define([
       studies: {
         "fibroblast": {
           friendly_name: "Fibroblast Collection",
-          sanger_sample_id_core: "fibroblast"
+          sanger_sample_id_core: "fibroblast",
+          defaults: {
+            hmdmc_number: null
+          }
         },
         "13-058": {
           friendly_name: "Skin Biopsy Collection (HMDMC 13-058)",
