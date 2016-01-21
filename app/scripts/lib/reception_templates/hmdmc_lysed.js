@@ -25,10 +25,10 @@ define([
       model: "tube",
 
       sample_types: {
-        "Tissue Non-Tumour": {sample: "Tissue Non-Tumour", aliquot: "!NA"},
-        "Tissue Tumour":     {sample: "Tissue Tumour",     aliquot: "!NA"},
-        "Blood":             {sample: "Blood",             aliquot: "!NA"},
-        "Cells":             {sample: "Cells",             aliquot: "!NA"}
+        "Tissue Non-Tumour":       {sample: "Tissue Non-Tumour", aliquot: "!NA"},
+        "Tissue Tumour":           {sample: "Tissue Tumour",     aliquot: "!NA"},
+        "Blood":                   {sample: "Blood",             aliquot: "!NA"},
+        "Cell Pellet":             {sample: "Cell Pellet",       aliquot: "!NA"}
       },
 
       studies: {
