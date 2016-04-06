@@ -42,6 +42,14 @@ define([
         HipSci_Blood_Collection: {
           friendly_name: "HipSci Blood Collection",
           sanger_sample_id_core: "HipSci_Blood_Collection"
+        },
+        SIGhum: {
+          friendly_name: "SIGhum",
+          sanger_sample_id_core: "SIGhum"
+        },
+        "CRUK-Pilot-ORG": {
+          friendly_name: "CRUK-Pilot-ORG",
+          sanger_sample_id_core: "ORG"
         }
       },
 
