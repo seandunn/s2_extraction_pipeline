@@ -45,6 +45,10 @@ define([
           defaults: {
             hmdmc_number: "13-058"
           }
+        },
+        "CRUK-Pilot-ORG": {
+          friendly_name: "CRUK-Pilot-ORG",
+          sanger_sample_id_core: "ORG"
         }
       },
 
