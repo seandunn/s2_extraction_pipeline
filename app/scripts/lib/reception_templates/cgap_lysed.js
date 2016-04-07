@@ -144,6 +144,10 @@ define([
         Ext_Test: {
           friendly_name: "Ext_Test",
           sanger_sample_id_core: "Ext_Test"
+        },
+        "EPAS1_RNA": {
+          friendly_name: "Functional validation of EPAS1 variants",
+          sanger_sample_id_core: "EPAS1_RNA"
         }
 
       },
