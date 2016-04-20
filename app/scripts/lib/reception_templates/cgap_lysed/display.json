@@ -46,7 +46,8 @@
           "Micro RNA QIAcube",
           "DNA Only Extraction",
           "RNA Only Extraction",
-          "DNA Purification"
+          "DNA Purification",
+          "Send to New Location"
         ],
       "default": "DNA & RNA QIAcube"
     }
