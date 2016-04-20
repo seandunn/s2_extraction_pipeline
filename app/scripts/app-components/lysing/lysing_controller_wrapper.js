@@ -1,6 +1,10 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define([
+  "event_emitter",
   "app-components/lysing/lysing"
-], function(Lysing) {
+], function(EventEmitter, Lysing) {
   "use strict";
 
   return {
@@ -22,21 +26,22 @@ define([
         model:       config.output[0].model.singularize(),
         role:        config.output[0].role,
         aliquotType: "NA+P",
-        purpose:     "Stock"
+        purpose:     "stock"
       },
       printers: owner.config.printers
     });
 
-    return {
+    return $.extend(new EventEmitter(), {
       setupController: function(model, selector) {
         // Attach the component to the view and signal the resource to be displayed.  When it
         // signals that it has completed it's work we can simulate the childDone behaviour.
-        var view = selector();
-        view.html(component.view).on(component.events).trigger("activate.s2");
+        var view       = selector(),
+            controller = this;
 
-        var controller = this;
+        view.html(component.view).on(component.events).trigger("activate.s2");
+        
         view.on("done.s2", $.stopsPropagation($.ignoresEvent(function(view) {
-          if (view === component.view[0]) owner.childDone(controller, "done", {});
+          if (view === component.view[0]) controller.emit("controllerDone"); 
           return true;
         })));
         return this;
@@ -45,6 +50,6 @@ define([
       release: function() {
         // There isn't much to do here!
       }
-    };
+    });
   }
 });

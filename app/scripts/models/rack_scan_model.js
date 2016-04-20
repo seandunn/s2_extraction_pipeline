@@ -1,3 +1,6 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define([
   'models/base_page_model'
   , 'mapper/operations'
@@ -29,7 +32,7 @@ define([
 
       return getTubesOnRack(model, locationsSortedByBarcode)
         .fail(function (error) {
-          model.owner.childDone(model, "error", error.message);
+          return error.message;
         })
         .then(function (inputTubes) {
           model.inputs = $.Deferred().resolve(inputTubes).promise();
@@ -60,29 +63,34 @@ define([
     },
 
     createOutputs: function(printer) {
-      var model = this;
-      var root;
-      return model.owner.getS2Root().then(function(result) {
-        root = result;
-        return Operations.registerLabware(
-          root[model.config.output[0].model],
-          model.config.output[0].aliquotType,
-          model.config.output[0].purpose,
-          {
-            number_of_rows:     8,
-            number_of_columns:  12,
-            tubes:              model.preparedTransferData
-          });
-      }).then(function (state) {
-        model.cache.push(state.labware);
-        model.owner.childDone(model, 'outputsReady', {});
-        return state.labware;
-      }).then(function(rack){
-        model.printBarcodes([rack], printer);
-        return rack;
-      }).fail(function () {
-        $('body').trigger("error.status.s2", "Impossible to create the rack.");
-      });
+      var model = this,
+          root;
+
+      return model.owner.getS2Root()
+        .then(function(result) {
+          root = result;
+          return Operations.registerLabware(
+            root[model.config.output[0].model],
+            model.config.output[0].aliquotType,
+            model.config.output[0].purpose,
+            {
+              number_of_rows:     8,
+              number_of_columns:  12,
+              tubes:              model.preparedTransferData
+            });
+        })
+        .then(function (state) {
+          model.cache.push(state.labware);
+          model.owner.childDone(model, 'outputsReady', {});
+          return state.labware;
+        })
+        .then(function(rack){
+          model.printBarcodes([rack], printer);
+          return rack;
+        })
+        .fail(function () {
+          $('body').trigger("error.status.s2", "Unable to create the rack.");
+        });
     },
 
     fire: function(printer) {
@@ -103,9 +111,10 @@ define([
         .then(function (result) {
           rack = result;
           return model.inputs;
-        }).fail(function () {
+        }).fail(function (errorObj) {
+          var errorMsg = JSON.parse(errorObj.responseText).general.join("\n");
           deferred.reject({
-            message: "Couldn't load the input tubes! Contact the administrator of the system."
+            message: errorMsg || "Couldn't load the input tubes! Contact the administrator of the system."
           });
         }).then(function (result) {
           inputs = result;
@@ -151,8 +160,9 @@ define([
   });
 
   function getTubesOnRack(model, locationsSortedByBarcode) {
-    var inputBarcodes = _.keys(locationsSortedByBarcode);
-    var searchDeferred = $.Deferred();
+    var inputBarcodes = _.keys(locationsSortedByBarcode),
+        searchDeferred = $.Deferred();
+
     model.owner.getS2Root()
       .then(function (root) {
           return root.tubes.searchByBarcode().ean13(inputBarcodes).all();
@@ -174,6 +184,7 @@ define([
           }
           return searchDeferred.resolve(inputTubes);
       });
+
     return searchDeferred.promise();
   }
 

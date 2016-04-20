@@ -1,0 +1,39 @@
+.ROLE-samples-qc_gel-imager-rna,.ROLE-samples-qc_gel-imager-rna-done,.ROLE-samples-qc_gel-imager-dna,.ROLE-samples-qc_gel-imager-dna-done{
+input.btn.imager {
+  opacity: 0; 
+  width: 5em;
+}
+
+.btn.imager {
+  cursor: pointer;
+}
+
+div.imager button.select {
+  margin-right: -65px;
+}
+
+input.imager {
+  padding: 0 0;
+}
+
+button.imager {
+  margin-right: 5px;
+}
+
+div.imager {
+margin-top: 1.5em;
+}
+
+div.resource {
+	height: 15em;
+}
+.imager { text-align: center; }
+
+button.imager {
+	z-index: 1001;
+}
+
+.filename {
+  float: right;	
+}
+}

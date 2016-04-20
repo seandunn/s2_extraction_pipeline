@@ -1,11 +1,15 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define([
   "text!app-components/labware/_display.html",
+  "labware/presenter",  
   'app-components/labware/plate_like',
   'app-components/labware/tube_like',
 
   // Global namespace requirements
   "lib/jquery_extensions"
-], function(View) {
+], function(View, LabwarePresenter) {
   'use strict';
 
   var template = _.compose($, _.template(View));
@@ -34,7 +38,12 @@ define([
 
   function UnspecifiedLabwarePresenter(view, labware) {
     if (_.isUndefined(labware)) return;
-    var display = Presenters[labware.resourceType];
-    display(view, labware);
+    var type = labware.resourceType || (labware.resource && labware.resource.resourceType);
+    if (!type) {
+      type = labware.expected_type;
+      labware=null;
+    }
+    var display = Presenters[type];
+    display(view, LabwarePresenter.presentResource(labware));
   }
 });

@@ -1,4 +1,7 @@
-define([ 'text!pipeline_config.json' ], function (pipelineJSON) {
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
+define([ 'text!pipeline_config-DO_NOT_DIRECTLY_EDIT.json' ], function (pipelineJSON) {
 
   var pipelineConfig = JSON.parse(pipelineJSON);
 
@@ -17,29 +20,29 @@ define([ 'text!pipeline_config.json' ], function (pipelineJSON) {
     }
   }
 
-  function byRole(activeRole){
-    return function(workflow){
-      return _.find(workflow.accepts, function(role){ return role === activeRole; });
-    };
-  }
-
   var getMatchingRoleDataFromItems = function (items) {
     var items = itemFilterOnStatus(items, 'done');
     if (items.length === 0){
       // no 'done' role <=> spent batch
-      return pipelineConfig['spentBatch'];
+      return new $.Deferred().reject("This labware is not in use anymore.");
     }
 
     var activeRole     = _.chain(pipelineConfig.role_priority).find(firstMatchingRoleOnItems(items)).value();
 
-    var foundWorkflows = pipelineConfig.workflows.filter(byRole(activeRole));
+    var foundWorkflows = pipelineConfig.workflows.filter(function(workflow) {
+      return workflow.accepts === activeRole;
+    });
 
     // no controller to deal with this role -> summary page
     if(foundWorkflows.length < 1){
       foundWorkflows.push(pipelineConfig.unknownRole);
+      return new $.Deferred().reject("The role selected ["+activeRole+"] was not defined in the actual workflows. Please contact administrator")
     }
 
-    if (foundWorkflows.length > 1) throw "More than 1 workflow active. I've made a terrible mistake!";
+    // I've made a terrible mistake!
+    if (foundWorkflows.length > 1) { 
+      return new $.Deferred().reject("More than 1 workflow active. Please contact administrator."); 
+    }
 
     return foundWorkflows[0];
   };
@@ -48,7 +51,6 @@ define([ 'text!pipeline_config.json' ], function (pipelineJSON) {
   var nextWorkflow = function(model) {
     var itemsPromise;
 
-    if (!model.user) return $.Deferred().resolve().promise();
     if (!model.batch && !model.labware) return $.Deferred().resolve().promise();
     if (!model.batch) {
       itemsPromise = model.labware.order().then(function(order) {

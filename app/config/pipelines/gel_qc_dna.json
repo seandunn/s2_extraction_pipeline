@@ -1,0 +1,170 @@
+{
+  "role_priority": [
+   "samples.qc_gel.imager.dna",
+   "samples.qc_gel.imager.dna.done",
+   "samples.qc_gel.fx.dna",
+   "samples.qc_gel.fx.dna.batched",
+   "samples.qc_gel.ebase.dna.batched"
+  ],
+
+  "workflows": [
+    {
+      "accepts": "samples.qc_gel.fx.dna",
+      "controllerName":"selection_page_controller",
+      "processTitle": "DNA QC - Gel FX",
+      "buttonTitle": "Continue",
+      "capacity": 4,
+      "input":        {
+        "role":"samples.qc_gel.fx.dna",
+        "model":"plates"
+      },
+      "output": [{
+        "role": "samples.qc_gel.fx.dna.batched"
+      }]
+    },
+
+    {
+      "accepts":        "samples.qc_gel.fx.dna.batched" ,
+      "controllerName": "step_controller",
+      "printerType": 1,
+      "defaultPrinter":"k114bc",
+      "buttons": [{ "action": "print", "title": "Print labels", "alwaysEnabled": true },
+                  { "action": "start", "title": "Begin FX" },
+                  { "action": "end",   "title": "Finished NX" },
+                  { "action": "next",  "title": "Done" }
+      ],
+      "processTitle":  "DNA QC - Gel FX",
+      "controllers": [{
+        "controllerName": "robot_controller",
+        "group": "fx"
+      },
+      {
+        "controllerName":   "connected_controller",
+        "behaviours": {
+          "start": "start",
+          "operate": "start",
+          "complete": "end",
+          "done": "next",
+          "outputs": "print"
+        },
+        "rowBehaviour":  "bedVerification",
+        "input": {
+          "role":  "samples.qc_gel.fx.dna.batched",
+          "model": "plates",
+          "title": "Working Dillution",
+          "bedTracking": true
+        },
+        "output": [{
+          "role": "samples.qc_gel.ebase.dna.batched",
+          "aliquotType":  "DNA",
+          "purpose":     "gel plate",
+          "model":       "gels",
+          "title":      "Gel",
+          "attributes":  {
+            "number_of_rows": 8,
+            "number_of_columns": 12
+          },
+          "bedTracking": true
+        }]
+      }]
+    },
+    {
+      "accepts":        "samples.qc_gel.ebase.dna.batched" ,
+      "controllerName": "step_controller",
+      "defaultPrinter":"k114bc",
+      "printerType": 1,
+      "buttons": [{ "action": "start", "title": "Begin E-Base" },
+                  { "action": "end",   "title": "Finished E-Base" },
+                  {"action": "next",   "title": "Done"}
+      ],
+      "processTitle":  "DNA QC - Gel E-Base",
+      "controllers": [{
+        "controllerName": "robot_controller",
+        "group": "ebase"
+      },
+      {
+        "controllerName":   "connected_controller",
+        "behaviours": {
+          "start": "start",
+          "operate": "start",
+          "complete": "end",
+          "done": "next"
+        },
+        "rowBehaviour":  "bedRecording",
+        "input": {
+          "role":  "samples.qc_gel.ebase.dna.batched",
+          "model": "gels",
+          "title": "Gel",
+          "bedTracking": true
+        },
+        "output": [{
+          "role": "samples.qc_gel.imager.dna",
+          "aliquotType":  "DNA",
+          "purpose":     "gel plate",
+          "model":       "gels",
+          "title":      "Gel",
+          "not_batched":true
+        }]
+      }]
+    },
+
+    {
+      "accepts":        "samples.qc_gel.imager.dna" ,
+      "controllerName": "imager",
+      "defaultPrinter":"k114bc",
+      "processTitle":  "DNA QC - Gel Imager",
+      "printerType": 1,
+      "buttons": [{ "action": "start", "title": "Begin Imager" },
+                  { "action": "end",   "title": "End Imager" },
+                  { "action": "select",   "title": "Select Image" },
+                  { "action": "next",   "title": "Upload" }
+      ],
+      "behaviours": {
+        "start": "start",
+        "operate": "start",
+        "complete": "end",
+        "done": "next"
+      },
+      "input": {
+        "role":  "samples.qc_gel.imager.dna",
+        "model": "gels",
+        "title": "Gel"
+      },
+      "output": [{
+        "role":  "samples.qc_gel.imager.dna.done",
+        "model": "gels",
+        "aliquotType":  "DNA",
+        "title": "Gel"
+      }]
+    },
+    {
+      "accepts":        "samples.qc_gel.imager.dna.done" ,
+      "controllerName": "imager",
+      "defaultPrinter":"k114bc",
+      "processTitle":  "DNA QC - Gel Imager",
+      "printerType": 1,
+      "buttons": [{ "action": "start", "title": "Begin Imager" },
+                  { "action": "end",   "title": "End Imager" },
+                  { "action": "select",   "title": "Select Image" },
+                  { "action": "next",   "title": "Upload" }
+      ],
+      "behaviours": {
+        "start": "start",
+        "operate": "start",
+        "complete": "end",
+        "done": "next"
+      },
+      "input": {
+        "role":  "samples.qc_gel.imager.dna.done",
+        "model": "gels",
+        "title": "Gel"
+      },
+      "output": [{
+        "role":  "samples.qc_gel.imager.dna.done",
+        "model": "gels",
+        "aliquotType":  "DNA",
+        "title": "Gel"
+      }]
+    }
+  ]
+}

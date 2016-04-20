@@ -1,3 +1,6 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define([
       'controllers/base_controller',
        'models/connected',
@@ -22,31 +25,73 @@ define([
       this.rowControllers    = [];
       this.controllerFactory = controllerFactory;
       this.template         = _.template(Template);
+      
       return this;
     },
+    
+   
 
     setupController:function (input_model, jquerySelection) {
       this.jquerySelection = jquerySelection;
       // send busy message
-      var thisController = this;
-      thisController.jquerySelection().trigger("start_process.busybox.s2");
+      this.jquerySelection().trigger("start_process.busybox.s2");
       this.model.setBatch(input_model.batch)
-          .then(function(){
-            thisController.jquerySelection().trigger("end_process.busybox.s2");
-          }).fail(function(error){
-            PubSub.publish("error.status.s2", thisController, error);
-            thisController.jquerySelection().trigger("end_process.busybox.s2");
-          }).then(function(){
-            thisController.jquerySelection().html(thisController.template({nbRow:12}));
-            thisController.setupSubControllers();
-          });
+          .then(_.bind(function(){
+            this.jquerySelection().trigger("end_process.busybox.s2");
+          }, this)).fail(_.bind(function(error){
+            PubSub.publish("error.status.s2", this, error);
+            this.jquerySelection().trigger("end_process.busybox.s2");
+          }, this)).then(_.bind(function(){
+            // TODO:
+            // This 96 MUST be read from pipeline config
+            this.jquerySelection().html(this.template({nbRow:96}));
+            this.setupSubControllers();
+          }, this));
+      this.attachHandlers();
       return this;
     },
+    
+    attachHandlers: function() {
+      this.model.addListeners({
+        "outputsReady": _.bind(this.resetSubControllers, this),
+        "successfulOperation": _.bind(this.operateOnNextRowUnset, this),
+        "startOperation": _.bind(this.transferStarted, this),
+        "completeOperation": _.bind(this.transferCompleted, this),
+        "barcodePrintSuccess": _.bind(this.owner.onBarcodePrintSuccess, this.owner),
+        "barcodePrintFailure": _.bind(this.owner.onBarcodePrintFailure, this.owner),
+        "inputRemoved": _.bind(this.onInputRemoved, this),
+        "outputRemoved": _.bind(this.onOutputRemoved, this),
+        "completedRow": _.bind(this.onCompletedRow, this),
+        "inputBarcodeScanned": _.bind(this.onInputBarcodeScanned, this),
+        "outputBarcodeScanned": _.bind(this.onOutputBarcodeScanned, this)
+      });
+    },
+    
+    onCompletedRow: function(childController) {
+      this.model.operate('row', [childController]);
+      if (this.checkPageComplete()) {
+        this.emit("renderCompleteRowDone");
+      }
+    },
+    
+    onBarcodePrintSuccess: function() {
+      return this.owner.onBarcodePrintSuccess.apply(this, arguments);
+    },
+    
+    onBarcodePrintFailure: function() {
+      return this.owner.onBarcodePrintFailure.apply(this, arguments);
+    },    
 
+    resetSubControllers: function() {
+      this.model.ready = true;
+      this.setupSubControllers(true);
+      this.emit("printingFinished");
+    },
+    
     setupSubControllers: function(reset) {
       var thisController = this;
       this.model.setupInputControllers(reset)
-          .then(function(){
+          .then(_.bind(function(){
             var currentController = _.find(thisController.rowControllers, function (controller) {
               return !controller.isRowComplete();
             });
@@ -62,10 +107,9 @@ define([
               currentController.unlockRow();
             }
             if(thisController.model.started){
-              thisController.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
-              thisController.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
+              this.emit("renderStartedProcess"); 
             }
-          });
+          }, this));
       return this;
     },
     
@@ -86,155 +130,128 @@ define([
     childDone:function (child, action, data) {
       if (child === this.currentView) {
         this.currentViewDone(child, action, data);
-      } else if (child === this.model) {
-        this.modelDone(child, action, data);
       } else {
         this.unknownDone(child, action, data);
       }
     },
 
-    unknownDone:function (child, action, data) {
-      var originator = data.origin, controller = this;
-      if (action === 'inputBarcodeScanned') {
-        controller.model.inputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
-          controller.model.inputs.pull(resource);
-        }).done(function() {
-          controller.focus();
-        });
-      } else if (action === 'outputBarcodeScanned') {
-        controller.model.outputs.getByBarcode(originator, data.modelName, data.BC).done(function(resource) {
-          controller.model.outputs.pull(resource);
-        }).done(function() {
-          controller.focus();
-        });
-      } else if (action === 'inputRemoved') {
-        this.model.inputs.push(data.resource);
-        controller.owner.childDone(controller, "disableBtn", {buttons:[{action:"start"}]});
-      } else if (action === 'outputRemoved') {
-        this.model.outputs.push(data.resource);
-        controller.owner.childDone(controller, "disableBtn", {buttons:[{action:"start"}]});
-      } else if (action === 'completed') {
-        this.rowDone(child, action, data);
-      }
+    onInputBarcodeScanned: function(controller, data) {
+      var originator = data.origin, controller = this, promise = data.promise;
+      
+      this.model.inputs.getByBarcode(originator, data.modelName, data.BC)
+      .then(promise.resolve, promise.reject)
+      .done(_.bind(function(resource) {
+        this.model.inputs.pull(resource);
+      }, this)).done(_.bind(function() {
+        this.focus();
+      }, this));      
     },
-
-    rowDone: function(child, action, data) {
-      if (action === 'completed') {
-        this.model.operate('row', [child]);
-        if (this.checkPageComplete()) {
-          this.owner.childDone(this, "enableBtn", {buttons:[{action:"start"}]});
-        }
-      }
+    
+    onOutputBarcodeScanned: function(controller, data) {
+      var originator = data.origin, controller = this, promise = data.promise;
+      
+      this.model.outputs.getByBarcode(originator, data.modelName, data.BC)
+        .then(promise.resolve, promise.reject).done(_.bind(function(resource) {
+          this.model.outputs.pull(resource);
+        }, this)).done(_.bind(function() {
+          this.focus();
+        }, this));      
     },
-
-    modelDone: function(child, action, data) {
-
-      if (action === 'outputsReady') {
-        this.model.ready = true;
-        this.setupSubControllers(true);
-        PubSub.publish("printing_finished.step_controller.s2", this);
-
-      } else if (action === "barcodePrintSuccess") {
-
-        PubSub.publish("message.status.s2", this, {message: 'Barcode labels printed'});
-        PubSub.publish("printing_finished.step_controller.s2", this);
-        this.owner.childDone(this, "disableBtn", {buttons:[{action:"print"}]});
-
-      } else if (action === "barcodePrintFailure") {
-
-        PubSub.publish("error.status.s2", this, {message: 'Barcode labels could not be printed'});
-        PubSub.publish("printing_finished.step_controller.s2", this);
-        this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
-
-      } else if (action === "startOperation") {
-
+    
+    onInputRemoved: function() {
+      this.model.inputs.push(data.resource);
+      this.emit("inputRemoved");
+    },
+    onOutputRemoved: function() {
+      this.model.outputs.push(data.resource);
+      this.emit("outputRemoved");
+    },
+    transferStarted: function() {
+      if (_.isUndefined(this.model.started)) {
         this.model.started = true;
-        PubSub.publish("message.status.s2", this, {message: 'Transfer started'});
-        this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
-        this.owner.childDone(this, "enableBtn", {buttons:[{action:"end"}]});
-
-      } else if (action === "completeOperation") {
-
-        PubSub.publish("message.status.s2", this, {message: 'Transfer completed'});
-        this.owner.childDone(this, "disableBtn", {buttons:[{action:"start"}]});
-        if (this.checkPageComplete()) {
-          this.owner.childDone(this, "enableBtn", {buttons:[{action:"next"}]});
-        }
-
-        var that = this;
-        this.model.behaviours.done.transfer(function() {
-          that.owner.childDone(that, "done", { batch:that.model.batch });
+        this.emit("processBegin")
+      }
+      this.emit("transferStarted");
+    },
+    
+    transferCompleted: function() {
+      this.model.behaviours.done.transfer(_.bind(function() {
+        this.emit("controllerDone", {
+          batch: this.model.batch,
+          user: this.owner.config.login,
+          scanNewIfNotFound: true
         });
-
-      } else if (action === "successfulOperation") {
-        // locks the rowControllers which have successfully completed their operations
-        _.each(data, function(controller){
-          controller.lockRow();
-        });
-
-        // find the index of the last rowController which has successfully completed its operations
-        var lastIndex = -1;
-        _.each(this.rowControllers,function(rowController, index){
-          if (_.contains(data,rowController)){
-            lastIndex = lastIndex < index ? index : lastIndex;
-          }
-        });
-        // if there is at least one controller after...
-        if (lastIndex+1 < this.rowControllers.length){
-          // we unlock it
-          this.rowControllers[lastIndex+1].unlockRow();
-        }
+      }, this));
+      
+      this.emit("transferCompleted");      
+      if (this.checkPageComplete()) {
+        this.emit("processFinished");        
       }
     },
+    
+    operateOnNextRowUnset: function(successfulRowControllers) {
+      // locks the rowControllers which have successfully completed their operations
+      _.each(successfulRowControllers, function(controller){
+        controller.lockRow();
+      });
 
+      // find the index of the last rowController which has successfully completed its operations
+      var lastIndex = -1;
+      _.each(this.rowControllers,function(rowController, index){
+        if (_.contains(successfulRowControllers,rowController)){
+          lastIndex = lastIndex < index ? index : lastIndex;
+        }
+      });
+      // if there is at least one controller after...
+      if (lastIndex+1 < this.rowControllers.length){
+        // we unlock it
+        this.rowControllers[lastIndex+1].unlockRow();
+      }
+    },
+    
     readyToCreateOutputs: function() {
       return !this.model.started;
     },
 
-    currentViewDone: function(child, action, data) {
+    currentViewDone: function() {
     },
 
     initialController: function() {
       this.model.previous = true;
-      this.owner.childDone(this, "enableBtn", {buttons:[{action:"print"}]});
+      this.emit("printReady");
     },
 
-    previousDone: function(child, action, data) {
+    previousDone: function() {
       this.model.previous = true;
     },
 
-    print: function(child, action, data) {
+    print: function() {
       if (this.readyToCreateOutputs()) {
-        PubSub.publish("printing_started.step_controller.s2", this);
-        this.model.createOutputs(data);
+        this.emit("printingStarted");
+        this.model.createOutputs(this.owner.getPrinterSelected());
       }
     },
 
-    next:  function(child, action, data){
-      var controller = this;
-
-      this.model.behaviours.done[action](
-        function(){ controller.owner.childDone(controller, 'done') },
-        function(){ eventHandler.call(controller, child, action, data); }
-      )
+    next:  function(){
+      return actionOperation.call(this, "next");
     },
 
-    start: eventHandler,
+    start: _.partial(actionOperation, "start"),
 
-    end:   eventHandler
+    end:   _.partial(actionOperation, "end")
   });
   return Controller;
 
-  function eventHandler(child, action, data) {
+  function actionOperation(action) {
     if (this.checkPageComplete()) {
-      var that = this;
-      that.model.operate(action, that.rowControllers);
-      that.model.behaviours.done[action](function() {
-        that.owner.childDone(that, "done", {
-          batch: that.model.batch,
-          user: that.model.user
-        });
-      });
+      this.model.operate(action, this.rowControllers);
+      this.model.behaviours.done[action](_.bind(function() {
+        this.emit("controllerDone", {
+          batch: this.model.batch,
+          user: this.owner.config.login,
+          scanNewIfNotFound: true
+        })
+      }, this));
     }
   }
 });

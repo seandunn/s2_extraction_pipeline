@@ -1,3 +1,6 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define([
   "lib/underscore_extensions"
 ], function() {
@@ -21,7 +24,7 @@ define([
 
   // This is a mixin for classes that wish to do labware presentation.
   return function(resource) {
-    var presenter = resourceTypeToLabwareDataMappers[resource.resourceType] || _.identity;
+    var presenter = (resource && resource.resourceType && resourceTypeToLabwareDataMappers[resource.resourceType]) || _.identity;
     return presenter(resource);
   };
 
@@ -59,15 +62,20 @@ define([
     fields.unshift(barcodeLookup);
 
     // Fields that are not already functions are turned into the appropriate picker so that we can
-    // then use a collapser to build oour final object.
+    // then use a collapser to build oour final object
     var pickers   = _.map(fields, function(field) { return _.isFunction(field) ? field : _.picker(field) });
     var collapser = _.collapser(pickers);
 
     return function(labware) {
-      return collapser(
+      var resourcePresented = collapser(
         (labware.tracked === false) ? {} : detailsHelper(labware),
         labware
       );
+      resourcePresented.attributes = {
+        number_of_rows: labware.number_of_rows,
+        number_of_columns: labware.number_of_columns
+      };
+      return resourcePresented;
     };
   }
 

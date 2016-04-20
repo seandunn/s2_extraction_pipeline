@@ -40,11 +40,15 @@
       "columnName": "_PROCESS",
       "friendlyName": "Workflow",
       "type":       "select",
-      "options":    [
-        "DNA & RNA Manual",
-        "DNA & RNA QIAcube",
-        "Micro RNA QIAcube"
-      ],
+        "options": [
+          "DNA & RNA Manual",
+          "DNA & RNA QIAcube",
+          "Micro RNA QIAcube",
+          "DNA Only Extraction",
+          "RNA Only Extraction",
+          "DNA Purification",
+          "Send to New Location"
+        ],
       "default": "DNA & RNA QIAcube"
     }
   }

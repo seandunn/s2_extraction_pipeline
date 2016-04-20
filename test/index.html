@@ -9,12 +9,14 @@
     <div id="mocha"></div>
     <script src="lib/mocha/mocha.js"></script>
     <script>
+        
         mocha.setup({
             ui: 'bdd',
             ignoreLeaks: false,
             bail: false,
             globals: ['WUIE_delays']
         });
+            
     </script>
     
     <!-- assertion framework -->
@@ -25,7 +27,6 @@
 
     <!-- include source files here... -->
     <script src="../app/components/jquery/jquery.min.js"></script>
-    <script src="../app/components/jquery-csv/src/jquery.csv.js"></script>
     <script src="../app/components/underscore/underscore.js"></script>
 
     <!-- include spec files here... -->

@@ -1,0 +1,48 @@
+#step1 {
+    margin-bottom: 1.5em;
+}
+
+.left {
+  float: left;
+  width: 40%;
+}
+
+.right {
+  float: right;
+  width: 40%;
+}
+
+.transferArrow.span1.offset1 {
+    padding-top: 0;
+    text-align: center;
+    margin-left: 0;
+}
+
+ol.labware-selection div.resource {
+  width: 100%;
+}
+
+.bed-recording div.resource {
+    margin-top: 5px;
+    width: 30%;
+}
+
+.linear-process {
+    clear: both;
+}
+
+.bed-recording .barcode-scanner span.add-on {
+	width: 10em;
+	text-align: left;
+}
+
+.bed-verification .transferArrow.span1.offset1 {
+    padding-top: 19px;
+    padding-left: 30px;
+}
+
+.labware-without-bed {
+	input,span {
+	   display: none !important;
+    }
+}

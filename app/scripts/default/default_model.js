@@ -1,3 +1,6 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define([
     'config'
   , 'models/base_page_model'
@@ -16,46 +19,41 @@ define([
     setLabwareFromBarcode: function (barcode) {
       var defaultModel = this;
       var deferred = $.Deferred();
-      this.cache.fetchResourcePromiseFromBarcode(barcode)
-          .fail(function(){
-            return deferred.reject({message:"Couldn't find any labware with a '"+barcode+"' barcode!"});
-          })
-          .then(function (labware) {
-            defaultModel.labware = labware;
-            return labware.order();
-          })
-          .then(function (order) {
-            return order.batchFor(function (item) {
-              return item.uuid === defaultModel.labware.uuid;
-            });
-          })
-          .then(function (batch) {
-            defaultModel.batch = batch;
-            return deferred.resolve(defaultModel);
-          })
-          .fail(function () {
-            // we resolve the promise because we already have a labware
-            // we simply didn't find a batch associated.
-            return deferred.resolve(defaultModel);
-          });
-      return deferred.promise();
-    },
 
-    setUserFromBarcode: function (barcode) {
-      var defaultModel = this;
-      var deferred = $.Deferred();
-      if (config.UserData[barcode]){
-        this.user = config.UserData[barcode];
-        this.owner.getS2Root(this.user);
-        deferred.resolve(this);
-      } else {
-        deferred.reject({message:"User barcode not recognised."});
-      }
-      return deferred.promise();
-    },
+      defaultModel
+      .cache
+      .fetchResourcePromiseFromBarcode(barcode)
 
-    isValid: function(){
-      return this.user && this.labware;
+      .then(function (labware) {
+        defaultModel.labware = labware;
+        return labware.order();
+      },
+      function () {
+        return deferred.reject({message:"Couldn't find any labware with a '"+barcode+"' barcode!"});
+      })
+
+      .then(function (order) {
+        return order.batchFor(function (item) {
+          return item.uuid === defaultModel.labware.uuid && item.status==="done";
+        });
+      }, 
+      function() {
+        return deferred.reject({message:"Couldn't find an order associated with the barcode '"+barcode+"'!"});
+      })
+
+      .then(function (batch) {
+        defaultModel.batch = batch;
+        return deferred.resolve(defaultModel);
+      },
+      function () {
+        // We reset the batch from the previous value it had on the model and
+        // we resolve the promise because we already have a labware
+        // we simply didn't find a batch associated.        
+        defaultModel.batch = null; 
+        return deferred.resolve(defaultModel);
+      });
+
+      return deferred.promise();
     }
 
   });

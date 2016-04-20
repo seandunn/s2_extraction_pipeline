@@ -10,7 +10,7 @@
    version="1.1"
    width="100%"
    height="100%"
-   viewBox="0 0 350 250"
+   viewBox="0 0 350 255"
 >
   <defs
      id="defs8428">
@@ -1348,7 +1348,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="A3"
+       class="A3"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="116.06335"
@@ -1356,7 +1356,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="B3"
+       class="B3"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="116.06335"
@@ -1364,7 +1364,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="C3"
+       class="C3"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="116.06335"
@@ -1372,7 +1372,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="D3"
+       class="D3"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="116.06335"
@@ -1380,7 +1380,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="E3"
+       class="E3"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="116.06335"
@@ -1388,7 +1388,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="F3"
+       class="F3"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="116.06335"
@@ -1396,7 +1396,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="G3"
+       class="G3"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="116.06335"
@@ -1404,7 +1404,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="H3"
+       class="H3"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="143.32953"
@@ -1412,7 +1412,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="A4"
+       class="A4"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="143.32953"
@@ -1420,7 +1420,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="B4"
+       class="B4"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="143.32953"
@@ -1428,7 +1428,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="C4"
+       class="C4"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="143.32953"
@@ -1436,7 +1436,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="D4"
+       class="D4"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="143.32953"
@@ -1444,7 +1444,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="E4"
+       class="E4"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="143.32953"
@@ -1452,7 +1452,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="F4"
+       class="F4"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="143.32953"
@@ -1460,7 +1460,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="G4"
+       class="G4"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="143.32953"
@@ -1468,7 +1468,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="H4"
+       class="H4"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="170.59572"
@@ -1476,7 +1476,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="A5"
+       class="A5"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="170.59572"
@@ -1484,7 +1484,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="B5"
+       class="B5"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="170.59572"
@@ -1492,7 +1492,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="C5"
+       class="C5"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="170.59572"
@@ -1500,7 +1500,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="D5"
+       class="D5"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="171.68637"
@@ -1508,7 +1508,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="E5"
+       class="E5"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="170.59572"
@@ -1516,7 +1516,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="F5"
+       class="F5"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="170.59572"
@@ -1524,7 +1524,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="G5"
+       class="G5"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="170.59572"
@@ -1532,7 +1532,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="H5"
+       class="H5"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="197.86191"
@@ -1540,7 +1540,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="A6"
+       class="A6"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="197.86191"
@@ -1548,7 +1548,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="B6"
+       class="B6"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="197.86191"
@@ -1556,7 +1556,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="C6"
+       class="C6"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="197.86191"
@@ -1564,7 +1564,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="D6"
+       class="D6"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="197.86191"
@@ -1572,7 +1572,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="E6"
+       class="E6"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="197.86191"
@@ -1580,7 +1580,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="F6"
+       class="F6"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="197.86191"
@@ -1588,7 +1588,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="G6"
+       class="G6"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="197.86191"
@@ -1596,7 +1596,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="H6"
+       class="H6"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="226.21873"
@@ -1604,7 +1604,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="A7"
+       class="A7"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="226.21873"
@@ -1612,7 +1612,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="B7"
+       class="B7"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="226.21873"
@@ -1620,7 +1620,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="C7"
+       class="C7"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="226.21873"
@@ -1628,7 +1628,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="D7"
+       class="D7"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="226.21873"
@@ -1636,7 +1636,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="E7"
+       class="E7"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="226.21873"
@@ -1644,7 +1644,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="F7"
+       class="F7"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="226.21873"
@@ -1652,7 +1652,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="G7"
+       class="G7"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="226.21873"
@@ -1660,7 +1660,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="H7"
+       class="H7"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="253.48492"
@@ -1668,7 +1668,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="A8"
+       class="A8"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="253.48492"
@@ -1676,7 +1676,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="B8"
+       class="B8"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="253.48492"
@@ -1684,7 +1684,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="C8"
+       class="C8"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="253.48492"
@@ -1692,7 +1692,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="D8"
+       class="D8"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="253.48492"
@@ -1700,7 +1700,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="E8"
+       class="E8"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="253.48492"
@@ -1708,7 +1708,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="F8"
+       class="F8"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="253.48492"
@@ -1716,7 +1716,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="G8"
+       class="G8"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="253.48492"
@@ -1724,7 +1724,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="H8"
+       class="H8"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="280.75113"
@@ -1732,7 +1732,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="A9"
+       class="A9"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="280.75113"
@@ -1740,7 +1740,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="B9"
+       class="B9"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="280.75113"
@@ -1748,7 +1748,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="C9"
+       class="C9"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="280.75113"
@@ -1756,7 +1756,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="D9"
+       class="D9"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="280.75113"
@@ -1764,7 +1764,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="E9"
+       class="E9"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="280.75113"
@@ -1772,7 +1772,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="F9"
+       class="F9"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="280.75113"
@@ -1780,7 +1780,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="G9"
+       class="G9"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="280.75113"
@@ -1788,7 +1788,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="H9"
+       class="H9"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="308.0173"
@@ -1796,7 +1796,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="A10"
+       class="A10"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="308.0173"
@@ -1804,7 +1804,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="B10"
+       class="B10"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="308.0173"
@@ -1812,7 +1812,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="C10"
+       class="C10"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="308.0173"
@@ -1820,7 +1820,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="D10"
+       class="D10"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="308.0173"
@@ -1828,7 +1828,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="E10"
+       class="E10"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="308.0173"
@@ -1836,7 +1836,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="F10"
+       class="F10"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="308.0173"
@@ -1844,7 +1844,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="G10"
+       class="G10"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="308.0173"
@@ -1852,7 +1852,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="H10"
+       class="H10"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="336.37415"
@@ -1860,7 +1860,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="A11"
+       class="A11"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="336.37415"
@@ -1868,7 +1868,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="B11"
+       class="B11"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="336.37415"
@@ -1876,7 +1876,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="C11"
+       class="C11"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="336.37415"
@@ -1884,7 +1884,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="D11"
+       class="D11"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="336.37415"
@@ -1892,7 +1892,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="E11"
+       class="E11"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="336.37415"
@@ -1900,7 +1900,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="F11"
+       class="F11"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="336.37415"
@@ -1908,7 +1908,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="G11"
+       class="G11"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="336.37415"
@@ -1916,7 +1916,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="H11"
+       class="H11"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="363.64032"
@@ -1924,7 +1924,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="A12"
+       class="A12"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="363.64032"
@@ -1932,7 +1932,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="B12"
+       class="B12"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="363.64032"
@@ -1940,7 +1940,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="C12"
+       class="C12"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="363.64032"
@@ -1948,7 +1948,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="D12"
+       class="D12"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="363.64032"
@@ -1956,7 +1956,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="E12"
+       class="E12"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="363.64032"
@@ -1964,7 +1964,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="F12"
+       class="F12"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="363.64032"
@@ -1972,7 +1972,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="G12"
+       class="G12"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <ellipse
        cx="363.64032"
@@ -1980,7 +1980,7 @@
        rx="10.906492"
        ry="11.032985"
        transform="matrix(0.91863078,0,0,0.92029063,-83.355461,738.42247)"
-       id="H12"
+       class="H12"
        style="stroke:#e6e6e6;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
     <text
        x="-55.138775"
@@ -2187,11 +2187,10 @@
      style="display:none">
     <tspan
        x="0"
-       y="245"
+       y="255"
        id="tspan6911">Barcode:</tspan>
     <tspan
-       x="100"
-       y="245"
-       id="tspan6913" />
+       y="255"
+       id="tspan6913" class="value"/>
   </text>
 </svg>

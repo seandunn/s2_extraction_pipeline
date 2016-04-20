@@ -88,6 +88,18 @@
       "columnName": "SCIENTIFIC NAME",
       "type": "string"
     },
+    "cell_type": {
+      "columnName": "CELL STATE",
+      "type": "string"
+    },
+    "growth_condition": {
+      "columnName": "FATE",
+      "type": "string"
+    },
+    "time_point": {
+      "columnName": "PASSAGE NUMBER",
+      "type": "string"
+    },
 
     "common_name": {
       "columnName": "COMMON NAME",

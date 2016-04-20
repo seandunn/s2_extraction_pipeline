@@ -1,3 +1,6 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define([
   'config'
   , 'test/lib/fake_user'
@@ -30,7 +33,6 @@ define([
           
           var app = {
             getS2Root: function () {
-              debugger;
               if (this.rootPromise === undefined) {
                 this.rootPromise = S2Root.load({user: "username"});
               }

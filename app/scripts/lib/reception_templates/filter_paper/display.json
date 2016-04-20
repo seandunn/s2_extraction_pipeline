@@ -33,8 +33,8 @@
       "columnName":   "_PROCESS",
       "friendlyName": "Workflow",
       "type":         "select",
-      "options":      ["DNA & RNA Bio Robot"],
-      "default":      "DNA & RNA Bio Robot"
+      "options":      ["DNA Bio Robot"],
+      "default":      "DNA Bio Robot"
     }
   }
 ]

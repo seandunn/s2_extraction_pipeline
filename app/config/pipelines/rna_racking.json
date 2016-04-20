@@ -1,0 +1,47 @@
+{
+  "role_priority": [
+    "samples.extraction.racking.fluidx_tube_rna"
+  ],
+  "workflows": [
+    {
+      "accepts": "samples.extraction.racking.fluidx_tube_rna",
+      "controllerName": "step_controller",
+      "defaultPrinter": "k114bc",
+      "printerType": 1,
+      "buttons": [
+        {
+          "action": "print",
+          "title": "Accept rack layout"
+        },
+        {
+          "action": "next",
+          "title": "Done"
+        }
+      ],
+      "processTitle": "Post RNA Extraction Racking - Rack Scanning",
+      "controllers": [
+        {
+          "controllerName": "rack_scan_controller",
+          "defaultPrinter": "k114bc",
+          "printerType": 1,
+          "model": "RackScanModel",
+          "input": {
+            "role": "samples.extraction.racking.fluidx_tube_rna",
+            "model": "tubes",
+            "title": "2D Extracted RNA Tube",
+            "validation": "2D_tube"
+          },
+          "output": [
+            {
+              "role": "samples.rack.stock.rna",
+              "aliquotType": "RNA",
+              "purpose": "stock",
+              "model": "tube_racks",
+              "title": "Tube Rack"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

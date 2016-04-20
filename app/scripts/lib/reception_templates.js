@@ -1,3 +1,6 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013-2015,2014 Genome Research Ltd.
 define([
   'lib/reception_templates/generators',
   'lib/reception_templates/readers',
@@ -5,9 +8,12 @@ define([
 
   // Add new templates after this comment and they will be automatically loaded
   'reception_templates/cgap_lysed',
+  'reception_templates/cgap_lysed_alt',
   'reception_templates/hmdmc_lysed',
+  'reception_templates/esdm',
   'reception_templates/general_plate',
-  'reception_templates/filter_paper'
+  'reception_templates/filter_paper',
+  'reception_templates/blood_manifest'
 ], function (Generators, Readers) {
   'use strict';
 
@@ -70,8 +76,8 @@ define([
       json_template:         JsonTemplater(createWrapper, templateTransform(template.templates.updates)),
       json_template_display: JsonTemplater(displayWrapper, displayTransform(template.templates.display)),
       validation:            template.validation || _.identity,
-      generator:             Generators[template.model](template, fieldMappers(template.templates.updates)),
-      reader:                Readers[template.model](template),
+      generator:             Generators[template.generator || template.model](template, fieldMappers(template.templates.updates)),
+      reader:                Readers[template.reader || template.model](template),
       emptyRow:              template.emptyRow || _.first
     });
   }
@@ -94,7 +100,7 @@ define([
   }
 
   // Recurses down the structure passed looking for the columnName definitions.  This builds a
-  // mapping from the header in the manifest to a function that converts a raw value to it's typed
+  // mapping from the header in the manifest to a function that converts a raw value to its typed
   // representation in the manifest.
   function fieldMappers(json) {
     return _.reduce(json, function(memo, value, field) {

@@ -1,0 +1,151 @@
+{
+  "role_priority": [
+    "samples.shipping.blood_!na.awaiting_shipping.awaiting_reception",
+    "samples.shipping.blood_!na.awaiting_shipping",
+    "samples.shipping.blood_!na.awaiting_shipping.batched",
+    "samples.extraction.lysing.prelysing.blood.awaiting_reception",
+    "samples.extraction.lysing.prelysing.blood",
+    "samples.extraction.lysing.prelysing.blood.batched"
+  ],
+  "workflows": [
+    {
+      "accepts": "samples.extraction.lysing.prelysing.blood.awaiting_reception",
+      "controllerName": "selection_page_controller",
+      "processTitle": "Receive Tubes",
+      "capacity": 96,
+      "input": {
+        "role": "samples.extraction.lysing.prelysing.blood.awaiting_reception",
+        "model": "tubes"
+      },
+      "output": [
+        {
+          "role": "samples.extraction.lysing.prelysing.blood",
+          "aliquotType": "blood",
+          "not_batched": true
+        }
+      ]
+    },
+    {
+      "accepts": "samples.extraction.lysing.prelysing.blood",
+      "controllerName": "selection_page_controller",
+      "processTitle": "Batch for Prelysing transfer",
+      "capacity": 96,
+      "input": {
+        "role": "samples.extraction.lysing.prelysing.blood",
+        "model": "tubes"
+      },
+      "output": [
+        {
+          "role": "samples.extraction.lysing.prelysing.blood.batched",
+          "aliquotType": "blood"
+        }
+      ]
+    },
+    {
+      "accepts": "samples.extraction.lysing.prelysing.blood.batched",
+      "controllerName": "step_controller",
+      "capacity": 96,
+      "printerType": 2,
+      "buttons": [
+        {
+          "action": "print",
+          "title": "Print labels"
+        },
+        {
+          "action": "next",
+          "title": "Next"
+        }
+      ],
+      "processTitle": "Prelysing transfer",
+      "controllers": [
+        {
+          "controllerName": "connected_controller",
+          "behaviours": {
+            "start": "row",
+            "operate": "row",
+            "complete": "row",
+            "done": "next",
+            "outputs": "print"
+          },
+          "input": {
+            "role": "samples.extraction.lysing.prelysing.blood.batched",
+            "model": "tubes",
+            "title": "Blood tube",
+            "aliquotType": "blood"
+          },
+          "output": [
+            {
+              "role": "samples.extraction.qiacube_dna_only.input_tube_blood",
+              "model": "tubes",
+              "purpose": "stock",
+              "title": "Blood tube",
+              "aliquotType": "blood",
+              "not_batched": true
+            }
+          ]
+        }
+      ]
+    },
+    { 
+      "accepts": "samples.shipping.blood_!na.awaiting_shipping.awaiting_reception",
+      "controllerName":"selection_page_controller",
+      "processTitle": "Sample Shipping - Reception",
+      "input": {
+        "role": "samples.shipping.blood_!na.awaiting_shipping.awaiting_reception",
+        "model": "tubes"
+      },
+      "output": [
+        {
+          "role": "samples.shipping.blood_!na.awaiting_shipping",
+          "model": "tubes",
+          "not_batched": true
+        }
+      ]
+    },
+    {
+      "accepts":  "samples.shipping.blood_!na.awaiting_shipping" ,
+      "controllerName":"selection_page_controller",
+      "processTitle": "Sample Shipping - Batching",
+      "input": {
+        "role": "samples.shipping.blood_!na.awaiting_shipping",
+        "model": "tubes"
+      },
+      "output": [
+        {
+          "role": "samples.shipping.blood_!na.awaiting_shipping.batched",
+          "model": "tubes"
+        }
+      ]
+    },
+    {
+      "accepts": "samples.shipping.blood_!na.awaiting_shipping.batched",
+      "processTitle": "Sample Shipping",
+      "controllerName": "step_controller",
+      "output": [
+        {
+          "role": "samples.shipping_blood_!na.shipped"
+        }
+      ],
+      "buttons": [
+        {
+          "action": "ship",
+          "title": "Ship Samples"
+        },
+        {
+          "action": "next",
+          "title": "Done"
+        }
+      ],
+      "controllers": [
+        {
+          "controllerName": "location_controller",
+          "output": [
+            {
+              "role": "samples.shipping.blood_!na.shipped"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

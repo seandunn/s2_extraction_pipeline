@@ -1,10 +1,14 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define([
   "text!html_partials/_rack_scan.html",
   "lib/pubsub",
-  "app-components/dropzone/dropzone"
-], function(partial, PubSub, dropZone) {
-  "use strict";
-
+  "app-components/dropzone/dropzone",
+  "event_emitter"
+], function(partial, PubSub, dropZone, EventEmitter) {
+  "use strict";  
+  
   var View = function(owner, selector) {
     this.owner    = owner;
     this.selector = selector;
@@ -13,7 +17,7 @@ define([
     return this;
   };
 
-  _.extend(View.prototype, {
+  _.extend(View.prototype, EventEmitter.prototype, {
     renderView: function(model) {
       var html = this.template({
         user: model.user,
@@ -23,34 +27,22 @@ define([
       var container = this.selector().empty().append(html);
       container.addClass(this.owner.model.containerName).addClass("pre-file");
 
-      // thisController is used until I can sort out these messy event handlers.
-      // NB. This sort of nonsense make me a sad panda :(
-      var thisController = this.owner;
       this.dropzone = dropZone(this);
       container.find(".dropzone").append(this.dropzone.view).on(this.dropzone.events);
-      container.on("dropzone.file", function(event, contents) {
-        thisController.model
-                      .analyseFileContent(contents)
-                      .then(function(scanModel){
-                        container.removeClass("pre-file').addClass('post-file");
-
-                        PubSub.publish("message.status.s2", thisController, {message: "File validated."});
-
-                        // We update the labware view but we've already translated it, so force the display to
-                        // be the identity, rather than the default mapping.
-                        thisController.labwareController.updateModel(scanModel.rack, _.identity);
-
-                        thisController.owner.childDone(this, "enableBtn", {buttons: [{action: "print"}]});
-                        thisController.owner.childDone(this, "enableBtn", {buttons: [{action: "end"}]});
-                      }, function (errorMessage) {
-                        PubSub.publish("error.status.s2", thisController, {message: errorMessage});
-                      });
-      });
+      
+      container.on("dropzone.file", _.bind(function(event, contents) {
+        this.emit("fileLoaded", contents);
+      }, this));
     },
 
     // TODO: should be triggered via an event
     disableDropZone:function(){
       this.dropzone.view.prop("disabled", true);
+    },
+    
+    updateToValidatedFile: function() {
+      var container = this.selector();
+      container.removeClass("pre-file').addClass('post-file");      
     },
 
     clear: function() {

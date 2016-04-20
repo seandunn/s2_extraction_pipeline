@@ -1,3 +1,6 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 // Generated on 2013-08-01 using generator-webapp 0.2.6
 'use strict';
 var LIVERELOAD_PORT = 35729;
@@ -26,13 +29,12 @@ module.exports = function (grunt) {
     grunt.initConfig({
         yeoman: yeomanConfig,
         watch: {
-            coffee: {
-                files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
-                tasks: ['coffee:dist']
-            },
-            coffeeTest: {
-                files: ['test/spec/{,*/}*.coffee'],
-                tasks: ['coffee:test']
+            pipeline: {
+              files: [
+                '<%= yeoman.app %>/config/pipelines/{,*/}*.json',
+                '<%= yeoman.app %>/scripts/lib/pipeline_config_schema.json'
+              ],
+              tasks: ['pipeline']
             },
             compass: {
                 files: [
@@ -49,6 +51,7 @@ module.exports = function (grunt) {
                     '<%= yeoman.app %>/*.html',
                     '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
                     '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
+                    '{.tmp,<%= yeoman.app %>}/scripts/app-components/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
                     '<%= yeoman.test %>/spec/{,*}*.js'
                 ]
@@ -73,6 +76,7 @@ module.exports = function (grunt) {
             },
             test: {
                 options: {
+                    port: 9001,
                     middleware: function (connect) {
                         return [
                             lrSnippet,
@@ -97,7 +101,7 @@ module.exports = function (grunt) {
                 path: 'http://localhost:<%= connect.options.port %>/index.html'
             },
             test: {
-                path: 'http://localhost:<%= connect.options.port %>/test/index.html'
+                path: 'http://localhost:<%= connect.test.options.port %>/test/index.html'
             }
         },
         clean: {
@@ -128,30 +132,14 @@ module.exports = function (grunt) {
             all: {
                 options: {
                     run: false,
-                    urls: ['http://localhost:<%= connect.options.port %>/test/index.html'],
-                    reporter: 'Nyan'
+                    urls: ['http://localhost:<%= connect.test.options.port %>/test/index.html']
                 }
             }
         },
-        coffee: {
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= yeoman.app %>/scripts',
-                    src: '{,*/}*.coffee',
-                    dest: '.tmp/scripts',
-                    ext: '.js'
-                }]
-            },
-            test: {
-                files: [{
-                    expand: true,
-                    cwd: 'test/spec',
-                    src: '{,*/}*.coffee',
-                    dest: '.tmp/spec',
-                    ext: '.js'
-                }]
-            }
+        pipeline: {
+          files: ['<%= yeoman.app %>/config/pipelines/*.json'],
+          outFile: '<%= yeoman.app %>/scripts/pipeline_config-DO_NOT_DIRECTLY_EDIT.json',
+          schemaPath: '<%= yeoman.app %>/scripts/lib/pipeline_config_schema.json'
         },
         compass: {
             options: {
@@ -313,14 +301,14 @@ module.exports = function (grunt) {
         },
         concurrent: {
             server: [
-                'compass',
-                'coffee:dist'
+                'compass'
             ],
             test: [
-                'coffee'
+                // 'coffee'
             ],
             dist: [
-                'coffee',
+                // 'coffee',
+              'pipeline',
                 'compass',
                 'imagemin',
                 // 'svgmin',
@@ -355,12 +343,16 @@ module.exports = function (grunt) {
         }
 
         if (target === 'test') {
-            return grunt.task.run(['clean:server', 'connect:test', 'open:test', 'watch']);
+            return grunt.task.run([
+                'open:test',
+                'connect:test:keepalive'
+            ]);
         }
 
         grunt.task.run([
             'clean:server',
             'concurrent:server',
+            'pipeline',
             'connect:livereload',
             'open:server',
             'watch'
@@ -374,8 +366,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('testAll', [
-        'test',
-        'cucumberjs'
+        'test'
     ]);
 
     grunt.registerTask('build', [
@@ -404,7 +395,7 @@ module.exports = function (grunt) {
             new_component = [new_path, name+".js"].join("/"),
             blueprint_component = [new_path, config.blueprintComponentName].join("/"),
             filesCreated = 0;
-        
+
         if (grunt.file.isDir(new_path)) {
             grunt.fail.fatal("Directory " + new_path + " already exists!");
         }
@@ -427,9 +418,76 @@ module.exports = function (grunt) {
         grunt.log.ok(filesCreated + " files created in " + new_path).ok();
     });
 
+    grunt.registerTask('pipeline', 'Verify and compile pipeline configs', function(){
+      grunt.log.subhead("Parsing pipeline configs...");
+      var JaySchema = require('jayschema');
+      var js = new JaySchema();
+
+      var options = grunt.config.get(this.name);
+
+      grunt.log.writeflags(options);
+      var schema = grunt.file.readJSON(options.schemaPath);
+
+      var filePath = options.files;
+
+      var files = grunt.file.expand(filePath);
+      var pipelineConfig = { role_priority: [], workflows: [] };
+      var configFile, errs;
+
+      for(var i in files){
+        configFile = grunt.file.readJSON(files[i]);
+
+        grunt.log.writeln('Processing '+files[i]);
+
+        errs       = js.validate(configFile, schema);
+        if (errs.length > 0) {
+          errs.map(function(schemaError){
+            grunt.log.errorlns('instanceContext: ' + schemaError.instanceContext);
+            grunt.log.errorlns('resolutionScope: ' + schemaError.resolutionScope);
+            grunt.log.errorlns('constaintName: '   + schemaError.constaintName);
+            grunt.log.errorlns('constaintValue: '  + schemaError.constaintValue);
+            grunt.log.errorlns('testedValue: '     + schemaError.testedValue);
+            grunt.log.writeln();
+            grunt.log.writeln();
+          });
+
+          grunt.fail.warn('Failed to parse piepline file: '+ files[i]);
+        }
+        else {
+          pipelineConfig.role_priority = pipelineConfig.role_priority.concat(configFile.role_priority);
+          pipelineConfig.workflows     = pipelineConfig.workflows.concat(configFile.workflows);
+          grunt.log.ok('...validated OK.');
+        }
+
+      }
+
+      grunt.log.writeln('Validating combined pipeline config file...');
+      errs = js.validate(configFile, schema);
+
+      if (errs.length > 0) {
+        errs.map(function(schemaError){
+          grunt.log.errorlns('instanceContext: ' + schemaError.instanceContext);
+          grunt.log.errorlns('resolutionScope: ' + schemaError.resolutionScope);
+          grunt.log.errorlns('constaintName: '   + schemaError.constaintName);
+          grunt.log.errorlns('constaintValue: '  + schemaError.constaintValue);
+          grunt.log.errorlns('testedValue: '     + schemaError.testedValue);
+          grunt.log.writeln();
+          grunt.log.writeln();
+        });
+
+        grunt.fail.warn('Validation failed');
+      }
+      else {
+        grunt.log.ok('...validated OK.');
+        grunt.log.ok('Writing combined pipeline_config to: '+options.outFile);
+        grunt.file.write(options.outFile, JSON.stringify(pipelineConfig));
+      }
+
+    });
+
     grunt.registerTask('default', [
-        'jshint',
-        'test',
-        'build'
+      'jshint',
+      'test',
+      'build'
     ]);
 };

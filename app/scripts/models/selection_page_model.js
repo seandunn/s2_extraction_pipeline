@@ -1,8 +1,11 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define([
-  'models/base_page_model'
-  , 'mapper/operations'
+  "models/base_page_model",
+  "mapper/operations"
 ], function (BasePageModel, Operations) {
-  'use strict';
+  "use strict";
 
   var SelectionPageModel = Object.create(BasePageModel);
 
@@ -12,7 +15,7 @@ define([
       this.inputs = $.Deferred();
       this.capacity = workflowConfig.capacity || 12;
       this.config = workflowConfig;
-      this.validators = [batchHasCapacity, labwareUniqueInBatch, labwareRoleIsEqual];
+      this.validators = [labwareTypeIsValid, batchHasCapacity, labwareUniqueInBatch, labwareRoleIsEqual];
 
       // Only add contentsAreEqual for tubes or spin columns
       if (this.config.output[0].aliquotType) {
@@ -40,19 +43,20 @@ define([
         this.cache.push(setupData.labware);
         this.inputs = $.Deferred().resolve([setupData.labware]).promise();
         deferred.resolve(thisModel);
-      } else throw "This model should not be created without either a batch or scanned labware";
+      } else {
+        throw "This model should not be created without either a batch or scanned labware";
+      }
 
       return deferred.promise();
     },
 
     addTube: function (newInput) {
-      var deferred = $.Deferred();
+      var deferred = new $.Deferred();
       var thisModel = this;
       
       var context = {
         model: thisModel,
-        input: newInput,
-        deferred: deferred
+        input: newInput
       };
 
       _.reduce(this.validators, function(memo, validator) {
@@ -60,12 +64,13 @@ define([
       }, thisModel.inputs.fail(function () {
         return deferred.reject({message: "Couldn't send the search for the order", previous_error: null});
       })).then(function (result) {
-            
         // it is only now that we can add the tube....
         result.push(newInput);
         thisModel.inputs = $.Deferred().resolve(result).promise();
         return deferred.resolve(thisModel);
-      })
+      }, function(msg) {
+        deferred.reject({message: msg, previous_error: null});
+      }).promise();
 
       return deferred.promise();
     },
@@ -124,7 +129,7 @@ define([
                 itemsByOrderUUID[order.uuid] = itemsByOrderUUID[order.uuid] || { order:order, items: []};
                 var labware = _.find(order.items[thisModel.config.input.role], function(labware) { return labware.status === "done" && labware.uuid === input.uuid; } );
                 itemsByOrderUUID[order.uuid].items.push(labware);
-              })
+              });
           }));
         })
         .fail(function(){
@@ -169,13 +174,14 @@ define([
       return deferred.promise();
     },
 
-    makeBatch:function () {
+    makeBatch: function () {
       var thisModel = this;
       var deferred = $.Deferred();
       var batchBySideEffect;
       var addingRoles = {updates:[]};
       var changingRoles = {updates:[]};
       var root;
+      
       this.owner.getS2Root()
           .then(function (result) {
             root = result;
@@ -232,7 +238,7 @@ define([
       return $.when.apply(null,
           _.chain(items)
               .filter(function (item) {
-                return item.role === that.config.input.role && item.status === 'done';
+                return item.role === that.config.input.role && item.status === "done";
               })
               .map(function (item) {
                 return that.cache.fetchResourcePromiseFromUUID(item.uuid)
@@ -251,50 +257,69 @@ define([
   return SelectionPageModel;
 
   function batchHasCapacity(context, result) {
+    var deferred = new $.Deferred();
     if (result.length > context.model.capacity - 1) {
       // check if not full
-      return context.deferred.reject({message: "Only " + context.model.capacity + " orders can be selected", previous_error: null});
+      return deferred.reject("Only " + context.model.capacity + " orders can be selected");
     } else {
-      return result;
+      return deferred.resolve(result);
     }
   }
 
+  function labwareTypeIsValid (context, result) {
+    var deferred = new $.Deferred();    
+    if (context.model.config.input.model !== context.input.resourceType.pluralize()) {
+      // check if correct type
+      return deferred.reject("You can only add \""
+          + context.model.config.input.model
+          + "\" to this batch. The input was of type \""+ context.input.resourceType.singularize()+"\"");
+    } else {
+      return deferred.resolve(result);
+    }
+  }
+
+  
   function contentsAreEqual (context, result) {
+    var deferred = new $.Deferred();
     if (context.model.config.output[0].aliquotType !== context.input.aliquots[0].type) {
       // check if correct type
-      var msg = "You can only add '"
+      return deferred.reject("You can only add \""
           + context.model.config.output[0].aliquotType
-          + "' inputs into this batch. The scanned barcode corresponds to a '"
+          + "\" inputs into this batch. The scanned barcode corresponds to a \""
           + context.input.aliquots[0].type
-          + "' input.";
-      return context.deferred.reject({message: msg, previous_error: null});
+          + "\" input.");
     } else {
-      return result;
+      return deferred.resolve(result);
     }
   }
 
   function labwareUniqueInBatch(context, result) {
+    var deferred = new $.Deferred();
     if (_.some(result, function (input) { return input.uuid === context.input.uuid; })) {
       // check if not already there
-      return context.deferred.reject({message: 'You cannot add the same tube twice.', previous_error: null});
+      return deferred.reject("You cannot add the same labware twice.");
     } else {
-      return result;
+      return deferred.resolve(result);
     }
   }
 
   function labwareRoleIsEqual(context, result) {
     // check if correct role
-    return context.input.order().then(function(order) {
+    var deferred = new $.Deferred();
+    context.input.order().then(function(order) {
       var newTubeHasCorrectRole = _.chain(order.items.filter(function (item) {
         return (item.uuid === context.input.uuid) && 
           (context.model.config.input.role === item.role) && 
           ( "done" === item.status);
       })).some().value();
       if (!newTubeHasCorrectRole) {
-        return context.deferred.reject({message: "This tube cannot be added to the current batch, because it does not have the correct role."});
+        return deferred.reject("This labware cannot be added to the current batch, because it does not have the correct role.");
       } else {
-        return result;
-      }                
-    })
+        return deferred.resolve(result);
+      }
+    }, function() {
+      return deferred.reject("This labware cannot be added to the current batch, because it doesn't belong to any order.");
+    });
+    return deferred.promise();
   }
 });

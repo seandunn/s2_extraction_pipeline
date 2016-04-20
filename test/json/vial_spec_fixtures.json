@@ -1,0 +1,733 @@
+{
+  "prepare": {
+    "samples": [
+      {
+        "actions": {
+          "read": "http://FAKEURL.fake/lims-management/a7f31130-430e-0131-2d31-005056a83e9e",
+          "create": "http://FAKEURL.fake/lims-management/a7f31130-430e-0131-2d31-005056a83e9e",
+          "update": "http://FAKEURL.fake/lims-management/a7f31130-430e-0131-2d31-005056a83e9e",
+          "delete": "http://FAKEURL.fake/lims-management/a7f31130-430e-0131-2d31-005056a83e9e"
+        },
+        "uuid": "a7f31130-430e-0131-2d31-005056a83e9e",
+        "state": "draft",
+        "supplier_sample_name": null,
+        "gender": null,
+        "sanger_sample_id": "foo-710",
+        "sample_type": "Blood",
+        "scientific_name": null,
+        "common_name": null,
+        "hmdmc_number": null,
+        "ebi_accession_number": null,
+        "sample_source": null,
+        "mother": null,
+        "father": null,
+        "sibling": null,
+        "gc_content": null,
+        "public_name": null,
+        "cohort": null,
+        "storage_conditions": null,
+        "taxon_id": null,
+        "volume": null,
+        "date_of_sample_collection": null,
+        "is_sample_a_control": null,
+        "is_re_submitted_sample": null,
+        "cellular_material": {
+          "lysed": false
+        }
+      },
+      {
+        "actions": {
+          "read": "http://FAKEURL.fake/lims-management/a7fb2780-430e-0131-2d31-005056a83e9e",
+          "create": "http://FAKEURL.fake/lims-management/a7fb2780-430e-0131-2d31-005056a83e9e",
+          "update": "http://FAKEURL.fake/lims-management/a7fb2780-430e-0131-2d31-005056a83e9e",
+          "delete": "http://FAKEURL.fake/lims-management/a7fb2780-430e-0131-2d31-005056a83e9e"
+        },
+        "uuid": "a7fb2780-430e-0131-2d31-005056a83e9e",
+        "state": "draft",
+        "supplier_sample_name": null,
+        "gender": null,
+        "sanger_sample_id": "foo-711",
+        "sample_type": "Blood",
+        "scientific_name": null,
+        "common_name": null,
+        "hmdmc_number": null,
+        "ebi_accession_number": null,
+        "sample_source": null,
+        "mother": null,
+        "father": null,
+        "sibling": null,
+        "gc_content": null,
+        "public_name": null,
+        "cohort": null,
+        "storage_conditions": null,
+        "taxon_id": null,
+        "volume": null,
+        "date_of_sample_collection": null,
+        "is_sample_a_control": null,
+        "is_re_submitted_sample": null,
+        "cellular_material": {
+          "lysed": false
+        }
+      },
+      {
+        "actions": {
+          "read": "http://FAKEURL.fake/lims-management/a7fd4a60-430e-0131-2d31-005056a83e9e",
+          "create": "http://FAKEURL.fake/lims-management/a7fd4a60-430e-0131-2d31-005056a83e9e",
+          "update": "http://FAKEURL.fake/lims-management/a7fd4a60-430e-0131-2d31-005056a83e9e",
+          "delete": "http://FAKEURL.fake/lims-management/a7fd4a60-430e-0131-2d31-005056a83e9e"
+        },
+        "uuid": "a7fd4a60-430e-0131-2d31-005056a83e9e",
+        "state": "draft",
+        "supplier_sample_name": null,
+        "gender": null,
+        "sanger_sample_id": "foo-712",
+        "sample_type": "Blood",
+        "scientific_name": null,
+        "common_name": null,
+        "hmdmc_number": null,
+        "ebi_accession_number": null,
+        "sample_source": null,
+        "mother": null,
+        "father": null,
+        "sibling": null,
+        "gc_content": null,
+        "public_name": null,
+        "cohort": null,
+        "storage_conditions": null,
+        "taxon_id": null,
+        "volume": null,
+        "date_of_sample_collection": null,
+        "is_sample_a_control": null,
+        "is_re_submitted_sample": null,
+        "cellular_material": {
+          "lysed": false
+        }
+      }
+    ],
+    "barcodes": [
+      {
+        "actions": {
+          "read": "http://FAKEURL.fake/lims-support/a8357160-430e-0131-2d50-005056a83e9e",
+          "create": "http://FAKEURL.fake/lims-support/a8357160-430e-0131-2d50-005056a83e9e",
+          "update": "http://FAKEURL.fake/lims-support/a8357160-430e-0131-2d50-005056a83e9e",
+          "delete": "http://FAKEURL.fake/lims-support/a8357160-430e-0131-2d50-005056a83e9e"
+        },
+        "uuid": "a8357160-430e-0131-2d50-005056a83e9e",
+        "ean13": "0660218778865",
+        "sanger": {
+          "prefix": "BL",
+          "number": "0218778",
+          "suffix": "V"
+        }
+      },
+      {
+        "actions": {
+          "read": "http://FAKEURL.fake/lims-support/a836d0f0-430e-0131-2d50-005056a83e9e",
+          "create": "http://FAKEURL.fake/lims-support/a836d0f0-430e-0131-2d50-005056a83e9e",
+          "update": "http://FAKEURL.fake/lims-support/a836d0f0-430e-0131-2d50-005056a83e9e",
+          "delete": "http://FAKEURL.fake/lims-support/a836d0f0-430e-0131-2d50-005056a83e9e"
+        },
+        "uuid": "a836d0f0-430e-0131-2d50-005056a83e9e",
+        "ean13": "0660218779879",
+        "sanger": {
+          "prefix": "BL",
+          "number": "0218779",
+          "suffix": "W"
+        }
+      },
+      {
+        "actions": {
+          "read": "http://FAKEURL.fake/lims-support/a8383080-430e-0131-2d50-005056a83e9e",
+          "create": "http://FAKEURL.fake/lims-support/a8383080-430e-0131-2d50-005056a83e9e",
+          "update": "http://FAKEURL.fake/lims-support/a8383080-430e-0131-2d50-005056a83e9e",
+          "delete": "http://FAKEURL.fake/lims-support/a8383080-430e-0131-2d50-005056a83e9e"
+        },
+        "uuid": "a8383080-430e-0131-2d50-005056a83e9e",
+        "ean13": "0660218780806",
+        "sanger": {
+          "prefix": "BL",
+          "number": "0218780",
+          "suffix": "P"
+        }
+      },
+      {
+        "actions": {
+          "read": "http://FAKEURL.fake/lims-support/a8399010-430e-0131-2d50-005056a83e9e",
+          "create": "http://FAKEURL.fake/lims-support/a8399010-430e-0131-2d50-005056a83e9e",
+          "update": "http://FAKEURL.fake/lims-support/a8399010-430e-0131-2d50-005056a83e9e",
+          "delete": "http://FAKEURL.fake/lims-support/a8399010-430e-0131-2d50-005056a83e9e"
+        },
+        "uuid": "a8399010-430e-0131-2d50-005056a83e9e",
+        "ean13": "0660218781810",
+        "sanger": {
+          "prefix": "BL",
+          "number": "0218781",
+          "suffix": "Q"
+        }
+      },
+      {
+        "actions": {
+          "read": "http://FAKEURL.fake/lims-support/a83aefa0-430e-0131-2d50-005056a83e9e",
+          "create": "http://FAKEURL.fake/lims-support/a83aefa0-430e-0131-2d50-005056a83e9e",
+          "update": "http://FAKEURL.fake/lims-support/a83aefa0-430e-0131-2d50-005056a83e9e",
+          "delete": "http://FAKEURL.fake/lims-support/a83aefa0-430e-0131-2d50-005056a83e9e"
+        },
+        "uuid": "a83aefa0-430e-0131-2d50-005056a83e9e",
+        "ean13": "0660218782824",
+        "sanger": {
+          "prefix": "BL",
+          "number": "0218782",
+          "suffix": "R"
+        }
+      },
+      {
+        "actions": {
+          "read": "http://FAKEURL.fake/lims-support/a83c7640-430e-0131-2d50-005056a83e9e",
+          "create": "http://FAKEURL.fake/lims-support/a83c7640-430e-0131-2d50-005056a83e9e",
+          "update": "http://FAKEURL.fake/lims-support/a83c7640-430e-0131-2d50-005056a83e9e",
+          "delete": "http://FAKEURL.fake/lims-support/a83c7640-430e-0131-2d50-005056a83e9e"
+        },
+        "uuid": "a83c7640-430e-0131-2d50-005056a83e9e",
+        "ean13": "0660218783838",
+        "sanger": {
+          "prefix": "BL",
+          "number": "0218783",
+          "suffix": "S"
+        }
+      }
+    ],
+    "expect": [
+      [
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-management/a7f31130-430e-0131-2d31-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-management/a7f31130-430e-0131-2d31-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-management/a7f31130-430e-0131-2d31-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-management/a7f31130-430e-0131-2d31-005056a83e9e"
+          },
+          "uuid": "a7f31130-430e-0131-2d31-005056a83e9e",
+          "state": "draft",
+          "supplier_sample_name": null,
+          "gender": null,
+          "sanger_sample_id": "foo-710",
+          "sample_type": "Blood",
+          "scientific_name": null,
+          "common_name": null,
+          "hmdmc_number": null,
+          "ebi_accession_number": null,
+          "sample_source": null,
+          "mother": null,
+          "father": null,
+          "sibling": null,
+          "gc_content": null,
+          "public_name": null,
+          "cohort": null,
+          "storage_conditions": null,
+          "taxon_id": null,
+          "volume": null,
+          "date_of_sample_collection": null,
+          "is_sample_a_control": null,
+          "is_re_submitted_sample": null,
+          "cellular_material": {
+            "lysed": false
+          }
+        },
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-support/a8357160-430e-0131-2d50-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-support/a8357160-430e-0131-2d50-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-support/a8357160-430e-0131-2d50-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-support/a8357160-430e-0131-2d50-005056a83e9e"
+          },
+          "uuid": "a8357160-430e-0131-2d50-005056a83e9e",
+          "ean13": "0660218778865",
+          "sanger": {
+            "prefix": "BL",
+            "number": "0218778",
+            "suffix": "V"
+          }
+        },
+        "Blood"
+      ],
+      [
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-management/a7f31130-430e-0131-2d31-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-management/a7f31130-430e-0131-2d31-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-management/a7f31130-430e-0131-2d31-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-management/a7f31130-430e-0131-2d31-005056a83e9e"
+          },
+          "uuid": "a7f31130-430e-0131-2d31-005056a83e9e",
+          "state": "draft",
+          "supplier_sample_name": null,
+          "gender": null,
+          "sanger_sample_id": "foo-710",
+          "sample_type": "Blood",
+          "scientific_name": null,
+          "common_name": null,
+          "hmdmc_number": null,
+          "ebi_accession_number": null,
+          "sample_source": null,
+          "mother": null,
+          "father": null,
+          "sibling": null,
+          "gc_content": null,
+          "public_name": null,
+          "cohort": null,
+          "storage_conditions": null,
+          "taxon_id": null,
+          "volume": null,
+          "date_of_sample_collection": null,
+          "is_sample_a_control": null,
+          "is_re_submitted_sample": null,
+          "cellular_material": {
+            "lysed": false
+          }
+        },
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-support/a836d0f0-430e-0131-2d50-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-support/a836d0f0-430e-0131-2d50-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-support/a836d0f0-430e-0131-2d50-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-support/a836d0f0-430e-0131-2d50-005056a83e9e"
+          },
+          "uuid": "a836d0f0-430e-0131-2d50-005056a83e9e",
+          "ean13": "0660218779879",
+          "sanger": {
+            "prefix": "BL",
+            "number": "0218779",
+            "suffix": "W"
+          }
+        },
+        "Blood"
+      ],
+      [
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-management/a7fb2780-430e-0131-2d31-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-management/a7fb2780-430e-0131-2d31-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-management/a7fb2780-430e-0131-2d31-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-management/a7fb2780-430e-0131-2d31-005056a83e9e"
+          },
+          "uuid": "a7fb2780-430e-0131-2d31-005056a83e9e",
+          "state": "draft",
+          "supplier_sample_name": null,
+          "gender": null,
+          "sanger_sample_id": "foo-711",
+          "sample_type": "Blood",
+          "scientific_name": null,
+          "common_name": null,
+          "hmdmc_number": null,
+          "ebi_accession_number": null,
+          "sample_source": null,
+          "mother": null,
+          "father": null,
+          "sibling": null,
+          "gc_content": null,
+          "public_name": null,
+          "cohort": null,
+          "storage_conditions": null,
+          "taxon_id": null,
+          "volume": null,
+          "date_of_sample_collection": null,
+          "is_sample_a_control": null,
+          "is_re_submitted_sample": null,
+          "cellular_material": {
+            "lysed": false
+          }
+        },
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-support/a8383080-430e-0131-2d50-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-support/a8383080-430e-0131-2d50-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-support/a8383080-430e-0131-2d50-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-support/a8383080-430e-0131-2d50-005056a83e9e"
+          },
+          "uuid": "a8383080-430e-0131-2d50-005056a83e9e",
+          "ean13": "0660218780806",
+          "sanger": {
+            "prefix": "BL",
+            "number": "0218780",
+            "suffix": "P"
+          }
+        },
+        "Blood"
+      ],
+      [
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-management/a7fb2780-430e-0131-2d31-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-management/a7fb2780-430e-0131-2d31-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-management/a7fb2780-430e-0131-2d31-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-management/a7fb2780-430e-0131-2d31-005056a83e9e"
+          },
+          "uuid": "a7fb2780-430e-0131-2d31-005056a83e9e",
+          "state": "draft",
+          "supplier_sample_name": null,
+          "gender": null,
+          "sanger_sample_id": "foo-711",
+          "sample_type": "Blood",
+          "scientific_name": null,
+          "common_name": null,
+          "hmdmc_number": null,
+          "ebi_accession_number": null,
+          "sample_source": null,
+          "mother": null,
+          "father": null,
+          "sibling": null,
+          "gc_content": null,
+          "public_name": null,
+          "cohort": null,
+          "storage_conditions": null,
+          "taxon_id": null,
+          "volume": null,
+          "date_of_sample_collection": null,
+          "is_sample_a_control": null,
+          "is_re_submitted_sample": null,
+          "cellular_material": {
+            "lysed": false
+          }
+        },
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-support/a8399010-430e-0131-2d50-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-support/a8399010-430e-0131-2d50-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-support/a8399010-430e-0131-2d50-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-support/a8399010-430e-0131-2d50-005056a83e9e"
+          },
+          "uuid": "a8399010-430e-0131-2d50-005056a83e9e",
+          "ean13": "0660218781810",
+          "sanger": {
+            "prefix": "BL",
+            "number": "0218781",
+            "suffix": "Q"
+          }
+        },
+        "Blood"
+      ],
+      [
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-management/a7fd4a60-430e-0131-2d31-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-management/a7fd4a60-430e-0131-2d31-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-management/a7fd4a60-430e-0131-2d31-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-management/a7fd4a60-430e-0131-2d31-005056a83e9e"
+          },
+          "uuid": "a7fd4a60-430e-0131-2d31-005056a83e9e",
+          "state": "draft",
+          "supplier_sample_name": null,
+          "gender": null,
+          "sanger_sample_id": "foo-712",
+          "sample_type": "Blood",
+          "scientific_name": null,
+          "common_name": null,
+          "hmdmc_number": null,
+          "ebi_accession_number": null,
+          "sample_source": null,
+          "mother": null,
+          "father": null,
+          "sibling": null,
+          "gc_content": null,
+          "public_name": null,
+          "cohort": null,
+          "storage_conditions": null,
+          "taxon_id": null,
+          "volume": null,
+          "date_of_sample_collection": null,
+          "is_sample_a_control": null,
+          "is_re_submitted_sample": null,
+          "cellular_material": {
+            "lysed": false
+          }
+        },
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-support/a83aefa0-430e-0131-2d50-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-support/a83aefa0-430e-0131-2d50-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-support/a83aefa0-430e-0131-2d50-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-support/a83aefa0-430e-0131-2d50-005056a83e9e"
+          },
+          "uuid": "a83aefa0-430e-0131-2d50-005056a83e9e",
+          "ean13": "0660218782824",
+          "sanger": {
+            "prefix": "BL",
+            "number": "0218782",
+            "suffix": "R"
+          }
+        },
+        "Blood"
+      ],
+      [
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-management/a7fd4a60-430e-0131-2d31-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-management/a7fd4a60-430e-0131-2d31-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-management/a7fd4a60-430e-0131-2d31-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-management/a7fd4a60-430e-0131-2d31-005056a83e9e"
+          },
+          "uuid": "a7fd4a60-430e-0131-2d31-005056a83e9e",
+          "state": "draft",
+          "supplier_sample_name": null,
+          "gender": null,
+          "sanger_sample_id": "foo-712",
+          "sample_type": "Blood",
+          "scientific_name": null,
+          "common_name": null,
+          "hmdmc_number": null,
+          "ebi_accession_number": null,
+          "sample_source": null,
+          "mother": null,
+          "father": null,
+          "sibling": null,
+          "gc_content": null,
+          "public_name": null,
+          "cohort": null,
+          "storage_conditions": null,
+          "taxon_id": null,
+          "volume": null,
+          "date_of_sample_collection": null,
+          "is_sample_a_control": null,
+          "is_re_submitted_sample": null,
+          "cellular_material": {
+            "lysed": false
+          }
+        },
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-support/a83c7640-430e-0131-2d50-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-support/a83c7640-430e-0131-2d50-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-support/a83c7640-430e-0131-2d50-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-support/a83c7640-430e-0131-2d50-005056a83e9e"
+          },
+          "uuid": "a83c7640-430e-0131-2d50-005056a83e9e",
+          "ean13": "0660218783838",
+          "sanger": {
+            "prefix": "BL",
+            "number": "0218783",
+            "suffix": "S"
+          }
+        },
+        "Blood"
+      ]
+    ]
+  },
+  "create": {
+    "rows": [
+      [
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-management/fa421b40-4316-0131-2d30-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-management/fa421b40-4316-0131-2d30-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-management/fa421b40-4316-0131-2d30-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-management/fa421b40-4316-0131-2d30-005056a83e9e"
+          },
+          "uuid": "fa421b40-4316-0131-2d30-005056a83e9e",
+          "state": "draft",
+          "supplier_sample_name": null,
+          "gender": null,
+          "sanger_sample_id": "foo-715",
+          "sample_type": "Blood",
+          "scientific_name": null,
+          "common_name": null,
+          "hmdmc_number": null,
+          "ebi_accession_number": null,
+          "sample_source": null,
+          "mother": null,
+          "father": null,
+          "sibling": null,
+          "gc_content": null,
+          "public_name": null,
+          "cohort": null,
+          "storage_conditions": null,
+          "taxon_id": null,
+          "volume": null,
+          "date_of_sample_collection": null,
+          "is_sample_a_control": null,
+          "is_re_submitted_sample": null,
+          "cellular_material": {
+            "lysed": false
+          }
+        },
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-support/fa4c2d60-4316-0131-2d51-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-support/fa4c2d60-4316-0131-2d51-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-support/fa4c2d60-4316-0131-2d51-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-support/fa4c2d60-4316-0131-2d51-005056a83e9e"
+          },
+          "uuid": "fa4c2d60-4316-0131-2d51-005056a83e9e",
+          "ean13": "0660218788659",
+          "sanger": {
+            "prefix": "BL",
+            "number": "0218788",
+            "suffix": "A"
+          }
+        },
+        "Blood"
+      ],
+      [
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-management/fa421b40-4316-0131-2d30-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-management/fa421b40-4316-0131-2d30-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-management/fa421b40-4316-0131-2d30-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-management/fa421b40-4316-0131-2d30-005056a83e9e"
+          },
+          "uuid": "fa421b40-4316-0131-2d30-005056a83e9e",
+          "state": "draft",
+          "supplier_sample_name": null,
+          "gender": null,
+          "sanger_sample_id": "foo-715",
+          "sample_type": "Blood",
+          "scientific_name": null,
+          "common_name": null,
+          "hmdmc_number": null,
+          "ebi_accession_number": null,
+          "sample_source": null,
+          "mother": null,
+          "father": null,
+          "sibling": null,
+          "gc_content": null,
+          "public_name": null,
+          "cohort": null,
+          "storage_conditions": null,
+          "taxon_id": null,
+          "volume": null,
+          "date_of_sample_collection": null,
+          "is_sample_a_control": null,
+          "is_re_submitted_sample": null,
+          "cellular_material": {
+            "lysed": false
+          }
+        },
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-support/fa5d6b70-4316-0131-2d51-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-support/fa5d6b70-4316-0131-2d51-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-support/fa5d6b70-4316-0131-2d51-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-support/fa5d6b70-4316-0131-2d51-005056a83e9e"
+          },
+          "uuid": "fa5d6b70-4316-0131-2d51-005056a83e9e",
+          "ean13": "0660218789663",
+          "sanger": {
+            "prefix": "BL",
+            "number": "0218789",
+            "suffix": "B"
+          }
+        },
+        "Blood"
+      ],
+      [
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-management/fa5c32f0-4316-0131-2d30-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-management/fa5c32f0-4316-0131-2d30-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-management/fa5c32f0-4316-0131-2d30-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-management/fa5c32f0-4316-0131-2d30-005056a83e9e"
+          },
+          "uuid": "fa5c32f0-4316-0131-2d30-005056a83e9e",
+          "state": "draft",
+          "supplier_sample_name": null,
+          "gender": null,
+          "sanger_sample_id": "foo-716",
+          "sample_type": "Blood",
+          "scientific_name": null,
+          "common_name": null,
+          "hmdmc_number": null,
+          "ebi_accession_number": null,
+          "sample_source": null,
+          "mother": null,
+          "father": null,
+          "sibling": null,
+          "gc_content": null,
+          "public_name": null,
+          "cohort": null,
+          "storage_conditions": null,
+          "taxon_id": null,
+          "volume": null,
+          "date_of_sample_collection": null,
+          "is_sample_a_control": null,
+          "is_re_submitted_sample": null,
+          "cellular_material": {
+            "lysed": false
+          }
+        },
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-support/fa5e7ce0-4316-0131-2d51-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-support/fa5e7ce0-4316-0131-2d51-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-support/fa5e7ce0-4316-0131-2d51-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-support/fa5e7ce0-4316-0131-2d51-005056a83e9e"
+          },
+          "uuid": "fa5e7ce0-4316-0131-2d51-005056a83e9e",
+          "ean13": "0660218790829",
+          "sanger": {
+            "prefix": "BL",
+            "number": "0218790",
+            "suffix": "R"
+          }
+        },
+        "Blood"
+      ],
+      [
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-management/fa5c32f0-4316-0131-2d30-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-management/fa5c32f0-4316-0131-2d30-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-management/fa5c32f0-4316-0131-2d30-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-management/fa5c32f0-4316-0131-2d30-005056a83e9e"
+          },
+          "uuid": "fa5c32f0-4316-0131-2d30-005056a83e9e",
+          "state": "draft",
+          "supplier_sample_name": null,
+          "gender": null,
+          "sanger_sample_id": "foo-716",
+          "sample_type": "Blood",
+          "scientific_name": null,
+          "common_name": null,
+          "hmdmc_number": null,
+          "ebi_accession_number": null,
+          "sample_source": null,
+          "mother": null,
+          "father": null,
+          "sibling": null,
+          "gc_content": null,
+          "public_name": null,
+          "cohort": null,
+          "storage_conditions": null,
+          "taxon_id": null,
+          "volume": null,
+          "date_of_sample_collection": null,
+          "is_sample_a_control": null,
+          "is_re_submitted_sample": null,
+          "cellular_material": {
+            "lysed": false
+          }
+        },
+        {
+          "actions": {
+            "read": "http://FAKEURL.fake/lims-support/fa5f6740-4316-0131-2d51-005056a83e9e",
+            "create": "http://FAKEURL.fake/lims-support/fa5f6740-4316-0131-2d51-005056a83e9e",
+            "update": "http://FAKEURL.fake/lims-support/fa5f6740-4316-0131-2d51-005056a83e9e",
+            "delete": "http://FAKEURL.fake/lims-support/fa5f6740-4316-0131-2d51-005056a83e9e"
+          },
+          "uuid": "fa5f6740-4316-0131-2d51-005056a83e9e",
+          "ean13": "0660218791833",
+          "sanger": {
+            "prefix": "BL",
+            "number": "0218791",
+            "suffix": "S"
+          }
+        },
+        "Blood"
+      ]
+    ],
+    "expect": [
+      ["Tube Barcode", "Sanger Barcode", "Sanger Sample ID", "SAMPLE TYPE"],
+      ["0660218788659", "BL0218788A", "foo-715", "Blood"],
+      ["0660218789663", "BL0218789B", "foo-715", "Blood"],
+      ["0660218790829", "BL0218790R", "foo-716", "Blood"],
+      ["0660218791833", "BL0218791S", "foo-716", "Blood"]
+    ]
+  }
+}

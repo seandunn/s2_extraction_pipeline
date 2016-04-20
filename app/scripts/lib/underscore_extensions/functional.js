@@ -1,3 +1,6 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013 Genome Research Ltd.
 define([], function() {
   "use strict";
 
@@ -21,6 +24,24 @@ define([], function() {
         function(m, v) { m.push(f(v)); return m; },
         zero || []
       );
+    },
+
+    rejectFirst: function(list, iterator, context) {
+      var found = false;
+
+      return _.reject(list, function(listItem) {
+        if (found === true) {
+          return false;
+        } else {
+          var result = iterator(listItem);
+          if (result === true) {
+            found = true;
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }, context);
     },
 
     // Turns the given function into a function that will map f across the argument passed

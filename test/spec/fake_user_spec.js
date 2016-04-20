@@ -1,63 +1,35 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013 Genome Research Ltd.
+/* global sinon, describe, before, after, it, expect */
 define([
-  'test/lib/fake_user'
-  , 'mapper_test/resource_test_helper'
-], function (FakeUser, TestHelper) {
-  'use strict';
+  "test/lib/fake_user",
+  "mapper_test/resource_test_helper"
+], function (FakeUser, testHelper) {
+  "use strict";
 
-  TestHelper(function (results) {
-
-    var $fakeDOM, 
-        fakeContent,
-        bySideEffect = 0;
+  testHelper(function (results) {
 
     describe("Fake user", function () {
 
-      it("will wait for something to happen on the DOM before taking action", function (done) {
-        
-        this.timeout(5000);
+      var $fakeDOM,
+          fakeContent,
+          bySideEffect = 0;
 
-        results.resetFinishedFlag();
-        
-        $fakeDOM = $('<div><div id="content"></div></div>');
+      $fakeDOM = $("<div><div id=\"content\"><div id=\"foo\"></div></div></div>");
 
-        fakeContent = function () {
-          return $fakeDOM.find("#content");
-        };
-
-        (function () {
-          var p = $.Deferred();
-
-          $.ajax("http://www.google.jp")
-            .then(function () {
-              $fakeDOM.find("#content").html("<div id='foo'></div>");
-              p.resolve();
-            }).fail(function () {
-              $fakeDOM.find("#content").html("<div id='foo'></div>");
-              p.reject();
-            });
-          return p.promise();
-        })()
-        .then(function() {
-          results.unexpected();
-        })
-        .fail(function() {
-          results.expected();
-          results.expectToBeCalled();
-        })
-        .always(done);
-
-      });
+      fakeContent = function () {
+        return $fakeDOM.find("#content");
+      };
 
       it("can inject HTML", function(done) {
         
-        results.resetFinishedFlag();
-
         FakeUser.waitsForIt($fakeDOM,
           "#foo",
           function () {
             bySideEffect = 1;
-            $fakeDOM.find("#foo").html("<span class='bar'></span>");
-        })
+            $fakeDOM.find("#foo").html("<span class=\"bar\"></span>");
+          })
           .then(function() {
             results.expected();
             expect(fakeContent().find(".bar").get(0)).to.not.be.undefined;
@@ -71,6 +43,7 @@ define([
       it("can see that FakeUser sets up a \"side effect\"", function() {
         expect(bySideEffect).to.equal(1);
       });
+
     });
   });
 });

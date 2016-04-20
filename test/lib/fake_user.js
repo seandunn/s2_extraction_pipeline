@@ -1,4 +1,9 @@
-define([], function () {
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
+define([
+  "jquery"
+], function () {
   "use strict";
 
   // Allows the tests to wait for UI element to appear.
@@ -55,7 +60,7 @@ define([], function () {
     },
 
     aPressReturnEvent: function () {
-      return jQuery.Event("keypress", {which: 13});
+      return jQuery.Event("keyup", {which: 13});
     }
   };
 });

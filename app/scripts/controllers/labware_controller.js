@@ -1,32 +1,15 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define(["controllers/base_controller",
   "views/labware_view",
   "lib/pubsub",
   "lib/barcode_checker",
   "lib/util",
   "labware/presenter",
-], function (BaseController, LabwareView, PubSub, BarcodeChecker, Util, LabwarePresenter) {
+  "models/labware_model"
+], function (BaseController, LabwareView, PubSub, BarcodeChecker, Util, LabwarePresenter, LabwareModel) {
   "use strict";
-
-  var LabwareModel = Object.create(null);
-  _.extend(LabwareModel, LabwarePresenter, {
-    init: function (owner, setupData) {
-      this.owner = owner;
-      $.extend(this, setupData);
-
-      return this;
-    },
-
-    displayResource: function(resourceSelector) {
-      var resourceController = this.owner.resourceController,
-          resource           = this.resource;
-
-      resourceController.setupController(this.presentResource(resource), resourceSelector);
-    },
-
-    displayLabware: function() {
-      return this.display_labware === undefined ? true : this.display_labware;
-    }
-  });
 
   var LabwareController = Object.create(BaseController);
 
@@ -47,6 +30,12 @@ define(["controllers/base_controller",
       this.setupPlaceholder(jquerySelection);
       this.labwareModel = Object.create(LabwareModel).init(this, setupData);
 
+      this.labwareModel.on("resourceUpdated", _.bind(function() {
+          this.setupView();
+          this.renderView();
+          this.emit("resourceUpdated");
+      }, this));
+      
       this.setupView();
       this.setupSubControllers();
       return this;
@@ -63,17 +52,13 @@ define(["controllers/base_controller",
     },
 
     updateModel: function (newResource, presentationHandler) {
-      this.labwareModel.presentResource = presentationHandler || LabwarePresenter.presentResource;
-      this.labwareModel.resource        = newResource;
-      this.childDone(this.labwareModel, "resourceUpdated", {});
+      this.labwareModel.setResource(newResource, presentationHandler || LabwarePresenter.presentResource)
       return this;
     },
-    getComponentInterface: function() {
-      return (_.isUndefined(this.bedController))? {view: "", events: {}} : this.bedController.getComponentInterface();
-    },
     setupSubControllers: function () {
+      var type;
       if (!this.resourceController) {
-        var type = this.labwareModel.expected_type;
+        type = this.labwareModel.expected_type;
       }
       if (this.labwareModel.resource) {
         type = this.labwareModel.resource.resourceType;
@@ -86,10 +71,6 @@ define(["controllers/base_controller",
         }
         if (!this.barcodeInputController && this.labwareModel.display_barcode && !this.isSpecial()) {
           this.barcodeInputController = this.controllerFactory.create("scan_barcode_controller", this);
-        }
-        if (!this.bedController && (this.labwareModel.bedTracking === true))
-        {
-          this.bedController = this.controllerFactory.create("bed_controller", this);
         }
         this.setupSubModel();
       }
@@ -116,12 +97,6 @@ define(["controllers/base_controller",
           return that.jquerySelection().find("div.barcodeScanner");
         });
       }
-      if (this.bedController) {
-        this.bedController.init(data[this.labwareModel.expected_type], function() {
-          that.jquerySelection().find("div.linear-process").trigger("activate");
-          return that.jquerySelection().find("div.bed");
-        });
-      }
     },
 
     renderView: function () {
@@ -130,40 +105,29 @@ define(["controllers/base_controller",
 
       this.view.renderView(this.model);
 
-      if (this.bedController) {
-        this.jquerySelection().append(this.bedController.renderView());
-        /**
-         * TODO
-         * These lines comes from setupSubcontroller. REFACTOR
-         * Begin
-         */
-        this.resourceController = this.controllerFactory.createLabwareSubController(this, this.labwareModel.expected_type);
-        this.labwareModel.displayResource(_.bind(function() {
-            return this.jquerySelection().find("div.resource");
-        }, this));
-         /**
-          * End
-          */
-      }
-
       if (this.resourceController) {
         this.resourceController.renderView();
       }
 
       if (this.barcodeInputController) {
         var labwareCallback = function(value, template, controller){
+          var statusPromise = new $.Deferred();
           if (value.match(/\d{12}/))
           {
             value = Util.pad(value);
           }
-          controller.owner.childDone(controller, "barcodeScanned", {
+          this.emit("barcodeScanned", {
             modelName: controller.labwareModel.expected_type.pluralize(),
-            BC:        value
+            BC:        value,
+            typeBarcode:   controller.labwareModel.input ? 'input' : 'output',
+            origin: controller,
+            promise: statusPromise
           });
           PubSub.publish("barcode_scanned.labware.s2", controller, {
             modelName: controller.labwareModel.expected_type.pluralize(),
             BC:        value
           });
+          return statusPromise;
         };
         this.jquerySelection().append(
           this.bindReturnKey(this.barcodeInputController.renderView(),
@@ -231,14 +195,6 @@ define(["controllers/base_controller",
       }
     },
 
-    modelDone: function(child, action, data) {
-      if (action === "resourceUpdated") {
-        this.setupView();
-        this.renderView();
-        this.owner.childDone(this, "resourceUpdated", {});
-      }
-    },
-
     barcodeFocus: function() {
       this.jquerySelection().find("input").focus();
     },
@@ -282,43 +238,12 @@ define(["controllers/base_controller",
       barcodeSelection.val("");
     }, 250);
   }
-
   
   function validationOnReturnKeyCallback (controller, type, barcodePrefixes) {
-    var validationCallBack;
-    switch(type){
-    case "2D_tube":
-      validationCallBack = BarcodeChecker.is2DTubeBarcodeValid;
-      break;
-    case "1D_tube":
-    default:
-      validationCallBack = BarcodeChecker.isBarcodeValid;
-    }
-
-    return function (element, callback, errorCallback) {
-      // validation of the barcode only on return key
-      return function (event) {
-        var CRKEYCODE=13, TABKEYCODE=9;
-        if (!((event.which === TABKEYCODE) || (event.which === CRKEYCODE))) {
-          return;
-        }
-
-        event.preventDefault();
-
-        var value = event.currentTarget.value;
-        var barcodeSelection = $(event.currentTarget);
-        setScannedTimeout(barcodeSelection);
-        if (value.match(/\d{12}/))
-        {
-          value = Util.pad(value);
-        }        
-        if (validationCallBack(value,barcodePrefixes)) {
-          callback(value, element, controller);
-          controller.onBarcodeScanned();
-        } else {
-          errorCallback(value, element, controller);
-        }
-      };
+    var validation = (type === "2D_tube")? BarcodeChecker.is2DTubeBarcodeValid : 
+      BarcodeChecker.isBarcodeValid;
+    return function(value) {
+      return validation(value, barcodePrefixes);
     };
   }
 });

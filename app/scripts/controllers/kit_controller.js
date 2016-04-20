@@ -1,3 +1,6 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define([
   'controllers/base_controller',
   'text!html_partials/_kit.html',
@@ -96,7 +99,12 @@ define([
           if(!model.batch.kit){
             controller.selector().html(_.template(kitPartialHtml)({}));
             controller.barcodeController = controller.controllerFactory.create('scan_barcode_controller', controller);
-            controller.barcodeController.init({ type: 'Kit' });
+
+            controller.barcodeController.init({
+              type: 'Kit',
+              icon: 'icon-tint'
+            });
+
             controller.selector()
                 .find('.barcode')
                 .append(controller.bindReturnKey( controller.barcodeController.renderView(), kitScannedCallback(controller), kitScannedErrorCallback(controller)('Barcode must be a 22 digit number.'), validationOnReturnKeyCallback(controller) ));

@@ -1,0 +1,102 @@
+{
+  "sample": {
+    "sanger_sample_id":          {
+      "columnName": "SANGER SAMPLE ID",
+      "type":       "string"
+    },
+    "gender":                    {
+      "columnName": "GENDER",
+      "type":       "string"
+    },
+    "sample_type":               {
+      "columnName": "SAMPLE TYPE",
+      "type":       "string"
+    },
+    "volume":                    {
+      "columnName": "VOLUME (ul)",
+      "type":       "float"
+    },
+    "date_of_sample_collection": {
+      "columnName": "DATE OF SAMPLE COLLECTION (yyyy-mm-dd only)",
+      "type":       "string"
+    },
+    "is_sample_a_control":       {
+      "columnName": "IS SAMPLE A CONTROL?",
+      "type":       "boolean"
+    },
+    "cellular_material":         {
+      "lysed": {
+        "columnName": "Lysed?",
+        "type":       "boolean"
+      },
+
+      "donor_id": {
+        "columnName": "Donor ID",
+        "type":       "string"
+      },
+
+      "extraction_process":{
+        "columnName": "_PROCESS",
+        "type":       "string"
+      }
+    },
+    "mother":                    {
+      "columnName": "MOTHER (optional)",
+      "type":       "string"
+    },
+    "father":                    {
+      "columnName": "FATHER (optional)",
+      "type":       "string"
+    },
+    "sibling":                   {
+      "columnName": "SIBLING (optional)",
+      "type":       "string"
+    },
+    "gc_content":                {
+      "columnName": "GC CONTENT",
+      "type":       "string"
+    },
+    "public_name":               {
+      "columnName": "PUBLIC NAME",
+      "type":       "string"
+    },
+    "hmdmc_number":              {
+      "columnName": "HMDMC",
+      "type":       "string"
+    },
+    "supplier_sample_name":      {
+      "columnName": "SUPPLIER SAMPLE NAME",
+      "type":       "string"
+    },
+    "cohort":                    {
+      "columnName": "COHORT",
+      "type":       "string"
+    },
+    "storage_conditions":        {
+      "columnName": "STORAGE CONDITIONS",
+      "type":       "string"
+    },
+    "ebi_accession_number":      {
+      "columnName": "SAMPLE ACCESSION NUMBER (optional)",
+      "type":       "string"
+    },
+    "taxon_id": {
+      "columnName": "TAXON ID",
+      "type": "int"
+    },
+    "scientific_name": {
+      "columnName": "SCIENTIFIC NAME",
+      "type": "string"
+    },
+
+    "common_name": {
+      "columnName": "COMMON NAME",
+      "type": "string"
+    },
+
+    "sample_description": {
+      "columnName": "SAMPLE DESCRIPTION",
+      "type": "string"
+    }
+  }
+}

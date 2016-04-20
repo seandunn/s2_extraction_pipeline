@@ -1,12 +1,16 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define([
+        "event_emitter",
   'mapper_services/print',
   'connected/caching'
-], function (PrintService, Cache) {
+], function (EventEmitter, PrintService, Cache) {
 
   'use strict';
 
-  var BasePageModel = Object.create(null);
-
+  var BasePageModel = new EventEmitter();
+  
   _.extend(BasePageModel, {
     initialiseCaching: function() {
       var model = this;
@@ -28,6 +32,10 @@ define([
       this.cache.resolve([]);
     },
 
+    fetchResource: function() {
+      return this.cache.fetchResourcePromiseFromUUID(this.uuid);
+    },
+
     printBarcodes:function(collection, printerName) {
       var that = this;
 
@@ -41,15 +49,9 @@ define([
       return printer.print(printItems, {
         user: this.user
       }).done(function() {
-        //TODO: remove guard code when childDone has been removed
-        if(that.owner && that.owner.childDone){
-          that.owner.childDone(that, 'barcodePrintSuccess', {});
-        }
+        that.emit('barcodePrintSuccess', {});
       }).fail(function() {
-        //TODO: remove guard code when childDone has been removed
-        if(that.owner && that.owner.childDone){
-          that.owner.childDone(that, 'barcodePrintFailure', {});
-        }
+        that.emit('barcodePrintFailure', {});
       });
     }
   });

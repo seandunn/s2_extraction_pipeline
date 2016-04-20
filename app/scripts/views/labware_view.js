@@ -1,3 +1,6 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define(['text!html_partials/_labware.html'], function (labwarePartialHtml) {
 
   'use strict';
@@ -27,8 +30,8 @@ define(['text!html_partials/_labware.html'], function (labwarePartialHtml) {
      */
     return function () {
       if (owner) {
-        var userbarcode = $(".user_barcode input").val();
-        var tube_barcode = $(".labware_barcode input").val();
+        var userbarcode = $(".user-barcode input").val();
+        var tube_barcode = $(".labware-barcode input").val();
 
         owner.childDone(view , "login",{ userBC:userbarcode, labwareBC:tube_barcode });
       }

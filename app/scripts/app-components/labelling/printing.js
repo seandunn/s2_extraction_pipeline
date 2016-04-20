@@ -1,10 +1,14 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define([
   "text!app-components/labelling/_printing.html",
   "mapper_services/print",
+  "config",
 
   // Global namespace requires
   "lib/jquery_extensions"
-], function(view, PrintService) {
+], function(view, PrintService, config) {
   "use strict";
 
   var template = _.compose($, _.template(view));
@@ -26,18 +30,21 @@ define([
       html.trigger("error.status.s2", [message]);
     };
 
+    var obj = {};
     var button  = html.find("button");
-    button.lockingClick(function() {
-      var selected = _.find(context.printers, function(p) { return p.name === printer.val(); });
-      html.trigger("trigger.print.s2", [selected]);
-    });
+    button.lockingClick(_.bind(function() {
+      obj.beforePrint().then(function() {
+        var selected = _.find(context.printers, function(p) { return p.name === printer.val(); });
+        html.trigger("trigger.print.s2", [selected]);        
+      });
+    }, obj));
 
     _.extend(html, {
       print:  $.ignoresEvent(print),
       filter: $.ignoresEvent(filter)
     });
 
-    return {
+    _.extend(obj, {
       name: "printing.labelling.s2",
       view: html,
       events: {
@@ -45,9 +52,17 @@ define([
         "filter.print.s2": _.bind(html.filter, view),
         "activate.s2":     $.stopsPropagation($.ignoresEvent(_.partial(disable, false, printer, button))),
         "deactivate.s2":   $.stopsPropagation($.ignoresEvent(_.partial(disable, true, printer, button)))
-      }
-    };
+      },
+      beforePrint: function() {
+        var deferred = new $.Deferred();
+        deferred.resolve(true);
+        return deferred;
+      },
+      print: print
+    });
 
+    return obj;
+    
     function disable(state) {
       _.chain(arguments)
        .drop(1)
@@ -61,7 +76,7 @@ define([
         return printer.name === details.name;
       });
 
-      return context.user.then(function(user) {
+      return config.userPromise.then(function(user) {
         return printer.print(
           _.invoke(printables, "returnPrintDetails"),
           {user:user}

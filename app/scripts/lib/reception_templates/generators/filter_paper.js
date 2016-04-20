@@ -1,3 +1,6 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013 Genome Research Ltd.
 define([
   "lib/underscore_extensions"
 ], function() {
@@ -14,8 +17,8 @@ define([
   // Filter papers are pre-barcoded, but we'll still generate barcodes and pretend they are labelled with these.
   // When the manifest is returned we'll attach the barcode that was specified, which may well be the pre-barcoded
   // one.  Even though there are two locations on the filter paper, they contain the same sample.
-  function prepare(model, preRegisterSamples, preRegisterBarcodes, numberOfLabwares, callback) {
-    var numberOfSamples  = numberOfLabwares;
+  function prepare(model, preRegisterSamples, preRegisterBarcodes, details, callback) {
+    var numberOfSamples  = details.number_of_labwares;
     var registerSamples  = _.partial(preRegisterSamples, numberOfSamples);
     var registerBarcodes = _.partial(preRegisterBarcodes, numberOfSamples, model);
 

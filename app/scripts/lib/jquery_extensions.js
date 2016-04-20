@@ -1,6 +1,10 @@
+//This file is part of S2 and is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2013,2014 Genome Research Ltd.
 define([
   "jquery",  // jquery will be in the global namespace
-  "lib/underscore_extensions"
+  "lib/underscore_extensions",
+  "bootstrap/bootstrap-affix"
 ], function() {
   "use strict";
 
@@ -54,6 +58,21 @@ define([
         return f.apply(this, _.drop(arguments, 1));
       };
     }),
+    
+    ignoresChildrenEvent: function(possibleParent, f) {
+      function isChildren(dom, possibleParent, iteration) {
+        iteration = (iteration || 0) + 1;
+        return ((dom.parentNode === possibleParent) ||
+        (possibleParent === document.body) || ((dom.parentNode !== document.body) &&
+        (iteration >= 0) && (iteration < 10) && (isChildren(
+          dom.parentNode, possibleParent, iteration))));
+      }
+      return function(event) {
+        var value = (!isChildren(event.target, possibleParent)) ? f.apply(this,
+          arguments) : false;
+        return value;
+      };      
+    },
 
     // Wraps the given handler to prevent the event from propagating up the DOM tree.
     stopsPropagation: handlesEvents(function(f) {

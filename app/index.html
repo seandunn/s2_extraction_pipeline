@@ -14,36 +14,56 @@
 </head>
 <body>
   <header class="container">
-    <div class="row page-title">
-      <div class="span3">
-        <img id="sanger-logo" src="images/sanger-logo.png"/>
-      </div>
-      <div class="span6 offset3">
-        <h1 id="title-text" class="pull-right">S2 Samples Pipeline</h1>
-      </div>
+  <div class="row page-title">
+    <div class="span3">
+      <img id="sanger-logo" src="images/sanger-logo.png"/>
     </div>
+    <div class="span6 offset3">
+      <h1 id="title-text" class="pull-right">S2 Samples Pipeline</h1>
+    </div>
+  </div>
+  <div class="row">&nbsp;</div>
 
-    <div class="row">
-      <div class="span4 offset8">
-      <ul class="nav nav-pills pull-right" role="menu" aria-labelledby="dLabel">
-        <li class="active"><a href="#">Pipeline</a></li>
-        <li><a href="lab_activities.html">Lab Activities</a></li>
-      </ul>
-      </div>
+  <div id="logging-bar" class="row fade">
+    <div class="span6">
+      <small id="user-email" class="muted fade"><span class="label">Logged as:</span> <span class="email">&nbsp;</span></small>
     </div>
+    <div class="span6">
+      <ul id="page-nav" class="nav nav-pills pull-right">
+        <li><a href="#pipeline" >Pipeline</a></li>
+        <li><a href="#lab-activities" >Lab Activities</a></li>
+        <li><a href="#lab-management" >Lab Management</a></li>
+        <li><a href="#admin" >Admin</a></li>
+      </ul>
+    </div>
+  </div>
 
   </header>
 
   <div id="alertContainer" class="container"></div>
-  <div id="content" class="sample-extraction container"></div>
-  <br/>
-  <br/>
-  <br/>
+
+  <div id="page-content" class="tab-content">
+    <div id="logging-page" class="s2-page container tab-pane fade active in">
+      <div class="component">
+        <h2>User Logging</h2>
+        <div class="row">
+          <div class="user-validation span12"></div>
+        </div>
+      </div>
+    </div>
+    <div id="pipeline" class="s2-page container tab-pane fade"></div>
+    <div id="lab-activities" class="s2-page container tab-pane fade"></div>
+    <div id="lab-management" class="s2-page container tab-pane fade"></div>
+    <div id="admin" class="s2-page container tab-pane fade"></div>
+  </div>
 
   <p class="navbar navbar-fixed-bottom muted">Release: <span id="release">unknown</span> - S2 Server: <span id="server-url">unknown</span></p>
 
   <!-- build:js scripts/amd-app.js -->
   <script data-main="scripts/main" src="components/requirejs/require.js"></script>
   <!-- endbuild -->
+
+  <!-- This should really be moved to an name spaced module... -->
+  <script type="text/javascript" src="http://public.tableausoftware.com/javascripts/api/tableau_v8.js"></script>
 </body>
 </html>
